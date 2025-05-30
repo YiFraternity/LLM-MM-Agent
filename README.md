@@ -6,18 +6,35 @@
 
 We propose a **Mathematical Modeling Agent** that simulates the real-world human process of mathematical modeling. This agent follows a complete problem-solving pipeline:
 
+<p align="center">
+   <img src="figs/Overview.png" alt="MM-Agent Overview" width="80%">
+</p>
+
+
+
+
 1. **Problem Analysis**
 2. **Mathematical Modeling**
 3. **Computational Solving**
 4. **Solution Reporting**
 
-<p align="center">
-   <img src="figs/Overview.pdf" alt="MM-Agent Overview" width="80%">
-</p>
 
 Our paper is available at [arXiv](https://arxiv.org/abs/2505.14148).
 
 ---
+
+
+## 🆚 Traditional vs LLM-powered Mathematical Modeling
+
+A well-defined mathematical problem, where an agent solves a well-defined problem to obtain a solution.  An open-ended mathematical modeling problem, where given an abstract application scenario or phenomenon, the agent first needs to formulate the mathematical problem before solving it and providing an end-to-end solution.
+
+<p align="center">
+   <img src="figs/difference.png" alt="Traditional vs LLM-powered Mathematical Modeling" width="80%">
+</p>
+
+<p align="center">
+   <b>Figure 1:</b> Traditional well-defined mathematics problem vs LLM-powered open-ended mathematical modeling problem.<br>
+</p>
 
 ## 🔬 How Does the Mathematical Modeling Agent Work?
 
