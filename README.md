@@ -2,6 +2,17 @@
 
 > 📖 This is the English version of the README. [点击查看中文版](./README_zh.md)
 
+
+
+## 📰 News
+
+## 2025-07
+🎉 Our paper *"MM-Agent: LLMs as Agents for Real-world Mathematical Modeling Problems"* has been accepted to the **AI4MATH Workshop at ICML 2025**!
+
+📄 [Read the paper on arXiv](https://arxiv.org/abs/2505.14148)
+
+
+
 ## 📖 Overview
 
 We propose a **Mathematical Modeling Agent** that simulates the real-world human process of mathematical modeling. This agent follows a complete problem-solving pipeline:
