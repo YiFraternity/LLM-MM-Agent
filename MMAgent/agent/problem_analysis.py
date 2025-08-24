@@ -5,7 +5,7 @@ from prompt.template import PROBLEM_ANALYSIS_PROMPT, PROBLEM_ANALYSIS_CRITIQUE_P
 class ProblemUnderstanding(BaseAgent):
     def __init__(self, llm):
         super().__init__(llm)
-    
+
     def analysis_actor(self, modeling_problem: str, user_prompt: str=''):
         prompt = PROBLEM_ANALYSIS_PROMPT.format(modeling_problem=modeling_problem, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)

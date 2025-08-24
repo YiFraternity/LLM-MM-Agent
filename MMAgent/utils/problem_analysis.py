@@ -1,18 +1,18 @@
 import os
+import shutil
 from utils.utils import read_json_file
 from agent.data_description import DataDescription
 from agent.problem_analysis import ProblemUnderstanding
 from agent.coordinator import Coordinator
 from agent.problem_decompse import ProblemDecompose
 from prompt.template import PROBLEM_PROMPT
-import shutil
 
 
 def get_problem(problem_path, llm):
     problem = read_json_file(problem_path)
     data_description = problem.get('dataset_description', {})
     ds = DataDescription(llm)
-    
+
     if data_description:
         data_path = problem['dataset_path']
         variable_description = problem['variable_description']
@@ -38,7 +38,7 @@ def problem_analysis(llm, problem_path, config, dataset_path, output_dir):
     # Get problem
     problem_str, problem = get_problem(problem_path, llm)
     problem_type = os.path.splitext(os.path.basename(problem_path))[0].split('_')[-1]
-    
+
     # Initialize solution dictionary
     solution = {'tasks': []}
     solution['problem_background'] = problem['background']

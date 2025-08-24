@@ -1,6 +1,10 @@
 from agent.retrieve_method import MethodRetriever
 from agent.task_solving import TaskSolver
-from prompt.template import TASK_ANALYSIS_APPEND_PROMPT, TASK_FORMULAS_APPEND_PROMPT, TASK_MODELING_APPEND_PROMPT
+from prompt.template import (
+    TASK_ANALYSIS_APPEND_PROMPT,
+    TASK_FORMULAS_APPEND_PROMPT,
+    TASK_MODELING_APPEND_PROMPT,
+)
 
 
 def get_dependency_prompt(with_code, coordinator, task_id):
@@ -37,7 +41,7 @@ This task is Task {task_id}, which depends on the following tasks: {task_depende
 {coordinator.memory[str(id)]['solution_interpretation']}
 ---
 """
-                
+
     if len(task_dependency) > 0:
         task_analysis_prompt = dependency_prompt + TASK_ANALYSIS_APPEND_PROMPT
         task_formulas_prompt = dependency_prompt + TASK_FORMULAS_APPEND_PROMPT
@@ -51,20 +55,18 @@ This task is Task {task_id}, which depends on the following tasks: {task_depende
 
 def mathematical_modeling(task_id, problem, task_descriptions, llm, config, coordinator, with_code):
     ts = TaskSolver(llm)
-    mr = MethodRetriever(llm)
+    mr = MethodRetriever(llm, embed_model=config['embed_model'])
     task_analysis_prompt, task_formulas_prompt, task_modeling_prompt, dependent_file_prompt = get_dependency_prompt(with_code, coordinator, task_id)
-    
+
     # Task analysis
     task_description = task_descriptions[task_id - 1]
     task_analysis = ts.analysis(task_analysis_prompt, task_description)
-    
+
     # Hierarchical Modeling Knowledge Retrieval
     description_and_analysis = f'## Task Description\n{task_description}\n\n## Task Analysis\n{task_analysis}'
     top_modeling_methods = mr.retrieve_meethods(description_and_analysis, top_k=config['top_method_num'])
 
     # Task Modeling
     task_modeling_formulas, task_modeling_method = ts.modeling(task_formulas_prompt, task_modeling_prompt, problem['data_description'], task_description, task_analysis, top_modeling_methods, round=config['task_formulas_round'])
-    
-    return task_description, task_analysis, task_modeling_formulas, task_modeling_method, dependent_file_prompt
 
-    
+    return task_description, task_analysis, task_modeling_formulas, task_modeling_method, dependent_file_prompt

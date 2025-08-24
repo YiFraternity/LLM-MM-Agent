@@ -1,23 +1,34 @@
-from .base_agent import BaseAgent
-from prompt.template import (TASK_ANALYSIS_PROMPT, TASK_RESULT_PROMPT, TASK_ANSWER_PROMPT, 
-                             TASK_FORMULAS_PROMPT, TASK_FORMULAS_CRITIQUE_PROMPT, TASK_FORMULAS_IMPROVEMENT_PROMPT, 
-                             TASK_MODELING_PROMPT, TASK_MODELING_CRITIQUE_PROMPT, TASK_MODELING_IMPROVEMENT_PROMPT,
-                             TASK_CODING_PROMPT, TASK_CODING_DEBUG_PROMPT, CODE_STRUCTURE_PROMPT, 
-                             TASK_RESULT_WITH_CODE_PROMPT)
 import sys
 import os
 import subprocess
+import json
 import selectors
 import tiktoken
-import json
+
+from .base_agent import BaseAgent
+from prompt.template import (
+    TASK_ANALYSIS_PROMPT,
+    TASK_RESULT_PROMPT,
+    TASK_ANSWER_PROMPT,
+    TASK_FORMULAS_PROMPT,
+    TASK_FORMULAS_CRITIQUE_PROMPT,
+    TASK_FORMULAS_IMPROVEMENT_PROMPT,
+    TASK_MODELING_PROMPT,
+    TASK_MODELING_CRITIQUE_PROMPT,
+    TASK_MODELING_IMPROVEMENT_PROMPT,
+    TASK_CODING_PROMPT,
+    TASK_CODING_DEBUG_PROMPT,
+    CODE_STRUCTURE_PROMPT,
+    TASK_RESULT_WITH_CODE_PROMPT
+)
 
 
 class EnvException(Exception):
     def __init__(self, message):
-        self.message = message 
+        self.message = message
     def __str__(self):
         return self.message
-    
+
 
 def execute_script(script_path, work_dir):
     try:
@@ -76,7 +87,7 @@ class TaskSolver(BaseAgent):
     def analysis(self, prompt: str, task_description: str, user_prompt: str = ''):
         prompt = TASK_ANALYSIS_PROMPT.format(prompt=prompt, task_description=task_description, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
-    
+
     def formulas_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, modeling_methods: str, user_prompt: str = ''):
         prompt = TASK_FORMULAS_PROMPT.format(prompt=prompt, data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_methods=modeling_methods, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
@@ -84,7 +95,7 @@ class TaskSolver(BaseAgent):
     def formulas_critic(self, data_summary: str, task_description: str, task_analysis: str, modeling_formulas: str):
         prompt = TASK_FORMULAS_CRITIQUE_PROMPT.format(data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=modeling_formulas).strip()
         return self.llm.generate(prompt)
-    
+
     def formulas_improvement(self, data_summary: str, task_description: str, task_analysis: str, modeling_formulas: str, modeling_formulas_critique: str, user_prompt: str = ''):
         prompt = TASK_FORMULAS_IMPROVEMENT_PROMPT.format(data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=modeling_formulas, modeling_formulas_critique=modeling_formulas_critique, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
@@ -94,9 +105,9 @@ class TaskSolver(BaseAgent):
         for i in range(round):
             formulas_critique = self.formulas_critic(data_summary, task_description, task_analysis, formulas)
             formulas = self.formulas_improvement(data_summary, task_description, task_analysis, formulas, formulas_critique, user_prompt)
-        
+
         modeling_method = self.modeling_actor(modeling_prompt, data_summary, task_description, task_analysis, formulas, user_prompt)
-    
+
         return formulas, modeling_method
 
     def modeling_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, formulas: str, user_prompt: str = ''):
@@ -106,7 +117,7 @@ class TaskSolver(BaseAgent):
     # def modeling_critic(self, task_description: str, task_analysis: str, data_summary: str, formulas: str, modeling_process: str):
     #     prompt = TASK_MODELING_CRITIQUE_PROMPT.format(task_description=task_description, task_analysis=task_analysis, data_summary=data_summary, modeling_formulas=formulas, modeling_process=modeling_process).strip()
     #     return self.llm.generate(prompt)
-    
+
     # def modeling_improvement(self, task_description: str, task_analysis: str, data_summary: str, formulas: str, modeling_process: str, modeling_process_critique: str):
     #     prompt = TASK_MODELING_IMPROVEMENT_PROMPT.format(task_description=task_description, task_analysis=task_analysis, data_summary=data_summary, modeling_formulas=formulas, modeling_process=modeling_process, modeling_process_critique=modeling_process_critique).strip()
     #     return self.llm.generate(prompt)
@@ -118,7 +129,7 @@ class TaskSolver(BaseAgent):
     #         process_critique = self.modeling_critic(task_description, task_analysis, data_summary, formulas, process)
     #         process = self.modeling_improvement(task_description, task_analysis, data_summary, formulas, process, process_critique)
     #     return process
-    
+
     def coding_actor(self, data_file, data_summary, variable_description, task_description: str, task_analysis: str, formulas: str, modeling: str, dependent_file_prompt: str, code_template: str, script_name: str, work_dir: str, user_prompt: str = ''):
         prompt = TASK_CODING_PROMPT.format(data_file=data_file, data_summary=data_summary, variable_description=variable_description, task_description=task_description, task_analysis=task_analysis, modeling_formulas=formulas, modeling_process=modeling, dependent_file_prompt=dependent_file_prompt, code_template=code_template, user_prompt=user_prompt).strip()
         max_retry = 0
@@ -127,7 +138,7 @@ class TaskSolver(BaseAgent):
             try:
                 completion = self.llm.generate(prompt)
                 new_content = completion.split("```python")[1].split("```")[0].strip()
-                break  
+                break
             except Exception as e:
                 # Format control.
                 print(f"Retry! The code does not start with ```python")
@@ -135,7 +146,7 @@ class TaskSolver(BaseAgent):
 
         with open(os.path.join(work_dir, script_name), "w") as f:
             f.write(new_content)
-        
+
         # Execute the script.
         try:
             observation = execute_script(script_name, work_dir)
@@ -150,18 +161,18 @@ class TaskSolver(BaseAgent):
             input("Ah oh, Got stuck! Press any key to continue.")
 
         return new_content, observation
-    
+
     def coding_debugger(self, code_template: str, modeling: str, code: str, observation: str, script_name: str, work_dir: str, user_prompt: str = ''):
-        
+
         prompt = TASK_CODING_DEBUG_PROMPT.format(code_template=code_template, modeling_process=modeling, code=code, observation=observation, user_prompt=user_prompt).strip()
-        
+
         max_retry = 0
         while max_retry < 5:
             max_retry += 1
             try:
                 completion = self.llm.generate(prompt)
                 new_content = completion.split("```python")[1].split("```")[0].strip()
-                break  
+                break
             except Exception as e:
                 # Format control.
                 print(f"Retry! The code does not start with ```python")
@@ -169,7 +180,7 @@ class TaskSolver(BaseAgent):
 
         with open(os.path.join(work_dir, script_name), "w") as f:
             f.write(new_content)
-        
+
         # Execute the script.
         try:
             observation = execute_script(script_name, work_dir)
@@ -184,7 +195,7 @@ class TaskSolver(BaseAgent):
             input("Ah oh, Got stuck! Press any key to continue.")
 
         return new_content, observation
-    
+
     def coding(self, data_file, data_summary, variable_description, task_description: str, task_analysis: str, formulas: str, modeling: str, dependent_file_prompt: str, code_template: str, script_name: str, work_dir: str, try_num: int = 5, round: int = 1, user_prompt: str = ''):
         for i in range(try_num):
             print("="*10 + f" Try: {i + 1} " + "="*10)

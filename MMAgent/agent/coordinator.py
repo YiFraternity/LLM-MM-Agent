@@ -40,7 +40,7 @@ class Coordinator:
             raise ValueError("Graph contains a cycle!")
 
         return order
-    
+
     def analyze(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, with_code: bool):
         if with_code:
             prompt = TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT.format(tasknum=tasknum, modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, task_descriptions=task_descriptions).strip()
@@ -49,11 +49,25 @@ class Coordinator:
         return self.llm.generate(prompt)
 
     def dag_construction(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, task_dependency_analysis: str):
-        prompt = DAG_CONSTRUCTION_PROMPT.format(tasknum=tasknum, modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, task_descriptions=task_descriptions, task_dependency_analysis=task_dependency_analysis).strip()
+        prompt = DAG_CONSTRUCTION_PROMPT.format(
+            tasknum=tasknum,
+            modeling_problem=modeling_problem,
+            problem_analysis=problem_analysis,
+            modeling_solution=modeling_solution,
+            task_descriptions=task_descriptions,
+            task_dependency_analysis=task_dependency_analysis
+        ).strip()
         return self.llm.generate(prompt)
 
     def analyze_dependencies(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, with_code: bool):
-        task_dependency_analysis = self.analyze(len(task_descriptions), modeling_problem, problem_analysis, modeling_solution, task_descriptions, with_code)
+        task_dependency_analysis = self.analyze(
+            len(task_descriptions),
+            modeling_problem,
+            problem_analysis,
+            modeling_solution,
+            task_descriptions,
+            with_code
+        )
         self.task_dependency_analysis = task_dependency_analysis.split('\n\n')
         count = 0
         for i in range(5):
@@ -70,5 +84,5 @@ class Coordinator:
         order = self.compute_dag_order(self.DAG)
 
         return order
-    
-    
+
+

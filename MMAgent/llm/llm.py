@@ -4,23 +4,22 @@ import openai
 from dotenv import load_dotenv
 import json
 
-load_dotenv()
+load_dotenv(override=True)
 
 class LLM:
 
     usages = []
-    def __init__(self, model_name, key, logger=None, user_id=None):
-        self.model_name = model_name
+    def __init__(self, logger=None, user_id=None):
+        self.model_name = os.getenv('MODEL_NAME')
         self.logger = logger
         self.user_id = user_id
-        self.api_key = key
+        self.api_key = os.getenv('OPENAI_API_KEY')
         if self.model_name in ['deepseek-chat', 'deepseek-reasoner']:
             self.api_base = os.getenv('DEEPSEEK_API_BASE')
-        elif self.model_name in ['qwen2.5-72b-instruct']:
-            self.api_base = "https://dashscope.aliyuncs.com/compatible-mode/v1"
         elif self.model_name in ['gpt-4o', 'gpt-4']:
             self.api_base = os.getenv('OPENAI_API_BASE')
-        
+        else:
+            self.api_base = os.getenv('OPENAI_API_BASE')
         if not self.api_key:
             raise ValueError('API key not found in environment variables')
 
@@ -73,7 +72,7 @@ class LLM:
                     'prompt_tokens': response.usage.prompt_tokens,
                     'total_tokens': response.usage.total_tokens
                 }
-            elif self.model_name in ['qwen2.5-72b-instruct']:
+            else:
                 response = self.client.chat.completions.create(
                     model=self.model_name,
                     messages=[
@@ -101,7 +100,7 @@ class LLM:
             return f'An error occurred: {e}'
 
     def get_total_usage(self):
-        total_usage = { 
+        total_usage = {
             'completion_tokens': 0,
             'prompt_tokens': 0,
             'total_tokens': 0
@@ -110,6 +109,6 @@ class LLM:
             for key, value in usage.items():
                 total_usage[key] += value
         return total_usage
-        
+
     def clear_usage(self):
         self.usages = []

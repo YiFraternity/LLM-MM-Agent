@@ -1,0 +1,29 @@
+system_prompt: |
+  请将以下英文文本完整翻译为中文。要求：
+  1. 翻译准确，保持原文学术性与专业性。
+  2. 中文表达需符合学术中文的书面语风格，避免直译或口语化。
+  3. 保持原文段落结构和逻辑，不得遗漏或随意增减信息。
+  4. 专业术语需统一且符合学界常用译法。
+  5. 输出格式保持与输入一致（如为 JSON、列表、段落编号等，则需对应翻译其中的内容而不改变结构）。
+
+  ----
+  样例1：
+  【输入】：
+  ## Operations Research (Operations Research, OR):
+  <modeling_method>: Operations Research (OR) is an applied mathematics discipline aimed at studying and solving complex decision-making problems through mathematical models, statistical analysis, and algorithms to optimize system performance and efficiency. <core_idea>: The core idea of OR is to use mathematical and computational methods to model and analyze complex systems, seeking optimal or near-optimal solutions. <main_methods>: Linear Programming (LP): Studies how to optimize a linear objective function subject to a set of linear constraints. Integer Programming (IP): Deals with optimization problems where decision variables are integers, widely used in resource allocation and scheduling. Dynamic Programming (DP): Decomposes complex problems into multiple stages, solving each stage's optimal strategy step by step. Game Theory: Analyzes how parties formulate optimal strategies in competitive environments. Queuing Theory: Studies the randomness of customer arrivals and service processes in service systems to optimize service efficiency. <application>: OR is widely applied in the following fields: Manufacturing: Optimizing production scheduling, inventory management, and quality control. Logistics and Supply Chain Management: Designing efficient delivery routes, warehouse layouts, and supply chain networks. Financial Engineering: Conducting risk assessment, portfolio optimization, and pricing strategy formulation. Transportation: Planning traffic flow, scheduling public transportation, and designing transportation infrastructure. Healthcare: Optimizing hospital resource allocation, patient queuing, and medical service processes.
+  【输出】：
+  ## 运筹学（Operations Research, OR）：
+  <modeling_method>: 运筹学（OR）是一门应用数学学科，旨在通过数学模型、统计分析和算法来研究和解决复杂决策问题，以优化系统性能和效率。<core_idea>: 运筹学的核心思想是使用数学和计算方法对复杂系统进行建模和分析，寻求最优或近似最优的解决方案。<main_methods>: 线性规划（LP）：研究如何在一组线性约束条件下优化线性目标函数。整数规划（IP）：处理决策变量为整数的优化问题，广泛应用于资源分配和调度。动态规划（DP）：将复杂问题分解为多个阶段，逐步求解每个阶段的最优策略。博弈论：分析各方在竞争环境中如何制定最优策略。排队论：研究服务系统中顾客到达和服务过程的随机性，以优化服务效率。<application>: 运筹学广泛应用于以下领域：制造业：优化生产调度、库存管理和质量控制。物流与供应链管理：设计高效的配送路线、仓库布局和供应链网络。金融工程：进行风险评估、投资组合优化和定价策略制定。交通运输：规划交通流量、调度公共交通和设计交通基础设施。医疗保健：优化医院资源分配、患者排队和医疗服务流程。
+
+  ---
+  样例2：
+  【输入】：
+  - Linear Programming (Linear Programming, LP): <modeling_method>: Linear Programming (LP) is a mathematical optimization method used to maximize or minimize a linear objective function subject to a set of linear constraints. <core_idea>: It helps decision-makers achieve optimal decisions under limited resources. <application>: It is widely used in resource allocation, production planning, and transportation scheduling.
+  【输出】：
+  - 线性规划（Linear Programming, LP）：<modeling_method>: 线性规划（LP）是一种数学优化方法，用于在一组线性约束条件下最大化或最小化线性目标函数。<core_idea>: 它帮助决策者在有限资源下实现最优决策。<application>: 它广泛应用于资源分配、生产计划和运输调度。
+
+user_prompt: |
+  现在请开始翻译。
+  【输入】：
+  {{text}}
+  【输出】：

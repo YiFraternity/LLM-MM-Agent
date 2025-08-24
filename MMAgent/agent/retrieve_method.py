@@ -72,10 +72,10 @@ class MethodScorer:
 
 
 class MethodRetriever(BaseAgent):
-    def __init__(self, llm, rag=True):
+    def __init__(self, llm, embed_model, rag=True):
         super().__init__(llm)
         self.rag = rag
-        self.embedding_scorer = EmbeddingScorer()
+        self.embedding_scorer = EmbeddingScorer(embed_model)
         json_path = 'MMAgent/HMML/HMML.json'
         md_path = 'MMAgent/HMML/HMML.md'
 
@@ -84,7 +84,7 @@ class MethodRetriever(BaseAgent):
         self.method_tree = markdown_to_json_method(self.markdown_text)
         with open(json_path, "w+", encoding="utf-8") as f:
             json.dump(self.method_tree, f, ensure_ascii=False, indent=4)
-        
+
     def llm_score_method(self, problem_description: str, methods: List[dict]):
         methods_str = '\n'.join([f"{i+1}. {method['method']} {method.get('description', '')}" for i, method in enumerate(methods)])
         prompt = METHOD_CRITIQUE_PROMPT.format(problem_description=problem_description, methods=methods_str)

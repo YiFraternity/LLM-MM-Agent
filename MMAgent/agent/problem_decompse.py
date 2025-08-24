@@ -19,7 +19,13 @@ class ProblemDecompose(BaseAgent):
 
     def refine(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, decomposed_subtasks: List[str], task_i: int):
         decomposed_subtasks_str = '\n'.join(decomposed_subtasks)
-        prompt = TASK_DESCRIPTION_PROMPT.format(modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, decomposed_subtasks=decomposed_subtasks_str, task_i=task_i+1)
+        prompt = TASK_DESCRIPTION_PROMPT.format(
+            modeling_problem=modeling_problem,
+            problem_analysis=problem_analysis,
+            modeling_solution=modeling_solution,
+            decomposed_subtasks=decomposed_subtasks_str,
+            task_i=task_i+1
+        )
         answer = self.llm.generate(prompt)
         return answer
 

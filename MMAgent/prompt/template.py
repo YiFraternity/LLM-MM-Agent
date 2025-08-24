@@ -1,8 +1,8 @@
 PROBLEM_PROMPT = """\
-Problem Background:
+问题背景：
 {problem_background}
 
-Problem Requirement:
+问题要求：
 {problem_requirement}
 {addendum}
 {data_summary}
@@ -10,115 +10,115 @@ Problem Requirement:
 
 
 DATA_DESCRIPTION_PROMPT = """\
-Data Description:
+数据描述：
 {data_description}
 
 ---
 
-Your task is to generate a detailed summary of the dataset based on the dataset description provided. It needs to cover comprehensive information, but not explain each field one by one. Using plain text to describe in a single paragraph, without any Markdown formatting or syntax.
+你的任务是根据提供的数据集描述生成一份详细的数据集摘要。它需要涵盖全面的信息，但无需逐一解释每个字段。使用纯文本在一个段落内进行描述，不使用任何 Markdown 格式或语法。
 """
 
 
 PROBLEM_ANALYSIS_PROMPT = """\
-# Mathematical Modeling Problem:
+# 数学建模问题:
 {modeling_problem}
 
 ---
 
-You are tasked with analyzing a mathematical modeling problem with a focus on the underlying concepts, logical reasoning, and assumptions that inform the solution process. Begin by considering the nature of the problem in its broader context. What are the primary objectives of the model, and how do they shape the way you approach the task? Think critically about the assumptions that may be inherently embedded in the problem. What implicit beliefs or constraints have been set up, either explicitly or implicitly, within the problem’s description? Reflect on how these assumptions might influence the interpretation and application of any potential solutions. 
+你的任务是对所给数学建模问题进行系统分析，重点阐释其背后的核心概念、逻辑推理以及所依赖的假设。首先，应从更宏观的背景出发审视问题的性质。模型的主要目标是什么？这些目标如何塑造解题思路与研究路径？需批判性地识别问题描述中显性或隐性的假设与约束，并思考这些前提如何影响模型结果的解释与应用价值。
 
-Dive deeper into the relationships and interdependencies between the different components of the problem. What are the potential hidden complexities that may arise from these interconnections? Are there any conflicts or tensions between different aspects of the problem that need to be resolved? Explore how these interdependencies might lead to unforeseen challenges and require revisiting initial assumptions or redefining the parameters of the task. 
+进一步而言，应深入探讨问题中各要素之间的关系与相互依赖。不同组成部分之间可能存在怎样的潜在复杂性？其间是否存在矛盾或张力需要调和？分析这些内在联系可能引发的潜在挑战，以及是否需要在此过程中重新审视原有假设或调整任务的边界条件。
 
-Consider how the complexity of the problem may evolve across different scales or over time. Are there time-dependent factors or long-term consequences that should be accounted for, especially in terms of the stability or sustainability of the model’s outcomes? Think about how the model’s behavior might change under different scenarios, such as variations in input or changes in external conditions. Reflect on whether any simplifications or idealizations in the problem might inadvertently obscure key dynamics that are crucial for an accurate representation.
+同时，还应关注问题复杂性在不同尺度或时间维度上的演化。是否存在需要考虑的动态因素或长期效应，尤其是在模型结果的稳定性与可持续性方面？在不同情境下（如输入扰动或外部条件变化），模型行为可能如何发生转变？应反思是否由于简化或理想化处理而忽略了对真实过程至关重要的关键机制。
 
-In your analysis, also give attention to possible alternative perspectives on the problem. Are there different ways to frame the issue that could lead to distinct modeling approaches or solution strategies? How would those alternative perspectives impact the overall approach? Additionally, evaluate the potential risks or uncertainties inherent in the problem, especially when it comes to choosing between competing modeling approaches. Consider how the outcomes might vary depending on the choices you make in constructing the model, and how you would manage such trade-offs.
+在此基础上，还需评估问题的多元视角与可能的替代性表述。是否可以从不同角度重新框定问题，从而引导出不同的建模思路或解决策略？这些替代性视角将如何影响研究方法与结果解读？进一步地，需识别并分析问题本身及模型构建过程中的不确定性与潜在风险，尤其在面对多种建模方案抉择时，如何权衡其利弊与取舍。
 
-Finally, reflect on the dynamic nature of the modeling process itself. How might your understanding of the problem evolve as you continue to explore its intricacies? Ensure that your thought process remains flexible, with a readiness to revise earlier conclusions as new insights emerge. The goal is to maintain a reflective, iterative analysis that adapts to deeper understandings of the task at hand, rather than pursuing a fixed or rigid approach.
+最后，应强调建模过程的动态性与开放性。随着研究的深入，对问题的理解可能不断演化，因此需要保持反思性与灵活性，在新见解出现时及时修正既有结论。目标是形成一种迭代式的分析过程，使模型与研究思路能够随着认识的加深而不断完善，而非拘泥于僵化的预设路径。
 
 {user_prompt}
 
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面而详尽地作答。回答时不使用 Markdown 格式，须以纯文本撰写，不包含任何 Markdown 语法。答案应由一个或多个逻辑连贯的长段落构成，避免条目化或编号式表述。
 """
 
 
 PROBLEM_ANALYSIS_CRITIQUE_PROMPT = """\
-# Mathematical Modeling Problem:
+# 数学建模问题：
 {modeling_problem}
 
-# Problem Analysis:
+# 问题分析：
 {problem_analysis}
 
 ---
 
-Critically examine the analysis results of the given mathematical modeling problem, focusing on the following aspects:
+请批判性地审查给定数学建模问题的分析结果，重点关注以下几个方面：
 
-1. Depth of Thinking: Evaluate whether the analysis demonstrates a comprehensive understanding of the underlying problem. Does it go beyond surface-level observations? Are the assumptions, limitations, and potential implications of the results carefully considered? Assess whether the analysis adequately addresses both the broader context and specific intricacies of the problem.
-2. Novelty of Perspective: Analyze the originality of the approach taken in the analysis. Does it introduce new insights or merely rehash well-established methods or solutions? Are alternative perspectives or unconventional techniques explored, or is the analysis constrained by a narrow set of assumptions or typical approaches?
-3. Critical Evaluation of Results: Consider the extent to which the analysis critically engages with the results. Are the conclusions drawn from the analysis well-supported by the mathematical findings, or do they overlook key uncertainties or counterexamples? Does the analysis acknowledge potential contradictions or ambiguities in the data?
-4. Rigor and Precision: Assess the level of rigor applied in the analysis. Are the steps logically consistent and mathematically sound, or are there overlooked errors, gaps, or assumptions that undermine the conclusions? Does the analysis exhibit a clear, methodical approach, or is it characterized by vague reasoning and imprecision?
-5. Contextual Awareness: Evaluate how well the analysis situates itself within the broader landscape of mathematical modeling in this area. Does it consider previous work or developments in the field? Is there any indication of awareness of real-world implications, practical constraints, or ethical concerns, if applicable?
+1. 思维深度：评估分析是否展示了对底层问题的全面理解。它是否超越了表面观察？是否仔细考虑了结果的假设、局限性和潜在影响？评估分析是否充分解决了问题的宏观背景和具体细节。
+2. 视角的创新性：分析所采用方法的原创性。它是否引入了新的见解，还是仅仅重复了已有的方法或解决方案？是否探索了替代视角或非常规技术，还是分析受限于一组狭窄的假设或典型方法？
+3. 结果的批判性评估：考虑分析在多大程度上批判性地审视了结果。得出的结论是否得到数学发现的充分支持，或者它们是否忽略了关键的不确定性或反例？分析是否承认数据中存在的潜在矛盾或歧义？
+4. 严谨性和精确性：评估分析应用的严谨性水平。步骤是否逻辑一致、数学上严谨，或者是否存在被忽略的错误、漏洞或假设，从而削弱了结论？分析是否展示了清晰、有条理的方法，还是以模糊的推理和不精确性为特征？
+5. 背景意识：评估分析在多大程度上将自身置于该领域数学建模的更广阔背景中。它是否考虑了该领域以前的工作或发展？是否表明了对现实世界影响、实际约束或伦理关注（如适用）的认识？
 
-Critique the analysis without offering any constructive suggestions—your focus should solely be on highlighting weaknesses, gaps, and limitations within the approach and its execution.
+请批判性地审查分析，不提供任何建设性建议——你的重点应仅在于突出其方法和执行中的弱点、漏洞和局限性。
 """
 
 
 PROBLEM_ANALYSIS_IMPROVEMENT_PROMPT = """\
-# Mathematical Modeling Problem:
+# 数学建模问题：
 {modeling_problem}
 
-# Problem Analysis:
+# 问题分析：
 {problem_analysis}
 
-# Problem Analysis Critique:
+# 问题分析批判：
 {problem_analysis_critique}
 
 ---
 
-Refine and improve the existing problem analysis based on the critique provided to generate insightful analysis. 
+根据提供的批判，精炼和改进现有的问题分析，以生成富有洞察力的分析。
 
-Provide the improved version directly. DO NOT mention any previous analysis content and deficiencies in the improved analysis. Just refer to the above critical suggestions and directly give the new improved analysis.
+直接提供改进后的版本。不要提及任何先前的分析内容和不足之处。只需参考上述批判性建议，直接给出新的改进分析。
 {user_prompt}
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 
-IMPROVED PROBLEM ANALYSIS:
+改进后的问题分析：
 """
 
 
 METHOD_CRITIQUE_PROMPT = """\
-## Problem Description
+## 问题描述
 
 {problem_description}
 
-## Method List
+## 方法列表
 
 {methods}
 
-## Evaluation Task
+## 评估任务
 
-Evaluate each method based on the following dimensions. For each dimension, consider the associated criteria and assign a score from 1 (poor) to 5 (excellent). 
+根据以下维度评估每种方法。对于每个维度，考虑相关标准并分配一个从 1（差）到 5（优）的分数。
 
-## Criteria Dimensions
+## 评估维度
 
-**1. Assumptions:** Whether the foundational mathematical assumptions align with the intrinsic characteristics of the problem.  
-For instance, linear regression assumes linear relationships but fails to capture nonlinear dynamics (e.g., exponential growth). Similarly, deterministic models (e.g., ordinary differential equations) may overlook critical uncertainties in inherently stochastic systems (e.g., financial markets or biological processes). Misaligned assumptions risk oversimplification or systematic bias.
+**1. 假设：** 基础数学假设是否与问题的内在特征相符。
+例如，线性回归假设线性关系，但无法捕捉非线性动态（如指数增长）。同样，确定性模型（如常微分方程）可能会忽略本质上是随机系统（如金融市场或生物过程）中的关键不确定性。假设不匹配可能会导致过度简化或系统性偏差。
 
-**2. Structure:** The mathematical framework’s ability to mirror the problem’s inherent logic, hierarchy, or spatiotemporal relationships.  
-Network-based problems (e.g., traffic flow or social interactions) demand graph theory or network flow models, while hierarchical systems (e.g., ecological food webs) may require multi-stage or layered modeling. A mismatch here—such as using static equations for time-dependent phenomena—renders the model structurally inadequate.
+**2. 结构：** 数学框架是否能够反映问题的内在逻辑、层次结构或时空关系。
+基于网络的问题（如交通流或社交互动）需要图论或网络流模型，而分层系统（如生态食物网）可能需要多阶段或分层建模。这里的失配——例如，对时间依赖现象使用静态方程——会使模型在结构上不恰当。
 
-**3. Variables:** Compatibility between the model’s mathematical tools and the variable types in the problem (continuous, discrete, categorical, stochastic, etc.).  
-For example, logistic regression or decision trees suit categorical outcomes, while partial differential equations better model spatially continuous systems. High-dimensional sparse data (e.g., genomics) may necessitate dimensionality reduction (PCA) or sparse optimization, whereas rigid variable handling leads to inefficiency or inaccuracy.
+**3. 变量：** 模型的数学工具与问题中的变量类型（连续、离散、分类、随机等）的兼容性。
+例如，逻辑回归或决策树适合分类结果，而偏微分方程更适合建模空间连续系统。高维稀疏数据（如基因组学）可能需要降维（PCA）或稀疏优化，而僵化的变量处理会导致效率低下或不准确。
 
-**4. Dynamics:** Alignment of the model’s temporal or dynamic properties with the problem’s evolutionary behavior.  
-Short-term forecasting might use static models (e.g., linear regression), but long-term ecological or economic systems require dynamic frameworks (e.g., differential equations or agent-based models). Ignoring time delays (e.g., policy impacts in economics) or feedback loops often invalidates predictions.
+**4. 动态性：** 模型的时态或动态特性与问题的演化行为的对齐。
+短期预测可能使用静态模型（如线性回归），但长期的生态或经济系统需要动态框架（如微分方程或基于代理的模型）。忽略时间延迟（如经济学中的政策影响）或反馈循环通常会使预测失效。
 
-**5. Solvability:** The existence and practicality of solutions under real-world constraints.  
-High-dimensional non-convex optimization problems (e.g., neural network training) may rely on heuristic algorithms (genetic algorithms) rather than exact solutions. Similarly, NP-hard problems (e.g., traveling salesman) demand approximations to balance computational feasibility and precision. Overly complex models risk theoretical elegance without actionable results.
+**5. 可解性：** 在现实世界约束下解决方案的存在和实用性。
+高维非凸优化问题（如神经网络训练）可能依赖于启发式算法（遗传算法）而非精确解。同样，NP-难问题（如旅行商问题）需要近似来平衡计算可行性和精度。过于复杂的模型可能会导致理论上优雅但没有可操作结果。
 
-## Instructions
-1. For each method in the Method List, score its performance on **all** evaluation dimensions.
-2. Return results in JSON format, including the method index and scores for each dimension.
+## 指令
+1. 对于方法列表中的每种方法，在**所有**评估维度上对其性能进行评分。
+2. 以 JSON 格式返回结果，包括方法索引和每个维度的分数。
 
-## Output Example (Only return the JSON output, no other text)
+## 输出示例（仅返回 JSON 输出，不含其他文本）
 ```json
 {{
   "methods": [
@@ -135,108 +135,108 @@ High-dimensional non-convex optimization problems (e.g., neural network training
 }}
 ```
 
-## Required Output
-Provide the JSON output below:
+## 所需输出
+请在下面提供 JSON 输出：
 ```json
 """
 
 
 PROBLEM_MODELING_PROMPT = """\
-# Mathematical Modeling Problem:
+# 数学建模问题：
 {modeling_problem}
 
-# Problem Analysis:
+# 问题分析：
 {problem_analysis}
 
 ---
 
-You are tasked with designing an innovative mathematical model to address the given problem. Begin by proposing a comprehensive model that integrates both theoretical and practical considerations, ensuring that the formulation is aligned with the problem's core objectives. This should include a clear set of assumptions that underpin the model, which may involve simplifications, approximations, or idealizations necessary to make the problem tractable, yet still retain fidelity to the real-world phenomena you aim to represent. Clearly define the variables, parameters, and constraints that will shape the mathematical formulation. 
+你的任务是设计一个创新的数学模型来解决给定的问题。首先，提出一个综合模型，整合理论和实践考虑，确保公式与问题的核心目标对齐。这应该包括一套清晰的假设，这些假设是模型的基础，可能涉及为使问题易于处理而进行的简化、近似或理想化，同时仍保持对你旨在表示的现实世界现象的保真度。明确定义将塑造数学公式的变量、参数和约束。
 
-Next, develop the key equations and relationships that will govern the model. Pay attention to the interdependencies between the various components of the system. These could involve differential equations, algebraic relations, optimization criteria, or probabilistic models, depending on the nature of the problem. Be sure to consider how different aspects of the model might interact, and whether feedback loops or non-linearities should be incorporated. Explore potential novel formulations or extensions of existing models that could offer new insights into the problem's dynamics. If applicable, propose advanced methods such as multi-scale modeling, agent-based simulations, or data-driven approaches like machine learning to improve the model’s adaptability or accuracy.
+接下来，制定将管理模型的关键方程和关系。注意系统各个组成部分之间的相互依赖性。这些可能涉及微分方程、代数关系、优化标准或概率模型，具体取决于问题的性质。务必考虑模型的不同方面可能如何相互作用，以及是否应纳入反馈循环或非线性。探索现有模型中可能提供对问题动态新见解的潜在新颖公式或扩展。如果适用，建议使用多尺度建模、基于代理的模拟或数据驱动方法（如机器学习）等高级方法，以提高模型的适应性或准确性。
 
-Once the model structure is established, outline a clear strategy for solving it. This may involve analytical techniques such as closed-form solutions or approximations, numerical methods like finite element analysis or Monte Carlo simulations, or optimization algorithms for parameter estimation. Be explicit about the computational resources required and the level of precision expected. If the model is complex or high-dimensional, suggest ways to reduce the computational burden, such as dimensionality reduction, surrogate models, or parallelization techniques. 
+一旦建立了模型结构，概述一个清晰的求解策略。这可能涉及解析技术（如封闭形式解或近似）、数值方法（如有限元分析或蒙特卡洛模拟）或用于参数估计的优化算法。明确说明所需的计算资源和预期的精度水平。如果模型复杂或高维，建议减少计算负担的方法，例如降维、代理模型或并行化技术。
 
-Additionally, consider how the model might evolve over time or under different conditions. Would the model require recalibration or adaptation in the face of changing circumstances? If applicable, provide strategies for sensitivity analysis to assess how the model responds to changes in its assumptions or parameters. Reflect on how the model’s predictions can be validated through empirical data or experimental results, ensuring that the model provides actionable insights and maintains real-world relevance.
+此外，考虑模型如何随时间或在不同条件下演变。在面对不断变化的环境时，模型是否需要重新校准或适应？如果适用，提供敏感性分析策略，以评估模型如何响应其假设或参数的变化。反思如何通过实证数据或实验结果验证模型的预测，确保模型提供可操作的见解并保持现实世界的相关性。
 
-Finally, propose avenues for further refinement or extension of the model. As new data becomes available or the problem context shifts, what adjustments would you make to improve the model's accuracy or applicability? Explore the possibility of incorporating new dimensions into the model, such as incorporating uncertainty quantification, dynamic optimization, or considering long-term sustainability of the proposed solutions. The ultimate goal is to develop a robust, flexible, and innovative model that not only addresses the problem at hand but also offers deeper insights into its underlying complexities.
+最后，提出进一步完善或扩展模型的途径。随着新数据的出现或问题背景的变化，你会做出哪些调整来提高模型的准确性或适用性？探索将新维度纳入模型的可能性，例如纳入不确定性量化、动态优化或考虑所提解决方案的长期可持续性。最终目标是开发一个健壮、灵活和创新的模型，该模型不仅能解决手头的问题，还能提供对其潜在复杂性的更深入见解。
 
 {user_prompt}
 
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 """
 
 
 PROBLEM_MODELING_CRITIQUE_PROMPT = """\
-# Mathematical Modeling Problem:
+# 数学建模问题：
 {modeling_problem}
 
-# Problem Analysis:
+# 问题分析：
 {problem_analysis}
 
-# Modeling Solution:
+# 建模解决方案：
 {modeling_solution}
 
 ---
 
-Critically examine the analysis results of the given mathematical modeling solution, focusing on the following aspects:
+请批判性地审查给定数学建模解决方案的分析结果，重点关注以下几个方面：
 
-1. Problem Analysis and Understanding:
-- Clarity of the problem definition: Does the solution demonstrate a clear and comprehensive understanding of the problem? Are all relevant variables, constraints, and objectives identified and well-defined? If not, which aspects of the problem may have been misunderstood or overlooked?
-- Contextualization and framing: How well does the model account for the context in which the problem is situated? Are there any contextual factors that are essential but were not addressed?
-- Scope of the problem: Is the problem's scope appropriately defined? Does the model include all the necessary details, or are there significant components that were neglected or oversimplified?
+1. 问题分析和理解：
+- 问题定义的清晰度：解决方案是否展示了对问题的清晰和全面理解？是否识别并明确定义了所有相关变量、约束和目标？如果没有，问题的哪些方面可能被误解或忽略了？
+- 背景化和框架：模型在多大程度上考虑了问题所处的背景？是否有任何关键的背景因素没有得到解决？
+- 问题范围：问题的范围是否被适当定义？模型是否包含了所有必要的细节，或者是否存在被忽视或过度简化的重要组成部分？
 
-2. Model Development and Rigor:
-- Formulation of the mathematical model: How well is the model constructed mathematically? Does it align with established modeling practices in the relevant domain? Are the mathematical formulations—such as equations, algorithms, or optimization methods—correct and robust?
-- Modeling techniques: What modeling approaches or techniques were used (e.g., linear programming, system dynamics, statistical modeling, etc.)? Are they the most appropriate for the problem at hand? What alternative approaches could have been considered, and how might they impact the solution?
-- Validation and verification: Was the model tested for consistency and accuracy? Are there validation steps in place to ensure the model behaves as expected under a variety of conditions? What specific methods were used for this validation (e.g., cross-validation, sensitivity analysis, etc.)?
+2. 模型开发和严谨性：
+- 数学模型的公式化：模型的数学构建如何？它是否与相关领域中已建立的建模实践相符？数学公式（如方程、算法或优化方法）是否正确和健壮？
+- 建模技术：使用了哪些建模方法或技术（例如，线性规划、系统动力学、统计建模等）？它们是否最适合手头的问题？可以考虑哪些替代方法，它们可能如何影响解决方案？
+- 验证和确认：模型是否经过一致性和准确性测试？是否有验证步骤来确保模型在各种条件下按预期运行？为此验证使用了哪些具体方法（例如，交叉验证、敏感性分析等）？
 
-3. Data and Results Analysis:
-- Data quality and relevance: Were there any significant issues with data availability or quality that could have influenced the model's results?
-- Interpretation of results: How well were the results analyzed and interpreted? Were the outcomes consistent with the problem's real-world implications? Are there any discrepancies between the model’s results and known empirical observations?
-- Sensitivity and robustness analysis: Did the model undergo a sensitivity analysis to determine how the results vary with changes in input parameters? Were the results robust across different assumptions, and if not, what are the implications for the solution's reliability?
+3. 数据和结果分析：
+- 数据质量和相关性：是否存在可能影响模型结果的数据可用性或质量方面的重大问题？
+- 结果解释：结果的分析和解释如何？结果是否与问题的现实世界影响一致？模型的运行结果与已知的经验观察之间是否存在任何差异？
+- 敏感性和稳健性分析：模型是否经过敏感性分析，以确定结果如何随输入参数的变化而变化？结果在不同假设下是否稳健，如果不是，这对解决方案的可靠性有何影响？
 
-4. Assumptions and Limitations:
-- Explicit and implicit assumptions: What assumptions underlie the model, and are they clearly articulated? Are these assumptions reasonable, and how might they affect the model's predictions? Were any critical assumptions left implicit or unaddressed?
-- Limitations of the model: What limitations are inherent in the model, and how do they affect its validity and reliability? Are there elements of the problem that are inherently difficult or impossible to model with the chosen approach? Were simplifications made, and what are the trade-offs involved?
-- Model boundaries: Does the model appropriately define its boundaries, and are there any critical factors that lie outside the model’s scope but could significantly influence the results?
+4. 假设和局限性：
+- 显式和隐式假设：模型的基础假设是什么，它们是否被清晰地阐述？这些假设是否合理，它们可能如何影响模型的预测？是否有任何关键假设被隐式或未解决？
+- 模型的局限性：模型固有的局限性是什么，它们如何影响其有效性和可靠性？是否存在某些问题元素是所选方法难以或无法建模的？是否进行了简化，以及涉及的权衡是什么？
+- 模型边界：模型是否适当地定义了其边界，并且是否存在任何在模型范围之外但可能显著影响结果的关键因素？
 
-5. Practicality and Applicability:
-- Real-world applicability: To what extent can the model be applied to real-world scenarios? 
-- Practical implementation: How would this model be implemented in practice? What would be the required infrastructure, and what challenges would need to be addressed during implementation? 
+5. 实用性和适用性：
+- 现实世界适用性：模型在多大程度上可以应用于现实世界场景？
+- 实际实施：该模型在实践中将如何实施？需要哪些基础设施，实施期间需要解决哪些挑战？
 
-Critique the analysis without offering any constructive suggestions—your focus should solely be on highlighting weaknesses, gaps, and limitations within the approach and its execution.
+请批判性地审查分析，不提供任何建设性建议——你的重点应仅在于突出其方法和执行中的弱点、漏洞和局限性。
 """
 
 
 PROBLEM_MODELING_IMPROVEMENT_PROMPT = """\
-# Mathematical Modeling Problem:
+# 数学建模问题：
 {modeling_problem}
 
-# Problem Analysis:
+# 问题分析：
 {problem_analysis}
 
-# Modeling Solution:
+# 建模解决方案：
 {modeling_solution}
 
-# Modeling Solution Critique:
+# 建模解决方案批判：
 {modeling_solution_critique}
 
 ---
 
-Refine and improve the existing modeling solution based on the critique provided. The goal is to enhance the formulation, structure, and overall effectiveness of the model while addressing the identified gaps, flaws, or limitations. Propose more appropriate assumptions, more robust mathematical techniques, or alternative modeling approaches if necessary. Focus on improving the model's relevance, accuracy, and computational feasibility while also ensuring its ability to capture the complexity of the problem in real-world contexts.
+根据提供的批判，精炼和改进现有的建模解决方案。目标是在解决已识别的漏洞、缺陷或局限性的同时，增强模型的公式化、结构和整体有效性。如有必要，提出更合适的假设、更健壮的数学技术或替代建模方法。重点在于提高模型的关联性、准确性和计算可行性，同时确保其能够捕捉现实世界中问题的复杂性。
 
-Provide a new version of the modeling solution that integrates these improvements directly. DO NOT mention any previous solution content and deficiencies.
+直接提供改进后的新版本建模解决方案。不要提及任何先前的解决方案内容和不足之处。
 
 {user_prompt}
 
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 
-IMPROVED MODELING SOLUTION: 
+改进后的建模解决方案：
 """
 
 
 DECOMPOSE_PRINCIPLE_PROMPT = """\
-The solution to a mathematical modeling problem is typically broken down into a series of subtasks, each addressing a different aspect of the overall challenge. Based on the examples provided below, summarize what each subtask in tasks 1 through {tasknum} generally involves, with a focus on the principles of task decomposition in mathematical modeling.
+数学建模问题的解决方案通常被分解为一系列子任务，每个子任务都解决整体挑战的不同方面。根据下面提供的示例，总结从任务 1 到任务 {tasknum} 中每个子任务通常涉及什么，重点关注数学建模中任务分解的原则。
 
 <examples>
 
@@ -244,492 +244,492 @@ The solution to a mathematical modeling problem is typically broken down into a 
 
 </examples>
 
-Requirements:
-1. The summary should focus on the general methods and approaches used in mathematical modeling tasks, not tied to any specific examples or cases provided.
-2. The response should not include any details specific to the examples in order to avoid providing any implicit solutions or insights from them.
-3. The summary should present a theoretical description of the techniques used at each stage of task decomposition, without any reference to particular problems or contexts.
-4. Each subtask should be described as comprehensively and in as much detail as possible within a single paragraph, capturing the essential steps and considerations for that task in a general mathematical modeling framework. The description should be comprehensive, highlighting the key methodologies without resorting to bullet points, numbered lists, or overly formalized structure.
-5. Do not provide any form of examples or mention any instances.
+要求：
+1. 摘要应侧重于数学建模任务中使用的通用方法和方法，不与任何提供的特定示例或案例绑定。
+2. 响应不应包含任何特定于示例的细节，以避免提供任何隐含的解决方案或见解。
+3. 摘要应提供每个任务分解阶段所用技术的理论描述，不提及特定的问题或背景。
+4. 每个子任务都应在单个段落内尽可能全面和详细地描述，在一个通用的数学建模框架中捕捉该任务的基本步骤和考虑。描述应全面，突出关键方法，但不使用项目符号、编号列表或过于正式的结构。
+5. 不要提供任何形式的示例或提及任何实例。
 """
 
 
 TASK_DECOMPOSE_PROMPT = """\
-# Decompose Principle:
+# 分解原则：
 {decomposed_principle}
 
-# Mathematical Modeling Problem:
+# 数学建模问题：
 {modeling_problem}
 
-# Problem Analysis:
+# 问题分析：
 {problem_analysis}
 
-# Modeling Solution:
+# 建模解决方案：
 {modeling_solution}
 
 ---
 
-Please decompose the given modeling solution into {tasknum} distinct and well-defined subtasks that collectively contribute to the overall objective. These subtasks should be clearly separated in their focus, each addressing a specific aspect of the modeling process. The goal is to break down the solution into key stages or methodologies, ensuring that all components of the solution are covered without redundancy. For each subtask, the approach or technique should be explicitly described, detailing the specific data, algorithms, or models required. The decomposition should reflect a logical and comprehensive path toward completing the task, with each part having a clear purpose and contributing to the final result.
+请将给定的建模解决方案分解为 {tasknum} 个不同且定义明确的子任务，这些子任务共同构成整体目标。这些子任务的重点应明确分开，每个都解决建模过程的一个特定方面。目标是将解决方案分解为关键阶段或方法，确保涵盖解决方案的所有组成部分而无冗余。对于每个子任务，应明确描述其方法或技术，详细说明所需的数据、算法或模型。分解应反映一个逻辑和全面的路径来完成任务，每个部分都有明确的目的并对最终结果有所贡献。
 {user_prompt}
-Each subtask should be described as comprehensively and in as much detail as possible within a single paragraph using plain text and seperated by '---' for each subtask. All the contents and details of the original solution need to be covered by the {tasknum} subtasks without omission. 
+每个子任务应在单个段落内尽可能全面和详细地描述，使用纯文本，并用'---'分隔每个子任务。原始解决方案的所有内容和细节都必须被这 {tasknum} 个子任务覆盖，无任何遗漏。
 """
 
 
 TASK_DESCRIPTION_PROMPT = """\
-# Mathematical Modeling Problem:
+# 数学建模问题：
 {modeling_problem}
 
-# Problem Analysis:
+# 问题分析：
 {problem_analysis}
 
-# Modeling Solution:
+# 建模解决方案：
 {modeling_solution}
 
-# Decomposed Subtasks:
+# 已分解的子任务：
 {decomposed_subtasks}
 
 ---
 
-You are tasked with refining and improving the description of subtask {task_i} to ensure it is more detailed, clear, and focused. Provide a precise and comprehensive explanation of the task, specifically elaborating on its scope, goals, and methodology without venturing into other subtasks. Make sure the description includes clear and concise language that defines the necessary steps, techniques, or approaches required for this subtask. If applicable, specify the data inputs, tools, or models to be used, but do not introduce analysis, results, or discussions related to other components of the modeling process. The goal is to enhance the clarity, depth, and precision of this subtask description, ensuring it is fully understood on its own without needing further explanation.
-The description of subtask {task_i} should be as comprehensive and in as much detail as possible within a single paragraph using plain text.
+你的任务是精炼和改进子任务 {task_i} 的描述，以确保其更详细、清晰和专注。提供一个精确和全面的任务解释，特别要详细说明其范围、目标和方法，不要涉及其他子任务。确保描述包含清晰简洁的语言，定义该子任务所需的必要步骤、技术或方法。如果适用，指定要使用的数据输入、工具或模型，但不要引入与建模过程的其他组成部分相关的分析、结果或讨论。目标是增强该子任务描述的清晰度、深度和精确性，确保其可以独立地被完全理解，无需进一步解释。
+子任务 {task_i} 的描述应在单个段落内尽可能全面和详细，使用纯文本。
 """
 
 TASK_ANALYSIS_PROMPT = """\
-# Task Description:
+# 任务描述：
 {task_description}
 
 ---
 {prompt}
 
-You are collaborating as part of a multi-agent system to solve a complex mathematical modeling problem. Each agent is responsible for a specific task, and some preprocessing or related tasks may have already been completed by other agents. It is crucial that you **do not repeat any steps that have already been addressed** by other agents. Instead, rely on their outputs when necessary and focus solely on the specific aspects of the task assigned to you.
+你正在作为一个多代理系统的一部分进行协作，以解决一个复杂的数学建模问题。每个代理都负责一个特定任务，并且一些预处理或相关任务可能已经由其他代理完成。至关重要的是，你**不要重复任何已被其他代理处理过的步骤**。相反，在必要时依赖他们的输出，并专注于分配给你的任务的具体方面。
 
-Provide a thorough and nuanced analysis of the task at hand, drawing on the task description as the primary source of context. Begin by elucidating the core objectives and scope of the task, outlining its significance within the larger context of the project or research. Consider the potential impact or outcomes that are expected from the task, whether they relate to solving a specific problem, advancing knowledge, or achieving a particular practical application. Identify any challenges that may arise during the task execution, including technical, logistical, or theoretical constraints, and describe how these might influence the process or outcomes. In addition, carefully highlight any assumptions that are being made about the data, environment, or system involved in the task, and discuss any external factors that could shape the understanding or execution of the task. Ensure that the analysis is framed in a way that will guide future steps or inform the next stages of work.
+根据任务描述作为主要上下文来源，对当前任务进行彻底和细致的分析。首先阐明任务的核心目标和范围，概述其在项目或研究更大背景下的意义。考虑任务预期的潜在影响或结果，无论它们是与解决特定问题、增进知识还是实现特定实际应用有关。识别在任务执行过程中可能出现的任何挑战，包括技术、后勤或理论约束，并描述这些如何可能影响过程或结果。此外，仔细突出对数据、环境或系统中涉及的系统所做的任何假设，并讨论任何可能塑造对任务的理解或执行的外部因素。确保分析的框架能够指导未来的步骤或为工作的下一阶段提供信息。
 {user_prompt}
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text and LaTeX for formulas only, without any Markdown formatting or syntax. Written as one paragraph. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本和 LaTeX 仅用于公式，不使用任何 Markdown 格式或语法。写成一个段落。避免使用项目符号或编号列表来组织你的答案。
 """
 
 TASK_FORMULAS_PROMPT = """\
-# Reference Modeling Methods:
+# 参考建模方法：
 {modeling_methods}
 
 {data_summary}
 
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
 ---
 {prompt}
 
-You are collaborating as part of a multi-agent system to solve a complex mathematical modeling problem. Each agent is responsible for a specific task, and some preprocessing or related tasks may have already been completed by other agents. It is crucial that you **do not repeat any steps that have already been addressed** by other agents. Instead, rely on their outputs when necessary and focus solely on the specific aspects of the task assigned to you.
+你正在作为一个多代理系统的一部分进行协作，以解决一个复杂的数学建模问题。每个代理都负责一个特定任务，并且一些预处理或相关任务可能已经由其他代理完成。至关重要的是，你**不要重复任何已被其他代理处理过的步骤**。相反，在必要时依赖他们的输出，并专注于分配给你的任务的具体方面。
 
-You are tasked with developing a set of precise, insightful, and comprehensive mathematical formulas that effectively model the problem described in the task. Begin by conducting an in-depth analysis of the system, process, or phenomenon outlined, identifying all relevant variables, their interdependencies, and the fundamental principles, laws, or constraints that govern the behavior of the system, as applicable in the relevant field. Clearly define all variables, constants, and parameters, and explicitly state any assumptions, approximations, or simplifications made during the formulation process, including any boundary conditions or initial conditions if necessary.
+你的任务是开发一套精确、富有洞察力且全面的数学公式，以有效地建模任务中描述的问题。首先对系统、过程或现象进行深入分析，识别所有相关变量、它们的相互依赖性以及（如适用）支配系统行为的基本原则、定律或约束。明确定义所有变量、常量和参数，并明确说明在公式化过程中所做的任何假设、近似或简化，包括任何边界条件或初始条件（如有必要）。
 
-Ensure the formulation considers the full scope of the problem, and if applicable, incorporate innovative mathematical techniques. Your approach should be well-suited for practical computational implementation, addressing potential numerical challenges, stability concerns, or limitations in simulations. Pay careful attention to the dimensional consistency and units of all terms to guarantee physical or conceptual validity, while remaining true to the theoretical foundations of the problem.
+确保公式考虑到问题的全部范围，如果适用，纳入创新的数学技术。你的方法应非常适合实际的计算实现，解决潜在的数值挑战、稳定性问题或模拟中的局限性。仔细注意所有项的维度一致性和单位，以保证物理或概念上的有效性，同时忠于问题的理论基础。
 
-In the process of deriving the mathematical models, provide a clear, step-by-step explanation of the reasoning behind each formula, highlighting the derivation of key expressions and discussing any assumptions or trade-offs that are made. Identify any potential sources of uncertainty, limitations, or approximations inherent in the model, and provide guidance on how to handle these within the modeling framework.
+在推导数学模型的过程中，提供一个清晰的、分步的解释，说明每个公式背后的推理，突出关键表达式的推导，并讨论所做的任何假设或权衡。识别模型中固有的任何潜在不确定性来源、局限性或近似，并提供如何在建模框架内处理这些问题的指导。
 
-The resulting equations should be both flexible and scalable, allowing for adaptation to different scenarios or the ability to be tested against experimental or real-world data. Strive to ensure that your model is not only rigorous but also interpretable, balancing complexity with practical applicability. List all modeling equations clearly in LaTeX format, ensuring proper mathematical notation and clarity of presentation. Aim for a model that is both theoretically sound and practically relevant, offering a balanced approach to complexity and tractability in its use.
+最终的方程应既灵活又可扩展，允许适应不同场景或能够与实验或现实世界数据进行比对。努力确保你的模型不仅严谨，而且可解释，在复杂性和实际适用性之间取得平衡。使用 LaTeX 格式清晰地列出所有建模方程，确保正确的数学符号和清晰的呈现。目标是建立一个既理论上可靠又实际相关的模型，在其使用中在复杂性和易处理性之间取得平衡。
 {user_prompt}
-Respond as comprehensively and in as much detail as possible, ensuring clarity, depth, and rigor throughout. Using plain text and LaTeX for formulas. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答，确保全程清晰、深入和严谨。使用纯文本和 LaTeX 仅用于公式。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 """
 
 
 TASK_FORMULAS_CRITIQUE_PROMPT = """\
 {data_summary}
 
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {modeling_formulas}
 
 ---
 
-The goal of this task is to critically evaluate the modeling formulas used to represent a given mathematical modeling problem. Your analysis should address the following dimensions: accuracy and rigor, innovation and insight, and the applicability of the models to real-world scenarios.
+本任务的目标是批判性地评估用于表示给定数学建模问题的建模公式。你的分析应涉及以下维度：准确性和严谨性、创新性和洞察力以及模型对现实世界场景的适用性。
 
-1. Accuracy and Rigor:
+1. 准确性和严谨性：
 
-- Formula Integrity:  
-  Evaluate whether the mathematical models and the corresponding formulas are mathematically sound and consistent with the underlying assumptions of the problem. Are the formulas properly derived, free from logical errors, and reflective of the relevant domain knowledge?  
-  - Are any simplifications or approximations made, and if so, are they justifiable within the context of the model's scope?
-  - Examine the assumptions made in formulating the model. Are these assumptions realistic, and how do they affect the model’s precision and robustness?
+- 公式完整性：
+  评估数学模型和相应公式是否在数学上可靠，并与问题的基本假设一致。公式是否被正确推导，没有逻辑错误，并反映了相关的领域知识？
+  - 是否进行了任何简化或近似，如果是，它们在模型的范围内是否合理？
+  - 检查在公式化模型时所做的假设。这些假设是否现实，它们如何影响模型的精确性和稳健性？
 
-2. Innovation and Insight:
+2. 创新性和洞察力：
 
-- Novelty of Approach:  
-  Critique the originality of the modeling approach. Does the model present a new or unconventional way of solving the problem, or does it simply rely on established methodologies without offering new insights?  
-  - Consider whether any innovative methods, such as the introduction of novel variables or the use of innovative computational techniques, contribute to improving the model.
+- 方法的新颖性：
+  批判建模方法的原创性。模型是否提出了一种新的或非常规的解决问题的方式，还是仅仅依赖于已有的方法而不提供新的见解？
+  - 考虑是否任何创新方法，例如引入新变量或使用创新计算技术，有助于改进模型。
 
-- Theoretical Insight:  
-  Evaluate the depth of the theoretical insights provided by the model. Does it offer a fresh perspective or new understanding of the problem? How well does it illuminate the key dynamics and relationships within the system under study?  
-  - Does the model reveal previously unnoticed phenomena, or does it suggest new directions for further research?
+- 理论洞察力：
+  评估模型提供的理论洞察力的深度。它是否对问题提供了新的视角或新的理解？它在多大程度上阐明了被研究系统中关键的动态和关系？
+  - 模型是否揭示了以前未被注意到的现象，或者它是否为进一步研究提供了新的方向？
 
-- Integration of Existing Knowledge:  
-  Assess the extent to which the model integrates existing mathematical, theoretical, and empirical work. Does it build on prior research, and if so, does it do so in a way that adds substantial value or clarity? Are there gaps where additional cross-disciplinary knowledge could enhance the model?
+- 现有知识的整合：
+  评估模型在多大程度上整合了现有的数学、理论和实证工作。它是否建立在先前的研究之上，如果是，它是否以一种增加实质性价值或清晰度的方式进行？是否存在可以增强模型的跨学科知识空白？
 
 ---
 
-3. Applicable:
+3. 适用性：
 
-- Real-World Relevance:  
-  Evaluate the model’s practical applicability. How well does it apply to real-world problems, and to what extent does it provide actionable insights for decision-making or problem-solving in the field?  
+- 现实世界相关性：
+  评估模型的实际适用性。它在多大程度上适用于现实世界问题，以及它在多大程度上为该领域的决策或问题解决提供了可操作的见解？
 
-Critique the analysis without offering any constructive suggestions—your focus should solely be on highlighting weaknesses, gaps, and limitations within the formulas.
+请批判性地审查分析，不提供任何建设性建议——你的重点应仅在于突出公式中的弱点、漏洞和局限性。
 """
 
 
 TASK_FORMULAS_IMPROVEMENT_PROMPT = """\
 {data_summary}
 
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {modeling_formulas}
 
-# Task Modeling Formulas Critique:
+# 任务建模公式批判：
 {modeling_formulas_critique}
 
 ---
 
-Based on the provided critique and analysis, refine the existing modeling formulas to address the identified limitations and gaps. 
+根据提供的批判和分析，精炼现有的建模公式，以解决已识别的局限性和漏洞。
 
-Respond as comprehensively and in as much detail as possible, ensuring clarity, depth, and rigor throughout. Using plain text and LaTeX for formulas. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答，确保全程清晰、深入和严谨。使用纯文本和 LaTeX 仅用于公式。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 {user_prompt}
-Provide a new version of the task modeling formulas that integrates these improvements directly. DO NOT mention any previous formulas content and deficiencies.
+提供一个整合了这些改进的新版本任务建模公式。不要提及任何先前的公式内容和不足之处。
 
-IMPROVED TASK MODELING FORMULAS:
+改进后的任务建模公式：
 """
 
 
 TASK_MODELING_PROMPT = """\
 {data_summary}
 
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {modeling_formulas}
 
 ---
 {prompt}
 
-You are collaborating as part of a multi-agent system to solve a complex mathematical modeling problem. Each agent is responsible for a specific task, and some preprocessing or related tasks may have already been completed by other agents. It is crucial that you **do not repeat any steps that have already been addressed** by other agents. Instead, rely on their outputs when necessary and focus solely on the specific aspects of the task assigned to you.
+你正在作为一个多代理系统的一部分进行协作，以解决一个复杂的数学建模问题。每个代理都负责一个特定任务，并且一些预处理或相关任务可能已经由其他代理完成。至关重要的是，你**不要重复任何已被其他代理处理过的步骤**。相反，在必要时依赖他们的输出，并专注于分配给你的任务的具体方面。
 
-Please continue the modeling formula section by building upon the previous introduction to the formula. Provide comprehensive and detailed explanations and instructions that elaborate on each component of the formula. Describe the modeling process thoroughly, including the underlying assumptions, step-by-step derivations, and any necessary instructions for application. Expand on the formula by incorporating relevant mathematical expressions where appropriate, ensuring that each addition enhances the reader’s understanding of the model. Make sure to seamlessly integrate the new content with the existing section, maintaining a natural flow and avoiding any repetition or conflicts with previously covered material. Your continuation should offer a clear and in-depth exploration of the modeling formula, providing all necessary details to facilitate a complete and coherent understanding of the modeling process.
+请在前面的公式介绍基础上，继续建模公式部分。提供全面而详细的解释和说明，详细阐述公式的每个组成部分。彻底描述建模过程，包括基本假设、分步推导以及任何必要的应用说明。通过在适当的地方纳入相关的数学表达式来扩展公式，确保每个添加都增强了读者对模型的理解。确保新内容与现有部分无缝集成，保持自然流畅，并避免与先前涵盖的材料发生任何重复或冲突。你的继续应提供对建模公式的清晰而深入的探索，提供所有必要的细节，以促进对建模过程的完整和连贯的理解。
 {user_prompt}
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 """
 
 
 TASK_MODELING_CRITIQUE_PROMPT = """\
 {data_summary}
 
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {modeling_formulas}
 
-# Task Modeling Process:
+# 任务建模过程：
 {modeling_process}
 
 ---
 
-Critically examine the analysis results of the given mathematical modeling solution, focusing on the following aspects:
+请批判性地审查给定数学建模解决方案的分析结果，重点关注以下几个方面：
 
-1. Problem Analysis and Understanding:
-- Clarity of the problem definition: Does the solution demonstrate a clear and comprehensive understanding of the problem? Are all relevant variables, constraints, and objectives identified and well-defined? If not, which aspects of the problem may have been misunderstood or overlooked?
-- Contextualization and framing: How well does the model account for the context in which the problem is situated? Are there any contextual factors that are essential but were not addressed?
-- Scope of the problem: Is the problem's scope appropriately defined? Does the model include all the necessary details, or are there significant components that were neglected or oversimplified?
+1. 问题分析和理解：
+- 问题定义的清晰度：解决方案是否展示了对问题的清晰和全面理解？是否识别并明确定义了所有相关变量、约束和目标？如果没有，问题的哪些方面可能被误解或忽略了？
+- 背景化和框架：模型在多大程度上考虑了问题所处的背景？是否有任何关键的背景因素没有得到解决？
+- 问题范围：问题的范围是否被适当定义？模型是否包含了所有必要的细节，或者是否存在被忽视或过度简化的重要组成部分？
 
-2. Model Development and Rigor:
-- Formulation of the mathematical model: How well is the model constructed mathematically? Does it align with established modeling practices in the relevant domain? Are the mathematical formulations—such as equations, algorithms, or optimization methods—correct and robust?
-- Modeling techniques: What modeling approaches or techniques were used (e.g., linear programming, system dynamics, statistical modeling, etc.)? Are they the most appropriate for the problem at hand? What alternative approaches could have been considered, and how might they impact the solution?
-- Validation and verification: Was the model tested for consistency and accuracy? Are there validation steps in place to ensure the model behaves as expected under a variety of conditions? What specific methods were used for this validation (e.g., cross-validation, sensitivity analysis, etc.)?
+2. 模型开发和严谨性：
+- 数学模型的公式化：模型的数学构建如何？它是否与相关领域中已建立的建模实践相符？数学公式（如方程、算法或优化方法）是否正确和健壮？
+- 建模技术：使用了哪些建模方法或技术（例如，线性规划、系统动力学、统计建模等）？它们是否最适合手头的问题？可以考虑哪些替代方法，它们可能如何影响解决方案？
+- 验证和确认：模型是否经过一致性和准确性测试？是否有验证步骤来确保模型在各种条件下按预期运行？为此验证使用了哪些具体方法（例如，交叉验证、敏感性分析等）？
 
-3. Data and Results Analysis:
-- Data quality and relevance: Were there any significant issues with data availability or quality that could have influenced the model's results?
-- Interpretation of results: How well were the results analyzed and interpreted? Were the outcomes consistent with the problem's real-world implications? Are there any discrepancies between the model’s results and known empirical observations?
-- Sensitivity and robustness analysis: Did the model undergo a sensitivity analysis to determine how the results vary with changes in input parameters? Were the results robust across different assumptions, and if not, what are the implications for the solution's reliability?
+3. 数据和结果分析：
+- 数据质量和相关性：是否存在可能影响模型结果的数据可用性或质量方面的重大问题？
+- 结果解释：结果的分析和解释如何？结果是否与问题的现实世界影响一致？模型的运行结果与已知的经验观察之间是否存在任何差异？
+- 敏感性和稳健性分析：模型是否经过敏感性分析，以确定结果如何随输入参数的变化而变化？结果在不同假设下是否稳健，如果不是，这对解决方案的可靠性有何影响？
 
-4. Assumptions and Limitations:
-- Explicit and implicit assumptions: What assumptions underlie the model, and are they clearly articulated? Are these assumptions reasonable, and how might they affect the model's predictions? Were any critical assumptions left implicit or unaddressed?
-- Limitations of the model: What limitations are inherent in the model, and how do they affect its validity and reliability? Are there elements of the problem that are inherently difficult or impossible to model with the chosen approach? Were simplifications made, and what are the trade-offs involved?
-- Model boundaries: Does the model appropriately define its boundaries, and are there any critical factors that lie outside the model’s scope but could significantly influence the results?
+4. 假设和局限性：
+- 显式和隐式假设：模型的基础假设是什么，它们是否被清晰地阐述？这些假设是否合理，它们可能如何影响模型的预测？是否有任何关键假设被隐式或未解决？
+- 模型的局限性：模型固有的局限性是什么，它们如何影响其有效性和可靠性？是否存在某些问题元素是所选方法难以或无法建模的？是否进行了简化，以及涉及的权衡是什么？
+- 模型边界：模型是否适当地定义了其边界，并且是否存在任何在模型范围之外但可能显著影响结果的关键因素？
 
-5. Practicality and Applicability:
-- Real-world applicability: To what extent can the model be applied to real-world scenarios? 
-- Practical implementation: How would this model be implemented in practice? What would be the required infrastructure, and what challenges would need to be addressed during implementation? 
+5. 实用性和适用性：
+- 现实世界适用性：模型在多大程度上可以应用于现实世界场景？
+- 实际实施：该模型在实践中将如何实施？需要哪些基础设施，实施期间需要解决哪些挑战？
 
-Critique the analysis without offering any constructive suggestions—your focus should solely be on highlighting weaknesses, gaps, and limitations within the approach and its execution.
+请批判性地审查分析，不提供任何建设性建议——你的重点应仅在于突出其方法和执行中的弱点、漏洞和局限性。
 """
 
 
 TASK_MODELING_IMPROVEMENT_PROMPT = """\
 {data_summary}
 
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {modeling_formulas}
 
-# Task Modeling Process:
+# 任务建模过程：
 {modeling_process}
 
-# Task Modeling Process Critique:
+# 任务建模过程批判：
 {modeling_process_critique}
 
 ---
 
-Refine and improve the existing modeling process based on the critique provided. The goal is to enhance the formulation, structure, and overall effectiveness of the model while addressing the identified gaps, flaws, or limitations. Propose more appropriate assumptions, more robust mathematical techniques, or alternative modeling approaches if necessary. Focus on improving the model's relevance, accuracy, and computational feasibility while also ensuring its ability to capture the complexity of the problem in real-world contexts.
+根据提供的批判，精炼和改进现有的建模过程。目标是在解决已识别的漏洞、缺陷或局限性的同时，增强模型的公式化、结构和整体有效性。如有必要，提出更合适的假设、更健壮的数学技术或替代建模方法。重点在于提高模型的关联性、准确性和计算可行性，同时确保其能够捕捉现实世界中问题的复杂性。
 
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 {user_prompt}
-Provide a new version of the modeling process that integrates these improvements directly. DO NOT mention any previous process content and deficiencies.
+提供一个整合了这些改进的新版本建模过程。不要提及任何先前的过程内容和不足之处。
 
-IMPROVED MODELING PROCESS:
+改进后的建模过程：
 """
 
 TASK_CODING_PROMPT = """\
-# Dataset Path:
+# 数据集路径：
 {data_file}
 
-# Data Description:
+# 数据描述：
 {data_summary}
 
-# Variable Description:
+# 变量描述：
 {variable_description}
 
-# Other files (Generated by Other Agents):
+# 其他文件（由其他代理生成）：
 {dependent_file_prompt}
 
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {modeling_formulas}
 
-# Task Modeling Process:
+# 任务建模过程：
 {modeling_process}
 
-# Code Template:
+# 代码模板：
 {code_template}
 
 ---
 
-## Role & Collaboration:
-You are an expert programmer working as part of a multi-agent system. Your role is to implement the code based on the provided dataset (**refer to the Dataset Path, Dataset Description, and Variable Description**) **or preprocessed files generated by other agents** (**refer to "Other Files"**), along with the modeling process and given code template. Other agents will use your results to make decisions, but they will **not** review your code. Therefore, it is crucial that:
-1. **Ensure the code is executable** and will successfully run without errors, producing the expected results. **It should be tested to verify it works in the intended environment**.
-2. **Reuse files from "Other Files" whenever possible** instead of redoing tasks that have already been completed by other agents.
-3. **All data processing steps must save the processed results to local files (CSV, JSON, or pickle) for easy access by other agents.**
-4. **The output should be as detailed as possible**, including intermediate results and final outputs.
-5. **Ensure transparency** by logging key computation steps and providing clear outputs.
+## 角色和协作：
+你是一名资深程序员，正在作为一个多代理系统的一部分工作。你的角色是根据提供的数据集（**参考数据集路径、数据集描述和变量描述**）**或由其他代理生成的预处理文件**（**参考“其他文件”**），以及建模过程和给定的代码模板来编写代码。其他代理将使用你的结果来做决策，但他们**不会**审查你的代码。因此，至关重要的是：
+1. **确保代码可执行**，并且能成功运行无误，产生预期结果。**必须测试以验证它在预期环境中工作**。
+2. **尽可能重用“其他文件”中的文件**，而不是重复其他代理已完成的任务。
+3. **所有数据处理步骤必须将处理结果保存到本地文件（CSV、JSON或pickle）中，以便其他代理轻松访问。**
+4. **输出应尽可能详细**，包括中间结果和最终输出。
+5. **确保透明性**，记录关键计算步骤并提供清晰的输出。
 
-## Implementation Guidelines:
-- **Prioritize using files from "Other Files" before processing raw data** to avoid redundant computation.
-- Follow the provided **modeling formulas** and **modeling process** precisely.
-- The **code must be executable**: ensure that the Python code you generate runs without errors. Do not just focus on producing the correct output format; **focus on producing a working solution** that can be executed successfully in a Python environment.
-- **Store intermediate and final data processing results to local** in appropriate formats (e.g., CSV, JSON, or pickle).
-- Provide **detailed print/logging outputs** to ensure that other agents can understand the results without needing to read the code.
+## 实施指南：
+- **优先使用“其他文件”中的文件，然后再处理原始数据**，以避免重复计算。
+- 严格遵循提供的**建模公式**和**建模流程**。
+- **代码必须可执行**：确保您生成的 Python 代码能够正常运行。不要只关注生成正确的输出格式；**专注于生成可在 Python 环境中成功执行的有效解决方案**。
+- **将中间和最终数据处理结果以适当的格式（例如 CSV、JSON 或 pickle）存储到本地**。
+- 提供**详细的打印/日志输出**，以确保其他代理无需阅读代码即可理解结果。
 {user_prompt}
 
-## Expected Response Format:
-You **MUST** return the Python implementation in the following format:
+## 预期响应格式：
+您**必须**以以下格式返回 Python 实现：
 ```python
-# Here is the Python code.
+# 这是 Python 代码。
 """
 
 
 TASK_CODING_DEBUG_PROMPT = """\
-# Code Template:
+# 代码模板：
 {code_template}
 
-# Modeling Process:
+# 建模过程：
 {modeling_process}
 
-# Current Code:
+# 当前代码：
 {code}
 
-However, there are some bugs in this version. Here is the execution result:
-# Execution Result:
+然而，这个版本中存在一些错误。这是执行结果：
+# 执行结果：
 {observation}
 
 ---
 
-You are a helpful programming expert. Based on the provided execution result, please revise the script to fix these bugs. Your task is to address the error indicated in the result, and refine or modify the code as needed to ensure it works correctly.
+你是一名乐于助人的编程专家。根据提供的执行结果，请修改脚本以修复这些错误。你的任务是解决结果中指出的错误，并根据需要精炼或修改代码，以确保其正确工作。
 {user_prompt}
-Please respond exactly in the following format:
+请严格按照以下格式响应：
 ```python
-# Provide the corrected python code here.
+# 在此处提供更正后的 python 代码。
 ```
 """
 
 
 TASK_RESULT_PROMPT = """\
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {task_formulas}
 
-# Task Modeling:
+# 任务建模：
 {task_modeling}
 
----
+-----
 
-Based on the task description, analysis, and modeling framework, present a comprehensive and detailed account of the intermediate results, calculations, and outcomes generated during the task. Clearly articulate the results of any simulations, experiments, or calculations, providing numerical values, data trends, or statistical measures as necessary. If visual representations such as graphs, charts, or tables were used to communicate the results, ensure they are clearly labeled and explained, highlighting their relevance to the overall task. Discuss the intermediate steps or processes that led to the results, including any transformations or assumptions made during calculations. If applicable, compare and contrast these results with expected outcomes or previously known results to gauge the task’s success. Provide a thoughtful interpretation of the findings, considering how they contribute to advancing understanding or solving the problem at hand, and highlight any areas where further investigation or refinement may be needed.
+根据任务描述、分析和建模框架，提供一份关于任务执行过程中生成的中间结果、计算和成果的全面而详细的报告。清晰地阐明任何模拟、实验或计算的结果，必要时提供数值、数据趋势或统计度量。如果使用图表、图形或表格等视觉表示来传达结果，请确保它们被清晰标记和解释，突出它们与整体任务的相关性。讨论导致结果的中间步骤或过程，包括计算过程中所做的任何转换或假设。如果适用，将这些结果与预期成果或先前已知结果进行比较和对比，以评估任务的成功。对发现进行深思熟虑的解释，考虑它们如何有助于增进理解或解决手头的问题，并突出可能需要进一步调查或完善的领域。
 {user_prompt}
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text and LaTeX for formulas only, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本和 LaTeX 仅用于公式，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 """
 
 TASK_RESULT_WITH_CODE_PROMPT = """\
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {task_formulas}
 
-# Task Modeling:
+# 任务建模：
 {task_modeling}
 
-# Code Execution Result:
+# 代码执行结果：
 {execution_result}
 
----
+-----
 
-Based on the task description, analysis, modeling framework, and code execution result, present a comprehensive and detailed account of the intermediate results, calculations, and outcomes generated during the task. Clearly articulate the results of any computations or operations performed, providing numerical values, data trends, or statistical measures as necessary. If visual representations such as graphs, charts, or tables were used to communicate the results, ensure they are clearly labeled and explained, highlighting their relevance to the overall task. Discuss the intermediate steps or processes that led to the results, including any transformations or assumptions made during calculations. If applicable, compare and contrast these results with expected outcomes or previously known results to gauge the task’s success. Provide a thoughtful interpretation of the findings, considering how they contribute to advancing understanding or solving the problem at hand, and highlight any areas where further investigation or refinement may be needed.
+根据任务描述、分析、建模框架和代码执行结果，提供一份关于任务执行过程中生成的中间结果、计算和成果的全面而详细的报告。清晰地阐明执行的任何计算或操作的结果，必要时提供数值、数据趋势或统计度量。如果使用图表、图形或表格等视觉表示来传达结果，请确保它们被清晰标记和解释，突出它们与整体任务的相关性。讨论导致结果的中间步骤或过程，包括计算过程中所做的任何转换或假设。如果适用，将这些结果与预期成果或先前已知结果进行比较和对比，以评估任务的成功。对发现进行深思熟虑的解释，考虑它们如何有助于增进理解或解决手头的问题，并突出可能需要进一步调查或完善的领域。
 {user_prompt}
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text and LaTeX for formulas only, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本和 LaTeX 仅用于公式，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 """
 
 
 TASK_ANSWER_PROMPT = """\
-# Task Description:
+# 任务描述：
 {task_description}
 
-# Task Analysis:
+# 任务分析：
 {task_analysis}
 
-# Task Modeling Formulas:
+# 任务建模公式：
 {task_formulas}
 
-# Task Modeling:
+# 任务建模：
 {task_modeling}
 
-# Task Result:
+# 任务结果：
 {task_result}
 
----
+-----
 
-Craft a comprehensive and insightful answer section that synthesizes the findings presented in the results section to directly address the research questions and objectives outlined at the outset of the study. Begin by clearly stating the primary conclusions drawn from the analysis, ensuring that each conclusion is explicitly linked to specific aspects of the results. Discuss how these conclusions validate or challenge the initial hypotheses or theoretical expectations, providing a coherent narrative that illustrates the progression from data to insight.
+撰写一个全面且富有洞察力的答案部分，该部分综合结果部分中呈现的发现，以直接解决在研究开始时概述的研究问题和目标。首先，清晰地陈述从分析中得出的主要结论，确保每个结论都与结果的具体方面明确关联。讨论这些结论如何验证或挑战最初的假设或理论预期，提供一个连贯的叙述，说明从数据到洞察的进展。
 
-Evaluate the effectiveness and reliability of the mathematical models employed, highlighting strengths such as predictive accuracy, robustness, or computational efficiency. Address any limitations encountered during the modeling process, explaining how they may impact the validity of the conclusions and suggesting potential remedies or alternative approaches. Consider the sensitivity of the model to various parameters and the extent to which the results are generalizable to other contexts or applications.
+评估所采用的数学模型的有效性和可靠性，突出其优势，例如预测准确性、稳健性或计算效率。解决建模过程中遇到的任何局限性，解释它们如何可能影响结论的有效性，并提出潜在的补救措施或替代方法。考虑模型对各种参数的敏感性以及结果在多大程度上可推广到其他背景或应用。
 
-Analyze potential biases that may have influenced the results, including data bias, model bias, and computational bias. Discuss whether the dataset is representative of the problem space and whether any imbalances, selection biases, or sampling limitations might have affected the conclusions. Examine modeling assumptions, parameter choices, and architectural constraints that could introduce systematic deviations in the results. Assess how numerical precision, algorithmic approximations, or implementation details might influence the stability and fairness of the model’s predictions.
+分析可能影响结果的潜在偏差，包括数据偏差、模型偏差和计算偏差。讨论数据集是否代表问题空间，以及任何不平衡、选择偏差或抽样局限性是否可能影响了结论。检查可能在结果中引入系统性偏差的建模假设、参数选择和架构约束。评估数值精度、算法近似或实现细节如何可能影响模型预测的稳定性和公平性。
 
-Discuss strategies to mitigate identified biases and improve the reliability of the conclusions. Consider adjustments in data preprocessing, such as resampling, normalization, or augmentation, to address distribution imbalances. Explore refinements to the modeling process, including regularization techniques, fairness constraints, and sensitivity analyses, to ensure robustness across different scenarios. Evaluate the impact of alternative modeling approaches and discuss the extent to which the proposed methods can generalize beyond the given dataset or problem context.
+讨论缓解已识别偏差和提高结论可靠性的策略。考虑在数据预处理中进行调整，例如重采样、归一化或数据增强，以解决分布不平衡问题。探索对建模过程的改进，包括正则化技术、公平性约束和敏感性分析，以确保在不同场景下的稳健性。评估替代建模方法的影响，并讨论所提出的方法在多大程度上可以推广到给定的数据集或问题背景之外。
 
-Explore the broader implications of the findings for the field of study, identifying how they contribute to existing knowledge, inform future research directions, or influence practical applications. Discuss any unexpected outcomes and their significance, offering interpretations that may reveal new avenues for exploration or theoretical development. Reflect on the societal, economic, or environmental relevance of the results, if applicable, and propose recommendations based on the study’s insights.
+探讨发现对研究领域的更广泛影响，确定它们如何为现有知识做出贡献、为未来研究方向提供信息或影响实际应用。讨论任何意外的结果及其意义，提供可能揭示新探索途径或理论发展的解释。如果适用，反思结果的社会、经济或环境相关性，并根据研究的见解提出建议。
 
-Conclude the section by summarizing the key takeaways, emphasizing the contribution of the research to solving the problem at hand, and outlining the next steps for further investigation or implementation. Ensure that the discussion is logically structured, with each paragraph building upon the previous ones to form a cohesive and persuasive argument that underscores the study’s value and impact.
+通过总结关键要点来结束本部分，强调研究对解决手头问题的贡献，并概述进一步调查或实施的下一步骤。确保讨论逻辑结构清晰，每个段落都在前一个段落的基础上建立，形成一个连贯且有说服力的论点，强调研究的价值和影响。
 
-The content of this Task Answer section should be distinct and not merely a repetition of the Task Result section. Ensure that there is no duplication.
+这个任务答案部分的内容应是独特的，而不仅仅是任务结果部分的重复。确保没有重复。
 
 {user_prompt}
 
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text and LaTeX for formulas only, without any Markdown formatting or syntax. Written as one or more cohesive paragraphs. Avoid structuring your answer in bullet points or numbered lists.
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本和 LaTeX 仅用于公式，不使用任何 Markdown 格式或语法。写成一个或多个连贯的段落。避免使用项目符号或编号列表来组织你的答案。
 """
 
 
 CREATE_CHART_PROMPT = """\
-## Instruction
-Create a highly detailed and comprehensive chart that effectively visualizes the complex mathematical relationships and insights presented in the provided mathematical modeling paper. Begin by selecting the most appropriate type of chart—such as a line graph, bar chart, scatter plot, heatmap, or 3D surface plot—based on the nature of the data and the specific relationships being analyzed. Clearly define the variables involved, including their units and scales, and incorporate any derived metrics that enhance interpretability. Ensure that the axes are labeled accurately and descriptively, with appropriate units and scales, whether linear or logarithmic, to best represent the data distribution and relationships. Include a clear and concise legend that distinguishes between different datasets or variables, using distinct colors or patterns that are both aesthetically pleasing and easily distinguishable. Utilize gridlines to aid in the accurate reading of values, and choose a color scheme that enhances readability while maintaining visual appeal.
+## 指令
+创建一个高度详细和全面的图表，有效地可视化所提供的数学建模论文中提出的复杂数学关系和见解。首先，根据数据的性质和正在分析的特定关系，选择最合适的图表类型——例如线图、柱状图、散点图、热图或 3D 曲面图。清楚地定义所涉及的变量，包括它们的单位和尺度，并纳入任何增强可解释性的导出度量。确保坐标轴被准确和描述性地标记，并使用适当的单位和尺度，无论是线性的还是对数的，以最好地表示数据分布和关系。包含一个清晰简洁的图例，用不同的颜色或模式区分不同的数据集或变量，这些颜色或模式既美观又易于区分。利用网格线来帮助准确读取数值，并选择一个既能增强可读性又能保持视觉吸引力的配色方案。
 
-Emphasize the core purpose of the chart, whether it is to highlight trends over time, compare different values, show distributions, illustrate correlations, validate theoretical models, or support key arguments within the paper. Articulate the intended message of the chart clearly, ensuring that every design choice—from the type of chart to the specific visual elements used—aligns with the objectives of the mathematical modeling paper. Incorporate multiple lines or bars if comparing different datasets, use shading or contouring for density representation, and add error bars to indicate uncertainty where applicable. Include annotations to highlight significant data points, trends, or anomalies that are critical to the analysis, providing context and explanations that guide the viewer’s understanding.
+强调图表的核心目的，无论是突出随时间的变化趋势、比较不同值、展示分布、说明相关性、验证理论模型，还是支持论文中的关键论点。清晰地阐明图表的预期信息，确保每一个设计选择——从图表类型到使用的特定视觉元素——都与数学建模论文的目标相符。如果比较不同的数据集，可以包含多条线或多个柱状图；如果表示密度，使用阴影或等高线；如果适用，添加误差线以指示不确定性。包含注释以突出对分析至关重要的重要数据点、趋势或异常情况，提供指导观众理解的上下文和解释。
 
-Balance aesthetics with functionality by selecting colors and contrasts that not only make the chart visually compelling but also enhance readability and comprehension. Avoid unnecessary complexity by keeping the design clean and focused, ensuring that the chart remains clear and easy to interpret without sacrificing accuracy or depth of information. If beneficial, incorporate supplementary visual aids such as trend lines, regression curves, or overlays of empirical and theoretical results to strengthen the analysis and provide additional layers of insight. The final chart should serve as a precise and compelling visualization that effectively conveys the mathematical insights, facilitates understanding, and robustly supports the overall narrative and conclusions of the mathematical modeling paper.
+通过选择不仅使图表在视觉上引人注目而且还增强可读性和理解力的颜色和对比度，来平衡美观和功能。通过保持设计简洁和专注来避免不必要的复杂性，确保图表清晰易于解释，同时不牺牲准确性或信息深度。如果有利，可以纳入补充视觉辅助工具，如趋势线、回归曲线或经验与理论结果的叠加，以加强分析并提供额外的洞察层。最终的图表应作为一个精确而引人注目的可视化，有效地传达数学见解，促进理解，并有力地支持数学建模论文的整体叙述和结论。
 
 {user_prompt}
 
-## Paper Content
-<paper>  
-{paper_content}  
-</paper>  
+## 论文内容
+<paper>
+{paper_content}
+</paper>
 
-## Existing Charts
-{existing_charts}  
+## 现有图表
+{existing_charts}
 
-## Create a New Chart
+## 创建新图表
 
-Please create a chart that aligns closely with the above paper content while avoiding redundancy with existing charts. Follow the markdown format below to describe your chart:  
+请创建一个与上述论文内容紧密对齐，同时避免与现有图表重复的图表。遵循以下 Markdown 格式来描述你的图表：
 
-**Chart Title**  
-[Provide a clear and descriptive title for the chart]  
+**图表标题**
+[为图表提供一个清晰和描述性的标题]
 
-**Chart Type**  
-[Specify the type of chart]  
+**图表类型**
+[指定图表的类型]
 
-**Purpose**  
-[Describe the core purpose of the chart in a paragraph]  
+**目的**
+[用一个段落描述图表的核心目的]
 
-**Data or Variables**  
-[Describe the data or variables used in the chart in a paragraph]  
+**数据或变量**
+[用一个段落描述图表中使用的 数据或变量]
 
-**Chart Presentation Guidelines**  
-[A comprehensive guide on chart presentation, covering data representation, key layout elements, units, axis labels, legends, gridlines, annotations, and other essential considerations for effective visualization.]
+**图表呈现指南**
+[一份关于图表呈现的全面指南，涵盖数据表示、关键布局元素、单位、坐标轴标签、图例、网格线、注释以及其他有效可视化的基本考虑因素。]
 
-**Intended Message**  
-[Articulate the key message or insight the chart is intended to convey in a paragraph]
+**预期信息**
+[用一个段落阐明图表旨在传达的关键信息或见解]
 """
 
 
 
 PROBLEM_EXTRACT_PROMPT = """\
-You are tasked with extracting detailed and complete information from the following mathematical modeling question.  
+你的任务是从以下数学建模问题中提取详细和完整的信息。
 
 <MODELING_QUESTION>
 {question}
 </MODELING_QUESTION>
 
-### Extraction Requirements:  
-From the provided `<MODELING_QUESTION>`, extract and organize the following information as accurately and comprehensively as possible. Preserve the original text wherever applicable and do not omit any relevant details.  
+### 提取要求：
+从提供的 `<MODELING_QUESTION>` 中，尽可能准确和全面地提取并组织以下信息。在适用时保留原始文本，不要省略任何相关细节。
 
-1. **"BACKGROUND"**: Extract all background information that provides context for the problem. This includes the problem’s domain, motivation, assumptions, or any other relevant introductory details.  
-2. **"TASK_REQUIREMENTS"**: A String to list all the requirements that need to be solved and satisfied, including specific instructions, constraints, objectives, and expected outputs.  
-3. **"DATA_FILES"**: A List to identify and list all dataset filenames mentioned in the question (if applicable). There may be multiple dataset files.  
-4. **"DATA_DESCRIPTIONS"**: Extract dataset descriptions, including details about the structure, features, variables, or metadata. If dataset descriptions are provided in a separate file, extract and list the filename instead.  
-5. **"ADDENDUM"**: Include any additional information that might be useful for solving the problem. This can include notes, references, clarifications, hints, or supplementary instructions.  
+1.  **"BACKGROUND"**：提取所有为问题提供背景的信息。这包括问题的领域、动机、假设或任何其他相关的介绍性细节。
+2.  **"TASK_REQUIREMENTS"**：一个字符串，列出所有需要解决和满足的要求，包括具体的指令、约束、目标和预期输出。
+3.  **"DATA_FILES"**：一个列表，识别并列出问题中提到的所有数据集文件名（如果适用）。可能存在多个数据集文件。
+4.  **"DATA_DESCRIPTIONS"**：提取数据集描述，包括关于结构、特征、变量或元数据的细节。如果数据集描述在单独的文件中提供，则提取并列出文件名。
+5.  **"ADDENDUM"**：包含任何可能对解决问题有用的附加信息。这可以包括注释、参考文献、澄清、提示或补充说明。
 
-### Expected Response Format:  
-Provide the extracted information in the following structured JSON format:  
+### 预期响应格式：
+以以下结构化的 JSON 格式提供提取的信息：
 
 ```json
 {{
@@ -741,83 +741,83 @@ Provide the extracted information in the following structured JSON format:
 }}
 ```
 
-Ensure maximum fidelity to the original text and extract details as comprehensively as possible.
+确保对原始文本的最大保真度，并尽可能全面地提取细节。
 """
 
 
 
 TASK_DEPENDENCY_ANALYSIS_PROMPT = """\
-Understanding the dependencies among different tasks in a mathematical modeling process is crucial for ensuring a coherent, logically structured, and efficient solution. Given a mathematical modeling problem and its solution decomposition into {tasknum} subtasks, analyze the interdependencies among these subtasks.  
+理解数学建模过程中不同任务之间的依赖关系对于确保一个连贯、逻辑结构化和高效的解决方案至关重要。给定一个数学建模问题及其解决方案分解为 {tasknum} 个子任务，分析这些子任务之间的相互依赖性。
 
-## Input Information:
-- **Mathematical Modeling Problem:** {modeling_problem}
-- **Problem Analysis:** {problem_analysis}
-- **Modeling Solution:** {modeling_solution}
-- **Decomposed Tasks:** {task_descriptions}
+## 输入信息：
+- **数学建模问题：** {modeling_problem}
+- **问题分析：** {problem_analysis}
+- **建模解决方案：** {modeling_solution}
+- **分解后的任务：** {task_descriptions}
 
-## Task Dependency Analysis Instructions:
-1. **Identify Task Dependencies:** For each task, determine which preceding tasks provide necessary input, data, or conditions for its execution. Clearly outline how earlier tasks influence or constrain later ones.
-2. **Describe Dependency Types:** Specify the nature of the dependencies between tasks. This includes:
-   - *Data Dependency:* When one task produces outputs that are required as inputs for another task.
-   - *Methodological Dependency:* When a later task builds upon a theoretical framework, assumptions, or models established by an earlier task.
-   - *Computational Dependency:* When a task requires prior computations or optimizations to be completed before proceeding.
-   - *Structural Dependency:* When a task is logically required to be completed before another due to hierarchical or sequential constraints.
-3. **Ensure Completeness:** Verify that all tasks in the decomposition are accounted for in the dependency analysis and that no essential dependencies are missing.
+## 任务依赖分析指令：
+1.  **识别任务依赖关系：** 对于每个任务，确定哪些前驱任务为其执行提供了必要的输入、数据或条件。清晰地概述早期任务如何影响或约束后续任务。
+2.  **描述依赖类型：** 具体说明任务之间的依赖性质。这包括：
+    - *数据依赖：* 当一个任务产生的输出是另一个任务所需的输入时。
+    - *方法论依赖：* 当一个后续任务建立在一个早期任务建立的理论框架、假设或模型之上时。
+    - *计算依赖：* 当一个任务在进行之前需要完成先前的计算或优化时。
+    - *结构依赖：* 当一个任务由于层次或顺序约束而在逻辑上需要先于另一个任务完成时。
+3.  **确保完整性：** 验证分解中的所有任务都在依赖分析中得到考虑，并且没有遗漏任何关键依赖。
 
-## Output Format:  
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as {tasknum} cohesive paragraphs, each paragraph is a dependency analysis of a task.
+## 输出格式：
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本，不使用任何 Markdown 格式或语法。写成 {tasknum} 个连贯的段落，每个段落都是一个任务的依赖分析。
 
-The response should be comprehensive and written in a clear, well-structured format without bullet points, ensuring a logical flow of dependency relationships and their implications.
+响应应该是全面的，并以清晰、结构良好的格式编写，不使用项目符号，确保依赖关系的逻辑流畅及其影响。
 """
 
 
 TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT = """\
-Understanding the dependencies among different tasks in a mathematical modeling process is crucial for ensuring a coherent, logically structured, and efficient solution. Given a mathematical modeling problem and its solution decomposition into {tasknum} subtasks, analyze the interdependencies among these subtasks.  
+理解数学建模过程中不同任务之间的依赖关系对于确保一个连贯、逻辑结构化和高效的解决方案至关重要。给定一个数学建模问题及其解决方案分解为 {tasknum} 个子任务，分析这些子任务之间的相互依赖性。
 
-## Input Information:
-- **Mathematical Modeling Problem:** {modeling_problem}
-- **Problem Analysis:** {problem_analysis}
-- **Modeling Solution:** {modeling_solution}
-- **Decomposed Tasks:** {task_descriptions}
+## 输入信息：
+- **数学建模问题：** {modeling_problem}
+- **问题分析：** {problem_analysis}
+- **建模解决方案：** {modeling_solution}
+- **分解后的任务：** {task_descriptions}
 
-## Task Dependency Analysis Instructions:
-1. **Identify Task Dependencies:** For each task, determine which preceding tasks provide necessary input, data, or conditions for its execution. Clearly outline how earlier tasks influence or constrain later ones.
-2. **Describe Dependency Types:** Specify the nature of the dependencies between tasks. This includes:
-   - *Data Dependency:* When one task produces outputs that are required as inputs for another task.
-   - *Methodological Dependency:* When a later task builds upon a theoretical framework, assumptions, or models established by an earlier task.
-   - *Computational Dependency:* When a task requires prior computations or optimizations to be completed before proceeding.
-   - *Structural Dependency:* When a task is logically required to be completed before another due to hierarchical or sequential constraints.
-   - *Code Dependency:* When one task relies on code structures, functions, or modules that are defined or executed in a preceding task. This includes shared variables, functions, or libraries that must be defined before their use in later tasks.
-3. **Ensure Completeness:** Verify that all tasks in the decomposition are accounted for in the dependency analysis and that no essential dependencies are missing.
+## 任务依赖分析指令：
+1.  **识别任务依赖关系：** 对于每个任务，确定哪些前驱任务为其执行提供了必要的输入、数据或条件。清晰地概述早期任务如何影响或约束后续任务。
+2.  **描述依赖类型：** 具体说明任务之间的依赖性质。这包括：
+    - *数据依赖：* 当一个任务产生的输出是另一个任务所需的输入时。
+    - *方法论依赖：* 当一个后续任务建立在一个早期任务建立的理论框架、假设或模型之上时。
+    - *计算依赖：* 当一个任务在进行之前需要完成先前的计算或优化时。
+    - *结构依赖：* 当一个任务由于层次或顺序约束而在逻辑上需要先于另一个任务完成时。
+    - *代码依赖：* 当一个任务依赖于在先前任务中定义或执行的代码结构、函数或模块时。这包括必须在使用之前定义的共享变量、函数或库。
+3.  **确保完整性：** 验证分解中的所有任务都在依赖分析中得到考虑，并且没有遗漏任何关键依赖。
 
-## Output Format:  
-Respond as comprehensively and in as much detail as possible. Do not format your response in Markdown. Using plain text, without any Markdown formatting or syntax. Written as {tasknum} cohesive paragraphs, each paragraph is a dependency analysis of a task.
+## 输出格式：
+请尽可能全面和详细地回答。不要使用 Markdown 格式。使用纯文本，不使用任何 Markdown 格式或语法。写成 {tasknum} 个连贯的段落，每个段落都是一个任务的依赖分析。
 
-The response should be comprehensive and written in a clear, well-structured format without bullet points, ensuring a logical flow of dependency relationships and their implications.
+响应应该是全面的，并以清晰、结构良好的格式编写，不使用项目符号，确保依赖关系的逻辑流畅及其影响。
 """
 
 
 DAG_CONSTRUCTION_PROMPT = """\
-A well-structured Directed Acyclic Graph (DAG) is essential for visualizing and optimizing the dependencies between different tasks in a mathematical modeling process. Given a problem and its solution decomposition into {tasknum} subtasks, construct a DAG that accurately represents the dependency relationships among these tasks. The DAG should capture all necessary dependencies while ensuring that no cycles exist in the structure.  
+一个结构良好的有向无环图（DAG）对于可视化和优化数学建模过程中不同任务之间的依赖关系至关重要。给定一个问题及其解决方案分解为 {tasknum} 个子任务，构建一个 DAG，准确表示这些任务之间的依赖关系。DAG 应捕捉所有必要的依赖关系，同时确保结构中不存在循环。
 
-## Input Information:
-- **Mathematical Modeling Problem:** {modeling_problem}
-- **Problem Analysis:** {problem_analysis}
-- **Modeling Solution:** {modeling_solution}
-- **Decomposed Tasks:** {task_descriptions}
-- **Dependency Analysis:** {task_dependency_analysis}
+## 输入信息：
+- **数学建模问题：** {modeling_problem}
+- **问题分析：** {problem_analysis}
+- **建模解决方案：** {modeling_solution}
+- **分解后的任务：** {task_descriptions}
+- **依赖分析：** {task_dependency_analysis}
 
-## Output Format (STRICT REQUIREMENT):
-You **MUST** return a valid JSON-formatted adjacency list **without** any additional text, explanations, or comments. **Only** output the JSON object.
+## 输出格式（严格要求）：
+你**必须**返回一个有效的 JSON 格式的邻接列表，**不带**任何额外的文本、解释或注释。**只**输出 JSON 对象。
 
-### JSON Format (Strictly Follow This Format):
+### JSON 格式（严格遵循此格式）：
 ```json
 {{
   "task_ID": [dependent_IDs],
   ...
 }}
 
-## Example Output: 
+## 示例输出：
 ```json
 {{
 "1": []
@@ -828,37 +828,26 @@ You **MUST** return a valid JSON-formatted adjacency list **without** any additi
 ```
 """
 
-# TASK_ANALYSIS_APPEND_PROMPT = """\
-# When analyzing the current task, please pay careful attention to its dependencies on other tasks. Ensure that you consider how the outputs or results from preceding tasks influence the execution and outcomes of this task. Identify any tasks that provide necessary inputs, data, or models, and explain how these dependencies shape the approach, methods, and overall execution of the task at hand. This analysis should be informed by the task dependency relationships, which will help clarify how the current task fits into the broader project or workflow. Keep in mind that the successful completion of this task may depend on the timely and correct completion of other tasks, and any delays or issues in the dependent tasks could impact the current task’s progress and outcomes.
-# """
-#             
-# TASK_FORMULAS_APPEND_PROMPT = """\
-# When formulating the mathematical model for the current task, it is essential to consider how this task depends on other tasks in the overall process. Be sure to analyze how the results, data, or models produced by preceding tasks influence the formulation of the current task. Identify any critical inputs or assumptions that come from earlier tasks and explain how these shape the approach, variables, or constraints in the mathematical formulation. In particular, pay attention to how the completion of dependent tasks impacts the accuracy, feasibility, or computational aspects of the model. This dependency analysis will help ensure that the model reflects the correct sequence of steps, and that any limitations or challenges arising from earlier tasks are properly accounted for. Ensure that the interdependencies between tasks are fully integrated into the mathematical formulation to maintain consistency and validity across the entire modeling process.
-# """
-# 
-# TASK_MODELING_APPEND_PROMPT = """\
-# Please continue the modeling process by considering the dependencies between the current task and the preceding tasks. Begin by analyzing how the outputs or models from earlier tasks influence the formulation and execution of the current task. Describe the interdependencies in detail, explaining how the results from previous tasks provide necessary data, constraints, or assumptions that affect the current task's modeling approach. Identify any key variables, parameters, or methods that are directly linked to earlier tasks and discuss how their incorporation into the current task ensures consistency and accuracy across the entire modeling framework. Additionally, consider any potential challenges or limitations introduced by the dependencies, such as delays or uncertainty in the results from prior tasks, and explain how these factors might be addressed in the modeling process. Ensure that these dependencies are clearly integrated into the continued modeling effort, providing a cohesive and comprehensive understanding of how the tasks interconnect and contribute to the overall solution.
-# """
 
 TASK_ANALYSIS_APPEND_PROMPT = """\
-When analyzing the current task, please pay careful attention to its dependencies on other tasks.
+分析当前任务时，请特别注意它对其他任务的依赖关系。
 """
-            
+
 TASK_FORMULAS_APPEND_PROMPT = """\
-When formulating the mathematical model for the current task, it is essential to consider how this task depends on other tasks in the overall process.
+为当前任务制定数学模型时，必须考虑此任务如何依赖于整个过程中的其他任务。
 """
 
 TASK_MODELING_APPEND_PROMPT = """\
-Please consider the dependencies between the current task and the preceding tasks.
+请考虑当前任务与前驱任务之间的依赖关系。
 """
 
 CODE_STRUCTURE_PROMPT = """\
-You are a programming expert. Please extract the structure from the following code and output it in the following JSON format, please return an empty list if the corresponding item is not available.:
-The code is:
+你是一名编程专家。请从以下代码中提取结构，并以以下 JSON 格式输出。如果相应项不可用，请返回一个空列表。
+代码是：
 ```python
 {code}
 ```
-The output format is:
+输出格式是：
 ```json
 {{
     "script_path": {save_path}
@@ -916,67 +905,66 @@ The output format is:
 
 
 PAPER_CHAPTER_PROMPT = """\
-You are tasked with creating a publication-quality LaTeX chapter for a mathematical modeling research paper. Carefully transform the provided structured draft into a coherent, rigorous, and concise narrative chapter that aligns logically and seamlessly with the previously written content.
+你的任务是为数学建模研究论文创建一个可供发表的 LaTeX 章节。仔细地将提供的结构化草稿转换为一个连贯、严谨和简洁的叙述性章节，该章节与先前撰写的内容在逻辑上和叙述上无缝衔接。
 
-## Target Chapter:
+## 目标章节：
 {chapter_path}
 
-## Structured Draft:
+## 结构化草稿：
 <structured_draft>
 {json_context}
 </structured_draft>
 
-## Preceding Chapters (for seamless narrative integration and avoiding repetition):
+## 前驱章节（用于无缝叙述集成和避免重复）：
 <preceding_content>
 {previous_chapters}
 </preceding_content>
 
+## 要求：
+- 仅使用准确、地道的 LaTeX 编写；完全避免 Markdown 语法和符号。
+- 清楚地表明章节内容精确地对应于目标章节 `{chapter_path}`；不要重复或明确引用其他章节的内容。
+- 使用正确的 LaTeX 环境（`\\begin{{align}}`）正确地集成任何数学公式。截断并换行过长的公式和符号。
+- 将章节呈现为一个连续、流畅的叙述，不使用章节标题、小节、项目符号或编号列表。只返回章节内容，不包括标题和任何其他内容。
+- 批判性地评估结构化草稿，只选择最重要和最相关的高质量内容。删除所有冗余，消除低价值陈述，并清晰简洁地提炼基本信息。
+- 保持严谨的学术风格、逻辑连贯性和清晰度，确保章节与前驱章节自然集成。
 
-## Requirements:
-- Write exclusively in accurate, idiomatic LaTeX; avoid Markdown syntax and symbols entirely.
-- Clearly indicate the chapter content corresponds precisely to the target chapter `{chapter_path}`; do not repeat or reference explicitly the content of other chapters.
-- Integrate any mathematical formulas properly using correct LaTeX environments (`\\begin{{align}}`). Truncate and wrap long formulas and symbols.
-- Present the chapter as a continuous, fluent narrative without section headings, subsections, bullet points, or numbered lists, Response only chapter content, do not include headlines and anything else.
-- Critically evaluate the structured draft, selecting only most high-quality important and relevant content. Remove all redundancy, eliminate low-value statements, and distill essential information clearly and succinctly.
-- Maintain rigorous academic style, logical coherence, and clarity throughout, ensuring that the chapter integrates naturally with preceding chapters.
-
-## Output Format:
+## 输出格式：
 ```latex
-CHAPTER_CONTENT_TEXT
+章节内容文本
 ```
 
 """
 
 PAPER_CHAPTER_WITH_PRECEDING_PROMPT = """\
-You are tasked with generating a publication-quality LaTeX chapter for a mathematical modeling paper. Write a cohesive, academically rigorous chapter that integrates seamlessly with the preceding content of the paper.
+你的任务是为数学建模论文生成一个可供发表的 LaTeX 章节。撰写一个连贯、学术严谨的章节，该章节与论文的前驱内容无缝集成。
 
-## Chapter to write: 
+## 要撰写的章节：
 {chapter_path}
 
-## Preceding Content: 
+## 前驱内容：
 <preceding_content>
 {previous_chapters}
 </preceding_content>
 
-## Writing Requirements:
-- Use accurate and proper LaTeX syntax throughout, avoid all Markdown syntax or symbols.
-- Present the content as a continuous, coherent narrative without using sections, subsections, or bullet points. Response only chapter content, do not include headlines and anything else.
-- Make it clear that the section you need to write is `{chapter_path}`. Do not involve the content of other chapters.
+## 写作要求：
+- 自始至终使用准确和正确的 LaTeX 语法，避免所有 Markdown 语法或符号。
+- 将内容呈现为一个连续、连贯的叙述，不使用章节、小节或项目符号。只返回章节内容，不包括标题和任何其他内容。
+- 明确指出你需要撰写的部分是 `{chapter_path}`。不要涉及其他章节的内容。
 """
 
 PAPER_NOTATION_PROMPT = """
-You are an AI assistant trained to extract and typeset the Notations table from a mathematical modeling paper in LaTeX format. Your task is to take the input paper and output a properly formatted LaTeX table displaying the notations used in the paper. 
+你是一个训练有素的 AI 助手，能够从数学建模论文中提取和排版符号表，并以 LaTeX 格式输出。你的任务是获取输入的论文，并输出一个正确格式化的 LaTeX 表格，显示论文中使用的符号。
 
-1. Well-structured and easy to read.
-2. Properly typeset for LaTeX documents.
-3. Adaptive in size and position to fit neatly into any document.
-4. Truncate and wrap long formulas, symbols and text in the table for better readability.
+1.  结构良好且易于阅读。
+2.  为 LaTeX 文档正确排版。
+3.  大小和位置可自适应，以整齐地放入任何文档。
+4.  截断和换行表格中过长的公式、符号和文本，以获得更好的可读性。
 
 <paper>
 {previous_chapters}
 </paper>
 
-Exmple of Table Format:
+表格格式示例：
 ```latex
 \\begin{{table}}[H]
     \\centering
@@ -993,33 +981,33 @@ Exmple of Table Format:
 \\end{{table}}
 ```
 
-Response only latex table content, do not include headlines and anything else.
+只返回 latex 表格内容，不包括标题和任何其他内容。
 """
 
 
 PAPER_INFO_PROMPT = """\
-You are an expert academic writer tasked with analyzing paper chapters and generating key metadata for a mathematical modeling paper.
+你是一名专业的学术作家，任务是分析论文章节并为一篇数学建模论文生成关键元数据。
 
-# Input Chapters
+# 输入章节
 {paper_chapters}
 
-Based on the content of these chapters, please generate:
-1. A concise, descriptive title that reflects the paper's main focus
-2. A comprehensive and detailed summary highlighting key findings and methodology
-3. 4-6 relevant keywords that capture the paper's main themes
+根据这些章节的内容，请生成：
+1.  一个简洁、描述性的标题，反映论文的核心焦点
+2.  一个全面而详细的摘要，突出关键发现和方法论
+3.  4-6 个相关的关键词，捕捉论文的主要主题
 
-Returns the Legal JSON Format:
-```Json
+返回法律 JSON 格式：
+```json
 {{
-    "title": "A clear, concise title",
-    "summary": "A well-structured summary covering the following information: \n- Restatement and Clarification of the Problem: Describe the problem to be solved in your own words.\n- Explanation of Assumptions and Their Rationality: Highlight the assumptions made in the modeling process and clearly list all the variables required for the model.\n- Model Design and Rationality Argumentation: Specify the type of model used or describe the construction of a new model, explain how it was established and the rationale behind its design.\n- Description of Model Testing and Sensitivity Analysis: Include error analysis and other testing items.",
-    "keywords": "keyword1; keyword2; keyword3; keyword4..."
+    "title": "一个清晰、简洁的标题",
+    "summary": "一个结构良好的摘要，涵盖以下信息： \n- 问题的重述和澄清：用你自己的话描述要解决的问题。\n- 假设及其合理性的解释：突出建模过程中所做的假设，并清晰地列出模型所需的所有变量。\n- 模型设计和合理性论证：指定使用的模型类型或描述新模型的构建，解释它是如何建立的以及其设计的理由。\n- 模型测试和敏感性分析的描述：包括误差分析和其他测试项目。",
+    "keywords": "关键词1; 关键词2; 关键词3; 关键词4..."
 }}
 ```
 
-Requirements:
-- Title should be specific and academic in tone
-- Summary should follow standard academic abstract structure and be approximately 400 words
-- Keywords should be ordered from general to specific
-- must return a strictly legal JSON
+要求：
+- 标题应具体且具有学术语气
+- 摘要应遵循标准的学术摘要结构，字数大约为 400 字
+- 关键词应从通用到具体排序
+- 必须返回一个严格合法的 JSON
 """

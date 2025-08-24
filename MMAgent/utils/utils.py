@@ -1,8 +1,8 @@
 import json
 from typing import Dict
 import os
-import yaml
 from datetime import datetime
+import yaml
 
 
 def read_text_file(file_path: str) -> str:
@@ -133,14 +133,14 @@ def json_to_markdown_general(json_data):
     Returns:
     - str: The markdown formatted string.
     """
-    
+
     if isinstance(json_data, str):
         json_data = json.loads(json_data)  # If input is a JSON string, parse it.
 
     def recursive_markdown(data, indent=0):
         markdown_str = ""
         indent_space = "  " * indent
-        
+
         if isinstance(data, dict):
             for key, value in data.items():
                 markdown_str += f"### {key}\n"
@@ -151,9 +151,9 @@ def json_to_markdown_general(json_data):
                 markdown_str += recursive_markdown(item, indent + 1)
         else:
             markdown_str += f"- {data}\n"
-        
+
         return markdown_str
-    
+
     markdown = recursive_markdown(json_data)
     return markdown
 
@@ -165,17 +165,12 @@ def save_solution(solution, name, path):
 
 
 def mkdir(path):
-    if not os.path.dirname(os.path.dirname(path)):
-        os.mkdir(os.path.dirname(os.path.dirname(path)))
-    if not os.path.dirname(path):
-        os.mkdir(os.path.dirname(path))
-    os.mkdir(path)
-    os.mkdir(path + '/json')
-    os.mkdir(path + '/markdown')
-    os.mkdir(path + '/latex')
-    os.mkdir(path + '/code')
-    os.mkdir(path + '/usage')
-
+    os.makedirs(path, exist_ok=True)
+    os.makedirs(path + '/json', exist_ok=True)
+    os.makedirs(path + '/markdown', exist_ok=True)
+    os.makedirs(path + '/latex', exist_ok=True)
+    os.makedirs(path + '/code', exist_ok=True)
+    os.makedirs(path + '/usage', exist_ok=True)
 
 
 def load_config(args, config_path='config.yaml'):
@@ -187,11 +182,13 @@ def load_config(args, config_path='config.yaml'):
 
 
 def get_info(args):
-    problem_path = 'MMBench/problem/{}.json'.format(args.task)
+    problem_path = 'MMBench/{}/problem/{}.json'.format(args.mm_dataset, args.task)
     config = load_config(args)
-    dataset_dir = os.path.join('MMBench/dataset/', args.task)
-    output_dir = os.path.join('MMAgent/output/{}'.format(config["method_name"]), args.task + '_{}'.format(datetime.now().strftime('%Y%m%d-%H%M%S')))
-    if not os.path.exists(output_dir):
-        mkdir(output_dir)
+    dataset_dir = 'MMBench/{}/dataset/{}'.format(args.mm_dataset, args.task)
+    output_dir = os.path.join(
+        'output/{}/{}'.format(args.mm_dataset, args.method_name),
+        args.task + '_{}'.format(datetime.now().strftime('%Y%m%d-%H%M%S'))
+    )
+    mkdir(output_dir)
     print(f'Processing {problem_path}..., config: {config}')
     return problem_path, config, dataset_dir, output_dir
