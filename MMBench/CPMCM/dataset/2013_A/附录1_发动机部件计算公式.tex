@@ -1,0 +1,159 @@
+\section*{附录1 发动机部件计算公式}
+
+\subsection*{1 基础知识}
+1) 空气、燃气的焓、熵公式见附录2。 \\
+2) 气动函数 $q(\lambda)$、$\pi(\lambda)$、$\tau(\lambda)$、$f(\lambda)$ 计算公式见附录3。
+
+\subsection*{2 变循环发动机各部件的计算公式}
+
+\subsubsection*{2.1 进气道}
+已知：发动机飞行高度 $H$、飞行马赫数 $Ma$。
+
+\paragraph{计算过程}
+1）计算标准大气条件下环境压力 $p_0$（静压）、环境温度 $T_0$（静温）：
+\[
+p_0 = 1.01325 \times \left( 1 - \frac{H}{44.308} \right)^{5.2553}, \quad
+T_0 = 288.15 - 6.5H
+\tag{2.1}
+\]
+其中 $H$ 单位为 km，$T$ 单位为 K，$p$ 单位为 bar。
+
+2）进气道进口的总温总压：
+\[
+T_0^* = T_0 \left( 1 + \frac{\gamma-1}{2} Ma^2 \right), \quad
+p_0^* = p_0 \left( 1 + \frac{\gamma-1}{2} Ma^2 \right)^{\frac{\gamma}{\gamma-1}}
+\tag{2.2}
+\]
+其中气体绝热指数：空气 $\gamma=1.4$，燃气 $\gamma=1.33$。
+
+3）进气道总压恢复系数：
+\[
+\sigma_i =
+\begin{cases}
+1.0, & Ma \leq 1.0 \\
+1 - 0.075(Ma-1), & Ma > 1.0
+\end{cases}
+\tag{2.3}
+\]
+
+4）进气道出口总温总压：
+\[
+T_1^* = T_0^*, \quad p_1^* = \sigma_i p_0^*
+\tag{2.4}
+\]
+
+---
+
+\subsubsection*{2.2 压气机}
+已知：压气机进口总温 $T_{in}^*$、总压 $p_{in}^*$、压比函数 $zz$、物理转速 $n$、导叶角 $\alpha$。
+
+1）换算转速：
+\[
+n_{cor} = n \sqrt{\frac{T_{d,in}^*}{T_{in}^*}}
+\tag{2.5}
+\]
+
+2）增压比、效率和换算流量：
+\[
+pr_c = f(n_{cor}, zz, \alpha), \quad
+\eta_c = f(n_{cor}, zz, \alpha), \quad
+W_c = f(n_{cor}, zz, \alpha)
+\tag{2.6}
+\]
+
+3）出口参数：
+\[
+p_{out}^* = p_{in}^* \cdot pr_c, \quad
+W_c = W_c(n_{cor}, zz, \alpha)
+\tag{2.8}
+\]
+
+计算功：
+\[
+l_c = h_{out} - h_{in}, \quad N_c = W_c \cdot l_c
+\tag{2.9}
+\]
+
+---
+
+\subsubsection*{2.3 主燃烧室}
+已知：进口总温 $T_3^*$、总压 $p_3^*$、空气流量 $\dot W_{a3}$、出口总温 $T_4^*$。
+
+1）出口油气比：
+\[
+f = \frac{h_4 - h_3}{\xi_b H_u - h_4}
+\]
+其中燃烧效率 $\xi_b=0.99$，燃油热值 $H_u=4.29\times 10^7$。
+
+2）燃油流量：
+\[
+\dot W_f = f \cdot \dot W_{a3}
+\]
+
+3）出口总压：
+\[
+p_4^* = \sigma_b p_3^*, \quad \sigma_b = 0.98
+\]
+
+---
+
+\subsubsection*{2.4 涡轮}
+已知：进口总温 $T_{in}^*$、总压 $p_{in}^*$、转速 $n$、压比函数 $zz$、导叶角 $\alpha$。
+
+1）换算转速：
+\[
+n_{cor} = n \sqrt{\frac{T_{d,in}^*}{T_{in}^*}}
+\tag{2.10}
+\]
+
+2）增压比、效率和换算流量：
+\[
+pr_T = f(n_{cor}, zz, \alpha), \quad
+\eta_T = f(n_{cor}, zz, \alpha), \quad
+W_T = f(n_{cor}, zz, \alpha)
+\tag{2.11}
+\]
+
+3）流量：
+\[
+W_T = W_T(T_{in}^*, p_{in}^*, \lambda)
+\tag{2.13}
+\]
+
+4）出口总温：
+\[
+T_{out}^* = T_{in}^* \left(1 - \eta_T \left(1 - (pr_T)^{\frac{1-\gamma}{\gamma}}\right)\right)
+\tag{2.14}
+\]
+
+5）功和功率：
+\[
+l_T = h_{in} - h_{out}, \quad N_T = W_T l_T \eta_m
+\tag{2.15}
+\]
+
+---
+
+\subsubsection*{2.9 尾喷管}
+采用拉瓦尔喷管。
+
+1）流量公式：
+\[
+\dot W = k_m A \frac{p^*}{\sqrt{T^*}} q(\lambda)
+\tag{2.18}
+\]
+
+2）推力：
+\[
+F = \dot W_g c_9 + (\!p_9 - p_0)A_9 - \dot W_a V
+\]
+
+3）单位推力：
+\[
+F_s = \frac{F}{\dot W_a}
+\]
+
+4）耗油率：
+\[
+sfc = \frac{3600 \dot W_f}{F}
+\]

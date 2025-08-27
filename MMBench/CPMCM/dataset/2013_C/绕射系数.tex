@@ -1,0 +1,152 @@
+\documentclass[12pt]{article}
+\usepackage{ctex}            % 中文支持（如用 XeLaTeX/LuaLaTeX 编译）
+\usepackage{amsmath,amssymb}
+\usepackage{physics}
+\usepackage{bm}
+\usepackage{geometry}
+\geometry{a4paper,margin=1in}
+
+\title{绕射系数（从 PDF 逆转义整理稿）}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{说明}
+本文档由给定 PDF 中的内容逆向整理而成。为可编译起见，文中公式统一放入
+\LaTeX{} 数学环境；对个别在原 PDF 中出现的字符丢失/错位之处，使用了占位符并附注释，便于后续替换为精确表达式。:contentReference[oaicite:1]{index=1}
+
+\section{劈的边缘绕射与绕射系数}
+劈的边缘绕射问题如图所示（示意图见原文）。设入射方向单位矢量为 $\bm I$，绕射点处切线为 $\bm e$。
+软边界绕射系数（入射电场平行于 $\bm s'\!$ 与 $\bm e$ 构成的平面）记为 $D_s$；
+硬边界绕射系数（入射电场平行于 $\bm s'\!$ 与 $\bm e$ 构成的平面）记为 $D_h$。
+题设入射电场判断应采用软边界绕射系数。【6†source}
+
+在题设的两种情形合并下，绕射系数（记 $D$）形式为（原式(1)）：\footnote{原 PDF 中部分字符存在错位；下式已按常见 UTD 记号整理排版，但仍保留若干占位符以示不确定处。}
+\begin{align}
+D \;=\;
+\frac{e^{\,j\pi/4}}{2}\,
+\Biggl[
+&\; \underbrace{\cot\!\qty(\tfrac{\pi - (\beta - \beta_0)}{2}) \, F\!\bigl(kL\,a_{-}\bigr)}_{\text{项A}}
+\;-\;
+\underbrace{\cot\!\qty(\tfrac{\pi - (\beta + \beta_0)}{2}) \, F\!\bigl(kL\,a_{+}\bigr)}_{\text{项B}}
+\Biggr]
+\nonumber\\[2pt]
+&\quad +\;
+\Biggl[
+\underbrace{\cot\!\qty(\tfrac{\pi + (\beta - \beta_0)}{2}) \, F\!\bigl(kL\,b_{-}\bigr)}_{\text{项C}}
+\;-\;
+\underbrace{\cot\!\qty(\tfrac{\pi + (\beta + \beta_0)}{2}) \, F\!\bigl(kL\,b_{+}\bigr)}_{\text{项D}}
+\Biggr]
+\;\Bigg/\, \bigl(\,\text{归一化因子}\,\bigr),
+\label{eq:D-generic}
+\end{align}
+其中上式的四个过渡函数自变量
+$a_{\pm}, b_{\pm}$ 在原 PDF 中有排版破损；此处以占位符表示（请据你的原题或图 4
+中的几何定义补全）。若题设为 $ \beta_0 = 90^\circ$，则 $\sin\beta_0 = 1$。:contentReference[oaicite:2]{index=2}
+
+\paragraph{记号与常量：}
+\begin{align}
+k &= \frac{2\pi}{\lambda}, \qquad \text{波数（$\lambda$ 为波长）}, \label{eq:k-def}\\
+L &:\; \text{绕射点到场点的距离},\\
+n &= \frac{3\pi}{2} - \alpha
+\quad\text{（原文作 $ 3\alpha $ 的定义如图 4 所示，单位弧度；此处据 PDF 文字保留）}. \label{eq:n-def}
+\end{align}
+:contentReference[oaicite:3]{index=3}
+
+\section{过渡函数 $F(x)$ 的定义与近似}
+为修正 Keller 非一致性解，采用过渡函数 $F(x)$（菲涅耳积分的变形）。定义为（原式(2)）：
+\begin{equation}
+F(x)
+= 2 \int_{x}^{+\infty}
+\exp\!\qty(-j\tau^{2})\,\exp\!\qty(j x \tau)\, d\tau,
+\label{eq:F-def}
+\end{equation}
+其中被积函数与积分上下限形式来自原 PDF 文字；若与你的教材/讲义记号不同，请据需要替换为等价的标准定义。:contentReference[oaicite:4]{index=4}
+
+\subsection*{小 $x$ 展开（原式(3)）}
+当 $x$ 很小时，有近似展开：
+\begin{equation}
+F(x) \approx
+2 e^{-j\pi/4}
+\;-\; c_1\, j\, x
+\;-\; c_2\, x^{2}
+\;+\; \mathcal{O}(x^{3}),
+\quad
+\bigl(c_1,c_2 \text{ 为与 $\pi$ 因子相关的常数；原 PDF 中字符错位，这里以占位符示意}\bigr).
+\label{eq:F-smallx}
+\end{equation}
+:contentReference[oaicite:5]{index=5}
+
+\subsection*{大 $x$ 展开（原式(4)）}
+当 $x$ 很大时，原文给出的渐近展开可表为：
+\begin{equation}
+F(x) \approx
+1 \;+\; \frac{j}{2x}\;-\; \frac{3}{4x^{2}}
+\;-\; \frac{15j}{8x^{3}}
+\;+\; \frac{75}{16x^{4}}
+\;+\; \cdots,
+\label{eq:F-largex}
+\end{equation}
+（系数顺序与正负号依原 PDF 文本整理；若与常见文献符号不同，请以课程指定版本为准）。:contentReference[oaicite:6]{index=6}
+
+\subsection*{变形积分（原式(5)\,(6)）}
+为数值计算（上限 $+\infty$ 不便直接求积），原文建议使用高斯型积分恒等式：
+\begin{equation}
+\int_{-\infty}^{+\infty}
+\exp\!\qty(-a u^{2} + b u)\, du
+= \sqrt{\frac{\pi}{a}}\;\exp\!\qty(\frac{b^{2}}{4a}),
+\qquad \Re(a) > 0,
+\label{eq:gauss}
+\end{equation}
+据此可把 \eqref{eq:F-def} 变形为适合数值实现的形式（原式(6)），例如
+\begin{equation}
+F(x) = e^{-j\pi/4}
+\int_{0}^{+\infty} \exp\!\qty(-j\tau^{2})\,\exp\!\qty(-j x \tau)\, d\tau,
+\label{eq:F-num}
+\end{equation}
+具体系数与相位因子依所用记号体系而定。该式与\eqref{eq:F-def}等价（在原 PDF 记号下）。:contentReference[oaicite:7]{index=7}
+
+\section{几何关系与整数 $N_{\pm}$（原式(7)--(9)）}
+设 $\alpha_1,\alpha_2$ 分别为入射角与绕射角（以劈上一边为参考，定义同图 4），令
+\begin{equation}
+\beta_{\pm} = \beta \pm \alpha, \qquad
+\text{并定义}\quad
+\frac{2}{n} \cos\!\qty(\frac{\pi(\beta \mp \alpha)}{2})
+= \text{（原 PDF 中出现的比值；此处按文字保留）},
+\label{eq:beta-pm}
+\end{equation}
+再令 $N_{\pm}$ 为最接近满足下列方程的整数（原式(8)\,(9)）：
+\begin{align}
+2 n\,\beta_{+} + \pi N_{+} &= \pi,
+\label{eq:Nplus}\\
+2 n\,\beta_{-} + \pi N_{-} &= -\,\pi.
+\label{eq:Nminus}
+\end{align}
+上述关系用于确定 \eqref{eq:D-generic} 中四个过渡函数的取值分支。:contentReference[oaicite:8]{index=8}
+
+\section{数值实现分段（原文建议）}
+过渡函数 $F(x)$ 在数值实现时，原文建议采用如下分段（按 $x$ 的大小）：
+\begin{itemize}
+  \item 当 $0 \le x < 10^{-3}$，采用小 $x$ 近似式 \eqref{eq:F-smallx}；
+  \item 当 $10^{-3} \le x \le 10$，采用变形公式（如 \eqref{eq:F-num}）进行数值积分；
+  \item 当 $x > 10$，采用大 $x$ 渐近式 \eqref{eq:F-largex}。
+\end{itemize}
+:contentReference[oaicite:9]{index=9}
+
+\section*{备注与占位符清单}
+由于原 PDF 在公式处存在若干字符丢失/换行错位，以下符号以占位表示，请按你的题设或教材公式替换：
+\begin{itemize}
+  \item \(\beta_0\)、\(a_{\pm}\)、\(b_{\pm}\) 的精确定义（与图 4 对应的几何量）；
+  \item \eqref{eq:D-generic} 中分母“归一化因子”的具体形式（常见为与 $n,\;k,\;L$ 等相关的幅度因子）；
+  \item \eqref{eq:F-smallx} 小 $x$ 展开中的常数系数（原 PDF 中该行字符重叠）。
+\end{itemize}
+为确保与你的课程版本一致，请将以上占位处替换为明确表达式后再使用。
+
+\vfill
+\begin{center}
+\small 本文为从用户提供 PDF 逆转义的 \LaTeX{} 可编译整理稿。来源见文内标注。:contentReference[oaicite:10]{index=10}
+\end{center}
+
+\end{document}
