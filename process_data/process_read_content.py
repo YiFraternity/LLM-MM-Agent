@@ -21,6 +21,7 @@ from pylatexenc.latex2text import LatexNodes2Text
 from pptx import Presentation
 from rich.logging import RichHandler
 from rich.console import Console
+import numpy as np
 
 
 console = Console()
@@ -98,6 +99,8 @@ class DevRead:
             ".flv": self.read_video,
             ".webm": self.read_video,
             ".py": self.read_py,
+            ".mat": self.read_mat,
+            ".dat": self.read_dat,
         }
 
     def _del_irrelevant(self, text):
@@ -251,6 +254,91 @@ class DevRead:
         except Exception as e:
             logger.error("Error reading YAML file: %s", e)
             return f"Error reading YAML file: {e}", None
+
+    def read_mat(
+        self, file_path: Path, task: Optional[str] = None, variable: Optional[str] = None
+    ) -> Tuple[str, Optional[dict]]:
+        import scipy.io as sio
+        try:
+            mat_data = sio.loadmat(file_path, struct_as_record=False, squeeze_me=True)
+            keys = [k for k in mat_data.keys() if not k.startswith("__")]
+            if not keys:
+                raise ValueError("No data variables found in mat file.")
+
+            var = variable or keys[0]
+            data = mat_data[var]
+
+            # 多维数组处理
+            if isinstance(data, np.ndarray):
+                if data.ndim == 2:
+                    df = pd.DataFrame(data)
+                    return df.to_markdown(index=False), None
+                elif data.ndim == 1:
+                    df = pd.DataFrame(data.reshape(-1, 1))
+                    return df.to_markdown(index=False), None
+                else:
+                    # 对于三维及以上数组，返回维度和部分预览
+                    shape = data.shape
+                    preview = data[..., 0] if data.ndim == 3 else data.flat[0]
+                    preview_df = pd.DataFrame(preview)
+                    info = f"变量 `{var}` 是一个 {data.ndim} 维数组，形状为 {shape}，以下是第一个切片的预览：\n\n"
+                    return info + preview_df.to_markdown(index=False), {"shape": shape}
+
+            elif isinstance(data, (list, tuple)):
+                df = pd.DataFrame(data)
+                return df.to_markdown(index=False), None
+
+            elif hasattr(data, "__dict__"):
+                df = pd.DataFrame(vars(data))
+                return df.to_markdown(index=False), None
+
+            else:
+                df = pd.DataFrame([data])
+                return df.to_markdown(index=False), None
+
+        except Exception as e:
+            return f"读取 MAT 文件失败：{str(e)}", None
+
+    def read_dat(self, file_path: Path, n_cols_guess=5, binary_dtype=np.float32, task: Optional[str] = None):
+        """
+        自动尝试将 .dat 文件读取为 DataFrame
+        读取顺序：
+        1. CSV / 分隔符文本 (逗号/空格/制表符)
+        2. 定长列 (fwf)
+        3. 二进制文件 (numpy.fromfile)
+
+        参数:
+            file_path : str
+                dat 文件路径
+            n_cols_guess : int, optional
+                如果是二进制数据，猜测每行的列数
+            binary_dtype : np.dtype, optional
+                如果是二进制数据，猜测的数据类型 (默认 float32)
+        """
+        # 1. 尝试 CSV/分隔符读取
+        try:
+            df = pd.read_csv(file_path, sep=None, engine="python")
+            print("读取方式: CSV/分隔符")
+        except Exception:
+            pass
+
+        # 2. 尝试定长列读取
+        try:
+            df = pd.read_fwf(file_path)
+            print("读取方式: 定长列 (fwf)")
+        except Exception:
+            pass
+
+        # 3. 尝试二进制读取
+        try:
+            data = np.fromfile(file_path, dtype=binary_dtype)
+            df = pd.DataFrame(data.reshape(-1, n_cols_guess))
+            print(f"读取方式: 二进制 (dtype={binary_dtype}, 每行 {n_cols_guess} 列)")
+        except Exception:
+            pass
+        if df is not None:
+            return df.to_markdown(index=False), None
+        raise ValueError("无法自动识别 .dat 文件格式，请手动指定读取方式。")
 
     def read_docx(
         self, file_path: Path, task: Optional[str] = None
