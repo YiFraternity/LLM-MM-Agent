@@ -1,29 +1,78 @@
 {
-  "background": "由于旅行业的快速发展，某航空公司在某机场的现有航站楼T的旅客流量已达饱和状态，为了应对未来的发展，现正增设卫星厅S。但引入卫星厅后，虽然可以缓解原有航站楼登机口不足的压力，对中转旅客的航班衔接显然具有一定的负面影响。本题希望参赛选手建立数学模型，优化分配登机口，分析中转旅客的换乘紧张程度，为航空公司航班规划的调整提供参考依据。飞机在机场廊桥（登机口）的一次停靠通常由一对航班（到达航班和出发航班，也叫“转场”）来标识，如下图所示。航班-登机口分配就是把这样的航班对分配到合适的登机口。所谓的中转旅客就是从到达航班换乘到由同一架或不同架飞机执行的出发航班的旅客。单纯的航班-登机口的优化分配问题已经被很好地解决[1]，Sabre Airline Solutions® 有非常成熟的产品满足航空公司和机场地勤服务公司的需求。但在优化分配登机口的同时考虑最小化旅客行走时间，学界研究有限，市场上产品一般也不具备此一功能。注：本赛题取材于中国东方航空公司和上海浦东国际机场，但对数据进行了适当修改。",
-  "problem_requirement": "评估一个系统必须首先掌握该系统如何运行。真实的航班-登机口分配调度方案可能受到各种制约因素的影响，但作为评估，我们可以不妨假设其是在一定约束条件下的优化方案。也就是说，本赛题要求就以下三种情形对航班-登机口分配问题建立数学优化模型，并通过求解这些模型，进行数据评估分析。由于比赛时间有限，本赛题的所有建模和数据分析都是针对航站楼T和卫星厅S同时使用的情形。问题一：本题只考虑航班-登机口分配。作为分析新建卫星厅对航班影响问题的第一步，首先要建立数学优化模型，尽可能多地分配航班到合适的登机口，并且在此基础上最小化被使用登机口的数量。本问题不需要考虑中转旅客的换乘，但要求把建立的数学模型进行编程，求最优解。问题二：考虑中转旅客最短流程时间。本问题是在问题一的基础上加入旅客换乘因素，要求最小化中转旅客的总体最短流程时间，并且在此基础上最小化被使用登机口的数量。本题不考虑旅客乘坐捷运和步行时间，但也要求编程并求最优解。问题三：考虑中转旅客的换乘时间。如前所述，新建卫星厅对航班的最大影响是中转旅客换乘时间的可能延长。因此，数学模型最终需要考虑换乘旅客总体紧张度的最小化，并且在此基础上最小化被使用登机口的数量。本问题可以在问题二的基础上细化，引入旅客换乘连接变量，并把中转旅客的换乘紧张度作为目标函数的首要因素。和前面两个问题一样，本问题也要求把建立的数学模型进行编程，并求最优解。换乘紧张度定义：其中，行走时间由下列表格查找（单位：分钟。捷运乘坐时间需另行计算）",
+  "background": "由于旅行业的快速发展，某航空公司在某机场的现有航站楼T的旅客流量已达饱和状态，为了应对未来的发展，现正增设卫星厅S。但引入卫星厅后，虽然可以缓解原有航站楼登机口不足的压力，对中转旅客的航班衔接显然具有一定的负面影响。本题希望参赛选手建立数学模型，优化分配登机口，分析中转旅客的换乘紧张程度，为航空公司航班规划的调整提供参考依据。\n\n飞机在机场廊桥（登机口）的一次停靠通常由一对航班（到达航班和出发航班，也叫“转场”）来标识，如下图所示。航班-登机口分配就是把这样的航班对分配到合适的登机口。所谓的中转旅客就是从到达航班换乘到由同一架或不同架飞机执行的出发航班的旅客。\n\n单纯的航班-登机口的优化分配问题已经被很好地解决[1]，Sabre Airline Solutions®有非常成熟的产品满足航空公司和机场地勤服务公司的需求。但在优化分配登机口的同时考虑最小化旅客行走时间，学界研究有限，市场上产品一般也不具备此一功能。\n\n注：本赛题取材于中国东方航空公司和上海浦东国际机场，但对数据进行了适当修改。",
+  "problem_requirement": "1. 机场布局：航站楼T和卫星厅S的布局设计如下图所示。T具有完整的国际机场航站功能，包括出发、到达、出入境和候机。卫星厅S是航站楼T的延伸，可以候机，没有出入境功能。为叙述方便起见，我们统称航站楼T和卫星厅S为终端厅。\n\nT和S之间有捷运线相通，可以快速往来运送国内、国际旅客。假定旅客无需等待，随时可以发车，单程一次需要8分钟。\n\n航站楼T有28个登机口，卫星厅S有41个登机口。其配置见数据部分。\n\n\\begin{table}\n\\centering\n\\begin{tabular}{c|c|c|c|c|c}\n\\multicolumn{2}{c|}{出发} & \\multicolumn{2}{c|}{国内出发(D)} & \\multicolumn{2}{c}{国际出发(I)} \\\\\n\\cline{3-6}\n\\multicolumn{2}{c|}{到达} & 航站楼T & 卫星厅S & 航站楼T & 卫星厅S \\\\\n\\hline\n国内到达 (D) & 航站楼T & 15/0 & 20/1 & 35/0 & 40/1 \\\\\n\\cline{2-6}\n & 卫星厅S & 20/1 & 15/0 & 40/1 & 35/0 \\\\\n\\hline\n国际到达 (I) & 航站楼T & 35/0 & 40/1 & 20/0 & 30/1 \\\\\n\\cline{2-6}\n & 卫星厅S & 40/1 & 45/2 & 30/1 & 20/0 \\\\\n\\end{tabular}\n\\end{table}\n\\begin{table}\n\\centering\n\\begin{tabular}{|c|c|c|c|c|c|c|c|}\n\\hline\n登机口区域 & T-North & T-Center & T-South & S-North & S-Center & S-South & S-East \\\\\n\\hline\nT-North & 10 & 15 & 20 & 25 & 20 & 25 & 25 \\\\\n\\hline\nT-Center & & 10 & 15 & 20 & 15 & 20 & 20 \\\\\n\\hline\nT-South & & & 10 & 25 & 20 & 25 & 25 \\\\\n\\hline\nS-North & & & & 10 & 15 & 20 & 20 \\\\\n\\hline\nS-Center & & & & & 10 & 15 & 15 \\\\\n\\hline\nS-South & & & & & & 10 & 20 \\\\\n\\hline\nS-East & & & & & & & 10 \\\\\n\\hline\n\\end{tabular}\n\\end{table}",
   "dataset_path": [
-    "飞机转场计划（Excel表格）",
-    "中转旅客信息（Excel表格）",
-    "登机口数据（Excel表格）"
+    "D2CD5E5A@2A4F5D1D.85099A5B.jpg",
+    "InputData.xlsx"
   ],
-  "dataset_description": {
-    "飞机转场计划": "包含2018年1月19、20、21三天的飞机转场计划，但本次竞赛只需要对20日到达或20日出发的航班进行分析。例如，某飞机19日到达20日出发，该飞机必须被考虑。另外，飞机转场数据还包含了一些航班和机场为‘*’的记录，只要它们的到达或出发时间发生在20日，所建立的数学模型必须考虑它们的登机口分配。",
-    "中转旅客信息": "每个旅客记录号代表一组同行旅客。",
-    "登机口数据": "D：Domestic，可停靠国内航班；I：International，可停靠国际航班；W：Wide-body，宽体机；N：Narrow-body，窄体机"
-  },
+  "dataset_description": "1. 飞机转场计划和中转旅客信息包含 2018 年 1 月 19、20、21 三天，但本次竞赛只需要对 20 日到达或 20 日出发的航班和旅客进行分析。例如，某飞机 19 日到达 20 日出发，该飞机必须被考虑。另外，飞机转场数据还包含了一些航班和机场为 '*' 的记录，只要它们的到达或出发时间发生在 20 日，所建立的数学模型必须考虑它们的登机口分配。\n\n1. 飞机转场计划及示例（Pucks）：\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}\n\\hline 转场 & 到达 & 到达 & 到达 & 到达 & 出发 & 出发 & 出发 & 出发 & 飞机 \\\\\n记录号 & 日期 & 时刻 & 航班 & 类型 & 航班 & 日期 & 时刻 & 类型 & 型号 \\\\\n\\hline PK001 & 19-Jan-18 & 10:00 & NV6294 & D & NV3118 & 19-Jan-18 & 12:40 & 1 & 321 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{D: Domestic, 国内航班; I: International, 国际航班。}\n\n\\textbf{2. 中转旅客信息及示例 (Tickets):}\n\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline 旅客记录号 & 乘客数 & 到达航班 & 到达日期 & 出发航班 & 出发日期 \\\\\n\\hline T0001 & 2 & NV677 & 19-Jan-18 & NV3446 & 19-Jan-18 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{每个旅客记录号代表一组同行旅客。}\n\n\\textbf{3. 登机口数据及示例 (Gates):}\n\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline 登机口 & 终端厅 & 区域 & 到达类型 & 出发类型 & 机体类别 \\\\\n\\hline T5 & T & North & 1 & D, I & W \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{D: Domestic, 可停靠国内航班; I: International, 可停靠国际航班}\n\n\\textbf{W: Wide-body, 宽体机; N: Narrow-body, 窄体机}",
   "variable_description": [
     {
-      "D": "Domestic，国内航班"
+      "转场记录号": "转场记录号"
     },
     {
-      "I": "International，国际航班"
+      "到达日期": "到达日期"
     },
     {
-      "W": "Wide-body，宽体机"
+      "到达时刻": "到达时刻"
     },
     {
-      "N": "Narrow-body，窄体机"
+      "到达航班": "到达航班"
+    },
+    {
+      "到达类型": "到达类型"
+    },
+    {
+      "出发航班": "出发航班"
+    },
+    {
+      "出发日期": "出发日期"
+    },
+    {
+      "出发时刻": "出发时刻"
+    },
+    {
+      "出发类型": "出发类型"
+    },
+    {
+      "飞机型号": "飞机型号"
+    },
+    {
+      "旅客记录号": "旅客记录号"
+    },
+    {
+      "乘客数": "乘客数"
+    },
+    {
+      "到达航班": "到达航班"
+    },
+    {
+      "到达日期": "到达日期"
+    },
+    {
+      "出发航班": "出发航班"
+    },
+    {
+      "出发日期": "出发日期"
+    },
+    {
+      "登机口": "登机口"
+    },
+    {
+      "终端厅": "终端厅"
+    },
+    {
+      "区域": "区域"
+    },
+    {
+      "到达类型": "到达类型"
+    },
+    {
+      "出发类型": "出发类型"
+    },
+    {
+      "机体类别": "机体类别"
     }
   ],
-  "addendum": "注：本赛题取材于中国东方航空公司和上海浦东国际机场，但对数据进行了适当修改。今年竞赛的MD5码、论文与附件都是在线上传，只是三者的上传时间分开。本题的附件必须上传但不需要再发送到邮箱了。上传时间的具体安排请见网站https://cpipc.chinadegrees.cn//cw/detail/4/2c9088a465c12f520165c30e59c65fcc上发布的《开赛公告》。"
+  "addendum": "【1】Hem chand Kochu kuttan and Sergey She balov, New Gate Planning Optimizer Perfects Gate \\\nAssignment Process, Ascend Magazine, https://www.sabreairlinesolutions.com/pdfs/Plan_Ahead.pdf\n\n【2】Abdelghani Bouras, Mageed A. Ghaleb, Umar S. Surya hat maja, and Ahmed M. Salem, The Airport \\\nGate Assignment Problem: A Survey, The Scientific World Journal, Volume 2014, \\\nhttp://dx.doi.org/10.1155/2014/923859\n\n【3】Dong Zhang, Diego Klabjan, Optimization for gate re-assignment, Transportation Research Part B: \\\nMethodological, Volume 95, January 2017\n\n【4】Shuo Liu, Wenhua Chen, Ji yin Liu, Optimizing airport gate assignment with operational safety \\\nconstraints, 2014 20th International Conference on Automation and Computing\n\n\\textbf{注：今年竞赛的MD5码、论文与附件都是在线上传，只是三者的上传时间分开。本题的附件必须上传但不需要再发送到邮箱了。上传时间的具体安排请见网站} \\\n\\textbf{https://cipc.chinadegrees.cn//cw/detail/4/2c9088a465c12f520165c30e59c65fcc}\n\n\\textbf{上发布的《开赛公告》。}"
 }

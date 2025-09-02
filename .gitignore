@@ -25,3 +25,8 @@ papers/
 eval_workspace/
 # MMBench/
 problem_1/
+problem_2/
+images/
+images2latex/
+latexs/
+latexs_json_str/

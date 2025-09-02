@@ -1,30 +1,39 @@
 {
-  "background": "在日常家庭生活中，人们可能需要花费大量时间去寻找随意摆放在家中某些角落里的小物品。但如果给某些重要物品贴上电路标签，再利用诸如扫地机器人的全屋覆盖能力，可以精准定位到这些物体，将极大地提升人们生活的便利性。而在智能辅助驾驶或者自动驾驶领域，更需要精准探测邻近车辆、行人的位置及速度，来控制车速、转向和刹车等以免发生意外。这些都属于移动场景定位问题。显然，定位的精度越高，应用价值越大，特别是超分辨率定位，具有广阔的应用前景。现有移动场景定位产品通常采用调频连续波雷达FMCW (frequency-modulated continuous-wave) ，通过发射线性增长频率的信号波，以及接收反射回来的信号波来进行定位，示意图如下\n\n其中PA（Power Amplifier），LNA（Low Noise Amplifier），ADC（Analogue-to-Digital Converter）。现有产品大多采用基线算法，其得到的分辨率较低，不能满足日益增长的超分辨定位需求，亟需通过建模以及设计对应算法来提高分辨率，以提升产品竞争力。",
-  "problem_requirement": "为了简化，我们考虑平面二维场景。假设在一个chirp周期内，雷达发射信号的频率及发射波信号分别为\n\n其中表示信号发射功率，表示载频，表示调频斜率，表示chirp周期，表示虚数单位。则雷达经过距离为的物体反射后的接收信号为 \n\n其中表示信号接收功率，为接收时延，这里表示光速。发射信号和接受信号在上有重叠，将这两个信号输入混频器，即可得到中频（IF）信号\n\n其中忽略了() 项。由于中频信号的频率为，故\n在水平面上，孔径为的个等效虚拟天线阵列是均匀排布的。我们建立以天线阵列中心为原点的坐标系，天线阵列为轴，垂直于天线阵列的是轴。 \n\n假设物体到中心距离为，且与轴的夹角，则对应的坐标为 \n\n因此第根天线(坐标为：, ) 的双程回波距离为\n\n对于这样回波距离的物体，FMCW雷达在时刻，第根天线上的接收中频信号为（这里及之后要关于时刻做均匀采样，为简化公式用来表示）\n\n\n其中表示物体的反射性，是采样间隔，为光速，表示取整。 在一个chirp周期内的时刻，第根天线接受到的中频信号是由个目标物体带噪声中频信号的混合\n\n这里表示噪声。  \n在移动场景中，雷达获得一帧（个chirp周期）中频信号组。 这里对于任意给定的，中频信号表示第个chirp周期内采集的信号，由于chirp周期(微秒)内时间极短，可认为此周期内物体静止不变。在一帧时间内，物体的相对位置有明显的移动。\n移动场景超分辨率定位是指：在上述移动场景下，设计鲁棒的低复杂度在线算法，实时超分辨率定位到物体。（不妨假设天线半径远小于物体的距离） \n现有算法及研究现状：\n现有产品中基线算法是通过加Hamming窗，然后做FFT来测距、测角。优点是复杂度低，缺点是分辨率较低。\n传统算法如MUSIC算法，通过空间平滑化滤波以及特征子空间的分解来分离信号空间和噪声空间，但是也会造成分辨率下降以及受噪声的较大干扰。\n现有的压缩感知算法利用了空间物体分布的稀疏性，可以有效提升分辨率，但处理这种连续傅里叶字典场景并设计低复杂度算法是一个巨大的挑战。\n问题： \n针对提供的无噪声仿真数据，建立定位模型，计算出物体相对位置，并以二维极坐标图（横坐标表示距离，纵坐标表示角度）展示。 \n针对提供的高斯噪声仿真数据，利用一个chirp周期内的IF信号，设计超分辨算法精确定位多个物体。\n设计在线低复杂度算法，利用一帧中频信号来超分辨定位，并且通过数值实验验证算法性能。针对提供的一帧数据，计算出物体相对运动轨迹，并以二维图（横坐标表示距离，纵坐标表示角度）展示。 \n考虑实际场景中由于老化等原因，天线阵列对于自身的定位也会有误差。针对提供的仿真数据，设计提升定位算法的鲁棒性的改进算法。",
+  "background": "在日常家庭生活中，人们可能需要花费大量时间去寻找随意摆放在家中某些角落里的小物品。但如果给某些重要物品贴上电路标签，再利用诸如扫地机器人的全屋覆盖能力，可以精准定位到这些物体，将极大地提升人们生活的便利性。而在智能辅助驾驶或者自动驾驶领域，更需要精准探测邻近车辆、行人的位置及速度，来控制车速、转向和刹车等以免发生意外。这些都属于移动场景定位问题。显然，定位的精度越高，应用价值越大，特别是超分辨率定位，具有广阔的应用前景。\n\n现有移动场景定位产品通常采用调频连续波雷达FMCW（frequency-modulated continuous-wave），通过发射线性增长频率的信号波，以及接收反射回来的信号波来进行定位，示意图如下\n\n\\begin{figure}[h]\n    \\centering\n    \\includegraphics[width=0.8\\textwidth]{fmcw_system.png}\n    \\caption{FMCW定位系统示意图}\n\\end{figure}\n\n其中PA（Power Amplifier），LNA（Low Noise Amplifier），ADC（Analogue-to-Digital Converter）。现有产品大多采用基线算法，其得到的分辨率较低，不能满足日益增长的超分辨定位需求，亟需通过建模以及设计对应算法来提高分辨率，以提升产品竞争力。\n\n为了简化，我们考虑平面二维场景。假设在一个chirp周期$T$内，雷达发射信号的频率及发射波信号分别为\n\\begin{equation}\n    f(t) = f_0 + \\gamma t, \\, 0 \\leq t < T\n\\end{equation}\n\\begin{equation}\n    s_{TX}(t) = A_{TX} \\exp\\left(j 2\\pi \\left(f_0 t + \\frac{\\gamma}{2} t^2\\right)\\right), \\, 0 \\leq t < T\n\\end{equation}\n其中$A_{TX}$表示信号发射功率，$f_0$表示载频，$\\gamma$表示调频斜率，$T$表示chirp周期，$j$表示虚数单位。则雷达经过距离为$R_0$的物体反射后的接收信号为\n\\begin{equation}\n    s_{RX}(t) = A_{RX} \\exp\\left(j 2\\pi \\left(f_0 (t - \\tau) + \\frac{\\gamma}{2} (t - \\tau)^2\\right)\\right), \\, \\tau \\leq t < T\n\\end{equation}\n其中$A_{RX}$表示信号接收功率，$\\tau = 2R_0 / c$为接收时延，这里$c$表示光速。发射信号和接收信号在$[\\tau, T]$上有重叠，将这两个信号输入混频器，即可得到中频（IF）。信号\n\\begin{equation}\n    s_{IF}(t) = s_{TX}(t)s_{RX}^*(t) = A_{TX}A_{RX}\\exp(j2\\pi(\\gamma t + f_0 t)), \\tau < t \\leq T.\n\\end{equation}\n其中忽略了 $\\tau^2 (\\tau \\ll 1)$ 项。由于中频信号的频率为 $f_{IF} = \\gamma \\tau$，故 $R_0 = \\frac{c}{2\\gamma}f_{IF}$。\n\n在水平面上，孔径为 $L$ 的 $N_a$ 个等效虚拟天线阵列是均匀排布的。我们建立以天线阵列中心为原点的坐标系，天线阵列为 $x$ 轴，垂直于天线阵列的是 $y$ 轴。\n\n\\begin{figure}[h]\n    \\centering\n    \\includegraphics[width=0.8\\textwidth]{radar_diagram.png}\n    \\caption{雷达定位示意图}\n\\end{figure}\n\n假设物体 $O_k$ 到中心距离为 $r_k$，且与 $y$ 轴的夹角 $\\theta_k$，则对应的坐标为\n\\begin{equation}\n    X_k = r_k \\sin \\theta_k, \\quad Y_k = r_k \\cos \\theta_k\n\\end{equation}\n因此第 $n$ 根天线（坐标为：$\\left\\{x_n = -\\frac{L}{2} + \\frac{nL}{N_a - 1}, y_n = 0\\right\\}, \\, n = 0, 1, \\cdots, N_a - 1.$）的双程回波距离为\n\\begin{equation}\n    R_{n,k} = 2\\sqrt{(x_n - X_k)^2 + (y_n - Y_k)^2}\n\\end{equation}\n对于这样回波距离的物体，FMCW 雷达在时刻 $t$，第 $n$ 根天线上的接收中频信号为（这里及之后要关于时刻做均匀采样，为简化公式用 $T_s t$ 来表示 $t$）\n\\begin{align}\n    s_{n,k}(t) &= a_k e^{j(2\\pi \\gamma T_s t \\tau + 2\\pi f_0 \\tau)} \\\\\n    &= a_k e^{j\\left(2\\pi \\gamma T_s \\frac{R_{n,k}}{c} + 2\\pi f_0 \\frac{R_{n,k}}{c}\\right)}, \\, t = 0, 1, 2, \\cdots, \\left[\\frac{T}{T_s}\\right] - 1\n\\end{align}\n其中 $a_k$ 表示物体的反射性，$T_s$ 是采样间隔，$c$ 为光速，$\\left[\\frac{T}{T_s}\\right]$ 表示取整。在一个 chirp 周期内的时刻 $t$，第 $n$ 根天线接受到的中频信号是由 $K$ 个目标物体带噪声中频信号的混合\n\\begin{equation}\n    z_n(t) = \\sum_{k=1}^K s_{n,k}(t) + w_n(t), \\quad t = 0, 1, 2, \\cdots, \\left[\\frac{T}{T_s}\\right] - 1\n\\end{equation}\n这里 $w_n$ 表示噪声。在移动场景中，雷达获得一帧（$N_f$ 个 chirp 周期）中频信号组\n\n\\[\n    \\{Z_q, q=0, \\ldots, N_f-1\\} \\text{。这里对于任意给定的 } q \\text{，中频信号 } Z_q = \\{z_n(t), n=0, \\ldots, N_a-1, t=0, \\ldots, \\left\\lfloor\\frac{T}{T_s}\\right\\rfloor-1\\} \\text{ 表示第 } q \\text{ 个 chirp 周期内采集的信号，由于 chirp 周期（~50 微秒）内时间极短，可认为此周期内物体静止不变。在一帧时间内，物体的相对位置有明显的移动。}\n\\]\n\n移动场景超分辨率定位是指：在上述移动场景下，设计鲁棒的低复杂度在线算法，实时超分辨率定位到物体。（不妨假设天线半径远小于物体的距离）",
+  "problem_requirement": "1. 针对提供的无噪声仿真数据，建立定位模型，计算出物体相对位置，并以二维极坐标图（横坐标表示距离，纵坐标表示角度）展示。\n\n2. 针对提供的高斯噪声仿真数据，利用一个 chirp 周期内的 IF 信号，设计超分辨算法精确定位多个物体。\n\n3. 设计在线低复杂度算法，利用一帧中频信号来超分辨定位，并且通过数值实验验证算法性能。针对提供的一帧数据，计算出物体相对运动轨迹，并以二维图（横坐标表示距离，纵坐标表示角度）展示。\n\n4. 考虑实际场景中由于老化等原因，天线阵列对于自身的定位也会有误差。针对提供的仿真数据，设计提升定位算法的鲁棒性的改进算法。",
   "dataset_path": [
-    "data_q1.npy",
     "data_q1.mat",
-    "data_q2.npy",
+    "data_q1.npy",
     "data_q2.mat",
-    "data_q3.npy",
+    "data_q2.npy",
     "data_q3.mat",
-    "data_q4.npy",
-    "data_q4.mat"
+    "data_q3.npy",
+    "data_q4.mat",
+    "data_q4.npy"
   ],
-  "dataset_description": {
-    "data_q1.npy": "问题1中场景的仿真数据",
-    "data_q1.mat": "问题1中场景的仿真数据",
-    "data_q2.npy": "问题2中场景的仿真数据",
-    "data_q2.mat": "问题2中场景的仿真数据",
-    "data_q3.npy": "问题3中场景的仿真数据",
-    "data_q3.mat": "问题3中场景的仿真数据",
-    "data_q4.npy": "问题4中场景的仿真数据",
-    "data_q4.mat": "问题4中场景的仿真数据"
-  },
+  "dataset_description": "附件 data_q1.npy (data_q1.mat)，data_q2.npy (data_q2.mat)，data_q3.npy (data_q3.mat)，data_q4.npy (data_q4.mat) 分别对应于问题 1-4 中场景的仿真数据。\n\n在各个场景下，均假设有 $K$（需要确定）个物体在雷达的探测范围内（以原点为中心半径 10 米以内、开口向上张开圆心角为 $100^\\circ$ 的扇形区域）。",
   "variable_description": [
     {
-      "": "噪声"
+      "T_s": "1.25 \\times 10^{-7} \\text{秒}"
+    },
+    {
+      "T": "3.2 \\times 10^{-5} \\text{秒}"
+    },
+    {
+      "N_f": "32"
+    },
+    {
+      "L": "0.0815 \\text{米}"
+    },
+    {
+      "\\gamma": "78.986 \\times 10^{12} \\text{赫兹/秒}"
+    },
+    {
+      "N_a": "86"
+    },
+    {
+      "f_0": "78.8 \\times 10^9 \\text{赫兹}"
     }
   ],
-  "addendum": "在各个场景下，均假设有𝐾（需要确定）个物体在雷达的探测范围内（以原点为中心半径10米以内、开口向上张开圆心角为100°的扇形区域）。\n已知的参数如下：\n\n名词解释：\n超分辨率：一般理解是极大化对物体细节的显示能力。本题是指在有多物体信号叠加时，极大化物体定位精度。\n等效虚拟天线阵列：调制好电磁波的波形后，个发射天线是依次进行发射，个接收天线也会依次接收到返回的信号。由于此周期极短，所以可以等效成个天线同时发射接收。"
+  "addendum": "[1] 毫米波雷达传感器基础知识\n\n\\url{https://www.ti.com/cn/lit/wp/zhcy075/zhcy075.pdf?ts=1657869722417&ref_url=https\\%253A\\%252Fwww.google.com\\%252F}\n\n[2] Herman, M. A., \\& Strohmer, T. (2009). High-resolution radar via compressed sensing. IEEE transactions on signal processing, 57(6), 2275-2284.\n\n[3] F. Belfiori, W. van Rossum, and P. Hoogeboom, “2D-MUSIC technique applied to a coherent FMCW MIMO radar,” in Radar Systems (Radar 2012), IET International Conference on, Glasgow, United Kingdom, Oct 2012, pp. 1-6.\n\n\\section*{名词解释:}\n\\begin{itemize}\n    \\item 超分辨率：一般理解是极大化对物体细节的显示能力。本题是指在有多物体信号叠加时，极大化物体定位精度。\n    \\item 等效虚拟天线阵列：调制好电磁波的波形后，$N_{\\text{TX}}$ 个发射天线是依次进行发射，$N_{\\text{RX}}$ 个接收天线也会依次接收到返回的信号。由于此周期极短，所以可以等效成 $N_{\\text{TX}} \\times N_{\\text{RX}}$ 个天线同时发射接收。\n\\end{itemize}"
 }
