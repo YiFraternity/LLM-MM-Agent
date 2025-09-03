@@ -14,23 +14,9 @@
     "ReadSSTnc.m",
     "sst.mnmean.nc"
   ],
-  "dataset_description": "(1) 加拿大各地天气的历史数据：eng-daily-01011987-12311987.csv；\n\nhttp://climate.weather.gc.ca/historical_data/search\\_historic\\_data\\_e.html（题目只提供了样例数据，更多数据请自行下载。建模中也可以下载其它地区数据进行研究）\n\n(2) 海洋表面温度(SST data)：sst.mnmean.nc；(data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at https://www.esrl.noaa.gov/psd/)\n\nhttps://www.esrl.noaa.gov/psd/data/gridded/using\\_dods.html（数据可以通过多种方式读取，其中Matlab代码见附件：ReadSSTnc.m）",
+  "dataset_description": "该数据集包含了一系列与气候变化研究相关的文献和数据文件。文献包括E题.pdf以及Ref1.pdf至Ref7.pdf，这些文献提供了气候变化、极端天气现象及其影响因素的理论基础和研究方法。数据文件包括1987年全年加拿大各地每日天气数据的CSV文件（eng-daily-01011987-12311987.csv）和一个全球海洋表面温度（SST）的NetCDF文件（sst.mnmean.nc）。此外，还包括两个MATLAB脚本文件（ReadSSTnc.m和sst.mnmean.nc），用于读取和处理海洋表面温度数据。这些资源可用于分析加拿大地区温度的时空变化趋势、海洋表面温度的规律，以及建立气候变化和极端天气现象的预测模型。",
   "variable_description": [
-    {
-      "地气系统": "把地面及大气看成一个整体。对此系统所计算出来的辐射平衡，称为地气系统辐射平衡，又称为地气系统辐射差额。地气系统的辐射收入部分是地面和大气吸收的太阳辐射；支出部分为发射到宇宙空间去的地面和大气的长波辐射。"
-    },
-    {
-      "海洋表面温度 (SST)": "指接近海洋表面的水温。"
-    },
-    {
-      "太平洋年代际震荡 (Interdecadal Pacific Oscillation)": "北太平洋所表现出的一种年代际时间尺度上的变化现象。"
-    },
-    {
-      "厄尔尼诺现象又称厄尔尼诺海流": "是太平洋赤道带大范围内海洋和大气相互作用后失去平衡而产生的一种气候现象。厄尔尼诺现象的基本特征是太平洋沿岸的海面水温异常升高，海水水位上涨，并形成一股暖流向南流动。"
-    },
-    {
-      "拉尼娜现象": "是赤道太平洋东部和中部海面温度持续异常偏冷的现象（与厄尔尼诺现象正好相反）。表现为东太平洋明显变冷，同时也伴随着全球性气候混乱，总是出现在厄尔尼诺现象之后。"
-    }
+    ""
   ],
   "addendum": "无"
 }

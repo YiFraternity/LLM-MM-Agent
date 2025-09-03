@@ -13,8 +13,11 @@ def read(file_path: Path) -> str:
     if file_path.suffix in ['.bmp', '.jpg', '.jpeg', '.png', '.mp4', '.mpg', '.mpeg', '.avi', '.wmv', '.flv', '.webm']:
         return ''
     else:
-        return dr.read(file_path)[0][:32768]
+        return dr.read(file_path)[0][:20000]
 
+def load_json(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 def load_yaml(yaml_path: str) -> dict:
     with open(yaml_path, 'r', encoding='utf-8') as f:
@@ -26,26 +29,29 @@ def get_data_content(root_dir, task_id) -> dict:
     return
         {
             'task_id': task_id,
-            'dataset_path': dataset_path,
+            'file_path': dataset_path,
             'content': content,
-            'sub_files': sub_files,
+            'sub_folders': ', '.join(sub_files),
         }
     """
+    background = load_json(f'MMBench/CPMCM/problem/{task_id}.json')['problem_requirement'][:500]
     if os.path.isfile(root_dir):
         path = Path(root_dir)
         return {
+            'background': background,
             'task_id': task_id,
-            'dataset_path': root_dir,
+            'file_path': root_dir,
             'content': read(path),
-            'sub_files': [],
+            'sub_folders': '',
         }
     if os.path.isdir(root_dir):
         files = os.listdir(root_dir)
         return {
+            'background': background,
             'task_id': task_id,
             'dataset_path': root_dir,
             'content': '',
-            'sub_files': files,
+            'sub_folders': ', '.join(files),
         }
 
 def populate_template(template: str, variables: dict) -> str:
@@ -64,7 +70,7 @@ def prepare_batch_prompts(prompts_kwargs: List[dict], prompt_template: dict, sys
     """
     prompts = []
     for prompt_kwarg in prompts_kwargs:
-        if prompt_kwarg['sub_files']:
+        if prompt_kwarg['sub_folders']:
             prompt = populate_template(prompt_template['folder_desp'], prompt_kwarg)
         if prompt_kwarg['content']:
             prompt = populate_template(prompt_template['file_desp'], prompt_kwarg)
@@ -112,10 +118,6 @@ def load_llm(model_name_or_path, tokenizer_name_or_path=None, gpu_num=1, lora_mo
     sampling_params = SamplingParams(**kwargs)
     return llm, sampling_params
 
-def load_json(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
 def get_dataset_path(root_dir):
     dataset_path = []
     if not os.path.exists(root_dir):
@@ -139,13 +141,12 @@ def scan_all_dataset_path(root_dir) -> List[dict]:
     tasks = os.listdir(root_dir)
     dataset_root_dir = 'MMBench/CPMCM/dataset'
     for task in tqdm(tasks):
-        year = int(task.split('_')[0])
-        if year < 2015 or year > 2018:
+        if '2016_C' not in task:
             continue
         task_id = task.split('.')[0]
         data = load_json(os.path.join(root_dir, task))
         dataset_paths = data['dataset_path']
-        if len(dataset_paths) > 10:
+        if len(dataset_paths) > 50:
             content = get_data_content(os.path.join(dataset_root_dir, task_id), task_id)
             result.append(content)
         else:
@@ -155,20 +156,32 @@ def scan_all_dataset_path(root_dir) -> List[dict]:
 
     return result
 
+
+def write_datapath_using_datapath_folder(task_id):
+    datapath_dir = os.path.join('MMBench/CPMCM/dataset', task_id)
+    files = os.listdir(datapath_dir)
+    files = sorted(files)
+    target_file = os.path.join('MMBench/CPMCM/problem', f"{task_id}.json")
+    problem = load_json(target_file)
+    problem['dataset_path'] = files
+    with open(target_file, mode='w', encoding='utf-8') as f:
+        json.dump(problem, f, ensure_ascii=False, indent=2)
+
 if __name__ == '__main__':
     base_dir = Path('MMBench/CPMCM/problem')
     output_dir = Path('MMBench/CPMCM/problem_2')
+    # task_id = '2015_F'
+    # write_datapath_using_datapath_folder(task_id)
+    # exit()
     contents = scan_all_dataset_path(base_dir)
-    contents = [_ for _ in contents if _['sub_files'] or _['content']]
+    contents = [_ for _ in contents if _['sub_folders'] or _['content']]
 
     # Prepare prompts
     templates = load_yaml('process_data/process_write_datapath.yaml')
-    prompt_template = templates['user_prompt']
-    system_prompt = templates['system_prompt']
-    all_prompts = prepare_batch_prompts(contents, prompt_template, system_prompt)
+    all_prompts = prepare_batch_prompts(contents, templates, '')
 
-    model_name_or_path = '/home/share/models/modelscope/Qwen/Qwen2.5-32B-Instruct/'
-    model, sampling_params = load_llm(model_name_or_path, gpu_num=4)
+    model_name_or_path = '/home/share/Qwen/Qwen2.5-7B-Instruct/'
+    model, sampling_params = load_llm(model_name_or_path, gpu_num=2)
 
     outputs_t = model.chat(all_prompts, sampling_params, use_tqdm=True)
 

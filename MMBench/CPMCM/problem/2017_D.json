@@ -17,7 +17,9 @@
     "hall",
     "lobby"
   ],
-  "dataset_description": "附件 1 提供了在 Matlab 环境下视频的读取、播放及相应基本操作程序。附件 2 提供了一些符合问题 1 和问题 2 特征的监控视频。附件 3 提供了8组视频（avi文件与mat文件内容相同），用于问题4。问题5中的一些典型视频可从 \\url{http://cvlab.epfl.ch/research/surv/multi-people-tracking} 下载。",
-  "variable_description": [],
+  "dataset_description": "该数据集包含多个子文件夹和脚本文件，旨在支持监控视频中前景目标的提取研究。子文件夹包括'不带晃动-动态背景'、'不带晃动-静态背景'、'有晃动'、'campus'、'curtain'、'escalator'、'fountain'、'hall'、'lobby'，每个子文件夹内存储了不同场景和条件下的监控视频。脚本文件如'avi2img.m'、'avi2mat.m'、'img2avi.m'、'run_vedio.m'用于视频处理和转换，而'readme.txt'提供了数据集的使用说明。这些资源共同支持了对静态背景和动态背景监控视频中前景目标提取的研究，符合问题1和问题2的要求。",
+  "variable_description": [
+    ""
+  ],
   "addendum": "强烈建议深刻考虑问题内涵，建造合理、高效的数学模型和求解方法，鼓励进行具有开放思路与创新思维的探索性尝试。"
 }

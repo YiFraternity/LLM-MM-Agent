@@ -18,7 +18,7 @@ scripts/
 .env
 .env.deepseek
 .python-version
-# data/
+data/
 output/
 # data
 papers/
@@ -26,6 +26,7 @@ eval_workspace/
 # MMBench/
 problem_1/
 problem_2/
+problem_3/
 images/
 images2latex/
 latexs/

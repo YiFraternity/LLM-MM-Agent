@@ -109,7 +109,9 @@
     "original_frame98.bmp",
     "original_frame99.bmp"
   ],
-  "dataset_description": "1. 高速公路视频图像（为了减少数据量，我们将视频截取为 100 帧 BMP 图片：高速公路视频截图.zip）；\n2. 某机场跑道监控视频（机场视频.zip）\n3. 某机场对应于上述时间段的能见度仪观测数据、地面温度、湿度、气压和风速等（机场AMOS观测.zip）。",
-  "variable_description": [],
+  "dataset_description": "该数据集包含多个子文件夹和文件，旨在支持能见度估计与预测的研究。具体包括：\n1. 'AMOS20191216' 和 'AMOS20200313' 文件夹，包含机场AMOS观测数据，用于分析能见度与地面气象因素（如温度、湿度和风速）之间的关系。\n2. '附件-资料格式（与赛题有关信息）说明.docx' 提供了数据格式和相关背景信息的详细说明。\n3. '机场视频参见百度云网盘.md' 提供了机场视频数据的访问链接，用于基于视频数据的能见度估计深度学习模型的建立。\n4. '能见度估计与预测.docx' 和 '能见度估计与预测.pdf' 提供了能见度估计与预测的详细任务描述和要求。\n5. 大量以 'original_frame' 开头的.bmp文件，代表从高速公路视频中提取的帧图像，用于开发不依赖能见度仪观测数据的能见度估计算法，并绘制能见度随时间变化的曲线。",
+  "variable_description": [
+    ""
+  ],
   "addendum": "相关名词解释\n\n1. 能见度，是指视力正常的人能将目标物从背景中识别出来的最大距离。所谓“能见”，在白天是指能看到和辨认出目标物的轮廓和形体，在夜间是指能清楚看到目标灯的发光点。\n2. 雾：在水汽充足、微风及大气稳定的情况下，相对湿度达到 100\\% 时，空气中的水汽便会凝结成细微的水滴悬浮于空中，使地面水平的能见度下降，这种天气现象称为雾。\n3. 团雾：是受局部地区微气候环境的影响，在大雾中数十米到上百米的局部范围内，出现的更“浓”、能见度更低的雾。团雾外视线良好，团雾内一片朦胧。\n4. 目标物和背景的亮度对比。在大气中目标物能见与否，取决于本身亮度，又与它同背景的亮度差异有关。比如，亮度暗的目标物在亮的背景衬托下，清晰可见。或者亮的目标物在暗的背景下，同样清晰可见。表示这种差异的指标是亮度的对比值 $K$。设 $B_0$ 为目标物的固有亮度，$B_0'$ 为背景的固有亮度，则亮度的对比值定义为：\n\\[\nK = \\frac{|B_0' - B_0|}{B_0'}, \\text{ if } B_0' \\geq B_0; \\quad K = \\frac{|B_0' - B_0|}{B_0}, \\text{ if } B_0' < B_0.\n\\]\n\n5. 能见度测量基本方程：\n\\[\nF = F_0 e^{-\\sigma z}\n\\]\n这里 $F$ 和 $F_0$ 分别表示观测和入射的光照强度，参数 $\\sigma$ 称为衰减系数，与雾的厚度有关：$\\sigma$ 越大表明雾越浓。气象光学视程 (MOR)\n\\[\n\\text{MOR} = \\frac{\\log(F/F_0)}{-\\sigma} = \\frac{\\log(0.05)}{-\\sigma}\n\\]\n\n6. 跑道视程 (RVR)：是指在跑道中线上的航空器上的飞行员能看到跑道面上的标志或跑道边界灯或中线灯的距离。\n\n参考文献\n\n1. S. K. Nayar, S. G. Narasimhan, Vision in bad weather, ICCV'99\n2. R. T. Tan, Visibility in bad weather from a single image, CVPR, 2008\n3. N. Hautiere, J-P Tarel, J Lavenant D. Aubert, Automatic fog detection and estimation of visibility distance through use of onboard camera, Machine Vision and Application, 2006, 17 (1): 8-20\n4. C. Sakaridis, D. Dai, L. V. Gool, Semantic foggy scene understanding with synthetic data, International J. Computer Vision, 2018, 3"
 }

@@ -126,7 +126,7 @@ class DevRead:
         # Check if the file exists
         if not file_path.exists():
             logger.error(f"File {file_path} does not exist.")
-            return f"Error: File {file_path} does not exist.", None
+            return f"Error: File {file_path} does not exist."
 
         # Determine the file type by its suffix
         suffix = file_path.suffix.lower()
@@ -135,15 +135,13 @@ class DevRead:
         # If a reader for the file type is found, attempt to read the file
         if reader:
             logger.info(f"Reading file {file_path} using {reader.__name__}.")
-            return reader(file_path, task), None
+            return reader(file_path, task)
         else:
             logger.error(
                 f"No reader found for suffix {suffix}. Unsupported file format."
             )
-            return (
-                f"The file exists, but we do not have a reader for {suffix}. However, we suggest you assume the content of the file is satisfactory in this situation.",
-                None,
-            )
+            return f"The file exists, but we do not have a reader for {suffix}. However, we suggest you assume the content of the file is satisfactory in this situation.",
+
 
     def read_py(
         self, file_path: Path, task: Optional[str] = None

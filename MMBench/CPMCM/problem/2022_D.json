@@ -6,29 +6,17 @@
     "attachment2.csv",
     "attachment3.csv"
   ],
-  "dataset_description": "输入数据包含三个附件，分别给出了各基本块资源使用情况、各基本块读写的变量信息、以及各基本块在流图中的邻接基本块，各附件格式如下：\n\n(1) attachment1.csv：各基本块使用的资源信息\n\n(2) attachment2.csv：各基本块读写的变量信息\n\n(3) attachment3.csv：各基本块在流程图中的邻接基本块信息",
+  "dataset_description": "attachment1.csv记录了不同基本块（BLOCK）在P4程序中使用的资源情况，包括TCAM、HASH、ALU和QUALIFY的使用量。每个基本块对应一行数据，展示了该基本块在执行时对不同资源的需求。\n\nattachment3.csv表示一个有向无环图，其中每一行代表一个基本块，行号表示基本块的编号，行中的数字表示该基本块执行完毕后可以跳转到的其他基本块编号。此文件用于描述P4程序流程图，其中每个基本块抽象为一个节点，节点之间的有向边表示基本块之间的跳转关系。",
   "variable_description": [
     {
-      "BLOCK": "基本块编号"
+      "BLOCK": "基本块的编号，标识不同的基本块。",
+      "TCAM": "该基本块使用的TCAM资源数量。",
+      "HASH": "该基本块使用的HASH资源数量。",
+      "ALU": "该基本块使用的ALU资源数量。",
+      "QUALIFY": "该基本块使用的QUALIFY资源数量。"
     },
-    {
-      "TCAM": "TCAM资源数量"
-    },
-    {
-      "HASH": "HASH资源数量"
-    },
-    {
-      "ALU": "ALU资源数量"
-    },
-    {
-      "QUALIFY": "QUALIFY资源数量"
-    },
-    {
-      "W": "写变量"
-    },
-    {
-      "R": "读变量"
-    }
+    {},
+    {}
   ],
   "addendum": "为了帮助大家进一步理解本问题，在附录C中给出了一个简单的资源排布示例。"
 }

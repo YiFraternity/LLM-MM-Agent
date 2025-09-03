@@ -5,73 +5,21 @@
     "D2CD5E5A@2A4F5D1D.85099A5B.jpg",
     "InputData.xlsx"
   ],
-  "dataset_description": "1. 飞机转场计划和中转旅客信息包含 2018 年 1 月 19、20、21 三天，但本次竞赛只需要对 20 日到达或 20 日出发的航班和旅客进行分析。例如，某飞机 19 日到达 20 日出发，该飞机必须被考虑。另外，飞机转场数据还包含了一些航班和机场为 '*' 的记录，只要它们的到达或出发时间发生在 20 日，所建立的数学模型必须考虑它们的登机口分配。\n\n1. 飞机转场计划及示例（Pucks）：\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}\n\\hline 转场 & 到达 & 到达 & 到达 & 到达 & 出发 & 出发 & 出发 & 出发 & 飞机 \\\\\n记录号 & 日期 & 时刻 & 航班 & 类型 & 航班 & 日期 & 时刻 & 类型 & 型号 \\\\\n\\hline PK001 & 19-Jan-18 & 10:00 & NV6294 & D & NV3118 & 19-Jan-18 & 12:40 & 1 & 321 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{D: Domestic, 国内航班; I: International, 国际航班。}\n\n\\textbf{2. 中转旅客信息及示例 (Tickets):}\n\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline 旅客记录号 & 乘客数 & 到达航班 & 到达日期 & 出发航班 & 出发日期 \\\\\n\\hline T0001 & 2 & NV677 & 19-Jan-18 & NV3446 & 19-Jan-18 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{每个旅客记录号代表一组同行旅客。}\n\n\\textbf{3. 登机口数据及示例 (Gates):}\n\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline 登机口 & 终端厅 & 区域 & 到达类型 & 出发类型 & 机体类别 \\\\\n\\hline T5 & T & North & 1 & D, I & W \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{D: Domestic, 可停靠国内航班; I: International, 可停靠国际航班}\n\n\\textbf{W: Wide-body, 宽体机; N: Narrow-body, 窄体机}",
+  "dataset_description": "该文件包含2018年1月19日至20日的飞机转场记录，包括到达和出发日期、时刻、航班号、类型、飞机型号以及上线和下线机场。",
   "variable_description": [
     {
-      "转场记录号": "转场记录号"
-    },
-    {
-      "到达日期": "到达日期"
-    },
-    {
-      "到达时刻": "到达时刻"
-    },
-    {
-      "到达航班": "到达航班"
-    },
-    {
-      "到达类型": "到达类型"
-    },
-    {
-      "出发航班": "出发航班"
-    },
-    {
-      "出发日期": "出发日期"
-    },
-    {
-      "出发时刻": "出发时刻"
-    },
-    {
-      "出发类型": "出发类型"
-    },
-    {
-      "飞机型号": "飞机型号"
-    },
-    {
-      "旅客记录号": "旅客记录号"
-    },
-    {
-      "乘客数": "乘客数"
-    },
-    {
-      "到达航班": "到达航班"
-    },
-    {
-      "到达日期": "到达日期"
-    },
-    {
-      "出发航班": "出发航班"
-    },
-    {
-      "出发日期": "出发日期"
-    },
-    {
-      "登机口": "登机口"
-    },
-    {
-      "终端厅": "终端厅"
-    },
-    {
-      "区域": "区域"
-    },
-    {
-      "到达类型": "到达类型"
-    },
-    {
-      "出发类型": "出发类型"
-    },
-    {
-      "机体类别": "机体类别"
+      "飞机转场记录号": "每条记录的唯一标识符",
+      "到达日期": "飞机到达的日期",
+      "到达时刻": "飞机到达的具体时间",
+      "到达航班": "到达航班的编号",
+      "到达类型": "到达航班的类型，D表示国内，I表示国际",
+      "飞机型号": "飞机的型号",
+      "出发日期": "飞机出发的日期",
+      "出发时刻": "飞机出发的具体时间",
+      "出发航班": "出发航班的编号",
+      "出发类型": "出发航班的类型，D表示国内，I表示国际",
+      "上线机场": "飞机上线的机场代码",
+      "下线机场": "飞机下线的机场代码"
     }
   ],
   "addendum": "【1】Hem chand Kochu kuttan and Sergey She balov, New Gate Planning Optimizer Perfects Gate \\\nAssignment Process, Ascend Magazine, https://www.sabreairlinesolutions.com/pdfs/Plan_Ahead.pdf\n\n【2】Abdelghani Bouras, Mageed A. Ghaleb, Umar S. Surya hat maja, and Ahmed M. Salem, The Airport \\\nGate Assignment Problem: A Survey, The Scientific World Journal, Volume 2014, \\\nhttp://dx.doi.org/10.1155/2014/923859\n\n【3】Dong Zhang, Diego Klabjan, Optimization for gate re-assignment, Transportation Research Part B: \\\nMethodological, Volume 95, January 2017\n\n【4】Shuo Liu, Wenhua Chen, Ji yin Liu, Optimizing airport gate assignment with operational safety \\\nconstraints, 2014 20th International Conference on Automation and Computing\n\n\\textbf{注：今年竞赛的MD5码、论文与附件都是在线上传，只是三者的上传时间分开。本题的附件必须上传但不需要再发送到邮箱了。上传时间的具体安排请见网站} \\\n\\textbf{https://cipc.chinadegrees.cn//cw/detail/4/2c9088a465c12f520165c30e59c65fcc}\n\n\\textbf{上发布的《开赛公告》。}"
