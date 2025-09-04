@@ -1,12 +1,12 @@
-%�����е�֡ͼƬת��Ϊ��Ƶ
-DIR='E:\MatlabCode\View2mat\highway\';        %ͼƬ�����ļ���
-file=dir(strcat(DIR,'*.jpg'));                %��ȡ����jpg�ļ�
-filenum=size(file,1);                         %ͼƬ����
+%将所有单帧图片转换为视频
+DIR='E:\MatlabCode\View2mat\highway\';        %图片所在文件夹
+file=dir(strcat(DIR,'*.jpg'));                %读取所有jpg文件
+filenum=size(file,1);                         %图片总数
 
-obj_gray = VideoWriter('highway_gray.avi');   %��ת���ɵ���Ƶ����
-writerFrames = filenum;                       %��Ƶ֡��
+obj_gray = VideoWriter('highway_gray.avi');   %所转换成的视频名称
+writerFrames = filenum;                       %视频帧数
 
-%������ͼƬ����avi�ļ�
+%将单张图片存在avi文件
 open(obj_gray);
 for k = 1: writerFrames
     fname = strcat(DIR, num2str(k), '.jpg');

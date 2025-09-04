@@ -1,16 +1,16 @@
-%½«ËùÓĞµ¥Ö¡Í¼Æ¬×ª»»ÎªÏòÁ¿´æ´¢ÎªmatÎÄ¼ş
+%å°†æ‰€æœ‰å•å¸§å›¾ç‰‡è½¬æ¢ä¸ºå‘é‡å­˜å‚¨ä¸ºmatæ–‡ä»¶
 clear
 clc
 
-DIR='E:\MatlabCode\View2mat\campus5\';     %µ¥Ö¡Í¼Æ¬ËùÔÚÎÄ¼ş¼Ğ
-file=dir(strcat(DIR,'*.jpg'));             %¶ÁÈ¡Í¼Æ¬ËùÔÚÎÄ¼şËùÓĞjpgÎÄ¼ş
-filenum=size(file,1);                      %Í¼Æ¬¸öÊı
+DIR='E:\MatlabCode\View2mat\campus5\';     %å•å¸§å›¾ç‰‡æ‰€åœ¨æ–‡ä»¶å¤¹
+file=dir(strcat(DIR,'*.jpg'));             %è¯»å–å›¾ç‰‡æ‰€åœ¨æ–‡ä»¶æ‰€æœ‰jpgæ–‡ä»¶
+filenum=size(file,1);                      %å›¾ç‰‡ä¸ªæ•°
 
-fname = strcat(DIR, num2str(1), '.jpg');   %µÚÒ»ÕÅÍ¼Æ¬µÄÎÄ¼şÃû
-frame = imread(fname);                     %¶ÁÈ¡µÚÒ»ÕÅÍ¼Æ¬
-rows = size(frame(:),1);                   %µ¥ÕÅÍ¼Æ¬µÄ×ÜÏñËØ¸öÊı
-XX = zeros(rows, filenum);                 %½«ËùÓĞÍ¼Æ¬À­³É¾ØÕóÊ±µÄÎ¬Êı
-%½«ËùÓĞÍ¼Æ¬´æÎªÒ»¾ØÕó
+fname = strcat(DIR, num2str(1), '.jpg');   %ç¬¬ä¸€å¼ å›¾ç‰‡çš„æ–‡ä»¶å
+frame = imread(fname);                     %è¯»å–ç¬¬ä¸€å¼ å›¾ç‰‡
+rows = size(frame(:),1);                   %å•å¼ å›¾ç‰‡çš„æ€»åƒç´ ä¸ªæ•°
+XX = zeros(rows, filenum);                 %å°†æ‰€æœ‰å›¾ç‰‡æ‹‰æˆçŸ©é˜µæ—¶çš„ç»´æ•°
+%å°†æ‰€æœ‰å›¾ç‰‡å­˜ä¸ºä¸€çŸ©é˜µ
 for k = 1: filenum
     fname = strcat(DIR, num2str(k), '.jpg');
     frame = imread(fname);
@@ -18,7 +18,7 @@ for k = 1: filenum
     XX(:, k) = x;
     %writeVideo(obj_gray, frame);
 end
-%½«ÊÓÆµ¾ØÕó¼°ÆäĞĞÁĞÊı´æÔÚobj¶ÔÏó
+%å°†è§†é¢‘çŸ©é˜µåŠå…¶è¡Œåˆ—æ•°å­˜åœ¨objå¯¹è±¡
 obj.XX = uint8(XX);
 obj.siz = size(frame);
-save campus5 obj                           %½«obj¶ÔÏó´æÎªmatÎÄ¼ş
+save campus5 obj                           %å°†objå¯¹è±¡å­˜ä¸ºmatæ–‡ä»¶

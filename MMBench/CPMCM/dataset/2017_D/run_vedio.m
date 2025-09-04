@@ -1,18 +1,18 @@
-%ÊÓÆµ²¥·Å
+%è§†é¢‘æ’­æ”¾
 clear;
 clc;
 
-video=VideoReader('highway_gray.avi');     %¶ÁÈ¡ÊÓÆµÎÄ¼ş
-vidFrames = read(video);                   % ¶ÁÈ¡ÊÓÆµÖĞËùÓĞÊı¾İ
-numFrames = get(video, 'numberOfFrames');  %»ñµÃÊÓÆµÖ¡µÄÖ¡Êı
+video=VideoReader('highway_gray.avi');     %è¯»å–è§†é¢‘æ–‡ä»¶
+vidFrames = read(video);                   % è¯»å–è§†é¢‘ä¸­æ‰€æœ‰æ•°æ®
+numFrames = get(video, 'numberOfFrames');  %è·å¾—è§†é¢‘å¸§çš„å¸§æ•°
 
-%´ÓÊÓÆµÖ¡Êı¾İÖĞ´´½¨Ò»¸öMATLABÊÓÆµ²¥·Å½á¹¹Ìå
+%ä»è§†é¢‘å¸§æ•°æ®ä¸­åˆ›å»ºä¸€ä¸ªMATLABè§†é¢‘æ’­æ”¾ç»“æ„ä½“
   for k = 1 : numFrames
          mov(k).cdata = vidFrames(:,:,:,k);
          mov(k).colormap = [];
   end   
-  hf=figure;                               %´´½¨Í¼Ïñ
-  %»ùÓÚÊÓÆµµÄ¿í¶ÈºÍ¸ß¶ÈÖØ½¨Í¼Æ¬
+  hf=figure;                               %åˆ›å»ºå›¾åƒ
+  %åŸºäºè§†é¢‘çš„å®½åº¦å’Œé«˜åº¦é‡å»ºå›¾ç‰‡
   set(hf, 'position', [150 150 video.Width video.Height])
-  %°´ÕÕÊÓÆµÖ¡ËÙÂÊÖØ²¥ÊÓÆµ
+  %æŒ‰ç…§è§†é¢‘å¸§é€Ÿç‡é‡æ’­è§†é¢‘
   movie(hf, mov, 1, video.FrameRate);

@@ -1,4 +1,4 @@
-Ê±Çø     : UTC +8:00
+æ—¶åŒº     : UTC +8:00
 
 
 Time              Azm  Elv  Mag Range S.Azm S.Elv
@@ -44,7 +44,7 @@ Time              Azm  Elv  Mag Range S.Azm S.Elv
 21:09:37        231.1 10.1 10.0  1954 312.5 -23.5
 
 
-Êı¾İº¬Òå¼û¸½¼ş2-1.
+æ•°æ®å«ä¹‰è§é™„ä»¶2-1.
 
 
 

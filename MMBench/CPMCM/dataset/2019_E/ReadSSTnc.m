@@ -1,4 +1,4 @@
-%Matlab³ÌĞò¶ÁÈ¡sstÊı¾İ£º 
+%Matlabç¨‹åºè¯»å–sstæ•°æ®ï¼š 
 close all
 clear all
  
@@ -27,7 +27,7 @@ pcolorm(Nlt,Nlg,sst(:,:,1))           % pseudocolor plot "stretched" to the grid
 load coast                                 % add continental outlines
 plotm(lat,long)
 colorbar
-% sstÊı¾İ¸ñÊ½
+% sstæ•°æ®æ ¼å¼
 % Variables:
 % lat 
 % Size: 89x1

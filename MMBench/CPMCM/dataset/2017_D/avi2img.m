@@ -1,17 +1,17 @@
-%½«ÊÓÆµ×ª»»Îªµ¥ÕÅÍ¼Æ¬
+%å°†è§†é¢‘è½¬æ¢ä¸ºå•å¼ å›¾ç‰‡
 clear
 clc
 
-file_name = 'campus5.avi';        %ÊÓÆµËùÔÚÎÄ¼ş¼Ğ
-obj = VideoReader(file_name);     %¶ÁÈ¡ÊÓÆµÎÄ¼ş
+file_name = 'campus5.avi';        %è§†é¢‘æ‰€åœ¨æ–‡ä»¶å¤¹
+obj = VideoReader(file_name);     %è¯»å–è§†é¢‘æ–‡ä»¶
 
-numFrames = obj.NumberOfFrames;   %ÊÓÆµ×ÜµÄÖ¡Êı 
+numFrames = obj.NumberOfFrames;   %è§†é¢‘æ€»çš„å¸§æ•° 
 for k = 1: numFrames
     frame = read(obj,k);
     %imshow(frame);                
-    gray_frame = rgb2gray(frame); %ÈôÃ¿Ò»Ö¡Îª²ÊÉ«Í¼Æ¬£¬×ª»»Îª»Ò¶ÈÍ¼
-    imshow(frame);                %ÏÔÊ¾Ã¿Ò»Ö¡Í¼Æ¬
-    %±£´æÃ¿Ò»Ö¡Í¼Æ¬
+    gray_frame = rgb2gray(frame); %è‹¥æ¯ä¸€å¸§ä¸ºå½©è‰²å›¾ç‰‡ï¼Œè½¬æ¢ä¸ºç°åº¦å›¾
+    imshow(frame);                %æ˜¾ç¤ºæ¯ä¸€å¸§å›¾ç‰‡
+    %ä¿å­˜æ¯ä¸€å¸§å›¾ç‰‡
     imwrite(gray_frame,strcat('E:\MatlabCode\View2mat\campus5\',num2str(k),'.jpg'),'jpg');
 end
 
