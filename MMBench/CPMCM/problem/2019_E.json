@@ -2,21 +2,59 @@
   "background": "全球气候变暖的解释是由于温室效应不断积累所致 \\cite{ref1, ref2}。事实上，由于人们焚烧化石燃料，如石油、煤炭等，或砍伐森林并将其焚烧时会产生大量的二氧化碳 \\cite{ref3}，即温室气体，这些温室气体对来自太阳辐射的可见光具有高度透过性，而对地球发射出来的长波辐射具有高度吸收性，能强烈吸收地面辐射中的红外线，使得地球温度上升，即温室效应。由于存在温室效应，影响地气系统 \\cite{ref4} 吸收与发射的能量平衡，能量不断在地气系统累积，从而导致温度上升，造成全球气候变暖。许多科学家认为，全球变暖可能导致更多的极端气象的产生，导致全球降水量重新分配、冰川和冻土消融、海平面上升等威胁人类生存的因素。不过，虽然温室气体的浓度在不断上升，但自从进入21世纪以来，10年间全球全年平均气温上升率仅为 $0.03^\\circ \\mathrm{C}$，几乎未变化，这种现象叫作 Hiatus（全球变暖停滞状态）。正因为出现全球变暖停滞现象，使公众对全球变暖产生了怀疑 \\cite{ref5}。2019年1月美国2/3的地区变成了一个大冰窖，出现了“几十年一遇”的极度寒冷天气，成为有人怀疑全球变暖的依据之一。\n\n导致分歧的原因在于观察问题的角度和范围。今年的夏天特别热或今年的冬天特别冷是地球上局地人们的直接感受，是一种天气现象。天气是一定区域短时段内的大气状态（如冷暖、风雨、干湿、阴晴等）及其变化的总称。而气候则是长时间内气象要素和天气现象的平均或统计状态，时间尺度为月、季、年、数年到数十年。气候是长时间的平均状态，在短时间内变化不大，所以人们一般感受不到。全球变暖是在气候尺度上看全球问题。从气候角度研究全球温度变化需要全球范围长时间的观测积累，但过去这方面的时空数据并不完整，给统计计算带来极大困难。不仅如此，海洋吸收热量对全球气候变化的影响很大 \\cite{ref6, ref7}。观测发现海洋表面温度 \\cite{ref8} 的变化具有某种震荡特征，如年代际太平洋震荡 \\cite{ref9}、厄尔尼诺现象 \\cite{ref10}、拉尼娜现象 \\cite{ref11} 等。这些因素使得研究全球温度变化更加困难。",
   "problem_requirement": "我们的命题宗旨是：利用现有的统计数据建立简化的气候模型和极端天气模型。希望你们所建立的模型区别于复杂的专业气候模型，有利于非专业人士理解和认识全球气候变化的态势，解释极端天气现象的发生，寻找、求证影响气候变化的因素，从而增强人们气候变化的意识，从现在做起、从自我做起的同时，督促决策者迅速制定应对气候变化的政策。\n\n请仔细阅读附录中的有关文献，回答以下问题（注：由于气候变化涉及众多因素及数据，题目中所给出的因素及数据只是其中的一部分，请自行从参考文献或网上获取建模过程中其它数据，比如全球表面温度变化及大气层中二氧化碳浓度变化等数据）：\n\n\\begin{enumerate}\n    \\item 你们能否从加拿大各地天气变化的历史数据中挖掘出该地区温度的时空变化趋势？海洋表面温度历史数据中蕴含着什么样的规律？\n    \\item 请你们建立一个刻画气候变化的模型对未来25年的气候变化进行预测，该模型至少需要考虑地球的吸热、散热以及海洋的温度变化 \\cite{ref12} 等要素？\n    \\item “极寒天气”是某地的天气现象，这种极端气象的出现，与气候变化有无关系？请建立相应的模型，并利用题目所提供的数据以及你能收集的数据说明：全球变暖和局地极寒现象的关系。\n\\end{enumerate}",
   "dataset_path": [
-    "E题.pdf",
-    "Ref1.pdf",
-    "Ref2.pdf",
-    "Ref3.pdf",
-    "Ref4.pdf",
-    "Ref5.pdf",
-    "Ref6.pdf",
-    "Ref7.pdf",
-    "eng-daily-01011987-12311987.csv",
     "ReadSSTnc.m",
-    "sst.mnmean.nc"
+    "eng-daily-01011987-12311987.csv",
+    "sst.mnmean.nc",
+    "参考文献"
   ],
-  "dataset_description": "该数据集包含了一系列与气候变化研究相关的文献和数据文件。文献包括E题.pdf以及Ref1.pdf至Ref7.pdf，这些文献提供了气候变化、极端天气现象及其影响因素的理论基础和研究方法。数据文件包括1987年全年加拿大各地每日天气数据的CSV文件（eng-daily-01011987-12311987.csv）和一个全球海洋表面温度（SST）的NetCDF文件（sst.mnmean.nc）。此外，还包括两个MATLAB脚本文件（ReadSSTnc.m和sst.mnmean.nc），用于读取和处理海洋表面温度数据。这些资源可用于分析加拿大地区温度的时空变化趋势、海洋表面温度的规律，以及建立气候变化和极端天气现象的预测模型。",
+  "dataset_description": "该文件包含从1800年1月1日至2019年左右的全球海洋表面温度（SST）的月平均数据。数据来源于NOAA Extended Reconstructed SST。文件使用Matlab脚本读取并绘制了海洋表面温度的分布。\n该文件包含了1987年1月1日至12月31日SURREY WHITE ROCK地区的每日天气数据，包括日期、温度、降水量等信息。\n该文件 'sst.mnmean.nc' 包含海洋表面温度的历史数据，用于研究海洋温度变化趋势及其对气候变化的影响。\n该文件夹包含多个参考文献，包括Ref6.pdf, Ref5.pdf, Ref2.pdf, Ref1.pdf, Ref3.pdf, Ref7.pdf, Ref4.pdf。这些文献旨在支持建立简化的气候模型和极端天气模型，以帮助非专业人士理解全球气候变化的趋势和极端天气现象的成因。文件夹内的文献涵盖了气候变化的多个方面，包括温度变化、海洋表面温度变化、地球吸热散热机制等，为建立预测未来25年气候变化的模型提供了理论基础。此外，文献还探讨了极寒天气等极端气象现象与气候变化之间的关系，为相关模型的建立提供了数据支持。",
   "variable_description": [
-    ""
+    {
+      "lat": "纬度，单位为'degrees_north'，范围为[-88, 88]。",
+      "lon": "经度，单位为'degrees_east'，范围为[0, 358]。",
+      "time": "时间，单位为'days since 1800-1-1 00:00:00'，范围为[19723, 74083]。",
+      "time_bnds": "时间边界，用于定义时间区间。",
+      "sst": "海洋表面温度，单位为'degC'，范围为[-1.8, 36.08]。数据为月平均值，存储格式为'int16'，有效范围为[-5, 40]。"
+    },
+    {
+      "Station Name": "气象站名称",
+      "Province": "省份",
+      "Latitude": "纬度",
+      "Longitude": "经度",
+      "Elevation": "海拔高度",
+      "Climate Identifier": "气候标识符",
+      "WMO Identifier": "WMO标识符",
+      "TC Identifier": "TC标识符",
+      "Date/Time": "日期和时间",
+      "Year": "年份",
+      "Month": "月份",
+      "Day": "日期",
+      "Data Quality": "数据质量",
+      "Max Temp (°C)": "最高温度（摄氏度）",
+      "Max Temp Flag": "最高温度标志",
+      "Min Temp (°C)": "最低温度（摄氏度）",
+      "Min Temp Flag": "最低温度标志",
+      "Mean Temp (°C)": "平均温度（摄氏度）",
+      "Mean Temp Flag": "平均温度标志",
+      "Heat Deg Days (°C)": "热度积温（摄氏度）",
+      "Heat Deg Days Flag": "热度积温标志",
+      "Cool Deg Days (°C)": "冷度积温（摄氏度）",
+      "Cool Deg Days Flag": "冷度积温标志",
+      "Total Rain (mm)": "总降雨量（毫米）",
+      "Total Rain Flag": "总降雨量标志",
+      "Total Snow (cm)": "总降雪量（厘米）",
+      "Total Snow Flag": "总降雪量标志",
+      "Total Precip (mm)": "总降水量（毫米）",
+      "Total Precip Flag": "总降水量标志",
+      "Snow on Grnd (cm)": "地面积雪量（厘米）",
+      "Snow on Grnd Flag": "地面积雪量标志",
+      "Dir of Max Gust (10s deg)": "最大风速方向（10度为单位）",
+      "Dir of Max Gust Flag": "最大风速方向标志",
+      "Spd of Max Gust (km/h)": "最大风速（千米/小时）",
+      "Spd of Max Gust Flag": "最大风速标志"
+    },
+    {},
+    {}
   ],
-  "addendum": "无"
+  "addendum": "名词解释：\n1. 地气系统：把地面及大气看成一个整体。对此系统所计算出来的辐射平衡，称为地气系统辐射平衡，又称为地气系统辐射差额。 地气系统的辐射收入部分是地面和大气吸收的太阳辐射；支出部分为发射到宇宙空间去的地面和大气的长波辐射。 \n2. 海洋表面温度 (SST)：指接近海洋表面的水温。\n3. 太平洋年代际震荡（Interdecadal Pacific Oscillation）：北太平洋所表现出的一种年代际时间尺度上的变化现象。 \n4. 厄尔尼诺现象又称厄尔尼诺海流：是太平洋赤道带大范围内海洋和大气相互作用后失去平衡而产生的一种气候现象。厄尔尼诺现象的基本特征是太平洋沿岸的海面水温异常升高，海水水位上涨，并形成一股暖流向南流动。\n5. 拉尼娜现象：是赤道太平洋东部和中部海面温度持续异常偏冷的现象（与厄尔尼诺现象正好相反）。表现为东太平洋明显变冷，同时也伴随着全球性气候混乱，总是出现在厄尔尼诺现象之后。 \n附件数据说明：  \n(1) 加拿大各地天气的历史数据: eng-daily-01011987-12311987.csv;\nhttp://climate.weather.gc.ca/historical_data/search_historic_data_e.html（题目只提供了样例数据，更多数据请自行下载。建模中也可以下载其它地区数据进行研究）\n (2) 海洋表面温度(SST data): sst.mnmean.nc；(data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at https://www.esrl.noaa.gov/psd/) \nhttps://www.esrl.noaa.gov/psd/data/gridded/using_dods.html(数据可以通过多种方式读取，其中Matlab代码见附件：ReadSSTnc.m)\n参考文献\n1. Y. Xu, V. Ramanathan, D. G. Victor, Global warming will happen faster than we think, Nature, Vol. 564, 30:32, 2018, Dec.\n2. D. Spratt, I. Dunlop, Existential climate-related security risk: A scenario approach, 2019 May, Policy Paper from Breakthrough-National Centre for Climate Restoration\n3. C. Quere, R. Andrew, et al, Global carbon budget 2017, Earth Syst. Sci. Data,2018, 405-448\n4. I. Medhaug, M. B. Stolpe, E. M. Fischer & R. Knutti, Reconciling controversies about the ‘global warming hiatus’, 2017, Nature\n5. G. A. Meehl, A. Hu, B. D. Santer & S. Xie, Contribution of the interdecadal Pacific Oscillation to twentieth-century global surface temperature tends, Nature Climate Change, 6, 1005-1008 (2016)\n6. X. Chen & K. K. Tung, Global surface warming enhanced by weak Atlantic overturning circulation, 2018, Nature\n 7. T. M. Smith, R. W. Reynolds, A high-resolution global sea surface temperature climatology for the 1961-90 base period, J. Climate, 1998, 3320-3323"
 }

@@ -17,9 +17,52 @@
     "hall",
     "lobby"
   ],
-  "dataset_description": "该数据集包含多个子文件夹和脚本文件，旨在支持监控视频中前景目标的提取研究。子文件夹包括'不带晃动-动态背景'、'不带晃动-静态背景'、'有晃动'、'campus'、'curtain'、'escalator'、'fountain'、'hall'、'lobby'，每个子文件夹内存储了不同场景和条件下的监控视频。脚本文件如'avi2img.m'、'avi2mat.m'、'img2avi.m'、'run_vedio.m'用于视频处理和转换，而'readme.txt'提供了数据集的使用说明。这些资源共同支持了对静态背景和动态背景监控视频中前景目标提取的研究，符合问题1和问题2的要求。",
+  "dataset_description": "该文件 'avi2img.m' 的用途是将视频文件 'campus5.avi' 转换为一系列灰度图像，并保存为 JPEG 格式的图片文件。具体步骤包括读取视频文件、逐帧处理视频帧、将彩色帧转换为灰度帧、显示每一帧，并将每一帧保存为单独的图片文件。\n该文件 'avi2mat.m' 是一个 MATLAB 脚本，用于将一系列单帧图片转换为向量并存储为 MATLAB mat 文件。具体来说，'avi2mat.m' 脚本读取指定文件夹中的所有 JPG 图片，将每张图片拉伸为一个列向量，并将所有列向量存储为一个矩阵。最后，该矩阵及其尺寸信息被保存为一个名为 'campus5' 的 mat 文件。\n该文件 'img2avi.m' 是一个 MATLAB 脚本，用于将一系列 JPEG 图片文件转换为一个 AVI 视频文件。该脚本首先定义了图片文件所在的目录，然后读取该目录下的所有 JPEG 文件，并将这些图片按顺序写入到一个 AVI 文件中，形成一个视频。\nreadme.txt是一个文本文件，包含了用于视频处理的几个Matlab脚本的简要描述。这些脚本主要用于视频到图像帧的转换、图像帧到向量的转换、向量到视频的转换以及视频的播放。\nrun_vedio.m 是一个 MATLAB 脚本文件，用于读取并播放视频文件 'highway_gray.avi'。该脚本读取视频的所有帧，并创建一个 MATLAB 视频播放结构体，最后按照视频的帧速率重播视频。\n不带晃动-动态背景文件夹包含一个名为'waterSurface'的子文件夹，内含符合特定特征的监控视频数据。这些视频数据主要用于研究和测试在不同背景条件下（包括静态和动态背景）的前景目标（如人、车、动物等）提取技术。具体而言，'waterSurface'文件夹中的视频数据旨在探索在动态背景（例如水面波动）下的前景目标提取方法。这些视频时长约为5秒，摄像头稳定，不包含动态背景的视频可用于验证和优化静态背景下的前景目标提取模型。\n不带晃动-静态背景数据集包含多个子文件夹，每个子文件夹代表不同场景下的监控视频片段。具体包括：smoke（烟雾场景）、pedestrian（行人场景）、office（办公室场景）、airport（机场场景）、hall（大厅场景）。这些视频片段主要用于研究和测试监控视频中的前景目标提取技术，包括但不限于人、车、动物等。不带晃动-静态背景数据集中的视频片段时长约为5秒，摄像头稳定，背景相对静态或动态。\n有晃动文件夹包含四个子文件夹：cars7, cars6, people2, people1。这些子文件夹分别存储了不同类型的监控视频片段，旨在用于测试和验证前景目标（如车辆和行人）的提取算法。每个子文件夹中的视频具有不包含动态背景、摄像头稳定拍摄时间大约5秒的特点，适用于构建和测试提取前景目标的数学模型。\ncampus文件夹包含两个文件：Campus.mat 和 Campus.avi。Campus.avi 是一个监控视频文件，展示了摄像头稳定拍摄的场景，持续时间约为5秒，不包含动态背景。Campus.mat 可能是与视频相关的元数据或标注文件，用于辅助视频分析任务，如前景目标提取。\ncurtain文件夹包含两个文件：Curtain.mat 和 Curtain.avi。Curtain.avi 是一个监控视频文件，展示了摄像头稳定拍摄的场景，持续时间约为5秒，不包含动态背景。Curtain.mat 是一个与视频相关的MAT文件，可能包含视频的元数据或处理后的数据。curtain数据集适用于研究和实现提取视频中前景目标（如人、车、动物等）的数学模型和求解方法。\n该文件夹包含一个名为'Escalator'的数据集，其中包括一个监控视频文件'escalator/Escalator.avi'和一个相关的MAT文件'escalator/Escalator.mat'。监控视频文件记录了在固定摄像头下拍摄的约5秒的电梯扶梯场景，背景相对稳定，无明显动态变化。MAT文件可能包含了视频的元数据、标注信息或其他辅助数据，用于支持视频分析任务，如前景目标（例如人、动物等）的提取。该数据集适用于研究和测试在静态背景条件下从监控视频中分离前景目标的技术。\n文件夹fountain包含两个文件：Fountain.avi 和 Fountain.mat。Fountain.avi 是一个监控视频文件，展示了一个不包含动态背景、摄像头稳定拍摄的场景，视频时长约为5秒。Fountain.mat 是一个与视频相关的MAT文件，可能包含视频的元数据或处理后的数据。该数据集适用于研究和测试在稳定摄像头拍摄条件下提取前景目标（如人、车、动物等）的算法。\n该文件夹包含两个文件：hall.mat 和 hall.avi。hall.avi 是一个监控视频文件，展示了一个不包含动态背景、摄像头稳定拍摄时间约为5秒的场景。hall.mat 是一个 MATLAB 数据文件，可能包含与 hall.avi 视频相关的元数据或标注信息。hall 适用于研究和测试在静态背景下的前景目标（如人、车、动物等）提取算法。\n该文件夹包含两个文件：Lobby.mat 和 Lobby.avi。Lobby.mat 可能是一个 MATLAB 数据文件，用于存储相关数据或元数据。Lobby.avi 是一个监控视频文件，可能用于展示或测试监控视频中的前景目标提取技术。需要注意的是，文件名 'Lobyy.avi' 中存在拼写错误，可能是 'Lobby.avi' 的误写。lobby 文件夹包含这些文件。",
   "variable_description": [
-    ""
+    {
+      "file_name": "视频文件 'avi2img.m' 的路径和名称",
+      "obj": "VideoReader 对象，用于读取和处理视频文件 'avi2img.m'",
+      "numFrames": "视频文件 'avi2img.m' 中的总帧数",
+      "frame": "从视频文件 'avi2img.m' 中读取的单帧图像",
+      "gray_frame": "将读取的彩色帧转换为灰度帧后的图像",
+      "k": "当前处理的视频文件 'avi2img.m' 的帧编号"
+    },
+    {
+      "XX": "存储所有图片拉伸后的向量组成的矩阵，每一列代表一张图片的所有像素值。",
+      "siz": "存储单张图片的尺寸信息，包括行数和列数。",
+      "obj": "包含变量 'XX' 和 'siz' 的 MATLAB 对象，该对象被保存为 'avi2mat.m' 文件。"
+    },
+    {
+      "DIR": "img2avi.m 中图片文件所在的目录路径",
+      "file": "img2avi.m 中包含所有 JPEG 文件信息的结构体数组",
+      "filenum": "img2avi.m 中 JPEG 文件的总数",
+      "obj_gray": "img2avi.m 中用于写入视频的 VideoWriter 对象",
+      "writerFrames": "img2avi.m 中视频的帧数",
+      "fname": "img2avi.m 中当前处理的 JPEG 文件的完整路径",
+      "frame": "img2avi.m 中当前处理的 JPEG 文件读取为图像矩阵",
+      "k": "img2avi.m 中当前处理的 JPEG 文件的索引"
+    },
+    {},
+    {
+      "video": "VideoReader 对象，用于读取视频文件 'highway_gray.avi'",
+      "vidFrames": "视频中所有帧的数据",
+      "numFrames": "视频的总帧数",
+      "mov": "一个包含所有视频帧的结构体数组，用于存储每一帧的图像数据",
+      "hf": "创建的图像窗口句柄",
+      "k": "循环变量，用于遍历视频帧",
+      "video.Width": "视频的宽度",
+      "video.Height": "视频的高度",
+      "video.FrameRate": "视频的帧速率"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
   ],
-  "addendum": "强烈建议深刻考虑问题内涵，建造合理、高效的数学模型和求解方法，鼓励进行具有开放思路与创新思维的探索性尝试。"
+  "addendum": "参考文献：\n[1] Andrews Sobral & Antoine Vacavant, A comprehensive review of background subtraction algorithms evaluated with synthetic and real videos, Computer Vision and Image Understanding, Volume 122, May 2014, Pages 4-21\n[2] B. Lee and M. Hedley, “Background estimation for video surveillance,” IVCNZ02, pp. 315–320, 2002.\n[3] C. Stauffer and W. E. L. Grimson, “Adaptive background mixture models for real-time tracking,” in Computer Vision and Pattern Recognition, 1999. IEEE Computer Society Conference on., vol. 2. IEEE, 1999.\n[4] E. J. Cand`es, X. Li, Y. Ma, and J. Wright, “Robust principal component analysis?” Journal of the ACM (JACM), vol. 58, no. 3, p. 11, 2011.\n[5] D. Meng and F. De la Torre, “Robust matrix factorization with unknown noise,” in IEEE International Conference on Computer Vision, 2013, pp. 1337–1344.\n[6] Q. Zhao, D. Meng, Z. Xu,W. Zuo, and L. Zhang, “Robust principal component analysis with complex noise,” in Proceedings of the 31st International Conference on Machine Learning (ICML-14), 2014, pp. 55–63.\n[7] Y. Peng, A. Ganesh, J. Wright, W. Xu, and Y. Ma, “RASL: Robust alignment by sparse and low-rank decomposition for linearly correlated images,” Pattern Analysis and Machine Intelligence, IEEE Transactions on, vol. 34, no. 11, pp. 2233–2246, 2012.\n[8] M. Babaee, D. T. Dinh, and G. Rigoll, “A deep convolutional neural network for background subtraction,” arXiv preprint arXiv: 1702.01731, 2017.\n"
 }
