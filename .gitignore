@@ -24,6 +24,7 @@ output/
 papers/
 eval_workspace/
 # MMBench/
+problem_0/
 problem_1/
 problem_2/
 problem_3/
@@ -31,3 +32,4 @@ images/
 images2latex/
 latexs/
 latexs_json_str/
+2023_F
