@@ -66,6 +66,7 @@ def clean_surrogates(text):
 class DevRead:
     def __init__(self):
         self.reader_map = {
+            ".m": self.read_txt,
             ".txt": self.read_txt,
             ".pdf": self.read_pdf,
             ".docx": self.read_docx,

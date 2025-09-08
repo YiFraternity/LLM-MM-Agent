@@ -1,18 +1,14 @@
 {
   "background": "我国地域辽阔，自然条件复杂，因此灾害性天气种类繁多，地区差异大。其中，雷雨大风、冰雹、龙卷、短时强降水等强对流天气是造成经济损失、危害生命安全最严重的一类灾害性天气 \\cite{ref1}。以2022年为例，我国强对流天气引发风雹灾害造成的死亡失踪人数和直接经济损失分别占73\\%和69\\%。由于强对流天气具有突发性和局地性强、生命史短、灾害重等特点，其短时（0~12小时）和临近（0~2小时）预报通常也是天气预报业务中的难点。\n\n传统强对流天气临近预报主要依靠雷达等观测资料，结合风暴识别、追踪技术进行雷达外推预报，即通过外推的方法得到未来时刻的雷达反射率因子，并进一步使用雷达反射率因子和降水之间的经验性关系（即Z-R关系）估计未来时刻的降水量 \\cite{ref2}。近年来，随着大数据的积累和计算机算力的发展，人工智能及深度学习技术发展迅速。深度学习方法是一类数据驱动的方法，理论上其性能随着训练数据量增大而提升，因此很适合有大量雷达观测数据积累的短临预报领域。目前国际上主要有两类基于深度学习的短临预报模型，一类基于卷积神经网络（Convolutional Neural Networks, CNNs），如U-Net等模型 \\cite{ref3}；另一类基于循环神经网络（Recurrent Neural Networks, RNNs），如ConvLSTM、DGMR等模型 \\cite{ref4,ref5}。\n\n雨滴在降落过程中受到空气阻力作用，形状可呈扁球形或馒头形，并且一般来说越大的雨滴越扁。因此，雨滴对水平偏振（电场振动方向在水平面内）的电磁波和垂直偏振（电场振动方向在垂直平面内）的电磁波的反射特征是不一样的。传统雷达仅能发射和接收一个偏振方向上的电磁波，而新型的双偏振雷达可同时发射和接收在水平和垂直两个偏振方向的电磁波，可以根据两个偏振方向上的回波的强度差别、相位关系等信息获得降水粒子的大小、相态、含水量等信息 \\cite{ref6}，这些信息被统称为微物理信息。近年来研究表明，双偏振雷达变量反映的微物理信息里包含了对流系统的演变状态、空间动力结构等关键信息 \\cite{ref7,ref8}。因此，双偏振雷达变量的应用，理论上对于强对流预报有重要意义。",
   "problem_requirement": "为了更好地应用双偏振雷达改进强对流降水短临预报，请回答以下问题：\n\n1. 如何有效应用双偏振变量改进强对流预报，仍是目前气象预报的重点难点问题。请利用题目提供的数据，建立可提取用于强对流临近预报双偏振雷达资料中微物理特征信息的数学模型。临近预报的输入为前面一小时（10帧）的雷达观测量 $(Z_{\\mathrm{H}}, Z_{\\mathrm{DR}}, K_{\\mathrm{DP}})$，输出为后续一小时（10帧）的 $Z_{\\mathrm{H}}$ 预报。\n\n2. 当前一些数据驱动的算法在进行强对流预报时，倾向于生成接近于平均值的预报，即存在“回归到平均（Regression to the mean）”问题，因此预报总是趋于模糊。在问题1的基础上，请设计数学模型以缓解预报的模糊效应，使预报出的雷达回波细节更充分、更真实。\n\n3. 请利用题目提供的 $Z_{\\mathrm{H}}, Z_{\\mathrm{DR}}$ 和降水量数据，设计适当的数学模型，利用 $Z_{\\mathrm{H}}$ 及 $Z_{\\mathrm{DR}}$ 进行定量降水估计。模型输入为 $Z_{\\mathrm{H}}$ 和 $Z_{\\mathrm{DR}}$，输出为降水量。（注意：算法不可使用 $K_{\\mathrm{DP}}$ 变量。）\n\n4. 请设计数学模型来评估双偏振雷达资料在强对流降水临近预报中的贡献，并优化数据融合策略，以便更好地应对突发性和局地性强的强对流天气。",
-  "dataset_path": [],
-  "dataset_description": "1. NJU-CPOL 双偏振雷达数据：\n   https://box.nju.edu.cn/f/16bbb37458d3443dbf9f/?dl=1\n\n2. 降水格点数据：\n   https://box.nju.edu.cn/f/076f5aeb2ec64b87bde8/?dl=1",
+  "dataset_path": [
+    "NJU-CPOL双偏振雷达数据",
+    "NJU_CPOL_kdpRain"
+  ],
+  "dataset_description": "NJU-CPOL双偏振雷达数据包含用于强对流降水短临预报的数据集，具体包括三个子文件夹：dBZ（水平反射率因子），KDP（双偏振相位结构函数），ZDR（差分反射率）。这些数据用于建立数学模型，提取双偏振雷达资料中的微物理特征信息，进行强对流临近预报，缓解预报模糊效应，并进行定量降水估计。\nNJU_CPOL_kdpRain包含多个子文件夹，每个子文件夹的名称为 'data_dir_XXXX'，其中XXXX为四位数字。每个子文件夹内存储了用于强对流降水短临预报的数据，具体包括双偏振雷达观测数据 $(Z_{\\mathrm{H}}, Z_{\\mathrm{DR}}, K_{\\mathrm{DP}})$ 和降水量数据。数据集旨在支持建立数学模型，用于提取双偏振雷达资料中的微物理特征信息，改进强对流预报，并缓解预报模糊效应，同时利用 $Z_{\\mathrm{H}}$ 和 $Z_{\\mathrm{DR}}$ 进行定量降水估计。每个子文件夹中的数据覆盖了一小时的时间段，输入为前面一小时（10帧）的雷达观测量，输出为后续一小时（10帧）的 $Z_{\\mathrm{H}}$ 预报。",
   "variable_description": [
-    {
-      "$Z_{\\mathrm{H}}$": "水平反射率因子，即水平方向的回波强度，单位通常为 dBZ，主要反映降水的强弱；"
-    },
-    {
-      "$Z_{\\mathrm{DR}}$": "差分反射率，即水平和垂直方向回波强度的差异，主要反映了观测区域的降水粒子大小；"
-    },
-    {
-      "$K_{\\mathrm{DP}}$": "比差分相移，即单位距离上降水粒子导致的水平和垂直方向回波的相位差，主要反映了液态含水量。"
-    }
+    {},
+    {}
   ],
   "addendum": "\\section*{名词解释：}\n\n1. 双偏振雷达：一种新型的气象探测雷达，能够提供比传统雷达更丰富的物理信息。它通过测量降水粒子对水平和垂直两个方向上的电磁波的反射情况，来获取降水粒子的大小、相态、含水量等信息。这些信息被统称为微物理信息，能够帮助我们更好地预测强对流天气。双偏振雷达最常用的三个变量为：\n   1) $Z_{\\mathrm{H}}$，水平反射率因子，即水平方向的回波强度，单位通常为 dBZ，主要反映降水的强弱；\n   2) $Z_{\\mathrm{DR}}$，差分反射率，即水平和垂直方向回波强度的差异，主要反映了观测区域的降水粒子大小；\n   3) $K_{\\mathrm{DP}}$，比差分相移，即单位距离上降水粒子导致的水平和垂直方向回波的相位差，主要反映了液态含水量。\n\n2. $Z$-$R$ 关系：雷达反射率和降水之间的经验性关系，通常表述为 $R = a \\cdot Z^b$，其中 $R$ 为降水量，$Z$ 为雷达反射率，$a$ 和 $b$ 为经验性参数，通常在不同地区及不同降水类型下有差异。参考文献\n郑永光, 张小玲, 周庆亮, 端义宏, 谌芸, & 何立富. (2010). 强对流天气短时临近预报业务技术进展与挑战. 气象，36(7)，33-42.\nChen, G., Zhao, K., Zhang, G., Huang, H., Liu, S., Wen, L., ... & Zhu, W. (2017). Improving polarimetric C-band radar rainfall estimation with two-dimensional video disdrometer observations in Eastern China. Journal of Hydrometeorology, 18(5), 1375-1391.\nPan, X., Lu, Y., Zhao, K., Huang, H., Wang, M., & Chen, H. (2021). Improving Nowcasting of Convective Development by Incorporating Polarimetric Radar Variables Into a Deep‐Learning Model. Geophysical Research Letters, 48(21), e2021GL095302.\nRavuri, S., Lenc, K., Willson, M., Kangin, D., Lam, R., Mirowski, P., ... & Mohamed, S. (2021). Skilful precipitation nowcasting using deep generative models of radar. Nature, 597, 672-677.\nZhang, Y., Long, M., Chen, K., Xing, L., Jin, R., Jordan, M. I., & Wang, J. (2023). Skilful nowcasting of extreme precipitation with NowcastNet. Nature, 619, 526–532.\nKumjian, M. R. (2013). Principles and Applications of Dual-Polarization Weather Radar. Part I: Description of the Polarimetric Radar Variables. Journal of Operational Meteorology, 1(19), 226-242.\nZhao, K., Huang, H., Wang, M., Lee, W. C., Chen, G., Wen, L., ... & Chen, S. (2019). Recent progress in dual-polarization radar research and applications in China. Advances in Atmospheric Sciences, 36, 961-974.\nWen, J., Zhao, K., Huang, H., Zhou, B., Yang, Z., Chen, G., ... & Lee, W. C. (2017). Evolution of microphysical structure of a subtropical squall line observed by a polarimetric radar and a disdrometer during OPACC in Eastern China. Journal of Geophysical Research: Atmospheres, 122(15), 8033-8050.\n"
 }

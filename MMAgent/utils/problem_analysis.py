@@ -29,7 +29,12 @@ def get_problem(problem_path, llm):
     else:
         addendum = ''
 
-    problem_str = PROBLEM_PROMPT.format(problem_background=problem['background'], problem_requirement=problem['problem_requirement'], addendum=addendum, data_summary=data_summary).strip()
+    problem_str = PROBLEM_PROMPT.format(
+        problem_background=problem['background'],
+        problem_requirement=problem['problem_requirement'],
+        addendum=addendum,
+        data_summary=data_summary
+    ).strip()
     problem['problem_str'] = problem_str
     return problem_str, problem
 
