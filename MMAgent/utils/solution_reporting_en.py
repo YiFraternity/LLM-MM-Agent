@@ -77,36 +77,11 @@ class ContentGenerator:
     def __init__(self, llm):
         self.llm = llm
 
-    def _extract_fenced_block(self, text: str) -> str:
-        """
-        从 Markdown 代码围栏中截取内容：
-        1) 优先选取 ```latex / ```tex 的代码块
-        2) 若没有，则取第一个代码块
-        3) 若完全没有围栏，则返回原文（去首尾空白）
-        """
-        # 捕获所有 ```lang\n ... \n``` 形式的代码块
-        blocks = list(re.finditer(r"```(?:\s*)(\w+)?\s*\n(.*?)\n```", text, re.DOTALL))
-        if blocks:
-            # 优先 latex/tex
-            for m in blocks:
-                lang = (m.group(1) or "").lower()
-                if lang in ("latex", "tex"):
-                    return m.group(2).strip()
-            # 退回：第一个代码块
-            return blocks[0].group(2).strip()
-
-        # 兜底：宽松匹配（即使没有换行也尝试抓取）
-        m = re.search(r"```(?:\w+)?(.*?)```", text, re.DOTALL)
-        if m:
-            return m.group(1).strip()
-
-        return text.strip()
-
-    def generate_chapter_content(self, prompt: str) -> str:
+    def generate_chapter_content(self, prompt: str) -> Dict[str, str]:
         """Generate chapter content using the language model"""
         response = self.llm.generate(prompt)
-        response = self._extract_fenced_block(response)
         response = escape_underscores_in_quotes(response)
+        response = response.replace("```latex", "").replace("```", "")
         # return self._parse_latex_response(response)
         return response
 
@@ -132,116 +107,119 @@ class ContentGenerator:
 # --------------------------------
 
 class OutlineGenerator:
-    """创建论文的层级结构（内部键也使用中文）"""
+    """Creates the hierarchical structure of the paper"""
 
     def create_outline(self, task_count: int) -> List[Chapter]:
-        """根据任务数量创建完整的章节结构（输出中文日志）"""
-        print(f"正在为 {task_count} 个任务创建论文大纲")
+        """Create a complete chapter structure based on number of tasks"""
+        print(f"Creating paper outline for {task_count} tasks")
 
-        # 定义基础结构模板（内部键为中文）
+        # Define the structure template
         outline = self._create_base_outline(task_count)
 
-        # 创建章节对象
+        # Create chapter objects
         chapters = []
         for path in outline:
-            # 若为叶子节点（没有子节点），则需要生成内容
+            # A chapter needs content if it's a leaf node (has no children)
             needs_content = not any(other[:len(path)] == path and len(other) > len(path)
                                    for other in outline)
             chapters.append(Chapter(path=path, needs_content=needs_content))
 
         content_chapters = sum(1 for c in chapters if c.needs_content)
-        print(f"共创建 {len(chapters)} 个章节，其中 {content_chapters} 个需要生成内容")
+        print(f"Created {len(chapters)} sections, {content_chapters} require content generation")
         for chapter in chapters:
-            print(" > ".join(chapter.path))
+            print(chapter.path_string)
         return chapters
 
     def _create_base_outline(self, task_count: int) -> List[List[str]]:
-        """定义论文的层级结构（内部键为中文）"""
-        # 基础结构
+        """Define the hierarchical structure of the paper"""
+        # Define the template structure
         outline = [
-            ["问题重述", "问题背景"],
-            ["问题重述", "问题陈述"],
-            ["模型假设"],
-            ["假设说明"],
-            ["问题分析"]
+            ["Problem Restatement", "Problem Background"],
+            ["Problem Restatement", "Problem Statement"],
+            ["Model Assumptions"],
+            ["Explanation of Assumptions"],
+            ["Problem Analysis"]
         ]
 
-        # 各任务的分析章节
+        # Add task-specific analysis chapters
         for i in range(1, task_count + 1):
-            outline.append(["问题分析", f"任务 {i} 分析"])
+            outline.append(["Problem Analysis", f"Task {i} Analysis"])
 
-        # “问题求解”总章节
-        outline.append(["问题求解"])
+        outline.append(["Solution to the Problem"])
 
-        # 各任务的求解章节
+        # Add task-specific solution chapters
         for i in range(1, task_count + 1):
-            outline.append(["问题求解", f"任务 {i} 解答", "模型建立：假设与链式模型"])
-            outline.append(["问题求解", f"任务 {i} 解答", "模型计算"])
+            outline.append(["Solution to the Problem", f"Task {i} Solution", "Model Setup: Assumptions and Chain Models"])
+            outline.append(["Solution to the Problem", f"Task {i} Solution", "Model Calculation"])
 
-        # 结论、限制与符号说明
+        # Add conclusion and reference sections
         outline.extend([
-            ["模型结论", "模型优点"],
-            ["模型结论", "模型不足"],
-            ["符号说明"]
+            ["Model Conclusion", "Model Advantages"],
+            ["Model Conclusion", "Model Limitations"],
+            ["Notation and Explanations"]
         ])
 
         return outline
 
     def generate_chapter_relevance_map(self, task_count: int) -> Dict[str, List[str]]:
         """
-        根据任务数量动态生成章节相关性映射（内部键为中文）。
-        返回的 key / value 均为由 ' > ' 连接的中文路径字符串。
+        Dynamically generate chapter relevance mapping based on the number of tasks.
+
+        Args:
+            task_count: Number of tasks in the paper
+
+        Returns:
+            Dictionary mapping chapter paths to lists of related chapter paths
         """
-        relevance_map: Dict[str, List[str]] = {}
+        relevance_map = {}
 
         for i in range(1, task_count + 1):
-            setup_path = f"问题求解 > 任务 {i} 解答 > 模型建立：假设与链式模型"
-            relevance_map[setup_path] = [f"问题分析 > 任务 {i} 分析"]
+            setup_path = f"Solution to the Problem > Task {i} Solution > Model Setup: Assumptions and Chain Models"
+            relevance_map[setup_path] = [f"Problem Analysis > Task {i} Analysis"]
 
         for i in range(1, task_count + 1):
-            calculation_path = f"问题求解 > 任务 {i} 解答 > 模型计算"
+            calculation_path = f"Solution to the Problem > Task {i} Solution > Model Calculation"
             relevance_map[calculation_path] = [
-                f"问题分析 > 任务 {i} 分析",
-                f"问题求解 > 任务 {i} 解答 > 模型建立：假设与链式模型",
+                f"Problem Analysis > Task {i} Analysis",
+                f"Solution to the Problem > Task {i} Solution > Model Setup: Assumptions and Chain Models",
             ]
 
-        # 模型结论应汇总所有任务的求解结果
-        task_solutions: List[str] = []
+        # Model conclusion chapters should include all task solutions
+        task_solutions = []
         for i in range(1, task_count + 1):
             task_solutions += [
-                f"问题求解 > 任务 {i} 解答 > 模型计算",
-                f"问题求解 > 任务 {i} 解答 > 模型建立：假设与链式模型"
+                f"Solution to the Problem > Task {i} Solution > Model Calculation",
+                f"Solution to the Problem > Task {i} Solution > Model Setup: Assumptions and Chain Models"
             ]
 
-        relevance_map["模型结论 > 模型优点"] = task_solutions.copy()
-        relevance_map["模型结论 > 模型不足"] = task_solutions.copy()
-        relevance_map["符号说明"] = task_solutions.copy()
+        relevance_map["Model Conclusion > Model Advantages"] = task_solutions.copy()
+        relevance_map["Model Conclusion > Model Limitations"] = task_solutions.copy()
+        relevance_map["Notation and Explanations"] = task_solutions.copy()
 
         return relevance_map
-
 
 # --------------------------------
 # Context Extraction
 # --------------------------------
 
 class ContextExtractor:
-    """从 JSON 中为每个章节抽取上下文（内部键为中文）"""
+    """Extracts relevant data from JSON for each chapter"""
 
     def get_context_for_chapter(self, chapter: Chapter, data: Dict[str, Any]) -> Dict[str, Any]:
-        """针对指定章节抽取 JSON 中的相关数据"""
+        """Extract relevant JSON data for a specific chapter"""
         path = chapter.path
 
-        # 顶层/二级章节
-        if path == ["问题重述", "问题背景"]:
+        # Handle different chapter types
+        if path == ["Problem Restatement", "Problem Background"]:
             return {"problem_background": data.get("problem_background", "")}
 
-        elif path == ["问题重述", "问题陈述"]:
+        elif path == ["Problem Restatement", "Problem Statement"]:
             return {"problem_requirement": data.get("problem_requirement", "")}
 
-        elif path == ["模型假设"]:
+        elif path == ["Model Assumptions"]:
             return self._get_assumptions_context(data)
 
-        elif path == ["假设说明"]:
+        elif path == ["Explanation of Assumptions"]:
             return {}
 
         elif self._is_task_analysis(path):
@@ -253,83 +231,93 @@ class ContextExtractor:
         elif self._is_model_calculation(path):
             return self._get_model_calculation_context(path, data)
 
-        # 其他章节默认空上下文
+        # Default empty context for other sections
         return {}
 
     def _get_assumptions_context(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """模型假设章节上下文"""
+        """Get context for assumptions sections"""
         context = {"problem_analysis": data.get("problem_analysis", "")}
 
         # Extract task modeling information
         keys = ['task_description', 'task_analysis', 'mathematical_modeling_process']
         context["tasks"] = [
             {k: v for k, v in task.items() if k in keys}
-            for task in data.get('tasks', [])
+            for task in data['tasks']
         ]
 
         return context
 
     def _get_task_analysis_context(self, path: List[str], data: Dict[str, Any]) -> Dict[str, Any]:
-        """任务分析章节上下文"""
+        """Get context for task analysis sections"""
         task_num = self._extract_task_number(path[1])
         if not self._is_valid_task_index(task_num, data):
             return {}
 
         task_data = data["tasks"][task_num]
         keys = ['task_analysis', 'task_description']
-        return {f'任务_{task_num+1}': {k: v for k, v in task_data.items() if k in keys}}
+        return {
+            f'task_{task_num+1}': {
+                k: v for k, v in task_data.items() if k in keys
+            }
+        }
 
     def _get_model_setup_context(self, path: List[str], data: Dict[str, Any]) -> Dict[str, Any]:
-        """模型建立章节上下文（假设与链式模型）"""
+        """Get context for model setup sections"""
         task_num = self._extract_task_number(path[1])
         if not self._is_valid_task_index(task_num, data):
             return {}
 
         task_data = data["tasks"][task_num]
         keys = ['preliminary_formulas', 'mathematical_modeling_process']
-        return {f'任务_{task_num+1}': {k: task_data.get(k, "") for k in keys}}
+        return {
+            f'task_{task_num+1}': {
+                k: task_data.get(k, "") for k in keys
+            }
+        }
 
     def _get_model_calculation_context(self, path: List[str], data: Dict[str, Any]) -> Dict[str, Any]:
-        """模型计算章节上下文"""
+        """Get context for model calculation sections"""
         task_num = self._extract_task_number(path[1])
         if not self._is_valid_task_index(task_num, data):
             return {}
 
         task_data = data["tasks"][task_num]
         keys = ['mathematical_modeling_process', 'execution_result', 'solution_interpretation', 'subtask_outcome_analysis']
-        return {f'任务_{task_num+1}': {k: task_data.get(k, "") for k in keys}}
+        return {
+            f'task_{task_num+1}': {
+                k: task_data.get(k, "") for k in keys
+            }
+        }
 
-    # --------- 辅助判断（中文键）---------
     def _is_task_analysis(self, path: List[str]) -> bool:
-
+        """Check if path is a task analysis section"""
         return (len(path) == 2 and
-                path[0] == "问题分析" and
-                re.match(r"^任务\s+\d+\s+分析$", path[1]) is not None)
+                path[0] == "Problem Analysis" and
+                path[1].startswith("Task "))
 
     def _is_model_setup(self, path: List[str]) -> bool:
-
+        """Check if path is a model setup section"""
         return (len(path) == 3 and
-                path[0] == "问题求解" and
-                re.match(r"^任务\s+\d+\s+解答$", path[1]) is not None and
-                path[2] == "模型建立：假设与链式模型")
+                path[0] == "Solution to the Problem" and
+                path[1].startswith("Task ") and
+                path[2] == "Model Setup: Assumptions and Chain Models")
 
     def _is_model_calculation(self, path: List[str]) -> bool:
-
+        """Check if path is a model calculation section"""
         return (len(path) == 3 and
-                path[0] == "问题求解" and
-                re.match(r"^任务\s+\d+\s+解答$", path[1]) is not None and
-                path[2] == "模型计算")
+                path[0] == "Solution to the Problem" and
+                path[1].startswith("Task ") and
+                path[2] == "Model Calculation")
 
     def _extract_task_number(self, task_string: str) -> int:
-        """从“任务 N 分析/解答”提取任务号（0 索引）"""
-        m = re.search(r"任务\s+(\d+)\s+(分析|解答)", task_string)
+        """Extract task number from strings like 'Task 1 Analysis'"""
         try:
-            return int(m.group(1)) - 1 if m else -1
-        except Exception:
+            return int(task_string.split()[1]) - 1  # Convert to 0-indexed
+        except (IndexError, ValueError):
             return -1
 
     def _is_valid_task_index(self, index: int, data: Dict[str, Any]) -> bool:
-
+        """Check if the task index is valid"""
         return 0 <= index < len(data.get("tasks", []))
 
 # --------------------------------
@@ -337,7 +325,7 @@ class ContextExtractor:
 # --------------------------------
 
 class PromptCreator:
-    """用于为大模型生成提示词（内部键为中文）"""
+    """Creates prompts for the language model"""
 
     def __init__(self):
         pass
@@ -346,12 +334,14 @@ class PromptCreator:
                      chapter: Chapter,
                      context: Dict[str, Any],
                      previous_chapters: List[Chapter]) -> str:
-        """根据章节与上下文生成提示词"""
-        json_str = json.dumps(context, indent=2, ensure_ascii=False)
+        """Create a prompt for generating chapter content"""
+        # Format JSON context
+        json_str = json.dumps(context, indent=2)
+
+        # Format previous chapters
         previous_text = self._format_previous_chapters(previous_chapters)
 
-        # “符号说明”章节单独使用 PAPER_NOTATION_PROMPT
-        if chapter.path == ["符号说明"]:
+        if chapter.path == ["Notation and Explanations"]:
             return PAPER_NOTATION_PROMPT.format(
                 previous_chapters=previous_text,
             )
@@ -387,45 +377,14 @@ class PromptCreator:
 # --------------------------------
 
 class LatexDocumentAssembler:
-    """组装最终的 LaTeX 文档（内部键为中文）"""
+    """Assembles the final LaTeX document from generated chapters"""
 
     def __init__(self, mathmodel_category='MCMICM') -> None:
         self.mathmodel_category = mathmodel_category
 
-    def _tr(self, s: str) -> str:
-        """标题兜底翻译（若仍出现英文键则转成中文；中文键则原样返回）"""
-        import re as _re_local
-        mapping = {
-            "Problem Restatement": "问题重述",
-            "Problem Background": "问题背景",
-            "Problem Statement": "问题陈述",
-            "Model Assumptions": "模型假设",
-            "Explanation of Assumptions": "假设说明",
-            "Problem Analysis": "问题分析",
-            "Solution to the Problem": "问题求解",
-            "Model Setup: Assumptions and Chain Models": "模型建立：假设与链式模型",
-            "Model Calculation": "模型计算",
-            "Model Conclusion": "模型结论",
-            "Model Advantages": "模型优点",
-            "Model Limitations": "模型不足",
-            "Notation and Explanations": "符号说明",
-            "References": "参考文献",
-            "Appendix": "附录",
-            "Python Code": "Python代码",
-        }
-        if s in mapping:
-            return mapping[s]
-        m = _re_local.match(r"Task\s+(\d+)\s+Analysis", s)
-        if m:
-            return f"任务{m.group(1)}分析"
-        m = _re_local.match(r"Task\s+(\d+)\s+Solution", s)
-        if m:
-            return f"任务{m.group(1)}解答"
-        # 中文键直接返回
-        return s
-
     def create_document(self, chapters: List[Chapter], metadata: Dict[str, Any]) -> str:
-        """创建完整 LaTeX 文档"""
+        """Create a complete LaTeX document"""
+        # Reorder chapters (move Notation chapter after Explanation of Assumptions)
         ordered_chapters = self._reorder_chapters(chapters)
 
         # Build document parts
@@ -434,7 +393,6 @@ class LatexDocumentAssembler:
             self._create_abstract(metadata),
             "\\maketitle",
             "\\renewcommand\\cfttoctitlefont{\\hfil\\Large\\bfseries}",
-            "\\renewcommand{\\contentsname}{目录}",
             "\\tableofcontents",
             "\\newpage",
             self._create_body(ordered_chapters, metadata),
@@ -444,39 +402,49 @@ class LatexDocumentAssembler:
         return "\n\n".join(document_parts)
 
     def _reorder_chapters(self, chapters: List[Chapter]) -> List[Chapter]:
-        """调整章节顺序：将“符号说明”移到“假设说明”之后"""
+        """Reorder chapters for better document structure"""
         reordered = []
-        notation_chapter = next((ch for ch in chapters if ch.path == ["符号说明"]), None)
+        notation_chapter = next((ch for ch in chapters if ch.path == ["Notation and Explanations"]), None)
 
         for chapter in chapters:
-            if chapter.path != ["符号说明"]:
+            if chapter.path != ["Notation and Explanations"]:
                 reordered.append(chapter)
-                if notation_chapter and chapter.path == ["假设说明"]:
+                # Insert notation chapter after Explanation of Assumptions
+                if notation_chapter and chapter.path == ["Explanation of Assumptions"]:
                     reordered.append(notation_chapter)
 
         return reordered
 
-    def _add_figure(self, figures: List[str]) -> List[str]:
-        """插入图片"""
-        figure_str: List[str] = []
-        for figure_path in figures:
+    def _add_figure(self, figures: List[str]) -> str:
+        """Add a figure to the content"""
+        figure_str = []
+        for i, figure_path in enumerate(figures):
             name = figure_path.split('/')[-1].split('.')[0].replace('_', '\\_')
             figure_str.append(f"""
 \\begin{{figure}}[H]
 \\centering
 \\includegraphics[width=0.5\\textwidth]{{{figure_path}}}
-\\caption{{图：{name}}}
+\\caption{{{name}}}
 \\end{{figure}}
 """)
         return figure_str
 
-    def _add_code(self, codes: List[str]) -> List[str]:
-        """附录中包含 Python 代码清单"""
-        code_str: List[str] = [
+
+    def _add_code(self, codes: List[str]) -> str:
+        """
+\subsection*{Python Code}
+\subsubsection*{main1.py}
+
+\begin{lstlisting}[language=Python, frame=single, basicstyle=\ttfamily\small]
+def main1():
+    pass
+\end{lstlisting}
+        """
+        code_str = [
             "\\clearpage",
-            "\\section{附录}",
+            "\\section{Appendix}",
         ]
-        for code_path in codes:
+        for i, code_path in enumerate(codes):
             with open(code_path, 'r') as f:
                 code = f.read()
             name = code_path.split('/')[-1].replace('_', '\\_')
@@ -490,7 +458,7 @@ class LatexDocumentAssembler:
         return code_str
 
     def _create_preamble(self, metadata: Dict[str, Any]) -> str:
-        """LaTeX 导言区"""
+        """Create LaTeX preamble with document setup"""
         metadata['title'] = metadata.get("title", "paper_title")
         metadata['baominghao'] = metadata.get("baominghao", "0123")
         metadata['schoolname'] = metadata.get("schoolname", "Agent")
@@ -502,7 +470,7 @@ class LatexDocumentAssembler:
         return contest.format_map(SafeDict(metadata))
 
     def _create_abstract(self, metadata: Dict[str, str]) -> str:
-        """摘要与关键词（环境名仍为 abstract/keywords）"""
+        """Create the abstract section"""
         return f"""\\begin{{abstract}}
 {metadata.get('summary', '')}
 
@@ -512,13 +480,13 @@ class LatexDocumentAssembler:
 \\end{{abstract}}"""
 
     def _create_body(self, chapters: List[Chapter], metadata: Dict[str, Any]) -> str:
-        """拼装正文"""
-        body_parts: List[str] = []
-        current_path: List[str] = []
+        """Create the main body of the document from chapters"""
+        body_parts = []
+        current_path = []
 
         for chapter in chapters:
-            # 在 “模型结论 > 模型优点” 处插图（若有）
-            if chapter.path == ["模型结论", "模型优点"] and metadata.get('figures', []):
+            # Add section headings
+            if chapter.path == ["Model Conclusion", "Model Advantages"] and metadata.get('figures', []):
                 body_parts += self._add_figure(metadata['figures'])
 
             for i, section in enumerate(chapter.path):
@@ -529,11 +497,10 @@ class LatexDocumentAssembler:
                         current_path.append(section)
                     else:
                         current_path[i] = section
-                        current_path = current_path[:i+1]
+                        current_path = current_path[:i+1]  # Truncate the path
 
                     # Use custom title if available for the last level
                     title = chapter.display_title if i == chapter.depth - 1 else section
-                    title = self._tr(title)
 
                     # Add section heading at appropriate level
                     if i == 0:
@@ -547,7 +514,7 @@ class LatexDocumentAssembler:
             if chapter.is_generated and chapter.content:
                 body_parts.append(chapter.content)
 
-        body_parts.append("\\section{参考文献}")
+        body_parts.append("\\section{References}")
         body_parts += self._add_code(metadata['codes'])
         return "\n\n".join(body_parts)
 
@@ -564,12 +531,12 @@ class FileManager:
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         with open(filepath, 'w') as f:
             f.write(content)
-        print(f"文档已保存到 {filepath}")
+        print(f"Document saved to {filepath}")
 
     @staticmethod
     def generate_pdf(latex_path: str) -> None:
         """Generate a PDF from a LaTeX file"""
-        print(f"正在从 {latex_path} 生成PDF...")
+        print(f"Generating PDF from {latex_path}...")
 
         # Run pdflatex twice to ensure references and TOC are correct
         latex_dir = os.path.dirname(latex_path)
@@ -580,7 +547,7 @@ class FileManager:
         FileManager._clean_temp_files(latex_path)
 
         pdf_path = latex_path.replace('.tex', '.pdf')
-        print(f"PDF已生成: {pdf_path}")
+        print(f"PDF generated at {pdf_path}")
 
     @staticmethod
     def _clean_temp_files(latex_path: str) -> None:
@@ -644,7 +611,7 @@ class PaperGenerator:
                             completed_chapters: List[Chapter],
                             chapter_relevance_map: Dict[str, List[str]]) -> None:
         """Generate content for a single chapter"""
-        print(f"正在生成内容: {chapter.path_string}")
+        print(f"Generating content for: {chapter.path_string}")
 
         # Get relevant context data for this chapter
         context = self.context_extractor.get_context_for_chapter(chapter, json_data)

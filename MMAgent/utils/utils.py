@@ -182,11 +182,15 @@ def load_config(args, config_path='config.yaml'):
 
 
 def get_info(args):
+    model_name = os.getenv('MODEL_NAME')
+    if model_name is None:
+        raise ValueError("Please set the MODEL_NAME environment variable.")
+    model_name = model_name.split('/')[-1]
     problem_path = 'MMBench/{}/problem/{}.json'.format(args.mm_dataset, args.task)
     config = load_config(args)
     dataset_dir = 'MMBench/{}/dataset/{}'.format(args.mm_dataset, args.task)
     output_dir = os.path.join(
-        'output/{}/{}'.format(args.mm_dataset, args.method_name),
+        'output/{}/{}/{}'.format(model_name, args.mm_dataset, args.method_name),
         args.task + '_{}'.format(datetime.now().strftime('%Y%m%d-%H%M%S'))
     )
     mkdir(output_dir)

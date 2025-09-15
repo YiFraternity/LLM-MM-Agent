@@ -1,7 +1,4 @@
 CPMCM = r"""
-% !Mode:: "TeX:UTF-8"
-%!TEX program  = xelatex
-
 \documentclass[bwprint]{{gmcmthesis}}
 \usepackage[framemethod=TikZ]{{mdframed}}
 
@@ -9,35 +6,29 @@ CPMCM = r"""
 \usepackage{{colortbl}}
 \usepackage{{palatino}}
 \usepackage{{algorithm}}
+\usepackage{algorithmicx}
 \usepackage{{algpseudocode}}
 \usepackage{{tocloft}}
 \usepackage{{amsmath}}
 \definecolor{{color1}}{{rgb}}{{0.78,0.88,0.99}}
 \definecolor{{color2}}{{rgb}}{{0.36,0.62,0.84}}
-%\definecolor{{color3}}{{rgb}}{{0.8235,0.8706,0.9373}}
 \definecolor{{color3}}{{rgb}}{{0.88,0.92,0.96}}
-\definecolor{{color4}}{{rgb}}{{0.96,0.97,0.98}}%{{0.9176,0.9373,0.9686}}
+\definecolor{{color4}}{{rgb}}{{0.96,0.97,0.98}}
 
-% 算法
-\usepackage[noend]{{algpseudocode}}
-\usepackage{{algorithmicx,algorithm}}
 \floatname{{algorithm}}{{算法}}
 \renewcommand{{\algorithmicrequire}}{{\textbf{{输入:}}}}
 \renewcommand{{\algorithmicensure}}{{\textbf{{输出:}}}}
 
-%\numberwithin{{equation}}{{section}}
-%\numberwithin{{figure}}{{section}}
-%\numberwithin{{table}}{{section}}
 
 \newcommand{{\red}}[1]{{\textcolor{{red}}{{#1}}}}
 \newcommand{{\blue}}[1]{{\textcolor{{blue}}{{#1}}}}
 
 \title{{{title}}}
-\baominghao{{{baominghao}}} %参赛队号
-\schoolname{{{schoolname}}} %学校名称
-\membera{{{membera}}}       %队员A
-\memberb{{{memberb}}}       %队员B
-\memberc{{{memberc}}}       %队员C
+\baominghao{{{baominghao}}}
+\schoolname{{{schoolname}}}
+\membera{{{membera}}}
+\memberb{{{memberb}}}
+\memberc{{{memberc}}}
 
 \begin{{document}}
 """
