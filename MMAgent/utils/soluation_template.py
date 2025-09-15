@@ -6,10 +6,11 @@ CPMCM = r"""
 \usepackage{{colortbl}}
 \usepackage{{palatino}}
 \usepackage{{algorithm}}
-\usepackage{algorithmicx}
+\usepackage{{algorithmicx}}
 \usepackage{{algpseudocode}}
 \usepackage{{tocloft}}
 \usepackage{{amsmath}}
+\usepackage{{xcolor}}
 \definecolor{{color1}}{{rgb}}{{0.78,0.88,0.99}}
 \definecolor{{color2}}{{rgb}}{{0.36,0.62,0.84}}
 \definecolor{{color3}}{{rgb}}{{0.88,0.92,0.96}}
