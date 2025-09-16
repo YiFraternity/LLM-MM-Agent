@@ -39,7 +39,7 @@ def parse_llm_output_to_json(output_text: str) -> dict:
         data = {}
     return data
 
-def json_to_markdown(paper):
+def json_to_markdown_en(paper):
     """
     Converts a paper dictionary to a Markdown string with multi-level headlines.
 
@@ -119,6 +119,89 @@ def json_to_markdown(paper):
                     markdown_lines.append(chart + "\n")
 
     # Combine all lines into a single string
+    markdown_str = "\n".join(markdown_lines)
+    return markdown_str
+
+def json_to_markdown(paper):
+    """
+    将论文字典转换为带有多级标题的 Markdown 字符串。
+
+    参数:
+        paper (dict): 包含问题详情和任务的论文字典。
+
+    返回:
+        str: 表示论文内容的 Markdown 格式字符串。
+    """
+    markdown_lines = []
+
+    # 问题背景
+    markdown_lines.append("## 问题背景")
+    markdown_lines.append(paper.get('problem_background', '未提供问题背景。') + "\n")
+
+    # 问题要求
+    markdown_lines.append("## 问题要求")
+    markdown_lines.append(paper.get('problem_requirement', '未提供问题要求。') + "\n")
+
+    # 问题分析
+    markdown_lines.append("## 问题分析")
+    markdown_lines.append(paper.get('problem_analysis', '未提供问题分析。') + "\n")
+
+    # 问题建模
+    if 'problem_modeling' in paper:
+        markdown_lines.append("## 问题建模")
+        markdown_lines.append(paper.get('problem_modeling', '未提供问题建模。') + "\n")
+
+    # 各任务
+    tasks = paper.get('tasks', [])
+    if tasks:
+        markdown_lines.append("## 任务\n")
+        for idx, task in enumerate(tasks, start=1):
+
+            markdown_lines.append(f"### 任务 {idx}")
+
+            task_description = task.get('task_description', '未提供任务描述。')
+            markdown_lines.append("#### 任务描述")
+            markdown_lines.append(task_description + "\n")
+
+            # 任务分析
+            task_analysis = task.get('task_analysis', '未提供任务分析。')
+            markdown_lines.append("#### 任务分析")
+            markdown_lines.append(task_analysis + "\n")
+
+            # 数学公式
+            task_formulas = task.get('mathematical_formulas', '未提供公式。')
+            markdown_lines.append("#### 数学公式")
+            if isinstance(task_formulas, list):
+                for formula in task_formulas:
+                    markdown_lines.append(f"$${formula}$$")
+            else:
+                markdown_lines.append(f"$${task_formulas}$$")
+            markdown_lines.append("")  # 空行
+
+            # 数学建模过程
+            task_modeling = task.get('mathematical_modeling_process', '未提供建模过程。')
+            markdown_lines.append("#### 数学建模过程")
+            markdown_lines.append(task_modeling + "\n")
+
+            # 结果
+            task_result = task.get('result', '未提供结果。')
+            markdown_lines.append("#### 结果")
+            markdown_lines.append(task_result + "\n")
+
+            # 答案
+            task_answer = task.get('answer', '未提供答案。')
+            markdown_lines.append("#### 答案")
+            markdown_lines.append(task_answer + "\n")
+
+            # 图表
+            charts = task.get('charts', [])
+            if charts:
+                markdown_lines.append("#### 图表")
+                for i, chart in enumerate(charts, start=1):
+                    markdown_lines.append(f"##### 图表 {i}")
+                    markdown_lines.append(chart + "\n")
+
+    # 合并为一个字符串
     markdown_str = "\n".join(markdown_lines)
     return markdown_str
 
