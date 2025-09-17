@@ -14,8 +14,17 @@
     "绕射系数.tex"
   ],
   "dataset_description": {
+    "1974_a_uniform_geometrical_theory_of_diffraction_for_an_edge_in_a_perfectly_conductiong_surface": "{}",
+    "00683539": "{}",
+    "00686774": "{}",
+    "00686780": "{}",
+    "00840192": "{}",
+    "04137803": "{}",
+    "05349441": "{}",
+    "基于虚拟源树的射线跟踪算法的研究": "{}",
+    "利用可见性概念改进基于镜像原理的射线追踪法": "{}",
+    "绕射系数": ".tex"
   },
-  "variable_description": [
-  ],
+  "variable_description": [],
   "addendum": "参考文献\n\n [1] R G. Kouyoumjian, P H Pathak, “A uniform geometrical theory of diffraction for an edge in a perfectly conducting surface”, IEEE Proceedings, vol. 62, No. 11, pp. 1448-1461, Jun. 1974\n\n[2] M. F. Catedra, J. Perez, F. Saez De Adana, and O. Gutierrez, \"Efficient Ray-tracing Techniques for Three-dimensional Analyses of Propagation in Mobile Communications: Application to Picocell and Microcell Scenarios,\" IEEE Antennas Propag. Mag., vol. 40, no. 2, pp. 15-28, Apr. 1998.\n\n[3] Georgia E. Athanasiadou, Andrew R. Nix, and Joseph. McGeehan. “A Microcellular Ray-Tracing Propagation Model and Evaluation of its Narrow-Band and Wide-Band Predictions,” IEEE Journal on Selected Areas in Communications, vol.18, no. 3, pp. 322-334, Mar. 2000\n\n[4] C. E Yang, B. C. Wu, “A Ray-Tracing Method for Modeling Indoor Wave Propagation and Penetration,” IEEE Trans. On A. and P., Vol. 46, No. 6，PP. 907-919, June 1998.\n\n[5] 顾晓龙. “利用可见性概念改进基于镜像原理的射线追踪法”, 电波科学学报，Vol. 16, No, 4, pp. 16-19, 2001\n\n[6] George Liang, Henry L. Bertoni, ”A New Approach to 3D Ray Tracing for Site Specific Propagation Modeling,” IEEE VT. C., PP. 1l13-1117, 1997.\n\n[7] D. N. Schettino, F. J. S. Moreira and C. G. Rego, “Efficient Ray Tracing for Radio Channel Characterization of Urban Scenarios,” IEEE Trans. Magn., vol. 43, no. 4, pp. 1305-1308, Apr. 2007.\n\n[8] 廖斌, 赵昵丽, 朱守正,”基于虚拟源树的射线跟踪算法的研究,” 华东师范大学学报,  2008:103-108\n\n[9] Chiya Saeidi, Farrokh Hodjatkashani, and Azim Fard, “New Tube-Based Shooting and Bouncing Ray Tracing Method,” 2009 International Conference on Advanced Technologies for Communications, pp.269-273\n\n[10]袁正午，移动通信系统终端射线跟踪定位理论与方法，2007，北京：电子工业出版社"
 }

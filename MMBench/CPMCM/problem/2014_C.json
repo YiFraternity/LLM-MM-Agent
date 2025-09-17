@@ -11,7 +11,12 @@
     "channel_data_450_10.mat",
     "channel_data_450_10.txt"
   ],
-  "dataset_description": "这组文件包括三个.mat 格式文件和对应的.txt 文本文件，分别是 channel_data_90_10, channel_data_360_10 与 channel_data_450_10，以及一个名为 channel_data10 的样本数据对。channel_data10.mat 与 channel_data10.txt构成了一个相对简化的信道数据示例，适用于初步的测试或算法验证。其命名中未包含路径或采样点的说明，通常表示为默认或参考模型的数据样本。它可作为较小规模模型的输入，用于调试信道估计算法或对比不同方法性能。channel_data_90_10.mat 与 channel_data_90_10.txt包含一个包含 90 个路径和 10 个观测点的信道数据集。.mat 文件用于 MATLAB 环境中快速加载复数信道系数矩阵，而 .txt 文件则以文本形式列出同样的复数数据，适合在 Python 等环境中解析。数据结构通常用于信道估计或低维建模任务，例如基函数展开建模（BEM）或压缩感知等。channel_data_360_10.mat 与 channel_data_360_10.txt提供了一个更大规模的信道数据集，包含 360 条路径的数据与 10 个时间采样点的观测结果，适用于对高分辨率或高维度信道的研究与分析。.mat 文件可供 MATLAB 直接操作，而 .txt 文件以便于阅读与跨平台导入的方式呈现了相同内容，常用于机器学习训练或神经网络建模中。channel_data_450_10.mat 与 channel_data_450_10.txt记录了 450 条路径的信道响应，采样数同样为 10，适合研究复杂或密集多径环境下的信道特性。该数据集体量较大，常用于验证压缩表示方法或降维建模策略的有效性。.mat 文件便于高效加载，.txt 文件则适用于通用环境下的数据移植和处理。",
+  "dataset_description": {
+    "channel_data10": "这组文件包括三个.mat 格式文件和对应的.txt 文本文件，分别是 channel_data_90_10, channel_data_360_10 与 channel_data_450_10，以及一个名为 channel_data10 的样本数据对。channel_data10.mat 与 channel_data10.txt构成了一个相对简化的信道数据示例，适用于初步的测试或算法验证。其命名中未包含路径或采样点的说明，通常表示为默认或参考模型的数据样本。它可作为较小规模模型的输入，用于调试信道估计算法或对比不同方法性能。",
+    "channel_data_90_10": "channel_data_90_10.mat 与 channel_data_90_10.txt包含一个包含 90 个路径和 10 个观测点的信道数据集。.mat 文件用于 MATLAB 环境中快速加载复数信道系数矩阵，而 .txt 文件则以文本形式列出同样的复数数据，适合在 Python 等环境中解析。数据结构通常用于信道估计或低维建模任务，例如基函数展开建模（BEM）或压缩感知等。",
+    "channel_data_360_10": "channel_data_360_10.mat 与 channel_data_360_10.txt提供了一个更大规模的信道数据集，包含 360 条路径的数据与 10 个时间采样点的观测结果，适用于对高分辨率或高维度信道的研究与分析。.mat 文件可供 MATLAB 直接操作，而 .txt 文件以便于阅读与跨平台导入的方式呈现了相同内容，常用于机器学习训练或神经网络建模中。",
+    "channel_data_450_10": "channel_data_450_10.mat 与 channel_data_450_10.txt记录了 450 条路径的信道响应，采样数同样为 10，适合研究复杂或密集多径环境下的信道特性。该数据集体量较大，常用于验证压缩表示方法或降维建模策略的有效性。.mat 文件便于高效加载，.txt 文件则适用于通用环境下的数据移植和处理。"
+  },
   "variable_description": [
     {
       "h": "<class 'numpy.ndarray'>"

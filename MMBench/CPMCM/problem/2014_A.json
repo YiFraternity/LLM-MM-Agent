@@ -7,7 +7,11 @@
     "V01_20131126_Data03_300s_330s_LFP_VisStim_1khz.mat",
     "moveonoff.pdf"
   ],
-  "dataset_description": "提供的数据包括：\n\n(1) 文件名称：LC01_20131204_Data10_V1_50s_70s_1kHz.mat\n数据格式：Matlab( .mat; int16)\n采样频率：1000 Hz\n数据长度：30秒\n第1-5 道（Ch11, Ch12, Ch13, Ch14, Ch15）：小鼠大脑视觉皮层局部电位(睡眠状态)\n第6道（Ch17）：呼吸曲线\n\n(2) 文件名称：V01_20131126_Data03_80s_110s_LFP_NoStim_1khz.mat\n数据格式：Matlab( .mat; int16)\n采样频率：1000 Hz\n数据长度：30秒\n第1-5 道（Ch11, Ch12, Ch13, Ch14, Ch15）：小鼠大脑视觉皮层局部电位(清醒状态)\n第6道（Ch17）：呼吸曲线\n\n(3) 文件名称：V01_20131126_Data03_300s_330s_LFP_VisStim_1khz.mat\n数据格式：Matlab( .mat; int16)\n采样频率：1000 Hz\n数据长度：30秒\n第1-5 道（Ch11, Ch12, Ch13, Ch14, Ch15）：小鼠大脑视觉皮层局部电位(清醒状态)\n第6道（Ch17）：呼吸曲线\n第7道（Ch18）：两次CheckBoard视觉刺激（波峰处为刺激开始）",
+  "dataset_description": {
+    "LC01_20131204_Data10_V1": "提供的数据包括：\n(1) 文件名称：LC01_20131204_Data10_V1_50s_70s_1kHz.mat\n数据格式：Matlab( .mat; int16)\n采样频率：1000 Hz\n数据长度：30秒\n第1-5 道（Ch11, Ch12, Ch13, Ch14, Ch15）：小鼠大脑视觉皮层局部电位(睡眠状态)\n第6道（Ch17）：呼吸曲线",
+    "V01_20131126_Data03_80s_110s_LFP_NoStim": "提供的数据包括：\n(2) 文件名称：V01_20131126_Data03_80s_110s_LFP_NoStim_1khz.mat\n数据格式：Matlab( .mat; int16)\n采样频率：1000 Hz\n数据长度：30秒\n第1-5 道（Ch11, Ch12, Ch13, Ch14, Ch15）：小鼠大脑视觉皮层局部电位(清醒状态)\n第6道（Ch17）：呼吸曲线",
+    "V01_20131126_Data03_300s_330s_LFP_VisStim": "提供的数据包括：\n(3) 文件名称：V01_20131126_Data03_300s_330s_LFP_VisStim_1khz.mat\n数据格式：Matlab( .mat; int16)\n采样频率：1000 Hz\n数据长度：30秒\n第1-5 道（Ch11, Ch12, Ch13, Ch14, Ch15）：小鼠大脑视觉皮层局部电位(清醒状态)\n第6道（Ch17）：呼吸曲线\n第7道（Ch18）：两次CheckBoard视觉刺激（波峰处为刺激开始）"
+  },
   "variable_description": [
     {
       "Ch11": "小鼠大脑视觉皮层局部电位信号（睡眠状态）",

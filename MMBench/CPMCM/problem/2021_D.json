@@ -7,7 +7,12 @@
     "Molecular_Descriptor.xlsx",
     "分子描述符含义解释.xlsx"
   ],
-  "dataset_description": "\n\n\n分子描述符含义解释.xlsx提供了分子描述符的详细解释，包括描述符的类型、数量以及参考文献，用于理解每个描述符的含义及其在分子建模中的应用。",
+  "dataset_description": {
+    "ADMET": "",
+    "ERα_activity": "",
+    "Molecular_Descriptor": "",
+    "分子描述符含义解释": "分子描述符含义解释.xlsx提供了分子描述符的详细解释，包括描述符的类型、数量以及参考文献，用于理解每个描述符的含义及其在分子建模中的应用。"
+  },
   "variable_description": [
     {
       "SMILES": "化合物的简化分子线性输入规范（Simplified Molecular Input Line Entry Specification）表示，用于唯一标识化合物的化学结构。",
