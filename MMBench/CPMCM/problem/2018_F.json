@@ -5,7 +5,9 @@
     "D2CD5E5A@2A4F5D1D.85099A5B.jpg",
     "InputData.xlsx"
   ],
-  "dataset_description": "InputData.xlsx包含2018年1月19日至20日的飞机转场记录，包括到达和出发日期、时刻、航班号、类型、飞机型号以及上线和下线机场。",
+  "dataset_description": {
+    "InputData": "InputData.xlsx包含2018年1月19日至20日的飞机转场记录，包括到达和出发日期、时刻、航班号、类型、飞机型号以及上线和下线机场。"
+  },
   "variable_description": [
     {},
     {

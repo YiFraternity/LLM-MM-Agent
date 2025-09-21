@@ -4,7 +4,9 @@
   "dataset_path": [
     "邮局间直达公路里程.xlsx"
   ],
-  "dataset_description": "表1：记录邮局之间的直达公路里程。",
+  "dataset_description": {
+    "邮局间直达公路里程": "表1：记录邮局之间的直达公路里程。"
+  },
   "variable_description": [
     {
       "邮局i": "邮局编号i，表示起点邮局。",

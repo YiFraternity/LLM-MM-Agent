@@ -73,7 +73,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mm_dataset', type=str, default='CPMCM')
     parser.add_argument('--method_name', type=str, default='MM-Agent')
-    parser.add_argument('--task', type=str, default='2020_A')
+    parser.add_argument('--task', type=str, default='2020_F')
 
     return parser.parse_args()
 

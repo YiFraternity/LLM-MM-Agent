@@ -9,13 +9,25 @@
     "pa_out_memoryless.txt",
     "pa_in_out_memoryless.mat"
   ],
-  "dataset_description": "pa_in_memory.txt是一个 纯文本文件，存储了功放输入信号（memoryless 输入）的数据。文件内容主要由复数构成，例如：\n6.1519e-015-4.9215e-015i\n-1.2304e-015-4.9215e-015i\n...\n，每一行代表一个采样点的输入值，格式为 实部 ± 虚部 i。这些数据可以用来表示基带信号的时域输入样本，用于后续非线性建模或功放仿真。pa_out_memory.txt是纯文本文件，存储了功放输出信号（具有记忆效应）的数据。与第一个文件类似，其内容也是复数序列：\n-0.0037878-0.0044593i\n-0.0013122-0.0041377i\n...\n这些数据代表了功率放大器输出的信号波形。与输入信号相比，输出信号包含 非线性失真 和 记忆效应（时延相关），可用于对比分析功放的性能。\npa_in_out_memory.mat是一个 MATLAB 数据文件，同时保存了 输入信号 和 输出信号。相比前两个 .txt 文件逐点存储的方式，.mat 文件是结构化存储，方便直接在 MATLAB 或 Python (scipy.io.loadmat) 中读取。pa_in_memoryless.txt：文本文件，存储功率放大器输入信号（无记忆效应），每一行是一个复数（格式为实部 ± 虚部 i，如 6.1519e-015-4.9215e-015i），数据代表基带信号在时域上的采样点，作为功率放大器输入参考信号；2. pa_out_memoryless.txt：文本文件，保存功率放大器输出信号（无记忆效应），内容为复数序列（如 1.8456e-014-1.4765e-014i），数据代表经过功率放大器后的输出波形，可用于比较输入与输出的非线性特性；3. pa_in_out_memoryless.mat：MATLAB 数据文件，同时包含输入信号和输出信号，以结构化数组存储，便于在 MATLAB 或 Python（如 scipy.io.loadmat）中直接加载，典型字段包括 pa_in（输入信号，复数序列，对应 pa_in_memoryless.txt 内容）、pa_out（输出信号，复数序列，对应 pa_out_memoryless.txt 内容）、Fs（采样率，部分文件包含，用于信号频域分析和建模）。",
-  "variable_description": [{}, {},
+  "dataset_description": {
+    "pa_in_memory": "这是一个纯文本文件，存储了功放输入信号（memoryless 输入）的数据。文件内容主要由复数构成，例如：6.1519e-015-4.9215e-015i，-1.2304e-015-4.9215e-015i，...，每一行代表一个采样点的输入值，格式为 实部 ± 虚部 i。这些数据可以用来表示基带信号的时域输入样本，用于后续非线性建模或功放仿真。",
+    "pa_out_memory": "这是一个纯文本文件，存储了功放输出信号（具有记忆效应）的数据。与第一个文件类似，其内容也是复数序列：-0.0037878-0.0044593i，-0.0013122-0.0041377i，...，这些数据代表了功率放大器输出的信号波形。与输入信号相比，输出信号包含非线性失真和记忆效应（时延相关），可用于对比分析功放的性能。",
+    "pa_in_out_memory": "这是一个 MATLAB 数据文件，同时保存了输入信号和输出信号。相比前两个 .txt 文件逐点存储的方式，.mat 文件是结构化存储，方便直接在 MATLAB 或 Python (scipy.io.loadmat) 中读取。",
+    "pa_in_memoryless": "这是一个文本文件，存储功率放大器输入信号（无记忆效应），每一行是一个复数（格式为实部 ± 虚部 i，如 6.1519e-015-4.9215e-015i），数据代表基带信号在时域上的采样点，作为功率放大器输入参考信号。",
+    "pa_out_memoryless": "这是一个文本文件，保存功率放大器输出信号（无记忆效应），内容为复数序列（如 1.8456e-014-1.4765e-014i），数据代表经过功率放大器后的输出波形，可用于比较输入与输出的非线性特性。",
+    "pa_in_out_memoryless": "这是一个 MATLAB 数据文件，同时包含输入信号和输出信号，以结构化数组存储，便于在 MATLAB 或 Python（如 scipy.io.loadmat）中直接加载，典型字段包括 pa_in（输入信号，复数序列，对应 pa_in_memoryless.txt 内容）、pa_out（输出信号，复数序列，对应 pa_out_memoryless.txt 内容）、Fs（采样率，部分文件包含，用于信号频域分析和建模）。"
+  },
+  "variable_description": [
+    {},
+    {},
     {
       "pa_in_memory": {
         "description": "记忆功放的输入信号（基带复信号，时域采样）",
         "dtype": "complex128",
-        "shape": [1000, 1],
+        "shape": [
+          1000,
+          1
+        ],
         "ndim": 2,
         "is_complex": true,
         "num_samples": 1000,
@@ -26,7 +38,10 @@
       "pa_out_memory": {
         "description": "记忆功放的输出信号（包含非线性效应后的基带复信号，时域采样）",
         "dtype": "complex128",
-        "shape": [1000, 1],
+        "shape": [
+          1000,
+          1
+        ],
         "ndim": 2,
         "is_complex": true,
         "num_samples": 1000,
@@ -45,7 +60,10 @@
       "pa_in_memoryless": {
         "description": "无记忆功放的输入信号（基带复信号，时域采样）",
         "dtype": "complex128",
-        "shape": [1000, 1],
+        "shape": [
+          1000,
+          1
+        ],
         "ndim": 2,
         "is_complex": true,
         "num_samples": 1000,
@@ -56,7 +74,10 @@
       "pa_out_memoryless": {
         "description": "无记忆功放的输出信号（包含非线性效应后的基带复信号，时域采样）",
         "dtype": "complex128",
-        "shape": [1000, 1],
+        "shape": [
+          1000,
+          1
+        ],
         "ndim": 2,
         "is_complex": true,
         "num_samples": 1000,

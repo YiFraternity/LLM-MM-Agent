@@ -971,17 +971,17 @@ PAPER_NOTATION_PROMPT = """
     \\renewcommand{{\\arraystretch}}{{1.3}}
     \\begin{{tabular}}{{>{{\\raggedright\\arraybackslash}}p{{3cm}}>{{\\raggedright\\arraybackslash}}p{{11cm}}}}
         \\toprule
-        \\textbf{{Notation}} & \\textbf{{Description}} \\\\
+        \\textbf{{符号}} & \\textbf{{说明}} \\\\
         \\midrule
-        \\( f(x) \\) & description... \\\\
+        \\( f(x) \\) & 示例描述... \\\\
         \\bottomrule
     \\end{{tabular}}
-    \\caption{{Table of Notations}}
+    \\caption{{符号表}}
     \\label{{tab:notations}}
 \\end{{table}}
 ```
 
-只返回 latex 表格内容，不包括标题和任何其他内容。
+只返回 LaTeX 表格内容，不包括标题和任何其他内容。
 """
 
 
