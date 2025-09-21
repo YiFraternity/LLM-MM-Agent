@@ -1,0 +1,1732 @@
+\begin{center}
+\textbf{\Large 全国第六届研究生数学建模竞赛}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.5\textwidth]{image.png}
+\end{center}
+
+\begin{center}
+\textbf{题目} \underline{枪弹头痕迹自动比对方法的研究}
+\end{center}
+
+\begin{center}
+\textbf{摘} \textbf{要:}
+\end{center}
+
+本文研究了弹头痕迹的比对问题，根据所给数据对弹痕特征进行定量分析，通过建立模型，减少了弹痕测量误差，提高了弹头比对精度和比对效率。
+
+\textbf{问题一：} 采用最小二乘圆法，建立误差补偿模型将弹头截面痕迹点坐标转换成相对于其最小二乘圆圆心的坐标。运用问题三中的模型对其进行验证，其结果表明误差补偿模型能够有效减少因弹头摆放位置和姿态差异引起的测量误差，见图 5-13。
+
+\textbf{问题二：} 由于弹痕数据为 564×756 的标准网格数据，运用小波滤波原理检测出误差噪声点，通过在网格内搜索噪声点圆周内的四个邻近点，用四个邻近点的加权平均值代替原有坐标值的方法来消除噪声，图 4-2、图 4-3 表明消噪效果明显。
+
+\textbf{问题三：} 方案一，提取经消噪后弹痕网格数据较为平滑稳定的 [0.825, 1.1] mm 之间的数据。将此段弹痕数据压缩为一条截面曲线，建立截面曲线特征的神经网络模型，把网络输出与其它弹痕截面进行比对，用欧氏距离来衡量相似度。方案二：把弹痕数据生成的三维图转化为二维灰度纹理图，用灰度纹理特征来量化弹痕的方向和深度。以纹理灰度矩阵中的四个纹理特征：能量、熵、惯性矩和局部平稳性来进行纹理比对，用欧氏距离来衡量纹理相似度。用 6 支枪发射的 12 个弹头痕迹对比结果表明，这两种方案都取得了很好的结果，分别见表 5-6、表 5-12。
+
+\textbf{问题四：} 采用问题三的方案一得出了 22 个弹头痕迹两两之间的相似度，见表 6-1，并给出与每个弹头相似的前 5 位的弹头文件号，见表 6-2。
+
+\textbf{关键词：} 弹痕比对 \quad 最小二乘圆法 \quad 小波变换 \quad 神经网络 \quad 纹理特征
+
+\begin{tabular}{l l}
+参赛队号 & \underline{1029498} \\
+队员姓名 & \underline{魏长赟 鲁进军 杨远慧} \\
+\end{tabular}
+\hfill
+\begin{tabular}{|c|}
+\hline
+参赛密码 \underline{\hspace{3cm}} \\
+(由组委会填写) \\
+\hline
+\end{tabular}
+
+\section*{一、问题的提出}
+
+弹头发射痕迹是指枪弹发射过程中，由枪支机件在稳固定位和规则性动作下同弹头的固定部位，发生机械作用而留下的擦痕。这些痕迹反映了枪支机件作用部位的外表结构特点，一般不会受到射击人变更，射击扣动扳机施力的大小和射击方向、距离等不同因素的影响，具有清晰、稳定、特征明显、再现性好等特点。
+
+目前世界性的持枪犯罪案件数量逐渐增加，给公民的生命财产安全造成了极大的危害。枪弹痕迹检验是用来侦破涉枪案件的刑侦技术手段，它是研究枪支发射弹头后，遗留在弹头、弹壳和被射物体上的各种痕迹、物屑的形成变化规律，并对其进行分析、检验的科学技术方法。通过研究弹头发射痕迹的形成、变化规律以及对之进行分析和检验，一方面可以用来区分发射枪种和认定射击枪支，从而由痕及枪、以枪找人的提供破案证据，为司法部门快速、准确侦破枪击要案提供有力的支持和科学的依据；另一方面还可以用于研究枪弹痕迹的形成机理及显微形态，检查机械、枪弹的性能、状况 \footnote{[1]}。
+
+本文就采用现代高精度数据采集设备对枪弹痕迹进行检验过程中出现的一些问题进行讨论。
+
+本题的问题有如下几个方面：
+
+1. 在采用光学设备对弹头上痕迹进行采集时，如何处理由位置和姿态造成的测量误差，使得两个弹头可以尽量在相同位置和相同姿态的情况下进行比对？
+
+2. 采取怎样的方法消除测量过程中出现的误差和噪声？
+
+3. 依据文件给出的数据，说明怎样的特征可以用于枪弹痕迹的比对？并给出提取这些特征的方法。采用数据的哪一部分用作比对，其效果比较好？要求给出完整的比对方案、算法，并在电子版附件中给出程序。
+
+4. 用解决问题3的方法列表表示出题中22个弹头痕迹两两之间的相似程度，并给出每个弹头按相似程度由高到低给出与之相似的前5位的弹头文件号。
+
+\section*{二、模型假设与符号说明}
+
+\textbf{模型假设：}
+
+a. 枪膛内弹痕特性具有很强的再现性，只要枪膛膛线没有发生本质的变化，即使经过千百次反复发射，弹痕特性变化也不大；
+
+b. 弹头的直径在发射过程中不会发生改变；
+
+c. 文件中给出的次棱数据包含了弹头痕迹的全部特征；
+
+\section*{符号说明:}
+
+\begin{tabular}{ll}
+$R$ & 最小二乘圆半径 \\
+$R_{\max }, R_{\min }$ & 实际被测轮廓上各点到最小二乘圆圆心距离的最大和最小值 \\
+$G(a, b)$ & 最小二乘圆的圆心直角坐标 \\
+$R_{i}$ & 实际被测轮廓上第 $i$ 点到最小二乘圆圆心的距离 \\
+$f_{L S}$ & 圆度的误差值 \\
+$P_{i}\left(r_{i}, \theta_{i}\right)$ & 实际轮廓上测得的第 $i$ 点的坐标 \\
+$w_{j, k}$ & 小波系数 \\
+$\theta_{j}$ & BP 神经网络节点 $j$ 的阈值 \\
+$\text { net }_{j}$ & BP 神经网络节点 $j$ 的输入值 \\
+$O_{j}$ & BP 神经网络节点 $j$ 前一层各节点输出值 \\
+$f_{s}\left(\text { net }_{j}\right)$ & BP 神经网络激励函数或作用函数，一般采用 Sigmoid 函数 \\
+$E_{P}$ & BP 神经网络均方误差函数 \\
+$\eta$ & BP 神经网络学习率，$0<\eta<1$ \\
+$x^{(k)}$ & BP 神经网络训练过程第 $k$ 次迭代的权值和阈值所组成的向量 \\
+$E(x)$ & BP 神经网络误差指标函数 \\
+$e(x)$ & 误差 \\
+$J(x)$ & Jacobian 矩阵 \\
+$P_{\delta}$ & 图像灰度共生矩阵 \\
+$L$ & 图像的灰度级 \\
+$\delta$ & 图像中两个像素间的位置关系 \\
+$G$ & 纹理的角二阶距（能量） \\
+$E$ & 纹理的熵 \\
+$A$ & 纹理的对比度（惯性矩） \\
+$J$ & 纹理的局部平稳性 \\
+$d$ & 空间两点之间的欧氏距离 \\
+\end{tabular}
+
+\section*{三、问题一的模型建立与求解}
+
+\subsection*{1、问题分析}
+
+用光学设备采集弹头上痕迹时，弹头由人工固定在支架上，由人工调节该弹头的位置和姿态，而人工调节很难使两个弹头在同样位置和同样姿态情况下被测量，容易产生平移误差；子弹在前进过程中会产生一定的倾斜角度，使擦痕分布成斜线状，与圆柱母线形成一定的夹角，很容易产生转动误差 \footnote{2}。这就需要寻找一条新的基准线，将不同弹头尽量在相同位置和相同姿态的情况下进行比对，减小平移误差和转动误差。
+
+由于测量弹头痕迹数据时，弹头由人工固定和调节其位置和姿态，且其发射过
+
+程也会产生转动误差，所以弹头在空间的位置不完全相同。可以寻找一条新的基准线，使其经过弹头圆柱底部圆心且平行于测量基准面，如图 3-1 所示。由于这条新基准线对于摆放位置不同的弹头而言都是唯一确定的，所以可以将其上面的点作为对应弹头圆柱截面的中心点。这样就可以通过坐标转换的方法将不同弹头痕迹上的点在相同的坐标系中表示出来。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{选取新基准线对弹头位置进行校正测量}
+    \label{fig:3-1}
+\end{figure}
+
+\section{最小二乘圆原理}
+
+最小二乘圆是个理想的圆，它从实际被测轮廓上各点到该圆周的距离的平方和为最小，以其圆心为中心，作两个同心圆包容实际被测轮廓，该轮廓上至少有一个测点与内圆接触，有另一个测点与外圆接触，以这两个圆的半径差作为圆度误差值，确定最小二乘圆的位置和大小，最小二乘圆圆心与实测圆圆心的距离即为偏心量 \cite{ref3}，即：
+
+\begin{equation}
+\sum_{i=1}^{n}(R_{i}-R)^{2}=\min \text{ （i=1, 2, $\cdots$, n）}
+\tag{3.1}
+\end{equation}
+
+\begin{equation}
+f_{LS}=R_{\max }-R_{\min }
+\tag{3.2}
+\end{equation}
+
+式中 $R$ — 最小二乘圆半径
+
+$R_{i}$ — 实际被测轮廓上各点到最小二乘圆圆心的距离
+
+$f_{LS}$ — 圆度误差值
+
+$R_{\max }$, $R_{\min }$ — 实际被测轮廓上各点到最小二乘圆圆心距离的最大和最小值
+
+最小二乘圆法评定圆度误差值的原理如图3-2所示。根据实际被测轮廓图，以测量中心 $O$（分度头的主轴回转曲线）为测量实际轮廓时所采用坐标系的原点。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{按最小二乘圆法评定圆度误差}
+    \label{fig:3-2}
+\end{figure}
+
+令最小二乘圆的圆心直角坐标为 $G(a, b)$，按极坐标测得的实际轮廓上各测点坐标为 $P_i(r_i, \theta_i)$，则最小二乘圆的圆心坐标 $G(a, b)$ 的计算公式为
+
+\begin{equation}
+\left\{
+\begin{aligned}
+a &= \frac{2}{n} \sum_{i=1}^{n} (r_i \cos \theta_i) \\
+b &= \frac{2}{n} \sum_{i=1}^{n} (r_i \sin \theta_i)
+\end{aligned}
+\right.
+\tag{3.3}
+\end{equation}
+
+\begin{equation}
+R = \frac{1}{n} \sum_{i=1}^{n} r_i
+\tag{3.4}
+\end{equation}
+
+式中
+\begin{itemize}
+    \item $n$ —— 实际轮廓等分角间隔数，$n$ 越大，计算结果越精确
+    \item $i$ —— 测点序号 ($i = 1, 2, \dots, n$)
+    \item $r_i$ —— 各测点到坐标原点（测量中心 $O$）的径向距离。
+\end{itemize}
+
+\section{误差补偿模型的建立}
+
+本模型的主要思想是采用最小二乘圆法，确定一个轮廓基准圆，把弹头各截面痕迹点的坐标转换成相对于各自最小二乘圆圆心的坐标。
+
+由题意知沿 $x$ 轴方向和沿 $y$ 轴方向的测量步长均为 2.75 微米，设 $i$ 表示截面，$j$ 表示此截面上的测量点，$R$ 表示各测点的半径。对弹头截面痕迹上点的坐标进行误差补偿，将其转换成相对于各自最小二乘圆圆心的坐标。误差补偿方法如图 3-3 所示，方法如下：
+
+\textbf{Step1:} 根据每组数据的第一行数据 $Z_{00}$ 确定各测点的参考圆心 $O_i$ 坐标。由于弹头直径 $d = 7.9 \, \text{mm}$，则
+
+\begin{equation}
+O_i = (0, 0.00275i, -d/2 + Z_{01}) \quad i = 0, 1, 2, \dots
+\tag{3.5}
+\end{equation}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{弹头各截面痕迹点的误差补偿示意图}
+    \label{fig:3-3}
+\end{figure}
+
+Step2: 确定第 $i$ 个截面上各测点相对于参考圆心 $O_{i}$ 的半径 $R_{ij}$ 和方向角 $\theta_{ij}$
+
+\begin{equation}
+R_{ij} = \sqrt{x_{ij}^2 + \left[\left(\frac{d}{2} - Z_{01}\right) + Z_{ij}\right]^2}
+\tag{3.6}
+\end{equation}
+
+\begin{equation}
+\cos\theta_{ij} = \frac{\left(\frac{d}{2} - Z_{01}\right) + Z_{ij}}{R_{ij}}
+\tag{3.7}
+\end{equation}
+
+\begin{equation}
+\sin\theta_{ij} = \frac{x_{ij}}{R_{ij}}
+\tag{3.8}
+\end{equation}
+
+Step3: 根据最小二乘圆原理公式，可计算出最小二乘圆半径 $R_{li}$ 和相对于各截面固定中心点的相对圆心坐标 $(U_{i}', V_{i}', W_{i}')$
+
+\begin{equation}
+R_{li} = \frac{1}{m} \sum_{j=1}^{m} R_{ij}
+\tag{3.9}
+\end{equation}
+
+\begin{equation}
+\begin{cases}
+U_{i}' = \frac{2}{m} \sum_{j=1}^{m} R_{ij} \sin\theta_{ij} \\
+V_{i}' = 0 \\
+W_{i}' = \frac{2}{m} \sum_{j=1}^{m} R_{ij} \cos\theta_{ij}
+\end{cases}
+\tag{3.10}
+\end{equation}
+
+Step4: 最小二乘圆圆心的绝对坐标转换
+
+最小二乘圆圆心坐标 $(U_{i}', V_{i}', W_{i}')$ 是相对于参考圆心 $O_{i}(0, 0.00275i, -d/2 + Z_{01})$ 产生，则最小二乘圆圆心的绝对坐标 $(U_{i}, V_{i}, W_{i})$ 转换公式为
+
+\begin{equation}
+\begin{cases}
+U_{i}=U_{i}^{\prime}+0 \\
+V_{i}=V_{i}^{\prime}+0.00275i \\
+W_{i}=W_{i}^{\prime}-d/2+Z_{00}
+\end{cases}
+\tag{3.11}
+\end{equation}
+
+Step5: 消除偏心误差后，各测点相对于最小二乘圆的坐标为
+
+\begin{equation}
+\begin{cases}
+x_{ij}^{\prime}=x_{ij}+U_{i}=R_{ij}\sin\theta_{ij}+U_{i} \\
+y_{ij}^{\prime}=0.00275i \\
+z_{ij}^{\prime}=z_{ij}+W_{i}=R_{ij}\cos\theta_{ij}+W_{i}
+\end{cases}
+\tag{3.12}
+\end{equation}
+
+\section*{4、模型检验}
+
+用77t1-1812492文件中C1棱的数据来检验模型的准确性，选取了$y=1.22$毫米的截面，通过计算，最小二乘圆半径$R_{ls}$为4.0964毫米，圆心的空间坐标为（1.5482，1.2200，3.9934），由于数据量较大，在附录中给出了其中100个测点相对于最小二乘圆中心的坐标。并利用Matlab软件模拟出实测弹头截面痕迹相对于原空间坐标系的曲线和经误差补偿后的痕迹曲线，如图3-4所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{误差补偿前后的弹头痕迹曲线}
+\end{figure}
+
+通过曲线可以看出，两痕迹曲线基本吻合，只是坐标发生了变化，但有些点也做了微调。所以运用此模型将各弹头痕迹数据转化成相对于各截面最小二乘圆圆心的坐标，就可以尽量实现不同弹头在相同位置和姿态的情况下进行比对，减少因弹头的摆放位置和姿态不同而带来的误差。
+
+为了进一步验证误差补偿模型能有效改善测量时由于弹头的位置和姿态的差异造成的误差，将在问题三的模型对误差补偿模型的效果进行验证。
+
+\section*{四、问题二的模型建立与求解}
+
+\subsection*{1. 问题分析}
+
+在枪弹头发射痕迹的检测过程中，由于弹头表面的损伤、锈迹、油斑、杂质及痕迹生成的随机性，所分析的信号常常是非平稳信号，它可能包含许多尖峰或突变部分，并可能混有非平稳噪声信号，而有用的信号通常表现为低频信号或一些比较平稳的信号，而噪声通常表现为高频信号，这样高频部分信号就存在有用和无用二种形式的成份——反映信号突变的高频量和噪声。要分析这种信号，必须首先进行消噪处理，而传统的傅立叶方法对这种信号消噪处理无能为力。因为傅立叶分析不能给出信号的某个时间点上或某个局部时间段的频域变化情况，也就不能区分高频分量哪些反映突变部分，哪些代表噪声部分。又由于弹头表面纹理的提取必须同时具备频域精度和时域精度，时域精度显得更重要，因此用传统的滤波方法对于弹头纹理的提取是不合适的。
+
+小波降噪原理是把信号分解“投影”到由小波函数构成的函数空间上，在这一过程中，与小波函数相似的信号将取得较大的投影值。小波分析的基本函数是一种由衰减的波动信号构成的“波包”，小波分析的过程是对整个“波包”（被分析的信号）进行处理以提取其波形特征。它利用了整个“波包”的能量，因而具有很强的抑制噪声的能力，在波形的时域特征被噪声所掩盖时，也能有效地识别信号中的突变部分和噪声，达到消噪预处理效果 \cite{ref4}。
+
+\subsection*{2. 小波理论}
+
+小波变换是一种新的变换分析方法，是一个新的数学分支，它具有完善的理论体系，是泛函分析、调和分析、时频分析、数值分析、逼近理论等众多学科知识的完美结晶。它的主要特点是通过变换能够充分突出问题某些方面的特征，被认为是近十几年来在工具及方法上的重大突破。小波变换的基本思想是用一族函数来表示信号或函数，这一族函数称为小波函数系。小波函数是由小波母函数的平移和伸缩构成的 \cite{ref4}。
+
+\subsubsection{2.1 小波的定义}
+
+小波是函数空间 $L^2(R)$ 中满足下述条件的一个函数或信号 $\Psi(x)$
+
+\begin{equation}
+C = \int_{R} \frac{\left|\hat{\Psi}(\omega)\right|^2}{|\omega|} d\omega < \infty
+\tag{4.1}
+\end{equation}
+
+其中，$R$ 为非零的全体实数，$\hat{\Psi}(\omega)$ 为傅立叶变换，上式称为“相容性条件”，称 $\Psi(t)$ 为一个基本小波（或称为小波母函数）。
+
+设函数 $\Psi(t) \in L^2(R)$，当 $\hat{\Psi}(\omega)$ 满足可容性条件时，对于任意的实数 $(a, b)$，对将 $\Psi(x)$ 经伸缩和平移后得
+
+\begin{equation}
+\Psi_{a,b}(x) = |a|^{-\frac{1}{2}} \Psi\left(\frac{x-b}{a}\right) \qquad a, b \in \mathbb{R} \quad a \neq 0
+\tag{4.2}
+\end{equation}
+
+称其为由小波母函数 $\Psi(x)$ 生成的依赖参数 $(a, b)$ 的连续小波函数 $\Psi_{a,b}(x)$（或小波序列），简称小波。式中 $a$ 为尺度因子，$b$ 为平移因子。
+
+\subsection{小波变换}
+
+对于任意函数或信号 $f(t) \in L^2(\mathbb{R})$，其连续小波变换定义为
+\begin{equation}
+W_f(a, b) = \int_{\mathbb{R}} f(x) \overline{\Psi}_{a,b}(x) dx = |a|^{-\frac{1}{2}} \int_{\mathbb{R}} f(x) \overline{\Psi}\left(\frac{x-b}{a}\right) dx
+\tag{4.3}
+\end{equation}
+其中 $\overline{\Psi}(x)$ 为函数 $\Psi(x)$ 的复共轭，对于任意的函数或信号 $\Psi(x)$，它的小波变换是一个二元函数。
+
+由可容性条件式 (4.1) 得
+\begin{equation}
+\int_{-\infty}^{\infty} \Psi(x) dx = 0
+\tag{4.4}
+\end{equation}
+容易证明，在空间 $L^2(\mathbb{R})$ 中小波变换反演公式为
+\begin{equation}
+f(x) = \frac{1}{C} \int_{\mathbb{R}} \int_{\mathbb{R}} W_f(a, b) \Psi_{a,b}(x) / a^2 da db
+\tag{4.5}
+\end{equation}
+
+\section{本文中采用的小波消噪方法}
+
+子弹头擦痕痕迹的实际测量的信号不会是纯粹的非平稳信号，总会掺杂有各种噪声。测量数据的过程中也会受到各种污染，成为检测数据信号中的噪声。如制作样本痕迹过程中，接触部位粘附微小金属颗粒等形成测量曲线的尖峰或突变部分，在信号中反映为高频成份，这些污染“噪声”会增大或减小计算量，掩盖磨损面的本质特征。因此检验过程中首先要求进行滤波或消噪处理，否则即使很弱的“噪声”都会给分析检验结果带来很大的误差。
+
+根据小波消噪原理，本研究采用阈值法直接对信号的小波系数进行“过滤”，此方法的优点是计算量小，方法简洁，同时不会过多地改变曲线的光滑度。首先利用Doubecies小波消噪算法来处理检验数据（sym8小波包3层，对信号进行消噪处理），处理过程如下：
+
+- Step1：对信号 $f(x)$ 进行小波分解，得到不同分解层的小波系数 $w_{j,k}$；
+- step2：计算小波分解层域值，域值 $\lambda$ 为 $\lambda = \sqrt{2 \log(n)}$，$n$ 为分解层样本的长度；
+- step3：把低于对应域值 $\lambda$ 的小波系数 $w_{j,k}$ 置为零，而保留高于域值 $\lambda$ 的的小波系数 $w_{j,k}$，把保留下来的小波系数矩阵 $W'_{j,k}$ 作为信号 $f(x)$ 降噪后信号分解的小波系数 $w'_{j,k}$；
+- step4：最后利用重构公式对分解信号 $w'_{j,k}$ 进行重构即获得消噪后的信号。
+
+由于题中给出的数据是网格状的（$x, y$ 的测量步长均为 2.75 毫米），对数据进行检测后，对检测到的噪声点 $z$ 进行小波消噪。基本方法是对噪声点周围的数据进行搜索，搜索范围满足
+
+$R > \sqrt{2} \Delta x, \, \Delta x = 2.75 \, \text{微米}$
+
+在搜索圆范围内选取距离噪声点相同的四个方向上的点 $z_1, z_2, z_3, z_4$，将这四个点的加权平均数代替噪声点 $z$：
+
+\begin{equation}
+z = (z_1 + z_2 + z_3 + z_4) / 4
+\tag{4.6}
+\end{equation}
+
+消噪原理如图4-1所示
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{小波消噪原理图}
+    \label{fig:4-1}
+\end{figure}
+
+选取子弹77T1-1504519，次棱为C2，来验证滤波效果。图4-2(a)和4-2(b)为消噪前弹头擦痕三维痕迹表面图和等高线图：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{小波消噪前子弹头擦痕三维表面图}
+    \label{fig:4-2a}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{小波消噪前子弹头三维擦痕迹等高线图}
+    \label{fig:4-2b}
+\end{figure}
+
+从上图可以明显看出，采用小波消噪前，采集数据受到一定的污染而含有“噪声”，其中有一个很强的噪声点，而且其他数据噪音也是比较大，图中反应出来的图像表面粗糙，不光滑。下面为采用小波消噪后的三维擦痕表面图 \ref{fig:4-3a} 和等高线图 \ref{fig:4-3b}。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{小波消噪后子弹头三维痕迹表面图}
+    \label{fig:4-3a}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{小波消噪后子弹头三维痕迹等高线图}
+    \label{fig:4-3b}
+\end{figure}
+
+由图中可以看出数据中的误差噪声已被明显削弱，图中表现出来的图像较光滑，过渡较平稳。由滤波结果可得，运用小波对数据集进行消除噪声处理，能有效的消除曲面中的突变部分和污染噪声，保留有用信息，从而消除弹头表面的误差和噪声。
+
+\section{五、问题三的模型建立与求解}
+
+\subsection{1、问题分析}
+
+从弹头的结构可知，整个弹头由头部、圆柱部分与尾部三部分组成。其中弹头圆柱部分直径最大，在枪弹发射过程中，弹头圆柱部分充分受到线膛内壁、膛线棱边、棱角以及膛线表面的强烈挤压、摩擦产生塑性变形，因此弹头圆柱部披甲上留下的射击痕迹最明显深刻。可以认定弹头圆柱部分所含发射痕迹最为丰富且特征最为稳定、明显，检验价值高，因此弹头痕迹采集主要在弹头圆柱部分。
+
+根据附件中给出的 6 支枪发射的 12 发子弹，对任意手枪射出的一对子弹 T1 和 T2 来对数据进行对比分析。由于本题对弹痕的测量顺序统一按照一个方向排序，假如是按照从弹头的底部向头部看去为逆时针方向排序，但每个弹痕的对应顺序是不可知的，即 T1 的四条次棱 C1、C2、C3、C4 与 T2 的四条次棱 C1、C2、C3、C4 之间的对应关系是不可知的。同时，由附件中给出的 4 条次棱的数据文件可以看出（单位 mm）：
+
+\begin{align*}
+x &\in [0, 1.54825], dx = 0.00275, Num_x = 564; \\
+y &\in [0, 2.07625], dy = 0.00275, Num_y = 756;
+\end{align*}
+
+其中，$x, y$ 为每个点对应的 $X, Y$ 方向上的坐标；$dx, dy$ 为 $X, Y$ 方向上的坐标间隔；$Num_x, Num_y$ 为 $X, Y$ 方向上的坐标数据。由此得出，题目中给出的三维数据图像为 $564 \times 756$ 的网格阵，又因为数据量非常大，可以考虑从弹头痕迹三维数据图中提取有效特征对弹痕进行比对。
+
+\section*{2、方案一：特征截面的神经网络匹配}
+
+\subsection*{2.1 方案一分析}
+
+a) 以 77T1-1812492 与 77T2-1812492 两发子弹做对比研究。根据子弹擦痕的三维数据，做出 77T1-1812492 子弹的四条棱 C1、C2、C3、C4 的三维图，如图 5-1 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{77T1-1812492 四条次棱擦痕的三维图}
+    \label{fig:5-1}
+\end{figure}
+
+从图中可以看出，子弹在经过枪膛后，在可能由于子弹头尾部经过火药的爆炸作用，会有不同程度的凹陷，这个凹陷掩盖了四条擦痕的特征，所以子弹尾部在进行比对研究的时候误差较大。同时，在擦痕靠近子弹头顶部时，由于子弹头靠顶部曲面逐渐往顶部收缩，此处的擦痕痕迹也逐渐模糊。所以在进行实验时，要对子弹头尾部和顶部数据进行剔除，只留具有稳定特征中间段数据进行比对，如图 5-2 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image1.png}
+    \caption{弹痕痕迹相对平稳处的位置示意}
+    \label{fig:5-2}
+\end{figure}
+
+因 $y \in [0, 2.07625]$，取中间段数据 $y_{real} \in [0.825, 1.1]$，即采用子弹位于圆柱部分宽度为 $0.275 \, \text{mm}$ 的数据段作为比对对象，此时对应的数所段为 $Num_y \in [300, 400]$，如图 \ref{fig:5-2} 所示。
+
+b) 选取 77T1-1812492 弹头四条棱擦痕痕迹对应的中间段数据，剔除其它部位的数据，如图 \ref{fig:5-3} 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{取出 77T1-1812492 四条棱擦痕中间段数据}
+    \label{fig:5-3}
+\end{figure}
+
+从图中可以看出，中间段的擦痕痕迹趋势比较平稳，特征明显，利于进行比对分析。
+
+c) 对于选取的弹头中间段数据，从图中可以看出，在Y轴方向上曲面变化相对平稳，所以可以把这一段数据压缩到Y轴的某一截面上。这个截面不是与某一特定Y坐标所对应的截面，而是把选取的数据在Y轴方向取平均值，从而使这一段区面转化为X—Z坐标平面内的一条曲线。从而可以把整个截面曲线做为特征进行比对研究。
+
+\section{2.2 建立具有截面特征的 BP—LM 神经网络}
+
+a) 采用的神经网络思想
+
+BP 神经网络也称误差反向传播神经网络，它是由非线性变换单元组成的前馈网络，一般的多层前馈网络也指 BP 网络 \cite{ref5}。
+
+本文用 T1 子弹头痕迹截面曲线特征对建立的神经网络进行训练，建立整条曲线的特征变化规律，与 T2 弹痕截面曲线进行比对。误差用欧氏距离来表示，欧氏距离越大，则相似程度越低；反之，欧氏距离越小，则相似程度越高。
+
+b) BP 神经网络算法 \cite{ref5}
+
+一般 BP 神经网络算法分为如下步骤：
+
+\textbf{Step1：正向传播过程}
+
+输入层：输入值一般为样本各分量输入值，输出值一般等于输入值。
+
+隐含层：对于节点 $j$，其输入值 $net_j$ 为其前一层各节点输出值 $O_i$ 的加权和：
+
+\begin{equation}
+net_j = \sum_i W_{ij} O_i
+\tag{5.1}
+\end{equation}
+
+输出值：
+
+\begin{equation}
+O_j = f_s(net_j)
+\tag{5.2}
+\end{equation}
+
+式中 $f_s(net_j)$ 称为激励函数或作用函数，一般采用 Sigmoid 函数：
+
+\begin{equation}
+f_i(net_j) = \frac{1}{1 + e^{-(net_j - \theta_j)/\lambda}}
+\tag{5.3}
+\end{equation}
+
+式中 $\theta_j$ 称为阈值，$\lambda$ 称为温度系数。
+
+输出层：输出层的输入 $net_k$ 与输出 $O_k$ 与隐含层类似，分别为：
+
+\begin{equation}
+net_k = \sum_j W_{kj} O_j
+\tag{5.4}
+\end{equation}
+
+\begin{equation}
+O_k = f_x(net_k)
+\tag{5.5}
+\end{equation}
+
+\textbf{Step2：反向传播过程}
+
+BP 学习算法的误差函数一般定义为实际输出与期望输出的均方误差和，通过误差函数最小化的过程不断的改变权重，完成从输入到输出的非线性映射。
+
+设网络输入模式样本为 $x_p = \{x_{pi}\}$，期望输出为 $\{t_{pk}\}$，均方误差函数 $E_p$ 为：
+
+\begin{equation}
+E_p = \frac{1}{2} \sum_k (t_{pk} - O_{pk})^2
+\tag{5.6}
+\end{equation}
+
+而对于所有的学习样本，系统的均方误差为：
+\begin{equation}
+E_{p}=\frac{1}{2P}\sum_{P}\sum_{k}(t_{pk}-O_{pk})^{2}
+\tag{5.7}
+\end{equation}
+
+step3：权值变化过程
+
+为了达到学习目的，要根据误差函数来相应地调整网络间的连接权值。一般来说经典的 BP 学习算法采用最速梯度下降法调整权值，每次调整的增量为：
+\begin{equation}
+\Delta W_{kj}=-\eta\frac{\partial E}{\partial W_{kj}}
+\tag{5.8}
+\end{equation}
+式中 $0<\eta<1$ 称为学习率。
+
+从上式可推出下列连接权值的修正量公式
+\begin{equation}
+\Delta W_{kj}=\eta\delta_{k}O_{j}
+\tag{5.9}
+\end{equation}
+
+对于输出节点：
+\begin{equation}
+\delta_{k}=(t_{k}-O_{k})O_{k}(1-O_{k})
+\tag{5.10}
+\end{equation}
+
+对于隐节点：
+\begin{equation}
+\delta_{j}=O_{j}(1-O_{j})\sum_{k}\delta_{k}W_{kj}
+\tag{5.11}
+\end{equation}
+
+step4：学习收敛过程
+
+重新从样本中随机选取一组输入和目标样本，返回第一个过程，直到网络全局误差 E 小于预先设定的一个极小值，即网络收敛，如果学习次数大于预先设定的值，网络就无法收敛，学习结束。
+
+c) 改进的 BP 网络 LM 算法
+
+标准的 BP 网络的逆传播算法具有思路清晰，结构严谨，可操作性强的特点，而且一个 3 层的 BP 网络可以完成任意的 $n$ 维到 $m$ 维的映射，但其收敛过程存在收敛速度慢和易限于局部最小值的问题，可以通过 Levenberg-Marquarde(简称 LM)算法来克服。
+
+设 $x^{(k)}$ 表示第 $k$ 次迭代的权值和阈值所组成的向量，新的权值的阈值组成的向量 $x^{(k+1)}$ 可根据下面的规则求得：
+\begin{equation}
+x^{(k+1)}=x^{(k)}+\Delta x
+\tag{5.12}
+\end{equation}
+
+对于牛顿算法：
+\begin{equation}
+\Delta x=-\left[\nabla^{2}E(x)\right]^{-1}\nabla E(x)
+\tag{5.13}
+\end{equation}
+式中 $\nabla^{2}E(x)$ 表示误差指标函数 $E(x)$ 的 Hessian 矩阵；$\nabla E(x)$ 表示梯度。
+
+误差指标函数为：
+\begin{equation}
+E(x)=\frac{1}{2}\sum_{i=1}^{n}e_{i}^{2}(x)
+\tag{5.14}
+\end{equation}
+上式中 $e(x)$ 为误差，那么
+\begin{equation}
+\nabla E(x)=J^{T}(x)e(x)
+\tag{5.15}
+\end{equation}
+\begin{equation}
+\nabla^{2}E(x)=J^{T}(x)e(x)+S(x)
+\tag{5.16}
+\end{equation}
+
+在式(6.15)、(6.16)中 $\mathrm{J}(x)=\sum_{i=1}^{n} e_{i}(x) \nabla^{2} e_{i}(x)$ 为 Jacobian 矩阵。
+
+对于高斯-牛顿法的计算法则有:
+\begin{equation}
+\Delta x=-\left[J^{T}(x) J(x)\right]^{-1} J(x) e(x)
+\tag{5.17}
+\end{equation}
+
+LM 算法是一种改进的高斯-牛顿法，它的形式为:
+\begin{equation}
+\Delta x=-\left[J^{T}(x) J(x)+\mu I\right]^{-1} J(x) e(x)
+\tag{5.18}
+\end{equation}
+
+式中比例系数 $\mu>0$ 为常数，$I$ 是单位矩阵。从式 (5.18) 中可看出，如果比例系数 $\mu=0$，则为高斯-牛顿法；如果 $\mu$ 取值很大，则 LM 算法接近梯度下降法，每迭代成功一步，则 $\mu$ 减小一些，这样在接近误差目标的时候，逐渐与高斯-牛顿法相似。高斯-牛顿法在接近误差的最小值时，计算速度更快，精度也更高。由于 LM 算法利用了近似的二阶导数信息，它比梯度下降法快得多，实践证明，采用 LM 算法可以较原来的梯度下降法速度提高很多倍。在实际的操作中，$\mu$ 是一个试探性的参数，对于给定的 $\mu$，如果求得的 $\Delta x$ 能使误差指标函数 $E(x)$ 降低，则 $\mu$ 降低；反之，则 $\mu$ 增加。
+
+\subsubsection{d) 神经网络的建立}
+
+\textbf{step1: 输入、输出层}
+
+子弹头擦痕痕迹数据包含，$x, y, z$ 三个坐标轴的值，根据问题分析，我们选择数据区间为 $y_{real} \in [0.825, 1.1]$ 的数据段，因为在此段，数据相对比较平滑稳定，适宜进行比对分析。把在这一段数据，在 $y$ 轴方向进行平均压缩，使得:
+\begin{equation}
+z_{x_{i}}=\sum_{j=300}^{400} \frac{y_{j}}{Num}, (i \in [0, 564])
+\tag{5.19}
+\end{equation}
+
+此时，有效的子弹头擦痕痕迹数据就被压缩到一个在 $y$ 坐标为定值，随着输入变量 $x$ 的变化，擦痕痕迹深度 $z$ 也随之变化的曲线。
+
+所以，选取网络的输入为:
+\begin{equation}
+o_{input}=x_{i}, (i \in [1, 564])
+\end{equation}
+
+网络输出为:
+\begin{equation}
+o_{output}=z_{x_{i}}, (i \in [1, 564])
+\end{equation}
+
+\textbf{step2: 网络中间层数}
+
+对于 BP 网络，有一个非常重要的定理，即对于任何在闭区间内的一个连续函数都可以用单隐层的 BP 网络逼近，因而一个三层的 BP 网络就可以完成任意的 $n$ 维到 $m$ 的映射。
+
+网络隐层神经元的数目对网络有一定的影响，神经元数目太少会造成网络的不适应性，而神经元数目太多又会引起网络的过适性。
+
+隐层的神经元的数目选择是一个十分复杂的问题，往往需要设计者的经验和多次实验来确定，因而不存在一个理想的解析式来表示。隐单元的数目与问题的要求，输入、输出单元的数目都有着直接关系。隐单元数目太多会导致学习时间过长、误
+
+差也不一定最佳，也会导致容错性差，不能识别以前没有看到的样本。因此一定存在一个最佳的隐单元数，以下 3 个公式用于选择最佳隐单元数时的参考范围公式。
+
+- $n_{1}=\sqrt{n+m}+a$，其中 $m$ 为输出神经元数，$n$ 为输入神经元数，$a$ 为 $[1,10]$ 之间的常数。
+- $n_{1}=\log _{2} n$，其中，$n$ 为输入单元数。
+- Kolmogorov 定理，$n_{1}=2 * n+1$，$n$ 为输入单元数。
+
+本文中，输入层为 1 个神经元，输出层为 1 个神经元，根据以上的隐层设计经验公式取隐层神经元个数为 3。
+
+\section*{Step3：本文 BP-LM 神经网络的参数设置}
+
+程序用 Matalb 进行编写，其中网络参数设置如下：
+
+\begin{verbatim}
+net=newff(minmax(p),[3,1],{'tansig','purelin'},'trainlm');
+net.trainParam.epochs=100;
+net.trainParam.goal=0;
+net.trainParam.lr=0.05;
+net.trainParam.show=20;
+\end{verbatim}
+
+\subsection*{2.3 相似度的测量方法}
+
+相似性度量是用来研究多源数据之间相似程度的，是对空间数据进行模式识别的基础。从相似性度量方法来看，通常情况下两类数据相似程度的衡量是根据其特征向量之间的“距离”来分析的，距离越近表明越相似，距离越远表明差别越大 \({ }^{[6]}\) 。空间中两条曲线欧氏距离的测量方法为：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{欧氏距离的测量原理}
+\end{figure}
+
+如图 5-4 所示，在 $x$ 轴上选取等间距点 $x_{1}, x_{2} \ldots, x_{n}(n \rightarrow \infty)$ 两条曲线上对应的 $y$ 轴上是坐标分别为 $y_{1}, y_{2} \ldots y_{n}$，$y_{1}^{\prime}, y_{2}^{\prime} \ldots y_{n}^{\prime}$，则曲线 1 与曲线 2 的欧氏距离为
+
+\[
+d=\sqrt{\left(y_{1}^{\prime}-y_{1}\right)^{2}+\left(y_{2}^{\prime}-y_{2}\right)^{2}+\ldots+\left(y_{n}^{\prime}-y_{n}\right)^{2}}
+\]
+
+\subsection{方案一的流程图}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{方案一进行比对的流程图}
+    \label{fig:5-4}
+\end{figure}
+
+采用此方案进行对比研究时，用图 \ref{fig:5-4} 所示方法，最后用欧氏距离来表示相似度，欧氏距离越长，相似度越大。
+
+\subsection{采用方案一对子弹擦痕比对研究}
+
+方案一首先把编号为 77T1-1812492 和 77T2-1812492 的两发子弹进行对比验证。把子弹痕迹的原始三维数据（原始数据没有经过问题一误差补偿模型进行处理），经过滤波消噪处理，全部已转换为截面曲线。
+
+a) T1 子弹 C1 棱为神经网络样本；T2 子弹 C1、C2、C3、C4 棱进行比对。神经网络训练过程曲线如图 5-5：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{神经网络训练过程曲线}
+    \label{fig:5-5}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{神经网络训练过程曲线}
+    \label{fig:training_curve}
+\end{figure}
+
+如上为网络训练过程中，误差变化和梯度变化记录，从记录中可以看出，经过 100 步的网络训练，网络误差已经下降到平稳，可以使用网络，网络均方误差 MSE \(=1.46243e-006\)。
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image2.png}
+        \caption{网络输出与C1棱截面对比照}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image3.png}
+        \caption{网络输出与C2棱截面对比照}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image4.png}
+        \caption{网络输出与C3棱截面对比照}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image5.png}
+        \caption{网络输出与C4棱截面对比照}
+    \end{minipage}
+\end{figure}
+
+图5-6 以77T1-1812492的C1棱为样本与77T2-1812492各棱进行比对
+
+表5-1 以77T1-1812492的C1为样本与77T2-1812492各棱匹配结果
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+         & T2C1 & T2C2 & T2C3 & T2C4 \\ \hline
+    欧氏距离 & 0.1319 & 0.1649 & 0.1506 & 0.1848 \\ \hline
+    \end{tabular}
+    \caption{匹配结果}
+    \label{tab:matching_results}
+\end{table}
+
+b) T1 子弹C2棱为神经网络样本；T2 子弹C1、C2、C3、C4棱分别做比对。
+
+神经网络训练过程曲线如图5-7所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{神经网络训练过程曲线}
+    \label{fig:training_curve}
+\end{figure}
+
+如上为网络训练过程中，误差变化和梯度变化记录，从记录中可以看出，经过 100 步的网络训练，网络误差已经下降到平稳，可以使用网络，均方误差 $MSE = 6.08269e-007$。
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image2.png}
+        \caption{网络输出与C1棱截面对比照}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image3.png}
+        \caption{网络输出与C2棱截面对比照}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image4.png}
+        \caption{网络输出与C3棱截面对比照}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image5.png}
+        \caption{网络输出与C4棱截面对比照}
+    \end{minipage}
+\end{figure}
+
+图5-8 77T1-1812492的C2为样本，77T2-1812492各棱进行对比
+
+表5-2 77T1-1812492的C2为样本与77T2-1812492各棱匹配
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    & T2C1 & T2C2 & T2C3 & T2C4 \\ \hline
+    欧氏距离 & 0.1434 & 0.0958 & 0.1544 & 0.2795 \\ \hline
+    \end{tabular}
+    \caption{77T1-1812492的C2与77T2-1812492各棱的欧氏距离}
+    \label{tab:euclidean_distances}
+\end{table}
+
+c) T1 子弹C3棱为神经网络样本；T2 子弹C1、C2、C3、C4棱分别做比对。神经网络训练过程曲线如图5-9所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{神经网络训练过程曲线}
+    \label{fig:training_curve}
+\end{figure}
+
+如上为网络训练过程中，误差变化和梯度变化记录，从记录中可以看出，经过 100 步的网络训练，网络误差已经下降到平稳，可以使用网络，网络均方误差 MSE \(=2.03307e-006\)。
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{image2.png}
+        \caption{网络输出与C1棱截面对比照}
+        \label{fig:c1_comparison}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{image3.png}
+        \caption{网络输出与C2棱截面对比照}
+        \label{fig:c2_comparison}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{image4.png}
+        \caption{网络输出与C3棱截面对比照}
+        \label{fig:c3_comparison}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{image5.png}
+        \caption{网络输出与C4棱截面对比照}
+        \label{fig:c4_comparison}
+    \end{minipage}
+\end{figure}
+
+图 5-10 77T1-1812492 的 C3 为样本，77T2-1812492 各棱进行对比
+
+表 5-3 77T1-1812492 的 C3 为样本与 77T2-1812492 各棱匹配
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        & T2C1 & T2C2 & T2C3 & T2C4 \\ \hline
+        欧氏距离 & 0.4275 & 0.4245 & 0.3353 & 0.5045 \\ \hline
+    \end{tabular}
+    \caption{77T1-1812492 的 C3 与 77T2-1812492 各棱的欧氏距离}
+    \label{tab:euclidean_distances}
+\end{table}
+
+\begin{enumerate}
+    \item[(d)] T1 子弹 C4 棱为神经网络样本； T2 子弹 C1、C2、C3、C4 棱分别做比对。
+\end{enumerate}
+
+神经网络训练过程曲线如图 5-11 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{神经网络训练过程曲线}
+    \label{fig:5-11}
+\end{figure}
+
+如上为网络训练过程中，误差变化和梯度变化记录，从记录中可以看出，经过 100 步的网络训练，网络误差已经下降到平稳，可以使用网络，网络均方误差 MSE \(=1.74599e-006\)。
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image2.png}
+        \caption{网络输出与 C1 棱截面对比照}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image3.png}
+        \caption{网络输出与 C2 棱截面对比照}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image4.png}
+        \caption{网络输出与 C3 棱截面对比照}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image5.png}
+        \caption{网络输出与 C4 棱截面对比照}
+    \end{minipage}
+\end{figure}
+
+图 5-12 77T1-1812492 的 C4 为样本，77T2-1812492 各棱进行比对。
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c c}
+ & T2C1 & T2C2 & T2C3 & T2C4 \\
+\hline
+欧氏距离 & 0.2241 & 0.2083 & 0.2033 & 0.1134 \\
+\end{tabular}
+\caption{表5-4 77T1-1812492的C4为样本与77T2-1812492各棱匹配}
+\end{table}
+
+e) 匹配结果验证分析
+
+根据以上77T1-1812492与77T1-1812492的四条棱做神经网络匹配分析，可以得出以下匹配结果：
+
+\begin{table}
+\centering
+\begin{tabular}{c c c}
+77T1-1812492 & 77T1-1812492最匹配的棱 & 欧氏距离 \\
+\hline
+C1 & C1 & 0.1319 \\
+C2 & C2 & 0.0958 \\
+C3 & C3 & 0.3353 \\
+C4 & C4 & 0.1134 \\
+\end{tabular}
+\caption{表5-5 77T1-1811345与77T21811345擦痕痕迹匹配分析}
+\end{table}
+
+从匹配结果来看，本组子弹四条棱是一一对应的，而且是T1C1对T2C1，T1C2对T2C2，T1C3对T2C3，T1C4对T2C4。说明此方案可以对子弹痕迹进行比对分析。
+
+d) 验证原始数据经过问题一的误差补偿模型，可以提高比对分析的精度
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{图5-13 误差补偿前后，T1C2与T2C2棱匹配对比}
+\end{figure}
+
+从图5-13中可以看出，经过误差补偿后，77T1-1811345子弹C2棱与77T2-1811345C2子弹C2棱之间的相互匹配图有了明显的改善。说明，经过问题一的误差补偿模型处理后的数据来进行痕迹比对时，可以提高对比精度，同时验证了误差模型能够有效减少因弹头摆放位置和姿态的差异引起的测量误差。
+
+但是，由于时间有限，误差补偿模型来处理数据会占用很多时间。所以，在本文中后面的验证程序，均采用的是没有经过误差补偿的原始数据，经过噪声滤波处理，再进行对比。
+
+\begin{table}
+\centering
+\caption{77T1-1203959与77T2-1203959神经网络对比结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.1750 & 0.2332 & 0.1462 & 0.4236 & T1C1 $\rightarrow$ T2C3 & T1C1 $\rightarrow$ T2C3 \\
+\hline
+T1C2 & 0.2343 & 0.3214 & 0.2147 & 0.1214 & T1C2 $\rightarrow$ T2C4 & T1C2 $\rightarrow$ T2C4 \\
+\hline
+T1C3 & 0.2263 & 0.0975 & 0.2878 & 0.4156 & T1C3 $\rightarrow$ T2C2 & T1C3 $\rightarrow$ T2C2 \\
+\hline
+T1C4 & 0.1071 & 0.2412 & 0.3421 & 0.1516 & T1C4 $\rightarrow$ T2C1 & T1C4 $\rightarrow$ T2C1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T1-1504519与77T2-1504519神经网络对比结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.3577 & 0.3856 & 0.4562 & 0.5124 & T1C1 $\rightarrow$ T2C1 & T1C1 $\rightarrow$ T2C1 \\
+\hline
+T1C2 & 0.4534 & 0.3967 & 0.4421 & 0.3823 & T1C2 $\rightarrow$ T2C4 & T1C2 $\rightarrow$ T2C2 \\
+\hline
+T1C3 & 0.4123 & 0.5634 & 0.3582 & 0.4563 & T1C3 $\rightarrow$ T2C3 & T1C3 $\rightarrow$ T2C3 \\
+\hline
+T1C4 & 0.4349 & 0.5431 & 0.5512 & 0.4019 & T1C4 $\rightarrow$ T2C4 & T1C4 $\rightarrow$ T2C4 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T1-1811345与77T2-1811345神经网络对比结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.0821 & 0.0367 & 0.0562 & 0.1508 & T1C1 $\rightarrow$ T2C2 & T1C1 $\rightarrow$ T2C2 \\
+\hline
+T1C2 & 0.0925 & 0.1134 & 0.0578 & 0.2131 & T1C2 $\rightarrow$ T2C3 & T1C2 $\rightarrow$ T2C3 \\
+\hline
+T1C3 & 0.0938 & 0.1278 & 0.0349 & 0.2192 & T1C3 $\rightarrow$ T2C3 & T1C3 $\rightarrow$ T2C4 \\
+\hline
+T1C4 & 0.0413 & 0.0921 & 0.0433 & 0.1296 & T1C4 $\rightarrow$ T2C1 & T1C4 $\rightarrow$ T2C1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T1-1928033与77T2-1928033神经网络对比结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.1513 & 0.1028 & 0.1639 & 0.1782 & T1C1 $\rightarrow$ T2C2 & T1C1 $\rightarrow$ T2C2 \\
+\hline
+T1C2 & 0.0678 & 0.1932 & 0.1668 & 0.2371 & T1C2 $\rightarrow$ T2C1 & T1C2 $\rightarrow$ T2C3 \\
+\hline
+T1C3 & 0.2359 & 0.2398 & 0.1436 & 0.0862 & T1C3 $\rightarrow$ T2C4 & T1C3 $\rightarrow$ T2C4 \\
+\hline
+T1C4 & 0.1481 & 0.2172 & 0.2372 & 0.3415 & T1C4 $\rightarrow$ T2C1 & T1C4 $\rightarrow$ T2C1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T2-1923252 与 77T2-1923252 神经网络对比结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.0783 & 0.1500 & 0.1668 & 0.1813 & T1C1 $\longrightarrow$ T2C1 & T1C1 $\longrightarrow$ T2C1 \\
+\hline
+T1C2 & 0.1821 & 0.1037 & 0.2518 & 0.4412 & T1C2 $\longrightarrow$ T2C2 & T1C2 $\longrightarrow$ T2C2 \\
+\hline
+T1C3 & 0.3829 & 0.4167 & 0.2454 & 0.0682 & T1C3 $\longrightarrow$ T2C4 & T1C3 $\longrightarrow$ T2C3 \\
+\hline
+T1C4 & 0.2162 & 0.1523 & 0.1934 & 0.0823 & T1C4 $\longrightarrow$ T2C4 & T1C4 $\longrightarrow$ T2C1 \\
+\hline
+\end{tabular}
+\end{table}
+
+由表可以看出, 采用截面特征神经网络模型进行比对, 6组子弹有2组4条棱吻合, 3组3条棱吻合, 1组2条棱吻合。说明此模型可以对同一支枪射出子弹进行比对。
+
+\section*{3、方案二：纹理特征的图像匹配}
+
+\subsection*{3.1 图像纹理的用途}
+
+纹理是计算机视觉和真实感造型领域经常使用的概念, 有着非常重要的应用价值。图像的纹理一般理解为图像灰度在空间上的变化和重复, 或图像中反复出现的局部模式(纹理单元)和它们的排列规则。纹理特征也是一种全局特征, 它也描述了图像或图像区域所对应景物的表面性质。与颜色特征不同, 纹理特征不是基于像素点的特征, 它需要在包含多个像素点的区域中进行统计计算。在模式匹配中, 这种区域性的特征具有较大的优越性, 不会由于局部的偏差而无法匹配成功。作为一种统计特征, 纹理特征常具有旋转不变性, 并且对于噪声有较强的抵抗能力 \cite{ref7}。
+
+\subsection*{3.2 选择纹理特征}
+
+纹理是由灰度分别在空间位置上反复交替变化而形成的, 因而在图像空间这相隔某距离的两像素间会存在一定的灰度关系, 这种关系被称为是图像中灰度的相关性 \cite{ref7}。为了更好的描述纹理的特征, 下面引入灰度共生矩阵的概念:
+
+定义: 从灰度为 $i$ 的点离开某个位置关系 $\delta=(Dx, Dy)$ 的点上的灰度为 $j$ 的概率称为灰度共生矩阵。灰度共生矩阵用 $P_{\delta}$ 表示:
+\begin{equation}
+P_{\delta}(i, j), \quad (i, j=0, 1, 2, \cdots, L-1)
+\tag{5.20}
+\end{equation}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=1.5]
+    \draw[->] (0,0) -- (3,0) node[right] {$y$};
+    \draw[->] (0,0) -- (0,3) node[above] {$x$};
+    \draw[->] (0,0) -- (1.5,1.5) node[above right] {$\delta$};
+    \draw (0,0) circle (0.3) node {$i$};
+    \draw (1.5,1.5) circle (0.3) node {$j$};
+    \node at (0.75,0.75) {$Dx$};
+    \node at (1.25,0.25) {$Dy$};
+\end{tikzpicture}
+\caption{两像素间的位置关系}
+\end{figure}
+
+上式中，$L$ 表示图像的灰度级；$i, j$ 分别表示两个像素的灰度；$\delta$ 表示两个像素间的位置关系，不同的 $\delta$ 决定了两个像素间的距离和方向。显然灰度共生矩阵是一个对称矩阵，其阶数由图像中的灰度层决定。这个矩阵是距离和方向的函数，在规定的计算窗口或图像区域内统计符合条件的像元对数。不同的 $\delta$ 决定了两个像素间的距离和方向，常用图5-15所示的4个方向上位置关系。
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[scale=0.8]
+        % 0度
+        \draw[->] (0,0) -- (8,0) node[right] {$y$};
+        \draw[->] (0,0) -- (0,4) node[above] {$x$};
+        \draw (0,0) node[anchor=south west] {0};
+        \draw (4,0) node[anchor=south] {0度};
+        
+        \draw (1,2) circle (0.5) node {i};
+        \draw (3,2) circle (0.5) node {i};
+        \draw (5,2) circle (0.5) node {i};
+        
+        \draw[->] (1.5,2) -- (2.5,2) node[above] {$|D_y|$};
+        \draw[->] (3.5,2) -- (4.5,2) node[above] {$|D_y|$};
+        \draw[->] (2.5,2) -- (1.5,2) node[above] {$-|D_y|$};
+        
+        % 90度
+        \begin{scope}[xshift=10cm]
+            \draw[->] (0,0) -- (8,0) node[right] {$y$};
+            \draw[->] (0,0) -- (0,4) node[above] {$x$};
+            \draw (0,0) node[anchor=south west] {0};
+            \draw (4,0) node[anchor=south] {90度};
+            
+            \draw (1,2) circle (0.5) node {i};
+            \draw (1,4) circle (0.5) node {i};
+            \draw (1,0) circle (0.5) node {i};
+            
+            \draw[->] (1,2.5) -- (1,3.5) node[right] {$|D_y|$};
+            \draw[->] (1,1.5) -- (1,0.5) node[right] {$-|D_y|$};
+        \end{scope}
+        
+        % 45度
+        \begin{scope}[yshift=-6cm]
+            \draw[->] (0,0) -- (8,0) node[right] {$y$};
+            \draw[->] (0,0) -- (0,4) node[above] {$x$};
+            \draw (0,0) node[anchor=south west] {0};
+            \draw (4,0) node[anchor=south] {45度};
+            
+            \draw (1,2) circle (0.5) node {i};
+            \draw (3,4) circle (0.5) node {i};
+            \draw (5,2) circle (0.5) node {i};
+            
+            \draw[->] (1.5,2) -- (2.5,3) node[above] {$|D_y|$};
+            \draw[->] (2.5,3) -- (3.5,2) node[above] {$|D_y|$};
+            \draw[->] (2.5,1) -- (1.5,2) node[above] {$-|D_y|$};
+        \end{scope}
+        
+        % 135度
+        \begin{scope}[xshift=10cm, yshift=-6cm]
+            \draw[->] (0,0) -- (8,0) node[right] {$y$};
+            \draw[->] (0,0) -- (0,4) node[above] {$x$};
+            \draw (0,0) node[anchor=south west] {0};
+            \draw (4,0) node[anchor=south] {135度};
+            
+            \draw (1,2) circle (0.5) node {i};
+            \draw (3,2) circle (0.5) node {i};
+            \draw (5,0) circle (0.5) node {i};
+            
+            \draw[->] (1.5,2) -- (2.5,1) node[above] {$-|D_y|$};
+            \draw[->] (2.5,1) -- (3.5,0) node[above] {$|D_y|$};
+            \draw[->] (2.5,3) -- (1.5,2) node[above] {$|D_y|$};
+        \end{scope}
+    \end{tikzpicture}
+    \caption{常用的4种方向位置关系}
+    \label{fig:directions}
+\end{figure}
+
+当两个像素间的位置关系选定后，就生成一定 $\delta$ 下的灰度共生矩阵 $P_{\delta}$：
+
+\begin{equation}
+P_{\delta} =
+\begin{bmatrix}
+P_{\delta}(0,0) & P_{\delta}(0,1) & \dots & P_{\delta}(0,j) & \dots & P_{\delta}(0,L-1) \\
+P_{\delta}(1,0) & P_{\delta}(1,1) & \dots & P_{\delta}(1,j) & \dots & P_{\delta}(1,L-1) \\
+\cdots & \cdots & \cdots & \cdots & \cdots & \cdots \\
+\cdots & \cdots & \cdots & \cdots & \cdots & \cdots \\
+P_{\delta}(L-1,0) & \cdots & \cdots & \cdots & \cdots & P_{\delta}(L-1,L-1)
+\end{bmatrix}
+\tag{5.21}
+\end{equation}
+
+共生矩阵 $[8]$ 中的一个元素表示了一种灰度组合小出现的次数。如元素 $P_{\delta}(1,0)$ 表示了图像上位置关系为 $\delta$ 的两像素灰度分别为1和0的情况出现的次数。显然，不同的位置关系，元素值就不同。灰度共生矩阵是对图像上保持某个距离的两个像素分别具有某灰度的状况进行统计得到的，它描述了成对像素的灰度组合分布。
+
+一般来说不同图像的相似性由各种纹理特征构成的归一化特征向量之间的加权欧氏距离决定。通常采用下面四个最常用的特征来提取图像的纹理特征。
+
+\subsection{3.2.1 能量（角二阶距）}
+
+角二阶距是灰度共生矩阵各元素的平方和，又称能量。它是图像纹理灰度变化均一的度量，反映了图像灰度分布均匀程度和纹理粗细程度。从图像整体来看，纹理较粗的图像能量较大；反之，纹理较细的图像能量较小。如果共生矩阵的所有值均相等能量值就小；相反，如果其中一些值大而其它值小，则能量值大。一幅有着一致灰度图像的共生矩阵只有一个值，它等于图像的总像素数，它能量的最大值为1，因此能量的值大则表明区域内图像灰度分布完全均匀；反之，当图像灰度分布很不均匀、表面呈现出粗糙特性时，此时能量值较小。它可表示为
+\begin{equation}
+G = \sum_{i=0}^{N-1} \sum_{j=1}^{N-1} P^2(i,j)
+\tag{5.22}
+\end{equation}
+
+\subsection{3.2.2 熵}
+
+熵代表图像的信息量，度量图像纹理的随机性，只是图像的复杂程度。若图像充满纹理，则灰度共生矩阵中所有值均相等，图像的复杂程度高时，它取得最大值；相反，若图像中的纹理较少，共生矩阵中的值非常不均匀时，其值较小。因此，熵的最大值暗示图像中灰度分布非常随机。如果图像没有任何纹理，则灰度共生矩阵几乎为零阵，则熵也接近于零，图像纹理的粗与细，多与少使得熵有所不同。它可表示为
+\begin{equation}
+E = -\sum_{i=1}^{N-1} \sum_{j=0}^{N-1} P(i,j) \log P(i,j)
+\tag{5.23}
+\end{equation}
+
+\subsection{3.2.3 惯性矩（对比度）}
+
+对比度是灰度共生矩阵主对角线附近的惯性矩，它反映临近像素的反差，度量矩阵的值是如何分布和图像中局部变化的多少，反映了图像的清晰度和纹理的沟纹深浅。纹理的沟纹深，对比度大，效果清晰；反之，对比度小，则沟纹浅，效果模糊。当对比度值为0，表明图像完全均一、无纹理。它可表示为
+\begin{equation}
+A = \sum_{i=0}^{N-1} n^2 \left\{ \sum_{i=0}^{N-1} \sum_{j=0}^{N-1} P(i,j) \right\}
+\tag{5.24}
+\end{equation}
+
+\subsection{3.2.4 局部平稳性}
+
+它反映纹理的规则程度，度量图像纹理局部变化的多少。其值大则说明图像纹理的不同区域间缺少变化，局部非常均匀，即规律较强、易于描述。纹理杂乱无章、难于描述的，说明图像的不同区域变化多，局部不均匀，则值小。它可表示为
+\begin{equation}
+J = \sum_{i=0}^{N-1} \sum_{j=0}^{N-1} \frac{P(i,j/d,\theta)}{[1+(i-j)^2]}
+\tag{5.25}
+\end{equation}
+
+本题中可构造四个方向的共生矩阵 $P(1,0), P(0,1), P(1,0), P(1,1)$，根据上述公式计算4个共生矩阵的4个纹理参数。
+
+\subsection{3.4 四个纹理特征的提取}
+
+四个纹理特征能量、熵、惯性矩、局部相似性的提取采用VC++6.0编程实现，对需要进行对比两副纹理进行提取特征值, 各个纹理特征值为整副纹理的平均值。纹理特征提取程序截面如图5-16所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{提取、计算擦痕纹理图的四个特征值}
+    \label{fig:5-16}
+\end{figure}
+
+纹理图像分割和计算纹理平均值代码如下:
+
+\begin{verbatim}
+//将图像分成若干个窗口，计算其纹理均值
+for(i=0; i<rolltimeH; i++)
+{
+    for(j=0; j<rolltimeW; j++)
+    {
+        //首先赋值给子窗口
+        for(p=0; p<m_grayShow.FilterWindowWidth; p++)
+        {
+            for(q=0; q<m_grayShow.FilterWindowWidth; q++)
+            {
+                arLocalImage[p][q] = m_grayShow.ImageArray[i*m_grayShow.FilterWindowWidth + p][j*m_grayShow.FilterWindowWidth + q];
+            }
+        }
+        m_grayShow.ComputeMatrix(arLocalImage, m_grayShow.FilterWindowWidth);
+        m_grayShow.ComputeFeature(dEnergy1, dEntropy1, dInertiaQuadrature1, dCorrelation1, dLocalCalm1);
+        dEnergy += dEnergy1;
+        dEntropy += dEntropy1;
+        dInertiaQuadrature += dInertiaQuadrature1;
+        dCorrelation += dCorrelation1;
+        dLocalCalm += dLocalCalm1;
+    }
+}
+\end{verbatim}
+
+\subsection{3.5 纹理的相似性度量}
+
+在纹理特征估计之后，另一个重要的问题是相似性的确定，即特征向量距离的度量。一般对于所提取的不同图像特征，需要定义不同的距离度量来计算图像间的相似度。
+
+a) 对于两幅图像的纹理特征，采用直方图相交法来进行相似性度量。
+\begin{equation}
+d_{1}=1-\sum_{i=1}^{t} \min (p_{i}, q_{i}) / \min \left[\sum_{i=1}^{t} p_{i}, q_{i}\right] dt
+\tag{5.26}
+\end{equation}
+其中 $(\mathrm{p}_{1}, \mathrm{p}_{2}, \cdots, \mathrm{p}_{t})$, $(\mathrm{q}_{1}, \mathrm{q}_{2}, \cdots, \mathrm{q}_{t})$ 分别表示图像库图像和示例图像所提取的直方图特征，$t$ 表示量化级数。
+
+b) 对于边缘空间分布特征，采用欧氏距离来进行度量
+\begin{equation}
+d_{2}=\sqrt{\left(R_{1}-R_{1}^{\prime}\right)^{2}+\left(R_{2}-R_{2}^{\prime}\right)^{2}+\cdots+\left(R_{20}-R_{20}^{\prime}\right)^{2}}
+\tag{5.27}
+\end{equation}
+其中，$(R_{1}, R_{2}, \cdots, R_{20})$, $(R_{1}^{\prime}, R_{2}^{\prime}, \cdots, R_{20}^{\prime})$ 分别表示示例图像和图像库图像所提取的边缘空间分布特征。
+
+对于所提取的不同图像特征，需要将不同子特征计算出的距离进行线性组合，由于不同的子特征采用的度量方式不同，因此，为了使不同的子特征具有可比性，需要对它进行归一化处理。一般采用 Gaussian 模型对所计算出的距离进行归一化处理，则示例图像与数据库图像之间的全局相似度可表示为：
+\begin{equation}
+d=\alpha d_{1}+\beta d_{2}
+\tag{5.28}
+\end{equation}
+这里 $\alpha, \beta$ 为子特征的权重，用来控制纹理特征和形状特征在检索中的相对重要性，并且满足 $\alpha+\beta=1$, $\alpha, \beta \in[0,1]$。
+
+由于本题是对枪弹痕迹进行比对，算法使用特征向量的加权欧式距离作为其相似性度量结果。算法基本思想为：假设有两个目标样本 $a, b$，分别计算这两个样本在四个方向上的上述四个纹理参数统计量 $f_{1}, f_{2}, f_{3}, f_{4}$，由于四个统计量的物理意义和取值范围不同，先将它们进行高斯归一化，然后计算每个方向的相似性距离（采用欧氏距离）：
+\begin{equation}
+d_{a, b}^{1}=\sqrt{\left(G_{a}-G_{b}\right)^{2}+\left(E_{a}-E_{b}\right)^{2}+\left(A_{a}-A_{b}\right)^{2}+\left(J_{a}-J_{b}\right)^{2}}
+\tag{5.29}
+\end{equation}
+同样定义其他三个方向的距离 $d_{a, b}^{2}, d_{a, b}^{3}, d_{a, b}^{4}$。其欧氏距离越大，相似性距离越大，相似度就越小；反之，欧氏距离越小，相似度就越大。
+
+\section*{3.7 子弹痕迹纹理特征匹配流程}
+
+采用方案二对子弹痕迹纹理进行匹配，要经过一系列事行图像出理。此处的纹理图像并不是题目中给出的 JPEG 格式的对每个棱痕迹的拍摄照片。此处所用到的纹理图，均为由三维痕迹数据生成的图像，因为这个图像更具有对比性，不会因为在拍照时光线的强弱等产生差异。根据三维痕迹的 $Z$ 轴痕迹的深浅，生成相应的灰白图，因此图像直接放应了痕迹的深切。
+
+方案二具体匹配流程如图 5-17 所示:
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[node distance=2cm, auto, >=latex']
+        % 节点定义
+        \node (start) [trapezium, draw, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, text width=3cm, align=center] {数据生成三维表面图};
+        \node (step1) [rectangle, draw, below of=start, text width=3cm, align=center] {二维真彩图};
+        \node (step2) [rectangle, draw, right of=step1, xshift=3cm, text width=3cm, align=center] {二维灰度图};
+        \node (step3) [trapezium, draw, trapezium left angle=70, trapezium right angle=110, below of=step2, text width=3cm, align=center] {灰度共生矩阵};
+        \node (step4a) [rectangle, draw, below of=step3, xshift=-4cm, text width=1.5cm, align=center] {能量};
+        \node (step4b) [rectangle, draw, right of=step4a, xshift=1.5cm, text width=1.5cm, align=center] {熵};
+        \node (step4c) [rectangle, draw, right of=step4b, xshift=1.5cm, text width=1.5cm, align=center] {惯性矩};
+        \node (step4d) [rectangle, draw, right of=step4c, xshift=1.5cm, text width=1.5cm, align=center] {局部平稳性};
+        \node (step5) [rectangle, draw, below of=step4c, text width=6cm, align=center] {两条棱灰度图像特征值对比};
+        \node (step6) [rectangle, draw, right of=step5, xshift=3cm, text width=3cm, align=center] {欧氏距离};
+        \node (end) [ellipse, draw, below of=step6, xshift=-3cm, text width=3cm, align=center, fill=blue!20] {欧氏距离越小\\相似度越高};
+        
+        % 边缘定义
+        \path[->] (start) edge node {转换} (step1);
+        \path[->] (step1) edge node {转换} (step2);
+        \path[->] (step2) edge node {提取} (step3);
+        \path[->] (step3) edge node {提取特征值} (step4a);
+        \path[->] (step3) edge node {} (step4b);
+        \path[->] (step3) edge node {} (step4c);
+        \path[->] (step3) edge node {} (step4d);
+        \path[->] (step4a) edge node {} (step5);
+        \path[->] (step4b) edge node {} (step5);
+        \path[->] (step4c) edge node {} (step5);
+        \path[->] (step4d) edge node {} (step5);
+        \path[->] (step5) edge node {误差} (step6);
+        \path[->] (step6) edge node {判定} (end);
+    \end{tikzpicture}
+    \caption{方案二流程图}
+    \label{fig:5-17}
+\end{figure}
+
+3.6 采用方案二对子弹痕迹纹理特征进行匹配
+
+a) 提取 77T1-1923252 的四个棱痕迹纹理
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+棱号 & C1 & C2 & C3 & C4 \\
+\hline
+\multirow{2}{*}{三维数据图} & \includegraphics[width=0.15\textwidth]{image1.png} & \includegraphics[width=0.15\textwidth]{image2.png} & \includegraphics[width=0.15\textwidth]{image3.png} & \includegraphics[width=0.15\textwidth]{image4.png} \\
+\cline{2-5}
+ & & & & \\
+\hline
+\multirow{2}{*}{转换为二维真彩图} & \includegraphics[width=0.15\textwidth]{image5.png} & \includegraphics[width=0.15\textwidth]{image6.png} & \includegraphics[width=0.15\textwidth]{image7.png} & \includegraphics[width=0.15\textwidth]{image8.png} \\
+\cline{2-5}
+ & & & & \\
+\hline
+\multirow{2}{*}{灰度图} & \includegraphics[width=0.15\textwidth]{image9.png} & \includegraphics[width=0.15\textwidth]{image10.png} & \includegraphics[width=0.15\textwidth]{image11.png} & \includegraphics[width=0.15\textwidth]{image12.png} \\
+\cline{2-5}
+ & & & & \\
+\hline
+\end{tabular}
+\caption{子弹头编号为77T1-1923252的各棱擦痕痕迹图}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\multirow{2}{*}{特征} & \multicolumn{4}{c|}{子弹头编号为77T1-1923252擦痕痕迹灰度共生矩阵中的特征值} \\
+\cline{2-5}
+棱号 & T1C1 & T1C2 & T1C3 & T1C4 \\
+\hline
+能量 & 0.7272 & 0.7809 & 0.6707 & 0.7128 \\
+\hline
+熵 & 0.5717 & 0.4381 & 0.6761 & 0.6023 \\
+\hline
+惯性矩 & 0.2928 & 0.1761 & 0.4347 & 0.3161 \\
+\hline
+局部平稳性 & 0.9063 & 0.9275 & 0.8767 & 0.8980 \\
+\hline
+\end{tabular}
+\caption{子弹头编号为77T1-1923252擦痕痕迹灰度共生矩阵中的特征值}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+棱号 & C1 & C2 & C3 & C4 \\
+\hline
+三维数据图 & \includegraphics[width=0.15\textwidth]{image1.png} & \includegraphics[width=0.15\textwidth]{image2.png} & \includegraphics[width=0.15\textwidth]{image3.png} & \includegraphics[width=0.15\textwidth]{image4.png} \\
+\hline
+转换为二维真彩图 & \includegraphics[width=0.15\textwidth]{image5.png} & \includegraphics[width=0.15\textwidth]{image6.png} & \includegraphics[width=0.15\textwidth]{image7.png} & \includegraphics[width=0.15\textwidth]{image8.png} \\
+\hline
+灰度图 & \includegraphics[width=0.15\textwidth]{image9.png} & \includegraphics[width=0.15\textwidth]{image10.png} & \includegraphics[width=0.15\textwidth]{image11.png} & \includegraphics[width=0.15\textwidth]{image12.png} \\
+\hline
+\end{tabular}
+\caption{子弹头编号为77T2-1923252的各棱擦痕痕迹图}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+棱特征 & T2C1 & T2C2 & T2C3 & T2C4 \\
+\hline
+能量 & 0.7344 & 0.7314 & 0.7889 & 0.6782 \\
+\hline
+熵 & 0.5251 & 0.5306 & 0.4657 & 0.6676 \\
+\hline
+惯性矩 & 0.2075 & 0.1636 & 0.4059 & 0.3642 \\
+\hline
+局部平稳性 & 0.9162 & 0.9256 & 0.9106 & 0.8909 \\
+\hline
+\end{tabular}
+\caption{子弹头编号为77T2-1923252擦痕痕迹灰度矩阵中的特征值}
+\end{table}
+
+\section*{c) 纹理特征匹配分析}
+
+提取两个弹头不同棱的痕迹纹理特征，必较纹理特征的欧氏距离，用欧氏距离的误差表现两个纹理的相似度。欧氏距离越小，相似度越高。整个纹理特征比较采
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{纹理特征对比程序}
+    \label{fig:5-18}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{纹理特征对比分析结果}
+    \label{tab:5-11}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\ \hline
+    T1C1 & 0.0980 & 0.1370 & 0.1669 & 0.1301 & T1C1 $\rightarrow$ T2C1 & T1C1 $\rightarrow$ T2C1 \\ \hline
+    T1C2 & 0.1041 & 0.1037 & 0.2322 & 0.3161 & T1C2 $\rightarrow$ T2C2 & T1C2 $\rightarrow$ T2C2 \\ \hline
+    T1C3 & 0.2829 & 0.3174 & 0.2454 & 0.0728 & T1C3 $\rightarrow$ T2C4 & T1C3 $\rightarrow$ T2C3 \\ \hline
+    T1C4 & 0.1362 & 0.1717 & 0.1808 & 0.0885 & T1C4 $\rightarrow$ T2C4 & T1C4 $\rightarrow$ T2C4 \\ \hline
+    \end{tabular}
+\end{table}
+
+根据四个纹理特征值，两发子弹的四条棱分别进行对比，从特征值的欧氏距离中找出最小值所对应的棱。并且由于四条棱测量的顺序是一致的，所以上面结果中只有三条棱吻合效果较好，可以对两发子弹进行判定是由同一把枪中所射出。
+
+d) 其它5支枪射出的10发子弹纹理匹配
+
+\begin{table}[h]
+    \centering
+    \caption{77T1-1203959与77T2-1203959纹理特征对比分析结果}
+    \label{tab:5-12a}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\ \hline
+    T1C1 & 0.1850 & 0.1280 & 0.1924 & 0.3778 & T1C1 $\rightarrow$ T2C2 & T1C1 $\rightarrow$ T2C3 \\ \hline
+    T1C2 & 0.2193 & 0.3000 & 0.2267 & 0.1458 & T1C2 $\rightarrow$ T2C4 & T1C2 $\rightarrow$ T2C4 \\ \hline
+    T1C3 & 0.2480 & 0.1677 & 0.3154 & 0.4919 & T1C3 $\rightarrow$ T2C2 & T1C3 $\rightarrow$ T2C2 \\ \hline
+    T1C4 & 0.1181 & 0.2132 & 0.0882 & 0.1417 & T1C4 $\rightarrow$ T2C1 & T1C4 $\rightarrow$ T2C1 \\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T1-1504519与77T2-1504519纹理特征对比分析结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.3887 & 0.3742 & 0.5612 & 0.4594 & T1C1$\rightarrow$T2C2 & 没有找出 \\
+\hline
+T1C2 & 0.2886 & 0.2767 & 0.4383 & 0.3543 & T1C2$\rightarrow$T2C2 & 没有找出 \\
+\hline
+T1C3 & 0.3982 & 0.3857 & 0.5589 & 0.4727 & T1C3$\rightarrow$T2C2 & 没有找出 \\
+\hline
+T1C4 & 0.3349 & 0.3221 & 0.5145 & 0.4119 & T1C4$\rightarrow$T2C2 & 没有找出 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T1-1811345与77T2-1811345纹理特征对比分析结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.0591 & 0.0376 & 0.0451 & 0.1506 & T1C1$\rightarrow$T2C2 & T1C1$\rightarrow$T2C2 \\
+\hline
+T1C2 & 0.0723 & 0.1031 & 0.0231 & 0.1746 & T1C2$\rightarrow$T2C3 & T1C2$\rightarrow$T2C3 \\
+\hline
+T1C3 & 0.0938 & 0.1171 & 0.0357 & 0.1958 & T1C3$\rightarrow$T2C2 & T1C3$\rightarrow$T2C4 \\
+\hline
+T1C4 & 0.0149 & 0.0822 & 0.0533 & 0.1553 & T1C4$\rightarrow$T2C1 & T1C4$\rightarrow$T2C1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T1-1812492与77T2-1812492纹理特征对比分析结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.1984 & 0.6885 & 0.8750 & 0.6929 & T1C1$\rightarrow$T2C1 & T1C1$\rightarrow$T2C1 \\
+\hline
+T1C2 & 0.5904 & 0.0696 & 0.1223 & 0.0912 & T1C2$\rightarrow$T2C2 & T1C2$\rightarrow$T2C2 \\
+\hline
+T1C3 & 0.6928 & 0.1846 & 0.0294 & 0.1741 & T1C3$\rightarrow$T2C3 & T1C3$\rightarrow$T2C3 \\
+\hline
+T1C4 & 0.2671 & 0.3382 & 0.4842 & 0.2336 & T1C4$\rightarrow$T2C4 & T1C4$\rightarrow$T2C4 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{77T1-1928033与77T2-1928033纹理特征对比分析结果}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+欧氏距离 & T2C1 & T2C2 & T2C3 & T2C4 & 计算匹配 & 实际应该匹配 \\
+\hline
+T1C1 & 0.1355 & 0.1120 & 0.1370 & 0.1551 & T1C1$\rightarrow$T2C2 & T1C1$\rightarrow$T2C2 \\
+\hline
+T1C2 & 0.0881 & 0.1186 & 0.1666 & 0.1863 & T1C2$\rightarrow$T2C1 & T1C2$\rightarrow$T2C3 \\
+\hline
+T1C3 & 0.1764 & 0.2136 & 0.1754 & 0.0632 & T1C3$\rightarrow$T2C4 & T1C3$\rightarrow$T2C4 \\
+\hline
+T1C4 & 0.1133 & 0.1540 & 0.2163 & 0.2239 & T1C4$\rightarrow$T2C1 & T1C4$\rightarrow$T2C1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+ & t1 & t2 & t3 & t4 & t5 & t6 & t7 & t8 & t9 & t10 & t11 \\
+\hline
+t1 &  & 0.5499 & 0.7193 & 0.4703 & 0.5904 & 0.9812 & 0.68 & 0.6573 & 0.4603 & 0.7022 & 0.7984 \\
+\hline
+t2 & 0.5499 &  & 0.3102 & 0.5126 & 1.2619 & 0.6593 & 0.48 & 0.2845 & 0.349 & 0.6203 & 0.3212 \\
+\hline
+t3 & 0.7193 & 0.3102 &  & 0.8969 & 0.4253 & 0.4613 & 0.4674 & 0.3697 & 0.7741 & 0.4266 & 0.4537 \\
+\hline
+t4 & 0.4703 & 0.5126 & 0.8969 &  & 0.3527 & 0.8313 & 0.7885 & 0.297 & 0.4321 & 0.2195 & 0.5398 \\
+\hline
+t5 & 0.5904 & 1.2619 & 0.4253 & 0.3527 &  & 0.4372 & 1.0728 & 0.6304 & 0.7507 & 0.3394 & 0.5343 \\
+\hline
+t6 & 0.9812 & 0.6593 & 0.4613 & 0.8313 & 0.4372 &  & 0.4074 & 0.5378 & 0.8645 & 0.4595 & 0.4672 \\
+\hline
+t7 & 0.68 & 0.48 & 0.4674 & 0.7885 & 1.0728 & 0.4074 &  & 0.1759 & 0.5187 & 0.3281 & 0.5039 \\
+\hline
+t8 & 0.6573 & 0.2845 & 0.3697 & 0.297 & 0.6304 & 0.5378 & 0.1759 &  & 0.5368 & 1.3947 & 0.4285 \\
+\hline
+t9 & 0.4603 & 0.349 & 0.7741 & 0.4321 & 0.7507 & 0.8645 & 0.5187 & 0.5368 &  & 0.5472 & 0.8639 \\
+\hline
+t10 & 0.7022 & 0.6203 & 0.4266 & 0.2195 & 0.3394 & 0.4595 & 0.3281 & 1.3947 & 0.5472 &  & 0.5832 \\
+\hline
+t11 & 0.7984 & 0.3212 & 0.4537 & 0.5398 & 0.5343 & 0.4672 & 0.5039 & 0.4285 & 0.8639 & 0.5832 &  \\
+\hline
+t12 & 0.3143 & 0.3297 & 0.8196 & 0.3414 & 0.95 & 1.0203 & 0.5516 & 0.7036 & 0.3398 & 0.8503 & 1.0332 \\
+\hline
+t13 & 0.4644 & 0.4692 & 0.3892 & 0.1675 & 0.7915 & 0.6901 & 1.0046 & 0.3194 & 0.4031 & 0.9054 & 1.0452 \\
+\hline
+t14 & 0.3452 & 1.2407 & 0.718 & 0.3627 & 0.5651 & 0.4919 & 0.3784 & 0.3666 & 0.4063 & 0.3726 & 0.7394 \\
+\hline
+t15 & 0.3695 & 0.6973 & 0.4218 & 0.3472 & 0.745 & 0.6816 & 0.3814 & 0.3325 & 0.9094 & 1.0692 & 0.8332 \\
+\hline
+t16 & 0.8692 & 0.4442 & 0.509 & 0.6926 & 0.7013 & 0.4979 & 0.4972 & 0.5824 & 0.3833 & 0.554 & 0.6267 \\
+\hline
+t17 & 0.4138 & 0.9146 & 0.468 & 0.888 & 0.7303 & 0.5347 & 0.483 & 0.377 & 0.3584 & 0.6742 & 0.7635 \\
+\hline
+t18 & 0.4483 & 0.2787 & 0.398 & 0.5472 & 0.7929 & 0.6725 & 0.5872 & 0.228 & 0.3337 & 0.7296 & 0.997 \\
+\hline
+t19 & 0.8578 & 0.3939 & 0.4338 & 0.5476 & 0.7783 & 0.8269 & 0.46 & 0.4605 & 0.2731 & 0.6313 & 1.0048 \\
+\hline
+t20 & 0.7285 & 0.3748 & 0.8214 & 0.5102 & 0.4854 & 0.4444 & 0.5118 & 0.4714 & 0.2278 & 0.3602 & 0.7841 \\
+\hline
+t21 & 0.4876 & 0.3484 & 0.6174 & 0.443 & 0.9505 & 1.0698 & 0.5014 & 0.3576 & 0.4119 & 0.9282 & 1.413 \\
+\hline
+t22 & 0.5308 & 0.4089 & 0.3802 & 0.3923 & 0.4919 & 0.3403 & 0.2611 & 0.292 & 0.3073 & 0.3107 & 0.6164 \\
+\hline
+\end{tabular}
+\caption{22发子弹两两之间匹配的欧氏距离}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c c c c c c c c c}
+\hline
+ & t12 & t13 & t14 & t15 & t16 & t17 & t18 & t19 & t20 & t21 & t22 \\
+\hline
+t1 & 0.3143 & 0.4644 & 0.3452 & 0.3695 & 0.8692 & 0.4138 & 0.4483 & 0.8578 & 0.7285 & 0.4876 & 0.5308 \\
+\hline
+t2 & 0.3297 & 0.4692 & 1.2407 & 0.6973 & 0.4442 & 0.9146 & 0.2787 & 0.3939 & 0.3748 & 0.3484 & 0.4089 \\
+\hline
+t3 & 0.8196 & 0.3892 & 0.718 & 0.4218 & 0.509 & 0.468 & 0.398 & 0.4338 & 0.8214 & 0.6174 & 0.3802 \\
+\hline
+t4 & 0.3414 & 0.1675 & 0.3627 & 0.3472 & 0.6926 & 0.888 & 0.5472 & 0.5476 & 0.5102 & 0.443 & 0.3923 \\
+\hline
+t5 & 0.95 & 0.7915 & 0.5651 & 0.745 & 0.7013 & 0.7303 & 0.7929 & 0.7783 & 0.4854 & 0.9505 & 0.4919 \\
+\hline
+t6 & 1.0203 & 0.6901 & 0.4919 & 0.6816 & 0.4979 & 0.5347 & 0.6725 & 0.8269 & 0.4444 & 1.0698 & 0.3403 \\
+\hline
+t7 & 0.5516 & 1.0046 & 0.3784 & 0.3814 & 0.4972 & 0.483 & 0.5872 & 0.46 & 0.5118 & 0.5014 & 0.2611 \\
+\hline
+t8 & 0.7036 & 0.3194 & 0.3666 & 0.3325 & 0.5824 & 0.377 & 0.228 & 0.4605 & 0.4714 & 0.3576 & 0.292 \\
+\hline
+t9 & 0.3398 & 0.4031 & 0.4063 & 0.9094 & 0.3833 & 0.3584 & 0.3337 & 0.2731 & 0.2278 & 0.4119 & 0.3073 \\
+\hline
+t10 & 0.8503 & 0.9054 & 0.3726 & 1.0692 & 0.554 & 0.6742 & 0.7296 & 0.6313 & 0.3602 & 0.9282 & 0.3107 \\
+\hline
+t11 & 1.0332 & 1.0452 & 0.7394 & 0.8332 & 0.6267 & 0.7635 & 0.997 & 1.0048 & 0.7841 & 1.413 & 0.6164 \\
+\hline
+t12 &  & 0.3675 & 0.9946 & 0.2658 & 0.7636 & 0.2369 & 0.5046 & 0.5868 & 0.6646 & 0.3431 & 0.37 \\
+\hline
+t13 & 0.3675 &  & 0.2304 & 0.308 & 0.6011 & 0.3881 & 0.5738 & 0.4429 & 0.4606 & 0.4946 & 0.3525 \\
+\hline
+t14 & 0.9946 & 0.2304 &  & 0.3904 & 0.6 & 0.8236 & 0.5235 & 0.8024 & 0.5012 & 0.8966 & 0.3746 \\
+\hline
+t15 & 0.2658 & 0.308 & 0.3904 &  & 0.9247 & 0.3995 & 0.4338 & 0.7762 & 0.8181 & 0.4521 & 0.5664 \\
+\hline
+t16 & 0.7636 & 0.6011 & 0.6 & 0.9247 &  & 0.3819 & 0.6306 & 0.425 & 0.7208 & 0.7019 & 0.2814 \\
+\hline
+t17 & 0.2369 & 0.3881 & 0.8236 & 0.3995 & 0.3819 &  & 2.1075 & 2.5391 & 2.4801 & 1.4007 & 2.4603 \\
+\hline
+t18 & 0.5046 & 0.5738 & 0.5235 & 0.4338 & 0.6306 & 2.1075 &  & 0.6457 & 0.548 & 0.4545 & 0.6157 \\
+\hline
+t19 & 0.5868 & 0.4429 & 0.8024 & 0.7762 & 0.425 & 2.5391 & 0.6457 &  & 0.1658 & 0.4126 & 0.3291 \\
+\hline
+t20 & 0.6646 & 0.4606 & 0.5012 & 0.8181 & 0.7208 & 2.4801 & 0.548 & 0.1658 &  & 0.8313 & 0.7155 \\
+\hline
+t21 & 0.3431 & 0.4946 & 0.8966 & 0.4521 & 0.7019 & 1.4007 & 0.4545 & 0.4126 & 0.8313 &  & 0.4563 \\
+\hline
+t22 & 0.37 & 0.3525 & 0.3746 & 0.5664 & 0.2814 & 2.4603 & 0.6157 & 0.3291 & 0.7155 & 0.4563 &  \\
+\hline
+\end{tabular}
+\caption{续上表]表6-1 22发子弹两两之间匹配的欧氏距离}
+\end{table}
+
+\begin{table}
+\centering
+\caption{相似度排序前五位弹头文件号}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+比对排序 & 1 & 2 & 3 & 4 & 5 \\
+弹头序号 & & & & & \\
+\hline
+t1 & t12 & t14 & t15 & t17 & t18 \\
+\hline
+t2 & t18 & t08 & t03 & t11 & t12 \\
+\hline
+t3 & t02 & t08 & t22 & t13 & t18 \\
+\hline
+t4 & t13 & t10 & t08 & t12 & t15 \\
+\hline
+t5 & t10 & t04 & t03 & t06 & t20 \\
+\hline
+t6 & t22 & t07 & t05 & t20 & t10 \\
+\hline
+t7 & t08 & t22 & t10 & t14 & t15 \\
+\hline
+t8 & t07 & t18 & t02 & t22 & t04 \\
+\hline
+t9 & t20 & t19 & t22 & t18 & t12 \\
+\hline
+t10 & t04 & t22 & t07 & t05 & t20 \\
+\hline
+t11 & t02 & t08 & t03 & t06 & t07 \\
+\hline
+t12 & t17 & t15 & t01 & t02 & t09 \\
+\hline
+t13 & t04 & t14 & t15 & t08 & t22 \\
+\hline
+t14 & t13 & t01 & t04 & t08 & t10 \\
+\hline
+t15 & t12 & t13 & t08 & t04 & t01 \\
+\hline
+t16 & t22 & t17 & t09 & t19 & t02 \\
+\hline
+t17 & t12 & t09 & t08 & t16 & t13 \\
+\hline
+t18 & t08 & t02 & t09 & t03 & t15 \\
+\hline
+t19 & t20 & t09 & t22 & t02 & t21 \\
+\hline
+t20 & t19 & t09 & t10 & t02 & t06 \\
+\hline
+t21 & t12 & t02 & t08 & t09 & t19 \\
+\hline
+t22 & t07 & t16 & t08 & t09 & t10 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section*{参考文献}
+
+[1] 谢峰. 表面形貌及弹头发射痕迹的接触与非接触两用测量系统. 华中理工大学博士学位论文: 80-81, 1999.
+
+[2] 杨少波. 弹头痕迹摄像与识别系统. 华中科技大学硕士学位论文: 1-2, 2004.
+
+[3] 张庆霞, 张建成. 最小二乘圆在定向管平行度测量中的应用. 计算机与数字工程 (34): 180-182, 2006.2.
+
+[4] 刘清, 孙颖. 用实时小波分析消除噪声的动态测量误差补偿. 南京师范大学学报, 6(3): 1-3, 2006.9.
+
+[5] 董长虹. MATLAB 神经网络与应用[M]. 北京: 国防工业出版社, 2005.
+
+[6] 王放明. 枪弹弹壳痕迹的模糊模式识别方法. 弹道学报 7(3): 81-83, 1995.9.
+
+[7] 鲁静, 李德华, 吴士泓. 基于图像纹理分布的算法在子弹自动比对中的应用. 武汉大学学报 53(5): 544-546, 2007.10.
+
+[8] 曾文涵, 郭军. 弹头发射痕迹计算机识别系统的研制. 华中科技大学 30(6): 41-42, 2002.6.
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+序号 & x坐标 & z坐标 & 序号 & x坐标 & z坐标 & 序号 & x坐标 & z坐标 \\
+\hline
+1 & 1.5482 & 7.9816 & 36 & 1.6445 & 7.9944 & 71 & 1.7407 & 8.0139 \\
+\hline
+2 & 1.551 & 7.9819 & 37 & 1.6472 & 7.9946 & 72 & 1.7435 & 8.014 \\
+\hline
+3 & 1.5538 & 7.9821 & 38 & 1.65 & 7.9954 & 73 & 1.7462 & 8.014 \\
+\hline
+4 & 1.5565 & 7.9826 & 39 & 1.6527 & 7.9956 & 74 & 1.749 & 8.0138 \\
+\hline
+5 & 1.5592 & 7.9831 & 40 & 1.6555 & 7.9956 & 75 & 1.7517 & 8.0136 \\
+\hline
+6 & 1.562 & 7.9833 & 41 & 1.6583 & 7.9959 & 76 & 1.7545 & 8.0131 \\
+\hline
+7 & 1.5647 & 7.9835 & 42 & 1.661 & 7.9962 & 77 & 1.7573 & 8.0124 \\
+\hline
+8 & 1.5675 & 7.9837 & 43 & 1.6637 & 7.9964 & 78 & 1.76 & 8.0101 \\
+\hline
+9 & 1.5702 & 7.9847 & 44 & 1.6665 & 7.9968 & 79 & 1.7627 & 8.0079 \\
+\hline
+10 & 1.573 & 7.9851 & 45 & 1.6692 & 7.9975 & 80 & 1.7655 & 8.0067 \\
+\hline
+11 & 1.5758 & 7.9854 & 46 & 1.672 & 7.9981 & 81 & 1.7682 & 8.0058 \\
+\hline
+12 & 1.5785 & 7.9857 & 47 & 1.6748 & 7.9982 & 82 & 1.771 & 8.0054 \\
+\hline
+13 & 1.5812 & 7.986 & 48 & 1.6775 & 7.9989 & 83 & 1.7737 & 8.0052 \\
+\hline
+14 & 1.584 & 7.9862 & 49 & 1.6803 & 7.9996 & 84 & 1.7765 & 8.005 \\
+\hline
+15 & 1.5867 & 7.9867 & 50 & 1.683 & 8.0004 & 85 & 1.7793 & 8.0048 \\
+\hline
+16 & 1.5895 & 7.987 & 51 & 1.6857 & 8.0008 & 86 & 1.782 & 8.0047 \\
+\hline
+17 & 1.5922 & 7.9874 & 52 & 1.6885 & 8.0014 & 87 & 1.7847 & 8.0049 \\
+\hline
+18 & 1.595 & 7.9879 & 53 & 1.6912 & 8.0025 & 88 & 1.7875 & 8.0052 \\
+\hline
+19 & 1.5978 & 7.9883 & 54 & 1.694 & 8.0031 & 89 & 1.7902 & 8.0056 \\
+\hline
+20 & 1.6005 & 7.989 & 55 & 1.6968 & 8.0049 & 90 & 1.793 & 8.006 \\
+\hline
+21 & 1.6032 & 7.9893 & 56 & 1.6995 & 8.0056 & 91 & 1.7958 & 8.0063 \\
+\hline
+22 & 1.606 & 7.9896 & 57 & 1.7022 & 8.0058 & 92 & 1.7985 & 8.0068 \\
+\hline
+23 & 1.6087 & 7.9901 & 58 & 1.705 & 8.0059 & 93 & 1.8013 & 8.0075 \\
+\hline
+24 & 1.6115 & 7.9907 & 59 & 1.7077 & 8.006 & 94 & 1.804 & 8.0075 \\
+\hline
+25 & 1.6143 & 7.9912 & 60 & 1.7105 & 8.0063 & 95 & 1.8067 & 8.008 \\
+\hline
+26 & 1.617 & 7.9917 & 61 & 1.7132 & 8.0065 & 96 & 1.8095 & 8.0082 \\
+\hline
+27 & 1.6197 & 7.9919 & 62 & 1.716 & 8.0068 & 97 & 1.8122 & 8.0086 \\
+\hline
+28 & 1.6225 & 7.9924 & 63 & 1.7188 & 8.007 & 98 & 1.815 & 8.0095 \\
+\hline
+29 & 1.6252 & 7.9926 & 64 & 1.7215 & 8.0075 & 99 & 1.8178 & 8.0103 \\
+\hline
+30 & 1.628 & 7.9927 & 65 & 1.7242 & 8.0083 & 100 & 1.8205 & 8.011 \\
+\hline
+31 & 1.6307 & 7.993 & 66 & 1.727 & 8.0104 & & & \\
+\hline
+32 & 1.6335 & 7.9932 & 67 & 1.7297 & 8.012 & & & \\
+\hline
+33 & 1.6363 & 7.9937 & 68 & 1.7325 & 8.0129 & & & \\
+\hline
+34 & 1.639 & 7.994 & 69 & 1.7353 & 8.0137 & & & \\
+\hline
+35 & 1.6417 & 7.994 & 70 & 1.738 & 8.0138 & & & \\
+\hline
+\end{tabular}
+\end{table}

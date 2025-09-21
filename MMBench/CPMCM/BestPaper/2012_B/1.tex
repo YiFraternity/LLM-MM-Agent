@@ -1,0 +1,1566 @@
+\begin{center}
+\textbf{第九届“华为杯”} \\
+\textbf{全国研究生数学建模竞赛}
+\end{center}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l}
+学 校 & 中国人民解放军理工大学 \\
+\hline
+参赛队号 & 90006033 \\
+\hline
+队员姓名 & \begin{tabular}{l l}
+1. 宋 歌 \\
+2. 陈 卓 \\
+3. 李红梅
+\end{tabular} \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{flushright}
+参赛密码 \underline{\hspace{3cm}} \\
+(由组委会填写)
+\end{flushright}
+
+\begin{center}
+\textbf{参赛密码} \underline{\hspace{5cm}} \\
+(由组委会填写)
+\end{center}
+
+\section*{第九届“华为杯”全国研究生数学建模竞赛}
+
+\begin{center}
+\includegraphics[width=0.3\textwidth]{image1.png} \quad
+\includegraphics[width=0.3\textwidth]{image2.png} \quad
+\includegraphics[width=0.3\textwidth]{image3.png}
+\end{center}
+
+\textbf{题目} 基于卫星无源探测的空间飞行器
+
+\textbf{主动段轨道估计与误差分析}
+
+\section*{摘 要}
+
+为对基于无源探测的飞行器进行主动段轨道估计和误差分析，我们利用空间几何知识、经典力学、数值计算、统计学以及曲线拟合等数据处理方法，
+
+针对问题一，建立微分方程模型，利用欧拉法对常微分方程组进行数值求解，并通过仿真实验模拟卫星公转一周后的轨道偏差，进行误差分析。然后基于动力学知识提出一种改进模型，有效提高轨道计算精确性。
+
+针对问题二，首先建立基于测向线公垂线中点的两站测向交叉定位模型，利用立体几何知识以及逐点交汇定位的思路，通过向量运算方法逐点定位目标，仿真06号和09号观测卫星对0号空间飞行器的立体交叠观测轨道；然后选取线性质量变化方程 $m(t) = m_0 - kt$，建立飞行器运动方程模型，通过分析和处理观测数据，拟合确定方程参数；最后利用无穷逼近方法，确定初值条件。
+
+针对问题三，首先在问题二结果的基础上对误差偏移量进行分析，发现选取公垂线中点作为观测目标位置偏移量不稳定，不符合系统误差稳定性的要求。基于此，采用将各观测线的公垂线集合所组成的曲面近似展成平面矩形，化空间曲线轨道为平面直线，重新建立选点定位模型，并设定指标 $W$ 评价系统误差的稳定性，建立优化模型并求解。最后在考虑系统误差的情况下计算目标轨道，发现精确度明显提高。
+
+针对问题四，对于单星测向定位的问题，假定单位时间内空间飞行器做匀加速直线运动，建立运动模型，使曲线上三点转化为直线上三点，运用立体几何和运动学知识，建立方程组，对单星观测下空间飞行器的运行轨迹进行探究。对于多星观测多目标的情况，提出三星确定公切圆、多星选取最小公切圆的方法实现定位和误差分析。
+
+\textbf{关键词：} 测向交叉定位 无源探测 微分方程数值解 轨道估计 误差分析
+
+\begin{center}
+-1-
+\end{center}
+
+\section*{目录}
+
+\section*{一、绪论}
+\begin{itemize}
+    \item[1.1] 问题背景 \dotfill -3-
+    \item[1.2] 发展技术与研究现状 \dotfill -3-
+    \item[1.3] 问题提出 \dotfill -4-
+    \item[1.4] 主要工作 \dotfill -4-
+\end{itemize}
+
+\section*{二、名词解释、符号说明及基本假设}
+\begin{itemize}
+    \item[2.1] 名词解释 \dotfill -6-
+    \item[2.2] 符号说明 \dotfill -7-
+    \item[2.3] 基本假设 \dotfill -8-
+\end{itemize}
+
+\section*{三、问题分析}
+\begin{itemize}
+    \item[3.1] 问题一分析 \dotfill -9-
+    \item[3.2] 问题二分析 \dotfill -9-
+    \item[3.3] 问题三分析 \dotfill -10-
+    \item[3.4] 问题四分析 \dotfill -10-
+\end{itemize}
+
+\section*{四、问题一的建模、求解}
+\begin{itemize}
+    \item[4.1] 欧拉模型 \dotfill -11-
+    \item[4.2] 改进的欧拉模型 \dotfill -14-
+    \item[4.3] 模型小结 \dotfill -16-
+\end{itemize}
+
+\section*{五、问题二的建模、求解}
+\begin{itemize}
+    \item[5.1] 基于测向线公垂线中点的两站测向交叉定位模型 \dotfill -17-
+    \item[5.2] 飞行器运动方程模型 \dotfill -21-
+    \item[5.3] 速度矢量修正模型 \dotfill -26-
+\end{itemize}
+
+\section*{六、问题三的建模、求解}
+\begin{itemize}
+    \item[6.1] 坐标反变换模型 \dotfill -29-
+    \item[6.2] 系统误差判断模型 \dotfill -30-
+    \item[6.3] 公垂线选点定位模型 \dotfill -33-
+    \item[6.4] 误差参数求解模型 \dotfill -36-
+\end{itemize}
+
+\section*{七、问题四的建模、求解}
+\begin{itemize}
+    \item[7.1] 单卫星对目标飞行器的轨道估计 \dotfill -40-
+    \item[7.2] 多星对多目标观测情况下的系统误差分析 \dotfill -42-
+\end{itemize}
+
+\section*{参考文献} \dotfill -43-
+
+\section*{一、绪论}
+
+\subsection{1.1 问题背景}
+
+随着航天技术的不断发展，卫星已在通信、导航定位、军事、资源勘探、环境监测等许多领域中得到越来越广泛的应用，轨道设计、轨道控制、轨道确定等是其最重要的组成部分，轨道问题因此成为其核心问题。一些国家会发射特殊目的的空间飞行器，如弹道式导弹、侦察卫星，发现发射和探测其轨道参数（包括轨道位置、速度初值和其他模型参数）是实现对那些敌意空间飞行器实施监控和作出反应的关键一步，然后通过数学模型与计算，为飞行器类别、飞行意图的判断提供信息基础。
+
+观测卫星是当今探测空间飞行器发射与轨道参数的重要平台，按轨道特点，可分为高轨地球同步轨道卫星和中低轨近圆轨道卫星。其中，中低轨近圆轨道距地球表面数百到几千千米不等，根据观测要求，其轨道平面与赤道平面交成一定角度，且常由若干颗卫星实现组网探测。空间飞行器轨道一般可分为三段，依次为：靠火箭推进的主动段、在地球外层空间的惯性飞行段和再入大气层后的攻击段。主动段通常由多级火箭相继推进，前一级火箭完成推进后脱落，由后一级火箭接力。惯性飞行段在空气阻力极小的大气层外，靠末级火箭关机前获得的速度在椭圆轨道上作无动力惯性飞行。攻击段则根据任务需求，受控制后再入大气层，飞向目标。对于卫星而言，在其寿命结束前一直绕地飞行，故无攻击段。
+
+观测卫星通过装置于其上的探测器进行目标探测，探测又分为有源和无源探测，其中无源探测卫星常采用红外光学探测器，这种探测器只接收目标的红外辐射信息，只可定向但不能测距，且容易受受到气候影响、云层干扰以及其他辐射源的扰射，又称为无源被动探测。这种无源探测系统本身不发射电磁波，完全是被动工作方式，具有作用距离远，隐蔽性强等特点，无源探测工作方式日益受到各国的广泛重视。
+
+无源探测定位在现代电子战中具有相当重要的意义，近年来的历次高科技局部战争再次证明，辐射源无源定位系统是现代一体化防空系统、机载对地、对海攻击以及对隐身目标的远程预警系统的重要组成部分。在越来越强调隐蔽攻击和硬杀伤的趋势下，采用被动工作方式的无源定位方法发展的主流和对定位系统的完善，较有源定位方法具有作用久远性、隐蔽接受、不易被对方发觉的优点对于提高武器系统在电子战环境下的生存能力和作战能力具有重要作用。单个红外光学探测器不具备测距能力，但借助多颗（含两颗）观测卫星的同步观测能够进行逐点定位，再结合空间飞行器的运动模型，便可以进行轨道参数估计。在单星观测条件下，利用空间飞行器轨道的特殊性，结合较强的模型约束也可得到一定精度轨道参数估计。通常，单站无源定位要求侦察平台在一段时间内有较大的角度移动以获得更好的定位效果，大多使用测向定位法研究。
+
+\subsection{1.2 发展技术与研究现状}
+
+无源探测系统现采用多种技术，如测向定位技术、时差（TDOA）无源定位技术、差分多普勒定位技术等都有着其利用价值与优点。其中侧向定位采用测向交叉定位原理，又称三角定位，是一项经典而又成熟的技术。双站测向定位原理两个或者两个以上观测站对辐射源进行测向，然后根据各观测站测量的数据与站之间的距离，经过几何计算来得出辐射源位置。系统单站测向采用常规的单脉冲比幅测向方法，两个测向站进行数据融合，对同一信号的方向交汇点进行计算。
+
+国内外现有的无源定位系统主要是利用目标自身辐射信号来对目标进行定位，关于单星、双星直至多星的无源定位算法及精度分析也有很多相关的研究，无源探测也因其被动式接受目标辐射表现出良好的隐蔽性，及其在军事上潜在的运用价值备受各国青睐。
+
+目前，西方美、英、法、德、澳等各国都在开展这方面的研究，其中尤为突出的代表系统是美国洛克希德·马丁公司的“沉默哨兵”系统、英国防御研究局（DERA）研究的利用 TV 信号的无源探测定位系统。2011 年继美、俄之后，我国成为世界上第三个具备自主无源卫星导航定位能力的国家。日本、印度等凭借本国的科技实力及军事战略需求也在极力地发展本国的无源卫星导航定位系统，以求在未来的战场上掌握信息主导权。近年来，国内有关单位如国防科大、电子科技集团 51 所、29 所、上海航天局、北航、西安电子科技大学、成都电子科技大学等都对单站、双站无源定位技术进行了跟踪和研究，并随着计算机科学技术、定位和跟踪算法、测量技术等的进步，无源定位和跟踪取得了很大的进步。
+
+\section*{1.3 问题提出}
+
+问题详见全国第九届研究生数学建模竞赛 B 题。
+
+\section*{1.4 主要工作}
+
+\textbf{针对问题一：}
+
+（1）建立欧拉模型。
+
+首先，确立基础坐标系，即选取地心坐标系 $O_{c}-X_{c}Y_{c}Z_{c}$ 为基础坐标系。然后，利用空间几何知识，建立常微分方程并利用数值解的方法，对观测卫星各个时刻的位置坐标进行求解。最后，进行模型的误差分析。
+
+（2）建立改进的欧拉模型。
+
+该模型是在欧拉模型基础上，进行误差分析后，提出了一种改进模型，使误差尽量减小，通过进行误差估计与分析，有效提高了卫星轨迹的精确度。
+
+\textbf{针对问题二：}
+
+（1）建立基于测向线公垂线中点的两站测向交叉定位模型，在该模型中：
+
+首先，利用空间立体几何知识进行坐标变换，即将观测坐标系 $O_{s}-X_{s}Y_{s}Z_{s}$ 下的位置矢量转化为基础坐标系 $O_{c}-X_{c}Y_{c}Z_{c}$ 下的位置矢量。其次，基于测向线公垂线的中点，利用双站测向定位原理，并根据仿真数据进行逐点定位，生成 06 号和 09 号观测卫星对 0 号空间飞行器形成的立体交叠观测离散点，仿真飞行器主动段运动轨迹。
+
+（2）建立飞行器运动模型，在该模型中：
+
+首先，选择适当的 $\vec{v}_{r}(t)$ 和 $m(t)$ 来表示模型。其次，并利用最小二乘法对飞行器主动段运动轨迹进行线性拟合，确定飞行器运动方程的参数。然后，寻找运动方程的初值条件，进一步导出飞行器的轨道估计方程。最后，再利用数值法按照从 $50.0 \mathrm{~s}$ 到 $170.0 \mathrm{~s}$ 间隔 $10.0 \mathrm{~s}$ 进行采样，计算并列表给出 0 号空间飞行器在各个时间采样点的位置和速度，并进行残差估计以及给出位置和速度的曲线示意图。
+
+\textbf{针对问题三：}
+
+（1）建立坐标反变换模型，将地心坐标系下的坐标转换为观测坐标系下的坐标，方便。
+
+（2）建立系统误差判断模型，基于测向线公垂线的中点来进行误差判断。首先，通过建立模型计算求出偏移量 $d_{\alpha} 、 d_{\beta}$，通过分析 $d_{\alpha} 、 d_{\beta}$，断定选取公垂线的中点对
+
+飞行器运行轨迹进行逐点交叉定位不能够对系统误差进行估计。我们选择建立新的模型，重新选取测向线公垂线上的点 \( F \)，通过逐点交叉对飞行器的轨迹进行重新定位。
+
+(3) 建立公垂线选点定位模型
+
+考虑到测向线公垂线长度相对于测向线长度极小，我们将公垂线长度视为固定值，方便了模型建立。将三维空间内公垂线与测向线组成的曲面展开成二维空间内的矩形平面，在公垂线上选取该 \( F \)，使线段 \( MF \) 与线段 \( FN \) 成线性比例。选定该点后，进行偏移量以及旋转量的线性拟合，证明了公垂线选点的合理性以及可以通过逐点交汇方法进行系统误差的估计。
+
+(4) 建立误差参数求解模型，确定误差函数中的两个参数 \( \mu \) 和 \( \lambda \)，确定误差函数，然后进行系统误差计算。
+
+针对问题四：
+
+(1) 假定单位时间内空间飞行器做匀加速直线运动，建立运动模型，使曲线上三点转化为直线上三点，运用立体几何和运动学知识，建立方程组，对单星观测下空间飞行器的运行轨迹进行探究。
+
+(2) 对于多星观测多目标的情况，提出三星确定公切圆、多星选取最小公切圆的方法实现定位和误差分析。
+
+\section*{二、名词解释、符号说明及基本假设}
+
+\subsection*{2.1 名词解释}
+
+1) 基础坐标系:
+
+基础坐标系为随地心平移的坐标系，取地球中心 $O_{c}$ 为原点，地球自转轴取为 $z$ 轴，指向北极为正向，$x$ 轴由 $O_{c}$ 指向零时刻的 0 经度线，再按右手系确定 $y$ 轴，建立直角坐标系 $O_{c}-X_{c}Y_{c}Z_{c}$。地心 $O_{c}$ 在绕日椭圆轨道上运动，所以理论上 $O_{c}-X_{c}Y_{c}Z_{c}$ 系是非惯性系。但地球公转周期远大于空间飞行器的观测弧段时长，故本题在短时间内认定该系为惯性坐标系，该基础坐标系不随地球旋转。
+
+2) 观测坐标系:
+
+随卫星运动的观测坐标系 $O_{s}-X_{s}Y_{s}Z_{s}$，见图 2，原点取为卫星中心 $O_{s}$，$X_{s}$ 轴沿 $O_{c}O_{s}$ 连线，离开地球方向为正，$Z_{s}$ 轴与 $X_{s}$ 垂直指向正北，$Y_{s}$ 轴按右手系确定。由于一般测量卫星的轨道都不会严格经过南北极上空，所以这种坐标系的定义是明确的。如此定义的观测坐标系也叫做 UEN 坐标系，因为三个坐标轴分别指向上（UP）、东（EAST）和北（NORTH）三个方向。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{观测坐标系示意图}
+    \label{fig:2}
+\end{figure}
+
+3) 坐标变换法:
+
+“先平移后旋转”坐标变换方法如下所示:
+
+a. 坐标轴的平移
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{坐标平移示意图}
+    \label{fig:3}
+\end{figure}
+
+则有:
+
+\begin{equation}
+\begin{cases}
+x = X + g \\
+y = Y + h \\
+z = Z + k
+\end{cases}
+\end{equation}
+
+式中 \( x \), \( y \), \( z \) 为旧坐标; \( X \), \( Y \), \( Z \) 为新坐标; \( g \), \( h \), \( k \) 为新坐标系原点 \( O' \) 在旧坐标系内的坐标.
+
+b. 坐标轴的旋转
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image.png}
+    \caption{坐标轴旋转示意图}
+\end{figure}
+
+新坐标轴 \( OX \), \( OY \), \( OZ \) 的方向余弦分别为:
+\begin{align*}
+OX & \longrightarrow l_1 \quad m_1 \quad n_1 \\
+OY & \longrightarrow l_2 \quad m_2 \quad n_2 \\
+OZ & \longrightarrow l_3 \quad m_3 \quad n_3
+\end{align*}
+则有:
+\[
+\begin{cases}
+x = l_1 X + l_2 Y + l_3 Z \\
+y = m_1 X + m_2 Y + m_3 Z \\
+z = n_1 X + n_2 Y + n_3 Z
+\end{cases}
+\]
+
+4) 测向定位:
+
+侧向定位又称为三角定位。双站测向定位原理两个或者两个以上观测站对辐射源进行测向, 然后根据各观测站测量的数据与站之间的距离, 经过几何计算来得出辐射源位置。单站测向采用常规的单脉冲比幅测向方法, 两个测向站进行数据融合, 对同一信号的方向交汇点进行计算雷达无源定位。
+
+\subsection{2.2 符号说明}
+
+\begin{itemize}
+    \item \(\vec{F}_e\) : 飞行器所受的外力加速度之和
+    \item \(\vec{F}_T\) : 火箭产生的推力加速度
+    \item \(m(t)\) : 瞬时质量
+    \item \(\dot{m}(t)\) : 质量变化率
+    \item \(\vec{r}(t)\) : 空间飞行器在基础坐标系下的位置矢量
+    \item \(\ddot{\vec{r}}(t)\) : \(\vec{r}(t)\) 对时间 \(t\) 的二阶导数, 即加速度
+    \item \(G_m\) : 地球引力常数 (本题中地球引力常数取 \(G_m = 3.986005 \times 10^{14} \, m^3/s^2\))
+    \item \(\vec{v}_r(t)\) : 燃料相对于火箭尾部喷口的喷射速度的逆矢量
+    \item \(X_s(t_0)\) : 零时刻探测卫星在基础坐标系下 \(x\) 轴方向的位置
+    \item \(Y_s(t_0)\) : 零时刻探测卫星在基础坐标系下 \(y\) 轴方向的位置
+\end{itemize}
+
+\begin{itemize}
+    \item $Z_s(t_0)$: 零时刻探测卫星在基础坐标系下 $z$ 轴方向的位置
+    \item $\dot{X}_s(t_0)$: 零时刻探测卫星在基础坐标系下 $x$ 轴方向的速度
+    \item $\dot{Y}_s(t_0)$: 零时刻探测卫星在基础坐标系下 $y$ 轴方向的速度
+    \item $\dot{Z}_s(t_0)$: 零时刻探测卫星在基础坐标系下 $z$ 轴方向的速度
+\end{itemize}
+
+\subsection{基本假设}
+
+1) 将地球看成是质量密度分布均匀的正球体
+
+2) 观测卫星的运行轨道相对于地球是不变的
+
+3) 空间飞行器飞行过程中忽略空气阻力影响
+
+4) 系统误差只考虑与卫星平台相关的系统误差，在本题只考虑三轴指向误差
+
+5) 以中低轨近圆轨道卫星为观测星座对假想的空间飞行器进行仿真观测
+
+6) 空间飞行器在空间运动过程中遵循能量守恒定律
+
+7) 由于空间飞行器的主动段主要依靠第一级火箭的 “垂直段+程序拐弯段（加外力矩）+重力斜飞段的前段”的推进（视发动机的特性），因此可以讲火箭视为单级火箭。
+
+8) 火箭本身一个由众多质量的质点所组成的变质量质点系，这里讲其视为一边质量的质点，即不考虑火箭上各点的速度差异，不考虑火箭质心因燃烧消耗而产生的位移，作用在火箭上所有外力都通过质心，也就是说不计火箭在飞行过程中绕质心的转动
+\end{itemize}
+
+\section{问题分析}
+
+\subsection{问题一分析}
+
+题目中指出：在仅考虑随机误差的条件下，根据数据文件 satinfo.txt 中的卫星观测数据以及观测卫星的简化运动方程 (3-1-1)
+\begin{equation}
+\ddot{\vec{r}}(t) = \vec{F}_{e} = -\frac{G_{m}}{|\vec{r}(t)|^{3}} \vec{r}(t)
+\tag{3-1-1}
+\end{equation}
+计算 09 号观测卫星在 50.0s、100.0s、150.0s、200.0s、250.0s 五个时刻的三维位置。本题需要建立卫星轨道模型，推导出观测卫星和空间飞行器的轨道运动方程，然后进行求解。
+
+首先需要建立适当的坐标系。由理论力学可知，若将地球看成是一个密度均匀的球体，则它对人造卫星的吸引可等效为一个质点，相当于全部质量集中于地球质心这一点上，于是地球和卫星就构成一个简单的二体系统。因此我们选择地心为坐标系的原点，来讨论人造卫星相对地心的运动，这是很自然的。但严格来说，该地心坐标系并非惯性参考系，又考虑到地球公转周期远大于空间飞行器的观测弧段时长，故本题在短时间内认定该系为惯性坐标系，该基础坐标系不随地球旋转，从而引力场系数不再变化。
+
+要计算观测卫星在任意时刻的位置，需建立观测卫星在上述坐标系下的矢量运动方程，通过将其分解为常微分方程，然后采用常用的数值法进行求解。同时要注意不同步长的选取对结果有着不同程度的影响，产生不同程度的误差。考虑到随机误差对观测数据以及轨道估计的影响，我们须再建立一种改进模型，尽量去减小误差，提高轨道估计的精确度。
+
+\subsection{问题二分析}
+
+题目指出：在本题给定的仿真数据下，06 号和 09 号观测卫星对 0 号空间飞行器形成了立体交叠观测，然后结合立体几何知识按照逐点交汇定位的思路，给出 0 号空间飞行器在公式 (3-2-1) 框架下的轨道估计，
+\begin{equation}
+\ddot{\vec{r}}(t) = \vec{F}_{e} + \vec{F}_{T} = -\frac{G_{m}}{|\vec{r}(t)|^{3}} \vec{r}(t) + \vec{v}_{r}(t) \frac{\dot{m}(t)}{m(t)}
+\tag{3-2-1}
+\end{equation}
+该公式是根据变质量质点的动力学，空间飞行器在基础坐标系下的主动段的简化运动方程，而观测卫星对于空间飞行器的观测数据通过化简又可以由观测坐标系下的两个无量纲比值确定：
+\begin{equation}
+\alpha = \frac{y_{s}}{x_{s}}; \quad \beta = \frac{z_{s}}{x_{s}}
+\tag{3-2-3}
+\end{equation}
+其中 $x_{s}, y_{s}, z_{s}$ 为空间飞行器在观测坐标系中的坐标。
+
+首先需要对空间飞行器位置矢量进行坐标变换。可以利用空间立体几何知识以及坐标变换法则，将观测坐标系 $O_{s}-X_{s}Y_{s}Z_{s}$ 下的位置矢量转化为基础坐标系 $O_{c}-X_{c}Y_{c}Z_{c}$ 下的位置矢量。
+
+其次，基于测向线公垂线中点，利用测向定位原理以及立体几何知识，并根据题目中给的仿真数据（编号为 $i$ 的卫星在观测时刻 $t$ 对编号为 $j$ 的飞行器以及对应观测数据 $\alpha, \beta$）进行逐点定位，描绘出地心坐标系下的 06 号和 09 号观测卫星对 0 号空间飞行器形成的立体交叠观测离散点，仿真飞行器主动段运动轨迹。
+
+然后，选择适当的 $\vec{v}_{r}(t)$ 和 $m(t)$ 来建立卫星轨道模型，并利用最小二乘法对飞行器主
+
+动段运动轨迹进行线性拟合，确定运动方程参数，进一步导出飞行器的轨道估计方程。最后，寻找运动方程的初值条件，并利用数值法进行求解。按照从 $50.0\,s$ 到 $170.0\,s$ 间隔 $10.0\,s$ 进行采样，计算并列表给出 0 号空间飞行器在各个时间采样点的位置和速度，并进行残差估计以及给出位置和速度的曲线示意图。
+
+\subsection{3.3 问题三分析}
+
+该问题的前提条件是要同时考虑随机误差以及 06 和 09 号两颗观测卫星可能带有的一定系统误差，对系统误差进行正确的估计来提高精度。注意到题目中要求仅考虑对系统误差影响比较大的三轴指向误差，即三个常值小量 $d_{\alpha}, d_{\beta}, d_{\theta}$，分别表示第一观测量 $\alpha$ 的平移量、第二观测量 $\beta$ 的平移量以及观测量在 $\alpha\beta$ 平面内的旋转量。
+
+问题二中在仅考虑随机误差的情况下，我们基于卫星 $S_1$、$S_2$ 的测向线公垂线的中点通过逐点交叉对飞行器进行定位。之所以选择公垂线的中点进行飞行器目标定位，是考虑到随机误差对不同探测卫星的影响效果是相同的。而当同时要考虑系统误差的时候，我们是否还能基于测向线公垂线的中点来进行系统误差的正确估计，这就需要通过建立模型计算求出 $d_{\alpha}$、$d_{\beta}$，来判断公垂线的中点是否可取。若不可取，需要建立新的模型重新在公垂线上选取点，通过逐点交叉对飞行器进行重新定位，保证 $d_{\alpha}$、$d_{\beta}$ 的不变性（这是由系统误差的稳定性决定的）。
+
+又已知 $\alpha$、$\beta$ 是由观测坐标系下的两个无量纲比值确定的值（$\alpha = \frac{y_s}{x_s}$；$\beta = \frac{z_s}{x_s}$），其中 $x_s, y_s, z_s$ 为空间飞行器在观测坐标系中的坐标。也就是说，系统误差 $d_{\alpha}$、$d_{\beta}$ 的确定需要建立在观测坐标系下进行求解。因此，首先需要建立模型进行坐标的反变换，即将地心坐标系下的坐标转换为观测坐标系下的坐标，然后进行后续的计算。
+
+\subsection{3.4 问题四分析}
+
+题目中要求对只有 09 号观测卫星单星观测的 01 号空间飞行器进行轨道估计。该题涉及到单星无源定位技术。单星对星的无源定位，就是把无源侦察跟踪设备安装到卫星平台上，利用单颗卫星平台截获目标卫星发射的通讯、测控和导航信号并进行处理，进而对目标星进行定位和跟踪。传统的单站无源定位一般采用只测向定位，考虑到其简单、容易实现的优点，我们首先采用这种定位方法进行轨道估计。
+
+\section*{四、问题一的建模、求解}
+
+本题是在仅考虑随机误差对观测数据影响的前提下，根据观测卫星在基础坐标系下的简化运动方程 $\ddot{\vec{r}}(t)=\vec{F}_{e}=-\frac{G_{m}}{|\vec{r}(t)|^{3}} \vec{r}(t)$ 以及零时刻观测卫星的位置和速度 $x, y, z, \dot{x}, \dot{y}, \dot{z}$，建立观测卫星的轨道模型进行求解。
+
+\subsection*{4.1 欧拉模型}
+
+\subsubsection{4.1.1 模型建立}
+
+本题的基础坐标系为随地心平移的坐标系，根据万有引力定律建立观测卫星运动的矢量运动方程（4-1-2）
+
+\begin{equation}
+\ddot{\vec{r}}(t)=-\frac{G_{m}}{|\vec{r}(t)|^{3}} \vec{r}(t)
+\tag{4-1-2}
+\end{equation}
+
+由空间立体几何知识，建立常微分方程模型，如图 4-1-3 所示：
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\ddot{\overline{X_{s}}}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}} \cdot \overline{X_{s}}(t) \\
+\ddot{\overline{Y_{s}}}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}} \cdot \overline{Y_{s}}(t) \\
+\ddot{\overline{Z_{s}}}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}} \cdot \overline{Z_{s}}(t) \\
+\vec{r}(t) & =\overline{X_{s}}(t)+\overline{Y_{s}}(t)+\overline{Z_{s}}(t)
+\end{aligned}
+\right.
+\tag{4-1-3}
+\end{equation}
+
+其中，$(X_{s}(t), Y_{s}(t), Z_{s}(t))$ 为观测卫星在地心坐标系 $O_{c}-X_{c} Y_{c} Z_{c}$ 下的坐标，分量 $\ddot{\overline{X_{s}}}(t)$、$\ddot{\overline{Y_{s}}}(t) 、 \ddot{\overline{Z_{s}}}(t)$ 分别为在三个坐标轴方向的加速度。$X_{s}\left(t_{0}\right), Y_{s}\left(t_{0}\right), Z_{s}\left(t_{0}\right), \dot{X}_{s}\left(t_{0}\right), \dot{Y}_{s}\left(t_{0}\right), \dot{Z}_{s}\left(t_{0}\right)$ 为微分方程组的初始状态参数，也就是题目中已给出的卫星初始位置和速度，且
+
+\[
+|\vec{r}(t)|=\sqrt{\overline{X_{s}}^{2}(t)+\overline{Y_{s}}^{2}(t)+\overline{Z_{s}}^{2}(t)} .
+\]
+
+\subsubsection{4.1.2 模型求解}
+
+考虑到卫星定轨的精度要求，我们选择具有高精度和高效率的数值积分方法来对卫星轨道方程进行计算，这也是解决常微分方程初值问题的常用数值解法。我们采用欧拉计算方法，将该连续的微分方程初值问题转化为离散的差分方程初值的问题，然后进行求解。
+
+不妨设 $\overline{A}=\overline{\dot{X}_{s}}, \overline{B}=\overline{\dot{Y}_{s}}, \overline{C}=\overline{\dot{Z}_{s}}$，则二阶微分方程组（4-1-3）转换为一阶方程组（4-1-4）
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\dot{\overline{A}}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}} \cdot \overline{X_{s}}(t) \\
+\dot{\overline{B}}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}} \cdot \overline{Y_{s}}(t) \\
+\dot{\overline{C}}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}} \cdot \overline{Z_{s}}(t)
+\end{aligned}
+\right.
+\tag{4-1-4}
+\end{equation}
+
+其中 $X_{s}(t_{0}) 、 Y_{s}(t_{0}) 、 Z_{s}(t_{0}) 、 \dot{X}_{s}(t_{0}) 、 \dot{Y}_{s}(t_{0}) 、 \dot{Z}_{s}(t_{0})$ 为微分方程组的初始状态参数，这样将二阶微分方程转换为一阶微分方程。
+
+取步长 $h=t_{1}-t_{0}=t_{2}-t_{1}=t_{3}-t_{2}=\ldots=t_{n+1}-t_{n}$ （h 为常数），根据欧拉法的计算公式，则有
+
+\begin{aligned}
+X_{s}\left(t_{n+1}\right) &= h \cdot A(t)+X_{s}(t) \\
+A\left(t_{n+1}\right) &= -\frac{G_{m}}{\left|\mathbf{r}(t)\right|^{3}} \cdot X_{s}\left(t_{n}\right)+A\left(t_{n}\right) \\
+\left|\mathbf{r}(t)\right| &= \sqrt{X_{s}^{2}\left(t_{n}\right)+Y_{s}^{2}\left(t_{n}\right)+Z_{s}^{2}\left(t_{n}\right)}
+\end{aligned}
+
+\begin{aligned}
+&\text{(4-1-5)} \\
+&\text{(4-1-6)} \\
+&\text{(4-1-7)}
+\end{aligned}
+
+### 4.1.3 结果仿真
+
+根据以上数值分析方法，我们选取以下步长 $h$，分别计算得到 09 号观测卫星在不同时刻的三维位置，见表 4-1-1：
+
+表 4-1-6:
+
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline 时间 & $X$ & $Y$ & $Z$ & $V_{x}$ & $V_{y}$ & $V_{z}$ \\
+\hline $(t)$ & & & & & & \\
+\hline $50 \mathrm{~s}$ & $1.77380 \mathrm{E}+06$ & $8.16139 \mathrm{E}+06$ & $4.51670 \mathrm{E}+06$ & $-5424.03$ & $-597.567$ & $3412.82$ \\
+\hline $100 \mathrm{~s}$ & $1.50162 \mathrm{E}+06$ & $8.12678 \mathrm{E}+06$ & $4.68469 \mathrm{E}+06$ & $-5462.14$ & $-787.054$ & $3305.78$ \\
+\hline $150 \mathrm{~s}$ & $1.22770 \mathrm{E}+06$ & $8.08272 \mathrm{E}+06$ & $4.84723 \mathrm{E}+06$ & $-5493.85$ & $-975.347$ & $3195.06$ \\
+\hline $200 \mathrm{~s}$ & $9.52353 \mathrm{E}+05$ & $8.02929 \mathrm{E}+06$ & $5.00415 \mathrm{E}+06$ & $-5519.15$ & $-1162.24$ & $3080.79$ \\
+\hline $250 \mathrm{~s}$ & $6.75898 \mathrm{E}+05$ & $7.96654 \mathrm{E}+06$ & $5.15526 \mathrm{E}+06$ & $-5538.01$ & $-1347.53$ & $2963.12$ \\
+\hline
+\end{tabular}
+
+通过 Matlab 仿真，卫星运行轨道如图 4-1-1 所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{satellite_orbit.png}
+\caption{卫星轨迹}
+\label{fig:satellite_orbit}
+\end{figure}
+
+### 4.1.4 误差估计与分析
+
+#### (1) 误差估计
+
+利用建立的模型求出观测卫星的运行轨迹，由于算法的原因，使得求解出的运行轨迹要比实际的运行轨迹偏离地球，当卫星运行一圈，再次回到和出发位置最近的距离时，
+
+此时的卫星三维位置与出发位置的三维位置的差值即为此模型求解产生的误差。09号观测卫星的初始位置（2043922.166765，8186504.631471，4343461.714791）卫星运行轨迹误差，见表4-1-2。
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\multirow{2}{*}{步长} & \multicolumn{3}{c|}{运行一圈后的坐标值} & \multicolumn{3}{c|}{和初始位置的坐标差值} \\
+\cline{2-7}
+ & $X$ & $y$ & $Z$ & $X'$ & $y'$ & $Z'$ \\
+\hline
+0.05 & 2.04808E+06 & 8.19036E+06 & 4.34325E+06 & 2.03606E-03 & 4.71839E-04 & -4.86518E-05 \\
+\hline
+0.1 & 2.05186E+06 & 8.19420E+06 & 4.34328E+06 & 1.84732E-03 & 4.67887E-04 & 7.92706E-06 \\
+\hline
+0.5 & 2.05483E+06 & 8.22278E+06 & 4.36140E+06 & 5.33559E-03 & 4.43129E-03 & 4.13038E-03 \\
+\hline
+\end{tabular}
+\caption{运行一圈后的坐标值和初始位置的坐标差值}
+\end{table}
+
+随机误差造成的卫星轨道偏离图像，如图4-1-2所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{卫星轨道误差显示图}
+\end{figure}
+
+(2) 误差分析
+
+从误差分析看到，三个步长情况下运算得到的卫星运行轨迹偏差，步长为0.1的要好于步长为0.05和0.5的。因此，步长的选取不易过大，亦不易过小。
+
+因此我们应该注意到，在微分方程的数值解中，选择适当的步长是非常重要的。从每跨一步的截断误差来看，截断误差就越小，但是随着步长的减小，在一定的求解区间内所需要的步数就要增多，这样引起的计算量的增大，并会引起舍入误差的大量积累和传播，这样计算仿真的卫星轨道会因误差的逐渐积累而“偏离”原轨道，形成螺旋式轨道，如图4-1-8所示。误差产生的原因，如图4-1-9所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{satellite_orbit.png}
+    \caption{仿真卫星轨道}
+    \label{fig:4-1-8}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{error_generation.png}
+    \caption{误差产生}
+    \label{fig:4-1-9}
+\end{figure}
+
+\subsection{改进的欧拉模型}
+
+\subsubsection{模型建立}
+
+针对上述模型产生的误差分析，我们采用一种“改进的欧拉模型”进行轨道改进，使计算产生的误差尽量减小，如图 \ref{fig:4-2-1} 所示。
+
+具体分析：将卫星运动轨迹的变化微元 $\overline{AB}$ 转化为微元 $AB'$（$AB'$ 为卫星运动在微元时间 $\Delta t$ 内的变化微元轨迹，该弧线的切线方向为 $\dot{\vec{r}}_1$，所在圆心为 $O'$，$O$ 为地球圆心），这样 $\overline{BB'}$ 即为减小的矢量差，从而减小误差，从而提高观测卫星轨道的精确度，减小计算结果的误差。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{improved_model.png}
+    \caption{改进模型}
+    \label{fig:4-2-1}
+\end{figure}
+
+\subsubsection{公式推导}
+
+在改进轨道模型中，向量 $\overrightarrow{OB'}$ 为观测卫星的位置矢量 $\vec{r}_1$，$\vec{r}_1$ 为位置矢量的加速度矢量。只要推导出向量 $\overrightarrow{OB'}$ 的坐标，后续求解过程便类似于上述欧拉模型，此处不再详细进行模型的求解。下面，我们主要进行向量 $\overrightarrow{OB'}$ 的推导。
+
+已知飞行器加速度 $\ddot{\vec{r}}_0$ 同位置矢量 $\vec{r}_0$ 之间的关系：
+
+\begin{equation}
+\ddot{\vec{r}}_{0} = -\frac{G_{m}}{|\vec{r}_{0}|^{3}} \cdot \vec{r}_{0}
+\tag{4-2-2}
+\end{equation}
+
+根据圆周运动规律，得到 $AB'$ 所在圆的半径 $R$，即 $|B'O'|$：
+
+\begin{equation}
+R = \frac{|\dot{\vec{r}}_{0}|^{2}}{|\ddot{\vec{r}}_{0}|}
+\tag{4-2-3}
+\end{equation}
+
+根据向量叉乘原理，易得 $\overline{AO}$ 的方向向量 $\vec{n}$：
+
+\begin{equation}
+\vec{n} = \dot{\vec{r}} \times (\dot{\vec{r}} \times \vec{r}_{0})
+\tag{4-2-4}
+\end{equation}
+
+令 $\theta = \angle BOO'$，根据向量三角函数，得 $\theta$ 的余弦：
+
+\begin{equation}
+\cos \theta = \frac{\overline{OB} \cdot \overline{OO'}}{|\overline{OB}| |\overline{OO'}|}
+\tag{4-2-5}
+\end{equation}
+
+由三角函数的余弦公式，得
+
+\begin{equation}
+|O'B|^{2} = |OB|^{2} + |OO'|^{2} - 2 |OB| |OO'| \cos \theta
+\tag{4-2-6}
+\end{equation}
+
+\begin{equation}
+|OH| = \frac{\overline{OB} \cdot \overline{OO'}}{|\overline{OB}|}
+\tag{4-2-7}
+\end{equation}
+
+$\overline{O'H}$ 为 $\triangle OBO'$ 的垂线，求得该垂线的高度 $|O'H|$：
+
+\begin{equation}
+|O'H| = \sqrt{|OO'|^{2} - |OH|^{2}}
+\tag{4-2-8}
+\end{equation}
+
+在 $\triangle B'HO'$ 中，根据勾股定理，易得 $|\overline{HB'}|$：
+
+\begin{equation}
+|\overline{HB'}| = \sqrt{R^{2} - |O'H|^{2}} = \sqrt{R^{2} + |OH|^{2} - |OO'|^{2}}
+\tag{4-2-9}
+\end{equation}
+
+又已知
+
+\begin{equation}
+|\overline{OB'}| = |OH| + |\overline{HB'}|
+\tag{4-2-10}
+\end{equation}
+
+将公式 (4-2-7)、(4-2-8) 代入公式 (4-2-10)，求得 $\overline{OB'}$ 的大小，进而计算出 $\overline{OB'}$：
+
+\begin{equation}
+\overline{OB'} = \frac{\overline{OB} \cdot |\overline{OB'}|}{|\overline{OB}|}
+\end{equation}
+
+\subsection{4.2.3 结果仿真}
+
+根据以上数值分析方法，我们选取以下步长 $h$，分别计算得到 09 号观测卫星在不同时刻的三维位置，见表 4-2-1：
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+时间 & $X$ & $y$ & $z$ & $V_{x}$ & $V_{y}$ & $V_{z}$ \\
+(t) & & & & & & \\
+\hline
+50s & 1.77380E+06 & 8.16138E+06 & 4.51669E+06 & -5424.03 & -597.567 & 3412.82 \\
+\hline
+100s & 1.50162E+06 & 8.12676E+06 & 4.68468E+06 & -5462.14 & -787.055 & 3305.78 \\
+\hline
+150s & 1.22769E+06 & 8.08269E+06 & 4.84721E+06 & -5493.85 & -975.349 & 3195.06 \\
+\hline
+200s & 9.52346E+05 & 8.02925E+06 & 5.00412E+06 & -5519.15 & -1162.24 & 3080.79 \\
+\hline
+250s & 6.75890E+05 & 7.96650E+06 & 5.15524E+06 & -5538.01 & -1347.53 & 2963.11 \\
+\hline
+\end{tabular}
+\caption{表4-2-1:}
+\end{table}
+
+\subsection*{4.2.4 误差分析}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\multirow{2}{*}{步长} & \multicolumn{3}{c|}{运行一圈后的坐标值} & \multicolumn{3}{c|}{和初始位置的坐标差值} \\
+\cline{2-7}
+& $X$ & $y$ & $z$ & $X'$ & $y'$ & $z'$ \\
+\hline
+0.05 & 2.04602E+06 & 8.18845E+06 & 4.34335E+06 & 1.02544E-03 & 2.37481E-04 & -2.47084E-05 \\
+\hline
+0.1 & 2.04774E+06 & 8.19036E+06 & 4.34349E+06 & 8.39358E-04 & 2.33879E-04 & 3.21971E-05 \\
+\hline
+0.5 & 2.06366E+06 & 8.20583E+06 & 4.34317E+06 & 9.65524E-03 & 2.36085E-03 & -6.63349E-05 \\
+\hline
+\end{tabular}
+\caption{表4-2-2:}
+\end{table}
+
+\subsection*{4.3 模型小结}
+
+通过模型一和模型二分别求出观测卫星的运行轨迹，并给出各模型条件下09号观测卫星在50.0s、100.0s、150.0s、200.0s、250.0s五个时刻的三维位置。通过对模型的误差分析可以得出结论：
+
+1. 模型在计算过程中，要注意选取合适的步长，步长不易过大，亦不易过小。
+
+2. 经过改进后的模型，误差要明显好于之前，计算得到的数据更加贴近实际，因此，模型二要优于模型一。
+
+\section*{五、问题二的建模、求解}
+
+\subsection{基于测向线公垂线中点的两站测向交叉定位模型}
+
+问题中要求利用给定的仿真观测数据进行计算，考虑到该仿真数据是建立在观测坐标系 $O_s-X_sY_sZ_s$ 下观测卫星对空间飞行器进行观测的数据，而空间飞行器的主动段的运动方程 $\ddot{\vec{r}}(t)=\vec{F}_e+\vec{F}_T=-\frac{G_m}{|\vec{r}(t)|^3}\vec{r}(t)+\vec{v}_r(t)\frac{\dot{m}(t)}{m(t)}$ 是建立在基础坐标系 $O_c-X_cY_cZ_c$ 下的方程，因此我们首先需要将飞行器的观测坐标数据转化为地心坐标系下的坐标数据，然后进行后续的计算。
+
+模型建立步骤（流程图）如下：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\end{figure}
+
+\subsubsection{模型建立}
+
+(1) 实现观测坐标系向地心坐标系的坐标变换
+
+现根据问题二，我们已知飞行器在观测坐标系 $O_s-X_sY_sZ_s$ 下的位置，下面将对飞行器进行坐标变换，坐标变换方法详见第一章。
+
+① 首先，已知坐标轴的平移向量 $\overrightarrow{O_cO_s}$，不妨设观测坐标系 $O_s-X_sY_sZ_s$ 的原点为 $O_s(X_0, Y_0, Z_0)$，则平移向量 $\overrightarrow{O_cO_s}=(X_0, Y_0, Z_0)$；
+
+② 然后，利用坐标轴的旋转公式进行坐标的旋转变换，这就需要求得新坐标轴 $O_sX_s$、$O_sY_s$、$O_sZ_s$ 的方向余弦。
+
+根据三维坐标系下的向量运算以及右手法则，分别求出坐标轴 $O_sX_s$、$O_sY_s$、$O_sZ_s$ 的方向余弦，如下所示：
+
+由于 $X_s$ 轴沿 $\overrightarrow{O_cO_s}$ 连线，离开地球方向为正，可得 $O_sX_s$ 方向的单位余弦向量：
+
+\[
+\overrightarrow{O_sX_s}=\left(\frac{x_s}{|\vec{r}_s|}, \frac{y_s}{|\vec{r}_s|}, \frac{z_s}{|\vec{r}_s|}\right)=(l_1, m_1, n_1)
+\]
+
+利用向量的差乘原理：
+
+\[
+\overrightarrow{O_sZ_s}=\overrightarrow{O_cO_s}\times(\overrightarrow{O_cZ_c}\times\overrightarrow{O_cO_s})
+\]
+
+将向量 $\overrightarrow{O_sY_s}$ 进行单位化，得到 $O_sY_s$ 的余弦向量（不妨设为 $(l_3, m_3, n_3)$）：
+
+\[
+\overrightarrow{O_sZ_s}=(l_3, m_3, n_3)
+\]
+
+用向量的差乘原理：
+
+\begin{equation}
+\overrightarrow{O_{s}Y_{s}}=\overrightarrow{O_{s}Z_{s}}\times\overrightarrow{O_{s}X_{s}}
+\end{equation}
+
+进而，求得 $O_{s}Y_{s}$ 的余弦向量：
+
+\begin{equation}
+\overrightarrow{O_{s}Y_{s}}=(l_{1},m_{1},n_{1})
+\end{equation}
+
+将新坐标轴 $O_{s}X_{s}$、$O_{s}Y_{s}$、$O_{s}Z_{s}$ 的方向余弦，带入旋转变换公式，得到坐标旋转变换方程：
+
+\begin{equation}
+\begin{cases}
+X_{c}=l_{1}X_{s}+m_{1}Y_{s}+n_{1}Z_{s} \\
+Y_{c}=l_{2}X_{s}+m_{2}Y_{s}+n_{2}Z_{s} \\
+Z_{c}=l_{3}X_{s}+m_{3}Y_{s}+n_{3}Z_{s}
+\end{cases}
+\end{equation}
+
+③通过利用坐标轴的平移和旋转进行坐标变换后的方程：
+
+\begin{equation}
+\begin{cases}
+X_{c}=l_{1}X_{s}+m_{1}Y_{s}+n_{1}Z_{s}+X_{0} \\
+Y_{c}=l_{2}X_{s}+m_{2}Y_{s}+n_{2}Z_{s}+Y_{0} \\
+Z_{c}=l_{3}X_{s}+m_{3}Y_{s}+n_{3}Z_{s}+Z_{0}
+\end{cases}
+\end{equation}
+
+(2) 确定测向线的公垂线中点
+
+无源探测器的观测卫星常采用红外光学探测器，单个红外光学探测器不具备测距能力，但借助多颗（含两颗）观测卫星的同步观测能够进行逐点定位，再结合空间飞行器的运动模型，便可以进行轨道参数估计。无源定位的方法有测向定位法、测时差定位法和测向时差定位法等。测向交叉定位法又称三角定位法，分为二维平面测向定位和三维空间测向定位，根据题目中给出的仿真数据，我们采用测向定位法对空间飞行器进行逐点定位。
+
+由于红外光学探测器只能通过接收目标的红外辐射信息来定向，但容易受气候影响与云层的干扰，在这种环境下必然存在“虚假定位点”的现象。因此我们分析到，06号探测卫星和09号探测卫星的两条测向线可能不会交汇于被探测空间飞行器这一点，大部分是两条异面直线，即这两条测向线是异面直线。那么，如何通过这两条异面直线来估计空间飞行器的某一点轨迹呢？问题的前提条件是仅考虑随机误差，而随机误差对两个卫星的测向线偏移的影响是相同的，因此选择这两条测向线的公垂线中点能够使概率最大。
+
+我们采用两条测向线的公垂线中点对空间飞行器的某点轨迹进行几何定位，后进行逐点交叉定位，模型如图 5-2-1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{基于测向线公垂线中点的两站测向交叉定位模型}
+    \label{fig:5-2-1}
+\end{figure}
+
+其中，$S_{1}$、$S_{2}$分别为06号、09号卫星，设两条卫星测向线分别为$\overrightarrow{f_{1}}$、$\overrightarrow{f_{2}}$，$MN$为两条测向线的公垂线。
+
+则由空间向量关系，得到公垂线$MN$的向量$\overrightarrow{MN}$：
+
+\begin{equation}
+\overrightarrow{MN} = (\overrightarrow{S_{1}S_{2}} \cdot \overrightarrow{n}) \cdot \overrightarrow{n_{0}}
+\tag{5-2-2}
+\end{equation}
+
+其中$\overrightarrow{n} = \overrightarrow{f_{1}} \times \overrightarrow{f_{2}}$，$\overrightarrow{n_{0}} = \frac{\overrightarrow{n}}{|\overrightarrow{n}|}$，然后根据向量运算得
+
+\begin{equation}
+\overrightarrow{OS_{1}'} = \overrightarrow{OS_{1}} + \overrightarrow{MN}
+\end{equation}
+
+由向量叉乘公式$|\text{向量 } c| = |\text{向量 } a \times \text{向量 } b| = |a||b|\sin\langle a, b \rangle$，向量$c$的方向与$a, b$所在的平面垂直，分别计算得到各个成角的正弦：
+
+\begin{equation}
+\sin \angle S_{1}'NS_{2} = \frac{|\overrightarrow{f_{1}} \times \overrightarrow{f_{2}}|}{|\overrightarrow{f_{1}}| \cdot |\overrightarrow{f_{2}}|}
+\tag{5-2-3}
+\end{equation}
+
+\begin{equation}
+\sin \angle NS_{1}'S_{2} = \frac{|\overrightarrow{f_{1}} \times \overrightarrow{S_{1}'S_{2}}|}{|\overrightarrow{f_{1}}| \cdot |\overrightarrow{S_{1}'S_{2}}|}
+\tag{5-2-4}
+\end{equation}
+
+\begin{equation}
+\sin \angle NS_{2}S_{1}' = \frac{|\overrightarrow{f_{2}} \times \overrightarrow{S_{1}'S_{2}}|}{|\overrightarrow{f_{2}}| \cdot |\overrightarrow{S_{1}'S_{2}}|}
+\tag{5-2-5}
+\end{equation}
+
+由三角函数公式
+
+\begin{equation}
+|\overrightarrow{S_{1}M}| = \frac{|\overrightarrow{S_{1}'S_{2}}|}{\sin \angle S_{1}'NS_{2}} \cdot \sin \angle NS_{2}S_{1}'
+\tag{5-2-6}
+\end{equation}
+
+\begin{equation}
+|\overrightarrow{S_{2}N}| = \frac{|\overrightarrow{S_{1}'S_{2}}|}{\sin \angle S_{1}'NS_{2}} \cdot \sin \angle NS_{1}'S_{2}
+\tag{5-2-7}
+\end{equation}
+
+将式（5-2-3）、（5-2-4）、（5-2-5）代入式（5-2-6）、（5-2-7），从而求得线段 $S_{1}M$、$S_{2}N$ 的长度，进而得到向量 $\overrightarrow{S_{1}M}$、$\overrightarrow{S_{2}N}$：
+
+\[
+\overrightarrow{S_{1}M} = \left| \overrightarrow{S_{1}M} \right| \cdot \frac{\overrightarrow{f_{1}}}{\left| \overrightarrow{f_{1}} \right|}
+\]
+
+\[
+\overrightarrow{S_{2}N} = \left| \overrightarrow{S_{2}N} \right| \cdot \frac{\overrightarrow{f_{2}}}{\left| \overrightarrow{f_{2}} \right|}
+\]
+
+又根据向量和，分别得到向量 $\overrightarrow{OM}$、$\overrightarrow{ON}$
+
+\[
+\overrightarrow{OM} = \overrightarrow{OS_{1}} + \overrightarrow{S_{1}M}
+\]
+
+\[
+\overrightarrow{ON} = \overrightarrow{OS_{2}} + \overrightarrow{S_{2}N}
+\]
+
+中垂线中心向量 $\overrightarrow{OF}$：
+
+\[
+\overrightarrow{OF} = \frac{1}{2} (\overrightarrow{OM} + \overrightarrow{ON})
+\]
+
+（3）逐点交叉定位
+
+利用空间几何知识，利用仿真数据对（2）中的双星测向线的公垂线中点进行逐点定位，仿真实现06号和09号观测卫星对0号空间飞行器形成的立体交叠观测轨道。仿真结果如图5-1-2所示，双星测向线的交汇（即蓝色部分）即为飞行器的运行轨道。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{图5-1-2}
+\end{figure}
+
+\section*{5.2 飞行器运动方程模型}
+
+该模型要求选择适当的 $\vec{v}_{r}(t)$ 和 $m(t)$ 来表示，通过公示推导后再利用最小二乘法对飞行器主动段运动轨迹进行拟合，确定飞行器运动方程参数。
+
+\subsection*{5.2.1 模型建立}
+
+(1) 选取火箭喷气速度 $\vec{v}_{r}(t)$ 和火箭质量 $m(t)$
+
+为简化方程，我们将燃料相对于火箭尾部喷口的喷射速度 $\vec{v}_{r}(t)$ 视为一常数，火箭的瞬时质量 $m(t)$ 为一随时间变化的线性方程：
+\begin{equation}
+m(t) = m_{0} - kt \tag{5-2-2}
+\end{equation}
+则火箭质量变化率 $\dot{m}(t)$ 为一常系数 $k$，即
+\begin{equation}
+\dot{m}(t) = k \tag{5-2-3}
+\end{equation}
+
+(2) 确定运动方程参数
+
+模型如图 5-3-1 所示
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{rocket_model.png}
+    \caption{图 5-2-1}
+\end{figure}
+
+该模型中，点 A、点 B、点 C 为火箭的观测点，观测步长为 $h$ ($h=1\text{s}$)，选取微元 $ds$ （如 $\overline{AB}$、$\overline{BC}$）进行研究，则我们可以假设火箭在每个微元 $ds$ 段内进行匀加速直线运动，$F_{T}$ 为火箭产生的推力加速度大小，$F_{e}$ 为飞行器所受的外力加速度大小，方向是由 $\triangle OAB$ 中线指向 $O$，大小为固定值。设 A 点处速度为 $v_{1}$，B 点处速度为 $v_{2}$。
+
+火箭受到的外力大小：
+\begin{equation}
+F_{e} = \frac{G_{m}}{r_{A}r_{B}} = \frac{G_{m}}{r^{2}} \tag{5-2-4}
+\end{equation}
+
+火箭产生的推力大小：
+\begin{equation}
+F_{T}=v_{r}(t)\frac{\dot{m}(t)}{m(t)}
+\tag{5-2-5}
+\end{equation}
+将式（5-2-2）、（5-2-3）代入式（5-2-5）得出火箭产生的推力大小：
+\begin{equation}
+F_{T}=\frac{v_{r}(t)}{\frac{m_{0}}{k}-t}
+\tag{5-2-6}
+\end{equation}
+易知微元 $\overline{AB}$ 段长为：
+\begin{equation}
+\overline{AB}=\frac{v_{1}+v_{2}}{2}\cdot h
+\tag{5-2-7}
+\end{equation}
+根据力学几何关系得出 $v_{2}$ 与 $v_{1}$ 的关系：
+\begin{equation}
+v_{2}=(F_{T}+F_{e}\cdot\cos\varphi_{AB})\cdot h+v_{1}
+\tag{5-2-8}
+\end{equation}
+其中，$\cos\varphi_{AB}=\frac{(\vec{r}_{A}+\vec{r}_{B})\cdot\overline{AB}}{|\vec{r}_{A}+\vec{r}_{B}|\cdot|\overline{AB}|}$。
+
+联立式（5-2-7）、（5-2-8）消除 $v_{2}$，得
+\begin{equation}
+v_{1}=(F_{T}+\frac{G_{m}}{r_{A}r_{B}}\cdot\cos\varphi_{AB})\cdot\frac{h}{2}+\frac{\overline{AB}}{h}
+\tag{5-2-9}
+\end{equation}
+得出样本的观测值 $\hat{F}_{T}$
+\begin{align*}
+\hat{F}_{T1}&=-(\frac{2v_{1}}{h}-\frac{2\overline{AB}}{h^{2}}+\frac{G_{m}}{r_{A}r_{B}}\cdot\cos\varphi_{AB}) \\
+\hat{F}_{T2}&=-(\frac{2v_{2}}{h}-\frac{2\overline{BC}}{h^{2}}+\frac{G_{m}}{r_{B}r_{C}}\cdot\cos\varphi_{BC}) \\
+&\vdots
+\end{align*}
+
+根据火箭推力加速度观测值的离散样本，运用最小二乘法进行数据拟合，通过 Matlab 进行计算仿真，得到火箭的推力加速度拟合曲线，如图 5-2-1.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{箭的推力加速度}
+\end{figure}
+
+通过上述仿真，得到火箭产生的推力加速度的公式（初始采样时间为第 50s）：
+\begin{equation}
+F_{T}=\frac{7863}{308.6-t}
+\tag{5-3-10}
+\end{equation}
+然后将式（5-3-10）代入公式（5-3-11）
+\begin{equation}
+\ddot{\vec{r}}(t)=\vec{F}_{e}+\vec{F}_{T}=-\frac{G_{m}}{|\vec{r}(t)|^{3}}\vec{r}(t)+\vec{v}_{r}(t)\frac{\dot{m}(t)}{m(t)}
+\tag{5-3-11}
+\end{equation}
+得到火箭所受到的合力加速度 $\ddot{\vec{r}}(t)$：
+\begin{equation}
+\ddot{\vec{r}}(t)=\vec{F}_{e}+\vec{F}_{T}=-\frac{G_{m}}{|\vec{r}(t)|^{3}}\vec{r}(t)+\frac{7863}{308.6-t}\frac{\dot{\vec{r}}}{|\dot{\vec{r}}|}
+\tag{5-3-12}
+\end{equation}
+
+\subsection{5.2.1 模型求解}
+
+使用数值法进行求解，求解过程同问题一相同，具体如下：
+
+由空间立体几何知识，飞行器运动方程（5-3-11）可以分解为如下常微分方程组：
+\begin{equation}
+\left\{
+\begin{aligned}
+\ddot{\overline{X}}_{f}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}}\cdot\overline{X}_{f}(t)+\frac{7863}{308.6-t}\cdot\frac{\dot{\overline{X}}_{f}(t)}{|\dot{\vec{r}}(t)|} \\
+\ddot{\overline{Y}}_{f}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}}\cdot\overline{Y}_{f}(t)+\frac{7863}{308.6-t}\cdot\frac{\dot{\overline{Y}}_{f}(t)}{|\dot{\vec{r}}(t)|} \\
+\ddot{\overline{Z}}_{f}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}}\cdot\overline{Z}_{f}(t)+\frac{7863}{308.6-t}\cdot\frac{\dot{\overline{Z}}_{f}(t)}{|\dot{\vec{r}}(t)|} \\
+\vec{r}(t) & =\overline{X}_{f}(t)+\overline{Y}_{f}(t)+\overline{Z}_{f}(t)
+\end{aligned}
+\right.
+\tag{5-3-13}
+\end{equation}
+
+其中 $X_{f}(t_{0})$、$Y_{f}(t_{0})$、$Z_{f}(t_{0})$、$\dot{X}_{f}(t_{0})$、$\dot{Y}_{f}(t_{0})$、$\dot{Z}_{f}(t_{0})$ 为微分方程组的初始状态参数，也就是题目中已给出的卫星初始位置和速度，且 $|\vec{r}(t)|=\sqrt{\overline{X}_{f}^{2}(t)+\overline{Y}_{f}^{2}(t)+\overline{Z}_{f}^{2}(t)}$。
+
+不妨设 $\overline{A}=\overline{X}_{f}$，$\overline{B}=\overline{Y}_{f}$，$\overline{C}=\overline{Z}_{f}$，则二阶微分方程组（5-3-13）转换为一阶方程组（5-3-14）
+\begin{equation}
+\left\{
+\begin{aligned}
+\dot{\overline{A}}_{f}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}}\cdot\overline{X}_{f}(t)+\frac{7863}{308.6-t}\cdot\frac{\overline{A}_{f}(t)}{|\dot{\vec{r}}(t)|} \\
+\dot{\overline{B}}_{f}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}}\cdot\overline{Y}_{f}(t)+\frac{7863}{308.6-t}\cdot\frac{\overline{B}_{f}(t)}{|\dot{\vec{r}}(t)|} \\
+\dot{\overline{C}}_{f}(t) & =-\frac{G_{m}}{|\vec{r}(t)|^{3}}\cdot\overline{Z}_{f}(t)+\frac{7863}{308.6-t}\cdot\frac{\overline{C}_{f}(t)}{|\dot{\vec{r}}(t)|} \\
+\dot{\vec{r}}(t) & =\overline{A}_{f}(t)+\overline{B}_{f}(t)+\overline{C}_{f}(t)
+\end{aligned}
+\right.
+\tag{5-3-14}
+\end{equation}
+
+这样将二阶微分方程转换为一阶微分方程。取步长 $h=t_{1}-t_{0}=t_{2}-t_{1}=t_{3}-t_{2}=\ldots=t_{n+1}-t_{n}$（$h$ 为常数），根据欧拉法的计算公式，则有
+
+\begin{align*}
+\overline{X}(t_{n+1}) &= h \cdot \overline{A}(t_n) + \overline{X}(t_n) \\
+\overline{A}(t_{n+1}) &= h \cdot \left( -\frac{G_m}{|\mathbf{r}(t)|^3} \cdot \overline{X}(t_n) + \frac{7863}{308.6 - t_n} \cdot \frac{\overline{A}(t_n)}{|\dot{\mathbf{r}}(t)|} \right) + \overline{A}(t_n)
+\end{align*}
+
+问题求解:
+
+① 从50.0s到170.0s间隔10.0s进行采样，表5-2-1中给出0号空间飞行器在各个采样点的位置和速度
+
+表5-2-1:
+
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline 时间(t) & $x$ (m) & $y$ (m) & $z$ (m) & $v_x$ (m/s) & $v_y$ (m/s) & $v_z$ (m/s) \\
+\hline 50 & -1110591 & 6201022 & 1131761 & -787.853 & 730.6079 & 933.9753 \\
+\hline 60 & -1119232 & 6208617 & 1142057 & -941.979 & 785.925 & 1121.697 \\
+\hline 70 & -1129475 & 6216769 & 1154302 & -1105.33 & 847.8379 & 1329.833 \\
+\hline 80 & -1141450 & 6225411 & 1168624 & -1286.76 & 886.1773 & 1541.026 \\
+\hline 90 & -1155249 & 6234501 & 1185177 & -1475.67 & 927.2808 & 1767.422 \\
+\hline 100 & -1171003 & 6244014 & 1204109 & -1677.7 & 972.3308 & 2012.575 \\
+\hline 110 & -1188852 & 6253898 & 1225568 & -1893.78 & 1010.72 & 2275.106 \\
+\hline 120 & -1208918 & 6264159 & 1249742 & -2124.44 & 1044.796 & 2557.066 \\
+\hline 130 & -1231366 & 6274750 & 1276797 & -2369.68 & 1078.937 & 2854.58 \\
+\hline 140 & -1256353 & 6285686 & 1306950 & -2632.23 & 1110.048 & 3176.46 \\
+\hline 150 & -1284060 & 6296939 & 1340424 & -2913.9 & 1143.804 & 3521.2 \\
+\hline 160 & -1314697 & 6308532 & 1377467 & -3217 & 1178.152 & 3888.932 \\
+\hline 170 & -1344978 & 6319249 & 1414076 & -3511.33 & 1206.011 & 4227.467 \\
+\hline
+\end{tabular}
+
+② 残差估计
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{残差估计图}
+\end{figure}
+
+残差: $\delta = 2317.745(m)$
+
+③ 0号空间飞行器的三个位置 $t$-x、$t$-y、$t$-z 和三个速度 $t$-vx、$t$-vy、$t$-vz 曲线示意图，见下图。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-vx曲线}
+    \caption{t-vx曲线}
+    \label{fig:t-vx}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-vy曲线}
+    \caption{t-vy曲线}
+    \label{fig:t-vy}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-vz曲线}
+    \caption{t-vz曲线}
+    \label{fig:t-vz}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-x_curve.png}
+    \caption{t-x曲线}
+    \label{fig:5-2-5}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-y_curve.png}
+    \caption{t-y曲线}
+    \label{fig:5-2-6}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-z_curve.png}
+    \caption{t-z曲线}
+    \label{fig:5-2-7}
+\end{figure}
+
+\section{速度矢量修正模型}
+\subsection{模型建立}
+该模型主要是通过不断修正（控制）速度矢量（即速度的大小和方向）来保证飞行
+
+器最终达到目标位置的能力，从而提高系统的精度。如图 5-3-1 所示，我们选取速度微元向量 $\overline{FR}$，其单位向量为 $\overline{f_{i}}$，我们的目的就是要将速度微元向量 $\overline{FR}$ 修正到 $\overline{FR_{0}}$，依此不断修正下一个速度微元向量，从而提高整个过程的精确度。
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[scale=1.5]
+        \coordinate (R) at (0,0);
+        \coordinate (F) at (4,0);
+        \coordinate (R0) at (0,3);
+        \coordinate (F0) at (3,2);
+        
+        \draw[->, thick] (R) -- (F) node[midway, below] {$\overline{f}$};
+        \draw[->, thick] (R) -- (R0) node[midway, left] {$\overline{R0}$};
+        \draw[->, thick] (R) -- (F0) node[midway, right] {$\overline{f_{0}}$};
+        
+        \node at (R) [below left] {R};
+        \node at (F) [below right] {F};
+    \end{tikzpicture}
+    \caption{图 5-3-1}
+\end{figure}
+
+(1) 速度方向修正
+
+不妨令 $\overline{FR_{0}} = \overline{f_{0}}$，$\overline{FR} = \overline{f}$
+
+易得速度微元向量 $\overline{FR}$、$\overline{FR_{0}}$ 的单位向量 $\overline{f_{i}}$、$\overline{f_{0i}}$：
+
+\[
+\overline{f_{0i}} = \frac{\overline{f_{0}}}{|\overline{f_{0}}|}
+\]
+
+\[
+\overline{f_{i}} = \frac{\overline{f}}{|\overline{f}|}
+\]
+
+那么，速度方向的修正因子向量 $\overline{\Delta d}$：
+
+\[
+\overline{\Delta d} = \overline{f_{0i}} - \overline{f_{i}}
+\]
+
+从而得到速度修正的单位向量 $\overline{v_{1i}}$
+
+\[
+\overline{v_{1i}} = \overline{v_{0i}} + \overline{\Delta d}
+\]
+
+进而得到修正后的速度向量 $\overline{v_{1}}$：
+
+\[
+\overline{v_{1}} = |v| \overline{v_{1i}}
+\]
+
+(2) 速度大小修正
+
+容易得到速度大小的修正因子大小 $\Delta s$：
+
+\[
+\Delta s = \frac{|\overline{f}|}{|\overline{f_{0}}|}
+\]
+
+因此修正后的速度大小为：
+
+\[
+|\overline{v_{1}}| = |\overline{v_{0}}| / \Delta s
+\]
+
+\subsection{5.3.2 模型求解}
+
+在初始位置和速度的前提下，不断进行其速度的修正，并经过大量的逼近，与观测数据计算出的运行轨迹进行比较，如图 5-3-2 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{图 5-3-2}
+\end{figure}
+
+\section{六、问题三的建模、求解}
+
+该问题的前提条件是要同时考虑随机误差以及 06 和 09 号两颗观测卫星可能带有的一定系统误差，对系统误差进行正确的估计来提高精度。注意到题目中要求仅考虑对系统误差影响比较大的三轴指向误差，即三个常值小量 $d_{\alpha}, d_{\beta}, d_{\phi}$，分别表示第一观测量 $\alpha$ 的平移量、第二观测量 $\beta$ 的平移量以及观测量在 $\alpha\beta$ 平面内的旋转量。
+
+问题二中在仅考虑随机误差的情况下，我们基于卫星 $S_1$、$S_2$ 的测向线公垂线的中点通过逐点交叉对飞行器进行定位。之所以选择公垂线的中点进行飞行器目标定位，是考虑到随机误差对不同探测卫星的影响效果是相同的。而当同时要考虑系统误差的时候，我们是否还能基于测向线公垂线的中点来进行系统误差的正确估计，这就需要通过建立模型计算求出 $d_{\alpha}$、$d_{\beta}$，来判断公垂线的中点是否可取。若不可取，需要建立新的模型重新在公垂线上选取点，通过逐点交叉对飞行器进行重新定位，保证 $d_{\alpha}$、$d_{\beta}$ 的稳定性（这是由系统误差的稳定性决定的）。
+
+又已知 $\alpha$、$\beta$ 是由观测坐标系下的两个无量纲比值确定的值（$\alpha = \frac{y_s}{x_s}$；$\beta = \frac{z_s}{x_s}$），其中 $x_s, y_s, z_s$ 为空间飞行器在观测坐标系中的坐标。也就是说，系统误差 $d_{\alpha}$、$d_{\beta}$ 的确定需要建立在观测坐标系下进行求解。因此，首先需要建立模型进行坐标的反变换，将地心坐标系下的坐标转换为观测坐标系下的坐标。
+
+\subsection{6.1 坐标反变换模型}
+
+文章中前面已给的“坐标变换法”是将地心坐标系下的坐标变换为观测坐标系下的坐标，我们可以将其简化为矩阵形式的变换公式（6-1-1）
+
+\begin{equation}
+\begin{bmatrix}
+X_c \\
+Y_c \\
+Z_c
+\end{bmatrix}
+=
+\begin{bmatrix}
+l_1 & l_2 & l_3 \\
+m_1 & m_2 & m_3 \\
+n_1 & n_2 & n_3
+\end{bmatrix}
+\begin{bmatrix}
+X_s \\
+Y_s \\
+Z_s
+\end{bmatrix}
++
+\begin{bmatrix}
+X_0 \\
+Y_0 \\
+Z_0
+\end{bmatrix}
+\tag{6-1-1}
+\end{equation}
+
+其中，$(X_c, Y_c, Z_c)$ 为地心坐标系下的坐标，$(X_s, Y_s, Z_s)$ 为观测坐标系下的坐标，$(X_0, X_0, X_0)$ 为观测坐标系的原心坐标。
+
+下面，我们进行坐标的反变换，即将地心坐标系下的坐标转换为观测坐标系下的坐标，见反变换公式（6-1-2）。
+
+\begin{equation}
+\begin{bmatrix}
+X_s \\
+Y_s \\
+Z_s
+\end{bmatrix}
+=
+\begin{bmatrix}
+l_1 & l_2 & l_3 \\
+m_1 & m_2 & m_3 \\
+n_1 & n_2 & n_3
+\end{bmatrix}^{-1}
+\begin{bmatrix}
+X_c - X_0 \\
+Y_c - Y_0 \\
+Z_c - Z_0
+\end{bmatrix}
+\tag{6-1-2}
+\end{equation}
+
+设观测卫星 S1 在观测坐标系下的坐标为 S1（$X_{s1}$，$Y_{s1}$，$Z_{s1}$），S1 的测向线与公垂线的交点为 M，M 在地心坐标系下的坐标为 M（$X_{M}$，$Y_{M}$，$Z_{M}$），公垂线中点 F 的坐标为 F（$X_{F}$，$Y_{F}$，$Z_{F}$）。
+
+令 M 在观测坐标系下的坐标为 $M_{s1}$（$X_{MS1}$，$Y_{MS1}$，$Z_{MS1}$），又可表示成 $M_{s1}$（1，$\alpha_{0}$，$\beta_{0}$）则根据坐标反变换公式，得出式（6-1-3）
+
+\begin{equation}
+M_{s1}^{T} = Q^{-1}(M^{T} - S^{T})
+\tag{6-1-3}
+\end{equation}
+
+其中，$Q = \begin{bmatrix} l_{1} & l_{2} & l_{3} \\ m_{1} & m_{2} & m_{3} \\ n_{1} & n_{2} & n_{3} \end{bmatrix}^{-1}$。
+
+接下来，我们便可以对系统误差（三轴指向误差 $d_{\alpha}$，$d_{\beta}$，$d_{\theta}$）进行模型的建立与估计。
+
+\subsection{系统误差判断模型}
+
+三轴指向误差中的两个偏移量 $d_{\alpha}$、$d_{\beta}$ 分别为式（6-2-1）、（6-2-2）：
+
+\begin{equation}
+d_{\alpha} = \alpha_{0} - \alpha
+\tag{6-2-1}
+\end{equation}
+
+\begin{equation}
+d_{\beta} = \beta_{0} - \beta
+\tag{6-2-2}
+\end{equation}
+
+通过 Matlab 对偏移量 $d_{\alpha}$、$d_{\beta}$ 及旋转量进 $d_{\theta}$ 行线性拟合，得到如下仿真图：
+
+（1）06 号卫星：
+
+a. 06 号卫星 $d_{\alpha}$ 的分布图，见图 6-2-1
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{06 号卫星 $d_{\alpha}$ 的分布图}
+\label{fig:6-2-1}
+\end{figure}
+
+b. 06号卫星 $d_{\beta}$ 的分布图，见图 6-2-2。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{06号卫星 $d_{\beta}$ 的分布图}
+    \label{fig:6-2-2}
+\end{figure}
+
+c. 06号卫星 $d_{\theta}$ 的分布图，见图 6-2-3。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{06号卫星 $d_{\theta}$ 的分布图}
+    \label{fig:6-2-3}
+\end{figure}
+
+(2) 09号卫星:
+
+a. 09号卫星 $d_{\alpha}$ 的分布图，见图 6-2-4。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{09号卫星 $d_{\alpha}$ 的分布图}
+    \label{fig:6-2-4}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{09号卫星 $d_{\alpha}$ 的分布图}
+    \label{fig:6-2-4}
+\end{figure}
+
+b. 09号卫星 $d_{\beta}$ 的分布图，见图 \ref{fig:6-2-5}。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{09号卫星 $d_{\beta}$ 的分布图}
+    \label{fig:6-2-5}
+\end{figure}
+
+c. 09号卫星 $d_{\theta}$ 的分布图，见图 \ref{fig:6-2-6}。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{09号卫星 $d_{\theta}$ 的分布图}
+    \label{fig:6-2-6}
+\end{figure}
+
+观察到两个偏移量 $d_{\alpha}$、$d_{\beta}$ 以及旋转量 $d_{\theta}$ 的拟合曲线，分析不能利用问题二中的选
+
+取公垂线中点进行逐点交叉定位，即不能进行系统误差估计。因此，我们需建立模型，重新选取测向线公垂线上的点 F，通过逐点交叉对飞行器的轨迹进行重新定位。
+
+\section{公垂线选点定位模型}
+
+首先，我们在问题二中仅考虑随机误差的情况下，通过 Matlab 仿真出公垂线长度随时间变化的曲线图，发现公垂线长度的变化范围为 2200m-2400m，而飞行器运行轨道近似长度 4000000m，由于 $2400<<400000$，因此可以近似看作为固定值。这就对以后公垂线的选点提供了方便。
+
+根据上述判断，我们认定测向线公垂线的长度不变，不妨将三维空间内公垂线与测向线组成的曲面展开成二维空间内的矩形平面，如图 6-3-1 所示。从 50s 开始，每隔一秒选取一条公垂线，一直到 170 秒。为了保证该曲面内逐点交汇成线的平滑性，我们在每条公垂线上选取该 F，使线段 MF 与线段 FN 成线性比例，该比例从 $\mu$ 变化到 $\lambda$。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{图 6-3-1}
+\end{figure}
+
+容易推断出以下变化：
+
+\begin{tabular}{c c}
+时刻 & $|MF|/|MN|$ \\
+\hline
+50s & $\mu$ \\
+51s & $\frac{119}{120}\mu + \frac{1}{120}\lambda$ \\
+$\vdots$ & \\
+$(50+n)$s & $\left(1-\frac{n}{120}\right)\mu + \frac{n}{120}\lambda$ \\
+$\vdots$ & \\
+170s & $\lambda$ \\
+\end{tabular}
+
+根据以上推导，容易得到 $(50+n)$s 时刻下观测坐标系下的向量 $\overrightarrow{OF}_{50+n}$：
+
+\[
+\overrightarrow{OF}_{50+n} = (1-\lambda')\overrightarrow{OM} + \lambda'\overrightarrow{ON}
+\]
+
+其中，$\lambda' = \left(1-\frac{n}{120}\right)\mu + \frac{n}{120}\lambda$
+
+联合上述两个模型，得知观测卫星 $S_1$、$S_2$ 在二维观测平面上的偏移量 $d_{\alpha_1}$、$d_{\beta_1}$、$d_{\alpha_2}$、$d_{\beta_2}$ 以及 $\alpha\beta$ 所在平面的旋转量 $d_\theta$ 是关于自变量 $t$ 的函数，其中包含参数 $\mu$、$\lambda$，形如 $d_{\alpha_1}(t; \mu, \lambda)$。
+
+然后，利用 Matlab 进行数据拟合，分别得到 06 号卫星和 09 号卫星的线性拟合曲线，发现 $d_{\alpha_1}$、$d_{\beta_1}$、$d_{\alpha_2}$、$d_{\beta_2}$、$d_{\theta_1}$、$d_{\theta_2}$ 近似围绕常数上下波动，符合系统误差的性质，这就证明公垂线选点的合理性以及可以通过逐点交汇方法进行系统误差的估计。
+
+(1) 06 号卫星：
+
+a. 06 号卫星 $d_{\alpha}$ 的分布图，见图 6-3-1
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image1.png}
+\caption{06 号卫星 $d_{\alpha}$ 的分布图}
+\label{fig:6-3-1}
+\end{figure}
+
+b. 06 号卫星 $d_{\beta}$ 的分布图，见图 6-3-2。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image2.png}
+\caption{06 号卫星 $d_{\beta}$ 的分布图}
+\label{fig:6-3-2}
+\end{figure}
+
+c. 06 号卫星 $d_{\theta}$ 的分布图，见图 6-3-3。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{06号卫星 $d_{\theta}$ 的分布图}
+    \label{fig:6-3-3}
+\end{figure}
+
+(2) 09号卫星:
+
+a. 09号卫星 $d_{\alpha}$ 的分布图，见图 \ref{fig:6-3-4}。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{09号卫星 $d_{\alpha}$ 的分布图}
+    \label{fig:6-3-4}
+\end{figure}
+
+b. 09号卫星 $d_{\beta}$ 的分布图，见图 \ref{fig:6-3-5}。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{09号卫星 $d_{\theta}$ 的分布图}
+    \label{fig:6-3-5}
+\end{figure}
+
+\section*{c. 09号卫星 \(d_{\theta}\) 的分布图，见图 6-3-6。}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{09号卫星 \(d_{\theta}\) 的分布图}
+    \label{fig:6-3-6}
+\end{figure}
+
+\subsection{6.4 误差参数求解模型}
+
+接下来，进行参数 \(u\) 和 \(\lambda\) 的求解，根据第三个模型得到 \(d_{\alpha_{1}}、d_{\beta_{1}}、d_{\alpha_{2}}、d_{\beta_{2}}\) 均是关于 \(u\) 和 \(\lambda\) 的函数。令 \(\mathbf{k}_{1} = \mathbf{d}_{\alpha_{1}}(u, \lambda)、\mathbf{k}_{2} = \mathbf{d}_{\beta_{1}}(u, \lambda)、\mathbf{k}_{3} = \mathbf{d}_{\alpha_{2}}(u, \lambda)、\mathbf{k}_{4} = \mathbf{d}_{\beta_{2}}(u, \lambda)\)，为使系统误差尽量减小，即偏移量 \(d_{\alpha_{1}}、d_{\beta_{1}}、d_{\alpha_{2}}、d_{\beta_{2}}\) 尽量趋向于 0。
+
+我们设定目标函数 \(\min w\)，约束条件为 \(w = k_{1}^{2} + k_{2}^{2} + k_{3}^{2} + k_{4}^{2}\)，其中 \(k_{1}、k_{2}、k_{3}、k_{4}\) 均为关于参数 \(u\) 和 \(\lambda\) 的函数。容易求出参数 \(u\) 和 \(\lambda\)，进而得到偏移量 \(d_{\alpha_{1}}、d_{\beta_{1}}、d_{\alpha_{2}}、d_{\beta_{2}}\) 以及旋转量 \(d_{\theta_{1}}、d_{\theta_{2}}\) 的函数，实现系统误差的估计。
+
+\textbf{问题计算：}
+
+(1) 分别求得两颗观测卫星的系统误差估计，结果如下：
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+时间 (t) & \(x\) (m) & \(y\) (m) & \(z\) (m) & \(v_{x}\) (m/s) & \(v_{y}\) (m/s) & \(v_{z}\) (m/s) \\
+\hline
+50 & -1109719 & 6201403 & 1132471 & -790.575 & 730.9744 & 933.2543 \\
+\hline
+60 & -1118371 & 6209008 & 1142772 & -944.586 & 786.2179 & 1121.009 \\
+\hline
+70 & -1128637 & 6217164 & 1155012 & -1107.04 & 848.4207 & 1329.827 \\
+\hline
+80 & -1140628 & 6225811 & 1169335 & -1285.76 & 887.9667 & 1543.299 \\
+\hline
+90 & -1154441 & 6234907 & 1185889 & -1475.43 & 928.5963 & 1768.979 \\
+\hline
+100 & -1170210 & 6244424 & 1204821 & -1677.85 & 973.3352 & 2013.711 \\
+\hline
+110 & -1188070 & 6254313 & 1226282 & -1895.82 & 1010.61 & 2274.427 \\
+\hline
+120 & -1208150 & 6264575 & 1250455 & -2124.95 & 1045.355 & 2557.662 \\
+\hline
+130 & -1230614 & 6275166 & 1277506 & -2370.39 & 1079.247 & 2854.858 \\
+\hline
+140 & -1255614 & 6286100 & 1307654 & -2633.2 & 1110.067 & 3176.346 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c c c c}
+\hline
+150 & -1283332 & 6297352 & 1341126 & -2914.67 & 1143.774 & 3521.107 \\
+\hline
+160 & -1313980 & 6308942 & 1378163 & -3216.52 & 1178.663 & 3889.862 \\
+\hline
+170 & -1344269 & 6319656 & 1414768 & -3508.77 & 1207.549 & 4230.233 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textcircled{2} 残差估计:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{残差}
+    \label{fig:residual}
+\end{figure}
+
+残差：$\delta = 6.454501$ (m)
+
+经过系统误差修正之后的残差明显降低很多，精度大大提高。
+
+\textcircled{3} 0号空间飞行器的三个位置 t-x、t-y、t-z 和三个速度 t-vx、t-vy、t-vz 曲线示意图，见下图。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{t-vx 曲线}
+    \label{fig:tvx}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-vy_curve.png}
+    \caption{t-vy曲线}
+    \label{fig:t-vy}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-vz_curve.png}
+    \caption{t-vz曲线}
+    \label{fig:t-vz}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-x_curve.png}
+    \caption{t-x曲线}
+    \label{fig:t-x}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-y曲线}
+    \caption{图 6-4-6 t-y}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{t-z曲线}
+    \caption{图 6-4-7 t-z}
+\end{figure}
+
+\section*{七、问题四的建模、求解}
+
+\subsection*{7.1 单卫星对目标飞行器的轨道估计}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{图 7-1-1}
+\end{figure}
+
+如图 7-1-1 所示，假设观测卫星第 0 时刻、1 时刻、2 时刻的空间位置分别为 D、E、F，相应的观测到目标飞行器所在的位置依次为 A、B、C。
+
+为方便问题求解，我们建立模型，假设观测卫星的运动为匀速圆周运动，目标飞行器在的很短的时间内运动为匀加速直线运动。由于实际情况及各种误差影响，观测卫星实际探测到的相邻三个时刻目标飞行器的位置并不在一条直线上，而是构成一个平面。为简化问题，取 AB 的中点 M 和 BC 的中点 N 两点的连线为假设拟合的目标飞行器匀加速运动的轨迹。
+
+设 9 号观测卫星在地球坐标系中 0 时刻位置 D $(x_{90}, y_{90}, z_{90})$，1 时刻位置 E $(x_{91}, y_{91}, z_{91})$，2 时刻位置 F $(x_{92}, y_{92}, z_{92})$，目标飞行器在你 0 时刻、1 时刻、2 时刻的位置依次为 A $(x_{T0}, y_{T0}, z_{T0})$、B $(x_{T1}, y_{T1}, z_{T1})$、C $(x_{T2}, y_{T2}, z_{T2})$，$\overrightarrow{MN}$ 的方向向量为 $(1, m, n)$。
+
+由上可得到 M、N 处的位置坐标：
+\[
+M \left( \frac{x_{T0} + x_{T1}}{2}, \frac{y_{T0} + y_{T1}}{2}, \frac{z_{T0} + z_{T1}}{2} \right), \quad N \left( \frac{x_{T1} + x_{T2}}{2}, \frac{y_{T1} + y_{T2}}{2}, \frac{z_{T1} + z_{T2}}{2} \right)
+\]
+
+由地心与目标飞行器的连线与直线 MN 的夹角 $\varphi$，在地球坐标系中 $\cot \varphi$ 即为直线 MN 的相对于地心的斜率，即目标飞行器的加速度 $\boldsymbol{a}$ 的大小。
+
+\[
+\cot \varphi = a
+\]
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image.png}
+    \caption{图 7-1-2}
+\end{figure}
+
+又 由直线运动方程得出:
+
+\[
+|\overline{BC}| - |\overline{AB}| = a\Delta t^2
+\]
+
+$\Delta t$ 为探测卫星探测数据的时间间隔，题目中为 0.2s。
+
+\begin{align*}
+\frac{\frac{y_{T_1} + y_{T_2}}{2} - \frac{y_{T_0} + y_{T_1}}{2}}{\frac{x_{T_1} + x_{T_2}}{2} - \frac{x_{T_0} + x_{T_1}}{2}} &= m \\
+\frac{\frac{z_{T_1} + z_{T_2}}{2} - \frac{z_{T_0} + z_{T_1}}{2}}{\frac{x_{T_1} + x_{T_2}}{2} - \frac{x_{T_0} + x_{T_1}}{2}} &= n
+\end{align*}
+
+由目标飞行器各时刻的位置坐标可以得到每一时刻下的 $\alpha$、$\beta$ 值：
+
+\begin{align*}
+\begin{cases}
+\frac{y_{T_0} - y_{90}}{x_{T_0} - x_{90}} = \alpha_0 \\
+\frac{z_{T_0} - z_{90}}{x_{T_0} - x_{90}} = \beta_0
+\end{cases}
+\end{align*}
+
+\begin{align*}
+\begin{cases}
+\frac{y_{T_1} - y_{91}}{x_{T_1} - x_{91}} = \alpha_1 \\
+\frac{z_{T_1} - z_{91}}{x_{T_1} - x_{91}} = \beta_1
+\end{cases}
+\end{align*}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\frac{y_{T2} - y_{92}}{x_{T2} - x_{92}} &= \alpha_{2} \\
+\frac{z_{T2} - z_{92}}{x_{T2} - x_{92}} &= \beta_{2}
+\end{aligned}
+\right.
+\end{equation}
+
+其中 $(\alpha_{0}, \beta_{0})$, $(\alpha_{1}, \beta_{1})$, $(\alpha_{2}, \beta_{2})$ 为已知，即为观测卫星在 D、E、F 处测得的空间飞行器的观测数据。
+
+再利用观测轨道卫星做匀速圆周运动的条件，和目标飞行器通过离心加速度建立方程。联立以上方程组，解出目标飞行器在 A、B、C 各点的坐标。为进一步确保位置的准确性，每三个连续测量值解出的结果，取中间的为准。即 A、C 的舍去，保留 B 点的数据，作为轨道估计。利用计算机可以对计算结果进行仿真，和实际情况进行比较，进行误差分析。
+
+在此基础上，结合第三问求得的系统误差，对单星轨道估计进行修正，进一步提高单星观测条件下空间飞行器的轨道估计。
+
+\subsection{7.2 多星对多目标观测情况下的系统误差分析}
+
+在多颗卫星对目标的观测下，相比于单星和双星观测，多了很多卫星坐标和观测向量，对目标的定位及误差分析更加精准。
+
+前面提到了双星利用两条观测向量所定下的公垂线作为定位目标的基础，三星可利用三条观测向量确定一个公切圆作为定位目标的基础。在没有系统误差的情况下，该公切圆的圆心即可作为目标位置，半径即可作为随机误差的评估标准。
+
+考虑系统误差下，建立优化模型，确定公切圆内目标点选取方法，以使各卫星观测偏移量尽量围绕常数波动，并依据统计学知识评估系统误差。
+
+在多星（三星以上）情况下，每三星一组确定一个公切圆，选取半径最小的公切圆进行目标选点分析，以全部卫星的观测偏移量的变化规律作为约束条件建立优化模型，使各卫星的观测误差整体上符合系统误差要求，见图 7-2。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{图 7-2}
+\end{figure}
+
+\section*{参考文献}
+
+[1] 李贵琦, 吴延众. 地球同步卫星定位. 解放军出版社. 1991. 10.
+
+[2] 赵承庆, 姜毅. 火箭导弹武器系统概论. 北京理工大学出版社. 1996. 1.
+
+[3] 马东升, 雷勇军. 数值计算方法. 机械工业出版社. 2006. 7.
+
+[4] 郭福成. 基于运动学原理的单站无源定位与跟踪关键技术研究. 国防科技大学博士学位论文. 2002. 10.
+
+[5] 王志刚, 施志佳. 远程火箭与卫星轨道力学基础 [M]. 西北工业大学出版社, 2006.
+
+[6] 张毅, 肖龙旭, 王顺宏. 弹道导弹弹道学 [M]. 国防科技大学出版社, 2005.
+
+[7] 中国人民解放军总装备部军事训练教材编辑工作委员会著. 外弹道测量数据处理 [M]. 国防工业出版社, 2002.
+
+[8] 王正明, 易东云著. 测量数据建模与参数估计 [M]. 国防科技大学出版社, 1996.
+
+[9] 科普托夫编著. 弹道式导弹设计和试验 [M]. 国防工业出版社.
+
+[10] http://baike.baidu.com/view/4428171.htm
+
+[11] http://www.docin.com/p-291768770.html

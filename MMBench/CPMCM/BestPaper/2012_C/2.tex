@@ -1,0 +1,1928 @@
+\begin{center}
+\textbf{第九届“华为杯”}\\
+\textbf{全国研究生数学建模竞赛}
+\end{center}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l}
+学校 & 中国石油大学(华东) \\
+\hline
+参赛队号 & 10425015 \\
+\hline
+队员姓名 & 1. 刘卓 \\
+ & 2. 陆雪皎 \\
+ & 3. 范坤坤 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{flushright}
+参赛密码 \underline{\hspace{2cm}} \\
+(由组委会填写)
+\end{flushright}
+
+\begin{center}
+\textbf{参赛密码} \underline{\hspace{3cm}} \\
+(由组委会填写)
+\end{center}
+
+\section*{第九届“华为杯”全国研究生数学建模竞赛}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{image1.png} \quad
+    \includegraphics[width=0.3\textwidth]{image2.png} \quad
+    \includegraphics[width=0.3\textwidth]{image3.png}
+\end{figure}
+
+\section*{题目}
+\textbf{有杆抽油系统的数学建模及诊断}
+
+\section*{摘要}
+
+本文是一个研究有杆抽油系统的建模及诊断问题。
+
+针对问题一，本文首先分析数据得到曲柄滑块四连杆机构的几何关系和满足的力学方程，第二，根据得到的规律，从简单到复杂，依次建立了三种模型：简谐运动模型、曲柄滑块机构模型、精确解模型，分别求得其位移函数、速度函数、加速度函数。第三，使用Matlab软件编程得到各个方程的计算结果，并画出函数曲线，作为各模型计算精度的对比。最后，根据已知悬点位移和三个模型求得的悬点位移，使用Origin画图，对比发现，三个模型得到的位移函数、速度函数差别不大，而加速度函数差别很大，且三个模型计算得到的位移与实际位移有一定误差，比实际位移大。
+
+针对问题二，本文根据 Gibbs 波动方程，给出了由悬点示功图转化为泵功图的详细计算过程，并给出了计算流程图。计算采用分离变量法，将偏微分方程化为常微分方程求解，用边界条件的限制，得到位移和载荷的方程，然后用节点分析法求解。计算出第一级杆的数据后，重复利用之前的过程计算第二级、第三级杆，计算过程中需要判定是否是最后一级杆柱，若不是继续计算，若是计算出位移、载荷函数，最后得到井下示功图。然后使用 Matlab 软件编程进行计算，得到一级杆和多级杆的地面示功图和泵功图。由结果图线可以看出转换之后的泵功图曲线比地面示功图曲线更光滑，而且没有大的波动。说明吉布斯模型在计算泵功图的过程中，消除了一些动载荷的影响，但是模型并未详细考虑两种不同内径抽油杆在连接处的载荷变化。
+
+针对问题三(1)，选择有效冲程模型和改进的液量迭代法模型，用问题二得到的泵功图进行产液量的计算，并用 Matlab 编制了一套根据泵功图计算产液量
+
+\begin{center}
+- 1 -
+\end{center}
+
+的程序。在有效冲程模型中，首先对泵功图进行预处理，然后建立曲率计算模型确定阀门开闭点，得到有效冲程；在改进的液量迭代模型中，将传统的液量迭代模型与有效冲程相结合，用 Getdata 软件对泵功图进行预处理，并考虑漏失的影响，计算得到产液量。附件 1 和附件 2 用有效冲程法计算的产液量分别为 $86.3115 \, \mathrm{m}^3/\mathrm{s}$ 和 $31.6027 \, \mathrm{m}^3/\mathrm{s}$；附件 1 和附件 2 用改进的液量迭代法计算的产液量分别为 $89.7784 \, \mathrm{m}^3/\mathrm{s}$ 和 $25.7963 \, \mathrm{m}^3/\mathrm{s}$。两个模型对比分析，得到改进的液量迭代模型比有效冲程模型更接近实际值。
+
+针对问题三(2)，本文从新的角度提取泵功图特征：首先对泵功图进行预处理，并提取泵功图的直观几何特征。计算功图总面积并与标准功图面积对比，然后分区域计算面积，按区域面积特征再对故障进行分类，最后再由曲率、拐点(固定阀游动阀的开启、关闭点)等特征细化故障类型，得出最终结论。根据本思路列方程及其边界条件，利用 Microsoft Visual Basic 6.0 编程计算，并根据判定条件进行自动诊断，本程序可以诊断出基本正常、严重漏失、供液不足和气体影响等情况，故障时报警提醒，使用简单方便。经计算机自动诊断，附件中给出的一级杆和三级杆均没有气体影响。
+
+针对问题四(1)，Gibbs 方程的不足在于 ① 抽油杆受力分析仅适用于直井 ② 使用傅里叶分解计算方程，而傅里叶系数数目太低就不能保证精度，因此计算时间较长。此外，傅里叶级数法使示功图平滑化，即不接近于实际数据，有限差分解可以克服此问题。③ 没有考虑多级管柱节箍的影响。
+
+因此本文对其做出如下改进：① 用三次样条插值法模拟抽油杆柱轴线的具体编程算法；② 对定向井抽油杆柱的受力进行分析，建立波动方程；③ 在同级杆柱内运用显式差分格式，在组合杆级边界节点采用变步长有限差分格式的混合差分法求解波动方程。④ 考虑多级管柱节箍的影响。并给出由悬点示功图转化为泵功图的详细计算过程，包括：原始数据的处理、边界条件、初始条件、求解算法；利用附件 1、附件 2 的数据重新进行计算；对计算结果与问题二的计算结果进行比较，发现新建模型更精确；不仅适用于直井，也适用于斜井；画出的泵功图不平滑，更接近实际数据。
+
+针对问题四(2)，本文研究一种能够定期校验并修正阻尼系数的方法。提出一种迭代计算阻尼系数的算法，利用已有地面示功图数据以及泵功图计算算法，可得到更加合理的阻尼系数。首先求出一个 $C$ 的初值，然后代入波动方程求井下示功图，再根据求得的功图对一组带阻尼的波动方程进行数值积分，从而导出与示功图参数有关的阻尼系数公式，反复迭代采用特定的收敛条件即可求出准确的阻尼系数。根据此方法，使用 Matlab 软件编程计算，得到结果。一级杆 $C=1.8498$，三级杆的 $C=0.6701$，根据得到的泵功图对比验证，迭代法得到的 $C$ 值更加精确。使用这种方法还可以校验各种阻尼公式对油田的适应性的好坏。
+
+关键词：有杆抽油 Gibbs 波动方程 泵功图 有效冲程法 液量迭代法 自动诊断故障系统 有限差分法 迭代法 阻尼系数
+
+\section*{目录}
+
+\begin{itemize}
+    \item[1] 问题的提出 \dotfill 5
+    \item[2] 模型的初始假设 \dotfill 5
+    \item[3] 问题一模型的建立和求解 \dotfill 6
+        \begin{itemize}
+            \item[3.1] 问题分析 \dotfill 6
+            \item[3.2] 模型建立 \dotfill 6
+                \begin{itemize}
+                    \item[3.2.1] 数据处理与分析 \dotfill 6
+                    \item[3.2.2] 简化为简谐运动时的悬点运动规律 \dotfill 6
+                    \item[3.2.3] 简化为曲柄滑块机构时的悬点运动规律 \dotfill 7
+                    \item[3.2.4] 精确模型求解时的悬点运动规律 \dotfill 8
+                \end{itemize}
+            \item[3.3] 模型求解与计算结果 \dotfill 10
+            \item[3.4] 模型评价与推广 \dotfill 13
+        \end{itemize}
+    \item[4] 问题二模型的建立与求解 \dotfill 13
+        \begin{itemize}
+            \item[4.1] 问题分析 \dotfill 13
+            \item[4.2] 假设条件 \dotfill 14
+            \item[4.3] 模型的建立 \dotfill 14
+                \begin{itemize}
+                    \item[4.3.1] Gibbs方程的建立 \dotfill 14
+                    \item[4.3.2] 边界条件 \dotfill 15
+                    \item[4.3.3] 初始条件 \dotfill 16
+                    \item[4.3.4] 原始数据处理 \dotfill 17
+                    \item[4.3.5] 求解算法 \dotfill 17
+                \end{itemize}
+            \item[4.4] 模型的计算与流程求解 \dotfill 18
+            \item[4.5] 模型的评价与推广 \dotfill 21
+        \end{itemize}
+    \item[5] 问题三(1)模型的建立与编程求解 \dotfill 21
+        \begin{itemize}
+            \item[5.1] 问题分析 \dotfill 21
+            \item[5.2] 模型一：有效冲程法 \dotfill 22
+                \begin{itemize}
+                    \item[5.2.1] 功图量油原理 \dotfill 22
+                    \item[5.2.2] 有效冲程的确定方法 \dotfill 23
+                    \item[5.2.3] 模型应用实例 \dotfill 24
+                \end{itemize}
+            \item[5.3] 模型二：改进的液量迭代法 \dotfill 27
+                \begin{itemize}
+                    \item[5.3.1] 示功图的预处理 \dotfill 27
+                    \item[5.3.2] 改进模型的求解 \dotfill 28
+                    \item[5.3.3] 模型应用实例 \dotfill 30
+                \end{itemize}
+        \end{itemize}
+    \item[6] 问题三(2)模型的建立与编程求解 \dotfill 30
+\end{itemize}
+
+\begin{itemize}
+    \item[6.1] 问题分析 \dotfill 30
+    \item[6.2] 思路分析与模型建立 \dotfill 30
+        \begin{itemize}
+            \item[6.2.1] 思路分析 \dotfill 30
+            \item[6.2.2] 故障特征知识 \dotfill 31
+            \item[6.2.3] 泵功图的预处理 \dotfill 32
+            \item[6.2.4] 泵功图的预处理 \dotfill 33
+            \item[6.2.5] 模型建立 \dotfill 33
+        \end{itemize}
+    \item[6.3] 计算结果 \dotfill 37
+    \item[6.4] 模型的评价与推广 \dotfill 39
+    \item[7] 问题四(1)模型的建立与求解 \dotfill 40
+        \begin{itemize}
+            \item[7.1] 问题分析 \dotfill 40
+            \item[7.2] 模型的建立 \dotfill 40
+                \begin{itemize}
+                    \item[7.2.1] 思路分析 \dotfill 40
+                    \item[7.2.2] 边界条件 \dotfill 40
+                    \item[7.2.3] 初始条件 \dotfill 40
+                    \item[7.2.4] 求解算法 \dotfill 41
+                \end{itemize}
+            \item[7.3] 计算结果 \dotfill 43
+            \item[7.4] 模型的评价与推广 \dotfill 45
+        \end{itemize}
+    \item[8] 问题四(2)模型的建立与编程求解 \dotfill 45
+        \begin{itemize}
+            \item[8.1] 问题分析 \dotfill 45
+            \item[8.2] 思路分析与模型建立 \dotfill 47
+                \begin{itemize}
+                    \item[8.2.1] 思路分析 \dotfill 47
+                    \item[8.2.2] 数据分析与处理 \dotfill 47
+                    \item[8.2.3] 模型建立 \dotfill 47
+                \end{itemize}
+            \item[8.3] 模型的求解 \dotfill 50
+            \item[8.4] 模型的评价与推广 \dotfill 50
+        \end{itemize}
+    \item[] 参考文献 \dotfill 52
+\end{itemize}
+
+\section{问题的提出}
+
+目前，开采原油广泛使用的是有杆抽油系统（垂直井）。电机旋转运动转化为抽油杆上下往返周期运动，带动设置在杆下端的泵的两个阀的相继开闭，从而将地下上千米深处蕴藏的原油抽到地面上来。
+
+抽油杆上端点称为悬点，图 4 示意了悬点 E 的运动过程。在一个冲程期间，仪器以一系列固定的时间间隔测得悬点 E 处的一系列位移数据和荷载数据，据此建立悬点 E 的示功图称为悬点示功图。
+
+“泵”是由柱塞、游动阀、固定阀、部分油管等几个部件构成的抽象概念，泵中柱塞处的示功图称为泵功图。因为受到诸多因素的影响，在同一时刻 \( t \)，悬点处的受力（荷载）与柱塞的受力是不相同的；同样，在同一时刻 \( t \)，悬点处的相对位移与柱塞的相对位移也不相同。因此悬点示功图与泵功图是不同的。图 5 给出了理论悬点示功图和理论泵功图。示功图包含了很多信息，其中就有有效冲程，泵的有效冲程是指泵中柱塞在一个运动周期内真正实现从出油口排油的那段冲程。工程上一般根据示功图形状与理论示功图进行对比来判断抽油机工作状态。通过悬点示功图可以初步诊断该井的工作状况，如产量、气体影响、阀门漏液、沙堵等等。要精确诊断油井的工作状况，最好采用泵功图。然而，泵在地下深处，使用仪器测试其示功数据实现困难大、成本高。因此，通过数学建模，把悬点示功图转化为杆上任意点的示功图（统称为地下示功图）并最终确定泵功图，以准确诊断该井的工作状况，是一个很有价值的实际问题。
+
+掌握抽油机悬点的位移、速度和加速度的变化规律时研究抽油装置动力学，进行抽油设计和分析其工作状况的基础。为了正确的使用抽油装置，首先必须了解其运动规律。
+
+目前，油田故障诊断的方法是首先获得地面示功图，然后由技术人员根据自己的经验和油井的具体工况参数，推算出泵功图，并与井下标准泵功图进行图像特征的比较，从而识别其故障。依靠经验的人为主观判断，会增大误诊的风险，这就需要提出一种合理有效的方法来提高诊断的准确性，这对提高有杆抽油系统的可靠性、避免井下作业的盲目性及提高石油产量具有重要的现实意义。随着人工神经网络、SVM 等技术的不断成熟，自动解决泵功图工况识别问题有了更多的工具和平台。
+
+Gibbs 波动方程的原理即通过首先研究抽油杆的动力学特性，建立抽油杆柱振动方程，利用分离变量法求解，并用傅里叶级数展开求解系数，根据边界条件，求出相应的解。Gibbs 方程有很多假设条件，方程本身及其边界条件、解法都有改进的余地。
+
+\section{模型的初始假设}
+
+1、钢制抽油杆由很多节连接而成，假定具有相同直径的为同一级；
+
+2、电机旋转运动通过四连杆机构转变为抽油杆的垂直运动。假设驴头外轮廓线为部分圆弧、电机匀速运动，悬点 E 下只挂光杆(光杆下不接其它杆，不抽油，通常用来调试设备);
+
+3、位移 \( u(x, t) \) 的方向以向上为正，载荷月不 0 的方向以向上为正，抽油杆柱的位置 \( x \) 沿杆向下为正；
+
+4、油管内充满液体，且液体密度均匀；
+
+5、杆柱在垂直井中工作，抽油杆柱不与油管发生摩擦或摩擦载荷不计；
+
+6、所有抽油杆均为钢制，密度为：8456（单位：kg/m³），弹性模量为：2.1×10¹¹（单位：Pa）。
+
+7、因为悬点功图数据是自动测试的，附件 1、2 所给数据的第一对并不一定刚好是一个冲程的起点。上行和下行用的时间也不一定完全相等。
+
+8、所有抽油机的油管是锚定的，因此本题不必考虑抽油管的长度变化（伸缩）。
+
+\section*{3 问题一模型的建立和求解}
+
+\subsection*{3.1 问题分析}
+
+问题一要求求出悬点 E 的一个冲程的运动规律：位移函数、速度函数、加速度函数。掌握抽油机悬点的位移、速度和加速度的变化规律是研究抽油装置动力学、进行抽油设计和分析其工作状况的基础。为了正确地使用抽油装置，首先必须了解其运动规律。
+
+游梁式抽油机是以游梁支点和曲柄轴中心的连线作为固定杆，以曲柄、连杆和游梁后臂为三个活动杆所构成的四连杆机构 [1]。根据题目中给出的结构图，“悬点”E 的运动过程：t=0 时刻，曲柄滑块 D 位于上顶点（\(\theta = 0\)），AB 平行于水平面，E 对应坐标原点（称为 E 的下死点），E 的位移为 0；D 运动到下顶点（\(\theta = \pi\)）时，E 的位移到达最大（称为 E 的上死点）；D 接着运动到上顶点（\(\theta = 2\pi\)）时，E 又回到位移为 0 的位置，完成一个周期（即一个冲程）。
+
+根据游梁式抽油机四连杆机构的几何关系和运动特点，建立游梁摆动方程，然后求得游梁式抽油机悬点位移变化规律，接着对位移方程进行求导，得到速度变化规律，接下来对速度方程进行求导，得到加速度变化规律 [2]。
+
+目前，常用的算法是将运动简化为简谐运动或者曲柄滑块机构进行分析求解，但是这样求得的解是近似解 [3]，不能满足精确计算的需要。若精确计算，需要根据几何关系和运动特点，以及力学分析，建立新的精确解模型。
+
+文献 3 以若干个相关角度的三角函数形式给出了悬点运动加速度的精确计算公式，但没有给出悬点运动的位移和速度计算公式；文献 [4] 虽然给出了悬点运动的位移、速度和加速度的精确计算公式，但整个推证过程和结果表达式繁杂，应用不便，两者都需要改进 [5]。
+
+\subsection*{3.2 模型建立}
+
+\subsubsection{3.2.1 数据处理与分析}
+
+由附录 4 中给出的数据可以得到抽油机四连杆机构的几何关系，由附件 1 的数据，可以得到冲程冲次等基本参数。
+
+根据这些数据建立方程，得到 A 点位移函数，求导得到速度函数，再对速度函数求导，得到加速度函数。E 点运动规律和 A 点运动规律相同。
+
+\subsubsection{3.2.2 简化为简谐运动时的悬点运动规律}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{抽油机四连杆机构简图}
+    \label{fig:3.1}
+\end{figure}
+
+游梁和连杆的连接点B的运动可看作简谐运动，其机构简图如图\ref{fig:3.1}所示。即认为B点的运动规律和D点做圆周运动时在垂直中心线上的投影(C点)的运动规律相同。
+
+\textbf{Step1：悬点位移函数}
+
+B点经过时间t(曲柄转过$\phi$角)时位移$S_B$为：
+\begin{equation}
+S_B = r(1 - \cos \phi) = r(1 - \cos \omega t)
+\tag{3.1}
+\end{equation}
+式中 $\phi$——曲柄转角，rad；
+
+$\omega$——曲柄角速度，rad/s；
+
+$t$——时间，s。
+
+以下死点为坐标零点，向上为坐标正方向，则E的位移$S_E$为：
+\begin{equation}
+S_E = \frac{a}{b} S_B = \frac{a}{b} r(1 - \cos \omega t)
+\tag{3.2}
+\end{equation}
+
+\textbf{Step2：悬点速度函数}
+\begin{equation}
+v_E = \frac{\mathrm{d}S_E}{\mathrm{d}t} = \frac{a}{b} \omega r \sin \omega t
+\tag{3.3}
+\end{equation}
+
+\textbf{Step3：悬点加速度函数}
+\begin{equation}
+a_E = \frac{\mathrm{d}v_E}{\mathrm{d}t} = \frac{a}{b} \omega^2 r \cos \omega t
+\tag{3.4}
+\end{equation}
+
+\subsection{简化为曲柄滑块机构时的悬点运动规律}
+
+曲柄滑块机构模型把B点绕游梁支点的弧线运动近似地看为直线运动。
+
+\textbf{Step1：悬点位移函数：}
+\begin{equation}
+S_A = r \left( 1 - \cos \phi + \frac{\lambda}{2} \sin^2 \phi \right) \frac{a}{b}
+\tag{3.5}
+\end{equation}
+
+\textbf{Step2：悬点速度函数}
+\begin{equation}
+v_A = \frac{\mathrm{d}S_A}{\mathrm{d}t} = \omega r \left( \sin \phi + \frac{\lambda}{2} \sin 2\phi \right) \frac{a}{b}
+\tag{3.6}
+\end{equation}
+
+\textbf{Step3：悬点加速度函数}
+\begin{equation}
+a_A = \frac{\mathrm{d}v_A}{\mathrm{d}t} = \omega^2 r \left( \cos \phi + \lambda \cos 2\phi \right) \frac{a}{b}
+\tag{3.7}
+\end{equation}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{曲柄滑块机构运动简图}
+    \label{fig:1}
+\end{figure}
+
+\subsection{精确模型求解时的悬点运动规律}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{游梁式抽油机示意图}
+    \label{fig:2}
+\end{figure}
+
+\textbf{Step1：游梁摆动模型方程的建立}
+
+游梁式抽油机结构图如图\ref{fig:2}所示。
+
+$\theta$ 为任意时刻游梁摆角，即游梁后臂与 $Y$ 方向的夹角；
+
+$\theta_{0}$ 为游梁初始摆角，即 $t=0$ 时游梁与 $Y$ 方向的夹角；
+
+$\Psi$ 为任意时刻 $J$ 与 $-Y$ 方向的夹角；
+
+\(\phi\) 为曲柄转角，它等于角速度 \(\omega\) 与时间 \(t\) 的乘积，即 \(\phi = \omega t\)；  
+\(S_{E}\) 为任意时刻悬点位移；  
+
+“悬点”E 的运动过程：t=0 时刻，曲柄滑块 D 位于上顶点 \((\vartheta = 0)\)，AB 平行于水平面，E 对应坐标原点（称为 E 的下死点），E 的位移为 0；D 运动到下顶点 \((\vartheta = \pi)\) 时，E 的位移到达最大（称为 E 的上死点）；D 接着运动到上顶点 \((\vartheta = 2\pi)\) 时，E 又回到位移为 0 的位置，完成一个周期（即一个冲程）。前臂 AO=4315 mm，后臂 BO=2495 mm，连杆 BD=3675 mm，曲柄半径 O'D=R=950 mm。  
+
+假定曲柄由 12 点钟位置开始沿顺时针方向做匀速圆周运动。在 \(\triangle OBD\) 中，根据余弦定理：  
+\begin{equation}
+L^2 = b^2 + J^2 - 2bJ \cos\big(\pi - (\theta + \psi)\big)
+\tag{3.8}
+\end{equation}  
+其中，  
+\begin{equation}
+L^2 = b^2 + J^2 - 2bJ \cos\big(\pi - (\theta + \psi)\big)
+\tag{3.9}
+\end{equation}  
+\begin{equation}
+\psi = \tan^{-1}\Big(\frac{I + r\cos\vartheta}{H - G - r\cos\vartheta}\Big)
+\tag{3.10}
+\end{equation}  
+由公式 (3.1) 得  
+\begin{equation}
+\theta = \pi - \cos^{-1}\Big(\frac{b^2 + J^2 - L^2}{2bJ}\Big) - \psi
+\tag{3.11}
+\end{equation}  
+公式 (3.11) 即游梁摆动方程。J 和 \(\psi\) 都是 \(\phi\) 的函数，因此 \(\theta\) 也只是 \(\phi\) 的函数，所以很容易求解。  
+
+\textbf{Step2: 悬点运动方程的建立与求解}  
+对于任意时刻，游梁的角位移  
+\begin{equation}
+\Delta\theta = \theta - \theta_0
+\tag{3.12}
+\end{equation}  
+游梁绕支点 O 摆动时因其前后臂的角位移相等，故任意时刻悬点位移 \(S_{E}\) 为  
+\begin{equation}
+S_{E} = a(\theta - \theta_0)
+\tag{3.13}
+\end{equation}  
+
+等式 (3.13) 即为任意时刻悬点位移表达式。由于对于某一给定型号的抽油机 \(\theta_0\) 是一常数，因此 \(S_{E}\) 只是 \(\phi\) 的函数。给定 \(\phi\) 值，便可计算出悬点位移 \(S_{E}\) [5]。  
+由附录 4 可以得到：  
+前臂 \(a = AO = 4315\) mm，后臂 \(b = BO = 2495\) mm，连杆 \(L = BD = 3675\) mm，曲柄半径 \(O'D = r = 950\) mm。  
+由附件 1 可以得到：  
+冲次 \(n = 7.6\) r/min，冲程 \(s = 3.2\) m。  
+由图 1 中，\(\vartheta = 0\) 时的情况，我们可以得到 \(H - G\)、\(I\) 的值。  
+
+\(\phi\) 为曲柄转角，等于角速度 \(\omega\) 与时间 \(t\) 的乘积，即 \(\phi = \omega t\)。其中角速度 \(\omega = \frac{2\pi n}{60}\)。  
+由已知数据应用等式 (3.8)-(3.13)，采用 matlab 编程，计算出不同时刻的 \(\phi\) 值和悬点位移 \(S_{E}\)，并画出相应的曲线。  
+
+\textbf{Step3：悬点移动速度方程的建立与求解}  
+将等式 (11) 两边同时对时间 \(t\) 求导数，得到游梁摆动的角速度 \(\theta'\)  
+\begin{equation}
+\theta' = \frac{J + \cos(\theta + \psi)}{bJ \sin(\theta + \psi)} J' - \psi'
+\tag{3.14}
+\end{equation}  
+式中 \(J'\) 和 \(\psi'\) 分别是 \(J\) 和 \(\psi\) 对时间的导数，分别由式 (3.9) 和式 (3.10) 求得为
+
+\begin{align}
+J' &= \omega r \sin(\phi + \psi) \tag{3.15} \\
+\psi' &= \frac{\omega r}{J} \cos(\theta + \psi) \tag{3.16}
+\end{align}
+
+将(3.15)和(3.16)代到(3.14)中，整理得到
+\begin{equation}
+\theta' = \frac{\omega r [J \sin(\theta + \psi) + b \sin(\phi - \theta)]}{b J \sin(\theta + \psi)} \tag{3.17}
+\end{equation}
+
+由几何关系不难求出
+\begin{equation}
+J \sin(\theta + \psi) = K \sin(\phi + \phi_0) \tag{3.18}
+\end{equation}
+其中 \( K \) 与 \( \phi_0 \) 的计算式为
+\begin{align}
+K &= \sqrt{I^2 + (H - G)^2} \\
+\phi_0 &= \tan^{-1} \frac{1}{H - G}
+\end{align}
+
+将等式(3.18)带入等式(3.17)中，得
+\begin{equation}
+\theta' = \frac{\omega r [K \sin(\phi + \phi_0) + b \sin(\phi - \theta)]}{b J \sin(\theta + \psi)} \tag{3.19}
+\end{equation}
+
+游梁绕支点 \( O \) 摆动时因其前后臂的角速度相等，故任意时刻悬点的速度 \( V_E \) 为
+\begin{equation}
+V_E = a \theta' = \frac{a \omega r [K \sin(\phi + \phi_0) + b \sin(\phi - \theta)]}{b J \sin(\theta + \psi)} \tag{3.20}
+\end{equation}
+
+\textbf{Step4：悬点运动加速度方程的建立}
+
+将等式(3.19)两边同时对 \( t \) 求导，整理得任意时刻游梁摆动的角速度 \( \theta'' \) 为
+\begin{equation}
+\theta'' = \frac{\omega^2 r [K \sin(\phi + \phi_0) + b \sin(\phi - \theta)] - 2 b \omega r \theta' \cos(\phi + \theta) - \theta'^2 \cos(\theta + \psi)}{b J \sin(\theta + \psi)} \tag{3.21}
+\end{equation}
+
+游梁绕支点 \( O \) 摆动时因前后臂的角加速度相等，故任意时刻悬点加速度 \( W_E \) 为
+\begin{align}
+W_E &= a \theta'' \\
+&= a \frac{\omega^2 r [K \sin(\phi + \phi_0) + b \sin(\phi - \theta)] - 2 b \omega r \theta' \cos(\phi + \theta) - \theta'^2 \cos(\theta + \psi)}{b J \sin(\theta + \psi)} \tag{3.22}
+\end{align}
+
+式(3.12)、式(3.19)和式(3.14)反映了游梁摆角的变化规律，式(3.13)、式(3.20)和式(3.22)是悬点运动的位移、速度和加速度计算公式。对于一定型号的抽油机，其几何尺寸 \( (a, b, L, H, G, r) \) 是已知的，给定曲柄旋转的角速度 \( \omega \) 或转速，应用以上公式便可计算各运动参数。
+
+上述结果是在曲柄背向驴头旋转的条件下得出的，但对于曲柄面向驴头旋转的抽油机，只要将 \( \phi \) 换成 \( 2\pi - \phi \) 即可；而对于前置式游梁抽油机，则用整个游梁的长度代替 \( a \) 值，结果仍然正确；对于研究其它具有四连杆机构的运动规律，也可供参考。
+
+\subsection*{3.3 模型求解与计算结果}
+
+对三种模型采用 matlab 编程求解，得到位移函数、速度函数、加速度函数曲线。横坐标为曲柄转角 \( \varphi \)，纵坐标分别为位移、速度、加速度。
+
+\textbf{(1) 三个模型的位移曲线}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{精确模型、简谐运动、曲柄滑块的位移曲线}
+    \label{fig:displacement_curve}
+\end{figure}
+
+(2) 三个模型的速度曲线
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{精确模型、简谐运动、曲柄滑块的速度曲线}
+    \label{fig:velocity_curve}
+\end{figure}
+
+(3) 三个模型的加速度曲线
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{精确模型、简谐运动、曲柄滑块的加速度曲线}
+    \label{fig:acceleration}
+\end{figure}
+
+(4) 三个模型的悬点位移曲线与实际数据悬点位移曲线的对比
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{精确模型、简谐运动、曲柄滑块三个模型的位移、实际位移对比}
+    \label{fig:displacement}
+\end{figure}
+
+由以上四幅图，可以得到：
+
+(1) 精确模型、简谐运动、曲柄滑块三个模型其位移、速度、加速度公式及随 \(\theta\) 角的变化曲线进行比较后发现，尽管同一角度下的数值不同，但其变化趋势是相似的。
+
+(2) 精确模型、简谐运动、曲柄滑块三个模型的位移函数、速度函数差别不大，而加速度函数差别很大。
+
+(3) 三个模型计算得到的位移与实际位移有一定的误差，比实际位移大。分析可知，造成这种现象的原因是实际情况下，由于作用在柱塞上的液柱载荷在上、下冲程中交替地分别由油管转移到抽油杆柱和由抽油杆柱转移到油管，从而引起杆柱和管柱交替的增载和减载，使杆柱和管柱发生交替的伸长和缩短，使悬点的位移变小。
+
+\section*{3.4 模型评价与推广}
+
+简谐运动模型将B点的运动看作简谐运动，认为 \(r/l \approx 0\) 及 \(r/b \approx 0\)，即认为曲柄半径 \(r\) 比连杆长度和游梁后臂小很多。而实际抽油机的 \(r/l\) 值是不可忽略的，特别是冲程长度较大时，忽略后会引起很大的误差。
+
+曲柄滑块机构模型把B点绕游梁支点的弧线运动近似地看为直线运动，取 \(r\) 与 \(l\) 的比值 \(\lambda\) 为有限值，即 \(0 < r/l < 1/4\)。
+
+在一般工程应用中，可以采用简化模型，但在做精确的分析计算和抽油机结构设计时，则必须按照四连杆机构来研究抽油机的实际运动规律。精确模型根据游梁式抽油机四连杆机构的几何关系和运动特点，通过建立游梁摆动方程，得出游梁式抽油机悬点运动参数。适用范围广泛。
+
+\section*{4 问题二模型的建立与求解}
+
+\subsection*{4.1 问题分析}
+
+问题二要求使用 Gibbs 模型，给出由悬点示功图转化为泵功图的详细计算过程，包括：原始数据的处理、边界条件、初始条件、求解算法。并利用附件中的数据分别计算出两口油井的泵功图数据；分别绘制出两油井的悬点示功图和泵功图。
+
+“泵”是由柱塞、游动阀、固定阀、部分油管等几个部件构成的抽象概念（见图 4.1），泵中柱塞处的示功图称为泵功图。因为受到诸多因素的影响，在同一时刻 \(t\)，悬点处的受力（荷载）与柱塞的受力是不相同的；同样，在同一时刻 \(t\)，悬点处的相对位移与柱塞的相对位移也不相同。因此悬点示功图与泵功图是不同的。示功图包含了很多信息，其中就有有效冲程，泵的有效冲程是指泵中柱塞在一个运动周期内真正实现从出油口排油的那段冲程。工程上一般根据示功图形状与理论示功图进行对比来判断抽油机工作状态。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{有杆泵抽油系统原理图}
+    \label{fig:4.1}
+\end{figure}
+
+通过悬点示功图可以初步诊断该井的工作状况，如产量、气体影响、阀门漏液、沙堵等等。要精确诊断油井的工作状况，最好采用泵功图。然而，泵在地下深处，使用仪器测试其示功数据实现困难大、成本高。因此，通过数学建模，把悬点示功图转化为杆上任意点的示功图（统称为地下示功图）并最终确定泵功图，以准确诊断该井的工作状况，是一个很有价值的实际问题。
+
+1966年，Gibbs给出了悬点示功图转化为地下示功图的模型[6]，[7]，由于受计算机速度的限制，直到近些年才得以被重新重视。
+
+\subsection{假设条件}
+
+(1) 位移 $u(x,t)$ 的方向以向上为正，载荷不 0 的方向以向上为正，抽油杆柱的位置 $x$ 沿杆向下为正；
+
+(2) 杆柱在垂直井中工作，抽油杆柱不与油管发生摩擦或摩擦载荷不计；
+
+(3) 油管内充满液体，且液体密度均匀；
+
+(4) 以悬点运动的下死点为运动起始点，抽油杆柱上任意截面的运动，记为 $u(x,t)$，可分解为两部分：(1) 该截面随着悬点的上下运动，记为：$u_0(t)$；(2) 该截面相对于悬点的弹性位移，记为：$u_1(x,t)$。
+
+\subsection{模型的建立}
+
+\subsubsection{Gibbs方程的建立}
+
+抽油杆柱的一段截取示意图如图 4.2 所示。这里假设以悬点为原点，沿井深方向为位移方向，沿杆柱纵向截取一点 $x$ 和另一点 $x+\Delta x$，其间有一段长度为 $L$ 的的接箍。抽油杆柱密度均匀为 $\rho$，截面积恒为 $A$，凡为微元所受阻尼，其方向与位移方向相反，$F_b$ 为微元在 $x$ 处的张力，$F_t$ 为微元在 $x+\Delta x$ 处的张力。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{抽油杆柱微元受力示意图}
+    \label{fig:4.2}
+\end{figure}
+
+根据牛顿第二定律 ($\sum F = ma$) 有：
+\begin{equation}
+F_b - F_t - F_d = \rho AL \frac{\partial^2 u}{\partial t^2}
+\tag{4.1}
+\end{equation}
+
+节点 $x$ 和 $x + \Delta x$ 处的张力可表示为：
+\begin{align}
+F_b &= \sigma_{x+\Delta x} A \tag{4.2} \\
+F_t &= \sigma_x A \tag{4.3}
+\end{align}
+
+根据胡克定律，$\sigma_x$ 和 $\sigma_{x+\Delta x}$ 可表示为：
+\begin{align}
+\sigma_x &= E \left. \frac{\partial u}{\partial x} \right|_x \tag{4.4} \\
+\sigma_{x+\Delta x} &= E \left. \frac{\partial u}{\partial x} \right|_{x+\Delta x} \tag{4.5}
+\end{align}
+
+其中，$\sigma_{x+\Delta x}$ 在 $x + \Delta x$ 处的应变泰勒公式表示为：
+\begin{equation}
+\left. \frac{\partial u}{\partial x} \right|_{x+\Delta x} = \left. \frac{\partial u}{\partial x} \right|_x + \left. \frac{\partial^2 u}{\partial x^2} \right|_x + \cdots
+\tag{4.6}
+\end{equation}
+
+微元受到的阻尼为：
+\begin{equation}
+F_d = cm \frac{\partial u}{\partial t} = c \rho AL \frac{\partial u}{\partial t}
+\tag{4.7}
+\end{equation}
+
+将式 (4.1)-(4.3) 带入，即可得到波动方程：
+\begin{equation}
+\frac{\partial^2 u}{\partial t^2} = a^2 \frac{\partial^2 u}{\partial x^2} - c \frac{\partial u}{\partial t}
+\tag{4.8}
+\end{equation}
+
+\subsection{边界条件}
+
+边界条件是将悬点动载荷函数 $D(t)$ 及光杆位移函数 $U(t)$ 展开成的傅里叶级数：
+\begin{align}
+D(t) &= \frac{\sigma_0}{2} + \sum_{n=1}^{\bar{n}} \left( \sigma_n \cos n \omega t + \tau_n \sin n \omega t \right) \tag{4.9} \\
+U(t) &= \frac{\nu_0}{2} + \sum_{n=1}^{\bar{n}} \left( \nu_n \cos n \omega t + \delta_n \sin n \omega t \right) \tag{4.10}
+\end{align}
+
+以上二式中的 4 个傅里叶系数由实测的 \(D(t)\) 和 \(U(t)\) 曲线数值积分求得，下面以 \(\sigma_n\) 为例。
+
+首先将 \(D(t)\) 和 \(U(t)\) 离散化，采样点数为 160，等时采样之后，令 \(\theta = \omega t\), \(T = \frac{2\pi}{\omega}\), \(\mathrm{d}t = \frac{\mathrm{d}\theta}{\omega}\)，可得到：
+
+\[
+\sigma_n = \frac{1}{\pi} \int_0^{2\pi} D(\theta) \cos n\theta \, \mathrm{d}t \quad (n = 0, 1, 2 \dots, \, \bar{n})
+\tag{4.11}
+\]
+
+考虑到 \(\theta\) 是离散变量：
+
+\[
+\theta = \frac{2\pi\rho}{k} \quad \rho = 1, 2, \dots, k
+\tag{4.12}
+\]
+
+\[
+D\left(\frac{2\pi\rho}{k}\right) = D_\rho
+\tag{4.13}
+\]
+
+采用梯形法则进行数值积分，合并同类项得到：
+
+\[
+\sigma_n
+\]
+
+\tag{4.14}
+
+由函数的周期性可得：\(D_0 = D_k\), \(\cos 0 = \cos 2n\pi\)，因此：
+
+\[
+\sigma_n = \frac{2}{k} \sum_{\rho=1}^k D_\rho \cos\left(\frac{2n\pi}{k}\rho\right) \quad (n = 0, 1, 2 \dots, \, \bar{n})
+\tag{4.15}
+\]
+
+同理，可求得其他三个傅氏系数：
+
+\[
+\tau_n = \frac{2}{k} \sum_{\rho=1}^k D_\rho \sin\left(\frac{2n\pi}{k}\rho\right) \quad (n = 0, 1, 2 \dots, \, \bar{n})
+\tag{4.16}
+\]
+
+\[
+\nu_n = \frac{2}{k} \sum_{\rho=1}^k U_\rho \cos\left(\frac{2n\pi}{k}\rho\right) \quad (n = 0, 1, 2 \dots, \, \bar{n})
+\tag{4.17}
+\]
+
+\[
+\delta_n = \frac{2}{k} \sum_{\rho=1}^k U_\rho \sin\left(\frac{2n\pi}{k}\rho\right) \quad (n = 0, 1, 2 \dots, \, \bar{n})
+\tag{4.18}
+\]
+
+以上各式中：
+- \(\Theta\) ——曲柄转角；
+- \(\omega\) ——曲柄角速度；
+- \(T\) ——抽汲周期；
+- \(\bar{n}\) ——傅氏级数所取项数，本文取 10；
+- \(k\) ——\(2\pi\) 周期内等分的份数，即离散化的采样点数，取 140 至 200 即可；
+- \(\rho\) ——从 \(O\) 到 \(k\) 各点序号。
+
+\subsection*{4.3.3 初始条件}
+
+系统在启动前，抽油杆柱从驴头上自由悬挂于充满液体的油管中，并且驴头
+
+从下死点开始向上运动，则模型的初始条件为：
+\[
+\begin{cases}
+u(x,t)|_{(0\leq x\leq L,t=0)}=0 \\
+\frac{\partial u(x,t)}{\partial t}|_{(0\leq x\leq L,t=0)}=0
+\end{cases}
+\]
+
+\subsection{4.3.4 原始数据处理}
+
+用插值法处理原始数据，由 Gibbs 波动方程可知，取 10 个点即可满足要求，得到的值已与结果十分接近。
+
+\subsection{4.3.5 求解算法}
+
+以式 (4.9) 和 (4.10) 为边界条件，用分离变量法求解方程 (4.8) 就可得出抽油杆任意深度 \( x \) 断面的位移随时间的变化。求解步骤如下：
+
+首先令 \( U(x,t) = X(x)T(t) \)，\( X(x) \) 和 \( T(t) \) 分别为仅含 \( x \) 和 \( t \) 的函数，将其带入波动方程并整理可得：
+\[
+\frac{T''(t)}{a^2 T(t)} + \frac{CT'(t)}{a^2 T(t)} = \frac{X''(x)}{X(x)} \tag{4.19}
+\]
+
+上式每一侧仅含有一个独立变量，因而它等于一个常数，令其为 \( \lambda_n^2 \)，带入 (4.19) 并将其分离成两个常微分方程：
+\[
+\begin{cases}
+T''(t) + CT'(t) + \lambda_n^2 a^2 T(t) = 0 \\
+X''(x) + \lambda_n^2 X(x) = 0
+\end{cases} \tag{4.20}
+\]
+
+方程组 (4.20) 中 (1) 式之中的周期解为：\( T(t) = e^{in\omega t} \)，带入方程组第一个等式可得方程 (4.19) 的特解 \( \lambda_n \)：
+\[
+\lambda_n = -\alpha_n + \mathrm{i}\beta_n \tag{4.21}
+\]
+式中 \( \alpha_n \) 和 \( \beta_n \) 为实数，其值为：
+\[
+\alpha_n = \frac{nw}{a\sqrt{2}} \sqrt{1 + \sqrt{1 + \left(\frac{c}{nw}\right)^2}} \tag{4.22}
+\]
+\[
+\beta_n = \frac{nw}{a\sqrt{2}} \sqrt{-1 + \sqrt{1 + \left(\frac{c}{nw}\right)^2}} \tag{4.23}
+\]
+
+当 \( n = 0 \) 时，\( \lambda_0 = 0 \)，方程组 (4.20) 变为：
+\[
+\begin{cases}
+T''(t) + CT'(t) = 0 \\
+X''(x) = 0
+\end{cases} \tag{4.24}
+\]
+
+其解为：
+\[
+\begin{cases}
+T(t) = \xi \\
+X(x) = \zeta + \eta x
+\end{cases} \tag{4.25}
+\]
+
+方程组 (4.20) 中第二个等式解为谐波方程：
+\[
+X(x) = \phi_n \sin \lambda_n x + \theta_n \cos \lambda_n x \tag{4.26}
+\]
+
+综合以上各式，求出方程 (4.19) 的解为：
+\[
+U(x,t) = \xi(\zeta + \eta x) + \sum_{n=1}^{\infty} \left( \phi_n \sin \lambda_n x + \theta_n \cos \lambda_n x \right) e^{in\omega t} \tag{4.27}
+\]
+
+再经过变换可得到 Gibbs 方式的解析解为：
+\[
+U(x,t) = \frac{\sigma_0}{2EA_r} + \frac{\nu_0}{2} + \cdots \tag{4.28}
+\]
+
+由胡克定律，抽油杆柱任意深度 \( x \) 断面上的动载荷随时间的变化为
+\begin{equation}
+\text{F}(x, t) = \text{E}A_r \frac{\partial U(x, t)}{\partial x} \sum_{n=1}^{\bar{n}} \left( O_n(x) \cos n \omega t + P_n(x) \sin n \omega t \right)
+\tag{4.29}
+\end{equation}
+即：
+\begin{equation}
+\text{F}(x, t) = \frac{\delta_0}{2} + \text{E}A_r \sum_{n=1}^{\bar{n}} \left( O_n'(x) \cos n \omega t + P_n'(x) \sin n \omega t \right)
+\tag{4.30}
+\end{equation}
+式中，E 为钢杆弹性模量，\( A_r \) 为抽油杆柱的截面积；\( \omega \) 为曲柄的角速度。张琪等人 1984 年提出了用摩擦功确立的粘滞阻尼系数公式：
+\begin{equation}
+C = \frac{2 \pi \mu}{\rho_r A_r} \left\{ \frac{1}{\ln m} + \frac{2}{B_2} (B_1 + 1) \left[ B_1 + \frac{2}{(\omega L / a) / \sin (\omega L / a) + \cos (\omega L / a)} \right] \right\}
+\tag{4.31}
+\end{equation}
+式中：\( m = D_t / D_r \)，\( B_1 = \frac{m^2 - 1}{2 \ln m} - 1 \)，\( B_2 = m^4 - 1 - \frac{(m^2 - 1)^2}{\ln m} \)
+
+\( D_t \)、\( D_r \)——油管内径、抽油杆直径，mm；
+
+\( A_r \)——抽油杆截面积，\( m^2 \)；
+
+\( \mu \)——液体粘度，\( \text{Pa} \cdot \text{s} \)；
+
+\( L \)——抽油杆长度，m；
+
+\( \rho_r \)——抽油杆密度，\( \text{Kg} / m^3 \)。
+
+在油田实际生产过程中，一般采用多级杆，所以对抽油杆柱的动载荷需要分级计算，逐级消除抽油杆柱动载荷。首先计算第一级杆杆柱末端载荷和位移；然后以第一级杆柱末端为第二级初始及边界条件，划分第二级抽油杆，再计算其末端载荷和位移。以此类推，直到求出最后一级末端的载荷和位移，得出最终的泵功图。
+
+根据力的连续性原理，计算第二级杆柱载荷与位移所需要的傅里叶系数与计算第一级杆柱的系数的关系如下：
+\begin{align*}
+\sigma_{02} &= \sigma_0 \\
+\sigma_{n2} &= \text{E}A_r O_n' \\
+\tau_{n2} &= \text{E}A_r P_n' \\
+\nu_{02} &= \frac{\sigma_0}{\text{E}A_r} L_1 + \nu_0 \\
+\nu_{n2} &= O_n(x) \\
+\delta_{n2} &= P_n(x)
+\end{align*}
+
+\subsection{模型的计算与流程求解}
+
+计算流程如图 4.3 所示，计算步骤如下：
+
+（1） 取得光杆载荷、位移与时间的函数，即 \( D(t) \) 和 \( U(t) \)。方法为将地面示功图数字化，或使用数字式动力仪 [8]。
+
+（2） 利用公式计算粘滞阻力系数 \( C \)。
+
+（3） 根据 \( D(t) \) 和 \( U(t) \) 计算四个傅里叶系数 \( \sigma_n \)、\( \tau_n \)、\( \nu_n \)、\( \delta_n \)。
+
+由于实际工作中 \( D(t) \) 和 \( U(t) \) 是经过数字动力仪测得的曲线的数值形式，所以四个傅里叶系数可由 \( D(t) \) 和 \( U(t) \) 数值积分求得。
+
+（4） 计算特殊系数和函数。
+
+系数包括 \( \alpha_n \)、\( \beta_n \)、\( \kappa_n \)、\( \mu_n \)，函数包括 \( O_n(x) \)、\( O_n'(x) \)、\( P_n'(x) \)、\( P_n(x) \)。
+
+(5) 判定是否为最后一级杆柱，如果不是则根据力的连续性原理，进行第二级杆的计算，重复步骤(2)、(3)、(4)。
+
+(6) 如果是最后一级，计算出杆柱末端的动载荷函数 \( F(x, t) \) 和位移函数 \( U(x, t) \)，即可得到井下示功图。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{计算井下示功图流程图}
+\label{fig:flowchart}
+\end{figure}
+
+使用 Matlab 软件编程进行计算。
+
+根据附件一的数据计算一级杆的泵功图，编程得图形如图 4.4：
+
+根据附件二的数据计算多级杆的泵功图，编程得图形如图 4.5：
+
+图 4.4 中上方曲线为地面示功图，下方曲线为转换后泵功图，可以看出转换之后的示功图曲线比地面示功图曲线更光滑，而且没有大的波动。说明吉布斯模型在计算泵功图的过程中，消除了一些动载荷的影响。
+
+图 4.5 中，地下泵功图曲线有明显的毛刺，但是从整体上看，比地面示功图的波动要小，进一步说明吉布斯模型能消除部分动载荷的影响，但是模型并未详细考虑两种不同内径抽油杆在连接处的载荷变化，因此，多级杆泵功图曲线局部毛刺较多。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{一级杆地面示功图和泵功图}
+    \label{fig:4.4}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{多级杆地面示功图和泵功图}
+    \label{fig:4.5}
+\end{figure}
+
+\section{模型的评价与推广}
+
+本文先建立了描述抽油杆纵向弹性振动的数学模型，即 GibbS 波动方程，然后利用分离变量法求解该方程，将地面示功图转化为泵功图。
+
+本题在计算阻尼系数 \( c \) 时用 GibbS 提出的第二种方法，
+\[
+c = \frac{\pi a \gamma}{2L}
+\]
+\[
+\gamma = \frac{4.42 \times 10^{-2} L (PRhp - Hhp) T^2}{(A_1 x_1 + A_2 x_2 + \cdots + A_n x_{1n}) S^2}
+\]
+上式涉及的未知参数用美国石油工程学会推荐的有杆抽油系统设计计算方法求得。
+
+采用的 GibbS 波动方程仅考虑了抽油杆柱的振动、惯性载荷，忽略了液柱的振动载荷，所以求出的泵功图与实测泵功图相比存在一定误差[9]。但是此误差不是很大，且二维和三维的数学模型计算复杂、难以实现，所以本系统采用的求解泵功图方法可以满足油田实际生产需要。
+
+\section{问题三(1)模型的建立与编程求解}
+
+\subsection{问题分析}
+
+问题三(1)要求建立 2 个不同的由泵功图估计油井产量的模型，其中至少一个要利用“有效冲程”；并利用附件 1 和附件 2 的数据分别估算两口油井一天(24 小时)的产液量。
+
+在问题二中，应用 Gibbs 模型将悬点示功图转化为本题所需的泵功图。功图能真实地反映泵的工作状态，解析好功图，就能顺利地求出油井的产液量。在功图处理过程中，由人工的拉线绘制发展到计算机数学处理，功图的解析越来越细化和量化；求解产液量也由功图面积求产发展到功图的有效冲程求产。但在实际的油井生产过程中，不但要考虑井身结构、油质粘度等对泵功图求解的影响，还要考虑泵充满程度、阀尔漏失、冲程损失、油井含气等因素对液量计算的影响。二者兼顾才能准确的计算出油井的产液量，真实描述泵的工作状态[10]。
+
+查阅文献得到，常用的“功图量油”方法主要有 5 种：拉线法、面积法、液量迭代法、有效冲程法和综合诊断法。“拉线法”只适合供液较好、粘度较低、惯性力和动载阻尼较小的油井。“面积法”在液量计算上采用面积相比仍然存在局限性，与“拉线法”计算的产液量相似。“液量迭代法”采用迭代循环处理，得到的液量越来越准确；但在功图处理上仍然采用人工拉线处理，虽然得到较大提高，但针对特殊井况，如上碰泵、下碰泵、双阀尔漏失、游动法尔关闭迟缓等，有一定局限性。“有效冲程法”采用数学方法准确求解，通过泵功图确定活塞的有效位移，也考虑了气体和供液不足对液量造成的影响，但在液量精度上不及“液量迭代法”。“综合诊断法”是依据游梁机-深井泵工作状态与油井产液量变化关系，把有杆泵抽油系统视为一个复杂的振动系统，该系统在一定的边界条件和一定的初始条件下，对外部激励(地面功图)产生响应(泵功图)。然后对泵功图进行分析，确定泵的有效冲程、泵漏失、充满程度、气影响等，计算井下泵排量，进而求出地面折算有效排量。
+
+针对本题，选用“有效冲程法”作为模型一，通过分析泵功图计算产油量；将“有效冲程法”得到的柱塞有效冲程引入“液量迭代法”中，得到改进的液量迭代法，作为模型二计算产油量。用 Matlab 编写相关程序，分别用两个模型计算单级杆和多级杆的日产油量。
+
+\subsection*{5.2 模型一：有效冲程法}
+
+\subsubsection{5.2.1 功图量油原理}
+
+通过建立油井有杆泵抽油系统的力学数学模型（波动方程），计算出给定系统在不同井口示功图激励下的泵功图响应，然后对此泵示功图进行定量分析，判断游动阀、固定阀开闭点的位置，确定泵的有效冲程，充满系数，气体影响等参数，计算泵的排液量，进而求出地面折算的有效排量。
+
+阀开闭点的位置与泵示功图的关系[11]：从泵的工作过程上分析，根据柱塞上所承受的载荷的变化特性及阀的开闭点位置，可以将泵示功图分为四个阶段（见图 5.1）。
+
+根据泵的工作过程可知，图 5.1 中 A、B、C、D 点依次为游动阀关闭点、固定阀开启点、固定阀关闭点、游动阀开启点。ABC 为上冲程，CDA 为下冲程，AB 为柱塞加载段，BC 为高载荷段（泵吸入过程），CD 为柱塞卸载段，DA 为低载荷段（泵排出过程）。
+
+柱塞加载阶段：游动阀关闭到固定阀开启，柱塞上行，柱塞上所承受的载荷在短时间内迅速增大，但相对于泵筒的位移变化量较小。
+
+高载荷阶段：固定阀开启到固定阀关闭，柱塞上行，柱塞上载荷维持在一个高的水平，同时相对于泵筒的位移变化量较大。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{泵功图与阀开闭点位置的关系}
+    \label{fig:5.1}
+\end{figure}
+
+柱塞卸载阶段：固定阀关闭到游动阀开启，柱塞下行，柱塞上所承受的载荷在短时间内迅速减小，但相对于泵筒的位移变化量较小。
+
+低载荷阶段：游动阀开启到游动阀关闭，柱塞下行，柱塞上载荷维持在一个低的水平，同时相对于泵筒的位移变化量较大。
+
+综合分析可得如下结论：(1) 在图形特征方面：阀开闭点处泵示功图曲线曲
+
+率变化显著。(2) 阀开闭点位于泵示功图的高、低载荷段，而高、低载荷段分别在上、下冲程。(3) 柱塞有效冲程取固定阀开、闭点位移差与游动阀阀开、闭点位移差的较小值。
+
+由泵功图可得到柱塞冲程和有效排出冲程，从而可以计算出泵的排量及油井产量。其关键是准确判定阀的开启点和闭合点，从而得到柱塞的有效冲程。然后根据公式(5-1)计算可得泵的日产液量[12]。
+
+\begin{equation}
+Q = 1440 \times Spe \times Ap \times N \times Bo
+\tag{5.1}
+\end{equation}
+
+式中：$Spe$ 为柱塞有效冲程，$m$；$Ap$ 为柱塞横截面积，$m^2$；$N$ 为冲次，$1/\text{min}$；$Bo$ 为泵排出压力条件下油管内混合物的体积系数。
+
+抽油泵的漏失主要有三类：阀漏失、柱塞与泵筒的间隙漏失和油管漏失。其中阀漏失引起的体积减少在计算有效冲程时已经考虑过了，而油管漏失是一个很难计算的量，不予考虑，现场只考虑柱塞与泵筒的间隙漏失。用有效冲程法进行功图量油的流程图如图 5.2 所示。
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=1.5cm, auto, >=latex']
+    \node (start) [rectangle, draw] {地面功图及相关生产数据};
+    \node (model) [rectangle, draw, below of=start] {有杆抽油系统动力学模型};
+    \node (pump) [rectangle, draw, below of=model] {井下泵功图};
+    \node (quant) [rectangle, draw, below of=pump] {泵功图定量处理};
+    \node (stroke) [rectangle, draw, below of=quant] {柱塞有效冲程，井下排量};
+    \node (calc) [rectangle, draw, below of=stroke] {折算井口液量};
+    
+    \draw[->] (start) -- (model);
+    \draw[->] (model) -- (pump);
+    \draw[->] (pump) -- (quant);
+    \draw[->] (quant) -- (stroke);
+    \draw[->] (stroke) -- (calc);
+\end{tikzpicture}
+\caption{有杆抽油系统有效冲程法功图量油的计算流程}
+\label{fig:5.2}
+\end{figure}
+
+\subsection{有效冲程的确定方法}
+
+(1) 泵功图的处理
+
+① 对示功图进行平滑去噪，即用平均法对数据进行处理。算法：
+
+\begin{equation}
+Y_i = \frac{1}{3}(y_{i-1} + y_i + y_{i+1}) \quad (i = 2, 3, \dots, N-1),
+\tag{5.2}
+\end{equation}
+
+\begin{equation}
+Y_1 = \frac{1}{2}(y_1 + y_2), \quad Y_N = \frac{1}{2}(y_{n-1} + y_n)
+\end{equation}
+
+② 由于泵示功图的数值范围相差较大，将其泵示功图组的原始数据进行归一化处理，归一化载荷比记为 $R_f$、行程比记为 $R_s$。算法：
+
+\begin{equation}
+R_f = F_{max} - F_{min}, \quad R_s = S_{max} - S_{min}, \quad f_i = (F_i - f_{min}) / R_f, \quad s_i = (S_i - S_{min}) / R_s.
+\end{equation}
+
+③ 将归一化的示功图分成两段曲线，即：高载荷段和低载荷段曲线。分区算法：计算出载荷的一半，计算出载荷一半与曲线的交点，两点的上边曲线为高载荷段曲线，下边为低载荷段曲线。
+
+(2) 确定阀开闭点
+
+理想泵示功图上阀开闭点处曲率变化最大，且固定阀开闭点在高载荷段，而游动阀开闭点在低载荷段。因此对预处理过的示功图的高低载荷段分别计算各数据点的曲率变化来确定阀开闭点。算法：曲率计算模型。
+
+曲率计算模型[13]：泵示功图曲线上任意一点 \( P_i \) 的曲率 \( K_i \) 根据与其相邻的五个数据点：\( P_i(s_{i-2}, f_{i-2}) \)、\( P_i(s_{i-1}, f_{i-1}) \)、\( P_i(s_i, f_i) \)、\( P_i(s_{i+1}, f_{i+1}) \)、\( P_i(s_{i+2}, f_{i+2}) \) 之间的几何关系计算（如图 5.3）。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png} % 替换为实际图片路径
+    \caption{离散点曲率计算示意图}
+    \label{fig:5.3}
+\end{figure}
+
+则 \( P_i \) 点的曲率为：
+\[
+K_i = \Delta \theta_i / \Delta l_i
+\]
+式中，\( \Delta \theta_i \) 为直线 \( P_{i-2}P_i \) 到直线 \( P_iP_{i+2} \) 的有向旋转角度，计算公式如下：
+\begin{equation}
+\Delta \theta_i = \arctan \left[ \frac{(f_i - f_{i+2})(s_i - s_{i-2}) - (f_i - f_{i-2})(s_i - s_{i+2})}{1 + (s_i - s_{i-2})(s_i - s_{i+2})} \right]
+\tag{5.3}
+\end{equation}
+
+弧长 \( \Delta l_i \) 的近似计算公式如下：
+\begin{equation}
+\Delta l_i = \overline{P_{i-2}P_{i-1}} + \overline{P_{i-1}P_i} + \overline{P_iP_{i+1}} + \overline{P_{i+1}P_{i+2}}
+\tag{5.4}
+\end{equation}
+
+点 \( P_i \) 处的曲率变化量 \( \delta K_i \) 根据 \( P_i \)、\( P_{i+1} \) 两点的曲率 \( K_i \)、\( K_{i+1} \) 由下式计算：
+\[
+\delta K_i = |K_{i+1} - K_i|
+\]
+
+泵示功图曲线是通过数值方法计算得到的，曲线中含有复杂的频率成分。在实际计算中，为了降低或消除其引起的曲率变化量的波动，一般采用相邻 5 点取平均值的方法计算中间点的曲率变化量 \( \delta K_i' \)，以提高计算精度。即：
+\begin{equation}
+\delta K_i' = \frac{\delta K_{i-2} + \delta K_{i-1} + \delta K_i + \delta K_{i+1} + \delta K_{i+2}}{5}
+\tag{5.5}
+\end{equation}
+
+⑤ 在高低载荷段分别找出两个曲率变化最大的点，分别求出其比例位移，较小者便是有效冲程。
+
+\subsection{5.2.3 模型应用实例}
+
+针对附件 1 和附件 2 给出的数据，结合问题二得到的泵功图，用 Matlab 编程将有效冲程法量油模型程序化。经过计算，附件 1 和附件 2 用有效冲程法得到的地面日产油量分别为：86.3115 m³/d，31.6027 m³/d。图 5.4—图 5.8 为单级杆有效冲程法算法实现图（见程序 youxiaochongcheng1.m），同理可得多级杆有效冲程法算法实现图（见程序 youxiaochongcheng2.m）。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{单级杆实际示功图}
+    \label{fig:5.4}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{单级杆平滑去噪后示功图}
+    \label{fig:5.5}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{单级杆归一化处理后泵功图}
+    \label{fig:5.6}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{单级杆高载荷段泵功图}
+    \label{fig:5.7}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{单级杆低载荷段泵功图}
+    \label{fig:5.8}
+\end{figure}
+
+\subsection{模型二：改进的液量迭代法}
+
+基于模型一得到的柱塞有效冲程，结合液量迭代法，提出改进的液量迭代模型，其算法流程图如图 \ref{fig:5.9} 所示。
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[node distance=1.5cm]
+        \node (start) [rectangle, draw] {地面实际示功图};
+        \node (add) [rectangle, draw, below of=start] {实际示功图的叠加};
+        \node (getdata) [rectangle, draw, below of=add] {Getdata软件取特征点};
+        \node (feature) [rectangle, draw, below of=getdata] {根据坐标求特征线};
+        \node (model) [rectangle, draw, below of=feature] {引用模型求得有效冲程};
+        \node (discuss) [rectangle, draw, below of=model] {讨论三种漏失情况};
+        \node (initial) [rectangle, draw, below of=discuss] {初始产量等于模型求得的产量，迭代计算求得产液量};
+        
+        \draw[->] (start) -- (add);
+        \draw[->] (add) -- (getdata);
+        \draw[->] (getdata) -- (feature);
+        \draw[->] (feature) -- (model);
+        \draw[->] (model) -- (discuss);
+        \draw[->] (discuss) -- (initial);
+    \end{tikzpicture}
+    \caption{改进的液量迭代法算法流程图}
+    \label{fig:5.9}
+\end{figure}
+
+\subsubsection{示功图的预处理}
+
+在抽油杆和液体质量惯性力的影响下，泵挂越深，示功图的外形顺时针扭转越厉害。因此，在处理有惯性力的示功图时，应该把理论示功图的外形叠加在实际示功图上，再旋转一个角度，见图 5.10。线段 $a_{1}b$ 和 $ab_{1}$ 平行，它们在上、下冲程中均分动载荷的波动值。在图 5.10 中，这些线都平行于零线。线段 $aa_{1}$ 和 $bb_{1}$ 从两端限制了示功图的外形并垂直于线段 $a_{1}b$ 和 $ab_{1}$，由上述线段的交点即可确定 $a$ 点和 $b$ 点的位置。活塞上冲程时，由示功图的边界线与线段 $a_{1}b$ 交点即定出 $d$ 点。活塞下冲程时，由示功图的边界线与线段 $ab$，交点即定出 $g$ 点。当泵筒被液体全部充满时，$g$ 点和 $f$ 点重合 [14]。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{(a)单级杆叠加示意图}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{(b)多级杆叠加示意图}
+\end{figure}
+
+图 5.10 理论示功图与实际示功图叠加示意图
+
+用 GetData 软件在叠加图上取特征点，结合几何知识，计算出特征线的长度。
+
+\subsection{5.3.2 改进模型的求解}
+
+取压缩气体的过程为多变过程，根据气液两相流理论，计算泵的吸入口压
+
+力和排出口压力，便可计算出泵的吸入因数、排出因数和充满因数。在根据文献[15]，对泵的吸入过程和排出过程漏失因子的公式加以简化，结合模型一计算的柱塞有效冲程，最后求出泵的现有产液量。针对泵的漏失情况，分三种情况进行讨论。
+
+(1) 泵无漏失时的现有排量 \( Q'_L \) 可按下式计算：
+\[
+Q'_L = 1440 \frac{\pi D^2}{4} S_{pe} n \eta
+\tag{5.6}
+\]
+式中：\( D \) 为抽油泵的泵径，m；\( S_{pe} \) 为活塞的冲程长度，m；\( n \) 为冲次，\( 1/\text{min} \)；\( \eta \) 为泵的充满因数，可由下式计算：
+\[
+\eta = \frac{\eta_k - b^\theta}{1 - b^\theta}
+\tag{5.7}
+\]
+式中，\( \eta \) 为按示功图计算的表观充满因数，表示在各种泵吸入压力下，抽汲气液混合物时液体充满泵的程度，是根据示功图的尺寸求得的，即 \( \eta_k = ag / cb \)，\( \theta = 1/m \)；\( m \) 为泵筒中的气体压缩多变指数，\( m = 1.12 \sim 1.13 \)；\( b = p_\lambda / p_{\text{出}} \)，表示泵吸入压力与排出压力的比值。当泵受到气体的破坏和带喷的作用时，\( b \) 表示在打开、排出凡尔的瞬间，泵筒中的气体受压缩的程度[16]。
+
+(2) 泵排出过程有漏失时，现有排量可按下式计算：
+\[
+Q'_L = 1440 \frac{\pi D^2}{4} S_p n (\eta - \alpha)
+\tag{5.8}
+\]
+式中：\( \alpha \) 为泵排出过程的漏失因数，由下式求得：
+\[
+\alpha = \frac{(1 - \zeta)(1 - b)}{t_{ad}} (t_{ad} + t_{bd} + t_{bg})
+\tag{5.9}
+\]
+式中：\( t_{ad} \)、\( t_{bd} \)、\( t_{bg} \) 分别表示排出过程有漏失时，示功图中 \( ad \)、\( bd \)、\( bg \) 线段所对应的漏失时间，可由下式确定：
+\[
+t_{ad} = \frac{1}{\omega} \arccos(2\delta\zeta - 1)
+\tag{5.10}
+\]
+\[
+t_{ab} = \frac{1}{\omega} \arccos(1 - 2\delta\zeta)
+\tag{5.11}
+\]
+\[
+t_{bg} = \frac{1}{\omega} \arccos(2\delta\eta_k - 1)
+\tag{5.12}
+\]
+式中：\( \omega \) 为曲柄的旋转角速度，\( \omega = n\pi / 30 \)；\( \delta \) 为活塞的有效冲程与光杆冲程之比，\( \delta = S_p / S \)；\( \zeta \) 表示液体或气液混合物进泵时，活塞打开吸入凡尔时的行程占总行程的百分数，\( \zeta = db / cb \)。
+
+(3) 泵吸入过程有漏失时，现有排量可按下式计算：
+\[
+Q'_L = 1440 \frac{\pi D^2}{4} S_p n (\eta - \beta)
+\tag{5.13}
+\]
+式中 \( \beta \) 为泵吸入过程的漏失因数，由下式求得：
+\[
+\beta = \frac{(\zeta - 1)(1 - b)}{t_{ga}} (t_{bg} + 2t_{ag} + t_{ac})
+\tag{5.14}
+\]
+
+式中：$t_{bg}$、$t_{ag}$、$t_{ac}$分别表示吸入过程有漏失时，示功图中$bg$、$ag$、$ac$线段所对应的漏失时间，可由下式确定：
+\begin{align}
+t_{bg} &= \frac{1}{\omega} \arccos(2\delta\eta_k - 1) \tag{5.15} \\
+t_{ga} &= \frac{1}{\omega} \arccos(1 - 2\delta\eta_k) \tag{5.16} \\
+t_{ac} &= \frac{1}{\omega} \arccos(2\delta\zeta - 1) \tag{5.17}
+\end{align}
+
+若$|Q_L - Q_L'| / Q_L \leq E$ ($E$为所要求的精度)，则$Q_L'$即为计算产液量，否则可用$Q_L'$代替$Q_L$重新计算，直到满足所要求的精度为止。
+
+\subsection{5.3.3 模型应用实例}
+
+针对附件 1 和附件 2 给出的数据，结合问题二得到的泵功图，用 Matlab 编程将改进的液量迭代法油模型程序化。经过计算，在相对误差为 5\% 时，附件 1 和附件 2 用液量迭代法得到的地面日产油量分别为：$89.7784 \, \mathrm{m}^3/\mathrm{d}$, $25.7963 \, \mathrm{m}^3/\mathrm{d}$。单级杆液量迭代法算法见程序 \texttt{gaijinyeliang1.m}，多级杆液量迭代法算法见程序 \texttt{gaijinyeliang2.m}。
+
+由于改进的液量迭代法是有效冲程法和传统液量迭代法的结合，因此理论上应用改进的液量迭代法得到的产液量更接近于实际数据。
+
+\section{6 问题三(2)模型的建立与编程求解}
+
+\subsection{6.1 问题分析}
+
+问题三(2)要求建立模型或算法，有计算机自动判别泵功图数据是否属于泵内有气体的情况，并对附件一、二给出的数据进行计算机诊断是否属于泵内充气这种情况。
+
+在第二问中，根据地面示功图用 Gibbs 方法计算得到了泵功图。泵功图用途广泛，根据泵功图可以计算出有效冲程、泵漏失、泵充满程度、油井产量等一系列参数，这些参数的计算对油田生产有着极其重要的作用。因此，泵功图的求解非常有必要。目前，油田故障诊断的方法是首先获得地面示功图，然后由技术人员根据自己的经验和油井的具体工况参数，推算出泵功图，并与井下标准泵功图进行图像特征的比较，从而识别其故障[17]。依靠经验的人为主观判断，会增大误诊的风险，这就需要提出一种合理有效的方法来提高诊断的准确性，这对提高有杆抽油系统的可靠性、避免井下作业的盲目性及提高石油产量具有重要的现实意义。随着人工神经网络，SVM 等技术的不断成熟，自动解决泵功图工况识别问题有了更多的工具和平台。
+
+对本问题求解需要找出气体影响的判定条件，并用方程或函数关系式表示，根据函数关系和条件，编写计算机程序进行自动诊断。
+
+\subsection{6.2 思路分析与模型建立}
+
+\subsubsection{6.2.1 思路分析}
+
+本文引入一种新的计算判定抽油机泵故障的方法。首先对泵功图进行预处理，并提取泵功图的直观几何特征。计算泵功图的面积，将其分为三类，即面积基本正常、面积部分缺失和面积严重缺失。然后计算四个区域面积，根据各区域面积的缺失程度再对故障进行分类，最后采取不同的故障规则来匹配。则这样，经过逐步分析，就能推断出故障的类型，得出结论。根据本思路列方程
+
+及其边界条件，利用 Microsoft Visual Basic 6.0 编程计算，并根据判定条件进行自动诊断，本程序可以诊断出基本正常、严重漏失、供液不足和气体影响等情况，使用简单方便。
+
+\subsection*{6.2.2 故障特征知识}
+
+由于井下工况复杂多样，泵示功图表现出多种形状特征。典型泵示功图是指某一因素影响十分明显，其形状代表该因素影响下的基本特征。虽然实际情况中有多种因素在影响示功图的形状，但是总有其主要因素[18]。因此，示功图的形状也是反映着主要因素影响下的特征，如图 6.1 所示。
+
+图 6.1(1)——(5)分别对应自喷、固定阀卡死、泵筒内壁严重磨损、抽油杆断脱、气锁的情况；图 6.1(6)、(8)对应抽油泵充不满的情况；图 6.1(7)是泵内气体影响下的示功图；图 6.1(9)对应柱塞脱出泵筒的情况；图 6.1(10)、(11)分别对应固定阀、游动阀漏失的情况；图 6.1(12)对应系统磨阻过大的情况；图 6.1(13)对应泵筒弯曲的情况；图 6.1(14)、(15)对应上碰泵、下碰泵的情况；图 6.1(16)对应卡泵情况；图 6.1(17)、(18)分别对应正常工况下油管不锚定、锚定的情况[26]。
+
+本文分析了大量基于油田技术人员多年经验的故障示功图，从新的角度出发，提取井下示功图的特征[27]，得到泵功图气体的影响的结果：$S_{3area} \to 0$；$F_{\text{max}} > F_{\text{stdmax}}$。井下泵功图气体影响的图示如图 6.2。
+
+式中 $S_{3area}$——泵功图第三部分面积；
+
+$S_{\text{stdarea}}$——标准泵功图第三部分的面积；
+
+$F_{\text{max}}$——在一个冲次内的最大载荷；
+
+$F_{\text{stdmax}}$——标准泵功图最小载荷。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{典型泵示功图}
+    \label{fig:6.1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{理论泵内充气泵功图形状及划分}
+    \label{fig:6.2}
+\end{figure}
+
+\subsection{泵功图的预处理}
+
+现场获得的泵功图往往规格不一至，曲线可能由某些原因导致不连续。对泵功图进行预处理的流程如图 \ref{fig:6.3} 所示 \cite{ref28}。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{泵功图预处理工作流程}
+    \label{fig:6.3}
+\end{figure}
+
+首先要进行线膨胀，保证泵功图的连通性，再进行线细化处理，从而获得单位宽度的中心骨架。对细化处理的一般要求是：保证细化后曲线的连通性；保留原图的细节特征；细化结果是原曲线的中心线；保留曲线的端点；保证交叉部分中心线不畸变。细化后的图像局部会存在噪声，需要进行去毛刺处理。泵功图预处理的过程如图 \ref{fig:6.4} 所示。经处理，图像变为单像素二值图像，可以直接提取特征与标准特征图像进行对比判断 \cite{ref19}。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{泵功图预处理过程}
+    \label{fig:6.4}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{扫描获得的图像预处理过程}
+    \label{fig:6.4}
+\end{figure}
+
+\subsection{泵功图的预处理}
+
+图 \ref{fig:6.4} 所示的封闭曲线为一幅泵功图。直观上，希望获得的几何特征有泵功图所围面积、封闭曲线周长、封闭曲线与图像边缘围成的 4 个角的面积，以及封闭曲线的质心。面积 \( S \) 可用图像中的区域面积 \( S \) 表征，即可以用同一标记的区域内像素的个数总和来表示。图 6.3(d) 中区域面积可以通过纵向扫描图像，累加同一标记像素得到。
+
+\textbf{周长 \( L \)}: 区域周长 \( L \) 是用区域中相邻边缘点间距离之和来表示。采用不同的距离公式，关于周长 \( L \) 的计算有很多方法。如果填充好的泵功图用 4 连接邻域确定边界 [20]，那么周长就等于边界中的像素数量和减 1。
+
+\textbf{封闭曲线与图像边缘围成的 4 个角的面积 \( A_{LU} \)、\( A_{LD} \)、\( A_{RU} \)、\( A_{RD} \)}:
+
+\( A_{LU} \)、\( A_{LD} \)、\( A_{RU} \)、\( A_{RD} \) 的位置如图 \ref{fig:6.4} 所示，均可采用统计各个区域像素的方法获得。
+
+\textbf{封闭曲线的质心 \( (X_0, Y_0) \)}:
+
+\begin{equation}
+X_0 = fix\left(\frac{\sum m_i x_i}{\sum m_i}\right), \quad Y_0 = fix\left(\frac{\sum m_i y_i}{\sum m_i}\right)
+\end{equation}
+
+用上式近似求得二值图像的质心。其中 \( m_i \) 为一个像素的值 0 或 1，\( x_i \) 为一个像素所对应的行，\( y_i \) 为一个像素所对应的列。以 Matlab 为工具，对图 6.3 所示泵功图提取特征，包括：面积、周长、左上角面积、右上角面积、左下角面积、右下角面积和质心。
+
+\subsection{模型建立}
+
+\subsubsection{Step1：泵工图面积的计算}
+
+首先计算泵功图的面积。数据库中的数据是以数组形式存在的，一个数组中包含两个元素（载荷、位移），且数组间是等间隔采样，其间隔时间取决于冲次的大小，一般一个冲刺内等时间取 144-200 个点，以保证面积计算的准确性。一个冲次内泵功图面积计算方法如下：
+
+\begin{equation}
+S = \lim_{n \to \infty} \sum_{i=0}^{n-1} (F_i^u - F_i^d)(X_{i+1} - X_i)
+\tag{6.1}
+\end{equation}
+
+式中，\( (X_i, F_i^u) \) 和 \( (X_{i+1}, F_i^d) \) 分别为泵功图离散点的长冲程和下冲程的横纵坐标，即位移和载荷，\( n = 150 \)。
+
+按照泵功图的面积大小进行分类，计算泵功图总面积 \( S_{area} \) 与标准泵功图 \( S_{stdarea} \) 进行对比。
+
+\begin{enumerate}
+    \item 如果 \( 0.9S_{stdarea} < S_{area} < 1.1S_{stdarea} \)，即泵功图面积基本正常。
+    \item 如果 \( S_{area} < 0.25S_{stdarea} \)，即泵功图面积严重缺失。
+\end{enumerate}
+
+(3) 其他情况，继续下一步。
+
+\textbf{Step2：泵工图的划分}
+
+为了更好的提取故障泵功图的特征，本文将泵功图分成四个部分，沿顺时针方向依次为第 1、2、3、4 区域[21]，具体划分如图 6.5 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image1.png}
+\caption{理论泵功图形状及划分}
+\end{figure}
+
+首先将标准泵功图存入数据库，进行划分，然后将划分好的四个标准区域的面积也存入数据库，以便日后作对比。划分取点算法如图 6.6 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image2.png}
+\caption{取划分点的算法}
+\end{figure}
+
+\section*{Step3: 计算泵功图各部分面积}
+
+四个区域面积的计算方法如图 6.7 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{分区域计算面积流程图}
+    \label{fig:6.7}
+\end{figure}
+
+(1) 如果 \( S_{3area} \to 0 \)（第三区域面积缺失严重），其他区域面积缺失不严重，则说明泵中有气体。
+
+(2) 其他情况，参照规则。
+
+\section*{Step4: 推断规则的建立}
+
+建立可靠的判断规则，规则表示了故障特征与故障间的因果关系。推测规则建立后可用下图 6.8 表示，一共有 20 条。
+
+气体影响和供液不足的区别：如果在第一区域内曲线的二阶导数趋近于常数，第三区域内曲线的二阶导数趋近于常数，则是气体影响。如果第三区域曲线的一阶倒数、第四区域曲线的一阶导数趋近于常数，则是供液不足。
+
+\section*{Step5: 系统推理流程}
+
+推理方式主要有三种：正向推理、反向推理和混合推理。本系统采用正向推理。正向推理的基本思想为：从已有信息（事实）出发，在知识库中寻找可用的知识，通过冲突消解对知识进行筛选、启用，将推理出的新事实加入到数据库中作为下一步推理的已知事实 [22]，然后继续搜索知识库，选取可用知识继续进行推理，如此重复直至问题解决。推理流程图如图 6.9 所示。
+
+由此，可编程由计算机自动判别某泵功图数据是否属于泵内有气体的情况。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{fault_classification_diagram.png}
+    \caption{故障分类图}
+    \label{fig:fault_classification}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{inference_flowchart.png}
+    \caption{推测流程图}
+    \label{fig:inference_flowchart}
+\end{figure}
+
+\section*{Step6：计算编程}
+具体程序参见附件。利用 Microsoft Visual Basic 6.0 编程计算。软件的初始界面如图 6.10 所示。在图片框中输入泵功图，点击判断故障按钮，即可在右下方的文本框中输出相应的故障。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{根据泵功图自动诊断故障系统界面}
+    \label{fig:6.10}
+\end{figure}
+
+\subsection{6.3 计算结果}
+
+(1) 附件一数据的诊断流程
+
+① 计算泵功图总面积与区域面积。
+
+② 用规则 1“总面积基本正常”判断，符合。本次循环结束。结果界面如图 6.11 所示：
+
+(2) 附件二数据的诊断流程
+
+① 计算泵功图总面积与区域面积。
+
+② 用规则 1“总面积基本正常”判断，符合。本次循环结束。结果界面如图 6.12 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{根据泵功图自动诊断故障系统界面(一级杆数据)}
+    \label{fig:6.11}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{根据泵功图自动诊断故障系统界面(多级杆数据)}
+    \label{fig:6.12}
+\end{figure}
+
+\subsection{6.4 模型的评价与推广}
+
+泵功图是描述泵处载荷——位移关系的封闭曲线，它包含了有杆抽油系统井下设备(油管、抽油杆、抽油泵)运行状况的丰富信息，可以准确、直观地反映出井下设备的工作情况，从而进行有效的故障诊断[23]。
+
+从新的角度提取泵功图特征，首先计算功图总面积并与标准功图面积对比，然后分区域计算面积，按区域面积特征再对故障进行分类，最后再由曲率细化故障类型，得出最终结论。
+
+如果泵功图如图 6.2 所示，则诊断流程如下所示：
+
+\begin{enumerate}
+    \item 计算泵功图总面积与区域面积。
+    \item 用规则 1“总面积基本正常”判断，不符合。
+    \item 用规则 2“总面积严重缺失”判断，不符合。
+    \item 用规则 3“不符合规则 1、2”判断，与事实相符，于是进入下一层规则继续判断。
+    \item 用规则 4“第三区域面积严重缺失”判断，符合，进入下一层次规则继续判断。
+    \item 用规则 10 进行判断，符合故障特征描述且没有下一层次规则，于是给出诊断结果：气体影响。
+\end{enumerate}
+
+结果界面如图 6.13 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{根据泵功图自动诊断故障系统界面（气体影响）}
+    \label{fig:6.13}
+\end{figure}
+
+显示泵功图第三区域面积严重漏失，有故障，原因是受气体的影响。并蜂鸣报警。
+
+本论文提出的方法切实可行，能有效诊断出多种有杆泵井典型故障。
+
+\section{问题四(1) 模型的建立与求解}
+
+\subsection{问题分析}
+
+问题四(1)要求对 Gibbs 进行原理分析，发现它的不足。在合理的假设下，重新建立抽油系统模型或对现有模型进行改进；并给出由悬点示功图转化为泵功图的详细计算过程，包括：原始数据的处理、边界条件、初始条件、求解算法；利用附件 1、附件 2 的数据重新进行计算；对计算结果与问题二的计算结果进行比较，分析新建模型的优缺点。
+
+\subsection{模型的建立}
+
+\subsubsection{思路分析}
+
+Gibbs 波动方程的原理即通过首先研究抽油杆的动力学特性，建立抽油杆柱振动方程，利用分离变量法求解，并用傅里叶级数展开求解系数，根据边界条件，求出相应的解。
+
+Gibbs 方程的不足在于：
+
+1. 抽油杆受力分析仅适用于直井；
+2. 使用傅里叶分解计算方程，而傅里叶系数数目太低就不能保证精度，因此计算时间较长。此外，傅里叶级数法使示功图平滑化，即不接近于实际数据，有限差分解可以克服此问题。
+3. 没有考虑多级管柱节箍的影响。
+
+对 Gibbs 模型改进：
+
+(1) 用三次样条插值法模拟抽油杆柱轴线的具体编程算法[29]；
+
+(2) 对定向井抽油杆柱的受力进行分析，建立波动方程；
+
+(3) 在同级杆柱内运用隐式差分格式，在组合杆级边界节点采用变步长有限差分格式的混合差分法求解波动方程；
+
+(4) 考虑多级管柱节箍的影响。
+
+然后并给出由悬点示功图转化为泵功图的详细计算过程，包括：原始数据的处理、边界条件、初始条件、求解算法；利用附件 1、附件 2 的数据重新进行计算；对计算结果与问题二的计算结果进行比较。
+
+\subsubsection{边界条件}
+
+在抽油机悬点运动一个周期内，已知地面悬点位移在不同时刻可分别为 \( u_1, u_2, \ldots, u_n \)；悬点动载荷为 \( F_1, F_2, \ldots, F_n \)，则边界条件为：
+\[
+u_{0,1} = -u_1, u_{0,n} = -u_2, \ldots, u_{0,n} = -u_n
+\]
+\[
+F_1 = EA \left. \frac{\partial u}{\partial s} \right|_{1,1} = EA \frac{u_{1,1} - u_{0,1}}{\Delta s}, F_2 = EA \left. \frac{\partial u}{\partial s} \right|_{1,2} = EA \frac{u_{1,2} - u_{0,2}}{\Delta s}, \ldots
+\]
+另外，由于示功图是一个周期函数，可知：
+\[
+u_{i,n} = u_{i,0}, u_{i,1} = u_{i,n+1}
+\]
+
+\subsubsection{初始条件}
+
+实际工程中的定向井有杆抽油系统是十分复杂的，为使问题简化，同时满足工程计算精度，对定向井有杆抽油系统做相应假设，具体假设同文献[30]。
+
+(1) 假设抽油杆柱轴线与油管轴线重合，并与井眼轴线具有相同的曲率；
+
+(2) 抽油杆柱在油管内的横向振动和变形很小，忽略不计；
+
+(3) 在弹性范围内，抽油杆柱在弯曲井中的弯曲变形仍看作弹性小变形；  
+(4) 抽油杆柱在运动过程中，始终与油管壁均匀接触；  
+(5) 油管壁呈刚性，外力作用下不变形；  
+(6) 抽油杆柱截面呈圆形，且为同一级抽油杆柱，其截面积不变；  
+(7) 油液密度、阻尼系数和库仑摩擦系数在同一口井内为常数。  
+
+\subsection*{7.2.4 求解算法}
+
+\textbf{Step1：定向井抽油杆柱轴线的计算机模拟}
+
+根据假设(3)可以看出抽油杆柱轴线应该是一条连续光滑的空间曲线，但由于工程上井眼轴线是用有限组离散井身参数(井深、井斜角和方位角)表示的，根据井眼井身参数模拟抽油杆柱轴线曲线是进行抽油杆柱动态仿真的前提。
+
+抽油杆柱轴线模拟的目的实际上就是根据井眼轨道上的一些已知的测点的井深、井斜角与方位角的数据来预测任意其它井深的井斜角和方位角。目前针对这一问题求解，已有正切法、平衡正切法，平衡井斜角法，曲率半径法以及三次样条差值法[31]。其中三次样条差值法精度最高，因为它既有分段插值的优点，又能使节点处保持光滑连续。
+
+本文采用三次样条插值法模拟抽油杆柱轴线。将井斜角 \(\theta\) 和方位角 \(\varphi\) 看成是随井深 \(s\) 变化的函数，根据三次样条函数的定义，可构造抽油杆柱轴线的样条函数 \(p(s)\) 和 \(Q(s)\)，其具体算法可参见文献[32]。
+
+\textbf{Step2：波动方程}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\frac{\partial^2 u}{\partial t^2} &= a^2 \frac{\partial^2 u}{\partial x^2} - c \frac{\partial u}{\partial t} - \delta h N + g' \cos \theta \\
+N &= \sqrt{\left(P \frac{d\theta}{ds} - q'_r \sin \theta\right)^2 + \left(P \sin \theta \frac{d\varphi}{ds}\right)^2}
+\end{aligned}
+\right.
+\tag{7.1}
+\end{equation}
+
+其中，\(a = \sqrt{E_r / \rho_r}\)；\(h = \frac{f}{\rho_r A_r}\)；\(g' = \frac{\rho'_r}{\rho_r} g\)；
+
+\[
+\delta = \frac{\partial u / \partial t}{|\partial u / \partial t|} = \pm 1 \, ; \, q'_r = (\rho_r - \rho_1) A_r g
+\]
+
+式中，\(u(x, t)\) 为抽油杆柱上 \(S\) 点出的界面在时刻 \(t\) 沿井深方向的位移，简写为 \(u\)；\(\theta\) 为抽油杆柱斜深 \(s\) 处的井眼倾斜角；\(\varphi\) 为斜深 \(s\) 处的井眼方位角；\(f\) 为抽油杆柱与油管间的摩擦系数；\(P_r\) 为抽油杆密度；\(E_r\) 为抽油杆弹性模量；\(A_r\) 为抽油杆截面积；\(P\) 为 \(s\) 截面处抽油杆的轴向力。
+
+对上述方程，在均质杆段，将抽油杆柱轴线离散成等步长的 \(m\) 个单元，步长为 \(\Delta s\)，各单元以下标 \(i\) 表示，\(i = 0, 1, 2, \ldots, m\)；将时间 \(t\) 离散成 \(n\) 个时间段，时间步长为 \(\Delta t\)，各时间点以下标 \(j\) 表示，\(j = 0, 1, 2, \ldots, n\)，则 \(u_{i, j}\) 表示抽油杆柱上第 \(i\) 个节点在时刻 \(j\) 的位移。根据牛顿差分公式得：
+
+\begin{align}
+\left(\frac{\partial u}{\partial t}\right)_{i, j} &= \frac{u_{i, j+1} - u_{i, j}}{\Delta t} \tag{7.2} \\
+\left(\frac{\partial u}{\partial t}\right)_{i, j-1} &= \frac{u_{i, j} - u_{i, j-1}}{\Delta t} \tag{7.3}
+\end{align}
+
+\begin{equation}
+\left( \frac{\partial^2 u}{\partial t^2} \right)_{i,j} = \frac{\left( \frac{\partial u}{\partial t} \right)_{i,j} - \left( \frac{\partial u}{\partial t} \right)_{i,j-1}}{\Delta t} = \frac{u_{i,j+1} - 2u_{i,j} + u_{i,j-1}}{\Delta t^2}
+\tag{7.4}
+\end{equation}
+
+\(u(s,t)\) 对井深 \(s\) 的二阶中心差分格式为：
+
+\begin{equation}
+\left( \frac{\partial^2 u}{\partial t^2} \right)_{i,j} = \frac{u_{i,j+1} - 2u_{i,j} + u_{i,j-1}}{\Delta s^2}
+\tag{7.5}
+\end{equation}
+
+\(u(s,t)\) 对井深 \(t\) 的一次导数的差分，根据一阶中心差分法得：
+
+\begin{equation}
+\left( \frac{\partial u}{\partial t} \right)_{i,j} = \frac{u_{i,j+1} - u_{i,j-1}}{2\Delta t}
+\tag{7.6}
+\end{equation}
+
+将式 (7.4)、(7.5)、(7.6) 带入式 (7.1) 经整理得：
+
+\begin{equation}
+u_{i+1,j} = \kappa \left( u_{i,j+1} - 2u_{i,j} + u_{i,j-1} \right) + \frac{\kappa \Delta t c}{2} \left( u_{i,j+1} - u_{i,j-1} \right) + 2u_{i,j}
+\tag{7.7}
+\end{equation}
+\[
+- u_{i-1,j} + \kappa B_{i,j} \Delta t^2
+\]
+
+其中，\(\kappa = \frac{\Delta s^2}{a^2 \Delta t^2}\); \(B_{i,j} = (\delta_{i,j} h_i N_{i,j} - g' \cos \theta_i)\)
+
+R.W. 亨别克指出，有限差分式 (7.7) 中 \(u_{i,j}\) 项的系数如果为负，则其解是不稳定的，因此有限差分解的收敛条件为：
+\[
+-2\kappa + 2 \geq 0 \implies \kappa \leq 1
+\]
+即
+\begin{equation}
+\frac{\Delta s^2}{a^2 \Delta t^2} \leq 1
+\tag{7.8}
+\end{equation}
+
+\textbf{Step3：组合杆柱连接处的处理方法}
+
+图 7.1 为不同材料及杆径组合杆柱结构示意图，
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{image.png}
+\caption{组合杆结构图}
+\end{figure}
+
+设 \(\mathbf{E}_{r1}\)、\(\mathbf{P}_{r1}\)、\(\mathbf{A}_{r1}\) 为第一级杆柱的弹性模量、密度与横截面积；\(\mathbf{E}_{r2}\)、\(\mathbf{P}_{r2}\)、\(\mathbf{A}_{r2}\) 为第二级杆柱的弹性模量、密度与横截面积。则第一、二级杆柱的波动方程可写为：
+
+\begin{equation}
+\frac{\partial^2 u}{\partial t^2} = a_1^2 \frac{\partial^2 u}{\partial x^2} - c_1 \frac{\partial u}{\partial t} - \delta h_1 \mathrm{N} + g_1' \cos \theta
+\tag{7.9}
+\end{equation}
+
+\begin{equation}
+\frac{\partial^2 u}{\partial t^2} = a_2^2 \frac{\partial^2 u}{\partial x^2} - c_2 \frac{\partial u}{\partial t} - \delta h_2 \mathrm{N} + g_2' \cos \theta
+\tag{7.10}
+\end{equation}
+
+由变形协调及连续性条件，两级杆连接点 \( i \) 处应满足如下条件：
+
+\begin{equation}
+(P_{i,j})_1 = (P_{i,j})_2
+\tag{7.11}
+\end{equation}
+
+\begin{equation}
+(u_{i,j})_1 = (u_{i,j})_2
+\tag{7.12}
+\end{equation}
+
+推出
+
+\begin{equation}
+u_{i+1,j} = \frac{\alpha_s + \beta_s}{\nu_2} u_{i,j+1} - \frac{(2\alpha_s - \nu_1 - \nu_2)}{\nu_2} u_{i,j} + \frac{\alpha_s - \beta_s}{\nu_2} u_{i,j-1} - \frac{\nu_1}{\nu_2} u_{i-1,j}
+\tag{7.13}
+\end{equation}
+
+\[
++ \frac{r_1 \left( \delta_{i,j} h_{1i} N_{i,j} - g_{1i}' \cos \theta_i \right) + r_2 \left( \delta_{i,j} h_{2i} N_{i,j} - g_{2i}' \cos \theta_i \right)}{\nu_2}
+\]
+
+式中，\(\alpha_s = \alpha_1 + \alpha_2\); \(\beta_s = \beta_1 + \beta_2\)
+
+其中，\(\alpha_k = \frac{(\Delta s E_r A_r)_k}{2 (a_k \Delta t)^2}\); \(\beta_k = \frac{(\Delta s E_r A_r c)_k}{4 a_k^2 \Delta t}\); \(\gamma_k = \frac{(\Delta s E_r A_r)_k}{2 (a_k)^2}\); \(\nu_k = \frac{(E_r A_r)_k}{\Delta s_k}\).
+
+\textbf{Step4：差分网格图}
+
+波动方程差分网格图如图 7.2 所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{波动方程计算差分网格图}
+\end{figure}
+
+泵处负荷可以写为：
+
+\begin{equation}
+P_{m,j} = E_r A_r \left( \frac{\partial u}{\partial s} \right)_{m,j} = \frac{E_r A_r}{\Delta s} \left( \frac{3}{2} \right) u_{m,j} - 2 v_{m-1,j} + \frac{1}{2} u_{m-2,j}
+\tag{7.14}
+\end{equation}
+
+\section*{7.3 计算结果}
+
+根据波动方程的求解方法，利用 matlab 语言编制了计算泵功图程序，通过该程序，可选择图形或文件两种形式载入地面功图数据，通过计算便可得到泵功图。
+
+一级杆的地面示功图和泵功图如图 7.3 所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{一级杆的地面示功图和泵功图}
+    \label{fig:1}
+\end{figure}
+
+三级杆的地面示功图和泵功图如图 \ref{fig:2} 所示:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{多级杆的地面示功图和泵功图}
+    \label{fig:2}
+\end{figure}
+
+\section{模型的评价与推广}
+
+给出了三次样条插值法模拟抽油杆柱轴线的具体编程算法, 并对定向井抽油杆柱的受力进行分析, 建立波动方程。
+
+抽油杆柱波动方程的求解。通常由于抽油杆是由多级杆柱组合, 为了求解这样一个双曲偏微分波动方程, 提出了在同级杆柱内运用显式差分格式, 在组合杆级边界节点采用变步长有限差分格式的混合差分法。
+
+对比第二问中结果, 发现新建模型更精确; 不仅适用于直井, 也适用于斜井; 画出的泵功图不平滑, 更接近实际数据。
+
+\section{问题四(2)模型的建立与编程求解}
+
+\subsection{问题分析}
+
+问题四(2)提出 Gibbs 波动方程中的阻尼系数 \( C \) 大多数是做了诸多假设后推出的, 并不能完整地反应实际情况。试从方程本身和某些数据出发用数学方法估计参数 \( C \), 写出 \( C \) 的理论推导过程并尽可能求出 \( C \)。
+
+目前, 确定阻尼系数 [1] 的方法, 归结起来主要有三种: (1) 经验算法, 操作人员根据经验输入不同的阻尼系数, 由计算机试算, 直至得出理想泵功图为止; (2) 根据不同假设推导出等效粘滞阻尼系数。文献 [34] 基于一定假设条件得出了两个阻尼系数公式; 文献 [35] 推导出可用于不同材料混合杆的阻尼公式, 并根据水功率与泵功率进行迭代求得了阻尼系数; 文献 [36] 根据 S.G.Gibbs 的假设及 A.M. 皮尔维尔江的近似阻尼力公式推导出了阻尼系数计算公式; (3) 根据示功图计算阻尼系数。文献 [52] 根据正常泵况下, 改变阻尼系数对泵功图面积影响较明显, 而对泵有效冲程影响不明显的特点, 提出了确定阻尼系数的方法; 文献 [37] 通过对一组带阻尼的波动方程进行数值积分, 导出了与示功图参数有关的阻尼系数公式。
+
+Gibbs 推导的两个阻尼系数计算公式基于以下假设:
+
+① 悬点是简谐振动;
+
+② 以光杆瞬时运动速度的均方根值表示抽油杆的平均速度;
+
+③ 抽油杆柱一周所耗散的功等于等效粘滞阻尼所耗散的功。
+
+曹均合将抽油杆柱在粘性液体中运动时由粘性阻尼引起的弹性比能损失位移, 等效为同种液体在与抽油杆柱结构尺寸相同的长直导管中等温、层流流动时的比能损失的压头高度, 假设悬点是简谐振动, 以抽油杆柱运动平均速度的积分表示粘滞阻尼损失, 推导出了无量纲阻尼因子 [38], 然后推得等效粘滞阻尼系数。
+
+A.M. 尔维尔江阻尼公式, 假设油管内混合物匀质且各相比例稳定的条件下, 根据做功相等原理。
+
+图 8.1、8.2、8.3 是针对某一地面示功图由于取不同的阻尼系数得出的 3 个井下泵功图。图 8.1 是取比实际阻尼系数低的欠阻尼泵功图, 图 8.2 是过阻尼泵功图, 图 8.3 是阻尼系数过大产生的反转泵功图。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{欠阻尼的泵功图}
+    \label{fig:8.1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{过阻尼的泵功图}
+    \label{fig:8.2}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image3.png}
+    \caption{阻尼过大产生的反转泵功图}
+    \label{fig:8.3}
+\end{figure}
+
+由于影响阻尼系数的因素相当的多，而其中的许多因素很难确定[39]。尽管有不少计算阻尼系数的公式，还没有哪种公式计算结果是令人满意的。对于具体油井，要通过试算的方法选用适合本油田的阻尼系数计算公式。
+
+\section{8.2 思路分析与模型建立}
+
+\subsection{8.2.1 思路分析}
+
+事实上，在抽油机井系统中，系统的阻尼力主要包括：抽油杆与油管内液体之间的摩擦力、抽油杆接箍与油管内液体之间的摩擦力、油管内壁与液体之间的摩擦力、液体通过游动阀的阻力、柱塞与泵筒之间的摩擦阻力。系统阻尼力受到井内液体温度、粘度、密度的影响，还与抽油杆柱的运动速度、液体流动速度等因素有关。而液体粘度、密度及流动速度在时时变化，实际阻尼力很难测到，因此一般情况下在相关计算中，通常以等效阻尼力代替实际阻尼力。在抽油井生产过程中，阻尼系数也不是一成不变的，它会随着油井含水的增加，产出液体的阻尼系数也会发生变化[40]。
+
+因此，本文研究一种能够定期校验并修正阻尼系数的方法。研究表明，改变阻尼系数对泵功图的面积影响较为明显，而对泵有效冲程影响不明显。对一组带阻尼的波动方程进行数值积分，从而导出与示功图参数有关的阻尼系数公式，采用特定的收敛条件求出精确的阻尼系数值。使用这种方法还可以校验各种阻尼公式对油田的适应性的好坏。
+
+\subsection{8.2.2 数据分析与处理}
+
+假设上冲程时间为 0 到 $T_1$，下冲程时间为从 $T_1$ 到 T。
+
+\subsection{8.2.3 模型建立}
+
+Gibbs 方程可以写成一下形式：
+
+\begin{equation}
+EA \frac{\partial^2 u}{\partial t^2} dx = \rho A \frac{\partial^2 u}{\partial x^2} dx - c \rho A \frac{\partial u}{\partial t} dx
+\tag{8.1}
+\end{equation}
+
+式中，$U(x, t)$——抽油杆在 Z 截面 t 时刻的位移，m；
+
+E——杆材的弹性模量，Pa。
+
+将 (8.1) 式沿 x 方向从 0 到 L 数值积分，等式左边积分为：
+
+\begin{align}
+\int_0^L EA \frac{\partial^2 u(x, t)}{\partial x^2} dx &= \sum_{i=1}^n \left\{ E_1 A_1 \left[ \frac{\partial u(x, t)}{\partial x} - \frac{\partial u(x_{i-1}, t)}{\partial x} \right] \right\} \\
+&= \sum_{i=1}^n \left[ F(x_1, t) - F(x_{i-1}, t) \right] = F(x_n, t) - F(x_0, t) = F_p(t) - F_0(t)
+\end{align}
+
+式中
+
+n——数值积分节点个数；
+
+$F_p(t)$——泵的动载荷，N；
+
+$F_0(t)$——光杆动载荷，N。
+
+对 (8.1) 积分后可以得到：
+
+\begin{equation}
+F_p(t) - F_0(t) = \int_0^L \rho A \frac{\partial^2 u}{\partial x^2} dx + \int_0^L c \rho A \frac{\partial u}{\partial t} dx
+\tag{8.2}
+\end{equation}
+
+式 (8.2) 在上冲程对时间积分并变换积分次序可得
+
+\begin{equation}
+\int_0^{T_1} F_p(t) - F_0(t) \, dt = \int_0^L \rho A \int_0^{T_1} \frac{\partial^2 u}{\partial x^2} dt \, dx + \int_0^L c \rho A \int_0^{T_1} \frac{\partial u}{\partial t} dt \, dx
+\end{equation}
+
+令 $\left[ \int_0^{T_1} F_p(t) \, dt \right] / T_1 = \overline{F_{pu}}$，表示上冲程泵的平均动载荷；
+
+令 $\left[\int_{0}^{T_{1}} F_{0}(t) dt\right] / T_{1} = \overline{F_{\mathrm{ou}}}$，表示上冲程光杆的平均动载荷。  
+这样上式可以表示为:  
+\begin{equation}
+T_{1}\left(\overline{F_{\mathrm{pd}}}-\overline{F_{\mathrm{od}}}\right)
+\tag{8.3}
+\end{equation}  
+其中, $\overline{F_{\mathrm{pd}}} = \int_{T_{1}}^{T} F_{p}(t) dt / (T-T_{1})$, 表示下冲程泵的平均动载荷;  
+$\overline{F_{\mathrm{od}}} = \int_{T_{1}}^{T} F_{0}(t) dt / (T-T_{1})$, 表示下冲程光杆的平均动载荷。  
+很明显  
+\begin{equation}
+u(x, 0) = u(x, T) \quad \frac{\partial u(x, 0)}{\partial t} = \frac{\partial u(x, T)}{\partial t}
+\end{equation}  
+由式(8.2)、(8.3)可得,  
+\begin{equation}
+\begin{aligned}
+& \left[T_{1} \overline{F_{\mathrm{pu}}} - (T-T_{1}) \overline{F_{\mathrm{pd}}}\right] - \left[T_{1} \overline{F_{\mathrm{ou}}} - (T-T_{1}) \overline{F_{\mathrm{od}}}\right] \\
+& = 2c \int_{0}^{L} \rho A \left[u(x, T_{1}) - u(x, 0)\right] dx \\
+& + 2 \int_{0}^{L} \rho A \left[\frac{\partial u(x, T_{1})}{\partial t} - \frac{\partial u(x, 0)}{\partial t}\right] dx
+\end{aligned}
+\tag{8.4}
+\end{equation}  
+假设 $T_{1} = aT (0.5 < a < 1)$. $a$ 由不同的抽油机确定。为了计算方便, 近似假设  
+\begin{equation}
+u(x, T_{1}) - u(x, 0) = -\frac{(S_{0} + S_{p})}{2}
+\end{equation}  
+其中, $S_{0}$——光杆冲程, m;  
+$S_{p}$——泵冲程, m。  
+以及假设  
+\begin{equation}
+\frac{\partial u(x, T_{1})}{\partial t} = \frac{\partial u(x, 0)}{\partial t} = 0
+\end{equation}  
+这样, 由式(8.4)就可以得到:  
+\begin{equation}
+c = \frac{T \left[(1-a)\left(\overline{F_{\mathrm{pd}}} - \overline{F_{\mathrm{od}}}\right) - a\left(\overline{F_{\mathrm{pu}}} - \overline{F_{\mathrm{ou}}}\right)\right]}{S_{0} \left(1 + S_{p} / S_{0}\right) \sum_{i=1}^{n} \rho_{1} A_{1} X_{1}}
+\tag{8.5}
+\end{equation}  
+其中, $\overline{F_{\mathrm{od}}}, \overline{F_{\mathrm{pd}}}$ 根据光杆示功图上、下冲程面积积分除以光杆冲程长度求得;  
+$\overline{F_{\mathrm{ou}}}, \overline{F_{\mathrm{pu}}}$ 根据泵功图上、下冲程面积积分除以泵冲程长求得。  
+用式(8.5)求解阻尼系数, 必须先知道泵功图, 但是如果知道泵功图, 必须先知道阻尼系数, 故采用迭代法解决这个问题。先给一个任选初始值 $C_{0}$, 根据初始值求泵功图, 再用式(8.5)求 $C$。
+
+\subsection{8.2.4 收敛条件}
+
+假设泵工作是正常的，其工作条件如附录 4 中图所示。
+
+$P_{0}$ 表示游动阀上部的压力，$P(t)$ 表示泵筒内压力，$P_{1}$ 表示泵的吸入压力。液体通过游动阀压力降为 $\Delta P_{t}$，通过固定阀压力降为 $\Delta P_{s}$。为方便计算，假设
+
+\[
+\Delta P = \Delta P_{t} = \Delta P_{s}
+\]
+
+如果忽略柱塞与液体的惯性力，则作用于柱塞上的平衡方程应该是
+
+\[
+F_{p}(t) = P_{0}\left(A_{p} - A_{r}\right) - P(t)A_{p} + W_{p} \pm f
+\]
+
+式中，$A_{p}$、$A_{r}$——柱塞与抽油杆截面积；
+
+$W_{p}$——柱塞重；
+
+$f$——柱塞与泵筒间的摩擦力。
+
+在上冲程固定阀打开时
+
+\[
+P(t) = P_{1} - \Delta P
+\]
+
+则上冲程平均泵载荷为
+
+\[
+\overline{F_{\mathrm{pu}}} = (P_{0} - P_{1})A_{p} - P_{0}A_{r} + W_{p} + f + \Delta P A_{p}
+\]
+
+在下冲程游动阀打开时
+
+\[
+P(t) = P_{0} + \Delta P
+\]
+
+则下冲程平均泵载荷为
+
+\[
+\overline{F_{\mathrm{pd}}} = -P_{0}A_{r} + W_{p} - (f + \Delta P A_{p})
+\]
+
+设 $f_{0} = f + \Delta P A_{p}$，则
+
+\[
+\overline{F_{\mathrm{pu}}} = P_{0}\left(A_{p} - A_{r}\right) - P_{1}A_{p} + W_{p} + f_{0}
+\]
+
+\[
+\overline{F_{\mathrm{pd}}} = -P_{0}A_{r} + W_{p} - f_{0}
+\]
+
+所以得出
+
+\[
+\overline{F_{\mathrm{pu}}} - \overline{F_{\mathrm{pd}}} = P_{0}A_{p} - P_{1}A_{p} + 2f_{0}
+\]
+
+如果近似地忽略了 $f_{0}$，就得出
+
+\[
+P_{0} = P_{1} + \left(\overline{F_{\mathrm{pu}}} - \overline{F_{\mathrm{pd}}}\right) / A_{p} \tag{8.6}
+\]
+
+又，
+
+\[
+P_{0} = P_{1} + F_{0} / A_{p} \tag{8.7}
+\]
+
+式中 $F_{0}$ 为泵举升液体载荷。
+
+对比 (8.6) 和 (8.7) 式，可以确定收敛条件为
+
+\[
+\left| \frac{K_{1} - F_{0}}{K_{1} - \left(\overline{F_{\mathrm{pu}}} - \overline{F_{\mathrm{pd}}}\right)} - 1 \right| < \varepsilon \tag{8.8}
+\]
+
+式中 $\varepsilon$ 为允许误差；$K_{1} = \overline{F_{\mathrm{ou}}} - \overline{F_{\mathrm{od}}}$
+
+\section*{迭代计算阻尼系数框图见图 8.4。}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=2cm, auto,>=latex']
+    % Define block styles
+    \tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+        text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+    \tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+        text width=5em, text centered, rounded corners, minimum height=4em]
+    \tikzstyle{line} = [draw, -latex']
+    \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+        minimum height=2em]
+    
+    % Place nodes
+    \node [block] (start) {开始};
+    \node [block, below of=start] (input_data) {输入油井数据};
+    \node [block, below of=input_data] (calculate_F0) {计算F0};
+    \node [block, below of=calculate_F0] (input_ground) {输入地面功图};
+    \node [block, below of=input_ground] (initial_C0) {任选初始值C0};
+    \node [block, below of=initial_C0] (calculate_pump) {计算泵示功图};
+    \node [block, below of=calculate_pump] (calculate_Fpu_Fpd) {计算Fpu, Fpd};
+    \node [block, below of=calculate_Fpu_Fpd] (calculate_Cd) {根据（8.5）计算Cd};
+    \node [decision, below of=calculate_Cd, yshift=-1cm] (decision1) {$\left|\frac{(K-F_0)}{(K-(F_{pu}-F_{pd}))}-1\right|<\varepsilon$};
+    \node [block, below of=decision1, yshift=-1cm] (print_Cd) {打印Cd};
+    \node [block, below of=print_Cd] (end) {结束};
+    \node [block, right of=decision1, xshift=5cm] (update_C0) {$C_0=C_d\frac{(K_1-F_0)}{(K_1-(F_{pu}-F_{pd}))}$};
+    \node [decision, right of=update_C0, xshift=5cm] (decision2) {$|C_0-C_d|<\varepsilon$};
+    
+    % Draw edges
+    \path [line] (start) -- (input_data);
+    \path [line] (input_data) -- (calculate_F0);
+    \path [line] (calculate_F0) -- (input_ground);
+    \path [line] (input_ground) -- (initial_C0);
+    \path [line] (initial_C0) -- (calculate_pump);
+    \path [line] (calculate_pump) -- (calculate_Fpu_Fpd);
+    \path [line] (calculate_Fpu_Fpd) -- (calculate_Cd);
+    \path [line] (calculate_Cd) -- (decision1);
+    \path [line] (decision1) -- node [near start] {N} (update_C0);
+    \path [line] (update_C0) -- (decision2);
+    \path [line] (decision2) -- node [near start] {N} (calculate_pump);
+    \path [line] (decision1) -- node [near start] {Y} (print_Cd);
+    \path [line] (decision2) -- node [near start] {Y} (print_Cd);
+    \path [line] (print_Cd) -- (end);
+\end{tikzpicture}
+\caption{迭代计算阻尼系数流程框图}
+\label{fig:8.4}
+\end{figure}
+
+\subsection{8.3 模型的求解}
+根据以上流程及算法，使用 Matlab 编写程序计算。求出 C 的值：
+一级杆的 C 值为：c = 1.8498，使用修正后的 C 画出的示功图和泵功图如图 8.5 所示；
+三级杆的 C 值为：c = 0.6701，使用修正后的 C 画出的示功图和泵功图如图 8.6 所示。
+
+\subsection{8.4 模型的评价与推广}
+本节提出一种迭代计算阻尼系数的算法，利用已有地面示功图数据以及泵功图计算算法，可得到更加合理的阻尼系数。
+
+由上可知，在油井正常工作的情况下，利用地面施工图，可以计算出满足工程需要的阻尼系数值。这对于油田技术工作人员定期校验油井阻尼系数是十分有益的。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{修正 C 后的一级杆的地面示功图和泵功图}
+    \label{fig:8.5}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{修正 C 后的三级杆的地面示功图和泵功图}
+    \label{fig:8.6}
+\end{figure}
+
+\section*{参考文献}
+
+[1] 王鸿勋，张琪等，采油工艺原理，北京：石油工业出版社，1989.
+
+[2] 万仁溥，《采油工程手册》，石油行业出版社，2000年8月，第五章，第二节.
+
+[3] 刘崇金，用解析法求抽油机悬点加速度，石油钻采机械，13 (3): 55～56, 1985.
+
+[4] Svino s JG. Exact kinematic analysis of pumping units. SPE 12201, 1983.
+
+[5] 王常斌，陈涛平，郑俊德，游梁式抽油机运动参数的精确解，石油学报，19(2): 107-110, 1998.
+
+[6] Gibbs.S.G, Neely, A.B, Computer Diagnosis of Downhole Condition in Sucker Rod Pumping Wells, J.Pet.Tech., Jan. 1966.
+
+[7] Gibbs.S.G, Method of Determining Sucker Rod Pump Performance, United States Patent Office, Sep.1967.
+
+[8] 董世民，抽油机井动态参数计算机仿真与系统优化[M]，北京：石油工业出版社，2003
+
+[9] 陈连吕，顾宇华，崔明根，一个微分方程的反问题[J]. 石油大学学报，1988, 12(1): 80~85
+
+[10] 余金泽，彭永刚，关成尧等. 功图量油技术的发展[J]. 石油工程技术.
+
+[11] 王秀娟，张立庆，宋子学，李恒双. 一种改进的功图量油技术及应用研究[J]. 长江大学学报. 2010, 242(3).
+
+[12] 王天柱，史建山，李丹. 利用泵示功图的井口产液量计算[J]. 中国西部科技. 2012, 5(11): 21-23.
+
+[13] 冯亚莉. 功图法计量技术及现场应用[J]. 油气田地面工程, 2008, 27(4).
+
+[14] 石在虹，魏兆胜，杨树人，陈家琅. 利用示功图计算抽油机井的产液量[J]. 大庆石油学院学报. 1996, 4(20): 20-23.
+
+[15] TponiiknA BX 著. 杆式深井泵装置工作的诊断与优化, 张柏年译. 油气田开发工程译丛, 1988, 27(7): 2-18.
+
+[16] 史明义，项勇，邹晓燕等. 功图法计量技术在大港油田的应用[J]. 石油规划设计, 2006, 17(3): 9-12.
+
+[17] 刘炜，刘宏昭，三种泵功图特征提取方法比较，煤炭技术，29(9): 202-204, 2010
+
+[18] 及昂，基于泵功图分析的有杆泵井故障诊断系统，大连理工大学，2011
+
+[19] 武波，马玉祥，专家系统[M]，北京：北京理工大学出版社，2003。
+
+[20] Rafael C. Gonzalez，数字图像处理 (MATLAB 版) [M]，北京：电子工业出版社，2005
+
+[21] 陈宪侃，叶利平，谷玉洪，抽油机采油技术[M]，北京：石油工业出版社，2004，(2): 1-2
+
+[22] 陈宪侃，示功图定量解释[J]，石油钻采工艺，1982，(2): 40-50
+
+[23] 周继德，用示功图拉线法计算抽油机井产量和泵筒漏失量[J]，油田地面工程，1986，(2): 60-62
+
+[24] 张琪，吴晓东，抽油井计算机诊断技术及其应用[J]，石油大学学报(自然科学版)，1984，(2): 144-159
+
+[25] 彭勇，余国安，泵功图的一类新的统计特征[J]，西安石油学院学报，1991，6(4): 11-15
+
+- 52 -
+
+\begin{itemize}
+    \item [26] 韩国庆，吴晓东，张庆生，示功图识别技术在有杆泵工况诊断中的应用[J]，石油钻采工艺，20(3)，25(5):70-74
+    \item [27] 时文刚，戴静君，王永，基于 FSvM 的抽油泵示功图识别方法[J]，石油矿场机械，2004，33(4):46-48
+    \item [28] 高国华，彭勇，余国安等，有杆抽油井泵示功图的定量分析方法[J]，石油学报，1993，14(4):141-150
+    \item [29] 崔振华，余国安，有杆抽油系统，北京：石油工业出版社，1994.
+    \item [30] S.G.Gibbs. A Review of Methods for Design and Analysis of Rod Pumping Installation.SPE9980,1982.
+    \item [31] Doty D.R. An Improved Model for Suck Rod pumping.SPE10245,1882.
+    \item [32] Chacin J.E.etc. A new Model for studying oil Well Pumping Installation.SPE16918,1987.
+    \item [33] Lea.J.F, Boundary Condition Used with Dynamic Method of Beam Pump performanee.SPE88,1988.
+    \item [34] s.G.Gibbs.Method of determination Sueker Rod Pump Performanee,U. 5. Patent3，343，409,SePt26,1967.
+    \item [35] T.A.EveritandJ.W.Jennings.An Improved Finite Deferenee Calculation of Down-hole Dynamometer card for Sucker Rod Pumps. SPE18189.
+    \item [36] M.J.BASTIAN.A Two Equation Method for Calculating Down hole Dynamometer cards with a study of Damping Effeets.M.5.Thesis, Texas A\&M University, Collegestation,Texas,Dee.1989.
+    \item [37] 余国安，高国华，利用示功图计算抽油井阻尼系数，石油钻采工艺，1991(5):57-64.
+    \item [38] 曹钧合，抽油杆柱动态方程等效粘滞阻力系数的确定.石油钻采工艺，(2)，1988.
+    \item [49] 葛述卿，有杆抽油泵性能及泵功图计算分析，西安理工大学，2004:44-53
+    \item [40] M.J.Bastian, A two Equation Method for Calculating Down hole Dynamometer Cards With a Study of Damping Effects.M.S Thesis,Texas A \&M University ,College Station ,Texas,Dec,Dec,1989
+\end{itemize}

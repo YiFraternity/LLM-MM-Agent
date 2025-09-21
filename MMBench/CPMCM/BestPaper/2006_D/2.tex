@@ -1,0 +1,2177 @@
+\section{问题重述}
+
+高校自主招生是高考改革中的一项新生事务，现在仍处于探索阶段。学生面试问题理所当然的成为高校自主招生中考察考生综合素质的重要环节之一。现有某高校拟在全面衡量考生的高中学习成绩及综合表现后再采用专家面试的方式决定录取与否。该校在今年自主招生中，经过初选合格进入面试的考生有 $N$ 人，拟聘请老师 $M$ 人。其中每位学生需要分别接受 4 位老师（简称该学生的“面试组”）的单独面试。在面试时，各位老师独立地对考生提问并根据其回答问题的情况给出评分。由于这是一项主观性很强的评价工作，老师的专业可能不同，他们的提问内容、提问方式以及评分习惯也会有较大差异，因此面试同一位考生的“面试组”的具体组成不同会对录取结果产生一定影响。同时为了保证面试工作的公平性，要求：
+
+\begin{itemize}
+    \item Y1. 每位老师面试的学生数量应尽量均衡；
+    \item Y2. 面试不同考生的“面试组”成员不能完全相同；
+    \item Y3. 两个考生的“面试组”中有两位或三位老师相同的情形尽量的少；
+    \item Y4. 被任意两位老师面试的两个学生集合中出现相同学生的人数尽量的少。
+\end{itemize}
+
+需要解决如下问题：
+
+\begin{itemize}
+    \item 问题 1：当考生人数 $N$ 已知时，在满足条件：两位学生的“面试组”都没有两位以及三位面试老师相同的情形时，该校至少要聘请的老师数 $M$。
+    \item 问题 2：在满足条件 Y2 的要求下，当学生数 $N=379$，聘请的教师数 $M=24$ 时，建立学生与教师之间合理的分配模型，并给出具体的分配方案。
+    \item 问题 3：假设当面试老师中理科与文科的老师各占一半，而每位学生都分别要接受两位文科与两位理科老师面试的情况下重新分析问题 1 与问题 2。
+    \item 问题 4：在解决以上问题的基础上，针对考生与面试老师之间分配的均匀性和面试公平性的关系，同时也是为了保证面试的公平性，提出一些合理化的意见及建议。
+\end{itemize}
+
+\section{问题分析}
+
+高考自主招生考试是通过笔试成绩和面试成绩两方面的综合评定鉴定学生的录取情况的。因此面试的成绩不容忽视。确定合理的面试老师分配方案，保证使录取工作达到真正的公平合理。针对这个问题提出了一些公平性准则（Y1--Y4），最终目的是合理分配老师。这是一个优化问题，所以我们用目标规划模型来解决这个问题。由于牵扯到很多个量的确定（$M$ 个老师，$N$ 个学生，分配方案的 0-1 矩阵是 $N \times M$ 阶的），考虑到选取一定有 $M < N$，因此我们假设 $N$ 的数量不是一个很大的数，而且它有一个上界。之所以这样假设，是因为自主招生考试对学生的能力要求非常高，通过初试的考生人数不会很多。在选取目标函数，约束条件时比较困难，将题目中的各个目标及约束转化成数学表达式从而构成了目标规划中的目标函数和约束条件，那么根据分析就可以针对问题一建立一个单目标的规划模型，针对问题二可以建立一个多目标的规划模型。最大的一个问题就是模型求解，考虑一些改进的近似算法求解是得到结果的关键。
+
+\section{符号说明及名词解释}
+
+\begin{tabular}{|c|c|}
+\hline
+\diagbox{符号}{说明} & 解释说明 \\
+\hline
+$N$ & 初试成绩合格，参加面试的考生人数 \\
+\hline
+$M$ & 在自主招生考试中，需要聘请的老师人数 \\
+\hline
+$A_{j}$ & 表示第$j$老师面试的学生集，$(j=1,2,\cdots M.)$ \\
+\hline
+$B_{i}$ & 第$i$个学生的“面试组”$(i=1,2,\cdots N)$ \\
+\hline
+$B_{i}^{(k)}$ & 第$i$个学生的第$k$个面试老师，$(B_{i}^{(k)}=1,2,\cdots M)$；$(k=1,2,3,4)$ \\
+\hline
+$\left|A_{j}\right|=a_{j}$ & 第$j$个教师面试的学生集的数量 \\
+\hline
+$\left|B_{i}\right|=b_{i}$ & 学生$i$的“面试组”数量，实际上$b_{i}\equiv 4(i=1,2,\cdots N)$ \\
+\hline
+$C_{ij}$ & $C_{ij}=A_{i}\cap A_{j}$，第$i,j$个面试老师的相同学生集合$(i,j=1,2,\cdots M)$ \\
+\hline
+$c_{ij}$ & $c_{ij}=B_{i}\cap B_{j}$，第$i,j$个学生“面试组”中相同老师集合$(i,j=1,2,\cdots N)$ \\
+\hline
+$C_{1}$ & $C_{1}=\left\{B_{i}\cap B_{j}||c_{ij}|=2\right\}$第$i,j$个学生面试组有两个相同的老师 \\
+\hline
+$C_{2}$ & $C_{2}=\left\{B_{i}\cap B_{j}||c_{ij}|=3\right\}$第$i,j$个学生面试组有三个相同的老师 \\
+\hline
+$x_{ij}$ & 第$j$个老师面试第$i$个学生的情况$(i=1,2\cdots N,j=1,2,\cdots,M)$ \\
+\hline
+$\alpha$ & 学生面试组中有两个老师相同的情况的优先级因子 \\
+\hline
+$\beta$ & 学生面试组中有三个老师相同的情况的优先级因子 \\
+\hline
+$p_{i}$ & 第$i$个目标的优先级 $i=1,2,\cdots,M$ \\
+\hline
+$G$ & 学生人数$N$的上限 \\
+\hline
+\end{tabular}
+
+\section{4 模型假设}
+\begin{enumerate}
+    \item 假设考生人数$N$有一个上限$G$。
+    \item 分配方案一旦确定，都可以招聘到任何需要的老师，招聘不到的情况忽略不计。
+    \item 设对每位招聘来的老师都要给他安排面试工作，即$\sum_{i=1}^{N}x_{ij}=0$的情况是不存在的。
+\end{enumerate}
+
+\section{5 问题1 模型建立、求解及结果分析}
+\subsection{5.1 问题1的模型分析}
+
+在 $Y_{2}$ 的前提下，参加面试的人数 $N$ 已知，要计算出满足任两位学生 “面试组” 都没有两位及三位面试老师相同的情况下符合情况的 $M$ 的最小值，只需将涉及到的条件转换成数学表达式作为目标规划的约束条件。
+
+5.1.1 由此可将条件 $Y_{1} \sim Y_{4}$ 的条件转换成数学表达式：
+
+$Y_{1}$：每位老师面试的学生数量应尽量均衡。即要取得 $\min \left|a_{i}-a_{j}\right|, \quad i, j=1,2 \cdots M$.
+
+$Y_{2}$：面试不同考生的 “面试组” 成员不能完全相同。即必须满足 $B_{i} \neq B_{j}, \quad i, j=1,2 \cdots N$.
+
+$Y_{3}$：要求两个考生的 “面试组” 中有两位或三位老师相同的情形尽量少。我们理解的尽量少是在学生人数给定的前提下，先考虑任两个 “面试组” 中只有一个相同老师的情形，如果该情形能够面试完所有的学生，则不再考虑两组中有两个相同老师的情况；否则，就要继续考虑。只有当两组中有两个相同老师也不能满足面试人数时，才会考虑有三个相同老师。那么第二个目标规划为：$\min \alpha C_{1}+\beta C_{2}$，正如上述的分析，要求三个相同的情况尽可能少，所以 $\beta>\alpha$。
+
+$Y_{4}$：被任意两位老师面试的两个学生集合中出现相同学生的人数尽量的少。即，$\min \left|C_{i j}\right|$。
+
+5.1.2 引进分配变量 $x_{i j}$ 后的符号表示变化：
+
+其中
+\[ x_{i j}=\begin{cases}1 & \text { 第 } j \text { 个老师面试第 } i \text { 个学生 } \\ 0 & \text { 第 } j \text { 个老师没有面试第 } i \text { 个学生 }\end{cases}, \quad i=1,2, \cdots N, \quad j=1,2, \cdots M \]
+
+由此可知，
+\begin{equation}
+\sum_{j=1}^{M} x_{i j}=4, \quad \sum_{i=1}^{N} x_{i j}=a_{i} \tag{1}
+\end{equation}
+
+$Y_{1}$ 转换成
+\begin{equation}
+\min \left|\sum_{i=1}^{N} x_{i j}-\sum_{k=1}^{N} x_{k j}\right|, \quad j=1,2, \cdots M \tag{2}
+\end{equation}
+
+因此任意两个学生 $i, j, (i, j=1,2, \cdots N)$ 选择 $k$ 老师的情况有三种，即全选，全不选，其中一个选，即
+\begin{equation}
+\left|x_{i k}-x_{j k}\right|=\begin{cases}1 & \text { 选法不相同 } \\ 0 & \text { 选法相同 }\end{cases} \tag{3}
+\end{equation}
+
+那么，$Y_{2}$ 转化成 $\left|x_{i k}-x_{j k}\right|>0$.
+
+考虑到要求面试老师没有两个相同的情况，那么最多只有一个选择相同，由 (3)：
+\begin{equation}
+\sum_{i \neq k=1}^{N} \sum_{j=1}^{M}\left|x_{i j}-x_{k j}\right| \geq 6
+\end{equation}
+
+5.2 建立模型：（满足不同情况的两个模型）
+
+通过上述的建模准备工作，针对问题 1 可以建立两个单目标的规划模型：模型 1.1（对任意两个学生的 “面试组” 中面试老师没有两个相同的模型）和模型 1.2（对任意两个学生的 “面试组” 中面试老师没有三个相同的模型）。
+
+\begin{equation}
+\min M = \frac{4N}{\sum_{i=1}^{N} x_{ij}}
+\end{equation}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\sum_{j=1}^{M} x_{ij} &= 4, i=1,2,\dots,N \\
+\sum_{i=1}^{N} x_{ij} &= a_{i} > 0 \\
+\left| x_{ik} - x_{jk} \right| &> 0, i,j=1,2,\dots,N, k=1,2,\dots,M \\
+\sum_{i\neq k=1}^{N} \sum_{j=1}^{M} \left| x_{ij} - x_{kj} \right| &\geq 6 \\
+x_{ij} &= 0 \text{ 或 } 1, \, i=1,2,\dots,N, \, j=1,2,\dots,M
+\end{aligned}
+\right.
+\tag{模型 1.1}
+\end{equation}
+
+考虑到要求面试老师中没有三个相同的情况，那么最多只有两个选择相同，根据上述（3）所示，将模型 1.1 中的最后一个约束条件改为：$\sum_{i\neq k=1}^{N} \sum_{j=1}^{M} \left| x_{ij} - x_{kj} \right| \geq 4$，建立模型 1.2。
+
+\begin{equation}
+\min M = \frac{4N}{\sum_{i=1}^{M} x_{ij}}
+\end{equation}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\sum_{j=1}^{M} x_{ij} &= 4, i=1,2,\dots,N \\
+\sum_{i=1}^{N} x_{ij} &= a_{i}, j=1,2,\dots,M \\
+\left| x_{ik} - x_{jk} \right| &> 0, i,j=1,2,\dots,N, k=1,2,\dots,M \\
+\sum_{i=1}^{N} \sum_{j=1}^{M} \left| x_{ij} - x_{kj} \right| &\geq 4 \\
+x_{ij} &= 0 \text{ 或 } 1, \, i=1,2,\dots,N, \, j=1,2,\dots,M
+\end{aligned}
+\right.
+\tag{模型 1.2}
+\end{equation}
+
+\subsection{问题 1 模型求解}
+
+\subsubsection{方法}
+
+针对问题 1 建立的目标规划模型 1.1、1.2 同时也是一个 $0-1$ 整数规划模型，涉及的内容比较复杂，通过常规的方法是不好求解的，因此我们提出了近似求解方法，即引用隐枚举法找到了变量 $x_{ij}$ 取值 $0$、$1$ 的最优组合，从而得到了较优的分配方案。取定一些特殊的 $N$ 值，例如 $N=6,7,8,9,\dots,24$，通过模型 1.1 和模型 1.2 利用此方法算出较优的 $M$ 值，计算的结果如表 2 所示。为了寻找出 $M$ 和 $N$ 之间的关系，我们将这些组数据进行拟合得到了 $M$ 和 $N$ 的函数关系。
+
+\begin{table}
+\centering
+\caption{由不同教师数 $M$ 得到在不同条件下可面试的学生数 $N$}
+\begin{tabular}{c|c|c|c|c|c|c}
+\hline
+\diagbox{N}{M} & 至多有两个老师相 & 至多有一个老师相 & & 至多有两个老师相 & 至多有一个老师相 & \\
+\hline
+ & & & & & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c|c|c|c|c|c|c|c|c}
+\hline
+ & 同 & 同 & & 同 & 同 & & 同 & 同 \\
+\hline
+6 & 3 & 1 & 15 & 105 & 13 & 24 & 378 & 35 \\
+\hline
+7 & 7 & 2 & 16 & 140 & 15 & 25 & 442 & 37 \\
+\hline
+8 & 14 & 2 & 17 & 140 & 17 & 26 & 518 & 42 \\
+\hline
+9 & 14 & 3 & 18 & 148 & 20 & 27 & 606 & 45 \\
+\hline
+10 & 18 & 3 & 19 & 164 & 21 & 28 & 707 & 48 \\
+\hline
+11 & 26 & 6 & 20 & 189 & 24 & 29 & 819 & 50 \\
+\hline
+12 & 39 & 9 & 21 & 221 & 26 & 30 & 945 & 55 \\
+\hline
+13 & 55 & 13 & 22 & 263 & 30 & 31 & 1085 & 59 \\
+\hline
+14 & 77 & 11 & 23 & 315 & 33 & 32 & 1240 & 64 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{5.3.2 拟合数据}
+
+对于有两个老师相同的情况，首先将得到的表格中的 6-24 的十九组数据进行拟合，程序见附录一的 1.1。其中参加面试学生数 \( N \) 看成是自变量 \( x \)，应聘的老师数 \( M \) 看成变量 \( y \)。拟合图象如图 1 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{图 1}
+\end{figure}
+
+为了使残差相对较小，而且从图象上直观的看拟合的效果好一些，因此选取三次函数做为最后结果。
+
+\begin{equation}
+y_{(1)} = P_{4}^{(1)} + P_{3}^{(1)}x + P_{2}^{(1)}x^{2} + P_{1}^{(1)}x^{3}
+\tag{4}
+\end{equation}
+
+\begin{align*}
+P_{1}^{(1)} &= 2.7049e-007 \\
+P_{2}^{(1)} &= -0.00026336 \\
+P_{3}^{(1)} &= 0.10592 \\
+P_{4}^{(1)} &= 7.1768
+\end{align*}
+
+从图 1 中看出在 \( M = 16, 17 \) 处的拟合效果不好，那么分段进行考虑。在 \( M = 16 \) 处
+
+分段，利用第 $6-16$ 组数据实现三次多项式拟合。如图 2 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{图形2（前段数据拟合）}
+    \label{fig:2}
+\end{figure}
+
+函数关系如下：
+\begin{equation}
+    y_{2} = P_{4}^{(2)} + P_{3}^{(2)}x + P_{2}^{(2)}x^{2} + P_{1}^{(2)}x^{3}
+    \tag{5}
+\end{equation}
+\begin{align*}
+    P_{1}^{(2)} &= 9.5192e-006 \\
+    P_{2}^{(2)} &= -0.0026579 \\
+    P_{3}^{(2)} &= 0.26167 \\
+    P_{4}^{(2)} &= 5.4428
+\end{align*}
+
+对后面第 $16-30$ 组数据实现三次多项式拟合，可得到：函数关系和图 3 如下所示：
+\begin{equation}
+    y_{3} = P_{4}^{(3)} + P_{3}^{(3)}x + P_{2}^{(3)}x^{2} + P_{1}^{(3)}x^{4}, \text{其中}
+    \tag{6}
+\end{equation}
+\begin{align*}
+    P_{1}^{(3)} &= 4.2883e-008 \\
+    P_{2}^{(3)} &= -8.6435e-005 \\
+    P_{3}^{(3)} &= 0.064984 \\
+    P_{4}^{(3)} &= 9.8379
+\end{align*}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{图 3}
+\end{figure}
+
+利用第三列数据（最多只有一个老师相同的情况）实现对第 $6-24$ 组数据的拟合，这时二次多项式拟合的效果较好。如图 4 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{图 4}
+\end{figure}
+
+函数关系式如下：
+\begin{equation}
+\begin{aligned}
+y_{4} &= P_{3}^{(4)} + P_{2}^{(4)}x + P_{1}^{(4)}x^{2} \\
+P_{1}^{(4)} &= -0.0085046 \\
+P_{2}^{(4)} &= 0.77452 \\
+P_{3}^{(4)} &= 6.1494
+\end{aligned}
+\tag{7}
+\end{equation}
+
+综上所述，问题 1 的结果是：
+
+任意两个学生面试组中没有三位老师相同的情形：
+\begin{equation}
+M =
+\begin{cases}
+P_{4}^{(2)} + P_{3}^{(2)}N + P_{2}^{(2)}N^{2} + P_{1}^{(2)}N^{3}, & N \in [6,140] \\
+P_{4}^{(3)} + P_{3}^{(3)}N + P_{2}^{(3)}N^{2} + P_{1}^{(3)}N^{4} & N \in [140,2000]
+\end{cases}
+\tag{8}
+\end{equation}
+
+任意两个学生面试组中没有两位老师相同的情形:
+\begin{equation}
+M = P_{3}^{(4)} + P_{2}^{(4)}N + P_{1}^{(4)}N^{2}
+\tag{9}
+\end{equation}
+
+5.4. 结果分析:
+
+利用回归分析法得到四个拟合函数的残差表（表3）
+
+表3：拟和函数的精确值和计算值的残差表:
+
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\diagbox{残差}{拟合函数} & $y_{1}$ & $y_{2}$ & $y_{3}$ & $y_{4}$ \\
+\hline
+残差 & 3.4245 & 1.2285 & 1.9847 & 3.5669 \\
+\hline
+\end{tabular}
+
+这些值都没有超过5的情况，因此我们认为结果是合理的。
+
+\section*{6 问题2模型建立、求解及结果分析}
+
+6.1 问题2的分析:
+
+问题2要求我们在问题1的基础上，考虑满足 $Y1-Y4$ 的条件下建立学生与面试老师之间合理的分配模型并对 $M=24, N=379$ 的情况给出具体的分配方案。
+
+这里要比问题1多考虑三个条件 $Y1, Y3, Y4$。每位老师面试的学生数量应尽量均衡和被任意两位老师面试的两个学生集合中出现相同学生的人数尽量的少。这就在建立的模型1.1的基础上增加了更多的目标和约束条件，因此可以将模型一进行改进，得到一个多目标，多个约束条件的目标规划问题。根据这个模型确立所考虑的情况，可以对 $N=379, M=24$ 的具体情况利用隐枚举和割平面的方法找到一个分配的最佳方案。
+
+6.2 建立模型:
+
+因此，由上述的三个目标 $(Y_{1}, Y_{3}, Y_{4})$ 和一个约束 $(Y_{2})$ 可以得到一个多目标规划模型。（模型2.1）
+
+\begin{equation}
+\begin{aligned}
+& \min \left|\sum_{j=1}^{N} X_{ij} - \sum_{j=1}^{N} X_{kj}\right| \cdots i, k = 1, 2, \cdots M \\
+& \min \left(\alpha |C_{1}| + \beta |C_{2}|\right) \cdots \left(\beta > \alpha\right) \\
+& \min \left|A_{i} \cap A_{j}\right| = a_{ij} \\
+& \begin{aligned}
+s.t. \left\{
+\begin{array}{l}
+\sum_{j=1}^{M} x_{ij} = 4, i = 1, 2 \cdots N \\
+\sum_{i=1}^{N} x_{ij} \leq N \\
+|x_{ik} - x_{jk}| > 0 \cdots k = 1, 2 \cdots M \text{ 且 } i, j = 1, 2, \cdots N \\
+x_{ij} = 0 \text{ 或 } 1
+\end{array}
+\right.
+\end{aligned}
+\end{aligned}
+\tag{模型 2.1}
+\end{equation}
+
+6.3 建立模型:
+
+在模型2.1的基础上将多目标规划模型转化为单目标规划模型2.2。
+
+\begin{equation}
+\begin{aligned}
+& \min \left[P_{1}\left(Y_{1}\right)+P_{2}\left(Y_{2}\right)+P_{3}\left(Y_{3}\right)\right] \\
+& \text { s.t. } \begin{cases}
+\sum_{j=1}^{M} x_{i j}=4, i=1,2 \cdots N \\
+\sum_{i=1}^{N} x_{i j} \leq N \\
+\left|x_{i k}-x_{j k}\right|>0 \cdots k=1,2 \cdots M \text { 且 } i, j=1,2, \cdots N \\
+x_{i j}=0 \text { 或 } 1
+\end{cases}
+\end{aligned}
+\end{equation}
+
+\textbf{模型 2.2}
+
+\section*{6.4 具体问题的求解:}
+
+要求给出当 \(N=379, M=24\) 时的具体分配方案，考虑到数据很多，条件的限制也复杂，而且模型的解也不好求得。因此，为了简便计算我们利用求解 0-1 整数规划中的隐枚举法的思想，改进了一种更为直观的方法：考虑到每个考生的面试组中需要有四个成员，而且根据题意面试的考生的“面试组”成员不能完全相同，为了更直观的得出每个考生的“面试组”成员 \(B_{j}^{(k)}\)，用组合的方法生成 \(N \times 4\) 的矩阵，其中第 \(j\) 行就表示第 \(j\) 个学生的“面试组” \(B_{j}(j=1,2, \cdots N)\)，第 \(k\) 列就是 \(B_{j}^{(k)}\left(B_{j}^{(k)}=1,2, \cdots M\right)\)，考虑到让任意两个考生的“面试组”没有两位老师相同的情况，即至多只有一位相同，紧接着用 \(B_{2}\) 和 \(B_{1}\) 作比较若它们的元素有两个，三个，四个相同则将 \(B_{2}\) 删除，再比较 \(B_{3}\) 和 \(B_{1}\)，依此类推，最后剩下的矩阵的行数就是有 \(M\) 位老师，满足每个学生的面试组成员至多只有一个相同的情况下可以面试的学生数 \(N\)。同理考虑到让任意两个考生的“面试组”没有三位老师相同的情况，即至多只有两位相同，紧接着用 \(B_{2}\) 和 \(B_{1}\) 作比较若它们的元素有三个，四个相同则将 \(B_{2}\) 删除，在比较 \(B_{3}\) 和 \(B_{1}\)，依此类推，最后剩下的矩阵的行数就是有 \(M\) 位老师，满足每个学生的面试组成员至多只有两个相同的情况下可以面试的学生数 \(N\)。那么具体的计算机实现附录程序 1，2。得到的具体的分配方案见下表。（表 4）
+
+\textbf{表 4：\(N=379, M=24\) 的 \(X_{ij}\) 分配方案（\(i=1,2, \cdots, N; j=1,2, \cdots, M\)）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\diagbox{j}{i} & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 \\
+\hline
+1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+2 & 1 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+3 & 1 & 1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+4 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+5 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+6 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+7 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+8 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+9 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+10 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c
+
+```latex
+\begin{table}
+\centering
+\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|
+
+\begin{tabular}{c c c c c c c c c c}
+\hline
+16 & 1 & 3 & 13 & 15 & 205 & 5 & 7 & 21 & 23 \\
+17 & 1 & 3 & 14 & 16 & 206 & 5 & 7 & 22 & 24 \\
+18 & 1 & 3 & 17 & 19 & 207 & 5 & 8 & 9 & 12 \\
+19 & 1 & 3 & 18 & 20 & 208 & 5 & 8 & 10 & 11 \\
+20 & 1 & 3 & 21 & 23 & 209 & 5 & 8 & 13 & 16 \\
+21 & 1 & 3 & 22 & 24 & 210 & 5 & 8 & 14 & 15 \\
+22 & 1 & 4 & 5 & 8 & 211 & 5 & 8 & 17 & 20 \\
+23 & 1 & 4 & 6 & 7 & 212 & 5 & 8 & 18 & 19 \\
+24 & 1 & 4 & 9 & 12 & 213 & 5 & 8 & 21 & 24 \\
+25 & 1 & 4 & 10 & 11 & 214 & 5 & 8 & 22 & 23 \\
+26 & 1 & 4 & 13 & 16 & 215 & 6 & 7 & 9 & 12 \\
+27 & 1 & 4 & 14 & 15 & 216 & 6 & 7 & 10 & 11 \\
+28 & 1 & 4 & 17 & 20 & 217 & 6 & 7 & 13 & 16 \\
+29 & 1 & 4 & 18 & 19 & 218 & 6 & 7 & 14 & 15 \\
+30 & 1 & 4 & 21 & 24 & 219 & 6 & 7 & 17 & 20 \\
+31 & 1 & 4 & 22 & 23 & 220 & 6 & 7 & 18 & 1 \\
+32 & 1 & 5 & 9 & 13 & 221 & 6 & 7 & 21 & 24 \\
+33 & 1 & 5 & 10 & 14 & 222 & 6 & 7 & 22 & 23 \\
+34 & 1 & 5 & 11 & 15 & 223 & 6 & 8 & 9 & 11 \\
+35 & 1 & 5 & 12 & 16 & 224 & 6 & 8 & 10 & 12 \\
+36 & 1 & 5 & 17 & 21 & 225 & 6 & 8 & 13 & 15 \\
+37 & 1 & 5 & 18 & 22 & 226 & 6 & 8 & 14 & 16 \\
+38 & 1 & 5 & 19 & 23 & 227 & 6 & 8 & 17 & 19 \\
+39 & 1 & 5 & 20 & 24 & 228 & 6 & 8 & 18 & 20 \\
+40 & 1 & 6 & 9 & 14 & 229 & 6 & 8 & 21 & 23 \\
+41 & 1 & 6 & 10 & 13 & 230 & 6 & 8 & 22 & 24 \\
+42 & 1 & 6 & 11 & 16 & 231 & 7 & 8 & 9 & 10 \\
+43 & 1 & 6 & 12 & 15 & 232 & 7 & 8 & 11 & 12 \\
+44 & 1 & 6 & 17 & 22 & 233 & 7 & 8 & 13 & 14 \\
+45 & 1 & 6 & 18 & 21 & 234 & 7 & 8 & 15 & 16 \\
+46 & 1 & 6 & 19 & 24 & 235 & 7 & 8 & 17 & 18 \\
+47 & 1 & 6 & 20 & 23 & 236 & 7 & 8 & 19 & 20 \\
+48 & 1 & 7 & 9 & 15 & 237 & 7 & 8 & 21 & 22 \\
+49 & 1 & 7 & 10 & 16 & 238 & 7 & 8 & 23 & 24 \\
+50 & 1 & 7 & 11 & 13 & 239 & 9 & 10 & 11 & 12 \\
+51 & 1 & 7 & 12 & 14 & 240 & 9 & 10 & 13 & 14 \\
+52 & 1 & 7 & 17 & 23 & 241 & 9 & 10 & 15 & 16 \\
+53 & 1 & 7 & 18 & 24 & 242 & 9 & 10 & 17 & 18 \\
+54 & 1 & 7 & 19 & 21 & 243 & 9 & 10 & 19 & 20 \\
+55 & 1 & 7 & 20 & 22 & 244 & 9 & 10 & 21 & 22 \\
+56 & 1 & 8 & 9 & 16 & 245 & 9 & 10 & 23 & 24 \\
+57 & 1 & 8 & 10 & 15 & 246 & 9 & 11 & 13 & 15 \\
+58 & 1 & 8 & 11 & 14 & 247 & 9 & 11 & 14 & 16 \\
+59 & 1 & 8 & 12 & 13 & 248 & 9 & 11 & 17 & 19 \\
+\hline
+\end{tabular}
+
+\begin{tabular}{c c c c c c c c c c}
+\hline
+60 & 1 & 8 & 17 & 24 & 249 & 9 & 11 & 18 & 20 \\
+61 & 1 & 8 & 18 & 23 & 250 & 9 & 11 & 21 & 23 \\
+62 & 1 & 8 & 19 & 22 & 251 & 9 & 11 & 22 & 24 \\
+63 & 1 & 8 & 20 & 21 & 252 & 9 & 12 & 13 & 16 \\
+64 & 2 & 3 & 5 & 8 & 253 & 9 & 12 & 14 & 15 \\
+65 & 2 & 3 & 6 & 7 & 254 & 9 & 12 & 17 & 20 \\
+66 & 2 & 3 & 9 & 12 & 255 & 9 & 12 & 18 & 19 \\
+67 & 2 & 3 & 10 & 11 & 256 & 9 & 12 & 21 & 24 \\
+68 & 2 & 3 & 13 & 16 & 257 & 9 & 12 & 22 & 23 \\
+69 & 2 & 3 & 14 & 15 & 258 & 9 & 13 & 17 & 21 \\
+70 & 2 & 3 & 17 & 20 & 259 & 9 & 13 & 18 & 22 \\
+71 & 2 & 3 & 18 & 19 & 260 & 9 & 13 & 19 & 23 \\
+72 & 2 & 3 & 21 & 24 & 261 & 9 & 13 & 20 & 24 \\
+73 & 2 & 3 & 22 & 23 & 262 & 9 & 14 & 17 & 22 \\
+74 & 2 & 4 & 5 & 7 & 263 & 9 & 14 & 18 & 21 \\
+75 & 2 & 4 & 6 & 8 & 264 & 9 & 14 & 19 & 24 \\
+76 & 2 & 4 & 9 & 11 & 265 & 9 & 14 & 20 & 23 \\
+77 & 2 & 4 & 10 & 12 & 266 & 9 & 15 & 17 & 23 \\
+78 & 2 & 4 & 13 & 15 & 267 & 9 & 15 & 18 & 24 \\
+79 & 2 & 4 & 14 & 16 & 268 & 9 & 15 & 19 & 21 \\
+80 & 2 & 4 & 17 & 19 & 269 & 9 & 15 & 20 & 22 \\
+81 & 2 & 4 & 18 & 20 & 270 & 9 & 16 & 17 & 24 \\
+82 & 2 & 4 & 21 & 23 & 271 & 9 & 16 & 18 & 23 \\
+83 & 2 & 4 & 22 & 24 & 272 & 9 & 16 & 19 & 22 \\
+84 & 2 & 5 & 9 & 14 & 273 & 9 & 16 & 20 & 21 \\
+85 & 2 & 5 & 10 & 13 & 274 & 10 & 11 & 13 & 16 \\
+86 & 2 & 5 & 11 & 16 & 275 & 10 & 11 & 14 & 15 \\
+87 & 2 & 5 & 12 & 15 & 276 & 10 & 11 & 17 & 20 \\
+88 & 2 & 5 & 17 & 22 & 277 & 10 & 11 & 18 & 19 \\
+89 & 2 & 5 & 18 & 21 & 278 & 10 & 11 & 21 & 24 \\
+90 & 2 & 5 & 19 & 24 & 279 & 10 & 11 & 22 & 23 \\
+91 & 2 & 5 & 20 & 23 & 280 & 10 & 12 & 13 & 15 \\
+92 & 2 & 6 & 9 & 13 & 281 & 10 & 12 & 14 & 16 \\
+93 & 2 & 6 & 10 & 14 & 282 & 10 & 12 & 17 & 19 \\
+94 & 2 & 6 & 11 & 15 & 283 & 10 & 12 & 18 & 20 \\
+95 & 2 & 6 & 12 & 16 & 284 & 10 & 12 & 21 & 23 \\
+96 & 2 & 6 & 17 & 21 & 285 & 10 & 12 & 22 & 24 \\
+97 & 2 & 6 & 18 & 22 & 286 & 10 & 13 & 17 & 22 \\
+98 & 2 & 6 & 19 & 23 & 287 & 10 & 13 & 18 & 21 \\
+99 & 2 & 6 & 20 & 24 & 288 & 10 & 13 & 19 & 24 \\
+100 & 2 & 7 & 9 & 16 & 289 & 10 & 13 & 20 & 23 \\
+101 & 2 & 7 & 10 & 15 & 290 & 10 & 14 & 17 & 21 \\
+102 & 2 & 7 & 11 & 14 & 291 & 10 & 14 & 18 & 22 \\
+103 & 2 & 7 & 12 & 13 & 292 & 10 & 14 & 19 & 23 \\
+\hline
+\end{tabular}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c c c c c c c}
+\hline
+104 & 2 & 7 & 17 & 24 & 293 & 10 & 14 & 20 & 24 \\
+105 & 2 & 7 & 18 & 23 & 294 & 10 & 15 & 17 & 24 \\
+106 & 2 & 7 & 19 & 22 & 295 & 10 & 15 & 18 & 23 \\
+107 & 2 & 7 & 20 & 21 & 296 & 10 & 15 & 19 & 22 \\
+108 & 2 & 8 & 9 & 15 & 297 & 10 & 15 & 20 & 21 \\
+109 & 2 & 8 & 10 & 16 & 298 & 10 & 16 & 17 & 23 \\
+110 & 2 & 8 & 11 & 13 & 299 & 10 & 16 & 18 & 24 \\
+111 & 2 & 8 & 12 & 14 & 300 & 10 & 16 & 19 & 21 \\
+112 & 2 & 8 & 17 & 23 & 301 & 10 & 16 & 20 & 22 \\
+113 & 2 & 8 & 18 & 24 & 302 & 11 & 12 & 13 & 14 \\
+114 & 2 & 8 & 19 & 21 & 303 & 11 & 12 & 15 & 16 \\
+115 & 2 & 8 & 20 & 22 & 304 & 11 & 12 & 17 & 18 \\
+116 & 3 & 4 & 5 & 6 & 305 & 11 & 12 & 19 & 20 \\
+117 & 3 & 4 & 7 & 8 & 306 & 11 & 12 & 21 & 22 \\
+118 & 3 & 4 & 9 & 10 & 307 & 11 & 12 & 23 & 24 \\
+119 & 3 & 4 & 11 & 12 & 308 & 11 & 13 & 17 & 23 \\
+120 & 3 & 4 & 13 & 14 & 309 & 11 & 13 & 18 & 24 \\
+121 & 3 & 4 & 15 & 16 & 310 & 11 & 13 & 19 & 21 \\
+122 & 3 & 4 & 17 & 18 & 311 & 11 & 13 & 20 & 22 \\
+123 & 3 & 4 & 19 & 20 & 312 & 11 & 14 & 17 & 24 \\
+124 & 3 & 4 & 21 & 22 & 313 & 11 & 14 & 18 & 23 \\
+125 & 3 & 4 & 23 & 24 & 314 & 11 & 14 & 19 & 22 \\
+126 & 3 & 5 & 9 & 15 & 315 & 11 & 14 & 20 & 21 \\
+127 & 3 & 5 & 10 & 16 & 316 & 11 & 15 & 17 & 21 \\
+128 & 3 & 5 & 11 & 13 & 317 & 11 & 15 & 18 & 22 \\
+129 & 3 & 5 & 12 & 14 & 318 & 11 & 15 & 19 & 23 \\
+130 & 3 & 5 & 17 & 23 & 319 & 11 & 15 & 20 & 24 \\
+131 & 3 & 5 & 18 & 24 & 320 & 11 & 16 & 17 & 22 \\
+132 & 3 & 5 & 19 & 21 & 321 & 11 & 16 & 18 & 21 \\
+133 & 3 & 5 & 20 & 22 & 322 & 11 & 16 & 19 & 24 \\
+134 & 3 & 6 & 9 & 16 & 323 & 11 & 16 & 20 & 23 \\
+135 & 3 & 6 & 10 & 15 & 324 & 12 & 13 & 17 & 24 \\
+136 & 3 & 6 & 11 & 14 & 325 & 12 & 13 & 18 & 23 \\
+137 & 3 & 6 & 12 & 13 & 326 & 12 & 13 & 19 & 22 \\
+138 & 3 & 6 & 17 & 24 & 327 & 12 & 13 & 20 & 21 \\
+139 & 3 & 6 & 18 & 23 & 328 & 12 & 14 & 17 & 23 \\
+140 & 3 & 6 & 19 & 22 & 329 & 12 & 14 & 18 & 24 \\
+141 & 3 & 6 & 20 & 21 & 330 & 12 & 14 & 19 & 21 \\
+142 & 3 & 7 & 9 & 13 & 331 & 12 & 14 & 20 & 22 \\
+143 & 3 & 7 & 10 & 14 & 332 & 12 & 15 & 17 & 22 \\
+144 & 3 & 7 & 11 & 15 & 333 & 12 & 15 & 18 & 21 \\
+145 & 3 & 7 & 12 & 16 & 334 & 12 & 15 & 19 & 24 \\
+146 & 3 & 7 & 17 & 21 & 335 & 12 & 15 & 20 & 23 \\
+147 & 3 & 7 & 18 & 22 & 336 & 12 & 16 & 17 & 21 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c c c c c c c}
+\hline
+148 & 3 & 7 & 19 & 23 & 337 & 12 & 16 & 18 & 22 \\
+149 & 3 & 7 & 20 & 24 & 338 & 12 & 16 & 19 & 23 \\
+150 & 3 & 8 & 9 & 14 & 339 & 12 & 16 & 20 & 24 \\
+151 & 3 & 8 & 10 & 13 & 340 & 13 & 14 & 15 & 16 \\
+152 & 3 & 8 & 11 & 16 & 341 & 13 & 14 & 17 & 18 \\
+153 & 3 & 8 & 12 & 15 & 342 & 13 & 14 & 19 & 20 \\
+154 & 3 & 8 & 17 & 22 & 343 & 13 & 14 & 21 & 22 \\
+155 & 3 & 8 & 18 & 21 & 344 & 13 & 14 & 23 & 24 \\
+156 & 3 & 8 & 19 & 24 & 345 & 13 & 15 & 17 & 19 \\
+157 & 3 & 8 & 20 & 23 & 346 & 13 & 15 & 18 & 20 \\
+158 & 4 & 5 & 9 & 16 & 347 & 13 & 15 & 21 & 23 \\
+159 & 4 & 5 & 10 & 15 & 348 & 13 & 15 & 22 & 24 \\
+160 & 4 & 5 & 11 & 14 & 349 & 13 & 16 & 17 & 20 \\
+161 & 4 & 5 & 12 & 13 & 350 & 13 & 16 & 18 & 19 \\
+162 & 4 & 5 & 17 & 24 & 351 & 13 & 16 & 21 & 24 \\
+163 & 4 & 5 & 18 & 23 & 352 & 13 & 16 & 22 & 23 \\
+164 & 4 & 5 & 19 & 22 & 353 & 14 & 15 & 17 & 20 \\
+165 & 4 & 5 & 20 & 21 & 354 & 14 & 15 & 18 & 19 \\
+166 & 4 & 6 & 9 & 15 & 355 & 14 & 15 & 21 & 24 \\
+167 & 4 & 6 & 10 & 16 & 356 & 14 & 15 & 22 & 23 \\
+168 & 4 & 6 & 11 & 13 & 357 & 14 & 16 & 17 & 19 \\
+169 & 4 & 6 & 12 & 14 & 358 & 14 & 16 & 18 & 20 \\
+170 & 4 & 6 & 17 & 23 & 359 & 14 & 16 & 21 & 23 \\
+171 & 4 & 6 & 18 & 24 & 360 & 14 & 16 & 22 & 24 \\
+172 & 4 & 6 & 19 & 21 & 361 & 15 & 16 & 17 & 18 \\
+173 & 4 & 6 & 20 & 22 & 362 & 15 & 16 & 19 & 20 \\
+174 & 4 & 7 & 9 & 14 & 363 & 15 & 16 & 21 & 22 \\
+175 & 4 & 7 & 10 & 13 & 364 & 15 & 16 & 23 & 24 \\
+176 & 4 & 7 & 11 & 16 & 365 & 17 & 18 & 19 & 20 \\
+177 & 4 & 7 & 12 & 15 & 366 & 17 & 18 & 21 & 22 \\
+178 & 4 & 7 & 17 & 22 & 367 & 17 & 18 & 23 & 24 \\
+179 & 4 & 7 & 18 & 21 & 368 & 17 & 19 & 21 & 23 \\
+180 & 4 & 7 & 19 & 24 & 369 & 17 & 19 & 22 & 24 \\
+181 & 4 & 7 & 20 & 23 & 370 & 17 & 20 & 21 & 24 \\
+182 & 4 & 8 & 9 & 13 & 371 & 17 & 20 & 22 & 23 \\
+183 & 4 & 8 & 10 & 14 & 372 & 18 & 19 & 21 & 24 \\
+184 & 4 & 8 & 11 & 15 & 373 & 18 & 19 & 22 & 23 \\
+185 & 4 & 8 & 12 & 16 & 374 & 18 & 20 & 21 & 23 \\
+186 & 4 & 8 & 17 & 21 & 375 & 18 & 20 & 22 & 24 \\
+187 & 4 & 8 & 18 & 22 & 376 & 19 & 20 & 21 & 22 \\
+188 & 4 & 8 & 19 & 23 & 377 & 19 & 20 & 23 & 24 \\
+189 & 4 & 8 & 20 & 24 & 378 & 21 & 22 & 23 & 24 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section*{6.5 结果分析:}
+
+对于我们给出的表 4 的 $N=379, M=24$ 的具体分配方案是基本符合条件 $Y1-Y4$
+
+\subsection*{6.5.1 对条件 $Y_1$ 而言:}
+
+24 个老师中, 前 20 个老师都面试 63 次, 只有后四个老师面试 64 次, 这就符合了第一个条件保证每位老师面试的学生数量尽量均衡的要求。
+
+\subsection*{6.5.2 对条件 $Y_2$ 而言:}
+
+在建立四位数组时就已经把三个和四个相同的情况删除了, 因此这一点是完全符合条件要求的。
+
+\subsection*{6.5.3 对条件 $Y_3$ 而言:}
+
+如果任意两个学生的 “面试组” 中只有一位老师不同, 那么 24 位老师只能给 35 位学生面试。所以我们就让有两个老师相同的情况下保证有三个老师相同的情况尽可能的少, 根据 6.5.1 的分析, 说明这个结果也符合这个条件。
+
+\subsection*{6.5.2 对条件 $Y_4$ 而言:}
+
+根据生成四位数组的方法可知这一点也是基本满足的。因此, 给出的具体的分配方案是比较合理的分配方案。
+
+\section*{7 问题 3 的模型建立与求解}
+
+\subsection*{7.1 问题 3 分析:}
+
+在上面两问的基础上, 又要考虑到文理分科的情况: 理科与文科的老师各占一半, 故我们假设面试老师总数为偶数; 同时还要求每位学生接受两位文科和两位理科老师的面试, 所以我们假设奇数为文科老师, 偶数为理科老师。也就是将所有老师按编号分为奇数组和偶数组两组, 面试组中的编号排列要符合两奇两偶的情况。面试学生时, 只需分别从两组中任取两位老师组合即可。
+
+对于问题 1, 我们需要在模型 1.1 的基础上加上老师编号要符合两奇两偶的条件, 将其转化为数学表达式, 即
+
+\[
+\sum_{j=1}^{M}(-1)^{j-1} x_{ij}=0
+\]
+
+\subsection*{7.2 模型建立和求解: (分别考虑问题 1 和问题 2 的情况)}
+
+\subsection*{7.2.1 重新考虑问题 1:}
+
+对于模型 1.1, 任意两个学生的 “面试组” 中面试老师没有两个相同的单目标规划模型改为:
+
+\begin{equation}
+\min M = \frac{4N}{\sum_{i=1}^{N} x_{ij}}
+\end{equation}
+\begin{equation}
+\left\{
+\begin{aligned}
+\sum_{j=1}^{M} x_{ij} &= 4, i=1,2,\cdots,N \\
+\sum_{i=1}^{N} x_{ij} &= a_{i} > 0 \\
+\left| x_{ik} - x_{jk} \right| &> 0, i,j=1,2,\cdots,N, k=1,2,\cdots,M \\
+\sum_{i \neq k=1}^{N} \sum_{j=1}^{M} \left| x_{ij} - x_{kj} \right| &\geq 6 \\
+x_{ij} &= 0 \text{ 或 } 1, \ i=1,2,\cdots,N, j=1,2,\cdots,M \\
+\sum_{j=1}^{M} (-1)^{j-1} x_{ij} &= 0
+\end{aligned}
+\right.
+\end{equation}
+\textbf{模型 3.1}
+
+对于模型 1.2，对任意两个学生的 “面试组” 中面试老师没有三个相同的模型相应的改为：
+
+\begin{equation}
+\min M = \frac{4N}{\sum_{i=1}^{M} x_{ij}}
+\end{equation}
+\begin{equation}
+\left\{
+\begin{aligned}
+\sum_{j=1}^{M} x_{ij} &= 4, i=1,2\cdots,N \\
+\sum_{i=1}^{N} x_{ij} &= a_{i}, j=1,2\cdots,M \\
+\left| x_{ik} - x_{jk} \right| &> 0, i,j=1,2\cdots,N, k=1,2\cdots,M \\
+\sum_{i=1}^{N} \sum_{j=1}^{M} \left| x_{ij} - x_{kj} \right| &\geq 4 \\
+x_{ij} &= 0 \text{ 或 } 1, \ i=1,2,\cdots,N, j=1,2,\cdots,M \\
+\sum_{j=1}^{M} (-1)^{j-1} x_{ij} &= 0
+\end{aligned}
+\right.
+\end{equation}
+\textbf{模型 3.2}
+
+这两个单目标规划模型只是在问题一的基础上多加了一个约束条件，我们仍然可以用解决问题一的方法来解决该问题，这里就不再赘述了。
+
+\subsection*{7.2.2 重新考虑问题 2:}
+
+对于问题 2，我们同样需在原来解决问题方案的基础上，再加上老师编号要符合两奇两偶的条件。经过统计，379 组面试组里共有 39 组全奇数组，39 组全偶数组。也就是说有 39 个学生的面试组中全是文科老师，而那 39 个学生的面试组中则全是理科老师，这就不符合题目中的要求。此时，我们需要将其调整为两奇两偶的形式。
+
+考虑到这两组分别是全奇全偶的情况，我们就将这 39 组全奇数组与 39 组全偶数组两两重组，以得到两奇两偶的形式。这时，我们发现任两个面试组中三个老师相同的情况增加了许多；经过计算共有 308 对两两出现三个老师相同，具体分配方案见表 4。
+
+由于该模型考虑问题时，优先满足任两个面试组中只有一个老师相同的情况；在面试不够学生的时候，才考虑有两个老师相同的情况；同理，当两个老师相同的组合也不够时，才考虑三个老师相同的情况。所以，我们有理由认为该方案完全适合组织者提出的那四个要求。
+
+\section*{8 问题 4 模型新的分配方案及建议}
+
+面试是各级各类组织在人员招生招聘中广泛使用的测评手段，它能够全面考核综合素质，现在被广泛用于各种反对应试教育的考察之中。高校自主招生是高考改革中的一项新生事物，面试也做为考核的一项关键性因素被引用在内。面试评价是由考官根据应试者在面试中的表现给出的，所以面试评价从客观上讲也不可避免的会受到考官主观因素的影响，在实际中我们总是力求控制这种主观影响，使面试评价尽量做到客观公正，能够真实反应出考生的综合素质。与笔试不同，面试主观性特别强，很大程度上凭的是主观判断和印象。无论怎样科学的面试设计，都避免不了主观性的存在。
+
+我们通过各种假设以及数学建模的方法来模拟考察考生在实际中可能受到的各种影响。数学建模是通过建立教学模型的过程，把错综复杂的实际问题简化、抽象为合理的数学结构的过程。主要通过调查、收集数据资料，观察和研究实际对象的固有特征和内在规律，抓住问题的主要矛盾，建立起反映实际问题的数量关系，然后利用数学的理论和方法去分析问题和解决问题的方法。我们通过它们提出了一些关于提高考生与面试老师之间分配的均匀性和公平性的建议。
+
+我们对于面试主要提出八点建议：
+
+1、应合理搭配“面试组”成员，使面试组知识结构全面，以求全面考察考生的综合素质。
+
+面试组的四位老师在知识结构以及特点上应较为互补，所组成的知识覆盖面也应尽量最大化。这样才能够对考生的综合素质和能力做出最客观的评价，最小化了考生“投机取巧”的几率。
+
+2、面试题目应统一，以确保公平性。题目的统一以及试题难度的一致性是面试所需要重视的重要环节。题目在广度和深度上不要相差过大，尽量做到难易适度，且在分差上也要保持适度。这样才能确保面试的公平性。
+
+3、考官应善于听取考生的陈述，避免打断考生的思路，避免发表个人意见会对考生产生的“诱导性”影响，防止考生投其所好，影响测评结果。
+
+4、学校事先对专家团的各个考官进行全面、严格的面试培训。最好申请纪检部门与媒体监督，还可有家长代表参与到学校的面试安排中，更好地体现公开、公平、公正的原则。
+
+5、应采用异地聘请考官制度。考官和考生应临时抽签，严把面试公平关。在面试前，为体现公平、公正，把报考同一方向的考生都编在一组，每组考生临时抽签决定面试顺序，每组考生的 1 号抽签决定该组考生所在的考场的组次，主考官、考官临时抽签决定所在的考场。
+
+6、所有专家和工作人员都应在面试前签署保密承诺书，学校同时制定严格的回避制度，专家和考生都有权利提出回避。所有面试过程均全程录音，专家面试记录和决议书应全部存档。
+
+7、注意参加面试的几位考官的年龄结构搭配应当一致，对考生的考察不只通过所掌握知识的广度和深度，还应有对社会的适应能力、交际能力以及对于人生的领悟。
+
+8、最为重要的是要注意控制面试过程，把握面试时间。考官提问要简洁明了，发音
+
+清楚，语速适中，要把握好面试进程，特别是在一些陈述不清的问题上不要与考生长时间纠缠。
+
+综上所述，如何在制度上保证面试招生录取中的公平性，是教育改革尝试中不可忽视的问题。教育部门和高校应做到力求公正。
+
+\section*{参考文献}
+
+[1] 钱颂迪，《运筹学》，北京：清华大学出版社，2003.10.
+
+[2] 王正林，《精通 Matlab7》，北京：电子工业出版社，1999.
+
+[3] 姜启源，《数学模型》，北京：高等教育出版社，2003.8.
+
+[4] 萧树铁，《数学实验》，北京：高等教育出版社，2006.5.
+
+\section*{附录：}
+
+\section*{1. 程序：}
+
+\textbf{程序 1.1:}
+
+\begin{verbatim}
+function NN=tichu4(M)%最多有两个一样的
+MM=pailie2(M);%生成组合数
+for i=1:length(MM(:,1))-1
+    for j=i+1:length(MM(:,1))
+        if sum(MM(i,:))~=0
+            b=biijiao(MM(i,:),MM(j,:));
+        else
+            b=0;
+        end
+        if b==3||b==4
+            MM(j,:)=zeros(1,4);
+        end
+    end
+end
+k=1;
+for i=1:length(MM(:,1))
+    if sum(MM(i,:))~=0
+        NN(k,1:4)=MM(i,:);
+        k=k+1;
+    end
+end
+A=(NN);
+b=size(A,1)
+\end{verbatim}
+
+\textbf{程序 1.2:}
+
+\begin{verbatim}
+function NN=tichu3(M)%最多有一个相同的老师
+MM=pailie2(M);
+\end{verbatim}
+
+\begin{verbatim}
+for i=1:length(MM(:,1))-1
+    for j=i+1:length(MM(:,1))
+        if sum(MM(i,:))~=0
+            b=bijiao1(MM(i,:),MM(j,:));
+        else
+            b=0;
+        end
+        if b==3||b==4||b==2
+            MM(j,:)=zeros(1,4);
+        end
+    end
+end
+k=1;
+for i=1:length(MM(:,1))
+    if sum(MM(i,:))~=0
+        NN(k,1:4)=MM(i,:);
+        k=k+1;
+    end
+end
+\end{verbatim}
+
+\textbf{2. 调用程序:}
+
+\textbf{2.1}
+\begin{verbatim}
+function Ma=pailie2(M)
+m=zuhe1(M);
+Ma=zeros(m,4);
+count=1;k=0;p=0;
+for i=1:(M-3)
+    for j=(i+1):(M-2)
+        for l=(j+1):(M-1)
+            for n=(l+1):M
+                Ma(count,:)=[i,j,l,n];count=count+1;
+            end
+        end
+    end
+end
+\end{verbatim}
+
+\textbf{2.2}
+\begin{verbatim}
+function nq=bijiao(a,b)
+nq=0;
+for i=1:length(a)
+    for j=1:length(b)
+        if a(i)==b(j)
+            nq=nq+1;
+        end
+    end
+end
+\end{verbatim}
+
+\begin{verbatim}
+end
+end
+
+2.3
+function nq=bijiao1(a, b)
+nq=0; k=0;
+for i=(1+k):length(a)
+    for j=1:length(b)
+        if a(i)==b(j)
+            k=i;
+            nq=nq+1;
+        end
+    end
+end
+
+2.4
+function NQ=zuhe(M)
+NQ=M;
+for i=1:3
+    NQ=NQ*(M-i);
+end
+
+2.5
+function NQ=zuhe1(M)
+NQ=M;
+for i=1:3
+    NQ=NQ*(M-i);
+end
+NQ=NQ/24;
+\end{verbatim}
+
+\textbf{2. 附表}
+
+\textbf{问题3的求解结果：学生的“面试组”：}
+
+\begin{tabular}{c c c c | c c c c | c c c c}
+\hline
+1 & 2 & 3 & 4 & 1 & 6 & 18 & 21 & 2 & 5 & 18 & 21 \\
+1 & 2 & 5 & 6 & 1 & 6 & 19 & 24 & 2 & 5 & 19 & 24 \\
+1 & 2 & 7 & 8 & 1 & 6 & 20 & 23 & 2 & 5 & 20 & 23 \\
+1 & 2 & 9 & 10 & 1 & 8 & 9 & 10 & 2 & 6 & 9 & 13 \\
+1 & 2 & 11 & 12 & 1 & 7 & 10 & 16 & 2 & 5 & 13 & 14 \\
+1 & 2 & 13 & 14 & 1 & 8 & 11 & 12 & 2 & 6 & 11 & 15 \\
+1 & 2 & 15 & 16 & 1 & 7 & 12 & 14 & 2 & 5 & 15 & 16 \\
+1 & 2 & 17 & 18 & 1 & 8 & 17 & 18 & 2 & 6 & 17 & 21 \\
+1 & 2 & 19 & 20 & 1 & 7 & 18 & 24 & 2 & 5 & 21 & 22 \\
+1 & 2 & 21 & 22 & 1 & 8 & 19 & 20 & 2 & 6 & 19 & 23 \\
+1 & 2 & 23 & 24 & 1 & 7 & 20 & 22 & 2 & 5 & 23 & 24 \\
+1 & 4 & 5 & 6 & 1 & 8 & 9 & 16 & 2 & 7 & 9 & 16 \\
+1 & 3 & 6 & 8 & 1 & 8 & 10 & 15 & 2 & 7 & 10 & 15 \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+1 & 4 & 9 & 10 \\
+\hline
+1 & 3 & 10 & 12 \\
+\hline
+1 & 4 & 13 & 14 \\
+\hline
+1 & 3 & 14 & 16 \\
+\hline
+1 & 4 & 17 & 18 \\
+\hline
+1 & 3 & 18 & 20 \\
+\hline
+1 & 4 & 21 & 22 \\
+\hline
+1 & 3 & 22 & 24 \\
+\hline
+1 & 4 & 5 & 8 \\
+\hline
+1 & 4 & 6 & 7 \\
+\hline
+1 & 4 & 9 & 12 \\
+\hline
+1 & 4 & 10 & 11 \\
+\hline
+1 & 4 & 13 & 16 \\
+\hline
+1 & 4 & 14 & 15 \\
+\hline
+1 & 4 & 17 & 20 \\
+\hline
+1 & 4 & 18 & 19 \\
+\hline
+1 & 4 & 21 & 24 \\
+\hline
+1 & 4 & 22 & 23 \\
+\hline
+1 & 6 & 9 & 10 \\
+\hline
+1 & 5 & 10 & 14 \\
+\hline
+1 & 6 & 11 & 12 \\
+\hline
+1 & 5 & 12 & 16 \\
+\hline
+1 & 6 & 17 & 18 \\
+\hline
+1 & 5 & 18 & 22 \\
+\hline
+1 & 6 & 19 & 20 \\
+\hline
+1 & 5 & 20 & 24 \\
+\hline
+1 & 6 & 9 & 14 \\
+\hline
+1 & 6 & 10 & 13 \\
+\hline
+1 & 6 & 11 & 16 \\
+\hline
+1 & 6 & 12 & 15 \\
+\hline
+1 & 6 & 17 & 22 \\
+\hline
+3 & 5 & 20 & 22 \\
+\hline
+3 & 6 & 9 & 16 \\
+\hline
+3 & 6 & 10 & 15 \\
+\hline
+3 & 6 & 11 & 14 \\
+\hline
+3 & 6 & 12 & 13 \\
+\hline
+3 & 6 & 17 & 24 \\
+\hline
+3 & 6 & 18 & 23 \\
+\hline
+3 & 6 & 19 & 22 \\
+\hline
+3 & 6 & 20 & 21 \\
+\hline
+3 & 8 & 9 & 10 \\
+\hline
+3 & 7 & 10 & 14 \\
+\hline
+3 & 8 & 11 & 12 \\
+\hline
+3 & 7 & 12 & 16 \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|c|}
+\hline
+1 & 8 & 11 & 14 \\
+\hline
+1 & 8 & 12 & 13 \\
+\hline
+1 & 8 & 17 & 24 \\
+\hline
+1 & 8 & 18 & 23 \\
+\hline
+1 & 8 & 19 & 22 \\
+\hline
+1 & 8 & 20 & 21 \\
+\hline
+2 & 3 & 5 & 8 \\
+\hline
+2 & 3 & 6 & 7 \\
+\hline
+2 & 3 & 9 & 12 \\
+\hline
+2 & 3 & 10 & 11 \\
+\hline
+2 & 3 & 13 & 16 \\
+\hline
+2 & 3 & 14 & 15 \\
+\hline
+2 & 3 & 17 & 20 \\
+\hline
+2 & 3 & 18 & 19 \\
+\hline
+2 & 3 & 21 & 24 \\
+\hline
+2 & 3 & 22 & 23 \\
+\hline
+2 & 4 & 5 & 7 \\
+\hline
+2 & 3 & 7 & 8 \\
+\hline
+2 & 4 & 9 & 11 \\
+\hline
+2 & 3 & 11 & 12 \\
+\hline
+2 & 4 & 13 & 15 \\
+\hline
+2 & 3 & 15 & 16 \\
+\hline
+2 & 4 & 17 & 19 \\
+\hline
+2 & 3 & 19 & 20 \\
+\hline
+2 & 4 & 21 & 23 \\
+\hline
+2 & 3 & 23 & 24 \\
+\hline
+2 & 5 & 9 & 14 \\
+\hline
+2 & 5 & 10 & 13 \\
+\hline
+2 & 5 & 11 & 16 \\
+\hline
+2 & 5 & 12 & 15 \\
+\hline
+2 & 5 & 17 & 22 \\
+\hline
+4 & 7 & 12 & 15 \\
+\hline
+4 & 7 & 17 & 22 \\
+\hline
+4 & 7 & 18 & 21 \\
+\hline
+4 & 7 & 19 & 24 \\
+\hline
+4 & 7 & 20 & 23 \\
+\hline
+4 & 8 & 9 & 13 \\
+\hline
+4 & 7 & 13 & 14 \\
+\hline
+4 & 8 & 11 & 15 \\
+\hline
+4 & 7 & 15 & 16 \\
+\hline
+4 & 8 & 17 & 21 \\
+\hline
+4 & 7 & 21 & 22 \\
+\hline
+4 & 8 & 19 & 23 \\
+\hline
+4 & 7 & 23 & 24 \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|c|}
+\hline
+2 & 7 & 11 & 14 \\
+\hline
+2 & 7 & 12 & 13 \\
+\hline
+2 & 7 & 17 & 24 \\
+\hline
+2 & 7 & 18 & 23 \\
+\hline
+2 & 7 & 19 & 22 \\
+\hline
+2 & 7 & 20 & 21 \\
+\hline
+2 & 8 & 9 & 15 \\
+\hline
+2 & 7 & 15 & 16 \\
+\hline
+2 & 8 & 11 & 13 \\
+\hline
+2 & 7 & 13 & 14 \\
+\hline
+2 & 8 & 17 & 23 \\
+\hline
+2 & 7 & 23 & 24 \\
+\hline
+2 & 8 & 19 & 21 \\
+\hline
+2 & 7 & 21 & 22 \\
+\hline
+3 & 4 & 5 & 6 \\
+\hline
+3 & 4 & 7 & 8 \\
+\hline
+3 & 4 & 9 & 10 \\
+\hline
+3 & 4 & 11 & 12 \\
+\hline
+3 & 4 & 13 & 14 \\
+\hline
+3 & 4 & 15 & 16 \\
+\hline
+3 & 4 & 17 & 18 \\
+\hline
+3 & 4 & 19 & 20 \\
+\hline
+3 & 4 & 21 & 22 \\
+\hline
+3 & 4 & 23 & 24 \\
+\hline
+3 & 6 & 9 & 10 \\
+\hline
+3 & 5 & 10 & 14 \\
+\hline
+3 & 6 & 11 & 12 \\
+\hline
+3 & 5 & 12 & 16 \\
+\hline
+3 & 6 & 17 & 18 \\
+\hline
+3 & 5 & 18 & 22 \\
+\hline
+3 & 6 & 19 & 20 \\
+\hline
+3 & 5 & 20 & 24 \\
+\hline
+3 & 6 & 9 & 14 \\
+\hline
+3 & 5 & 10 & 13 \\
+\hline
+3 & 6 & 11 & 16 \\
+\hline
+3 & 5 & 12 & 15 \\
+\hline
+3 & 6 & 17 & 22 \\
+\hline
+6 & 7 & 21 & 24 \\
+\hline
+6 & 7 & 22 & 23 \\
+\hline
+6 & 8 & 9 & 11 \\
+\hline
+6 & 7 & 11 & 12 \\
+\hline
+6 & 8 & 13 & 15 \\
+\hline
+6 & 7 & 15 & 16 \\
+\hline
+6 & 8 & 17 & 19 \\
+\hline
+6 & 7 & 19 & 20 \\
+\hline
+6 & 8 & 21 & 23 \\
+\hline
+6 & 7 & 23 & 24 \\
+\hline
+7 & 8 & 9 & 10 \\
+\hline
+7 & 8 & 11 & 12 \\
+\hline
+7 & 8 & 13 & 14 \\
+\hline
+\end{tabular}
+
+\begin{tabular}{c c c c | c c c c | c c c c}
+\hline
+3 & 8 & 17 & 18 & 5 & 6 & 7 & 8 & 7 & 8 & 15 & 16 \\
+\hline
+3 & 7 & 18 & 22 & 5 & 6 & 9 & 10 & 7 & 8 & 17 & 18 \\
+\hline
+3 & 8 & 19 & 20 & 5 & 6 & 11 & 12 & 7 & 8 & 19 & 20 \\
+\hline
+3 & 7 & 20 & 24 & 5 & 6 & 13 & 14 & 7 & 8 & 21 & 22 \\
+\hline
+3 & 8 & 9 & 14 & 5 & 6 & 15 & 16 & 7 & 8 & 23 & 24 \\
+\hline
+3 & 8 & 10 & 13 & 5 & 6 & 17 & 18 & 9 & 10 & 11 & 12 \\
+\hline
+3 & 8 & 11 & 16 & 5 & 6 & 19 & 20 & 9 & 10 & 13 & 14 \\
+\hline
+3 & 8 & 12 & 15 & 5 & 6 & 21 & 22 & 9 & 10 & 15 & 16 \\
+\hline
+3 & 8 & 17 & 22 & 5 & 6 & 23 & 24 & 9 & 10 & 17 & 18 \\
+\hline
+3 & 8 & 18 & 21 & 5 & 8 & 9 & 10 & 9 & 10 & 19 & 20 \\
+\hline
+3 & 8 & 19 & 24 & 5 & 7 & 10 & 12 & 9 & 10 & 21 & 22 \\
+\hline
+3 & 8 & 20 & 23 & 5 & 8 & 13 & 14 & 9 & 10 & 23 & 24 \\
+\hline
+4 & 5 & 9 & 16 & 5 & 7 & 14 & 16 & 9 & 12 & 13 & 14 \\
+\hline
+4 & 5 & 10 & 15 & 5 & 8 & 17 & 18 & 9 & 11 & 14 & 16 \\
+\hline
+4 & 5 & 11 & 14 & 5 & 7 & 18 & 20 & 9 & 12 & 17 & 18 \\
+\hline
+4 & 5 & 12 & 13 & 5 & 8 & 21 & 22 & 9 & 11 & 18 & 20 \\
+\hline
+4 & 5 & 17 & 24 & 5 & 7 & 22 & 24 & 9 & 12 & 21 & 22 \\
+\hline
+4 & 5 & 18 & 23 & 5 & 8 & 9 & 12 & 9 & 11 & 22 & 24 \\
+\hline
+4 & 5 & 19 & 22 & 5 & 8 & 10 & 11 & 9 & 12 & 13 & 16 \\
+\hline
+4 & 5 & 20 & 21 & 5 & 8 & 13 & 16 & 9 & 12 & 14 & 15 \\
+\hline
+4 & 6 & 9 & 15 & 5 & 8 & 14 & 15 & 9 & 12 & 17 & 20 \\
+\hline
+4 & 5 & 15 & 16 & 5 & 8 & 17 & 20 & 9 & 12 & 18 & 19 \\
+\hline
+4 & 6 & 11 & 13 & 5 & 8 & 18 & 19 & 9 & 12 & 21 & 24 \\
+\hline
+4 & 5 & 13 & 14 & 5 & 8 & 21 & 24 & 9 & 12 & 22 & 23 \\
+\hline
+4 & 6 & 17 & 23 & 5 & 8 & 22 & 23 & 9 & 14 & 17 & 18 \\
+\hline
+4 & 5 & 23 & 24 & 6 & 7 & 9 & 12 & 9 & 13 & 18 & 22 \\
+\hline
+4 & 6 & 19 & 21 & 6 & 7 & 10 & 11 & 9 & 14 & 19 & 20 \\
+\hline
+4 & 5 & 21 & 22 & 6 & 7 & 13 & 16 & 9 & 13 & 20 & 24 \\
+\hline
+4 & 7 & 9 & 14 & 6 & 7 & 14 & 15 & 9 & 14 & 17 & 22 \\
+\hline
+4 & 7 & 10 & 13 & 6 & 7 & 17 & 20 & 9 & 14 & 18 & 21 \\
+\hline
+4 & 7 & 11 & 16 & 6 & 7 & 18 & 19 & 9 & 14 & 19 & 24 \\
+\hline
+9 & 14 & 20 & 23 & 11 & 13 & 18 & 24 & 14 & 15 & 17 & 20 \\
+\hline
+9 & 16 & 17 & 18 & 11 & 14 & 19 & 20 & 14 & 15 & 18 & 19 \\
+\hline
+9 & 15 & 18 & 24 & 11 & 13 & 20 & 22 & 14 & 15 & 21 & 24 \\
+\hline
+9 & 16 & 19 & 20 & 11 & 14 & 17 & 24 & 14 & 15 & 22 & 23 \\
+\hline
+9 & 15 & 20 & 22 & 11 & 14 & 18 & 23 & 14 & 16 & 17 & 19 \\
+\hline
+9 & 16 & 17 & 24 & 11 & 14 & 19 & 22 & 14 & 15 & 19 & 20 \\
+\hline
+9 & 16 & 18 & 23 & 11 & 14 & 20 & 21 & 14 & 16 & 21 & 23 \\
+\hline
+9 & 16 & 19 & 22 & 11 & 16 & 17 & 18 & 14 & 15 & 23 & 24 \\
+\hline
+9 & 16 & 20 & 21 & 11 & 15 & 18 & 22 & 15 & 16 & 17 & 18 \\
+\hline
+10 & 11 & 13 & 16 & 11 & 16 & 19 & 20 & 15 & 16 & 19 & 20 \\
+\hline
+10 & 11 & 14 & 15 & 11 & 15 & 20 & 24 & 15 & 16 & 21 & 22 \\
+\hline
+10 & 11 & 17 & 20 & 11 & 16 & 17 & 22 & 15 & 16 & 23 & 24 \\
+\hline
+10 & 11 & 18 & 19 & 11 & 16 & 18 & 21 & 17 & 18 & 19 & 20 \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+10 & 11 & 21 & 24 \\
+\hline
+10 & 11 & 22 & 23 \\
+\hline
+10 & 12 & 13 & 15 \\
+\hline
+\rowcolor{green!20} 10 & 11 & 15 & 16 \\
+\hline
+10 & 12 & 17 & 19 \\
+\hline
+\rowcolor{green!20} 10 & 11 & 19 & 20 \\
+\hline
+10 & 12 & 21 & 23 \\
+\hline
+\rowcolor{green!20} 10 & 11 & 23 & 24 \\
+\hline
+10 & 13 & 17 & 22 \\
+\hline
+10 & 13 & 18 & 21 \\
+\hline
+10 & 13 & 19 & 24 \\
+\hline
+10 & 13 & 20 & 23 \\
+\hline
+10 & 14 & 17 & 21 \\
+\hline
+\rowcolor{green!20} 10 & 13 & 21 & 22 \\
+\hline
+10 & 14 & 19 & 23 \\
+\hline
+\rowcolor{green!20} 10 & 13 & 23 & 24 \\
+\hline
+10 & 15 & 17 & 24 \\
+\hline
+10 & 15 & 18 & 23 \\
+\hline
+10 & 15 & 19 & 22 \\
+\hline
+10 & 15 & 20 & 21 \\
+\hline
+10 & 16 & 17 & 23 \\
+\hline
+\rowcolor{green!20} 10 & 15 & 23 & 24 \\
+\hline
+10 & 16 & 19 & 21 \\
+\hline
+\rowcolor{green!20} 10 & 15 & 21 & 22 \\
+\hline
+11 & 12 & 13 & 14 \\
+\hline
+11 & 12 & 15 & 16 \\
+\hline
+11 & 12 & 17 & 18 \\
+\hline
+11 & 12 & 19 & 20 \\
+\hline
+11 & 12 & 21 & 22 \\
+\hline
+11 & 12 & 23 & 24 \\
+\hline
+11 & 14 & 17 & 18 \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|c|}
+\hline
+11 & 16 & 19 & 24 \\
+\hline
+11 & 16 & 20 & 23 \\
+\hline
+12 & 13 & 17 & 24 \\
+\hline
+12 & 13 & 18 & 23 \\
+\hline
+12 & 13 & 19 & 22 \\
+\hline
+12 & 13 & 20 & 21 \\
+\hline
+12 & 14 & 17 & 23 \\
+\hline
+\rowcolor{green!20} 12 & 13 & 23 & 24 \\
+\hline
+12 & 14 & 19 & 21 \\
+\hline
+\rowcolor{green!20} 12 & 13 & 21 & 22 \\
+\hline
+12 & 15 & 17 & 22 \\
+\hline
+12 & 15 & 18 & 21 \\
+\hline
+12 & 15 & 19 & 24 \\
+\hline
+12 & 15 & 20 & 23 \\
+\hline
+12 & 16 & 17 & 21 \\
+\hline
+12 & 15 & 21 & 22 \\
+\hline
+12 & 16 & 19 & 23 \\
+\hline
+\rowcolor{green!20} 12 & 15 & 23 & 24 \\
+\hline
+13 & 14 & 15 & 16 \\
+\hline
+13 & 14 & 17 & 18 \\
+\hline
+13 & 14 & 19 & 20 \\
+\hline
+13 & 14 & 21 & 22 \\
+\hline
+13 & 14 & 23 & 24 \\
+\hline
+13 & 16 & 17 & 18 \\
+\hline
+13 & 15 & 18 & 20 \\
+\hline
+\rowcolor{yellow!20} 13 & 16 & 21 & 22 \\
+\hline
+13 & 15 & 22 & 24 \\
+\hline
+13 & 16 & 17 & 20 \\
+\hline
+13 & 16 & 18 & 19 \\
+\hline
+13 & 16 & 21 & 24 \\
+\hline
+13 & 16 & 22 & 23 \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|c|}
+\hline
+17 & 18 & 21 & 22 \\
+\hline
+17 & 18 & 23 & 24 \\
+\hline
+\rowcolor{yellow!20} 17 & 20 & 21 & 22 \\
+\hline
+17 & 19 & 22 & 24 \\
+\hline
+17 & 20 & 21 & 24 \\
+\hline
+17 & 20 & 22 & 23 \\
+\hline
+18 & 19 & 21 & 24 \\
+\hline
+18 & 19 & 22 & 23 \\
+\hline
+18 & 20 & 21 & 23 \\
+\hline
+\rowcolor{green!20} 18 & 19 & 23 & 24 \\
+\hline
+19 & 20 & 21 & 22 \\
+\hline
+19 & 20 & 23 & 24 \\
+\hline
+21 & 22 & 23 & 24 \\
+\hline
+\end{tabular}
+
+\section*{附录:}
+
+\section{程序:}
+
+程序 1.1:
+
+\begin{verbatim}
+function NN=tichu4(M)%最多有两个一样的
+MM=pailie2(M);%生成组合数
+for i=1:length(MM(:,1))-1
+    for j=i+1:length(MM(:,1))
+        if sum(MM(i,:))~=0
+            b=biijiao(MM(i,:),MM(j,:));
+        else
+            b=0;
+        end
+        if b==3||b==4
+            MM(j,:)=zeros(1,4);
+        end
+    end
+end
+k=1;
+for i=1:length(MM(:,1))
+    if sum(MM(i,:))~=0
+        NN(k,1:4)=MM(i,:);
+    end
+end
+\end{verbatim}
+
+\begin{verbatim}
+k=k+1;
+end
+end
+A=(NN);
+b=size(A, 1)
+
+程序 1.2:
+function NN=tichu3(M)%最多有一个相同的老师
+MM=pailie2(M);
+for i=1:length(MM(:,1))-1
+    for j=i+1:length(MM(:,1))
+        if sum(MM(i,:))~=0
+            b=bijiao1(MM(i,:), MM(j,:));
+        else
+            b=0;
+        end
+        if b==3 || b==4 || b==2
+            MM(j,:)=zeros(1,4);
+        end
+    end
+end
+k=1;
+for i=1:length(MM(:,1))
+    if sum(MM(i,:))~=0
+        NN(k,1:4)=MM(i,:);
+        k=k+1;
+    end
+end
+
+2.调用程序:
+2.1
+function Ma=pailie2(M)
+m=zuhe1(M);
+Ma=zeros(m,4);
+count=1;k=0;p=0;
+for i=1:(M-3)
+    for j=(i+1):(M-2)
+        for l=(j+1):(M-1)
+            for n=(l+1):M
+                Ma(count,:)=[i,j,l,n];count=count+1;
+            end
+        end
+    end
+end
+end
+\end{verbatim}
+
+\section*{2.2}
+\begin{verbatim}
+function nq=bijiao(a, b)
+nq=0;
+for i=1:length(a)
+    for j=1:length(b)
+        if a(i)==b(j)
+            nq=nq+1;
+        end
+    end
+end
+\end{verbatim}
+
+\section*{2.3}
+\begin{verbatim}
+function nq=bijiao1(a, b)
+nq=0; k=0;
+for i=(1+k):length(a)
+    for j=1:length(b)
+        if a(i)==b(j)
+            k=i;
+            nq=nq+1;
+        end
+    end
+end
+\end{verbatim}
+
+\section*{2.4}
+\begin{verbatim}
+function NQ=zuhe(M)
+NQ=M;
+for i=1:3
+    NQ=NQ*(M-i);
+end
+\end{verbatim}
+
+\section*{2.5}
+\begin{verbatim}
+function NQ=zuhe1(M)
+NQ=M;
+for i=1:3
+    NQ=NQ*(M-i);
+end
+NQ=NQ/24;
+\end{verbatim}
+
+\section*{2. 附表}
+问题3的求解结果：学生的“面试组”：
+\begin{table}[h]
+\centering
+\begin{tabular}{c c c c c c c c c c c}
+1 & 2 & 3 & 4 & 1 & 6 & 18 & 21 & 2 & 5 & 18 \\
+1 & 2 & 5 & 6 & 1 & 6 & 19 & 24 & 2 & 5 & 19 \\
+1 & 2 & 7 & 8 & 1 & 6 & 20 & 23 & 2 & 5 & 20 \\
+1 & 2 & 9 & 10 & 1 & 8 & 9 & 10 & 2 & 6 & 9 \\
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c c c c|c c c c|c c c c|}
+\hline
+1 & 2 & 11 & 12 & 1 & 7 & 10 & 16 & 2 & 5 & 13 & 14 \\
+\hline
+1 & 2 & 13 & 14 & 1 & 8 & 11 & 12 & 2 & 6 & 11 & 15 \\
+\hline
+1 & 2 & 15 & 16 & 1 & 7 & 12 & 14 & 2 & 5 & 15 & 16 \\
+\hline
+1 & 2 & 17 & 18 & 1 & 8 & 17 & 18 & 2 & 6 & 17 & 21 \\
+\hline
+1 & 2 & 19 & 20 & 1 & 7 & 18 & 24 & 2 & 5 & 21 & 22 \\
+\hline
+1 & 2 & 21 & 22 & 1 & 8 & 19 & 20 & 2 & 6 & 19 & 23 \\
+\hline
+1 & 2 & 23 & 24 & 1 & 7 & 20 & 22 & 2 & 5 & 23 & 24 \\
+\hline
+1 & 4 & 5 & 6 & 1 & 8 & 9 & 16 & 2 & 7 & 9 & 16 \\
+\hline
+1 & 3 & 6 & 8 & 1 & 8 & 10 & 15 & 2 & 7 & 10 & 15 \\
+\hline
+1 & 4 & 9 & 10 & 1 & 8 & 11 & 14 & 2 & 7 & 11 & 14 \\
+\hline
+1 & 3 & 10 & 12 & 1 & 8 & 12 & 13 & 2 & 7 & 12 & 13 \\
+\hline
+1 & 4 & 13 & 14 & 1 & 8 & 17 & 24 & 2 & 7 & 17 & 24 \\
+\hline
+1 & 3 & 14 & 16 & 1 & 8 & 18 & 23 & 2 & 7 & 18 & 23 \\
+\hline
+1 & 4 & 17 & 18 & 1 & 8 & 19 & 22 & 2 & 7 & 19 & 22 \\
+\hline
+1 & 3 & 18 & 20 & 1 & 8 & 20 & 21 & 2 & 7 & 20 & 21 \\
+\hline
+1 & 4 & 21 & 22 & 2 & 3 & 5 & 8 & 2 & 8 & 9 & 15 \\
+\hline
+1 & 3 & 22 & 24 & 2 & 3 & 6 & 7 & 2 & 7 & 15 & 16 \\
+\hline
+1 & 4 & 5 & 8 & 2 & 3 & 9 & 12 & 2 & 8 & 11 & 13 \\
+\hline
+1 & 4 & 6 & 7 & 2 & 3 & 10 & 11 & 2 & 7 & 13 & 14 \\
+\hline
+1 & 4 & 9 & 12 & 2 & 3 & 13 & 16 & 2 & 8 & 17 & 23 \\
+\hline
+1 & 4 & 10 & 11 & 2 & 3 & 14 & 15 & 2 & 7 & 23 & 24 \\
+\hline
+1 & 4 & 13 & 16 & 2 & 3 & 17 & 20 & 2 & 8 & 19 & 21 \\
+\hline
+1 & 4 & 14 & 15 & 2 & 3 & 18 & 19 & 2 & 7 & 21 & 22 \\
+\hline
+1 & 4 & 17 & 20 & 2 & 3 & 21 & 24 & 3 & 4 & 5 & 6 \\
+\hline
+1 & 4 & 18 & 19 & 2 & 3 & 22 & 23 & 3 & 4 & 7 & 8 \\
+\hline
+1 & 4 & 21 & 24 & 2 & 4 & 5 & 7 & 3 & 4 & 9 & 10 \\
+\hline
+1 & 4 & 22 & 23 & 2 & 4 & 9 & 11 & 3 & 4 & 11 & 12 \\
+\hline
+1 & 6 & 9 & 10 & 2 & 3 & 7 & 8 & 3 & 4 & 13 & 14 \\
+\hline
+1 & 5 & 10 & 14 & 2 & 3 & 11 & 12 & 3 & 4 & 15 & 16 \\
+\hline
+1 & 6 & 11 & 12 & 2 & 3 & 15 & 16 & 3 & 4 & 17 & 18 \\
+\hline
+1 & 5 & 12 & 16 & 2 & 3 & 19 & 20 & 3 & 4 & 19 & 20 \\
+\hline
+1 & 6 & 17 & 18 & 2 & 4 & 13 & 15 & 3 & 4 & 21 & 22 \\
+\hline
+1 & 5 & 18 & 22 & 2 & 4 & 17 & 19 & 3 & 4 & 23 & 24 \\
+\hline
+1 & 6 & 19 & 20 & 2 & 4 & 21 & 23 & 3 & 6 & 9 & 10 \\
+\hline
+1 & 5 & 20 & 24 & 2 & 3 & 23 & 24 & 3 & 5 & 10 & 16 \\
+\hline
+1 & 6 & 9 & 14 & 2 & 5 & 9 & 14 & 3 & 6 & 11 & 12 \\
+\hline
+1 & 6 & 10 & 13 & 2 & 5 & 10 & 13 & 3 & 5 & 12 & 14 \\
+\hline
+1 & 6 & 11 & 16 & 2 & 5 & 11 & 16 & 3 & 6 & 17 & 18 \\
+\hline
+1 & 6 & 12 & 15 & 2 & 5 & 12 & 15 & 3 & 5 & 18 & 24 \\
+\hline
+1 & 6 & 17 & 22 & 2 & 5 & 17 & 22 & 3 & 6 & 19 & 20 \\
+\hline
+3 & 5 & 20 & 22 & 4 & 7 & 12 & 15 & 6 & 7 & 21 & 24 \\
+\hline
+3 & 6 & 9 & 16 & 4 & 7 & 17 & 22 & 6 & 7 & 22 & 23 \\
+\hline
+3 & 6 & 10 & 15 & 4 & 7 & 18 & 21 & 6 & 8 & 9 & 11 \\
+\hline
+3 & 6 & 11 & 14 & 4 & 7 & 19 & 24 & 6 & 7 & 11 & 12 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{tabular}{|c|c|c|c|}
+\hline 3 & 6 & 12 & 13 \\
+\hline 3 & 6 & 17 & 24 \\
+\hline 3 & 6 & 18 & 23 \\
+\hline 3 & 6 & 19 & 22 \\
+\hline 3 & 6 & 20 & 21 \\
+\hline \rowcolor{yellow} 3 & 8 & 9 & 10 \\
+\hline 3 & 7 & 10 & 14 \\
+\hline \rowcolor{yellow} 3 & 8 & 11 & 12 \\
+\hline 3 & 7 & 12 & 16 \\
+\hline \rowcolor{yellow} 3 & 8 & 17 & 18 \\
+\hline 3 & 7 & 18 & 22 \\
+\hline \rowcolor{yellow} 3 & 8 & 19 & 20 \\
+\hline 3 & 7 & 20 & 24 \\
+\hline 3 & 8 & 9 & 14 \\
+\hline 3 & 8 & 10 & 13 \\
+\hline 3 & 8 & 11 & 16 \\
+\hline 3 & 8 & 12 & 15 \\
+\hline 3 & 8 & 17 & 22 \\
+\hline 3 & 8 & 18 & 21 \\
+\hline 3 & 8 & 19 & 24 \\
+\hline 3 & 8 & 20 & 23 \\
+\hline 4 & 5 & 9 & 16 \\
+\hline 4 & 5 & 10 & 15 \\
+\hline 4 & 5 & 11 & 14 \\
+\hline 4 & 5 & 12 & 13 \\
+\hline 4 & 5 & 17 & 24 \\
+\hline 4 & 5 & 18 & 23 \\
+\hline 4 & 5 & 19 & 22 \\
+\hline 4 & 5 & 20 & 21 \\
+\hline 4 & 6 & 9 & 15 \\
+\hline \rowcolor{green} 4 & 5 & 15 & 16 \\
+\hline 4 & 6 & 11 & 13 \\
+\hline \rowcolor{green} 4 & 5 & 13 & 14 \\
+\hline 4 & 6 & 17 & 23 \\
+\hline \rowcolor{green} 4 & 5 & 23 & 24 \\
+\hline 4 & 6 & 19 & 21 \\
+\hline \rowcolor{green} 4 & 5 & 21 & 22 \\
+\hline 4 & 7 & 9 & 14 \\
+\hline 4 & 7 & 10 & 13 \\
+\hline 4 & 7 & 11 & 16 \\
+\hline 9 & 14 & 20 & 23 \\
+\hline \rowcolor{yellow} 9 & 16 & 17 & 18 \\
+\hline 9 & 15 & 18 & 24 \\
+\hline \rowcolor{yellow} 9 & 16 & 19 & 20 \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|c|}
+\hline 4 & 7 & 20 & 23 \\
+\hline 4 & 8 & 9 & 13 \\
+\hline \rowcolor{green} 4 & 7 & 13 & 14 \\
+\hline 4 & 8 & 11 & 15 \\
+\hline \rowcolor{green} 4 & 7 & 15 & 16 \\
+\hline 4 & 8 & 17 & 21 \\
+\hline \rowcolor{green} 4 & 7 & 21 & 22 \\
+\hline 4 & 8 & 19 & 23 \\
+\hline \rowcolor{green} 4 & 7 & 23 & 24 \\
+\hline 5 & 6 & 7 & 8 \\
+\hline 5 & 6 & 9 & 10 \\
+\hline 5 & 6 & 11 & 12 \\
+\hline 5 & 6 & 13 & 14 \\
+\hline 5 & 6 & 15 & 16 \\
+\hline 5 & 6 & 17 & 18 \\
+\hline 5 & 6 & 19 & 20 \\
+\hline 5 & 6 & 21 & 22 \\
+\hline 5 & 6 & 23 & 24 \\
+\hline \rowcolor{yellow} 5 & 8 & 9 & 10 \\
+\hline 5 & 7 & 10 & 12 \\
+\hline \rowcolor{yellow} 5 & 8 & 13 & 14 \\
+\hline 5 & 7 & 14 & 16 \\
+\hline \rowcolor{yellow} 5 & 8 & 17 & 18 \\
+\hline 5 & 7 & 18 & 20 \\
+\hline \rowcolor{yellow} 5 & 8 & 21 & 22 \\
+\hline 5 & 7 & 22 & 24 \\
+\hline 5 & 8 & 9 & 12 \\
+\hline 5 & 8 & 10 & 11 \\
+\hline 5 & 8 & 13 & 16 \\
+\hline 5 & 8 & 14 & 15 \\
+\hline 5 & 8 & 17 & 20 \\
+\hline 5 & 8 & 18 & 19 \\
+\hline 5 & 8 & 21 & 24 \\
+\hline 5 & 8 & 22 & 23 \\
+\hline 6 & 7 & 9 & 12 \\
+\hline 6 & 7 & 10 & 11 \\
+\hline 6 & 7 & 13 & 16 \\
+\hline 6 & 7 & 14 & 15 \\
+\hline 6 & 7 & 17 & 20 \\
+\hline 6 & 7 & 18 & 19 \\
+\hline 11 & 13 & 18 & 24 \\
+\hline \rowcolor{yellow} 11 & 14 & 19 & 20 \\
+\hline 11 & 13 & 20 & 22 \\
+\hline 11 & 14 & 17 & 24 \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|c|}
+\hline 6 & 8 & 13 & 15 \\
+\hline 6 & 7 & 15 & 16 \\
+\hline 6 & 8 & 17 & 19 \\
+\hline 6 & 7 & 19 & 20 \\
+\hline 6 & 8 & 21 & 23 \\
+\hline \rowcolor{green} 6 & 7 & 23 & 24 \\
+\hline 7 & 8 & 9 & 10 \\
+\hline 7 & 8 & 11 & 12 \\
+\hline 7 & 8 & 13 & 14 \\
+\hline 7 & 8 & 15 & 16 \\
+\hline 7 & 8 & 17 & 18 \\
+\hline 7 & 8 & 19 & 20 \\
+\hline 7 & 8 & 21 & 22 \\
+\hline 7 & 8 & 23 & 24 \\
+\hline 9 & 10 & 11 & 12 \\
+\hline 9 & 10 & 13 & 14 \\
+\hline 9 & 10 & 15 & 16 \\
+\hline 9 & 10 & 17 & 18 \\
+\hline 9 & 10 & 19 & 20 \\
+\hline 9 & 10 & 21 & 22 \\
+\hline 9 & 10 & 23 & 24 \\
+\hline \rowcolor{yellow} 9 & 12 & 13 & 14 \\
+\hline 9 & 11 & 14 & 16 \\
+\hline \rowcolor{yellow} 9 & 12 & 17 & 18 \\
+\hline 9 & 11 & 18 & 20 \\
+\hline \rowcolor{yellow} 9 & 12 & 21 & 22 \\
+\hline 9 & 11 & 22 & 24 \\
+\hline \rowcolor{yellow} 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 24 \\
+\hline 9 & 12 & 22 & 2
+
+\begin{tabular}{c c c c | c c c c | c c c c}
+\hline
+9 & 15 & 20 & 22 & 11 & 14 & 18 & 23 & 14 & 16 & 17 & 19 \\
+9 & 16 & 17 & 24 & 11 & 14 & 19 & 22 & 14 & 15 & 19 & 20 \\
+9 & 16 & 18 & 23 & 11 & 14 & 20 & 21 & 14 & 16 & 21 & 23 \\
+9 & 16 & 19 & 22 & 11 & 16 & 17 & 18 & 14 & 15 & 23 & 24 \\
+9 & 16 & 20 & 21 & 11 & 15 & 18 & 22 & 15 & 16 & 17 & 18 \\
+10 & 11 & 13 & 16 & 11 & 16 & 19 & 20 & 15 & 16 & 19 & 20 \\
+10 & 11 & 14 & 15 & 11 & 15 & 20 & 24 & 15 & 16 & 21 & 22 \\
+10 & 11 & 17 & 20 & 11 & 16 & 17 & 22 & 15 & 16 & 23 & 24 \\
+10 & 11 & 18 & 19 & 11 & 16 & 18 & 21 & 17 & 18 & 19 & 20 \\
+10 & 11 & 21 & 24 & 11 & 16 & 19 & 24 & 17 & 18 & 21 & 22 \\
+10 & 11 & 22 & 23 & 11 & 16 & 20 & 23 & 17 & 18 & 23 & 24 \\
+10 & 12 & 13 & 15 & 12 & 13 & 17 & 24 & 17 & 20 & 21 & 22 \\
+10 & 11 & 15 & 16 & 12 & 13 & 18 & 23 & 17 & 19 & 22 & 24 \\
+10 & 12 & 17 & 19 & 12 & 13 & 19 & 22 & 17 & 20 & 21 & 24 \\
+10 & 11 & 19 & 20 & 12 & 13 & 20 & 21 & 17 & 20 & 22 & 23 \\
+10 & 12 & 21 & 23 & 12 & 14 & 17 & 23 & 18 & 19 & 21 & 24 \\
+10 & 11 & 23 & 24 & 12 & 13 & 23 & 24 & 18 & 19 & 22 & 23 \\
+10 & 13 & 17 & 22 & 12 & 14 & 19 & 21 & 18 & 20 & 21 & 23 \\
+10 & 13 & 18 & 21 & 12 & 13 & 21 & 22 & 18 & 19 & 23 & 24 \\
+10 & 13 & 19 & 24 & 12 & 15 & 17 & 22 & 19 & 20 & 21 & 22 \\
+10 & 13 & 20 & 23 & 12 & 15 & 18 & 21 & 19 & 20 & 23 & 24 \\
+10 & 14 & 17 & 21 & 12 & 15 & 19 & 24 & 21 & 22 & 23 & 24 \\
+10 & 13 & 21 & 22 & 12 & 15 & 20 & 23 & & & & \\
+10 & 14 & 19 & 23 & 12 & 16 & 17 & 21 & & & & \\
+10 & 13 & 23 & 24 & 12 & 15 & 21 & 22 & & & & \\
+10 & 15 & 17 & 24 & 12 & 16 & 19 & 23 & & & & \\
+10 & 15 & 18 & 23 & 12 & 15 & 23 & 24 & & & & \\
+10 & 15 & 19 & 22 & 13 & 14 & 15 & 16 & & & & \\
+10 & 15 & 20 & 21 & 13 & 14 & 17 & 18 & & & & \\
+10 & 16 & 17 & 23 & 13 & 14 & 19 & 20 & & & & \\
+10 & 15 & 23 & 24 & 13 & 14 & 21 & 22 & & & & \\
+10 & 16 & 19 & 21 & 13 & 14 & 23 & 24 & & & & \\
+10 & 15 & 21 & 22 & 13 & 16 & 17 & 18 & & & & \\
+11 & 12 & 13 & 14 & 13 & 15 & 18 & 20 & & & & \\
+11 & 12 & 15 & 16 & 13 & 16 & 21 & 22 & & & & \\
+11 & 12 & 17 & 18 & 13 & 15 & 22 & 24 & & & & \\
+11 & 12 & 19 & 20 & 13 & 16 & 17 & 20 & & & & \\
+11 & 12 & 21 & 22 & 13 & 16 & 18 & 19 & & & & \\
+11 & 12 & 23 & 24 & 13 & 16 & 21 & 24 & & & & \\
+11 & 14 & 17 & 18 & 13 & 16 & 22 & 23 & & & & \\
+\hline
+\end{tabular}
+
+\begin{center}
+38
+\end{center}

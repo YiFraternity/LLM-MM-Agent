@@ -1,0 +1,1705 @@
+\begin{center}
+\textbf{\Large 全国第七届研究生数学建模竞赛}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.5\textwidth]{image.png}
+\end{center}
+
+\textbf{题目} 与封堵溃口有关的重物落水后运动过程的数学模型
+
+\section*{摘要：}
+
+我国经常发生洪水，溃坝溃堤进而引发泥石流灾害造成国家和人民生命财产的严重损失，而物体填堵法是解决该问题的一种有效手段，本文主要解决了物体填堵法中应在何处投放重物最合适的问题。
+
+问题 1：在合理假设的前提下，通过对试验模型中各单件相关数据进行分析并参考相关资料，得出影响重物在水中运动的主要因素，包括流速、投放高度、投放方式、物体体积和重量等。然后按照物体是否完全浸入水中把运动过程分成两个阶段，再分别从垂直和水平两个运动方向考虑，建立了大实心方砖落水后运动过程的微分方程模型，详见 7～8 页。
+
+问题 2：在问题一的基础上，综合考虑各种相关因素，建立了能够适应不同情况的、描述重物水中运动过程的数学模型。在此模型的基础上，利用已知的试验数据和相关知识，分别建立了单个重物在水中运动过程的数学模型，详见 11～19 页。
+
+问题 3：在问题二的基础上，利用 Matlab 软件对大实心方砖和小实心方砖的运动模型求解，生成运动轨迹图形。利用光的折射原理对试验数据进行坐标值转换，然后对处理过的数据进行拟合可得到各单件的运动方程。以大实心方砖为例进行分析，对比拟合试验数据得到的和所建模型得到的运动方程，从而可以计算出离散时间点的相对误差，其值大约为 8\%～13\%，符合容许条件，证明所建模型还是比较合理的。
+
+问题 4：小型试验模型满足弗劳德准则、欧拉准则、柯西准则和韦伯准则。依据相关准则，利用几何相似和运动相似，得到所求问题与模型的速度、体积、面积等的关联式，将试验所建模型成果推广。根据补充假设条件，按照大实心方砖：长为 1.0928m，高为 0.5464m，投放高度 2m，平放情况模型（29 页）对提出的问题进行求解，如水深为 3m，水速是 4m/s 时情况时，算出需提前投放距离是 1.3521m；
+
+关键词：微分方程模型 \quad Matlab \quad 光折射原理 \quad 相对误差分析
+
+\begin{tabular}{l l}
+参赛队号 \underline{10188002} & \begin{tabular}{|c|} \hline 参赛密码 \\ \hline (由组委会填写) \\ \hline \end{tabular} \\
+队员姓名 \underline{崔卫丽} \underline{黄小波} \underline{李松寒} & 
+\end{tabular}
+
+\begin{center}
+中山大学承办
+\end{center}
+
+\section*{与封堵溃口有关的重物落水后运动过程的数学模型}
+
+\section*{摘要}
+
+我国经常发生洪水，溃坝溃堤进而引发泥石流灾害造成国家和人民生命财产的严重损失，而物体填堵法是解决该问题的一种有效手段，本文主要解决了物体填堵法中应在何处投放重物最合适的问题。
+
+问题 1：在合理假设的前提下，通过对试验模型中各单件相关数据进行分析并参考相关资料，得出影响重物在水中运动的主要因素，包括流速、投放高度、投放方式、物体体积和重量等。然后按照物体是否完全浸入水中把运动过程分成两个阶段，再分别从垂直和水平两个运动方向考虑，建立了大实心方砖落水后运动过程的微分方程模型，详见 7～8 页。
+
+问题 2：在问题一的基础上，综合考虑各种相关因素，建立了能够适应不同情况的、描述重物水中运动过程的数学模型。在此模型的基础上，利用已知的试验数据和相关知识，分别建立了单个重物在水中运动过程的数学模型，详见 11～19 页。
+
+问题 3：在问题二的基础上，利用 Matlab 软件对大实心方砖和小实心方砖的运动模型求解，生成运动轨迹图形。利用光的折射原理对试验数据进行坐标值转换，然后对处理过的数据进行拟合可得到各单件的运动方程。以大实心方砖为例进行分析，对比拟合试验数据得到的和所建模型得到的运动方程，从而可以计算出离散时间点的相对误差，其值大约为 8\%～13\%，符合容许条件，证明所建模型还是比较合理的。
+
+问题 4：小型试验模型满足弗劳德准则、欧拉准则、柯西准则和韦伯准则。依据相关准则，利用几何相似和运动相似，得到所求问题与模型的速度、体积、面积等的关联式，将试验所建模型成果推广。根据补充假设条件，按照大实心方砖：长为 1.0928m，高为 0.5464m，投放高度 2m，平放情况模型（29 页）对提出的问题进行求解，如水深为 3m，水速是 4m/s 时情况时，算出需提前投放距离是 1.3521m。
+
+关键词：微分方程模型 \quad Matlab \quad 光折射原理 \quad 相对误差分析
+
+\section*{一、问题的提出}
+
+\subsection{1.1 问题的由来}
+
+我国经常发生洪水，溃坝溃堤进而引发泥石流灾害造成国家和人民生命财产的严重损失。历年来的洪灾，尤其是最近的溃坝、泥石流险情给了我们深刻的教训：必须有效地开展封堵溃口的研究。由于溃口水流的流量和速度会比较大，在通常情况下很难在短时间之内将溃口彻底封堵，但如果通过投放重物对尚存的坝体产生一定的保护作用，就可以延缓溃坝溃堤的过程，为人民群众的撤离争取更多的时间。
+
+利用直升飞机投放堵口组件，不仅能显著提高溃口抢险的快速反应能力，而且容易解决溃口交通不便、堵口物资缺乏等问题。如 2005 年 8 月，美国陆军工程师团针对新奥尔良第 17 大街运河的防洪堤坝缺口展开修补行动时动用直升飞机向缺口处投放砂袋，终于在几日后成功封住了缺口。
+
+显然，投入溃口的重物落水后受到溃口水流的作用会向下游漂移。为了使封堵用的重物落水后能够沉底到、并保持在预想的位置，尽可能减少无效投放，必须掌握重物落水后的运动过程，在预定沉底位置的上游一定距离投放达到一定体积和重量的重物。由于溃坝溃堤的高度危害性、不可重复性和经济损失过大，肯定无法通过相关实物试验去研究封堵用重物落在溃口后的运动过程，而只能先通过理论分析和小型试验获取相关数据的方法进行研究，特别后者具有客观、经费省、风险小、时间短、易重复、条件可以改变等优点。
+
+\subsection{1.2 相关信息}
+
+在研究前期，忽略了某些非关键性影响因素，只考虑在简单情况下，通过固定大多数因素、条件，只让少数因素发挥作用，去发现事物内部的规律，揭示问题的本质。也不考虑重物沉底后的稳定性，只探索重物落水后的运动规律。
+
+设计的小型试验先选取几种重物形状、四种不同速度的稳定水流、在三种不同的高度下多次重复进行投放试验。希望从大量数据的分析中发现重物在水中运动的规律，同时为机理模型的建立提供思路及检验模型用的数据。
+
+在理论分析和小型试验数据分析的基础上，将根据水力学已经有的方法进行推广，同时变动试验的条件和物理、几何等参数再进行新试验。一方面可以补充原来方案的不足，另一方面使新试验更接近真实情况，验证已经发现的“疑似规律”和建立的数学模型，并加以改进和推广。在进一步总结后再将改进后的试验方法、手段包括测试方案、数据采集、数学模型，推广应用到野外中型试验，在获得成功并掌握重物在水中运动的规律后才能够最终应用于实际抢险行动。
+
+\subsection{1.3 问题的提出}
+
+问题 1：以附录 1 中各单件试件为例，利用所学知识及相关参考资料分析影响重物在水中运动过程的因素，并建立大实心方砖（如图 1）落水后运动过程的数学模型。
+
+问题 2：利用小型试验数据或相关数学、物理方法，建立包含上述各种因素，从而能够适应不同情况的、描述重物水中运动过程的数学模型。其中建立单个重物在水中运动过程的数学模型是必做项目，建立两个重物连接后的组件在水中运动过程的数学模型为选做项目。
+
+问题 3：对你们所建立的数学模型进行误差分析，利用相关的数学、物理概念、小型试验数据，验证你们所建立的数学模型的合理性，并根据你们的数学模型提出让堵口重物恰好在你们认为最有效位置触底的猜想和应该进行哪些新试验来验证你们的猜想。
+
+问题 4：由于水流运动非常复杂，至今一些水流现象还无法从小型试验得到，因此
+
+小型试验的结论不能任意推广到真实情况。水力学理论研究的结论是：小型试验的流动与真实情况的流动具有一定的相似性时，小型试验的结果方可用到原型中去。流动相似是指在对应点上、对应瞬时，所有物理量都成比例。具体的可以表述成几何相似、运动相似和动力相似。几何相似是指模型和原型的全部对应线形长度的比值为一常数；运动相似是指满足几何相似的流场中，对应时刻、对应点流速（加速度）的方向一致，大小成比例；动力相似是指两个运动相似的流场中，对应空间点、对应瞬时，作用在两相似几何微团上的力，方向相同、大小成比例。在几何相似的条件下，两种物理现象保证相似的条件或准则，称之为相似准则。流体力学试验中常采用的相似准则包括重力相似准则（费劳德准则）、粘性力相似准则（雷诺准则）、压力相似准则（欧拉准则）等。由于很难使流动完全相似，而且定性准则数越多，小型试验的设计越困难，甚至根本无法进行。为了解决这方面的矛盾，在实际的小型试验中，一般只能满足某个或某些相似准则，忽略对过程影响比较小的相似准则，抓住问题的主要物理量，使问题得到简化。请根据上述简要介绍，查阅相关资料，并根据前面你们建立的数学模型，简要回答以下两个问题。
+
+（1）本题所提及的小型试验满足了什么相似准则？如何依据相似准则将本试验及你们所建立的数学模型的成果加以推广，对未来需要进行的试验和研究工作提出建议。
+
+（2）假定溃口几何形状及水流速度与小型试验相似，溃口水深分别为 \(3 \, \text{m}\) 和 \(4 \, \text{m}\)，溃口流速为 \(4 \, \text{m/s}\) 和 \(5 \, \text{m/s}\)，若重物重量为 \(1.5 \, \text{t}\)，根据你们建立的数学模型求解距离水面 \(2 \, \text{m}\) 投放重物时，应分别提前多远投放才能使重物沉底到预定位置？
+
+\section*{二、问题分析}
+
+整个模型需要考虑的关键问题有两个：① 准确性，即根据所建模型计算出投放位置，使在该位置投放的堵口组件能够准确落入到计划需要封堵的溃口；② 物体受力分析，在流体中运动物体的受力可以从垂直和水平两个方向分别考虑：水平方向，受到水的冲击力和水的粘滞阻力；垂直方向，受到重力、水的浮力、压差阻力和粘滞阻力。然而，在小型试验模型中，通过资料数据分析可以认为，水对物体的粘滞阻力相对于压差阻力来说，可以看成是比较小的数值，因而在计算过程中忽略了粘滞阻力对物体运动的影响。
+
+\subsection*{2.1 问题一的分析}
+
+物体在流水中的运动不同于其在静水中的运动，运动过程受到多种因素的影响。利用流体力学的相关知识，在保持一定精确度要求下，忽略一些非关键而又复杂的因素。从而可以得出影响重物在水中运动过程的因素主要有以下几个方面：
+
+（1）投放区水的流动速度。
+
+（2）投放物体距离水面的高度。
+
+（3）物体的形状。
+
+（4）物体的体积和重量。
+
+（5）物体投放的方式。
+
+（6）流体的结构。
+
+建立大实心方砖落水后运动过程的模型时，以物体是否完全浸入水中为分界点，把运动过程划分成两个阶段：① 物体接触水面到刚完全浸入水中；② 物体完全浸入水中到达实验水槽的底部。然后根据划分的两个阶段，又分开考虑了大实心方砖在垂直和水平方向上的受力，分别建立了物体在垂直方向运动的微分方程模型和水平方向运动的微分方程模型。
+
+\subsection{2.2 问题二的分析}
+
+在问题一的基础上，进一步进行细化分析，尤其是对物块的受力分析。一般受到水平拖曳力和垂直上举力的作用，其中水平拖曳力是促使物体运动的主要动力。当块体具有一定空心结构时，由于重量减轻，水平拖曳力将发生变化。为分析方便，引入了空心率的概念。从力学角度出发，研究空心块体所受的水流作用力随块体空心率大小的变化关系，研究空心块体在具有不同空心率的情况下对水流作用力的影响，研究水流作用力随块体空心率的变化关系。从而得出拖曳力关于空心率的表达式，在此基础上分析物体的运动方程。
+
+重物在水中的运动过程与重物的形状——空心、实心、方形、蜂巢型，重物的投放方式——正放、竖放、立放，都有很大的关系。因此在建立重物落水后运动过程的数学模型时要充分考虑这些因素，同时为了使模型计算简单且更容易推广，分开考虑了垂直和水平方向的受力情形。
+
+\subsection{2.3 问题三的分析}
+
+摄像机记录下来的数据并不是物体运动的实际坐标值，需对记录的数据进行转换。首先，将物体从三维空间转换到二维平面，然后利用光的折射原理，得到相应的新旧坐标之间的关系表达式，并实现数据的转换。
+
+经过坐标转换，得到动力学方程在体轴系下的形式，并补充运动学方程，使方程组满足封闭性要求，从而建立完整的矢量动力学模型。对处理后的数据进行拟合，与上述所建立的运动方程模型进行实例比较，比较其不同，并进行相应的误差分析。
+
+\subsection{2.4 问题四的分析}
+
+由于水流运动非常复杂，至今一些水流现象还无法从小型试验得到，因此小型试验的结论不能任意推广到真实情况。根据流体力学理论及其相关理论知识可知，为了使利用小型试验建立的数学模型应用到实际中去，就必须使小型试验的流动与真实情况的流动满足一定的相似性准则，并利用相似准则在原型与模型之间建立关联，从而使建立的数学模型的成果能够加以推广。
+
+根据上述所建的模型以及实验所得的相关数据，得出满足条件的相似性的原则，以便推广。根据假定的几何形状以及水流速度与小型实验相似，再根据问题二中所建立的模型，算出投放重物应提前投放多远的距离才能使重物落到预定位置。
+
+\section{三、模型假设}
+
+(1) 重物落水区的水文特征有一定的稳定性，水流速度是均匀稳定的；
+
+(2) 重物投入流水中不会发生翻转的情况；
+
+(3) 重物水平运动方向水的阻力相对于水的推动力来说可以忽略；
+
+(4) 在物体距离水面一定距离投放时，忽略空气阻力和随机风的影响；
+
+(5) 不考虑物体刚入水时刻的抨击力；
+
+(6) 模型计算中忽略了水的粘滞阻力。
+
+\section{四、符号说明}
+
+$m$: 物块质量
+
+\begin{itemize}
+    \item $\rho_{\text{水}}$: 水的密度
+    \item $\rho_{\text{物}}$: 物块的密度
+    \item $A$: 物块截面积
+    \item $C$: 阻力系数
+    \item $V_{\text{水}}$: 水流速度
+    \item $V_{\text{物}}$: 物块在流水中的运动速度
+    \item $a_{\text{竖直}}$: 大方砖竖直方向的加速度
+    \item $a_{\text{水平}}$: 大方砖水平方向的加速度
+    \item $V_{\text{相}}$: 物块与流水的相对速度
+    \item $V_{\text{排}}$: 物块进入水流中的排水体积
+    \item $V$: 物块体积
+    \item $V_{0}$: 物块入水前的初速度
+    \item $g$: 重力加速度
+    \item $h$: 物块与水面的高度
+    \item $G$: 物块重力
+    \item $F_{\text{浮}}$: 水对物块的浮力
+    \item $F_{\text{压差}}$: 水对物块的压差阻力
+    \item $F_{\text{拖曳}}$: 拖曳力
+\end{itemize}
+
+\section{五、模型建立与求解}
+
+\subsection{5.1 问题一的分析与建模}
+
+\subsubsection{5.1.1 问题分析}
+
+流体与物体间的相互作用，是流体动力学中的重要课题，在许多领域中得以应用，流体本身的复杂性及块体的多样性都决定了研究的复杂性。物体的存在，将会引起物体周围流体流动的变化，产生水流的分离、漩涡等现象。因此，物体在流水中的运动不同于其在静水中的运动，运动过程受到多种因素的影响。
+
+就单个物体研究而言，球体或二维柱体（轴线垂直于水流方向）常被作为研究对象，如研究泥沙运动问题时多采用的球形体，仅由直径或名义粒径（等体积球的直径）一个几何尺度便可确定粒径尺寸，本文中的实验试件多为此类，而块体形状的不同将导致水流
+
+作用力不同。因此，在忽略某些非关键因素的基础上，通过分析附录 1 中各单件试件的区别及相关实验数据，利用流体力学的相关知识，分析得出影响重物在水中运动过程的因素主要有以下几个方面：
+
+(1) 投放物块距离水面的高度
+
+从物块距离水面一定距离时开始投放直到物块接触水面（忽略空气中的阻力），这一过程物块做自由落体运动，不同的高度 \( h \) 可以使物体获得不同的入水时的初速度。根据动能守恒定理
+
+\[
+mgh = \frac{1}{2} m V_0^2
+\tag{1}
+\]
+
+可以得到物块的入水前初速度的计算公式如下：
+
+\[
+V_0 = \sqrt{2gh}
+\tag{2}
+\]
+
+(2) 物体的形状
+
+物体的形状发生变化时，产生的加速度也会做相应的改变。若加速度改变，受力就一定会变，其运动过程自然就会不同，如大实心方砖和大空心蜂巢，根据截图资料可以看出其入水后的运动过程不同。
+
+下面对物体进行受力分析，一般作用在物体上的作用力可分为以下三类：
+
+① 与流体——块体的相对运动无关的力：即使相对运动的速度和加速度为零，此力也不消失，如惯性力，重力，压差力等；
+
+② 依赖于流体——块体间相对运动的，其方向沿着相对运动方向的力：即为纵向力，如拖曳力、附加质量力、Basset 力等；
+
+③ 依赖于流体——块体间相对运动的，其方向垂直于相对运动方向的力：即为侧向力，如上举力、Magnus 力和 Saffman 力等；
+
+就本文对物体进行受力分析时，忽略了水的粘滞阻力对物体运动的影响，只考虑以下力：一是物体所在的流体内部各处的压强不同，造成两个对立方向的压力差，即所谓的浮力；二是物体本身固有的重力；三是物体与流体间存在相对运动而产生在运动方向上的压力差和摩擦力，即所谓的拖曳力。而块体本身的拖曳力就是由压差阻力和摩擦阻力构成的，两者中哪一部分占主体地位，则是根据块体的形状及抛置情况决定。对于细长物体，例如顺水流抛置的平板，则摩擦阻力占主导地位；而钝形物体的受力，例如圆球，则主要是压差阻力。其具体计算公式如下：
+
+\[
+F_{\text{拖曳}} = \frac{1}{2} C \rho A V_{\text{相}}^2
+\tag{3}
+\]
+
+其中 \( V_{\text{相}} = V_{\text{物}} - V_{\text{水}} \)，\( C \) 为拖曳力系数，由物体的长高比值决定，\( A \) 为块体水平运动时纵截面的面积。
+
+以大实心方砖为例进行受力分析，其受力分析图 5-1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{大实心方砖的受力分析示意图}
+    \label{fig:force_diagram}
+\end{figure}
+
+(3) 物体的体积和质量
+
+物体的体积影响物体所受浮力，质量影响物体所受重力，体积和质量的变化可以通过影响物体受力来影响物体在水中的运动过程。
+
+\begin{equation}
+G = mg
+\tag{4}
+\end{equation}
+
+\begin{equation}
+F_{\text{浮}} = \rho_{\text{水}} g V_{\text{排}}
+\tag{5}
+\end{equation}
+
+其中 $G$ 是物体所受重力，$F_{\text{浮}}$ 是物体所受浮力，$V_{\text{排}}$ 是物体在水流中的排水体积。
+
+(4) 物体投放的方式
+
+同一物体，以不同的方式入水，其运动过程也会不同。如以大实心方砖为例，分别以平放、竖放的方式入水，根据视频资料可以看出其在水中的运动过程是不相同的。
+
+(5) 流体的结构
+
+流体各部分的流速不相同时，流体各部分的压强也不同，处在其中的物体将受到力的作用也有所不同，从而影响其运动过程；若物体两边的流体密度相同而流速不相同，其运动状况也大有不同。所以，流体本身的结构对物体的运动也是有影响的。
+
+\subsection{5.1.2 模型建立}
+
+在受力分析的基础上，建立大实心方砖落水后运动过程的模型时，把运动过程划分成两个阶段：① 物体刚接触水面到刚完全浸入水；② 物体完全浸入水到达到试验水槽的底部。然后根据划分的两个阶段，又分开考虑了大实心方砖在垂直和水平方向上的受力，分别建立了物体在垂直方向和水平方向运动的微分方程模型。
+
+(1) 物块从接触水面到完全浸入水中阶段
+
+根据以上对大实心方砖的受力分析，可以得到大实心方砖落水后的运动模型如下：
+
+① 垂直方向的运动模型
+
+\begin{equation}
+G - F_{\text{压差}} - F_{\text{浮}} = m \cdot a_{\text{竖}}
+\end{equation}
+
+即
+
+\begin{equation}
+mg - \frac{1}{2} C \rho_{\text{水}} A L \left[ \frac{d(h-y)}{dt} \right] - \rho_{\text{水}} g A (h-y) = m \cdot \frac{d^2(h-y)}{dt^2}
+\end{equation}
+
+其中 $C$ 是水的阻力系数，$A$ 是物体垂直运动时与水的横截面面积，$y$ 是重心的纵坐标，$t$ 是运动时间，坐标系原点在区域左下角。
+
+(2) 水平方向的运动模型
+
+\[
+F_{\text{拖曳}} = m \cdot a_{\text{水}}
+\]
+
+即
+
+\[
+\frac{1}{2} C \rho_{\text{水}} L (h - y) \cdot \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = m \cdot \frac{d^2 x}{dt^2}
+\]
+
+其中 $L$ 是物体水平运动方向纵截面的底边长度，$h$ 是流水深度，$y$ 值由垂直方向的运动时间确定。
+
+(2) 物体完全浸入水到到达试验水槽底部
+
+完全浸入水后，物体所受浮力就是一个定值。在上述运动模型的基础上，可以得出完全浸入水后的大实心方砖的运动模型如下：
+
+(1) 垂直方向的运动模型
+
+\[
+G - F_{\text{压差}} - F_{\text{浮}} = m a_{\text{竖}}
+\]
+
+即
+
+\[
+mg - \frac{1}{2} C \rho_{\text{水}} A \left[ \frac{d(h - y + l)}{dt} \right]^2 - \rho_{\text{水}} g V = m \frac{d^2 (h - y + l)}{dt^2}
+\]
+
+其中 $V$ 是物体体积，$l$ 的值等于物体高度的 $\frac{1}{2}$。
+
+(2) 水平方向的运动模型
+
+\[
+F_{\text{拖曳}} = m \cdot a_{\text{水}}
+\]
+
+即
+
+\[
+\frac{1}{2} C \rho_{\text{水}} A \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = m \frac{d^2 x}{dt^2}
+\]
+
+其中 $A$ 是物体水平运动时与水的纵截面面积。
+
+\subsection{5.2 问题二的分析与建模}
+
+\subsubsection{5.2.1 问题分析}
+
+球体或二维圆柱体（轴线垂直与于水流方向）受到的水平拖曳力的研究较多，一般拖曳力计算公式如下：
+
+\[
+F_{\text{拖曳}} = \frac{1}{2} C \rho A V_{\text{相}}^2
+\]
+
+对球体或接近于球体的泥沙、卵石等只需一个几何尺度便可确定物体的大小，采用该公式可以方便地计算拖曳力。对偏离球体的块体而言，其形状影响着压强力和摩擦力的大小，也影响着水流拖曳力的变化。
+
+而对于空心块体的研究较少，本文将重点研究在水流作用下，空心块体受到的拖曳力。对于研究空心块体在水流中的作用力时，往往借鉴该公式来计算块体所受拖曳力。本文在研究空心块体受力的情况时，通过测量具有不同空心率的空心块体在水流作用下受到的拖曳力大小，来研究空心块体的空心率（用符号 $\eta$ 表示）对水流拖曳力影响，
+
+进而求得拖曳力的函数表达式关系。
+
+为了研究方便，本文将物体形状均概化为具有不同空心的块体。由于空心块体有两种形式，故又有内空心率、外空隙率的概念。
+
+空心块体的空心率定义为空心的体积与空心块体的总体积比，或空心块体单位体积内空心的体积，以百分数表示。
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\eta &= \frac{V_{v}}{V} \\
+\eta_{\text{内}} &= \frac{V_{\text{内}}}{V} \\
+\eta_{\text{外}} &= \frac{V_{\text{外}}}{V}
+\end{aligned}
+\right.
+\tag{7}
+\end{equation}
+
+其中 $V_{v}$ 表示块体空心的体积，$V$ 表示块体的总体积，$V_{\text{内}}$ 表示具有内空心的块体的空心体积，$V_{\text{外}}$ 表示具有外空隙的块体的空心体积。
+
+### 5.2.2 空心块体所受水平拖曳力函数关系的推导
+
+设空心块体的当量体积为 $V$，其当量粒径为 $D$，则当量粒径 $D$ 可计算如下：
+
+等容：$V = \pi D^{3} / 6$
+
+等面积：$A = \pi D^{2} / 4$
+
+则有，$D = \sqrt[3]{\frac{6V}{\pi}}$
+
+\tag{8}
+
+则块体的拖曳力可以表达为下式：
+
+\begin{equation}
+F_{\text{拖曳}} = \frac{1}{2} C \rho V_{\text{相}}^{2} A = \frac{1}{2} C \rho V_{\text{相}}^{2} \cdot A \cdot \frac{\frac{1}{4} \pi D^{2}}{\frac{1}{4} \pi D^{2}} = \frac{1}{2} C \rho V_{\text{相}}^{2} \cdot \frac{1}{4} \pi D^{2} \cdot \frac{A}{\frac{1}{4} \pi D^{2}}
+\tag{9}
+\end{equation}
+
+令 $C' = C \cdot \frac{A}{\frac{1}{4} \pi D^{2}}$
+
+则 $F_{\text{拖曳}} = \frac{1}{2} \rho V_{\text{相}}^{2} \cdot \frac{1}{4} \pi D^{2} \cdot C'$
+
+由以上推导可知，无论是迎流面的面积，还是体积，都与空心率有关，故空心块体的当量粒径 $D$ 也与空心率有关，从而导出 $C$ 也与空心率有关。
+
+\begin{equation}
+C' = \lambda(\eta)
+\end{equation}
+
+\begin{equation}
+C' = \frac{F_{\text{拖曳}}}{\frac{1}{2} \rho V_{\text{相}}^{2} \cdot \frac{1}{4} \pi D^{2}}
+\tag{10}
+\end{equation}
+
+根据相关资料确定拖曳力系数与空心率之间的关系，从而给出考虑空心率影响时的
+
+拖曳力系数的函数表达式如下：
+\begin{equation}
+C' = 0.4486\eta^2 + 0.3556\eta + 1.3498
+\tag{11}
+\end{equation}
+则空心块体的拖曳力可以表示如下：
+\begin{equation}
+F_{\text{拖曳}} = \frac{1}{2}\rho V_{\text{相}}^2 \cdot \frac{1}{4}\pi D^2 \cdot C' = (0.4486\eta^2 + 0.3556\eta + 1.3498) \cdot \frac{1}{2}\rho V_{\text{相}}^2 \cdot \frac{1}{4}\pi D^2
+\tag{12}
+\end{equation}
+
+下面将依据实验数据来确定拖曳力系数与空心率之间的关系，从而可以得到考虑空心率影响时的拖曳力系数的拖曳力函数表达式。
+
+\begin{table}[h]
+\centering
+\caption{表5-1：不同空心物块对应的空心率}
+\begin{tabular}{|c|c|}
+\hline
+空心物块 & 空心率$\eta$ \\
+\hline
+小空心蜂巢 & 0.3125 \\
+\hline
+大空心蜂巢 & 0.3077 \\
+\hline
+小空心方砖 & 0.25 \\
+\hline
+大空心方砖 & 0.25 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{表5-2：不同物块的当量粒径和拖曳力}
+\begin{tabular}{|c|c|c|}
+\hline
+物块 & $D$ & $F_{\text{拖曳}}$ \\
+\hline
+小空心蜂巢 & 0.0334 & $0.315V_{\text{相}}^2$ \\
+\hline
+大空心蜂巢 & 0.0677 & $4.0568V_{\text{相}}^2$ \\
+\hline
+小空心方砖 & 0.0394 & $0.8943V_{\text{相}}^2$ \\
+\hline
+大空心方砖 & 0.0788 & $3.5771V_{\text{相}}^2$ \\
+\hline
+小实心蜂巢 & 0.0334 & $0.5831V_{\text{相}}^2$ \\
+\hline
+大实心蜂巢 & 0.0677 & $2.4383V_{\text{相}}^2$ \\
+\hline
+小实心方砖 & 0.0542 & $1.5372V_{\text{相}}^2$ \\
+\hline
+大实心方砖 & 0.1083 & $6.2018V_{\text{相}}^2$ \\
+\hline
+小三角锥 & 0.0355 & $0.6891V_{\text{相}}^2$ \\
+\hline
+大三角锥 & 0.0710 & $2.6503V_{\text{相}}^2$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{5.2.3 模型建立}
+
+根据问题一中对块体重物在水中运动过程所受影响因素的分析以及建立的数学模型的基础，又对其所受的力（尤其是拖曳力，浮力与问题一中的分析相差不大）进行了详细的分析，同时又引入了空心率的概念，使得拖曳力和空心率建立了一定的数学关系，
+
+从而可以建立起适应不同情况的、描述重物水中运动过程的数学模型，具体模型建立的过程如下。
+
+(1) 完全入水前阶段模型
+
+① 垂直方向运动模型
+
+\[
+G - F_{\text{拖曳}} - F_{\text{浮}} = m a_{\text{竖}}
+\]
+
+假设重物从高空为 \( h \)，根据动能守恒定律可得：
+
+\[
+m g h = \frac{1}{2} m V_0^2
+\]
+
+从而可以解得入水前的速度：
+
+\[
+V_0 = \sqrt{2 g h}
+\]
+
+\[
+F_{\text{拖曳}} = \frac{1}{2} \rho V_{\text{相}}^2 \cdot \frac{1}{4} \pi D^2 \cdot C' = (0.4486 \eta^2 + 0.3556 \eta + 1.3498) \cdot \frac{1}{2} \rho V_{\text{相}}^2 \cdot \frac{1}{4} \pi D^2
+\]
+
+对上式进行进一步的化简，
+
+\[
+m g - (0.4486 \eta^2 + 0.3556 \eta + 1.3498) \cdot \frac{1}{2} \rho (V_{\text{物}} - V_0)^2 \cdot \frac{1}{4} \pi D^2 - \rho_{\text{水}} g A V_{\text{排}} = m \cdot a_{\text{竖}}
+\]
+
+\[
+m \cdot g - \frac{1}{8} \pi \cdot \rho \cdot D^2 (0.4486 \eta^2 + 0.3556 \eta + 1.3498) (V_{\text{物}} - V_0)^2 - \rho_{\text{水}} g A V_{\text{排}} = m \cdot a_{\text{竖}}
+\]
+
+② 水平方向运动模型
+
+\[
+F_{\text{拖曳}} = m \cdot a_{\text{水平}}
+\]
+
+\[
+(0.4486 \eta^2 + 0.3556 \eta + 1.3498) \cdot \frac{1}{2} \rho (V_{\text{物}} - V_{\text{水}})^2 \cdot \frac{1}{4} \pi D^2 = m \cdot a_{\text{水平}}
+\]
+
+\[
+\frac{1}{8} \pi \cdot \rho \cdot D^2 (0.4486 \eta^2 + 0.3556 \eta + 1.3498) (V_{\text{物}} - V_{\text{水}})^2 = m \cdot a_{\text{水平}}
+\]
+
+(2) 完全入水后模型
+
+① 垂直方向运动模型
+
+\[
+G - F_{\text{拖曳}} - F_{\text{浮}} = m a_{\text{竖}}
+\]
+
+由完全入水前所建的模型可以简化上述方程，
+
+\[
+m g - (0.4486 \eta^2 + 0.3556 \eta + 1.3498) \cdot \frac{1}{2} \rho (V_{\text{物}} - V_0)^2 \cdot \frac{1}{4} \pi D^2 - \rho_{\text{水}} g A V = m \cdot a_{\text{竖}}
+\]
+
+其中 \( V \) 是物体体积。
+
+② 水平方向运动模型：
+
+\[
+F_{\text{拖曳}} = m \cdot a_{\text{水平}}
+\]
+
+\[
+(0.4486 \eta^2 + 0.3556 \eta + 1.3498) \cdot \frac{1}{2} \rho (V_{\text{物}} - V_{\text{水}})^2 \cdot \frac{1}{4} \pi D^2 = m \cdot a_{\text{水平}}
+\]
+
+\[
+\frac{1}{8} \pi \cdot \rho \cdot D^2 (0.4486 \eta^2 + 0.3556 \eta + 1.3498) (V_{\text{物}} - V_{\text{水}})^2 = m \cdot a_{\text{水平}}
+\]
+
+5.2.4 各个单组件的运动模型
+
+利用上述模型，根据表 2 中计算出每个试件模型的拖曳力，分别建立单个试件模型在完全入水前、后阶段的运动模型，具体如下。
+
+1、单个物体完全入水前阶段模型
+
+(1) 小空心蜂巢运动模型
+
+① 垂直方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.0304 \frac{d^2y}{dt^2} - 0.8275 \left( \frac{dy}{dt} \right)^2 + 11y - 2.721 = 0 \\
+\text{竖放模型: } & 0.0304 \frac{d^2y}{dt^2} - 0.2257 \left( \frac{dy}{dt} \right)^2 + 3y - 0.521 = 0 \\
+\text{立放模型: } & 0.0304 \frac{d^2y}{dt^2} - 0.2257 \left( \frac{dy}{dt} \right)^2 + 3y - 0.521 = 0
+\end{aligned}
+\right.
+\]
+
+② 水平方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & (10.3448 - 37.6125y)V_{\text{相}}^2 = 0.0304 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & (2.4828 - 9.0282y)V_{\text{相}}^2 = 0.0304 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & (10.3448 - 37.6125y)V_{\text{相}}^2 = 0.0304 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\]
+
+(2) 大空心蜂巢运动模型
+
+① 垂直方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.2587 \frac{d^2y}{dt^2} - 3.3788 \left( \frac{dy}{dt} \right)^2 + 45y - 9.788 = 0 \\
+\text{竖放模型: } & 0.2587 \frac{d^2y}{dt^2} - 0.9761 \left( \frac{dy}{dt} \right)^2 + 13y - 0.988 = 0 \\
+\text{立放模型: } & 0.2587 \frac{d^2y}{dt^2} - 0.9761 \left( \frac{dy}{dt} \right)^2 + 13y - 0.988 = 0
+\end{aligned}
+\right.
+\]
+
+② 水平方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & (20.6484 - 75.085y)V_{\text{相}}^2 = 0.2587 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & (5.1621 - 18.7713y)V_{\text{相}}^2 = 0.2587 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & (20.6484 - 75.085y)V_{\text{相}}^2 = 0.2587 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\]
+
+(3) 小实心蜂巢运动模型
+
+① 垂直方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.0442 \frac{d^2y}{dt^2} - 1.2 \left( \frac{dy}{dt} \right)^2 + 16y - 3.958 = 0 \\
+\text{竖放模型: } & 0.0442 \frac{d^2y}{dt^2} - 0.225 \left( \frac{dy}{dt} \right)^2 + 3y - 0.383 = 0 \\
+\text{立放模型: } & 0.0442 \frac{d^2y}{dt^2} - 0.225 \left( \frac{dy}{dt} \right)^2 + 3y - 0.383 = 0
+\end{aligned}
+\right.
+\]
+
+(2) 水平方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & (10.3125 - 37.5y)V_{\text{相}}^2 = 0.0442 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & (2.475 - 9y)V_{\text{相}}^2 = 0.0442 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & (10.3125 - 37.5y)V_{\text{相}}^2 = 0.0442 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\]
+
+(4) 大实心蜂巢运动模型
+
+(1) 垂直方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.3737 \frac{d^2y}{dt^2} - 4.875 \left( \frac{dy}{dt} \right)^2 + 65y - 14.138 = 0 \\
+\text{竖放模型: } & 0.3737 \frac{d^2y}{dt^2} - 0.975 \left( \frac{dy}{dt} \right)^2 + 13y + 0.162 = 0 \\
+\text{立放模型: } & 0.3737 \frac{d^2y}{dt^2} - 0.975 \left( \frac{dy}{dt} \right)^2 + 13y + 0.162 = 0
+\end{aligned}
+\right.
+\]
+
+(3) 水平方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & (20.625 - 75y)V_{\text{相}}^2 = 0.3737 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & (501563 - 18.75y)V_{\text{相}}^2 = 0.3737 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & (20.625 - 75y)V_{\text{相}}^2 = 0.3737 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\]
+
+(5) 小实心方砖运动模型
+
+(1) 垂直方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.0736 \frac{d^2y}{dt^2} - 1.2 \left( \frac{dy}{dt} \right)^2 + 16y - 3.664 = 0 \\
+\text{竖放模型: } & 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 8y - 1.464 = 0 \\
+\text{立放模型: } & 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 8y - 1.464 = 0
+\end{aligned}
+\right.
+\]
+
+(2) 水平方向运动模型
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.408 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 0.204 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 0.408 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\]
+
+(6) 大实心方砖运动模型
+
+\begin{enumerate}
+    \item 垂直方向运动模型
+    \begin{equation}
+        \left\{
+        \begin{aligned}
+            & \text{平放模型: } 0.5888 \frac{d^2y}{dt^2} - 4.8 \left( \frac{dy}{dt} \right)^2 + 64y - 11.712 = 0 \\
+            & \text{竖放模型: } 0.5888 \frac{d^2y}{dt^2} - 2.4 \left( \frac{dy}{dt} \right)^2 + 32y - 2.912 = 0 \\
+            & \text{立放模型: } 0.5888 \frac{d^2y}{dt^2} - 2.4 \left( \frac{dy}{dt} \right)^2 + 32y - 2.912 = 0
+        \end{aligned}
+        \right.
+    \end{equation}
+    \item 水平方向运动模型
+    \begin{equation}
+        \left\{
+        \begin{aligned}
+            & \text{平放模型: } 0.816 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+            & \text{竖放模型: } 0.4065 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+            & \text{立放模型: } 0.816 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2}
+        \end{aligned}
+        \right.
+    \end{equation}
+\end{enumerate}
+
+(7) 小空心方砖运动模型
+\begin{enumerate}
+    \item 垂直方向运动模型
+    \begin{equation}
+        \left\{
+        \begin{aligned}
+            & \text{平放模型: } 0.0552 \frac{d^2y}{dt^2} - 0.9 \left( \frac{dy}{dt} \right)^2 + 12y + 2.748 = 0 \\
+            & \text{竖放模型: } 0.0552 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 8y - 1.648 = 0 \\
+            & \text{立放模型: } 0.0552 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 8y - 1.648 = 0
+        \end{aligned}
+        \right.
+    \end{equation}
+    \item 水平方向运动模型
+    \begin{equation}
+        \left\{
+        \begin{aligned}
+            & \text{平放模型: } (8.25 - 30y) V_{\text{相}}^2 = 0.0552 \frac{d^2x}{dt^2} \\
+            & \text{竖放模型: } (4.125 - 15y) V_{\text{相}}^2 = 0.0552 \frac{d^2x}{dt^2} \\
+            & \text{立放模型: } (8.25 - 30y) V_{\text{相}}^2 = 0.0552 \frac{d^2x}{dt^2}
+        \end{aligned}
+        \right.
+    \end{equation}
+\end{enumerate}
+
+(8) 大空心方砖运动模型
+\begin{enumerate}
+    \item 垂直方向运动模型
+    \begin{equation}
+        \left\{
+        \begin{aligned}
+            & \text{平放模型: } 0.4416 \frac{d^2y}{dt^2} - 3.6 \left( \frac{dy}{dt} \right)^2 + 48y - 8.784 = 0 \\
+            & \text{竖放模型: } 0.4416 \frac{d^2y}{dt^2} - 2.4 \left( \frac{dy}{dt} \right)^2 + 32y - 4.384 = 0 \\
+            & \text{立放模型: } 0.4416 \frac{d^2y}{dt^2} - 2.4 \left( \frac{dy}{dt} \right)^2 + 32y - 4.384 = 0
+        \end{aligned}
+        \right.
+    \end{equation}
+    \item 水平方向运动模型
+\end{enumerate}
+
+\begin{equation}
+\begin{cases}
+\text{平放模型: } (16.5 - 60y)V_{\text{相}}^2 = 0.4416 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } (8.25 - 30y)V_{\text{相}}^2 = 0.4416 \frac{d^2x}{dt^2} \\
+\text{立放模型: } (16.5 - 60y)V_{\text{相}}^2 = 0.4416 \frac{d^2x}{dt^2}
+\end{cases}
+\end{equation}
+
+(9) 大三角锥运动模型
+
+① 垂直方向运动模型
+\begin{equation}
+0.0637 \frac{d^2y}{dt^2} - 1.2 \left( \frac{dy}{dt} \right)^2 + 16y - 3.763 = 0
+\end{equation}
+
+② 水平方向运动模型
+\begin{equation}
+(12.375 - 45y)V_{\text{相}}^2 = 0.0637 \frac{d^2x}{dt^2}
+\end{equation}
+
+(10) 小三角锥运动模型
+
+① 垂直方向运动模型
+\begin{equation}
+0.0078 \frac{d^2y}{dt^2} - 0.2923 \left( \frac{dy}{dt} \right)^2 + 3.987y - 1.0184 = 0
+\end{equation}
+
+② 水平方向运动模型
+\begin{equation}
+(6.1875 - 22.5y)V_{\text{相}}^2 = 0.0078 \frac{d^2x}{dt^2}
+\end{equation}
+
+2、完全入水后阶段模型
+
+根据表2中计算出来的拖曳力公式，利用上述模型，分别建立单个组件在完全入水后阶段的运动模型如下：
+
+(1) 小空心蜂巢运动模型
+
+① 垂直方向运动模型
+\begin{equation}
+\begin{cases}
+\text{平放模型: } 0.0304 \frac{d^2y}{dt^2} - 0.8275 \left( \frac{dy}{dt} \right)^2 + 0.304 = 0 \\
+\text{竖放模型: } 0.0304 \frac{d^2y}{dt^2} - 0.2257 \left( \frac{dy}{dt} \right)^2 + 0.304 = 0 \\
+\text{立放模型: } 0.0304 \frac{d^2y}{dt^2} - 0.2257 \left( \frac{dy}{dt} \right)^2 + 3y + 0.304 = 0
+\end{cases}
+\end{equation}
+
+② 水平方向运动模型
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.45V_{\text{相}}^2 = 3.04 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 0.45V_{\text{相}}^2 = 3.04 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 0.825V_{\text{相}}^2 = 3.04 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+(2) 大空心蜂巢运动模型
+
+① 垂直方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.2587 \frac{d^2y}{dt^2} - 3.3788 \left( \frac{dy}{dt} \right)^2 + 1.1248 = 0 \\
+\text{竖放模型: } & 0.2587 \frac{d^2y}{dt^2} - 0.9761 \left( \frac{dy}{dt} \right)^2 + 1.1248 = 0 \\
+\text{立放模型: } & 0.2587 \frac{d^2y}{dt^2} - 0.9761 \left( \frac{dy}{dt} \right)^2 + 1.1248 = 0
+\end{aligned}
+\right.
+\end{equation}
+
+② 水平方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 1.875V_{\text{相}}^2 = 0.2587 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 1.875V_{\text{相}}^2 = 0.2587 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 3.375V_{\text{相}}^2 = 0.2587 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+(3) 小实心蜂巢运动模型
+
+① 垂直方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.0442 \frac{d^2y}{dt^2} - 1.2 \left( \frac{dy}{dt} \right)^2 + 0.442 = 0 \\
+\text{竖放模型: } & 0.0442 \frac{d^2y}{dt^2} - 0.225 \left( \frac{dy}{dt} \right)^2 + 0.442 = 0 \\
+\text{立放模型: } & 0.0442 \frac{d^2y}{dt^2} - 0.225 \left( \frac{dy}{dt} \right)^2 + 0.442 = 0
+\end{aligned}
+\right.
+\end{equation}
+
+② 水平方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.9V_{\text{相}}^2 = 0.0442 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 0.9V_{\text{相}}^2 = 0.0442 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 1.2V_{\text{相}}^2 = 0.0442 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+(4) 大实心蜂巢运动模型
+
+① 垂直方向运动模型
+
+\begin{equation}
+\begin{cases}
+\text{平放模型: } 0.3737 \frac{d^2y}{dt^2} - 4.875 \left( \frac{dy}{dt} \right)^2 + 3.7368 = 0 \\
+\text{竖放模型: } 0.3737 \frac{d^2y}{dt^2} - 0.975 \left( \frac{dy}{dt} \right)^2 + 3.7368 = 0 \\
+\text{立放模型: } 0.3737 \frac{d^2y}{dt^2} - 0.975 \left( \frac{dy}{dt} \right)^2 + 3.7368 = 0
+\end{cases}
+\end{equation}
+
+(4) 水平方向运动模型
+\begin{equation}
+\begin{cases}
+\text{平放模型: } 0.45 V_{\text{相}}^2 = 0.3737 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } 0.45 V_{\text{相}}^2 = 0.3737 \frac{d^2x}{dt^2} \\
+\text{立放模型: } 4.875 V_{\text{相}}^2 = 0.3737 \frac{d^2x}{dt^2}
+\end{cases}
+\end{equation}
+
+(5) 小实心方砖运动模型
+
+(1) 垂直方向运动模型
+\begin{equation}
+\begin{cases}
+\text{平放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.9 \left( \frac{dy}{dt} \right)^2 + 0.416 = 0 \\
+\text{竖放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 0.416 = 0 \\
+\text{立放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 0.416 = 0
+\end{cases}
+\end{equation}
+
+(2) 水平方向运动模型
+\begin{equation}
+\begin{cases}
+\text{平放模型: } 2.4 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } 2.4 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+\text{立放模型: } 4.8 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2}
+\end{cases}
+\end{equation}
+
+(6) 大实心方砖运动模型
+
+(1) 垂直方向模型
+\begin{equation}
+\begin{cases}
+\text{平放模型: } 0.5888 \frac{d^2y}{dt^2} - 4.8 \left( \frac{dy}{dt} \right)^2 + 3.328 = 0 \\
+\text{竖放模型: } 0.5888 \frac{d^2y}{dt^2} - 2.4 \left( \frac{dy}{dt} \right)^2 + 3.328 = 0 \\
+\text{立放模型: } 0.5888 \frac{d^2y}{dt^2} - 2.4 \left( \frac{dy}{dt} \right)^2 + 3.328 = 0
+\end{cases}
+\end{equation}
+
+(2) 水平方向运动模型
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 2.4\left(\frac{dx}{dt} - V_{\text{水}}\right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 2.4\left(\frac{dx}{dt} - V_{\text{水}}\right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 4.8\left(\frac{dx}{dt} - V_{\text{水}}\right)^2 = 0.5888 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+(7) 小空心方砖运动模型
+
+(1) 垂直方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.0552 \frac{d^2y}{dt^2} - 0.9\left(\frac{dy}{dt}\right)^2 + 0.312 = 0 \\
+\text{竖放模型: } & 0.0552 \frac{d^2y}{dt^2} - 0.6\left(\frac{dy}{dt}\right)^2 + 0.312 = 0 \\
+\text{立放模型: } & 0.0552 \frac{d^2y}{dt^2} - 0.6\left(\frac{dy}{dt}\right)^2 + 0.312 = 0
+\end{aligned}
+\right.
+\end{equation}
+
+(2) 水平方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.6V_{\text{相}}^2 = 0.0552 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 0.6V_{\text{相}}^2 = 0.0552 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 0.9V_{\text{相}}^2 = 0.0552 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+(8) 大空心方砖运动模型
+
+(1) 垂直方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.4416 \frac{d^2y}{dt^2} - 3.6\left(\frac{dy}{dt}\right)^2 + 2.496 = 0 \\
+\text{竖放模型: } & 0.4416 \frac{d^2y}{dt^2} - 2.4\left(\frac{dy}{dt}\right)^2 + 2.496 = 0 \\
+\text{立放模型: } & 0.4416 \frac{d^2y}{dt^2} - 2.4\left(\frac{dy}{dt}\right)^2 + 2.496 = 0
+\end{aligned}
+\right.
+\end{equation}
+
+(2) 水平方向运动模型
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 2.4V_{\text{相}}^2 = 0.4416 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 2.4V_{\text{相}}^2 = 0.4416 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 3.6V_{\text{相}}^2 = 0.4416 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+(9) 大三角锥运动模型
+
+(1) 垂直方向运动模型
+
+\begin{equation}
+0.0637 \frac{d^2y}{dt^2} - 1.2 \left( \frac{dy}{dt} \right)^2 + 0.36 = 0
+\end{equation}
+
+(2) 水平方向运动模型
+
+\begin{equation}
+1.2 V_{\text{相}}^2 = 0.0637 \frac{d^2x}{dt^2}
+\end{equation}
+
+(10) 小三角锥运动模型
+
+(1) 垂直方向运动模型
+
+\begin{equation}
+0.0078 \frac{d^2y}{dt^2} - 0.2923 \left( \frac{dy}{dt} \right)^2 + 0.0441 = 0
+\end{equation}
+
+(2) 水平方向运动模型
+
+\begin{equation}
+0.2923 V_{\text{相}}^2 = 0.0078 \frac{d^2x}{dt^2}
+\end{equation}
+
+\subsection{5.3 问题三的分析与求解}
+
+为了验证问题一和问题二中所建模型的合理性，本部分主要是以大实心方砖和小实心方砖的运动模型为例进行验证。对大实心方砖运动模型和小实心方砖运动模型进行求解，并对两个模型的结果进行对比分析。
+
+\subsubsection{5.3.1 大实心方砖运动模型求解}
+
+在模型试验中，大实心方砖的投放方式分别是：平放、竖放和立放；水流速度分别设定为：0.34m/s、0.40m/s、0.47m/s 和 0.55m/s；重心距离水面的高度分别是：重物重心在水面投放、重物重心距离水面 5cm 投放和重物重心距离水面 12cm 投放。
+
+(1) 垂直方向运动的模型求解
+
+根据问题一中所建模型，代入已知的试验数据和物理量值，得到大实心方砖平放入水时垂直方向运动的模型如下：
+
+\begin{equation}
+0.5888 \frac{d^2y}{dt^2} - 4.8 \left( \frac{dy}{dt} \right)^2 + 64y - 11.712 = 0
+\end{equation}
+
+同理可以得到大实心方砖竖放入水时垂直方向运动的模型如下：
+
+\begin{equation}
+0.5888 \frac{d^2y}{dt^2} - 2.4 \left( \frac{dy}{dt} \right)^2 + 32y - 2.912 = 0
+\end{equation}
+
+由于竖放和立放时大实心方砖与水接触的底面积相同，压差阻力等也相同，所以立放时的模型同于竖放时的模型。
+
+按照所建立的微分方程模型，并根据物体的投放情况算出初始条件，利用 Matlab 软件编程求解，得到物体的运动轨迹图形如下所示（立放基本同于竖放）：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{运动轨迹图形}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{(注：星号线表示运动轨迹，虚线表示加速度变化曲线)}
+    \label{fig:5-2}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{图 5—2：平放时垂直方向运动轨迹}
+    \label{fig:5-3}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{图 5—3：竖放时垂直方向运动轨迹}
+    \label{fig:5-4}
+\end{figure}
+
+\subsection{(2) 大实心方砖在水平方向的运动模型求解}
+
+根据问题一所建模型，代入试验数据和物理量值，可得大实心方砖水平方向的运动模型如下所示：
+
+\begin{enumerate}
+    \item 从进入水到完全浸入水阶段
+    \begin{equation}
+        \begin{cases}
+            \text{平放模型: } 0.816 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+            \text{竖放模型: } 0.4065 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+            \text{立放模型: } 0.816 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2}
+        \end{cases}
+    \end{equation}
+\end{enumerate}
+
+\section*{(2) 完全浸入水到到达终点阶段}
+
+\[
+\left\{
+\begin{aligned}
+\text{平放模型: } & 2.4 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 2.4 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 4.8 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.5888 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\]
+
+按照所建模型，并根据物体的投放情况算出初始条件，利用 Matlab 软件编程求解，得到物体的水平运动轨迹图形（因不同的流水速度值代入模型，只是改变了模型的系数，原理都是相同的，所以下面图形中取的是 \( V_{\text{水}} = 0.34 \, \text{m/s} \) 的情况）如下所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{完全入水前平放图}
+    \label{fig:5-4}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{完全入水前竖放图}
+    \label{fig:5-5}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{完全入水前立放图}
+    \label{fig:5-6}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{完全入水后平放图}
+    \label{fig:5-7}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{完全入水后竖放图}
+    \label{fig:5-8}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{完全入水后立放图}
+    \label{fig:5-9}
+\end{figure}
+
+\subsection{小实心方砖落水后运动模型求解}
+
+在模型试验中，小实心方砖的投放方式分别是：平放、竖放和立放；水流速度分别设定为：0.34m/s、0.40m/s、0.47m/s 和 0.55m/s；重心距离水面的高度分别是：重物重心在水面投放、重物重心距离水面 5cm 投放和重物重心距离水面 12cm 投放。
+
+根据问题二中所建小实心方砖落水后运动模型，代入相关试验数据和物理量值，得到小实心方砖的运动模型如下所示：
+
+\subsubsection{小实心方砖垂直方向运动模型求解}
+
+\begin{enumerate}
+    \item 从进入水到完全浸入水阶段
+    \begin{equation}
+        \begin{cases}
+            \text{平放模型: } 0.0736 \frac{d^2y}{dt^2} - 1.2 \left( \frac{dy}{dt} \right)^2 + 16y - 3.664 = 0 \\
+            \text{竖放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 8y - 1.464 = 0 \\
+            \text{立放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 8y - 1.464 = 0
+        \end{cases}
+    \end{equation}
+    
+    \item 完全浸入水到到达终点阶段
+    \begin{equation}
+        \begin{cases}
+            \text{平放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.9 \left( \frac{dy}{dt} \right)^2 + 0.416 = 0 \\
+            \text{竖放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 0.416 = 0 \\
+            \text{立放模型: } 0.0736 \frac{d^2y}{dt^2} - 0.6 \left( \frac{dy}{dt} \right)^2 + 0.416 = 0
+        \end{cases}
+    \end{equation}
+\end{enumerate}
+
+按照所建立的微分方程模型，并根据小实心方砖的投放情况算出初始条件，利用 Matlab 软件编程求解，得到小实心方砖的运动轨迹图形如下所示（立放同于竖放）：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{小实心方砖运动轨迹图}
+    \label{fig:5-10}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{物体重心在水面运动轨迹}
+    \label{fig:1}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{物体重心在水面运动轨迹}
+    \label{fig:2}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{物体重心距离水面5cm运动轨迹}
+    \label{fig:3}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{物体重心距离水面5cm运动轨迹}
+    \label{fig:4}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image5.png}
+    \caption{物体重心距离水面12cm运动轨迹}
+    \label{fig:5}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image6.png}
+    \caption{物体重心距离水面12cm运动轨迹}
+    \label{fig:6}
+\end{figure}
+
+\begin{center}
+    (注：星号线表示运动轨迹，虚线表示加速度变化曲线)
+\end{center}
+
+图5—10：平放，垂直方向运动轨迹图形 \hspace{2cm} 图5—11：竖放，垂直方向运动轨迹图形
+
+\subsubsection{(2) 小实心方砖水平方向模型求解}
+
+\begin{enumerate}
+    \item 从进入水到完全浸入水阶段
+\end{enumerate}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.408 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 0.204 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 0.204 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+\textbf{(2) 完全浸入水到到达终点阶段}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\text{平放模型: } & 0.6 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2} \\
+\text{竖放模型: } & 0.6 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2} \\
+\text{立放模型: } & 1.2 \left( \frac{dx}{dt} - V_{\text{水}} \right)^2 = 0.0736 \frac{d^2x}{dt^2}
+\end{aligned}
+\right.
+\end{equation}
+
+按照所建模型，并根据物体的投放情况算出初始条件，利用 Matlab 软件编程求解，得到物体的水平运动轨迹图形（因不同的流水速度值代入模型，只是改变了模型的系数，原理都是相同的，所以下面图形中取的是 \( V_{\text{水}} = 0.34 \, \text{m/s} \)，物体重心在水面的情况）如下所示：
+
+\begin{equation}
+\text{平放模型: } 0.0736 \frac{d^2x}{dt^2} - 1.5 \left( \frac{dx}{dt} \right)^2 + 1.02 \frac{dx}{dt} - 0.1734 = 0
+\end{equation}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{水平方向平放轨迹图}
+\end{figure}
+
+\begin{equation}
+\text{竖放模型: } 0.0736 \frac{d^2x}{dt^2} - 0.8265 \left( \frac{dx}{dt} \right)^2 + 0.562 \frac{dx}{dt} - 0.0955 = 0
+\end{equation}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{水平方向竖放轨迹图}
+    \label{fig:5-13}
+\end{figure}
+
+立放模型: $0.0736\frac{d^{2}x}{dt^{2}}-1.5(\frac{dx}{dt})^{2}+1.02\frac{dx}{dt}-0.1734=0$
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{水平方向立放轨迹图}
+    \label{fig:5-14}
+\end{figure}
+
+\subsection{模型的误差分析}
+
+摄像机记录下来的数据并不是物体运动的实际坐标值，需对记录的数据进行数据。首先，将物体从三维空间转换到二维平面，根据光折射定律画出入射折射图，如图 5-15。尔后把 $X$ 和 $Y$ 坐标轴分开来进行投影，利用光折射原理，得到相应的新旧坐标之间的关系表达式。另外，摄像的路线经过玻璃会发生折射现象，因此需考虑折射率的问题。进行相关的分析与计算，可以得出如下表达式:
+
+\begin{equation}
+x = X + \arcsin(\sin(\arctan(X-25)/120))/1.33
+\end{equation}
+
+\begin{equation}
+y = Y + \arcsin(\sin(\arctan((Y-20)/120))/1.33)
+\end{equation}
+
+其中 $X$ 和 $Y$ 是摄像机记录下来的坐标值，$x$ 和 $y$ 是转换后真实的坐标值。
+
+处理过的数据见“处理过的试验数据”文件夹。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{5-15 入射反射图}
+\end{figure}
+
+经过坐标转换，得到动力学方程在体轴系下的形式，并补充运动学方程，使方程组满足封闭性要求，从而建立完整的矢量动力学模型。下面对转换后的数据进行拟合结果见下表：
+
+\begin{table}[h]
+    \centering
+    \caption{表5-3 数据拟合后各种情况下的运动方程}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        & & 平放 & $f(x) = -0.04747*x^3 + 1.136*x^2 - 10.87*x + 47.1$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = 0.497*x^3 - 2.646*x^2 - 7.661*x + 47.08$ \\
+        \cline{3-4}
+        & & 立放 & $f(x) = -0.03688*x^3 + 0.9719*x^2 - 9.368*x + 39.7$ \\
+        \hline
+        & & 平放 & $f(x) = -0.01781*x^3 + 0.522*x^2 - 6.909*x + 39.08$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = -0.1619*x^3 + 2.875*x^2 - 20.52*x + 63.62$ \\
+        \cline{3-4}
+        & & 立放 & $f(x) = -0.06702*x^3 + 1.321*x^2 - 11.41*x + 46.61$ \\
+        \hline
+        & & 平放 & $f(x) = -0.3021*x^3 + 5.627*x^2 - 36.66*x + 91.98$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = -0.5224*x^3 + 10.73*x^2 - 73.3*x + 171.7$ \\
+        \cline{3-4}
+        & & 立放 & $f(x) = -1.336*x^3 + 17.62*x^2 - 80.6*x + 145.1$ \\
+        \hline
+        & & 平放 & $f(x) = 0.02042*x^3 - 0.1785*x^2 - 3.846*x + 40.48$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = -2.643*x^3 + 38.41*x^2 - 189.7*x + 329.9$ \\
+        \cline{3-4}
+        & & 立放 & $f(x) = -0.04093*x^3 + 1.036*x^2 - 9.732*x + 41.88$ \\
+        \hline
+        & & 平放 & $f(x) = -0.0447*x^3 + 1.1*x^2 - 10.82*x + 45.58$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = 0.6639*x^3 - 7.359*x^2 + 18.53*x + 15.9$ \\
+        \cline{3-4}
+        & & 立放 & $f(x) = -0.03026*x^3 + 0.8068*x^2 - 8.576*x + 41.09$ \\
+        \hline
+        & & 平放 & $f(x) = 0.004322*x^3 + 0.3146*x^2 - 7.744*x + 44.3$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = 0.401*x^3 - 1.728*x^2 - 11.9*x + 58.54$ \\
+        \cline{3-4}
+        & & 立放 & $f(x) = 0.1098*x^3 - 0.5942*x^2 - 7.707*x + 46.61$ \\
+        \hline
+        & & 平放 & $f(x) = -0.007541*x^3 + 0.1921*x^2 - 3.451*x + 31.8$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = -0.01322*x^3 + 0.5936*x^2 - 9.075*x + 46.99$ \\
+        \cline{3-4}
+        & & 立放 & $f(x) = -0.01048*x^3 + 0.3941*x^2 - 5.885*x + 40.48$ \\
+        \hline
+        & & 平放 & $f(x) = -0.08538*x^3 + 1.952*x^2 - 16.17*x + 59.53$ \\
+        \cline{3-4}
+        & & 竖放 & $f(x) = -0.2113*x^3 + 3.545*x^2 - 24.97*x + 77$ \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & & 立放 & $f(x)=0.01336*x^3-0.001221*x^2-4.85*x+41.84$ \\
+\hline
+ & \multirow{4}{*}{重心距水面12cm} & 平放 & $f(x)=-0.0006193*x^3+0.245*x^2-6.092*x+42.64$ \\
+\cline{3-4}
+ & & 竖放 & $f(x)=0.2758*x^3-3.635*x^2+8.841*x+24.52$ \\
+\cline{3-4}
+ & & 立放 & $f(x)=0.1692*x^3-3.689*x^2+18.38*x-1.495$ \\
+\hline
+ & \multirow{9}{*}{水速0.55m/s} & \multirow{3}{*}{重心在水面} & 平放 \\
+\cline{4-4}
+ & & & $f(x)=-0.01284*x^3+0.3603*x^2-4.663*x+33.27$ \\
+\cline{3-4}
+ & & 竖放 & $f(x)=-0.03765*x^3+1.08*x^2-11.44*x+46.95$ \\
+\cline{3-4}
+ & & 立放 & $f(x)=-0.006003*x^3+0.2339*x^2-3.925*x+30.52$ \\
+\cline{3-4}
+ & & \multirow{3}{*}{重心距水面5cm} & 平放 \\
+\cline{4-4}
+ & & & $f(x)=0.003678*x^3-0.06112*x^2-1.961*x+35.56$ \\
+\cline{3-4}
+ & & 竖放 & $f(x)=-0.02136*x^3+0.6527*x^2-8.52*x+45.95$ \\
+\cline{3-4}
+ & & 立放 & $f(x)=-0.4417*x^3+5.337*x^2-26.53*x+63.39$ \\
+\cline{3-4}
+ & & \multirow{3}{*}{重心距水面12cm} & 平放 \\
+\cline{4-4}
+ & & & $f(x)=0.01797*x^3-0.4276*x^2+0.6634*x+28.74$ \\
+\cline{3-4}
+ & & 竖放 & $f(x)=-0.1024*x^3+2.281*x^2-17.37*x+54.53$ \\
+\cline{3-4}
+ & & 立放 & $f(x)=-0.2953*x^3+6.331*x^2-46.14*x+120.4$ \\
+\hline
+\end{tabular}
+\end{table}
+
+利用试验所给数据，通过 Matlab 软件拟合出大实心方砖平放时的运动轨迹图如图 5-12 所示；利用所建模型拟合出来的大实心方砖平放时的运动轨迹图如 5-13 所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image1.png}
+\caption{实验数据的到的运动轨迹}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image2.png}
+\caption{运用所建模型得出的运动轨迹}
+\end{figure}
+
+对上述图形进行分析，对应时间对应不同的值，从而可以计算出不同值时的相对误差，其值大约为 $8\% \sim 13\%$，符合容许条件，证明所建模型还是合理的。
+
+虽然符合容许条件，但是还存在一定的误差。分析其原因可能有两个：一个是在模型计算过程中，忽略了水的粘滞阻力影响所造成的误差；另一个是试验所给数据有一定程度的误差造成的不一致。
+
+\subsection{5.3.4 模型相关猜想}
+
+堵口重物是否能落在有效位置是决定堵溃成败的关键。让堵口重物恰好在最有效位置触底，就是在重物触底时，水平方向上的速度恰好达到匀速；竖直方向上的速度刚好达到零。
+
+设置一组实验，让物体在离最有效位置水平距离不同的位置及垂直距离不同的位置开始下沉，通过计算分析是否是在上述猜想的条件下达到最有效位置。
+
+\subsection{5.4 问题四的分析与求解}
+
+\subsubsection{5.4.1 问题（1）的分析与求解}
+
+（1）本题所提及的小型试验满足重力相似准则
+
+重力相似准则的适用范围是：凡有自由水面并且允许水面上下自由变动的各种流动（重力起主要作用的流动），如堰坝溢流、孔口出流、明槽流动、紊流阻力平方区的有压管流与隧洞流动等，本题中的小型试验相对其它相似准则而言更符合重力相似准则。依据重力相似准则：
+
+\[
+Fr_{p} = Fr_{m} \text{ 或 } \frac{\lambda_{v}^{2}}{\lambda_{g} \lambda_{L}} = 1
+\]
+
+利用几何相似：
+
+\textbf{长度比值}
+
+\[
+\lambda_{L} = \frac{L_{p}}{L_{m}}
+\]
+
+\textbf{面积比值}
+
+\[
+\lambda_{A} = \frac{A_{p}}{A_{m}} = \frac{L_{p}^{2}}{L_{m}^{2}} = \lambda_{L}^{2}
+\]
+
+\textbf{体积比值}
+
+\[
+\lambda_{v} = \frac{V_{1}}{V_{2}} = \frac{L_{1}^{3}}{L_{2}^{3}} = \lambda_{L}^{3}
+\]
+
+利用运动相似：
+
+\textbf{速度比值}
+
+\[
+\lambda_{u} = \frac{u_{1}}{u_{2}} = \frac{L_{1} / t_{1}}{L_{2} / t_{2}} = \lambda_{L} \lambda_{t}^{-1}
+\]
+
+\textbf{加速度比值}
+
+\[
+\lambda_{a} = \frac{a_{1}}{a_{2}} = \frac{u_{1} / t_{1}}{u_{2} / t_{2}} = \lambda_{L} \lambda_{t}^{-2} = \lambda_{u} \lambda_{t}^{-1}
+\]
+
+得到原型与模型的关联式，便可以将本实验及所建模型的成果进行推广了。
+
+(2) 对未来需要进行的试验和研究工作提出建议
+
+- (1) 关于水流作用下的块体受力，本次试验只是对单个块体作了一定的研究。可在此基础上进一步研究块体组合情况下，周围块体对所研究块体受到作用力的影响。
+- (2) 研究块体形状、块体周围水流结构、水流作用力间的关系，进一步研究不规则形状块体的水流作用力。
+- (3) 研究块体迎流面与水流呈不同角度的试验研究中，试验研究的范围是在，可以进一步增大研究范围来研究分析块体受力的情况。
+- (4) 可进一步改善试验条件来研究空心块体与水流呈一定角度的情况下的受力情况，分析在空心率和夹角共同影响下拖曳力的变化情况，并探求含有两种影响因素的拖曳力的函数表达式。
+- (5) 采用先进仪器直接测量、记录水流脉动对块体作用的冲击力。
+- (6) 研究水表面、河床床面对水流结构的影响，进一步探讨相对水深位置对作用力的影响。
+- (7) 依据研究成果寻求适合工程应用的新型结构块体。
+
+### 5.4.2 问题（2）的分析与求解
+
+根据题目假设条件，溃口几何形状及水流速度与小型试验相似，满足几何相似的原则。考虑到模型在实际中的应用，在这里可以进行合理的补充假设：
+
+1) 假设重物的形状比例等与大实心方砖相同；
+2) 假设重物的密度也是 $2300 \, \text{kg}/\text{m}^3$；
+3) 重物以平放方式投放。
+
+由此可计算出重物的长是 $1.0928 \, \text{m}$，厚度是 $0.5464 \, \text{m}$。
+
+根据已经建立的数学模型，可以得到水深或流速改变情况下的物体运动模型如下：
+
+(1) 水深为 $3 \, \text{m}$ 时
+
+#### 垂直方向运动模型
+
+\[
+\begin{cases}
+\text{完全入水前: } 1500 \frac{d^2 y}{dt^2} - 902.25 \left( \frac{dx}{dt} \right)^2 + 12030 y - 21090 = 0 \\
+\text{完全入水后: } 1500 \frac{d^2 y}{dt^2} - 12030 \left( \frac{dx}{dt} \right)^2 + 8478 = 0
+\end{cases}
+\]
+
+根据已建模型，利用 Matlab 软件编程求解，得到垂直方向运动轨迹图如下所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{垂直方向运动轨迹图}
+\end{figure}
+
+#### 水平方向运动模型
+
+\begin{equation}
+\begin{cases}
+\text{完全入水前: } (2457 - 819.6y)\left(\frac{dx}{dt} - V_{\text{水}}\right)^2 = 1500 \frac{d^2x}{dt^2} \\
+\text{完全入水后: } 447.825\left(\frac{dx}{dt} - V_{\text{水}}\right)^2 = 1500 \frac{d^2x}{dt^2}
+\end{cases}
+\end{equation}
+
+(2) 水深为 \(4m\) 时
+
+垂直方向运动模型
+
+\begin{equation}
+\begin{cases}
+\text{完全入水前: } 1500 \frac{d^2y}{dt^2} - 902.25\left(\frac{dx}{dt}\right)^2 + 12030y - 33120 = 0 \\
+\text{完全入水后: } 1500 \frac{d^2y}{dt^2} - 12030\left(\frac{dx}{dt}\right)^2 + 8478 = 0
+\end{cases}
+\end{equation}
+
+水平方向运动模型
+
+\begin{equation}
+\begin{cases}
+\text{完全入水前: } (3278 - 819.6y)\left(\frac{dx}{dt} - V_{\text{水}}\right)^2 = 1500 \frac{d^2x}{dt^2} \\
+\text{完全入水后: } 447.825\left(\frac{dx}{dt} - V_{\text{水}}\right)^2 = 1500 \frac{d^2x}{dt^2}
+\end{cases}
+\end{equation}
+
+根据所建模型，代入已知的数量值，利用 Matlab 软件编程求解，可以得到不同情况的计算结果如下：
+
+1) 投放高度为 \(2m\)，水深为 \(3m\)，水速是 \(4m/s\) 时情况时：纵坐标是厚度的一半 \(0.2732m\)，到达溃口时间是 \(0.645s\)，提前投放距离是 \(1.3521m\)；
+
+2) 投放高度为 \(2m\)，水深为 \(3m\)，水速是 \(5m/s\) 时的情况时：纵坐标是厚度的一半 \(0.2732m\)，到达溃口时间是 \(0.532s\)，提前投放距离是 \(2.7124m\)；
+
+3) 投放高度为 \(2m\)，水深为 \(4m\)，水速是 \(4m/s\) 时的距离是：纵坐标是厚度的一半 \(0.2732m\)，到达溃口时间是 \(0.951s\)，提前投放距离是 \(2.315m\)；
+
+4) 投放高度为 \(2m\)，水深为 \(4m\)，水速是 \(5m/s\) 时的距离是：纵坐标是厚度的一半 \(0.2732m\)，到达溃口时间是 \(0.932s\)，提前投放距离是 \(2.873m\)。
+
+\section*{六、模型的讨论、灵敏度分析与误差分析}
+
+模型讨论：模型中把物体的运动过程根据物体是否完全浸入水中，分成两个阶段考虑，根据物体在两个阶段的受力变化分别建立模型，使模型的运算结果更贴近于实际。
+
+灵敏度分析：模型中拖曳力的系数根据物体长高比值的不同取值发生变化，说明这个系数的灵敏度值得探讨。在问题二的模型中，根据物体形状的不同，长高比值发生变化，根据不同的比值，确定不同的拖曳力系数。
+
+误差分析：模型中忽略了水的粘滞阻力对物体运动过程的影响，而且在物体运动速度较低时，粘滞阻力对物体的影响较大，忽略会造成较大误差。
+
+\section*{七、模型的进一步分析}
+
+从所给的试验数据结合实际情况分析，由于现实中具体情况千变万化，溃口的纵、横断面千差万别，而且都不是规则的矩形、梯形或 V 字形；溃口的底面也都不是水平或
+
+具有稳定斜率的平面，粗糙度各异；溃口各部分的流速分布肯定也是不均匀的；更值得注意的是，溃口形状和大小一般是不断变化的，流速、流量也随着水位和溃口形状的变化而变化。由于往往是就地取材，封堵用重物的形状、大小千变万化；重量、体积、面积各不相同，不可能一模一样。所以针对本问题建立一个精度较高的较适合的模型是比较困难的。本题建立的模型的实用度是比较广的，可以对不同的实验记录数据进行评价和预测，并可以对相类似的问题进行求解。如果想进一步提高模型的精度，可以提高实验记录数据的数量和精确度，或者对初始数据用更好的方法进行处理或者采用其他模型进行实验。
+
+\section*{八、模型的评价、改进和推广}
+
+\subsection*{8.1 模型的评价}
+
+\subsubsection{8.1.1 模型的优点}
+
+（1）采用的数学模型和数学理论有成熟的理论基础，可信度高。
+
+（2）利用数据处理工具 Excel、数学编程软件 MATLAB 进行数据的处理和编程的实现，算法简单，编程实现简单，推广容易。
+
+（3）建立的模型与实际紧密联系，在先建立的微分方程模型基础上，又充分考虑了该模型在实际应用中的情况，从而使模型更贴近实际，通用性、推广性强。
+
+（4）该模型对于抗洪抢险有一定的实用价值，借助建立的重物落水后的运动模型能够有效的减少洪水带来的损失。
+
+（5）在建立模型时，把物体运动过程根据是否完全浸入水中划分成两个阶段，分别进行求解，使模型结果更加准备可靠。
+
+（6）文中分别求解了大实心方砖和小实心方砖的运动模型，并把两个模型的结果进行对比分析，验证了该模型的通用性和准确性。
+
+\subsubsection{8.1.2 模型的缺点}
+
+（1）在建模过程中，简化了一些因素，造成与实际有一定的不相符之处。
+
+（2）块体的拖曳力由压差阻力和摩擦阻力构成，两者中哪一部分占主体地位，则是根据块体的形状及抛置情况决定，而压差阻力系数缺乏相应的计算公式，根据试验条件，很难确定具体的数值，所以模型中是根据相关因素对其进行有误差的定值。
+
+\subsection*{8.2 模型的改进}
+
+（1）物体受力分析的改进
+
+在实际问题中对物体受力进行分析时，应该把物体入水时的抨击力考虑在内。
+
+（2）物体运动过程中的翻转变化
+
+在实际应用中，应该分析物体落水后的翻转情况对物体运动规律的影响。
+
+（3）在计算物体的速度时应该考虑水的粘滞阻力的影响，在物体运动速度较小时，粘滞阻力对物体运动的影响较大，忽略会造成较大误差。
+
+\subsection*{8.3 模型的推广}
+
+仔细分析所建立模型本身的特点，不难发现：这几个模型不仅在抗洪抢险这样的救灾工作中发挥作用，而且在其他领域也不乏其用武之地。其他应用的具体体现在以下几个方面：
+
+（1）空中热气球飞行方面：可以按照模型的方法来处理热气球在空中某一水平面上受有规律风速影响的运动规律。
+
+（2）空投水雷入水方面：几乎可以直接利用此模型分析水雷入水的受力情况和运动过程。
+
+(3) 空投货物方面：借以参考模型所设的方案，分析风速等条件，估计货物的投放位置。
+
+(4) 民航飞机航向和速度的调整方面：类似条件的模型可以为民航系统飞机飞行的引导发挥一定的作用，为民用航空业的发展做出贡献。
+
+(5) 相关益智训练软件的开发方面：可以根据这几个模型的特点，将模型的种种可能情况考虑进去，再根据现实中的实际条件，设计一款仿真游戏软件，将知识转化为成果，让更多人收益。
+
+\section*{参考文献}
+
+[1] 吴建国等，数学建模案例精编，北京：中国水利水电出版社，2005。
+
+[2] 刘会灯等，MATLAB 编程基础与典型应用，北京：人民邮电出版社，2008。
+
+[3] 赵静等，数学建模与数学实验，北京：高等教育出版社，2008。
+
+[4] 李德宜等，数学建模，北京：科学出版社，2009。
+
+[5] 薛寅飞等，物体在流体中运动阻力的实验研究，2009 年全国高等学校物理基础课程教育学术研讨会论文集，2009。
+
+[6] 胡生青，浅谈阻力与流体的阻力，物理教师，第 29 卷第 7 期：2008。
+
+[7] 姜启源等，《数学模型》（第三版），北京：高等教育出版社，2005。
+
+\section*{附录}
+
+1、大实心方砖垂直运动程序源代码:
+
+\textbf{平放:}
+\begin{verbatim}
+clc, clear
+[TT, YY] = ode45(@odefun, 0:0.01:0.2, [0.275 0]);
+subplot(3, 1, 1)
+plot(TT, YY(:, 1), 'r-*', TT, YY(:, 2), 'b--')
+xlabel('单位/s'); ylabel('单位/m')
+title('物体重心在水面运动轨迹')
+
+[TT, YY] = ode45(@odefun, 0:0.01:0.2, [0.325 0.7746]);
+subplot(3, 1, 2)
+plot(TT, YY(:, 1), 'r-*', TT, YY(:, 2), 'b--')
+xlabel('单位/s'); ylabel('单位/m')
+title('物体重心距离水面5cm运动轨迹')
+
+[TT, YY] = ode45(@odefun, 0:0.01:0.2, [0.395 1.414]);
+subplot(3, 1, 3)
+plot(TT, YY(:, 1), 'r-*', TT, YY(:, 2), 'b--')
+xlabel('单位/s'); ylabel('单位/m')
+title('物体重心距离水面12cm运动轨迹')
+\end{verbatim}
+
+\textbf{function} dY = odefun(t, Y) \\
+dY = [Y(2); 4.8/0.5888*Y(2)^2 - 64/0.5888*Y(1) - 11.712/0.5888];
+
+\textbf{竖放:}
+\begin{verbatim}
+clc, clear
+[TT, YY] = ode45(@odefun, 0:0.01:0.2, [0.275 0]);
+subplot(3, 1, 1)
+plot(TT, YY(:, 1), 'r-*', TT, YY(:, 2), 'b--')
+xlabel('单位/s'); ylabel('单位/m')
+title('物体重心在水面运动轨迹')
+
+[TT, YY] = ode45(@odefun, 0:0.01:0.2, [0.325 0.4472]);
+subplot(3, 1, 2)
+plot(TT, YY(:, 1), 'r-*', TT, YY(:, 2), 'b--')
+xlabel('单位/s'); ylabel('单位/m')
+title('物体重心距离水面5cm运动轨迹')
+
+[TT, YY] = ode45(@odefun, 0:0.01:0.2, [0.395 1.2649]);
+subplot(3, 1, 3)
+plot(TT, YY(:, 1), 'r-*', TT, YY(:, 2), 'b--')
+xlabel('单位/s'); ylabel('单位/m')
+title('物体重心距离水面12cm运动轨迹')
+\end{verbatim}
+
+\textbf{function} dY = odefun(t, Y)
+
+\begin{verbatim}
+dY=[Y(2);2.4/0.5888*Y(2)^2-32/0.5888*Y(1)-2.912/0.5888];
+**********
+2、大实心方砖水平运动程序源代码：
+完全入水前：clc,clear
+[TT,YY]=ode45(@odefun1,0:0.01:0.2,[0.04 0]);
+plot(TT,YY(:,1),'r-*')
+xlabel('单位/s');ylabel('单位/m')
+title('大方砖平放')
+function dY=odefun1(t,Y)
+dY=[Y(2);4.8/0.5888*Y(2)^2-4.8/0.5888*Y(2)+11.712/0.5888];
+**********
+clc,clear
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.02 0]);
+plot(TT,YY(:,1),'r-*')
+xlabel('单位/s');ylabel('单位/m')
+title('大方砖竖放')
+function dY=odefun1(t,Y)
+dY=[Y(2);2.551*Y(2)^2-2.551*0.68*Y(2)+2.551*0.1156];
+**********
+clc,clear
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.04 0]);
+plot(TT,YY(:,1),'r-*')
+xlabel('单位/s');ylabel('单位/m')
+title('大方砖立放')
+function dY=odefun1(t,Y)
+dY=[Y(2);3.9653*Y(2)^2-3.9653*0.68*Y(2)+3.9653*0.1156];
+**********
+3、小实心方砖垂直方向运动模型源代码：
+平放：clc,clear
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.275 0]);
+subplot(3,1,1)
+plot(TT,YY(:,1),'r-*',TT,YY(:,2),'b--')
+xlabel('单位/s');ylabel('单位/m')
+title('物体重心在水面运动轨迹')
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.325 0.6325]);
+subplot(3,1,2)
+plot(TT,YY(:,1),'r-*',TT,YY(:,2),'b--')
+xlabel('单位/s');ylabel('单位/m')
+title('物体重心距离水面5cm运动轨迹')
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.395 1.4832]);
+\end{verbatim}
+
+\begin{verbatim}
+subplot(3,1,3)
+plot(TT,YY(:,1),'r-*',TT,YY(:,2),'b--')
+xlabel('单位/s');ylabel('单位/m')
+title('物体重心距离水面12cm运动轨迹')
+\end{verbatim}
+
+\begin{verbatim}
+function dY=odefun(t,Y)
+dY=[Y(2);1.2/0.0736*Y(2)^2-16/0.0736*Y(1)-3.664/0.0736];
+\end{verbatim}
+
+\begin{verbatim}
+竖放：clc,clear
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.275 0]);
+subplot(3,1,1)
+plot(TT,YY(:,1),'r-*',TT,YY(:,2),'b--')
+xlabel('单位/s');ylabel('单位/m')
+title('物体重心在水面运动轨迹')
+
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.325 0.7746]);
+subplot(3,1,2)
+plot(TT,YY(:,1),'r-*',TT,YY(:,2),'b--')
+xlabel('单位/s');ylabel('单位/m')
+title('物体重心距离水面5cm运动轨迹')
+
+[TT,YY]=ode45(@odefun,0:0.01:0.2,[0.395 1.414]);
+subplot(3,1,3)
+plot(TT,YY(:,1),'r-*',TT,YY(:,2),'b--')
+xlabel('单位/s');ylabel('单位/m')
+title('物体重心距离水面12cm运动轨迹')
+\end{verbatim}
+
+\begin{verbatim}
+function dY=odefun(t,Y)
+dY=[Y(2);0.6/0.0736*Y(2)^2-8/0.0736*Y(1)-1.464/0.0736];
+\end{verbatim}
