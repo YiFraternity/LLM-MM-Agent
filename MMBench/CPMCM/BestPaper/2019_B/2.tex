@@ -1,0 +1,1386 @@
+\begin{center}
+\includegraphics[width=0.9\textwidth]{image.png}
+\end{center}
+
+\begin{center}
+\textbf{中国研究生创新实践系列大赛}\\
+\textbf{“华为杯”第十六届中国研究生}\\
+\textbf{数学建模竞赛}
+\end{center}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+学 校 & 中国人民解放军海军工程大学 \\
+\hline
+参赛队号 & 19910160009 \\
+\hline
+队员姓名 & 1. 徐瑞麟 \\
+& 2. 李明珂 \\
+& 3. 文者 \\
+\end{tabular}
+\end{table}
+
+\begin{center}
+\textbf{中国研究生创新实践系列大赛}\\
+\textbf{“华为杯”第十六届中国研究生}\\
+\textbf{数学建模竞赛}
+\end{center}
+
+\begin{flushleft}
+题目
+\end{flushleft}
+\begin{center}
+\textbf{天文导航中的星图识别}
+\end{center}
+
+\begin{center}
+摘 \quad 要：
+\end{center}
+
+本文以导航恒星的几何关系为基础，研究了根据导航恒星天球坐标解算测者天球坐标的问题，以及三星观测定位模型非线性方程组的解析解法和数值解法，并对三星观测定位误差与导航恒星排布之间的关系进行了理论推证和仿真分析。同时针对星图识别问题，以角距及其衍生特征为基础，研究并设计了三种星图识别特征，并实现了对题给星图数据的识别。
+
+针对问题一中第（1）问，利用了天球坐标与空间直角坐标的转换关系、空间三角形几何关系与向量夹角的计算方法，构造了三元超定方程组；利用变量代换、线性代数和空间解析几何知识，提出了此类三元超定方程组的三种不同解析解法，给出了每种解法的不同几何含义和具体的解，并在解法三中创新地提出了考虑参数依赖时方程的解法。
+
+针对问题一中第（2）问，在第（1）问的基础上构造了三元非线性方程组，由于得到解析解非常困难，团队主要采用了基于最小二乘法和牛顿迭代法的数值解法，推导图像坐标系星像点与天球坐标系利用第二问答案数据采用相应方法给出了几组例解。
+
+针对问题一中第（3）问，根据天文导航误差传播理论进行推导，得出了“恒星四面体体积越大，定位精度越高”的理论结果，考虑到实际视场宽度问题，探索了星像点在感光胶片的分布与定位精度的关系，确定在三星观测定位时，应当使得 3 颗导航恒星尽量位于视场边界，且呈正三角形排布的选星方式受误差影响最小，并采用蒙特卡洛仿真试验验证了结果。
+
+针对问题二，首先采用角距匹配思想，构建恒星夹角正弦数据库，并依据视场界限进行筛选，缩小了搜索空间。并通过编程实现了基于角距特征的星图识别；构建了邻接星数据库，建立了基于角距和特征的星图识别模型；在第一题（2）问提出的感光面投影到天球坐标系的思想方法的基础上，利用邻接星数据库，提出了一种非角距衍生的星图识别特征——恒星线交角特征。然后对上述判据带入星图进行判断，给出了匹配结果和匹配计算量，对各种算法的适用条件和优缺点进行了全面的分析，并给出了最终结果。
+
+\textbf{关键词：} 三星观测定位，星图识别，解非线性方程组，蒙特卡洛仿真，角距匹配，恒星线交角匹配。
+
+\section*{目录}
+\begin{itemize}
+    \item[1] 问题重述 \dotfill 3
+    \begin{itemize}
+        \item[1.1] 问题背景 \dotfill 3
+        \item[1.2] 问题描述 \dotfill 3
+    \end{itemize}
+    \item[2] 基本假设和符号系统 \dotfill 4
+    \begin{itemize}
+        \item[2.1] 基本假设 \dotfill 4
+        \item[2.2] 符号系统 \dotfill 4
+    \end{itemize}
+    \item[3] 问题一的建模与求解 \dotfill 5
+    \begin{itemize}
+        \item[3.1] 问题分析 \dotfill 5
+        \begin{itemize}
+            \item[3.1.1] 子问题1和子问题2的分析 \dotfill 5
+            \item[3.1.3] 子问题3的分析 \dotfill 6
+        \end{itemize}
+        \item[3.2] 模型建立 \dotfill 6
+        \begin{itemize}
+            \item[3.2.1] 三星观测定位模型 \dotfill 6
+            \item[3.2.2] 基于恒星四面体的选星模型 \dotfill 7
+        \end{itemize}
+        \item[3.3] 问题求解 \dotfill 12
+        \begin{itemize}
+            \item[3.3.1] 子问题1的求解 \dotfill 13
+            \item[3.3.2] 子问题2的求解 \dotfill 15
+            \item[3.3.3] 子问题3的求解 \dotfill 17
+        \end{itemize}
+        \item[3.4] 模型评价 \dotfill 20
+    \end{itemize}
+    \item[4] 问题二的建模与求解 \dotfill 21
+    \begin{itemize}
+        \item[4.1] 问题分析 \dotfill 21
+        \item[4.2] 模型建立 \dotfill 21
+        \begin{itemize}
+            \item[4.2.1] 基于角距特征搜索的星图识别模型 \dotfill 22
+            \item[4.2.2] 基于恒星线交角搜索的星图识别模型 \dotfill 23
+            \item[4.2.3] 基于角距和特征搜索的星图识别模型 \dotfill 24
+        \end{itemize}
+        \item[4.3] 问题求解 \dotfill 25
+        \begin{itemize}
+            \item[4.3.1] 使用角距特征搜索 \dotfill 25
+            \item[4.2.3] 使用恒星线交角搜索 \dotfill 27
+            \item[4.2.3] 使用角距和特征搜索 \dotfill 27
+        \end{itemize}
+        \item[4.4] 模型评价 \dotfill 31
+    \end{itemize}
+    \item[5] 总结 \dotfill 33
+    \item 参考文献 \dotfill 34
+    \item 附录 \dotfill 35
+    \begin{itemize}
+        \item 附录A \dotfill 35
+        \item 附录B \dotfill 35
+        \item 附录C \dotfill 36
+        \item 附录D \dotfill 36
+        \item 附录E \dotfill 37
+        \item 附录F \dotfill 38
+        \item 附录G \dotfill 39
+    \end{itemize}
+\end{itemize}
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+天文导航（Celestial Navigation）是利用天体光频辐射或射电辐射能量，被动探测天体位置，研究天体和载体之间的关系，以确定载体的位置、航向和姿态引导载体运动的导航方法。天文导航的优点主要有：抗干扰能力强、全球使用、信息实时性好、精度较高、误差不随时间发散的特点 \cite{ref1} \cite{ref1}。
+
+星敏感器是以恒星为参照系，以星空为工作对象的高精度空间姿态测量装置，通过探测天球上不同位置的恒星并进行解算，为卫星、洲际战略导弹、宇航飞船等航空航天飞行器提供准确的空间方位和基准，并且与惯性陀螺一样都具有自主导航能力，具有重要的应用价值。
+
+本题是在利用星敏感器进行天文定位的背景下展开的，主要讨论两个方面的问题：
+
+（1）天文定位。也即利用星敏感器测得 3 颗恒星在天球坐标系下的位置信息（赤经，赤纬），解算星敏感器（测者）在大地坐标系中所在位置。
+
+（2）星图识别。也即将当前星敏感器视场中观测得到的星图与导航星库中的恒星数据进行匹配，并完成对观测星图中的恒星进行识别的任务。
+
+\subsection{问题描述}
+
+本题需要通过建立数学模型，解决如下问题。
+
+\textbf{问题一} （1）通过天球坐标系下利用星敏感器测得 3 颗恒星的赤经和赤纬坐标，以及来自此 3 颗恒星的平行光经过星敏感器光学系统成像在感光面上的星像点质心中心位置，在已知星敏感器焦距的情况下，建立解算星敏感器光轴与天球面焦点位置信息的数学模型及其求解算法。（2）在（1）的条件下，若星敏感器焦距未知，建立解算星敏感器光轴与天球面焦点位置信息的数学模型及其求解算法。（3）在考虑误差的情况下，分析确定在使用三星观测定位方法的情形下，选择以何种形式排列的 3 颗导航恒星，可以使得定位误差最小。
+
+\textbf{问题二} 以角距或其衍生的形式为特征的传统星图识别方法比较简单，但所需存储空间较大，实时性不好且识别率不高。为提高星图识别算法的实时性和降低误匹配率，可以对星图中的星点信息进行更为精细的特征提取，构建更高层次的特征。在给出总量为 4908 的简易星表的基础上，构建特征提取模型并设计星图识别算法，确定测得 8 幅星图中每个星像点在简易星表中对应的恒星编号，并评估所设计的算法性能。
+
+\section{基本假设和符号系统}
+
+\subsection{基本假设}
+
+假设 1 由于地球半径的尺度相比于导航恒星的对地距离可以忽略不计，故将地球视为一个点，并以地心代表地球进行计算和处理。
+
+假设 2 本文所处的观测条件，是不考虑星云尘埃、云团遮挡、光的折反射等情况的理想条件。
+
+假设 3 关于星敏感器本身所产生的观测误差，本文认为相对于观测角而言属于小角度误差，即在测角误差为 $\Delta \alpha$ 时，有 $\sin \Delta \alpha \approx \tan \Delta \alpha \approx \Delta \alpha$.
+
+假设 4 不考虑观测过程中导航恒星相对天球坐标系的位置变化。
+
+假设 5 图像坐标系与星敏感器所在载体坐标系重合。
+
+\subsection{符号系统}
+
+本文所使用的符号系统及其解释如表 2.1 所示。
+
+\begin{table}[h]
+\centering
+\caption{本文所使用的部分符号说明}
+\begin{tabular}{c c}
+\hline
+符号 & 说明 \\
+\hline
+$\alpha_{i}$ & 导航恒星的赤经 \\
+\hline
+$\delta_{i}$ & 导航恒星的赤纬 \\
+\hline
+$\alpha_{0}$ & 星敏感器的赤经 \\
+\hline
+$\delta_{0}$ & 星敏感器的赤纬 \\
+\hline
+$a_{i}$ & 感光面上投影点到感光面中心的距离 \\
+\hline
+$\overrightarrow{OO'}, \overrightarrow{OD}$ & 星敏感器光轴方向 \\
+\hline
+$f$ & 星敏感器焦距 \\
+\hline
+\end{tabular}
+\end{table}
+
+注：考虑到全文连续性，其他未在表 2.1 中列出的符号将在建模和求解过程中给出解释说明。
+
+\section{3 问题一的建模与求解}
+
+\subsection{3.1 问题分析}
+
+实现在天球坐标系下的三星观测定位，实际是求解星敏感器的光轴指向问题。根据假设 1，将地球（测者）视为一点 $O$，则星敏感器的光轴 $OO'$ 与天球面的交点即为点 $D(\alpha_0, \delta_0)$，$D$ 点坐标也即星敏感器（测者）在天球坐标系中的赤经和赤纬。问题一的求解，就是利用 3 颗导航恒星 $P_1, P_2, P_3$ 的坐标，以及其在星敏感器感光面 $ABCE$ 上的投影与感光面中心 $O'$ 的距离 $a_1, a_2, a_3$，求解 $\alpha_0$ 和 $\delta_0$ 的过程（图 3.1）。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{问题一的几何分析}
+    \label{fig:3.1}
+\end{figure}
+
+\subsubsection{3.1.1 子问题 1 和子问题 2 的分析}
+
+问题一的前两个子问题，都是根据 3 颗导航恒星在天球坐标系下的位置确定测者位置。图 3.2（a）反映了球坐标系、空间直角坐标系和天球坐标系的关系。天球坐标系中的赤纬 $\delta$ 即经典球坐标系中的 $90^\circ - \varphi$，赤经 $\alpha$ 即经典球坐标系中的 $\theta$。因此，需要将在天球坐标系和图像坐标系下的位置坐标统一到直角坐标系下表示，再通过图 3.2（b）所示的三角关系，解 3 个坐标三角形 $\triangle O'OQ_i (i=1,2,3)$，确定向量 $\overrightarrow{OD}$ 关于向量 $\overrightarrow{OP_1}$、$\overrightarrow{OP_2}$ 和 $\overrightarrow{OP_3}$ 的相对关系，联立方程求解 $D$ 点的坐标。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{问题一的坐标关系}
+    \label{fig:3.2}
+\end{figure}
+
+\subsection{3.1.3 子问题 3 的分析}
+
+本问题的误差主要来源于星敏感器校准误差和导航恒星质心提取误差等，统称为天文观测误差。当天文观测误差一定时，子问题 3 需要分析三星观测定位算法受误差的影响情况，确定对定位算法产生决定性影响的关键因素，并以此确定导航恒星的选择方式。
+
+\subsection{3.2 模型建立}
+
+对于子问题 1 和子问题 2，从分析 3 颗导航恒星与星敏感器光轴的角度关系出发，建立通过三星观测定位方法求解测者在天球坐标系下位置坐标的数学模型，并给出求解该问题的一般方法。
+
+对于子问题 3，文献[2]证明了对于三星观测定姿问题，所选 3 颗导航恒星与观测点所成四面体（恒星四面体）体积最大时，定姿误差最小。在此基础上，本节通过数学推证，说明了当三星在视场顶面正方形中按其最大内接正三角形排布时的误差最小。
+
+\subsubsection{3.2.1 三星观测定位模型}
+
+如图 3.3 所示，$P_{i}(\alpha_{i}, \delta_{i}) (i=1,2,3)$ 是 3 颗导航恒星在天球坐标系下的位置，$O$ 点为地心，$\overline{OD}$ 为星敏感器光轴指向，$\overline{OD}$ 与星敏感器感光面正交于点 $O'$（感光面中心），$O$ 与 $O'$ 点的距离为星敏感器的焦距 $f$，$Q_{i}$ 为 3 颗导航恒星在星敏感器感光面上的投影坐标，其与感光面中心的距离为 $a_{i}$，$r_{0}$ 和 $r_{i}$ 分别为 $D$ 点和 $P_{i}$ 点的球径，是一个充分大量。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{子问题 1 和子问题 2 的几何抽象}
+    \label{fig:3.3}
+\end{figure}
+
+参照空间直角坐标系与球坐标系的坐标转化关系，可以将用天球坐标表示的点统一到空间直角坐标系中。对于天球坐标系中的任意一点 $P(\alpha, \delta)$（球径 $r$ 充分大），将其变换为直角坐标表示的点 $P'(x, y, z)$，坐标变换关系为：
+
+\begin{equation}
+\begin{cases}
+x = r \cos \delta \cos \alpha \\
+y = r \cos \delta \sin \alpha \\
+z = r \sin \delta
+\end{cases}
+\tag{3.1}
+\end{equation}
+
+对子问题 1 而言，在图 3.3 中，可以将其抽象成以下表述：
+
+已知 $P_{1}(\alpha_{1}, \delta_{1}, r_{1})$, $P_{2}(\alpha_{2}, \delta_{2}, r_{2})$, $P_{3}(\alpha_{3}, \delta_{3}, r_{3})$, $\overline{OO'} = f$, $\overline{O'Q_{1}} = a_{1}$, $\overline{O'Q_{2}} = a_{2}$, $\overline{O'Q_{3}} = a_{3}$;
+
+求解 $D(\alpha_{0}, \delta_{0})$.
+
+由于
+\begin{equation}
+\cos \angle P_{i} O D=\cos \left\langle\overrightarrow{O P_{i}}, \overrightarrow{O D}\right\rangle=\frac{\overrightarrow{O P_{i}} \cdot \overrightarrow{O D}}{\left|\overrightarrow{O P_{i}}\right|\left|\overrightarrow{O D}\right|}
+\tag{3.2}
+\end{equation}
+且
+\begin{align}
+\overrightarrow{O P_{i}} &=\left(r_{i} \cos \delta_{i} \cos \alpha_{i}, r_{i} \cos \delta_{i} \sin \alpha_{i}, r_{i} \sin \delta_{i}\right) \tag{3.3} \\
+\overrightarrow{O D} &=\left(r_{0} \cos \delta_{0} \cos \alpha_{0}, r_{0} \cos \delta_{0} \sin \alpha_{0}, r_{0} \sin \delta_{0}\right) \tag{3.4}
+\end{align}
+于是有
+\begin{align}
+\frac{\overrightarrow{O P_{i}} \cdot \overrightarrow{O D}}{\left|\overrightarrow{O P_{i}}\right|\left|\overrightarrow{O D}\right|} &= \frac{r_{i} \cos \delta_{i} \cos \alpha_{i} r_{0} \cos \delta_{0} \cos \alpha_{0}+r_{i} \cos \delta_{i} \sin \alpha_{i} r_{0} \cos \delta_{0} \sin \alpha_{0}+r_{i} \sin \delta_{i} r_{0} \sin \delta_{0}}{\sqrt{\left(r_{i} \cos \delta_{i} \cos \alpha_{i}\right)^{2}+\left(r_{i} \cos \delta_{i} \sin \alpha_{i}\right)^{2}+\left(r_{i} \sin \delta_{i}\right)^{2}} \sqrt{\left(r_{0} \cos \delta_{0} \cos \alpha_{0}\right)^{2}+\left(r_{0} \cos \delta_{0} \sin \alpha_{0}\right)^{2}+\left(r_{0} \sin \delta_{0}\right)^{2}}} \nonumber \\
+&= \frac{r_{i} r_{0}\left(\cos \delta_{i} \cos \alpha_{i} \cos \delta_{0} \cos \alpha_{0}+\cos \delta_{i} \sin \alpha_{i} \cos \delta_{0} \sin \alpha_{0}+\sin \delta_{i} \sin \delta_{0}\right)}{r_{i} r_{0} \sqrt{\left(\cos \delta_{i} \cos \alpha_{i}\right)^{2}+\left(\cos \delta_{i} \sin \alpha_{i}\right)^{2}+\left(\sin \delta_{i}\right)^{2}} \sqrt{\left(\cos \delta_{0} \cos \alpha_{0}\right)^{2}+\left(\cos \delta_{0} \sin \alpha_{0}\right)^{2}+\left(\sin \delta_{0}\right)^{2}}} \nonumber \\
+&= \frac{\cos \delta_{i} \cos \alpha_{i} \cos \delta_{0} \cos \alpha_{0}+\cos \delta_{i} \sin \alpha_{i} \cos \delta_{0} \sin \alpha_{0}+\sin \delta_{i} \sin \delta_{0}}{\sqrt{\cos ^{2} \delta_{i}\left(\cos ^{2} \alpha_{i}+\sin ^{2} \alpha_{i}\right)+\sin ^{2} \delta_{i}} \sqrt{\cos ^{2} \delta_{0}\left(\cos ^{2} \alpha_{0}+\sin ^{2} \alpha_{0}\right)+\sin ^{2} \delta_{0}}} \nonumber \\
+&= \cos \delta_{i} \cos \alpha_{i} \cos \delta_{0} \cos \alpha_{0}+\cos \delta_{i} \sin \alpha_{i} \cos \delta_{0} \sin \alpha_{0}+\sin \delta_{i} \sin \delta_{0}
+\tag{3.5}
+\end{align}
+又在 $\triangle O^{\prime} O Q_{i}$ 中有
+\begin{equation}
+\cos \left\langle\overrightarrow{O P_{i}}, \overrightarrow{O D}\right\rangle=\frac{f}{\sqrt{a_{i}^{2}+f^{2}}}
+\tag{3.6}
+\end{equation}
+所以
+\begin{equation}
+\frac{f}{\sqrt{a_{i}^{2}+f^{2}}}=\cos \delta_{i} \cos \alpha_{i} \cos \delta_{0} \cos \alpha_{0}+\cos \delta_{i} \sin \alpha_{i} \cos \delta_{0} \sin \alpha_{0}+\sin \delta_{i} \sin \delta_{0}, i=1,2,3
+\tag{3.7}
+\end{equation}
+式 (3.7) 实际上是一个方程组
+\begin{equation}
+\left\{\begin{array}{l}
+\frac{f}{\sqrt{a_{1}^{2}+f^{2}}}=\cos \delta_{1} \cos \alpha_{1} \cos \delta_{0} \cos \alpha_{0}+\cos \delta_{1} \sin \alpha_{1} \cos \delta_{0} \sin \alpha_{0}+\sin \delta_{1} \sin \delta_{0} \\
+\frac{f}{\sqrt{a_{2}^{2}+f^{2}}}=\cos \delta_{2} \cos \alpha_{2} \cos \delta_{0} \cos \alpha_{0}+\cos \delta_{2} \sin \alpha_{2} \cos \delta_{0} \sin \alpha_{0}+\sin \delta_{2} \sin \delta_{0} \\
+\frac{f}{\sqrt{a_{3}^{2}+f^{2}}}=\cos \delta_{3} \cos \alpha_{3} \cos \delta_{0} \cos \alpha_{0}+\cos \delta_{3} \sin \alpha_{3} \cos \delta_{0} \sin \alpha_{0}+\sin \delta_{3} \sin \delta_{0}
+\end{array}\right.
+\tag{3.8}
+\end{equation}
+在式 (3.8) 中，仅有 $\alpha_{0}$ 和 $\delta_{0}$ 两个未知量，因此，该方程组有一个最小二乘解。同理，关于子问题 2，当 $f$ 未知时，共三个方程，求解 $f$, $\alpha_{0}$ 和 $\delta_{0}$ 三个未知量时，有唯一解。
+
+\subsection*{3.2.2 基于恒星四面体的选星模型}
+
+文献[2]采用多矢量天文定姿方法，建立了天文定姿误差模型，在主要考虑三星观测定姿的情况下，分析了影响三星观测定姿精度的关键因素。本问题以此为基础，将三星定姿问题的误差分析方法转化运用到三星定位问题上，建立定位误差的数学模型。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{坐标系的抽象和转换}
+    \label{fig:coordinate_system}
+\end{figure}
+
+如图 \ref{fig:coordinate_system} 所示，设天球坐标系为 $T$ 系，图像坐标系 $XO'Y$ 为 $S$ 系，空间直角坐标系 $xOy$ 为 $V$ 系，点 $Q_i(X_i, Y_i)$ 为导航恒星 $P_i(\alpha_i, \delta_i)$ 不考虑天文观测误差时，在图像坐标系下的投影。点 $Q'_i$ 是在天文观测误差影响下的实际观测投影。
+
+观测点 $Q$ 在 $S$ 系下的单位向量为
+
+\begin{equation}
+\mathbf{e}_s = \frac{1}{\sqrt{X^2 + Y^2 + f^2}} \begin{bmatrix} X \\ Y \\ f \end{bmatrix} = \begin{bmatrix} x_{eq} \\ y_{eq} \\ z_{eq} \end{bmatrix}
+\tag{3.9}
+\end{equation}
+
+观测点 $Q$ 在 $V$ 系下的单位向量为
+
+\begin{equation}
+\mathbf{e}_v = \mathbf{e}_p = \begin{bmatrix} \cos \delta \cos \alpha \\ \cos \delta \sin \alpha \\ \sin \delta \end{bmatrix} = \begin{bmatrix} x_{ep} \\ y_{ep} \\ z_{ep} \end{bmatrix}
+\tag{3.10}
+\end{equation}
+
+设由 $S$ 系到 $V$ 系的观测转换矩阵为 $\mathbf{C}_S^V$，则 $\mathbf{e}_s$ 到 $\mathbf{e}_v$ 的关系为
+
+\begin{equation}
+\mathbf{e}_v = \mathbf{C}_S^V \mathbf{e}_s
+\tag{3.11}
+\end{equation}
+
+对于三星观测定位问题，记 $\mathbf{S} = \begin{bmatrix} \mathbf{s}_1^{\text{T}} \\ \mathbf{s}_2^{\text{T}} \\ \mathbf{s}_3^{\text{T}} \end{bmatrix}$，$\mathbf{V} = \begin{bmatrix} \mathbf{v}_1^{\text{T}} \\ \mathbf{v}_2^{\text{T}} \\ \mathbf{v}_3^{\text{T}} \end{bmatrix}$，则根据式 (3.11) 有
+
+\begin{equation}
+\mathbf{S} = \mathbf{V} \mathbf{C}_S^V
+\tag{3.12}
+\end{equation}
+
+所以，当观测恒星数目为 3 时，使用最小二乘法 [X] 求解矩阵方程 (3.12)，得
+
+\begin{equation}
+\mathbf{C}_S^V = (\mathbf{V}^{\text{T}} \mathbf{V})^{-1} \mathbf{V}^{\text{T}} \mathbf{S} = \mathbf{M} \mathbf{S}
+\tag{3.13}
+\end{equation}
+
+式中
+
+\begin{equation}
+\mathbf{M} = (\mathbf{V}^{\text{T}} \mathbf{V})^{-1} \mathbf{V}^{\text{T}}
+\tag{3.14}
+\end{equation}
+
+在 $V$ 系下产生天文观测误差 $\overrightarrow{OP_i} - \overrightarrow{O P_i'} = \Delta \mathbf{P}$ 时，在 $V$ 系下的响应 $\overrightarrow{OQ_i} - \overrightarrow{O Q_i'} = \Delta \mathbf{S}$，观测得到的 $\mathbf{\tilde{S}}$ 为
+
+\begin{equation}
+\mathbf{\tilde{S}} = \mathbf{S} + \Delta \mathbf{S}
+\tag{3.15}
+\end{equation}
+
+在观测时，观测转换矩阵 $\boldsymbol{C}_{S}^{V}$ 对 $\tilde{S}$ 的响应为
+\begin{equation}
+\tilde{\boldsymbol{C}}_{S}^{V}=\boldsymbol{M} \tilde{S}=\boldsymbol{M} S+\boldsymbol{M} \Delta S=\boldsymbol{C}_{S}^{V}+\Delta \boldsymbol{C}_{S}^{V}
+\tag{3.16}
+\end{equation}
+在 $V$ 系中，记天文观测误差矢量为 $\Delta \boldsymbol{\theta}=\left[\begin{array}{lll}\Delta \theta_{1} & \Delta \theta_{2} & \Delta \theta_{3}\end{array}\right]^{\mathrm{T}}$，由假设 3，观测误差为小角度量，因此观测转换矩阵的误差响应 $\tilde{\boldsymbol{C}}_{S}^{V}$ 可以用观测误差矢量 $\Delta \boldsymbol{\theta}$ 表示为
+\begin{equation}
+\tilde{\boldsymbol{C}}_{S}^{V}=\boldsymbol{C}_{S^{\prime}}^{V}=\boldsymbol{C}_{S}^{V} \boldsymbol{C}_{S^{\prime}}^{S} \approx \boldsymbol{C}_{S}^{V}\left[\begin{array}{ccc}1 & \Delta \theta_{3} & -\Delta \theta_{2} \\-\Delta \theta_{3} & 1 & \Delta \theta_{1} \\\Delta \theta_{2} & -\Delta \theta_{1} & 1\end{array}\right]
+\tag{3.17}
+\end{equation}
+式中，$S^{\prime}$ 表示在天文观测误差影响下对星敏感器导航恒星 $P$ 的观测响应，$\boldsymbol{C}_{S}^{S^{\prime}}$ 为误差转移矩阵，是一个反对称矩阵 $^{[3]}$。
+
+联立式 (3.16) 和式 (3.17)，得转换误差
+\begin{equation}
+\Delta \boldsymbol{C}_{S}^{V}=\tilde{\boldsymbol{C}}_{S}^{V}-\boldsymbol{C}_{S}^{V}=\boldsymbol{C}_{S}^{V}\left[\begin{array}{ccc}0 & \Delta \theta_{3} & -\Delta \theta_{2} \\-\Delta \theta_{3} & 0 & \Delta \theta_{1} \\\Delta \theta_{2} & -\Delta \theta_{1} & 0\end{array}\right]=\boldsymbol{C}_{S}^{V} \boldsymbol{N}
+\tag{3.18}
+\end{equation}
+式中
+\begin{equation}
+\boldsymbol{N}=\left[\begin{array}{ccc}0 & \Delta \theta_{3} & -\Delta \theta_{2} \\-\Delta \theta_{3} & 0 & \Delta \theta_{1} \\\Delta \theta_{2} & -\Delta \theta_{1} & 0\end{array}\right]=\boldsymbol{C}_{V}^{S} \Delta \boldsymbol{C}_{S}^{V}
+\tag{3.19}
+\end{equation}
+分别求矩阵 $\Delta \boldsymbol{C}_{S}^{V}$，$\boldsymbol{N}$ 和天文观测误差矢量 $\Delta \boldsymbol{\theta}$ 的协方差矩阵 $\operatorname{Cov}_{\Delta}, \operatorname{Cov}_{N}$ 和 $\operatorname{Cov}_{\Delta \theta}$ 得
+\begin{equation}
+\operatorname{Cov}_{\Delta}=\left\langle\Delta \boldsymbol{C}_{S}^{V}\left(\Delta \boldsymbol{C}_{S}^{V}\right)^{\mathrm{T}}\right\rangle
+\tag{3.20}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\operatorname{Cov}_{N} & =\left\langle\boldsymbol{N} \boldsymbol{N}^{\mathrm{T}}\right\rangle=\left\langle\left(\boldsymbol{C}_{V}^{S} \Delta \boldsymbol{C}_{S}^{V}\right)\left(\boldsymbol{C}_{V}^{S} \Delta \boldsymbol{C}_{S}^{V}\right)^{\mathrm{T}}\right\rangle=\boldsymbol{C}_{V}^{S} \operatorname{Cov}_{\Delta} \boldsymbol{C}_{S}^{V} \\
+& =\left[\begin{array}{ccc}\left(\Delta \theta_{2}\right)^{2}+\left(\Delta \theta_{3}\right)^{2} & -\Delta \theta_{1} \Delta \theta_{2} & -\Delta \theta_{1} \Delta \theta_{3} \\-\Delta \theta_{1} \Delta \theta_{2} & \left(\Delta \theta_{1}\right)^{2}+\left(\Delta \theta_{3}\right)^{2} & -\Delta \theta_{2} \Delta \theta_{3} \\-\Delta \theta_{1} \Delta \theta_{3} & -\Delta \theta_{2} \Delta \theta_{3} & \left(\Delta \theta_{1}\right)^{2}+\left(\Delta \theta_{2}\right)^{2}\end{array}\right]
+\end{aligned}
+\tag{3.21}
+\end{equation}
+\begin{equation}
+\operatorname{Cov}_{\Delta \theta}=\left\langle\Delta \boldsymbol{\theta}\left(\Delta \boldsymbol{\theta}\right)^{\mathrm{T}}\right\rangle=\left[\begin{array}{ccc}\left(\Delta \theta_{1}\right)^{2} & \Delta \theta_{1} \Delta \theta_{2} & \Delta \theta_{1} \Delta \theta_{3} \\\Delta \theta_{1} \Delta \theta_{2} & \left(\Delta \theta_{2}\right)^{2} & \Delta \theta_{2} \Delta \theta_{3} \\\Delta \theta_{1} \Delta \theta_{3} & \Delta \theta_{2} \Delta \theta_{3} & \left(\Delta \theta_{3}\right)^{2}\end{array}\right]
+\tag{3.22}
+\end{equation}
+联立式 (3.21) 和 (3.22)，得
+\begin{equation}
+\begin{aligned}
+\operatorname{tr}\left(\operatorname{Cov}_{\Delta \theta}\right) & =\left(\Delta \theta_{1}\right)^{2}+\left(\Delta \theta_{2}\right)^{2}+\left(\Delta \theta_{3}\right)^{2} \\
+& =\frac{1}{2} \operatorname{tr}\left(\operatorname{Cov}_{N}\right)=\frac{1}{2} \operatorname{tr}\left(\boldsymbol{C}_{V}^{S} \operatorname{Cov}_{\Delta} \boldsymbol{C}_{S}^{V}\right)=\frac{1}{2} \operatorname{tr}\left(\operatorname{Cov}_{\Delta} \boldsymbol{C}_{V}^{S} \boldsymbol{C}_{S}^{V}\right)=\frac{1}{2} \operatorname{tr}\left(\operatorname{Cov}_{\Delta}\right)
+\end{aligned}
+\tag{3.23}
+\end{equation}
+假设 天文观测误差 $\Delta \boldsymbol{S}$ 是高斯白噪声。
+
+联立式 (3.14)，(3.16) 和 (3.20) 有
+\begin{equation}
+\begin{aligned}
+\operatorname{Cov}_{\Delta} & =E\left(\Delta \boldsymbol{C}_{S}^{V}\left(\Delta \boldsymbol{C}_{S}^{V}\right)^{\mathrm{T}}\right)=E\left(\boldsymbol{M} \Delta \boldsymbol{S}\left(\boldsymbol{M} \Delta \boldsymbol{S}\right)^{\mathrm{T}}\right) \\
+& =\boldsymbol{M} E\left(\Delta \boldsymbol{S}\left(\Delta \boldsymbol{S}\right)^{\mathrm{T}}\right) \boldsymbol{M}^{\mathrm{T}}=\boldsymbol{M} \boldsymbol{M}^{\mathrm{T}} D(\Delta \boldsymbol{S})=\left(\boldsymbol{V}^{\mathrm{T}} \boldsymbol{V}\right)^{-1} \boldsymbol{V}^{\mathrm{T}} \boldsymbol{V}\left(\boldsymbol{V}^{\mathrm{T}} \boldsymbol{V}\right)^{-1} \sigma_{S}^{2}=\left(\boldsymbol{V}^{\mathrm{T}} \boldsymbol{V}\right)^{-1} \sigma_{S}^{2}
+\end{aligned}
+\tag{3.24}
+\end{equation}
+式中 $\sigma_{S}^{2}$ 为 $\Delta \boldsymbol{S}$ 的方差。
+
+因此，天文观测误差矢量 $\Delta \boldsymbol{\theta}$ 的方差为
+
+\begin{equation}
+\text{Var}(\Delta\boldsymbol{\theta}) = \text{tr}(\boldsymbol{Cov}_{\Delta\theta}) = \frac{1}{2} \text{tr}(\boldsymbol{Cov}_{\Delta}) = \frac{1}{2} \text{tr}((\boldsymbol{V}^{\text{T}}\boldsymbol{V})^{-1}) \sigma_s^2 = \frac{\text{tr}((\boldsymbol{V}^{\text{T}}\boldsymbol{V})^*)}{2\det(\boldsymbol{V}^{\text{T}}\boldsymbol{V})} \sigma_s^2
+\tag{3.25}
+\end{equation}
+
+若记
+\begin{equation}
+\boldsymbol{A} = (\boldsymbol{V}^{\text{T}}\boldsymbol{V})^*
+\tag{3.26}
+\end{equation}
+则三星观测定位误差的均方差系数 \( K \) 为
+\begin{equation}
+K = \sqrt{\frac{\text{tr}(\boldsymbol{A})}{2\det(\boldsymbol{V}^{\text{T}}\boldsymbol{V})}}
+\tag{3.27}
+\end{equation}
+
+由式 (3.27) 可知，三星感测定位的误差完全与矩阵 \(\boldsymbol{V}\) 相关，而 \(\boldsymbol{V}\) 是导航恒星在星敏感器感光面上的投影构成，说明在天文观测误差 \(\sigma_s^2\)（也即 \(\Delta\boldsymbol{S}\)）一定的情况下，影响定位误差的关键因素是 3 颗导航恒星的排布方式。
+
+在三星观测定位时
+\begin{equation}
+\text{tr}(\boldsymbol{Cov}_{\Delta\theta}) = (\Delta\theta_1)^2 + (\Delta\theta_2)^2 + (\Delta\theta_3)^2 = \frac{\text{tr}(\boldsymbol{A})}{2\det^2(\boldsymbol{V})} \sigma_s^2
+\tag{3.28}
+\end{equation}
+设 \(\boldsymbol{V} = [\boldsymbol{\nu}_1^{\text{T}} \ \boldsymbol{\nu}_2^{\text{T}} \ \boldsymbol{\nu}_3^{\text{T}}]^{\text{T}}\)，则
+\begin{equation}
+\det(\boldsymbol{V}) = \begin{vmatrix}
+\boldsymbol{\nu}_1^{\text{T}} \\
+\boldsymbol{\nu}_2^{\text{T}} \\
+\boldsymbol{\nu}_3^{\text{T}}
+\end{vmatrix} = (\boldsymbol{\nu}_1 \times \boldsymbol{\nu}_2) \cdot \boldsymbol{\nu}_3
+\tag{3.29}
+\end{equation}
+
+定义 恒星四面体是在三星观测定位时观测的 3 颗导航恒星与天球面的交点和观测点（天球球心）所成的四面体（图 3.4 中四面体 \(OP_1P_2P_3\)）。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{image.png}
+\caption{恒星四面体}
+\end{figure}
+
+根据式 (3.30) 可得，对恒星四面体 \(OP_1P_2P_3\)，其体积
+\begin{equation}
+V_{\text{恒星四面体}OP_1P_2P_3} = \frac{1}{6} (\overrightarrow{OP_1} \times \overrightarrow{OP_2}) \cdot \overrightarrow{OP_3}
+\tag{3.30}
+\end{equation}
+结合式 (3.29) 和 (3.30)，得到
+\begin{equation}
+\text{Var}(\Delta\boldsymbol{\theta}) = \frac{\text{tr}(\boldsymbol{A})}{2\det(\boldsymbol{V}^{\text{T}}\boldsymbol{V})} \sigma_s^2 = \frac{\text{tr}(\boldsymbol{A})}{72V_{\text{恒星四面体}OP_1P_2P_3}^2} \sigma_s^2
+\tag{3.31}
+\end{equation}
+
+猜想 文献[2]通过仿真验证，在三星定姿问题上，项 \(\text{tr}(\boldsymbol{A})\) 的量级远小于 \(1/V^2\) 的量级。故类比猜想在三星定位问题中，\(1/V_{\text{恒星四面体}OP_1P_2P_3}^2\) 是影响定位精度的关键因素。
+
+基于对恒星四面体特性的分析，可作如下推证：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{上半天球的内接四面体}
+    \label{fig:3.5}
+\end{figure}
+
+\textbf{推证} 如图 \ref{fig:3.5} 所示，以 $O$ 为球心，半径为 $R$ 的上半天球被任一平面 $\alpha$ 所截，截得 $\odot O'$，且截面与 $O$ 的距离 $\overline{OO'}$ 随之确定。若要使平面 $\alpha$ 限制下的四面体 $OABC$ 体积最大，在 $\overline{OO'}$ 一定时，必须使得 $S_{\triangle ABC}$ 最大。
+
+\textbf{定理} 当且仅当圆内接三角形为正三角形时，其面积最大。
+
+由定理可知，在 $\odot O'$ 中，要使 $S_{\triangle ABC}$ 最大，$\triangle ABC$ 一定是正三角形，设其边长为 $a$，则有
+
+\begin{equation}
+V_{\text{恒星四面体}OABC} = \frac{1}{3} S_{\triangle ABC} \cdot h = \frac{1}{3} \cdot \frac{\sqrt{3}}{4} a^2 \cdot \sqrt{R^2 - \frac{a^2}{4} - \left( \frac{\sqrt{3}}{6} a \right)^2}
+\tag{3.32}
+\end{equation}
+
+\begin{equation}
+= \frac{\sqrt{3}}{12} a^2 \sqrt{R^2 - \frac{1}{3} a^2}
+\end{equation}
+
+于是
+
+\begin{equation}
+V_{\text{恒星四面体}OABC}^2 = \frac{3R^2}{144} a^4 - \frac{1}{144} a^6
+\tag{3.33}
+\end{equation}
+
+\begin{equation}
+(V_{\text{恒星四面体}OABC}^2)' = -\frac{1}{24} a^5 + \frac{R^2}{12} a^3 = \frac{1}{24} a^3 (2R^2 - a^2)
+\tag{3.34}
+\end{equation}
+
+又 $a \neq 0$，则当且仅当 $a = \sqrt{2} R$ 时，$V_{\text{恒星四面体}OABC}^2$ 取得最大值。
+
+若取 $R = 1$，则 $a = \sqrt{2}$，于是可知，在四面体 $OABC$ 中，$OA$，$OB$，$OC$ 两两垂直。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{无视场限制时误差最小的三星排布方式}
+    \label{fig:3.6}
+\end{figure}
+
+综上所述，在 3 颗导航恒星两两之间角距为直角，且星敏感器光轴方向位于观测点（天球球心）与 3 颗导航恒星连线所成 3 个方向的角平分线附近（图 \ref{fig:3.6}）。
+
+以上推证是在不考虑星敏感器视场限制条件的情况下进行的，当存在视场限制时，使
+
+用感光面截恒星四面体（图 3.7），在感光面上得到正三角形 $Q_1Q_2Q_3$，此时若仍要保持体积最大条件和正三角形的投影关系，就需要求解视场顶面正方形 $ABCD$ 的最大内接正三角形。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{受视场限制时的恒星四面体截面}
+    \label{fig:3.7}
+\end{figure}
+
+容易解出，当正三角形 $Q_1Q_2Q_3$ 的一个顶点与正方形重合，另外两个顶点所分边比例为 $\tan 15^\circ$ 时（图 3.8），该正三角形的面积最大。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{视场顶面正方形的最大内接正三角形}
+    \label{fig:3.8}
+\end{figure}
+
+因此，在实际的三星观测定位过程中，应当选择这样的 3 颗恒星：它们应当尽量位于视场边界（与中心相距较远），且在按照视场顶面正方形的最大内接正三角形方式排布，并使感光面中心尽量位于正三角形中心附近。
+
+\section{3.3 问题求解}
+
+对于子问题 1 和子问题 2，对 $D$ 点坐标给出显式的解析解比较困难，但根据分析和求证，当 $f$ 已知（子问题 1）时求解式（3.8），若给定一组数值输入，这一非线性方程组可以通过恒等变形转化为线性方程组求解。当 $f$ 未知（子问题 2）时，可以使用数值方法求解该方程组。
+
+对于子问题 3，在理论推证的基础上，为验证其可靠性，可以采用蒙特卡洛方法进行
+
+仿真试验，若仿真结果与理论分析一致，则证明理论推证是正确的。
+
+\subsection{3.3.1 子问题 1 的求解}
+
+为求解超定方程组 (3.8)，本文尝试通过下述三种方法进行求解析解，最终采用方法三（本文称“带权几何法”）求得在对 3 组参数同等依赖情况下的解析解。
+
+\subsubsection{3.3.1.1 线性变换法}
+
+当 \( f \) 已知时，设
+
+\begin{equation}
+\begin{cases}
+ea_i = \cos \delta_i \cos \alpha_i \\
+eb_i = \cos \delta_i \sin \alpha_i \\
+ec_i = \sin \delta_i \\
+ed_i = \frac{f}{\sqrt{a_i^2 + f^2}}, \, i = 1, 2, 3 \\
+x = \cos \delta_0 \cos \alpha_0 \\
+y = \cos \delta_0 \sin \alpha_0 \\
+z = \sin \delta_0
+\end{cases}
+\tag{3.35}
+\end{equation}
+
+又令
+
+\begin{equation}
+\begin{cases}
+A = [ea_1, ea_2, ea_3]^{\mathrm{T}} \\
+B = [eb_1, eb_2, eb_3]^{\mathrm{T}} \\
+C = [ec_1, ec_2, ec_3]^{\mathrm{T}} \\
+D = [ed_1, ed_2, ed_3]^{\mathrm{T}}
+\end{cases}
+\tag{3.36}
+\end{equation}
+
+则式 (3.8) 可以变换为
+
+\begin{equation}
+[A, B, C] \begin{bmatrix} x \\ y \\ z \end{bmatrix} = D
+\tag{3.37}
+\end{equation}
+
+解得
+
+\begin{equation}
+x = \frac{|D, B, C|}{|A, B, C|}, \, y = \frac{|A, D, C|}{|A, B, C|}, \, z = \frac{|A, B, D|}{|A, B, C|}
+\tag{3.38}
+\end{equation}
+
+进而有
+
+\begin{equation}
+\tan \alpha_0 = \frac{\sin \alpha_0}{\cos \alpha_0} = \frac{y}{x} = \frac{|A, D, C|}{|D, B, C|}, \, \sin \delta_0 = z = \frac{|A, B, D|}{|A, B, C|}
+\tag{3.39}
+\end{equation}
+
+当 \( f \) 已知时，\( A, B, C, D \) 均为常矩阵，故式 (3.8) 可以转化为线性方程组。但是，在变换过程中，条件约束
+
+\begin{equation}
+x^2 + y^2 + z^2 = 1
+\tag{3.40}
+\end{equation}
+
+未被考虑在内，因此，在考虑非线性约束 (3.38) 的情况下，采用此方法求解超定方程组 (3.8) 一般无解，故此法不可行。
+
+\subsubsection{3.3.1.2 简单几何法}
+
+如图 3.9 所示，解超定方程组
+
+\begin{equation}
+\left\{
+\begin{aligned}
+A_{1}x + B_{1}y + C_{1}z &= D_{1} \\
+A_{2}x + B_{2}y + C_{2}z &= D_{2} \\
+A_{1}x + B_{1}y + C_{3}z &= D_{3} \\
+x^{2} + y^{2} + z^{2} &= 1
+\end{aligned}
+\right.
+\tag{3.41}
+\end{equation}
+
+可以被等价地视为求解平面 $\alpha: A_{1}x + B_{1}y + C_{1}z = D_{1}$，平面 $\beta: A_{2}x + B_{2}y + C_{2}z = D_{2}$ 和平面 $\gamma: A_{1}x + B_{1}y + C_{3}z = D_{3}$ 交点的问题，且交点必须落在单位球上，同时满足上述条件的交点是理想解。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{解超定方程组的简单几何法}
+    \label{fig:3.9}
+\end{figure}
+
+求得 $\alpha$, $\beta$, $\gamma$ 三平面的交点为 $Q$，也即在不考虑单位球约束时的唯一解。然而所求量必须满足单位球约束，所以要求在此约束下最接近无约束解 $Q$ 的点。连接 $OQ$ 与单位球交于点 $P$，$P$ 与 $Q$ 的距离为最短，故此时 $P(x, y, z)$ 为最优解。
+
+本方法是在不考虑所求解对平面的倾向性的情况下求解的，也就是此时没有考虑对 3 颗导航恒星数据（方程组中参数 $A_{i}$, $B_{i}$, $C_{i}$）的依赖程度。
+
+\subsubsection{带权几何法}
+
+方法二是不考虑对参数的依赖条件求得的最优解。由于 3 颗导航恒星可能存在观测准确性的差异，因此，所求解应当更加依赖于观测准确性更高的导航恒星（参数）。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{解超定方程组的带权几何法}
+    \label{fig:3.10}
+\end{figure}
+
+若以对参数的同权依赖（即对 3 组参数的依赖相同）为例，分析在考虑参数依赖的情况下求解超定方程组 (3.39) 的方法，如图 3.10 有：
+
+直线 \( l \) 到平面 \( \alpha \), \( \beta \), \( \gamma \) 距离相等，与单位球交于点 \( P_1, P_2 \)，其中 \( P_1 \) 距 \( Q \) 点更近，在此条件下，\( P_1(x_1, y_1, z_1) \) 即为对 3 颗导航恒星同等依赖的最优解。
+
+设 \( Q(x_q, y_q, z_q) \)，要使过点 \( Q \) 的直线 \( l \) 到平面 \( \alpha \), \( \beta \), \( \gamma \) 距离相等，则 \( l \) 与 \( \alpha \), \( \beta \), \( \gamma \) 三条交线的角平分线重合，即有
+\[
+l = (a, b, c) = \left( \frac{A_1 + A_2 + A_3}{3}, \frac{B_1 + B_2 + B_3}{3}, \frac{C_1 + C_2 + C_3}{3} \right)
+\tag{3.42}
+\]
+设 \( \forall P(x, y, z) \in l \)，于是直线 \( l \) 为
+\[
+\frac{x - x_q}{a} = \frac{y - y_q}{b} = \frac{z - z_q}{c}
+\tag{3.43}
+\]
+即
+\[
+\frac{x - x_q}{A_1 + A_2 + A_3} = \frac{y - y_q}{B_1 + B_2 + B_3} = \frac{x - z_q}{C_1 + C_2 + C_3} \stackrel{\text{设为}}{=} t
+\tag{3.44}
+\]
+又设
+\[
+\begin{cases}
+A = A_1 + A_2 + A_3 \\
+B = B_1 + B_2 + B_3 \\
+C = C_1 + C_2 + C_3
+\end{cases}
+\tag{3.45}
+\]
+于是
+\[
+\begin{cases}
+x = At + x_q \\
+y = Bt + y_q \\
+z = Ct + z_q
+\end{cases}
+\tag{3.46}
+\]
+与单位球 \( x^2 + y^2 + z^2 = 1 \) 联立求解，得
+\[
+t = \frac{-2(Ax_q + By_q + Cz_q) \pm \sqrt{4(Ax_q + By_q + Cz_q)^2 - 4(A^2 + B^2 + C^2)(x_q^2 + y_q^2 + z_q^2 - 1)}}{2(A^2 + B^2 + C^2)}
+\tag{3.47}
+\]
+由于所选最优解为 \( P_1 \) 点，故分子取 “+” 号。于是，对 3 三组参数同等依赖情况下的最优解为
+\[
+\begin{cases}
+x_1 = At + x_q \\
+y_1 = Bt + y_q \\
+z_1 = Ct + z_q \\
+A = A_1 + A_2 + A_3 \\
+B = B_1 + B_2 + B_3 \\
+C = C_1 + C_2 + C_3 \\
+t = \frac{-2(Ax_q + By_q + Cz_q) + \sqrt{4(Ax_q + By_q + Cz_q)^2 - 4(A^2 + B^2 + C^2)(x_q^2 + y_q^2 + z_q^2 - 1)}}{2(A^2 + B^2 + C^2)}
+\end{cases}
+\tag{3.48}
+\]
+若对 3 组参数的依赖程度不同，仅需调整 \( l \) 到三个平面的距离即可，对参数依赖权重越高，到该组参数对应平面的距离越短。
+
+\subsection*{3.3.2 子问题 2 的求解}
+
+对于子问题 2，非线性方程组 (3.8) 有唯一解。由于难以给出显式的解析解，因此可以采用数值方法求解该非线性方程组。
+
+\begin{table}
+\centering
+\caption{导航恒星图像坐标和天球坐标}
+\begin{tabular}{ccc}
+赤经 $\alpha$ & 赤纬 $\delta$ & 距离 $a$ \\
+\hline
+115.8 & 28.88 & 330.1057 \\
+105.9 & 29.34 & 258.2379 \\
+107.8 & 30.25 & 192.6445 \\
+113.8 & 30.96 & 212.7449 \\
+112.3 & 31.78 & 149.8827 \\
+104.3 & 33.68 & 191.836 \\
+103.2 & 33.96 & 226.8131 \\
+106.8 & 34.01 & 99.13677 \\
+106.5 & 34.47 & 106.9912 \\
+114.8 & 34.58 & 182.1378 \\
+114.6 & 35.5 & 177.71 \\
+110.5 & 36.76 & 101.1725 \\
+116.7 & 37.52 & 275.7536 \\
+115.1 & 38.34 & 248.9759 \\
+107.9 & 39.32 & 213.3195 \\
+\end{tabular}
+\end{table}
+
+\subsubsection{使用最优化工具箱 (Optimization Toolbox) 求解}
+
+MATLAB 软件在最优化工具箱中提供了使用 $fsolve()$ 函数求解非线性方程组的方法:
+
+\begin{verbatim}
+[x, fval, exitflag] = fsolve(fun, x0, options);
+% fun 为待解方程（组）
+% x0 为初值
+% fval 为未知量个数
+% exitflag 用于判断解敛散性
+\end{verbatim}
+
+$fsolve()$ 函数多用于求解非线性方程组和含有超越函数的方程组。该函数使用最小二乘法 \cite{cite4} 求非线性方程组的数值解，但需要给出初值 $X_0$，对初值的依赖使得通过迭代不一定能够收敛到方程的根。
+
+利用最优化工具箱求解方程组 (3.8)，在初值为 $X_0=[0,0,800]$ 时，对表 3.X 中的数据，每 3 行为一组，求解得到的结果如表 3.X 所示。
+
+\begin{table}
+\centering
+\caption{最小二乘法的求解结果}
+\begin{tabular}{ccc}
+$\alpha_0$ & $\delta_0$ & $f$ \\
+\hline
+0.6 & 1.9 & 2441 \\
+0.6 & 1.9 & 2426.2 \\
+0.6 & 1.9 & 2471 \\
+0.6 & 1.9 & 1522.5 \\
+0.9 & 1.9 & 1218.7 \\
+\end{tabular}
+\end{table}
+
+\subsubsection{使用牛顿迭代法求解}
+
+牛顿迭代法 \cite{cite5} 是在数值求解非线性方程（组）中比较常用的一种方法，其基本原理是给定一个初值点，使用该点的切线近似函数，然后寻找切线与解坐标轴的交点坐标作为一
+
+16
+
+次迭代，也就是利用切线进行线性逼近。牛顿迭代法收敛速度快，但对初始值的依赖性较强。其收敛的一个充分条件是：若 \( f \) 二阶可导，则在零点 \( x \) 周围存在一个区域，只要初值点 \( x_0 \) 位于这个邻近区域内，那么牛顿迭代法必收敛。
+
+对三元非线性方程组（3.8），在初值为 \( X_0 = [0, 0, 500] \) 时，对表 3.X 中的数据，每 3 行为一组，求解得到的结果如表 3.X 所示。
+
+\begin{table}[h]
+\centering
+\caption{牛顿迭代法的求解结果}
+\begin{tabular}{ccc}
+\hline
+\( \alpha_0 \) & \( \delta_0 \) & \( f \) \\
+\hline
+0.6 & -4.4 & 2440.3 \\
+-5.7 & 27 & 2671.3 \\
+0 & 0 & 1668.4 \\
+0.6 & 1.9 & 1522.8 \\
+4 & 2.7 & -1218.6 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{3.3.3 子问题 3 的求解}
+
+基于前文所建立的恒星四面体选星结论，利用蒙特卡洛方法 [X] 对以下 6 种选星方式进行仿真试验。经验证分析，当一颗导航星位于视场顶面正方形顶点，另两颗导航星位于两边，且三星对视场中心的夹角均为 \( 120^\circ \)，也即成正方形的最大内接正三角形排布时，受天文观测误差的影响最小。
+
+\subsubsection{3.3.3.1 仿真准备}
+
+仿真参数的构造过程，实际是已知图像坐标，求解天球坐标的问题。为确定从图像坐标系到天球坐标系的转换关系，对坐标系作如下处理。
+
+如图 3.8 所示，已知 \( Q \) 点在图像坐标系下的坐标 \( (X, Y) \)，求解 \( Q \) 点在天球坐标系下的坐标。由于三维空间各方向均匀，为便于计算，可假设星敏感器光轴 \( \overrightarrow{OO'} \) 在天球系下指向春分点（赤经 \( 0^\circ \)、赤纬 \( 0^\circ \)）；星敏感器 \( X \) 轴位于天赤道面内且指向赤经增加的方向，星敏感器 \( Y \) 轴在主圈平面内指向赤纬增加的方向。\( Q(X, Y) \) 的赤经和赤纬并不是真实天球坐标系下绝对位置，而是参考位置。如果星敏感器视场中还有其他恒星，那么该星以相同方式投射到天球坐标系中，可以保证该星与 \( Q \) 星的相对关系不变。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{坐标等效转换}
+\end{figure}
+
+显然，解坐标关系得
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\alpha_{q} &= \frac{X}{f} \\
+\beta_{q} &= \frac{Y}{f}
+\end{aligned}
+\right.
+\tag{3.49}
+\end{equation}
+
+在此基础上，若已知图像坐标，则可求得其对应的天球坐标。
+
+\subsubsection{仿真试验}
+
+分析可知，天文观测误差的主要来源为观星不准误差和成像不准误差，即 $\alpha, \delta$ 和 $a$ 的误差，对这三个量分别设置误差量如下：
+
+(1) 距离误差 $\Delta a$：设置为均值为 0，方差为 0.05 的高斯分布误差。
+
+(2) 赤经误差 $\Delta a_{i}$：设置为均值为 0，标准差为 $0.1 / \cos(\delta_{i})$ 的高斯分布误差。（这里注意到赤纬越靠近天极，赤经越密集的“经线收敛效应”，在相同角距变化下，赤经的变化量与该处赤纬的余弦成反比，推导从略。）
+
+(3) 赤纬误差 $\delta_{i}$：设置为均值为 0，标准差为 0.1 的高斯分布误差。
+
+(4) 视场宽度设置为 $12^\circ$，迭代次数为 5000 次。
+
+结合前文进行的论文分析与推证，考虑以下 6 种三星排布情况的误差情况：（1）三星连线与视场顶面正方形的最大内接正三角形重合；（2）两星位于视场顶面正方形的两顶点，第三星位于对边中点；（3）三星位于视场顶面正方形的三个顶点；（4）三星位于视场顶面正方形的同一边上；（5）三星位于视场顶面正方形的对角顶点和中心；（6）三星位于视场顶面正方形的三边中点（表 3.X）。
+
+\begin{table}[h]
+\centering
+\caption{所选导航星的图像坐标}
+\begin{tabular}{c c c c}
+\hline
+\multirow{2}{*}{排布方式} & \multicolumn{3}{c}{图像坐标} \\
+\cline{2-4}
+& $Q_{1}$ & $Q_{2}$ & $Q_{3}$ \\
+\hline
+排布 1 & $(-256, 256)$ & $(512\tan15^\circ - 256, -256)$ & $(256, 256 - 512\tan15^\circ)$ \\
+排布 2 & $(-256, 256)$ & $(256, 0)$ & $(-256, -256)$ \\
+排布 3 & $(-256, 256)$ & $(256, 256)$ & $(-256, -256)$ \\
+排布 4 & $(-256, 256)$ & $(-256, 0)$ & $(-256, -256)$ \\
+排布 5 & $(-256, -256)$ & $(0, 0)$ & $(256, 256)$ \\
+排布 6 & $(0, -256)$ & $(0, 256)$ & $(-256, 0)$ \\
+\hline
+\end{tabular}
+\end{table}
+
+在上述6种排布方式下，得到的仿真结果如图3.9所示。
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_a.png}
+        \caption{方差 $4.35909700378394 \times 10^{-6}$}
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_b.png}
+        \caption{方差 $4.771756237533916 \times 10^{-6}$}
+        \label{fig:sub2}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_c.png}
+        \caption{方差 $6.339696175386709 \times 10^{-6}$}
+        \label{fig:sub3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_d.png}
+        \caption{方差 $2.528909622811590$}
+        \label{fig:sub4}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_e.png}
+        \caption{方差无穷大}
+        \label{fig:sub5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_f.png}
+        \caption{方差 $6.006234680823559 \times 10^{-6}$}
+        \label{fig:sub6}
+    \end{subfigure}
+    \caption{仿真结果}
+    \label{fig:results}
+\end{figure}
+
+\subsection*{3.3.3.3 仿真分析}
+
+图 3.9 的仿真结果说明：（1）当 3 颗导航恒星不共线时，误差相对较小；（2）导航恒星与感光面中心的距离越近，误差越大；特别地，当导航星与中心重合时，三星消减为两星，定位条件丧失，误差无穷大；（3）应当使导航星按照视场顶面正方形的最大内接正三角形方式排布。
+
+仿真结果从试验角度证实了前述选星模型理论推证的正确性，说明在进行三星观测定位时，应当避免使所选导航恒星共线的情况，同时应当尽量使三星位于视场边界上，并使得三星两两夹角为 $120^\circ$。
+
+\subsection*{3.4 模型评价}
+
+关于子问题 1 和子问题 2，通过确定天球坐标、图像坐标和直角坐标的坐标变换关系，利用恒星矢量与光轴矢量的角距离，通过 3 组导航恒星数据（恒星矢量）的两两夹角，求解用天球坐标表示的光轴矢量。得到非线性方程组（3.8）。通过理论分析可知，在式（3.8）中，仅有 $\alpha_0$ 和 $\delta_0$ 两个未知量时，该方程组为超定方程，本章给出了其最优解的解析表达。当 $f$ 未知时，共三个方程，求解 $f$、$\alpha_0$ 和 $\delta_0$ 三个未知量时，该方程组有唯一解，但难以求得解析解，本章采用了最小二乘法和牛顿迭代法求解方程组（3.8），最小二乘法在求解本问题是的精度相对更高，但两种方法对初值的依赖都比较大。
+
+关于子问题 3，本章通过理论推证和仿真试验，说明了在进行三星观测定位时，应当尽量选择位于观测视场边界，且呈正三角型排布的三颗导航恒星。理论推证与仿真试验的结果一致，证明结论合理。
+
+\section{问题二的建模与求解}
+
+\subsection{问题分析}
+
+题述的星图识别问题，需要寻找星图（星表）的识别特征，建立识别模型，并确定从导航星表（数据库）中搜索观测星图恒星信息的方法和策略。
+
+所给8幅观测星图都没有提供星等信息，并且附件1所说明的星敏感器的极限星等用绝对星等表示。由于简易星表中给出的星等数据为视星等，且没有给出导航星的对地距离（秒差），因此无法使用天文学中“恒星视星等-恒星绝对星等=5\(\log \frac{\text{恒星对地秒差}}{10}\)”的星等转换关系\({}^{[6]}\)将所给简易星表中的视星等转化为绝对星等，也就无法根据星等特征减少简易星表容量。
+
+根据以上分析，只能依靠恒星的位置特征进行星图识别。由于给出观测星图的位置使用图像坐标表示，为求解几何特征，首先需要解出观测所使用星敏感器的焦距\(f\)。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{视场四棱锥}
+    \label{fig:4.1}
+\end{figure}
+
+如图\ref{fig:4.1}所示，在视场四棱锥\(OABCD\)中，焦距\(f=\overline{OO'}\)，感光面为\(\square ABCD\)，水平视场角为\(\angle FOH\)，垂直视场角为\(\angle AOB\)（\(\angle EOG\)），在附件1所述条件下，\(\angle FOH=\angle EOG=12^\circ\)或\(20^\circ\)，感光面尺度为\(512\ \text{px} \times 512\ \text{px}\)或\(1024\ \text{px} \times 1024\ \text{px}\)，即\(\overline{AB}=\overline{BC}=\overline{CD}=\overline{DA}=512\)或\(1024\)，根据以上条件，可解焦距\(f\)为
+\begin{equation}
+f=\frac{1}{2}\overline{BC}\cot\left(\frac{1}{2}\angle FOH\right)
+\tag{4.1}
+\end{equation}
+
+由于角距具有投影不变性，在使用角距及其衍生形式的基础上，调整识别特征和搜索策略，是对传统全天星图搜索识别方法[X]的优化方向。
+
+\subsection{模型建立}
+
+角距是投影不变量，从天球面到感光面的投射过程中，任意两颗导航恒星之间的角距不变\({}^{[7]}\)\({}^{[8]}\)。基于这一原则，本章从角距及其衍生形式出发，构建了原理各异的识别特征，结合不同识别场景，建立了3种星图识别模型。
+
+\subsection{4.2.1 基于角距特征搜索的星图识别模型}
+
+角距是两颗恒星与地心连线的夹角，反映恒星之间的相对位置。由于恒星之间的相对位置基本不会改变（不考虑恒星自行），因此角距是良好的星图识别特征。
+
+建立角距搜索模型的关键问题，在于建立具有良好识别精度的角距数据库。在导航恒星位置由坐标给出时，利用矢量三角形求解夹角成为了求两星角距的当然条件。在矢量三角形中，由 Taylor 展开 $\sin \theta = x + o(x)$ 和 $\cos \theta = 1 - \frac{1}{2}x^2 + o(x^2)$ 可知，正弦量 $\sin \theta$ 为一阶量，余弦量 $\cos \theta$ 为二阶量，因而在同等阈值条件下，正弦量 $\sin \theta$ 精度更高，对小角度误差更加敏感，且有关系 $\sin \Delta \alpha \approx \tan \Delta \alpha \approx \Delta \alpha$，同时可以直接通过坐标运算求解，避免了从余弦量传递来的误差。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{视场条件}
+    \label{fig:4.2}
+\end{figure}
+
+若两颗导航恒星能够被星敏感器记录，则此两星角距必然不能超出视场界限（图 4.2）。因此，若在导航星数据库（导航星表）中两星角距大于视场界限，在额必然不会被星敏感器记录，据此，将视场界限角距内的导航星数据筛选出来，可以缩小搜索空间。
+
+\subsubsection{4.2.1.1 角距数据库的构建}
+
+由式 (3.1) 可知，在空间直角坐标系下，导航恒星 $A, B$ 的正弦角距为
+
+\begin{equation}
+\sin \langle \overrightarrow{OA}, \overrightarrow{OB} \rangle = \frac{|\overrightarrow{OA} \times \overrightarrow{OB}|}{|\overrightarrow{OA}| \cdot |\overrightarrow{OB}|}
+\tag{4.2}
+\end{equation}
+
+以式 (4.2) 为计算依据，对附件 2 给出的简易星表，建立 $4908 \times 4908$ 的正弦角距矩阵 $S$，其中元素 $s_{ij}$ 表示简易星表中标号为 $i, j$ 两星的正弦角距。
+
+当两星角距超出视场界限时，两星不可能同时出现在感光面上。因此，将正弦角距大于视场正弦界限的两星组合的正弦角距全部置为 1，得到以表 4.1 为例的正弦角距数据库。
+
+\begin{table}[h]
+\centering
+\caption{正弦角距数据库（部分）}
+\begin{tabular}{c|ccccccccc}
+\hline
+标号 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+4 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+5 & 1 & 1 & 1 & 0.052 & 1 & 1 & 1 & 1 \\
+6 & 1 & 1 & 0.052 & 1 & 1 & 1 & 1 & 0.052 \\
+7 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+8 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+9 & 1 & 1 & 0.199 & 0.250 & 1 & 1 & 1 & 0.199 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{4.2.1.2 基于正弦角距的搜索算法}
+
+要实现对当前观测星图的识别，基本方法是先求解当前观测星的角距特征，再返回正弦角距数据库中进行检索，确定是否存在特征匹配的一组恒星，若存在，则完成识别。此算法的基本步骤为：
+
+\textbf{Step 1. 数据重构：} 将正弦角距数据库中的非 1 项全部取出，并按照表 4.2 的形式重新组合，使得第 1 列为正弦值（搜索主键），第 2, 3 列为恒星标号；
+
+\begin{table}[h]
+\centering
+\caption{重构正弦角距数据库（部分）}
+\begin{tabular}{ccc}
+\hline
+正弦值 & 标号 1 & 标号 2 \\
+\hline
+0.052 & 5 & 6 \\
+0.052 & 6 & 6 \\
+0.052 & 6 & 10 \\
+0.199 & 9 & 5 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Step 2. 主星选取：} 选取在感光面上投影点距感光面中心最近的导航恒星为主星，并以之为起算方向，求解星图中其他各星与主星的正弦角距表；
+
+\textbf{Step 3. 搜索匹配：} 在重构的正弦角距数据库中，指定标号 1，筛选出标号 1 恒星与其所有相关恒星的正弦角距，再将观测得到的正弦焦距表与之进行比对，若满足阈值条件，则采纳，完成识别；若不满足，则更换下一颗标号 1 恒星，并重复 Step 3，直到搜索到满足条件的组合，或整个数据库被完全遍历为止。
+
+\subsection*{4.2.2 基于恒星线交角搜索的星图识别模型}
+
+基于角距特征搜索的识别模型虽然原理简单清晰，搜索准确，但在空间和时间性能上都不具备优势。因此，当恒星在感光面上的投影信息比较完整时，为了提高星图识别的实时性，可以采用基于恒星线交角特征的搜索模型。
+
+恒星线交角是两组及以上恒星矢量之差的交角，与角距这种两恒星矢量交角不同，恒星线交角反映的是 3 颗及以上数量导航恒星之间的相对方位关系。
+
+如图 4.3 所示，在感光面上与主星最近的 3 颗导航恒星投影分别为 $A', B', C'$，对应恒星为 $A, B, C$，设 $A'$ 距离主星投影最近，$B'$ 次之，$C'$ 再次之，则取 $\angle ABC$ 和 $\angle BCA$ 为恒星线交角，这样的 3 颗星称为主星的邻接星。由于投影不变性，$\triangle A'B'C'$ 中的角度关系将被相似地传递回 $ABC$ 上。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{恒星线交角}
+\end{figure}
+
+因此，在选定主星后，可以得到恒星线交角数据库（表 4.3）。
+
+\begin{table}
+\centering
+\caption{恒星线交角数据库（部分）}
+\begin{tabular}{c c c}
+\hline
+标号 & 第一交角 & 第二交角 \\
+\hline
+1 & 2.12117713330097 & 0.398297197448568 \\
+2 & 2.24717087827883 & 0.215157268534202 \\
+3 & 0.0752480784293969 & 0.687772985456452 \\
+4 & 1.02125159330416 & 0.621756590499689 \\
+5 & 0.419214787426487 & 0.224944007325643 \\
+6 & 0.881781647456345 & 0.384730680387633 \\
+\hline
+\end{tabular}
+\end{table}
+
+在此数据库的基础上，完成选取主星、计算交角，搜索匹配，即可完成识别。算法的基本流程如图4.4所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png} % 替换为实际图像文件名
+\caption{基于恒星线交角的搜索流程}
+\end{figure}
+
+\subsection{4.2.3 基于角距和特征搜索的星图识别模型}
+
+角距和特征是利用了主星及邻接恒星的位置信息来实现匹配搜索的算法。如图4.5所示，恒星$A$和投影点$A'$在一条直线上，故$\angle AOD = \angle A'OD$，也即主星与邻接星的角距与其在感光面上对应投影的角距相等。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image2.png} % 替换为实际图像文件名
+\caption{角距和特征}
+\end{figure}
+
+由于使用角距反映的是星体之间位置关系需要3个维度，为降低特征向量的维度，优
+
+\begin{table}[h]
+\centering
+\caption{角距和特征数据库（部分）}
+\begin{tabular}{c c}
+\hline
+主星 & 主星及其3颗邻接星的角距和 \\
+\hline
+1 & 7.2994 \\
+2 & 7.2994 \\
+3 & 7.6390 \\
+4 & 4.9467 \\
+5 & 9.2660 \\
+\hline
+\end{tabular}
+\end{table}
+
+利用角距和特征搜索的基本流程如图4.6所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png} % 替换为实际图片路径
+\caption{基于角距和特征的搜索流程}
+\end{figure}
+
+\subsection{4.3 问题求解}
+
+\subsubsection{4.3.1 使用角距特征搜索}
+
+使用角距特征搜索得到的星图识别结果如表4.5-4.12所示。
+
+\begin{table}[h]
+\centering
+\caption{星图1的识别结果}
+\begin{tabular}{c c c c}
+\hline
+星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+A01 & 1670 & A09 & 1488 \\
+A02 & 1477 & A10 & 1648 \\
+A03 & 1502 & A11 & 1646 \\
+A04 & 1631 & A12 & 1566 \\
+A05 & 1603 & A13 & 1688 \\
+A06 & 1453 & A14 & 1655 \\
+A07 & 1432 & A15 & 1505 \\
+A08 & 1492 & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c}
+\hline
+星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+B01 & 518 & B09 & 478 \\
+B02 & 477 & B10 & 499 \\
+B03 & 537 & B11 & 547 \\
+B04 & 428 & B12 & 460 \\
+B05 & 491 & B13 & 507 \\
+B06 & 469 & B14 & 556 \\
+B07 & 482 & B15 & 447 \\
+B08 & 503 & B16 & 479 \\
+\hline
+\end{tabular}
+\caption{星图2的识别结果}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c}
+\hline
+星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+C01 & 1574 & C05 & 1601 \\
+C02 & 1445 & C06 & 1597 \\
+C03 & 1500 & C07 & 1506 \\
+C04 & 1579 & & \\
+\hline
+\end{tabular}
+\caption{星图3的识别结果}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c}
+\hline
+星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+D01 & 3249 & D07 & 3283 \\
+D02 & 3346 & D08 & 3370 \\
+D03 & 3364 & D09 & 3265 \\
+D04 & 3275 & D10 & 3261 \\
+D05 & 3421 & D11 & 3321 \\
+D06 & 3319 & D12 & 3309 \\
+\hline
+\end{tabular}
+\caption{星图4的识别结果}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c}
+\hline
+星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+E01 & 1230 & E06 & 1223 \\
+E02 & 1150 & E07 & 1008 \\
+E03 & 1017 & E08 & 1208 \\
+E04 & 1033 & E09 & 1201 \\
+E05 & 1014 & & \\
+\hline
+\end{tabular}
+\caption{星图5的识别结果}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c}
+\hline
+星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+F01 & 2048 & F07 & 1901 \\
+F02 & 1865 & F08 & 1879 \\
+F03 & 1854 & F09 & 2014 \\
+F04 & 1977 & F10 & 1932 \\
+F05 & 1981 & F11 & 2060 \\
+F06 & 2021 & F12 & 2050 \\
+\hline
+\end{tabular}
+\caption{星图6的识别结果}
+\end{table}
+
+\begin{table}
+\centering
+\caption{星图7的识别结果}
+\begin{tabular}{cccccc}
+星图标号 & 星表标号 & 星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+G01 & 1525 & G15 & 1681 & G29 & 1648 \\
+G02 & 1572 & G16 & 1606 & G30 & 1646 \\
+G03 & 1443 & G17 & 1670 & G31 & 1566 \\
+G04 & 1748 & G18 & 1477 & G32 & 1688 \\
+G05 & 1780 & G19 & 1790 & G33 & 1655 \\
+G06 & 1675 & G20 & 1502 & G34 & 1505 \\
+G07 & 1720 & G21 & 1631 & G35 & 1373 \\
+G08 & 1503 & G22 & 1603 & G36 & 1576 \\
+G09 & 1634 & G23 & 1415 & G37 & 1545 \\
+G10 & 1577 & G24 & 1692 & G38 & 1424 \\
+G11 & 1757 & G25 & 1453 & G39 & 1375 \\
+G12 & 1586 & G26 & 1432 & G40 & 1825 \\
+G13 & 1536 & G27 & 1492 & G41 & 1401 \\
+G14 & 1610 & G28 & 1488 & & \\
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{星图8的识别结果}
+\begin{tabular}{cccccc}
+星图标号 & 星表标号 & 星图标号 & 星表标号 & 星图标号 & 星表标号 \\
+\hline
+H01 & 1572 & H11 & 1390 & H21 & 1688 \\
+H02 & 1387 & H12 & 1502 & H22 & 1359 \\
+H03 & 1675 & H13 & 1631 & H23 & 1505 \\
+H04 & 1634 & H14 & 1603 & H24 & 1373 \\
+H05 & 1586 & H15 & 1692 & H25 & 1576 \\
+H06 & 1610 & H16 & 1432 & H26 & 1424 \\
+H07 & 1354 & H17 & 1488 & H27 & 1375 \\
+H08 & 1681 & H18 & 1648 & H28 & 1401 \\
+H09 & 1606 & H19 & 1646 & H29 & 1385 \\
+H10 & 1670 & H20 & 1566 & & \\
+\end{tabular}
+\end{table}
+
+\subsection*{4.2.3 使用恒星线交角搜索}
+
+使用恒星线交角搜索得到的星图识别结果如表4.13所示。
+
+\begin{table}
+\centering
+\caption{恒星线交角搜索的识别结果}
+\begin{tabular}{cccccccccc}
+星图1 & 星图2 & 星图3 & 星图4 & 星图5 & 星图6 & 星图7 & 星图8 \\
+星图 & 星表 & 星图 & 星表 & 星图 & 星表 & 星图 & 星表 \\
+A08 & 1492 & B07 & 482 & C03 & 1825 & G30 & 522 \\
+ & & & & C03 & 3818 & G30 & 1427 \\
+ & & & 无 & E06 & 4290 & F09 & 3704 \\
+ & & & & & & & H17 \\
+ & & & & & & & 3082 \\
+\end{tabular}
+\end{table}
+
+\subsection*{4.2.3 使用角距和特征搜索}
+
+使用角距和特征搜索得到的星图识别结果如表4.14所示。
+
+\begin{table}
+\centering
+\caption{角距和特征搜索的识别结果}
+\begin{tabular}{cccccccccc}
+星图1 & 星图2 & 星图3 & 星图4 & 星图5 & 星图6 & 星图7 & 星图8 \\
+星图 & 星表 & 星图 & 星表 & 星图 & 星表 & 星图 & 星表 \\
+A06 & 555 & B07 & 930 & C03 & 2525 & D06 & 2096 \\
+ & & B07 & 944 & C03 & 4631 & E06 & 2374 \\
+ & & & & & & F06 & 596 \\
+ & & & & & & G30 & 926 \\
+ & & & & & & & H17 \\
+ & & & & & & & 2173 \\
+\end{tabular}
+\end{table}
+
+综合考虑上述3种识别模型，给出最终的识别结果如表4.15所示。
+
+\begin{table}
+\centering
+\caption{综合考虑3种特征搜索的识别结果}
+\begin{tabular}{l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{星图 1}
+    \label{fig:star_map_1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{星图 2}
+    \label{fig:star_map_2}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{星图 3}
+    \label{fig:star_map_3}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{星图4}
+    \label{fig:4.10}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{星图5}
+    \label{fig:4.11}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{星图6}
+    \label{fig:4.12}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{星图 7}
+    \label{fig:star_map_7}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{星图 8}
+    \label{fig:star_map_8}
+\end{figure}
+
+\section{4.4 模型评价}
+
+为解决星图识别问题，建立了三种搜索匹配模型：角距搜索匹配模型、角距和搜索匹配模型、夹角搜索匹配模型。
+
+角距特征量属于星图基本特征量，反映了两恒星之间的关系，由于恒星相对惯性空间静止，角距是反映星间关系的客观恒定的特征量，相对于模式识别等方法，角距的特征性是最为稳定的，因此在匹配的精确性上是最高的，误匹配率也是最低的，对“缺失星”的容错性也较强，匹配成功后可直接确定所有星图中的星。然而其缺点是，需要预先存储一个数据库，识别一幅星图需要多个角距完全匹配，因此需多次遍历角距库中所有值，匹配速度很慢，并且如果星像中存在“假星”角距匹配模型就搜索不到匹配星。
+
+角距和特征量属于角距衍生特征量，4 个角距求和，把单独的四个角距信息融合成一个信息，就是为了达到匹配迅速的目标，事先构建好星表中角距和数据库，只用一个参数进行匹配，匹配快速性较好，然而相似的角距和所对应的主星往往很多，考虑到测量误差的情况下阈值又不能设置太低，因此匹配精度较差，往往依靠其快速性设置较大的阈值进行初筛。同时这种特征量选取了三颗邻近星作为主星的相关星进行角距计算，如果在三个
+
+邻近星中有一个缺失或存在距离主星更近的假星，匹配算法就无能为力了。因此在“缺失星”或“假星”存在的情况下，此模型均无法适用。
+
+夹角特征量是除角距特征量以外的又一客观恒定的特征量，反映了三个或三个以上恒星的相对位置关系，因此也具有高精确性，在算法中使用两个特征夹角匹配也具有较高的特异性，经检验识别速度快，精确度高。缺点是选取相关星也是邻近星，因此对“缺失星”和“假星”也都难以识别。
+
+\begin{table}[h]
+\centering
+\caption{三种星图识别模型的性能比较}
+\begin{tabular}{c c c c c}
+\hline
+\diagbox{识别模型}{评价指标} & 准确性 & 快速性 & “缺失星” & “假星” \\
+\hline
+角距 & 优 & 慢 & 可以识别 & 无法识别 \\
+角距和 & 一般 & 快 & 无法识别 & 无法识别 \\
+夹角 & 较优 & 快 & 无法识别 & 无法识别 \\
+\hline
+\end{tabular}
+\end{table}
+
+在实际星图识别过程中，应当充分利用各种匹配方法，如先采用角距和匹配模型初步筛选，再使用夹角匹配模型快速寻找角特征量；或者直接使用夹角匹配模型快速筛选，再利用角距判据精细筛选匹配出每个星。注意到初次筛选时，阈值可以稍大，以保证真星不被遗漏；若利用角距和与夹角判据都没有合适的值给出，很可能存在干扰星；应直接用角距匹配模型进行计算。
+
+\section{总结}
+
+本团队在对给出问题及其子问题开展研究与分析的过程中，通过查阅文献、理论推导、仿真试验、建模分析等科学研究手段基本解决了所给问题，但是在以下方面还存在不足和有待改进之处。
+
+\begin{enumerate}
+    \item 在求解非线性方程组的过程中由于所采用的最小二乘法和牛顿迭代法对初值依赖较强，但是初值选取上本文并没有给出最优的方法。
+    \item 蒙特卡洛仿真试验考虑的误差类型不全面，误差条件设置过于理想，在实际观测中这种方法的可靠性有待检验。
+    \item 对于所提出的三种判据，缺少对干扰星识别的有效方法，经分析若给出星等信息或其它特征条件就有可能解决干扰星的识别问题。
+    \item 本文给出的星图识别特征层次比较单一，局限于几何位置关系上，如果追加考虑更多形式的特征，可能会进一步提升算法性能。
+\end{enumerate}
+
+\section*{参考文献}
+
+[1] 李文魁, 高敬东, 等. 舰船综合导航系统.[M]. 武汉: 海军工程大学. 2015.1-2.
+
+[2] 王丽娜, 赵慧, 熊智, 等. 基于导航恒星几何分布的天文导航定姿系统误差建模及误差特性研究[J]. 兵工学报, 2015, 36(10): 1933-1942.
+
+[3] 许江宁, 马恒, 等. 陀螺原理及应用[M]. 武汉: 海军工程大学. 2014.10-11.
+
+[4] 莫小琴. 基于最小二乘法的线性与非线性拟合[J]. 无线互联科技, 2019, 16(4): 128-129.
+
+[5] 徐瑞民. 二元非线性方程组求根的牛顿迭代法[J]. 山东轻工业学院学报(自然科学版), 2009, 23(4): 89-91.
+
+[6] COSMOS, ApparentMagnitude[OL] http://astronomy.swin.edu.au/cosmos/A/Apparent+ Magnitude, 2019-09-22.
+
+[7] 郭磊, 李保权, 曹阳, 等. 基于三角形匹配的星图识别算法及优化[J]. 电子设计工程, 2018, 26(5): 137-140, 145.
+
+[8] 程会艳, 钟红军, 王龙, 等. 一种快速全天星图识别算法[J]. 空间控制技术与应用, 2017, 43(4): 73-78.

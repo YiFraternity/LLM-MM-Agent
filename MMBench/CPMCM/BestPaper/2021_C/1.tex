@@ -1,0 +1,1270 @@
+\begin{center}
+\includegraphics[width=0.9\textwidth]{image.png}
+\end{center}
+
+\begin{center}
+\textbf{中国研究生创新实践系列大赛}
+\end{center}
+
+\begin{center}
+\textbf{“华为杯”第十八届中国研究生}
+\end{center}
+
+\begin{center}
+\textbf{数学建模竞赛}
+\end{center}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l}
+学校 & 常州大学 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l}
+参赛队号 & 21102920013 \\
+\hline
+队员姓名 & 1. 罗雪峰 \\
+ & 2. 蔡建明 \\
+ & 3. 丁首魁 \\
+\end{tabular}
+\end{table}
+
+\begin{center}
+\textbf{中国研究生创新实践系列大赛}
+\end{center}
+
+\begin{center}
+\textbf{“华为杯”第十八届中国研究生}
+\end{center}
+
+\begin{center}
+\textbf{数学建模竞赛}
+\end{center}
+
+\section*{目录}
+\begin{itemize}
+    \item 一、问题重述 \dotfill 3
+        \begin{itemize}
+            \item 1.1 问题背景 \dotfill 3
+            \item 1.2 待解决的问题 \dotfill 3
+        \end{itemize}
+    \item 二、问题的分析 \dotfill 3
+    \item 三、模型假设 \dotfill 4
+    \item 四、符号及变量说明 \dotfill 5
+    \item 五、模型的建立与求解 \dotfill 6
+        \begin{itemize}
+            \item 5.1 问题 1 模型的建立与求解 \dotfill 6
+                \begin{itemize}
+                    \item 5.1.1 问题 1 的模型分析 \dotfill 6
+                    \item 5.1.2 问题 1 的模型建立 \dotfill 6
+                    \item 5.1.3 问题 1 的模型求解 \dotfill 7
+                    \item 5.1.4 问题 1 的结果分析 \dotfill 8
+                \end{itemize}
+            \item 5.2 问题 2 的模型建立与求解 \dotfill 10
+                \begin{itemize}
+                    \item 5.2.1 问题 2 的模型分析 \dotfill 10
+                    \item 5.2.1 问题 2 的模型建立 \dotfill 11
+                    \item 5.2.2 问题 2 的模型求解 \dotfill 13
+                    \item 5.2.3 问题 2 的结果分析 \dotfill 14
+                \end{itemize}
+            \item 5.3 问题 3 的模型建立与求解 \dotfill 15
+                \begin{itemize}
+                    \item 5.3.1 问题 3 的模型分析 \dotfill 15
+                    \item 5.3.2 问题 3 的模型建立 \dotfill 15
+                    \item 5.3.3 问题 3 的模型求解 \dotfill 17
+                    \item 5.3.4 问题 3 的结果分析 \dotfill 18
+                \end{itemize}
+            \item 5.4 问题 4 的模型建立与求解 \dotfill 19
+                \begin{itemize}
+                    \item 5.4.1 问题 4 的模型分析 \dotfill 19
+                    \item 5.4.2 问题 4 的模型建立 \dotfill 20
+                    \item 5.4.3 问题 4 的模型求解 \dotfill 23
+                    \item 5.4.4 问题 4 的结果分析 \dotfill 23
+                \end{itemize}
+            \item 5.5 问题 5 的模型建立与求解 \dotfill 27
+                \begin{itemize}
+                    \item 5.5.1 问题 5 的模型分析 \dotfill 27
+                    \item 5.5.2 问题 5 的模型建立 \dotfill 27
+                    \item 5.5.3 问题 5 的模型求解 \dotfill 29
+                    \item 5.5.4 问题 5 的结果分析 \dotfill 29
+                \end{itemize}
+        \end{itemize}
+    \item 六、模型评价 \dotfill 30
+        \begin{itemize}
+            \item 6.1 模型的优点 \dotfill 30
+            \item 6.2 模型的缺点 \dotfill 30
+            \item 6.3 模型的改进 \dotfill 30
+        \end{itemize}
+    \item 七、参考文献 \dotfill 31
+    \item 附录 \dotfill 32
+\end{itemize}
+
+\section*{题目}
+帕金森病的脑深部电刺激治疗建模研究
+
+\section*{摘要:}
+本文主要研究帕金森病的脑深部电刺激治疗问题，基于电导的神经元 Hodgkin-Huxley 模型模拟人脑神经元，利用电突触和化学突触模型作为神经元和神经核团之间的耦合突触，构建神经核团和基底神经节的数学模型。对构建的神经节外加不同模式、不同大小和不同频率的激励，探究健康状态和帕金森状态下不同的电位发放行为和特征指标。
+
+\section*{问题一：}
+对于问题 1 虽然神经元 Hodgkin-Huxley 模型已经给出，选择改进的欧拉算法对神经元 Hodgkin-Huxley 模型进行离散化。数值模拟外界刺激时分别引入直流和交流两种刺激，通过调节直流幅值、交流幅值和交流频率三个可变参数，发现了神经元峰发放和簇发放两种电位发放行为，如表 1 和图 5.1.2、5.1.3、5.1.4 所示。为了更好地分析电位发放行为引入了 ISI 分岔图的概念，以不同类型的变参数为变量绘制 ISI 分岔图可以快速的、大范围的确定各个类型参数下神经元电位发放情况。通过分析单个神经元的电位发放行为和特征指标，发现特征指标与外加刺激有密切的关系。
+
+\section*{问题二：}
+问题 2 要求建立基底神经节神经回路的理论模型，计算基底神经节内部神经元的电位发放。假设每个神经团块内的神经元有 5 个，采用电耦合的连接方式将 5 个神经元连接起来并且每个神经元间的电耦合强度相同。神经团块之间采用化学突触耦合的方式进行连接，连接方式为全连接，根据所给的基底神经节内部核团连接图建立基底神经节神经回路的理论模型。因为兴奋型突触耦合和抑制型突触耦合的存在，神经核团间的连接就会比较复杂，为了简化模型假设化学兴奋或抑制突触耦合的耦合强度相同，在此基础上通过数值仿真计算神经节内部神经元的电位发放并给出了电位发放的特征指标。与问题 1 中单个神经元的电位发放行为相比，问题 2 中构建的神经回路模型可以产生更加丰富的电位发放行为，如图 5.2.5 所示。
+
+\section*{问题三：}
+根据问题 2 建立基底神经节神经回路理论模型的思想，分别建立健康状态和 PD 状态下的基底神经节内部神经核团的数学模型，其中的神经核团内的神经元间的电耦合强度与神经核团间的化学突触耦合强度和问题 2 中所使用的相同。建立了健康状态和 PD 状态下的基底神经节神经核团数学模型后，给每个神经核团外加直流或交流刺激，首先模拟健康状态下基底神经节神经回路的电位发放情况，然后去掉回路中的黑质 SNc 来模拟 PD 状态并模拟基底神经节神经回路的电位发放情况。利用数值仿真软件观察到健康状态和 PD 状态下的神经回路的电位发放情况有明显的差异，通过理论分析基底神经节回路电位发放的特征指标更加验证了两种状态电位发放情况的差异性，如图 5.3.3 所示。
+
+\section*{问题四：}
+针对问题四，利用问题三建立的 PD 状态的基底神经节回路模型，首先利用高频正弦交流电刺激来分别刺激靶点 STN 和靶点 GPi，通过最小二乘法计算刺激靶点 STN 和靶点 GPi 后的电位发放的特征指标与健康状态下基底神经节回路电位发放特征指标的差异，得出 STN 时最佳刺激靶点，如图 5.4.2 所示，刺激后的核团电位发放特征指标与健康电位发放特征指标比较一致。确定了最佳刺激靶点之后，改变高频电刺激的电刺激强度、电刺激频率和电刺激模式，刺激已经确定的最佳靶点 STN，利用最小二乘法分析和比较不同高频电刺激下的特征指标和正常特征指标，优化高频电刺激参数。
+
+\section*{问题五：}
+问题 5 要求在直接通路或者间接通路中模型回答是否还有其他最优电刺激靶点。
+
+点。在问题 4 中已经对刺激靶点 STN 和靶点 GPi 进行了探究，直接通路中有两个靶点是在问题 4 中讨论过的。因此，从寻找范围最大化角度出发，问题 5 选取间接通路模型。采用问题 4 中优化后的高频电刺激，分别对靶点 Cortex、靶点 Str 和靶点 GPe 进行刺激，将刺激后的特征指标与正常状态的特征指标无限逼近，建立最小二乘模型，探求除了靶点 STN 和靶点 GPi 以外的其他最优刺激靶点。可以发现在刺激靶点 GPe 的时候，帕金森病态的电位发放特征指标可以更好的逼近健康状态，因此除了靶点 STN 和靶点 GPi，还存在靶点 GPe 是另一个最优刺激靶点，如图 5.5.2 所示，刺激靶点 GPe 后核团电位发放特征指标与健康特征指标较为一致。
+
+关键词：Hodgkin-Huxley 神经元，改进欧拉算法，电位发放，帕金森，最小二乘法
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+随着社会的发展和人类平均寿命的增加，中老年人群中出现了一类常见的慢性疾病——帕金森，帕金森 (Parkinson's disease, PD) 是基底神经节疾病谱上一种严重的神经退行性疾病。其临床表现不仅包括运动发起困难、肌肉僵直和静止性震颤等运动症状，而且常常伴发睡眠紊乱及情绪情感障碍等非运动症状\cite{ref1,ref2,ref3}。帕金森病产生的原因目前并未可知，但是现如今学术界的主流观点认为：基底神经节黑质核团（SNc）多巴胺能神经元的退化，纹状体多巴胺减少，破坏神经元通路之间信息传递的平衡，导致运动控制紊乱从而引起帕金森病症。目前治疗帕金森病的方法主要有：药物治疗、手术治疗和脑深部刺激（DBS）这三种方法。虽然三种方法都对治疗帕金森病具有一定的疗效，但是药物和手术治疗有其一定的局限性。例如药物治疗只能针对性治疗早期帕金森病情，手术治疗需要切除一定的脑组织且手术是不可逆的。DBS 治疗帕金森病是指通过输入高频电刺激信号，作用于某些特定的神经元核团改变其兴奋状态，已到达治疗帕金森病症状的效果。DBS 因其安全，可调节、并发症少和可逆等特点受到了越来越多的医生和患者的青睐。
+
+Hodgkin-Huxley (HH) 模型是 Alan Hodgkin 和 Andrew Huxley 于 1952 年总结乌贼神经元对电刺激的反应得出。它可以模拟众多神经元行为，研究突触整合，同时它还为建立电导依赖神经元模型提供了一条可靠的路径。本文拟用 Hodgkin-Huxley (HH) 神经元模型模拟人脑神经元构建基底神经节，探究不同的外加刺激对神经节的影响。
+
+\subsection{待解决的问题}
+
+对于问题一，利用给出的神经元 Hodgkin-Huxley 模型（附件 1），数值模拟外界刺激（包括直流刺激和交流刺激）情况下，单个神经元的电位发放情况，并给出神经元电位发放的特征指标；
+
+对于问题二，根据问题 1 的神经元 Hodgkin-Huxley 模型，结合附件 1 中神经元之间的突触连接理论，建立基底神经节神经回路的理论模型，计算基底神经节内部神经元的电位发放（每个神经团块可以简化为 5-10 个神经元）；
+
+对于问题三，根据建立的基底神经节回路模型，理论分析正常状态和帕金森病态基底神经节回路电位发放的特征指标；
+
+对于问题四，利用建立的基底神经节回路模型，对帕金森病态的基底神经节靶点添加高频电刺激，可以模拟脑深部电刺激治疗帕金森病的状态。请模型确定最佳刺激靶点，是刺激靶点 STN，还是刺激靶点 GPi；请模型优化刺激的参数，如电刺激强度，电刺激频率和电刺激模式等；
+
+针对问题五，在直接通路的神经通路中，或者间接通路的神经通路中，模型回答脑深部电刺激治疗是否存在其它最优电刺激靶点。
+
+\section{问题的分析}
+
+针对问题一：要求我们根据给出的神经元 Hodgkin-Huxley 模型，数值模拟外界刺激，包括直流刺激和交流刺激，根据刺激的不同探究单个神经元的电位发放情况，并给出神经元电位发放的特征指标。通过分析可知，首先将已给出的神经元 Hodgkin-Huxley 模型进行整理，确定神经元中的已知参数，此时不需要神经元之间的化学突触电流，因此可以得到外加模拟直流和交流刺激的新的神经元模型。分别讨论外加直流刺激和交流刺激下的单
+
+\section*{三、模型假设}
+
+假设 1：假设单个神经核团内神经元通过电耦合连接且耦合强度相同；
+
+假设 2：假设神经核团间受到的化学突触耦合强度相同；
+
+假设 3：假设每个神经核团内有五个神经元；
+
+假设 4：假设问题中涉及到的幅值为峰峰值；
+
+假设 5：假设神经核团内的神经元为全连接耦合；
+
+假设 6：假设神经元只受其他神经元耦合以及外加刺激影响。
+
+\section*{四、符号及变量说明}
+
+\begin{tabular}{c l}
+\hline
+\textbf{符号} & \textbf{定义} \\
+\hline
+$C$ & 神经元的膜电容； \\
+$V(t)$ & 神经元的膜电位； \\
+$m(t), h(t), n(t)$ & 细胞膜内外离子通道的电导特性； \\
+$g_{Na}$ & 钠离子关于细胞膜的电导系数的最大值； \\
+$g_{K}$ & 钾离子关于细胞膜的电导系数的最大值； \\
+$g_{L}$ & 泄漏电流关于细胞膜的电导系数的最大值； \\
+$V_{Na}$ & 钠离子的反向电压； \\
+$V_{K}$ & 钾离子的反向电压； \\
+$V_{L}$ & 泄漏电流的反向电压； \\
+$a_{m}b_{m}a_{n}b_{n}a_{h}b_{h}$ & 模型中离子通道的开关函数； \\
+$I_{external}$ & 外界对神经元的刺激影响； \\
+$I_{synapse}$ & 神经元之间的化学突触电流； \\
+$I$ & 外加直流刺激的幅值； \\
+$A$ & 外加交流刺激的幅值； \\
+$F$ & 外加交流刺激的频率； \\
+$g_{AMPA}$ & 兴奋型突触模型-谷氨酸能突触最大电导； \\
+$g_{GABA}$ & 抑制型突触模型-GABA能突触最大电导； \\
+$r$ & 化学突触受体开放状态的比例； \\
+$V_{pre}$ & 突触前电压； \\
+$V_{post}$ & 突触后电压； \\
+$E_{AMPA}$ & 逆转电位； \\
+$E_{GABA}$ & 逆转电位； \\
+$k_{i,j}$ & 神经核团内第$i$个神经元到第$j$个神经元的电耦合权重 \\
+$m(d)$ & 神经元受到得到化学耦合个数 \\
+$k_{i}$ & 第$k$个核团中第$i$个神经元 \\
+$I_{D}$ & 外加的高频电刺激 \\
+$H(\cdot)$ & 符号函数 \\
+\hline
+\end{tabular}
+
+\begin{table}
+\centering
+\begin{tabular}{c l}
+\hline \hline
+$i_{D}\delta_{D}\rho_{D}$ & 高频脉冲刺激的幅值、脉冲占空比和周期 \\
+$A_{D}f_{D}$ & 高频正弦交流刺激的幅值和频率 \\
+\hline \hline
+\end{tabular}
+\end{table}
+
+\section{五、模型的建立与求解}
+
+\subsection{5.1 问题 1 模型的建立与求解}
+
+\subsubsection{5.1.1 问题 1 的模型分析}
+
+对于问题 1，要求我们根据给出的神经元 Hodgkin-Huxley 模型，数值模拟外界刺激，包括直流刺激和交流刺激，根据刺激的不同探究单个神经元的电位发放情况，并给出神经元电位发放的特征指标。通过分析可知，首先将已给出的神经元 Hodgkin-Huxley 模型进行整理，确定神经元中的已知参数，此时不需要神经元之间的化学突触电流，因此可以得到外加模拟直流和交流刺激的新的神经元模型。分别讨论外加直流刺激和交流刺激下的单个神经元模型的电位发放情况，并计算特征指数，在讨论交流刺激下的电位发放情况下，需要分别讨论外加刺激的幅值和频率的影响。问题 1 的模型建立流程图如图 5.1.1 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png} % 替换为实际图像文件名
+\caption{问题 1 的模型建立流程图}
+\label{fig:5.1.1}
+\end{figure}
+
+\subsubsection{5.1.2 问题 1 的模型建立}
+
+针对问题 1 的分析，利用已有的经典 Hodgkin-Huxley 模型引入直流或者交流外加激励，模型参数选取题目所给的典型参数，构建单个 Hodgkin-Huxley 神经元。
+
+\begin{equation}
+\begin{cases}
+C\frac{dV}{dt} = -g_{N_{a}}m^{3}h(V-V_{N_{a}}) - g_{K}n^{4}(V-V_{K}) - g_{L}(V-V_{L}) + I_{\text{external}} \\
+\frac{dm}{dt} = -(a_{m}+b_{m})m + a_{m}, \\
+\frac{dh}{dt} = -(a_{h}+b_{h})h + a_{h}, \\
+\frac{dn}{dt} = -(a_{n}+b_{n})n + a_{n}
+\end{cases}
+\tag{1}
+\end{equation}
+
+其中：$C=1\ \mu F$，$g_{N_{a}}=120mS/cm^{2}$，$g_{K}=36mS/cm^{2}$，$g_{L}=0.3mS/cm^{2}$
+
+$V_{N_{a}}=50mV$，$V_{K}=-77mV$，$V_{L}=-54.5mV$
+
+\begin{align*}
+a_{m} &= \frac{0.1(V+40)}{1-e^{-0.1(V+40)}}, & a_{h} &= 0.07e^{-0.05(V+65)}, & a_{n} &= \frac{0.01(V+55)}{1-e^{-0.1(V+55)}} \\
+b_{m} &= 4e^{-(V+65)/18}, & b_{h} &= \frac{1}{1+e^{0.1(V+35)}}, & b_{n} &= 0.125e^{-(V+65)/80}
+\end{align*}
+
+初始条件为：$V_{0}(t)=V(0), \quad n_{0}(t)=n(0), \quad m_{0}(t)=m(0), \quad h_{0}(t)=h(0)$
+
+\subsection{5.1.3 问题 1 的模型求解}
+
+由于问题 1 所建立的是连续系统的微分方程且具有一定的复杂性，纯理论分析角度找出系统的电位发放指标具有一定的难度，因此对于问题 1 本文使用离散化数值仿真的方法寻找电位发放指标。常用的连续系统离散化的方法有，欧拉法 \cite{euler}、改进欧拉法 \cite{improved_euler} 和龙格库塔法 \cite{runge_kutta} 等。考虑到经典欧拉方法误差率较大，龙格库塔法较为复杂，本文使用改进欧拉法作为离散化方法。改进欧拉算法的基础模型为：
+
+\begin{equation}
+\left\{
+\begin{aligned}
+y_{p} &= y_{i} + c f\left(t_{i}, y_{i}\right) \tag{2a} \\
+y_{c} &= y_{i} + c f\left(t_{i+1}, y_{p}\right) \tag{2b} \\
+y_{i+1} &= \frac{1}{2}\left(y_{p} + y_{c}\right) \tag{2c} \\
+y\left(x_{0}\right) &= y_{0} \tag{2d}
+\end{aligned}
+\right.
+\end{equation}
+
+其中 $c$ 是精度，$y\left(x_{0}\right) = y_{0}$ 是初始状态。
+
+\subsubsection{5.1.3.1 求解步骤}
+
+利用优化欧拉算法分步骤构建离散化神经元 Hodgkin-Huxley 模型，用于求解式 (1)。
+
+- **Step1**：首先将式 (1) 带入公式 (2a)，$y_{p}$ 为矢量分别对应 $V_{p}、m_{p}、h_{p}、n_{p}$，$y_{i}$ 也为矢量分别对应 $V_{i}、m_{i}、h_{i}、n_{i}$。$f(t_{i}, y_{i})$ 是将 $t_{i}$ 和 $y_{i}$ 带入式 (1) 构建离散化 $f(t_{i}, y_{i})$ 方程。由此推导出以 $V_{p}、m_{p}、h_{p}、n_{p}$ 为因变量，$V_{i}、m_{i}、h_{i}、n_{i}$ 为自变量的离散化方程。
+
+- **Step2**：其次计算公式 (2b)，$y_{c}$ 为矢量分别对应 $V_{c}、m_{c}、h_{c}、n_{c}$，$y_{i}$ 也为矢量分别对应 $V_{i}、m_{i}、h_{i}、n_{i}$。$f(t_{i+1}, y_{i})$ 是将 $t_{i+1}$ 和 $y_{p}$ 带入式 (1) 构建离散化 $f(t_{i+1}, y_{i})$ 方程。由此推导出以 $V_{c}、m_{c}、h_{c}、n_{c}$ 为因变量，$V_{i}、m_{i}、h_{i}、n_{i}$ 为自变量的离散化方程。
+
+- **Step3**：利用 Step1 和 Step2 计算的结果带入 (2c) 得到最终的以 $V_{i+1}、m_{i+1}、h_{i+1}、n_{i+1}$ 为因变量，$V_{i}、m_{i}、h_{i}、n_{i}$ 为自变量的离散化方程。
+
+- **Step3**：根据离散化的模型，带入不同的直流激励和交流激励绘制神经核团的电位发放图，具体特征指标和选取参数将会在 5.1.4 小节介绍。
+
+\subsubsection{5.1.3.2 离散化模型}
+
+按照上述步骤建立离散化模型：
+
+\begin{equation}
+\left\{
+\begin{aligned}
+V_{i+1} &= \frac{1}{2}(V_{p} + V_{c}) \\
+m_{i+1} &= \frac{1}{2}(m_{p} + m_{c}) \\
+h_{i+1} &= \frac{1}{2}(h_{p} + h_{c}) \\
+n_{i+1} &= \frac{1}{2}(n_{p} + n_{c})
+\end{aligned}
+\right.
+\tag{3}
+\end{equation}
+
+其中
+
+\begin{equation}
+\begin{cases}
+V_{p} = V_{i} + \frac{k}{C} \big[ -g_{N_{a}} m_{i}^{3} h_{i} (V_{i} - V_{N_{a}}) - g_{K} n_{i}^{4} (V_{i} - V_{K}) - g_{L} (V_{i} - V_{L}) + I_{external} + I_{synapse} \big] \\
+m_{p} = m_{i} + k \big[ -((a_{m})_{i} + (b_{m})_{i}) m_{i} + (a_{m})_{i} \big] \\
+h_{p} = h_{i} + k \big[ -((a_{h})_{i} + (b_{h})_{i}) h_{i} + (a_{h})_{i} \big] \\
+n_{p} = n_{i} + k \big[ -((a_{n})_{i} + (b_{n})_{i}) n_{i} + (a_{n})_{i} \big]
+\end{cases}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+(a_{m})_{i} &= \frac{0.1(V + 40)}{1 - e^{-0.1(V_{i} + 40)}}, \quad (a_{h})_{i} = 0.07 e^{-0.05(V_{i} + 65)}, \quad (a_{n})_{i} = \frac{0.01(V_{i} + 55)}{1 - e^{-0.1(V_{i} + 55)}} \\
+(b_{m})_{i} &= 4 e^{-(V_{i} + 65)/18}, \quad (b_{h})_{i} = \frac{1}{1 + e^{0.1(V_{i} + 35)}}, \quad (b_{n})_{i} = 0.125 e^{-(V_{i} + 65)/80}
+\end{aligned}
+\tag{4}
+\end{equation}
+
+\begin{equation}
+\begin{cases}
+V_{c} = V_{i} + \frac{k}{C} \big[ -g_{N_{a}} m_{p}^{3} h_{p} (V_{p} - V_{N_{a}}) - g_{K} n_{p}^{4} (V_{p} - V_{K}) - g_{L} (V_{p} - V_{L}) + I_{external} + I_{synapse} \big] \\
+m_{c} = m_{i} + k \big[ -((a_{m})_{p} + (b_{m})_{p}) m_{p} + (a_{m})_{p} \big] \\
+h_{c} = h_{i} + k \big[ -((a_{h})_{p} + (b_{h})_{p}) h_{p} + (a_{h})_{p} \big] \\
+n_{c} = n_{i} + k \big[ -((a_{n})_{p} + (b_{n})_{p}) n_{p} + (a_{n})_{p} \big]
+\end{cases}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+(a_{m})_{p} &= \frac{0.1(V + 40)}{1 - e^{-0.1(V_{p} + 40)}}, \quad (a_{h})_{p} = 0.07 e^{-0.05(V_{p} + 65)}, \quad (a_{n})_{p} = \frac{0.01(V_{p} + 55)}{1 - e^{-0.1(V_{p} + 55)}} \\
+(b_{m})_{p} &= 4 e^{-(V_{p} + 65)/18}, \quad (b_{h})_{p} = \frac{1}{1 + e^{0.1(V_{p} + 35)}}, \quad (b_{n})_{p} = 0.125 e^{-(V_{p} + 65)/80}
+\end{aligned}
+\tag{5}
+\end{equation}
+
+这里需要指出，离散化的模型的参数和原模型的各项参数相同，激励 $I_{external}$ 和 $I_{synapse}$ 离散化关系式并未给出，但是在选择不同的激励时需要按上述规则离散化才能耦合到离散系统中去。
+
+\subsection*{5.1.4 问题 1 的结果分析}
+
+为了方便求解模型，神经元初值 $(V(0), m(0), h(0), n(0))$ 选取为 $(0, 0, 0, 0)$，为了尽可能多和准确的寻找到所有可能的电位发放指标，我们引入了神经元电活动的尖峰间隔(ISI)分岔图。ISI 分岔图是统计在一段时间内神经元系统相邻两尖峰之间时间间隔的分岔图。通过它能够大范围和只直观的观察出神经元系统中存在的峰放电，簇放电等放电活动。
+
+\subsubsection{5.1.4.1 引入直流刺激的电位发放}
+
+将模型(1)中的外加激励 $I_{external}$ 设置为直流激励，将其引入到神经元模型中。通过更改直流激励的大小，寻找神经元 Hodgkin-Huxley 模型的电位发放指标。参数和初值固定为上文所述值，利用 MATLAB 绘制了神经元模型关于直流激励的 ISI 分岔图。如图 5.1.2(a)所示，根据图 5.1.2(a)所示的 ISI 分岔图，选取 $I_{external} = 15\mu \text{A}$ 和 $I_{external} = 40\mu \text{A}$ 绘制电位发放-时间关系图，如图 5.1.2(b)所示。从图中可以看出在不同直流激励下的尖峰间距和图 5.1.2(a)中的分岔图相对应。侧面验证了 ISI 分岔图的正确性和在直流激励下的神经元尖峰的多样性。图 5.1.2(b)中神经元电位发放的各项特征指标如表 1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{(a) 关于直流激励的 ISI 分岔图，(b) 典型直流激励下的电位发放指标}
+    \label{fig:5.1.2}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{直流电刺激神经元电位发放的特征指标}
+    \label{tab:1}
+    \begin{tabular}{c c c}
+        \hline \hline
+        & 神经元电位发放的特征指标 & \\
+        \hline
+        外加刺激电流大小/$\mu$A & 振幅/mV & 频率/Hz \\
+        \hline
+        15 & 101.08 & 78.125 \\
+        40 & 83.95 & 107.53 \\
+        \hline \hline
+    \end{tabular}
+\end{table}
+
+\subsection{引入交流刺激的电位发放}
+
+将模型(1)中的外加激励 $I_{external}$ 设置为交流激励 $I_{external} = A\sin(2\pi ft)$，将其引入到神经元模型中。通过更改交流激励的幅值和频率大小，计算神经元 Hodgkin-Huxley 模型的电位发放指标，参数和初值同直流激励时设置一样。
+
+固定频率 $F = 0.004\,\text{kHz}$，以幅值 $A$ 为变量，利用 MATLAB 绘制关于交流激励幅值 $A$ 的 ISI 分岔图。如图 \ref{fig:5.1.3}(a) 所示，根据图 \ref{fig:5.1.3}(a) 所示的分岔图，可以看出 $A$ 在 $0$–$50\,\mu\text{A}$ 幅值范围内，神经元系统出现了明显的簇发放电特性。选取 $A = 15\,\mu\text{A}$ 和 $A = 40\,\mu\text{A}$，绘制电位发放-时间关系图，如图 \ref{fig:5.1.3}(b) 所示。从图中可以看出在不同的幅值的交流激励下，神经元 Hodgkin-Huxley 模型能够出现簇发放行为且簇发的频率，幅值和簇发指个数各不相同，同图 \ref{fig:5.1.3}(a) 的 ISI 分岔图结果相对应。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{(a) 关于交流幅值激励的 ISI 分岔图，(b) 典型交流幅值下的电位发放指标}
+    \label{fig:5.1.3}
+\end{figure}
+
+固定幅值 $A = 15\,\mu\text{A}$，以频率 $F$ 为变量，利用 MATLAB 绘制关于交流激励频率 $F$ 的 ISI 分岔图。如图 \ref{fig:5.1.4}(a) 所示，根据图 \ref{fig:5.1.4}(a) 所示的分岔图，可以看出在图中幅值范围内，神经元系统同样出现了明显的簇发放电特性。选取 $F = 0.01\,\text{kHz}$ 和 $F = 0.004\,\text{kHz}$，绘制电位
+
+\section*{发放-时间关系图。如图 5.1.4(b)所示，从图中可以看出在不同的频率的交流激励下，神经元 Hodgkin-Huxley 模型能够出现簇发放电行为，且簇发的频率，幅值和簇发指个数各不相同，同图 5.1.4(a)的 ISI 分岔图结果相对应。图 5.1.4(b) 神经元电位发放的各项特征指标如表 2 所示。}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{图 5.1.4 (a) 关于交流频率激励的 ISI 分岔图，(b) 典型交流频率下的电位发放指标}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{交流电刺激神经元电位发放的特征指标}
+    \begin{tabular}{c c | c c c c c}
+        \hline
+        \multicolumn{2}{c|}{交流电刺激参数} & \multicolumn{5}{c}{神经元电位发放的特征指标} \\
+        \hline
+        幅度/mV & 频率/Hz & 振幅/mV & 静息间隔/ms & 激活时间/ms & 峰峰间距/ms & 簇发放周期/ms \\
+        \hline
+        15 & 4 & 146.24 & 151.3 & 99.6 & 14.29 & 250.9 \\
+        40 & 4 & 233.76 & 146.7 & 103.8 & 10.38 & 250.5 \\
+        15 & 3 & 134.39 & 238.5 & 94.7 & 13.53 & 333.2 \\
+        15 & 10 & 149.37 & 73.6 & 26.5 & 13.25 & 100.1 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section*{5.2 问题 2 的模型建立与求解}
+
+\subsection*{5.2.1 问题 2 的模型分析}
+
+问题 2 建立在问题 1 的基础之上，考虑到基底神经节是由神经核团构成，神经核团是由神经元构成。因此如何利用问题 1 所给的神经元 Hodgkin-Huxley 模型构建神经节是问题 2 的关键。首先我们考虑由神经元构建神经核团的耦合方法，现有的关于模拟神经元之间耦合的方法有电耦合、化学耦合和忆阻器突触耦合等。它们各有优缺点，在不同的耦合场景中有不同的优势。电耦合具有传到信号较快、前后膜间隙窄、传导无延迟、突触模型简单等特点，当需要神经网络简单和高度同步的时候可用电突触耦合。化学突触耦合有方向性，可以起到抑制或者刺激的作用，具有针对性可以精准控制某一神经元的激励或者抑制。忆阻突触具有记忆特性和体积小的特点。本题指定了神经核团之间用化学耦合，考虑到比赛时间和分析的难易程度，本文神经元构建神经核团采用电耦合，神经核团构建神经节采用化学突触耦合。
+
+此外，神经核团构建神经节的结构题目中已经给出，但是神经元构建神经核团的数量和结构还需单独考虑。题目给出神经元构建单个神经核团的数量可以选取 5-10 个，为了方便仿真和建模，本文取 5 个神经元构建一个神经核团，且所有神经核团均构建为相同结构。根据已有文献的参考，常用的神经元连接结构有，直线型、环形、全链接等。考虑到线性和环形结构太过简单，本文采用全连接形式及每个神经元之间都相互衔接。
+
+由上述分析得到问题 2 模型建立流程图，如图 5.2.1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{问题 2 的模型建立流程图}
+    \label{fig:flowchart}
+\end{figure}
+
+\subsection{5.2.1 问题 2 的模型建立}
+
+根据上所述分析，本文神经核团构建用简单电耦合，神经节构建用化学突触耦合。首先建立神经核团模型，为了便于仿真和确定典型权重，五个神经元之间的连接权重设为相同的大小用 $k$ 表示，单个神经核团的结构模型图如图 \ref{fig:neuron_structure} 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{单个神经核团结构图}
+    \label{fig:neuron_structure}
+\end{figure}
+
+根据图 \ref{fig:neuron_structure} 建立单个神经核团的数学模型：
+
+\begin{equation}
+\begin{cases}
+C\frac{dV_{i}}{dt}=-g_{N_{a}}m_{i}^{3}h_{i}\left(V_{i}-V_{N_{a}}\right)-g_{K}n_{i}^{4}\left(V_{i}-V_{K}\right)-g_{L}\left(V_{i}-V_{L}\right)+I_{external(i)}+\sum_{j=1}^{5}k_{i,j}\left(V_{i}-V_{j}\right) \\
+\frac{dm_{i}}{dt}=-\left((a_{m})_{i}+(b_{m})_{i}\right)m_{i}+(a_{m})_{i} \\
+\frac{dh_{i}}{dt}=-\left((a_{h})_{i}+(b_{h})_{i}\right)h_{i}+(a_{h})_{i} \\
+\frac{dn_{i}}{dt}=-\left((a_{n})_{i}+(b_{n})_{i}\right)n_{i}+(a_{n})_{i} \\
+i=1,2,3,4,5 \\
+j=1,2,3,4,5
+\end{cases}
+\tag{6}
+\end{equation}
+
+\begin{align*}
+a_{m} &= \frac{0.1(V+40)}{1-e^{-0.1(V+40)}}, & a_{h} &= 0.07e^{-0.05(V+65)}, & a_{n} &= \frac{0.01(V+55)}{1-e^{-0.1(V+55)}} \\
+b_{m} &= 4e^{-(V+65)/18}, & b_{h} &= \frac{1}{1+e^{0.1(V+35)}}, & b_{n} &= 0.125e^{-(V+65)/80}
+\end{align*}
+
+初始条件为：$V_{i}(t)=V(0)$, $n_{i}(t)=n(0)$, $m_{i}(t)=m(0)$, $h_{i}(t)=h(0)$
+
+这里需要指出，如若表示出单个神经核团的模型的所有公式，会占用过多空间且公式中有过多重复部分。因此，式子 (6) 只是单个神经元的结构模型，构建整个神经核团需要按
+
+照图 5.2.2 所给的结构，构建整个神经核团。
+
+考虑到具有相同功能神经元具有相似性，同时为了简化分析难度，本文所有神经核团采用相同的初值和参数。利用图 5.2.2 神经核团按照问题 2 所给要求构建神经节模型，其结构模型图如图 5.2.3 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{问题 2 神经节结构模型}
+    \label{fig:5.2.3}
+\end{figure}
+
+根据结构模型图建立神经节模型：
+
+\begin{equation}
+\begin{cases}
+C\frac{dV_{i}}{dt}=-g_{N_{a}}m_{i}^{3}h_{i}\left(V_{i}-V_{N_{a}}\right)-g_{K}n_{i}^{4}\left(V_{i}-V_{K}\right)-g_{L}\left(V_{i}-V_{L}\right)+I_{external(i)} \\
+\quad +\sum_{j=1}^{5}k_{i,j}\left(V_{i}-V_{j}\right)+\sum_{d=1}^{m(d)}I_{synapse(d)} \\
+\frac{dm_{i}}{dt}=-\left((a_{m})_{i}+(b_{m})_{i}\right)m_{i}+(a_{m})_{i} \\
+\frac{dh_{i}}{dt}=-\left((a_{h})_{i}+(b_{h})_{i}\right)h_{i}+(a_{h})_{i} \\
+\frac{dn_{i}}{dt}=-\left((a_{n})_{i}+(b_{n})_{i}\right)n_{i}+(a_{n})_{i}
+\end{cases}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\begin{cases}
+I_{\text{synapse}(s,k,i)} = g_{(s,k,i)} r_{(s,k,i)} \left[ V_{\text{post}(k,i)} - E \right] \\
+\frac{dr_{(s,k,i)}}{dt} = \alpha S \left[ V_{\text{pre}(s,i)} \right] \left[ 1 - r_{(s,k,i)} \right] - \beta r_{(s,k,i)} \\
+S \left[ V_{\text{pre}(s,i)} \right] = \left[ 1 + \exp \left( -\frac{V_{\text{pre}(s,k,i)} - V_P}{k_P} \right) \right]^{-1} \\
+i = 1, 2, 3, 4, 5 \\
+j = 1, 2, 3, 4, 5 \\
+0 \leq m(d) \leq 6 \\
+s \leq 8 \\
+k \leq 8
+\end{cases}
+\tag{8}
+\end{equation}
+
+\begin{align*}
+a_m &= \frac{0.1(V + 40)}{1 - e^{-0.1(V + 40)}}, \quad a_h = 0.07 e^{-0.05(V + 65)}, \quad a_n = \frac{0.01(V + 55)}{1 - e^{-0.1(V + 55)}} \\
+b_m &= 4 e^{-(V + 65)/18}, \quad b_h = \frac{1}{1 + e^{0.1(V + 35)}}, \quad b_n = 0.125 e^{-(V + 65)/80}
+\end{align*}
+
+初始条件为：$V_i(t) = V(0), \quad n_i(t) = n(0), \quad m_i(t) = m(0), \quad h_i(t) = h(0)$
+
+其中，$g_{\text{AMPA}} = 0.5 \, \text{nS}$；$g_{\text{GABA}} = 0.8 \, \text{nS}$，$m(d)$表示该神经元受到的化学耦合个数，$I_{\text{synapse}(d)}$表示其它核团内的神经元以化学突触耦合的方式作用到该神经元上。$s, i$ 表示第 $s$ 个核团中的第 $i$ 个神经元；$s, k, i$ 表示第 $s$ 个神经核团中的第 $i$ 个神经元通过化学突触耦合第 $k$ 个神经核团中的第 $i$ 个神经元。同样需要指出，如若表示出神经节模型的所有公式，会占用过多空间且公式中有重复部分。因此，式子(7)只是单个神经元的结构模型，构建整个神经节需要按照图 5.2.3 所给的结构图构建整个神经节。
+
+\subsection*{5.2.2 问题 2 的模型求解}
+
+仿照问题 1 的离散化过程，利用改进欧拉算法分步骤构建离散化神经节(8)(9)模型，并进行求解。为了方便求解模型，神经元初值 $(V_i(0), m_i(0), h_i(0), n_i(0))$ 选取为 $(0, 0, 0, 0)$，欧拉算法构建离散化神经元已经在问题 1 中给出。
+
+\textbf{Step1：} 首先要确定神经核团内部神经元的耦合权重 $k$ 的合适大小，因此以权重 $k$ 为参数，绘制关于 $k$ 的 ISI 分岔图如图 5.2.4 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{单个神经团关于耦合权重 $k$ 的 ISI 分岔图}
+\end{figure}
+
+考虑到神经元之间突触权重越大能耗越大，在绘制图 5.2.4 时选取了较小的权重。此外在 MATLAB 仿真的过程中，随着权重 $k$ 的增加，系统会出现发散的现象。最终权重 $k$ 的取值
+
+范围设定 0-0.2。根据图 5.2.4 所示在 $k$ 取 0.033-0.084 范围内神经元更稳定，更像正常状态下的神经元，因此单个神经元的突触权重 $k$ 取值为 0.05。
+
+\textbf{Step2：} 神经核团耦合神经节的化学耦合权重 $g_{\text{AMPA}}$ 也是模型求解需要解决的问题，题目中已经给出了化学耦合权重的参考范围，兴奋型 ($g_{\text{AMPA}}$) 为 (0.35-1nS)，抑制性 ($g_{\text{GABA}}$) 为 (0.25-1.2nS)。通过参考文献 [7] 和我们枚举的耦合结果，选取兴奋性突触权重 $g_{\text{AMPA}}=0.5\text{nS}$，抑制性突触权重 $g_{\text{GABA}}=0.8\text{nS}$ 作为化学耦合的权重大小。
+
+\textbf{Step3：} 根据确定的各个耦合强度和离散模型，选取不同的模式的激励绘制和分析神经元的电位发放图。
+
+\subsection*{5.2.3 问题 2 的结果分析}
+
+神经节内所有神经元初值设置为 0，参数同 5.1 节保持一致，神经节由八个核团构成，对其中的四个核团施加直流刺激，对另外四个核团施加交流刺激。不同交直流刺激其产生的电位发放图如图 5.2.5 所示。具体刺激指标如表 3 和表 4 所示。
+
+\begin{table}[h]
+\centering
+\caption{直流刺激}
+\begin{tabular}{c c c c c}
+\hline
+神经核团 & STN & dMSN & iMSN & Thalamus \\
+\hline
+直流刺激大小 & $30\mu\text{A}/\text{cm}^2$ & $10\mu\text{A}/\text{cm}^2$ & $20\mu\text{A}/\text{cm}^2$ & $60\mu\text{A}/\text{cm}^2$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{交流刺激}
+\begin{tabular}{c c c c c c c}
+\hline
+神经核团 & \multicolumn{2}{c}{GPe} & \multicolumn{2}{c}{SNc} & \multicolumn{2}{c}{GPi/SNr} & Cortex \\
+\cline{2-7}
+ & 幅值 & 频率 & 幅值 & 频率 & 幅值 & 频率 & 幅值 & 频率 \\
+ & /mV & /Hz & /mV & /Hz & /mV & /Hz & /mV & /Hz \\
+\hline
+交流刺激 & 15 & 10 & 15 & 100 & 15 & 20 & 15 & 30 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{(a) 直流激励刺激下的电位发放图，(b) 交流激励刺激下的电位发放图}
+\end{figure}
+
+从图中可以看出在不同交直流激励刺激下，神经节具有丰富的放电活动，如峰发放、
+
+\section*{5.3 问题 3 的模型建立与求解}
+
+\subsection*{5.3.1 问题 3 的模型分析}
+
+针对问题三，根据题目给出的健康状态和帕金森状态的神经节结构图建立基底神经节回路模型，分别建立健康状态回路模型和帕金森状态回路模型。问题 3 的建立是根据问题 2 建立的基底模型而来，所以问题 3 中神经核团结构和突触模型同问题 2 完全相同。将建立的回路模型利用改进欧拉算法进行离散化，将离散化的模型利用 Matlab 软件进行仿真，观察健康状态回路模型和帕金森状态回路模型表现出的电位发放情况，理论分析两种状态下电位发放的特征指标。由上述分析得到问题 3 模型建立流程图，如图 5.3.1 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image1.png}
+\caption{问题 3 的模型建立流程图}
+\label{fig:5.3.1}
+\end{figure}
+
+\subsection*{5.3.2 问题 3 的模型建立}
+
+由题目可知问题 3 模型全部建立在问题 2 的神经元的基础之上。通过增减 SNc 神经核团和化学突触的个数，建立的健康神经节和帕金森病神经节。其结构模型图如图 5.3.2 所示。其中红色箭头代表激励，虚线蓝色箭头代表抑制。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image2.png}
+\caption{(a) 健康神经节结构模型图，(b) 帕金森神经节结构模型图}
+\label{fig:5.3.2}
+\end{figure}
+
+\subsubsection{5.3.2.1 健康神经节的模型建立}
+
+按照图 5.3.2(a) 所示结构，建立健康神经节模型。
+
+\begin{equation}
+\begin{cases}
+C\frac{dV_{i}}{dt}=-g_{N_{a}}m_{i}^{3}h_{i}\left(V_{i}-V_{N_{a}}\right)-g_{K}n_{i}^{4}\left(V_{i}-V_{K}\right)-g_{L}\left(V_{i}-V_{L}\right)+I_{external(i)} \\
++\sum_{j=1}^{5}k_{i,j}\left(V_{i}-V_{j}\right)+\sum_{d=1}^{m(d)}I_{synapse(d)} \\
+\frac{dm_{i}}{dt}=-\left((a_{m})_{i}+(b_{m})_{i}\right)m_{i}+(a_{m})_{i} \\
+\frac{dh_{i}}{dt}=-\left((a_{h})_{i}+(b_{h})_{i}\right)h_{i}+(a_{h})_{i} \\
+\frac{dn_{i}}{dt}=-\left((a_{n})_{i}+(b_{n})_{i}\right)n_{i}+(a_{n})_{i}
+\end{cases}
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\begin{cases}
+I_{synapse(s,k,i)}=g_{(s,k,i)}r_{(s,k,i)}\left[V_{post(k,i)}-E\right] \\
+\frac{dr_{(s,k,i)}}{dt}=\alpha S\left[V_{pre(s,i)}\right]\left[1-r_{(s,k,i)}\right]-\beta r_{(s,k,i)} \\
+S\left[V_{pre(s,i)}\right]=\left[1+\exp\left(-\frac{V_{pre(s,k,i)}-V_{P}}{k_{P}}\right)\right]^{-1} \\
+s.t.
+\begin{cases}
+i=1,2,3,4,5 \\
+j=1,2,3,4,5 \\
+0\leq m(d)\leq 6 \\
+s\leq 7 \\
+k\leq 7
+\end{cases}
+\end{cases}
+\tag{10}
+\end{equation}
+
+\begin{align*}
+a_{m} &= \frac{0.1(V+40)}{1-e^{-0.1(V+40)}}, \quad a_{h} = 0.07e^{-0.05(V+65)}, \quad a_{n} = \frac{0.01(V+55)}{1-e^{-0.1(V+55)}} \\
+b_{m} &= 4e^{-(V+65)/18}, \quad b_{h} = \frac{1}{1+e^{0.1(V+35)}}, \quad b_{n} = 0.125e^{-(V+65)/80}
+\end{align*}
+
+初始条件为：$V_{i}(t)=V(0), \quad n_{i}(t)=n(0), \quad m_{i}(t)=m(0), \quad h_{i}(t)=h(0)$。
+
+其中，$g_{\text{AMPA}}=0.41\text{nS}$；$g_{\text{GABA}}=1 \text{ nS}$，$m_{(d)}$表示该神经元受到的化学耦合个数，$I_{synapse(d)}$表示其它核团内的神经元以化学突触耦合的方式作用到该神经元上，$s,i$表示第$s$个核团中的第$i$个神经元；$s,k,i$表示第$s$个神经核团中的第$i$个神经元通过化学突触耦合第$k$个神经核团中的第$i$个神经元。
+
+\subsection*{5.3.2.2 帕金森神经节的模型建立}
+
+按照图 5.3-2(b)所示结构，建立帕金森神经节模型。
+
+\begin{equation}
+\begin{cases}
+C\frac{dV_{i}}{dt}=-g_{N_{a}}m_{i}^{3}h_{i}\left(V_{i}-V_{N_{a}}\right)-g_{K}n_{i}^{4}\left(V_{i}-V_{K}\right)-g_{L}\left(V_{i}-V_{L}\right)+I_{external(i)} \\
++\sum_{j=1}^{5}k_{i,j}\left(V_{i}-V_{j}\right)+\sum_{d=1}^{m(d)}I_{synapse(d)} \\
+\frac{dm_{i}}{dt}=-\left((a_{m})_{i}+(b_{m})_{i}\right)m_{i}+(a_{m})_{i} \\
+\frac{dh_{i}}{dt}=-\left((a_{h})_{i}+(b_{h})_{i}\right)h_{i}+(a_{h})_{i} \\
+\frac{dn_{i}}{dt}=-\left((a_{n})_{i}+(b_{n})_{i}\right)n_{i}+(a_{n})_{i}
+\end{cases}
+\tag{11}
+\end{equation}
+
+\begin{equation}
+\begin{cases}
+I_{synapse(s,k,i)}=g_{(s,k,i)}r_{(s,k,i)}\left[V_{post(k,i)}-E\right] \\
+\frac{dr_{(s,k,i)}}{dt}=\alpha S\left[V_{pre(s,i)}\right]\left[1-r_{(s,k,i)}\right]-\beta r_{(s,k,i)} \\
+S\left[V_{pre(s,i)}\right]=\left[1+\exp(-\frac{V_{pre(s,k,i)}-V_{P}}{k_{P}})\right]^{-1} \\
+s.t. \begin{cases}
+i=1,2,3,4,5 \\
+j=1,2,3,4,5 \\
+0\leq m(d)\leq 3 \\
+s\leq 7 \\
+k\leq 7
+\end{cases}
+\end{cases}
+\tag{13}
+\end{equation}
+
+\begin{align*}
+a_{m} &= \frac{0.1(V+40)}{1-e^{-0.1(V+40)}}, \quad a_{h} = 0.07e^{-0.05(V+65)}, \quad a_{n} = \frac{0.01(V+55)}{1-e^{-0.1(V+55)}} \\
+b_{m} &= 4e^{-(V+65)/18}, \quad b_{h} = \frac{1}{1+e^{0.1(V+35)}}, \quad b_{n} = 0.125e^{-(V+65)/80}
+\end{align*}
+
+初始条件为：$V_{i}(t)=V(0), \quad n_{i}(t)=n(0), \quad m_{i}(t)=m(0), \quad h_{i}(t)=h(0)$。
+
+其中，$g_{\text{AMPA}}=0.55\text{nS}$；$g_{\text{GABA}}=0.91\text{nS}$，$k_{ij}$，$m(d)$，$I_{synapse(d)}$等参数含义与式(10)(11)中的一致。
+
+\subsection*{5.3.3 问题 3 的模型求解}
+
+仿照问题 1 的离散化过程，利用改进欧拉算法分步骤构建离散化神经元节模型(12)和(13)，用于构建适用于 MATLAB 仿真离散模型，这里具体的构建过程和结果因和问题 1 重复过多再次不在过多赘述，本节重点讨论构建的离散模型解题过程。为了方便求解模型，神经元初值$(V_{i}(0), m_{i}(0), h_{i}(0), n_{i}(0))$选取为$(0, 0, 0, 0)$
+
+\textbf{Step1：} 首先确定神经核团内部神经元的耦合权重 $k$ 的合适大小，问题 2 和问题 3 所用神经核团一样，因此问题 3 神经核团内部的耦合权重也取同问题 2 一样的值。
+
+\textbf{Step2：} 问题 3 神经节的神经核团和突触数量有所变动，因此问题 3 神经节结构也发生了改变，通过参考 [7] 和我们的枚举的耦合结果，选取兴奋性突触权重 $g_{\text{AMPA}}=0.8 \, \text{nS}$，抑制性突触权重 $g_{\text{GABA}}=1.2 \, \text{nS}$ 作为化学耦合的权重大小。
+
+\textbf{Step3：} 根据确定的各个耦合强度和离散模型，求解并分析健康和帕金森神经元的电位
+
+\section*{5.3.4 问题 3 的结果分析}
+
+对正常状态神经节模型和帕金森状态神经节模型内的除 SNc 外的所有神经核团施加相同的激励信号，激励信号的具体大小和频率如表 5 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{(a) 健康状态的神经节电位发放图，(b) 帕金森状态神经节电位发放图}
+    \label{fig:5.3.3}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{对健康和病态神经节的激励}
+    \begin{tabular}{c c c}
+        \hline
+        $I_{\text{STN}}$ & $I_{\text{GPe}}$ & $I_{\text{GPi}}$ \\
+        \hline
+    \end{tabular}
+    \label{tab:5}
+\end{table}
+
+\begin{table}
+\centering
+\caption{正常状态下基底神经节回路电位发放的特征指标}
+\begin{tabular}{c c c c c c c}
+\hline
+神经核团 & STN & GPe & GPi/SNr & dMSN \\
+\hline
+特征指标 & 振幅 & 频率 & 振幅 & 频率 & 振幅 & 频率/Hz \\
+ & /mV & /Hz & /mV & /Hz & /mV & /Hz \\
+ & 88.48 & 102.7 & 162.02 & 50.48 & 108.99 & 147.71 \\
+\hline
+神经核团 & iMSN & Cortex & Thalamus \\
+\hline
+特征指标 & 振幅 & 频率 & 振幅 & 频率 & 振幅 & 频率 \\
+ & /mV & /Hz & /mV & /Hz & /mV & /Hz \\
+ & 98.75 & 121.92 & 75.94 & 116.82 & 100.09 & 78.55 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{帕金森状态下基底神经节回路电位发放的特征指标}
+\begin{tabular}{c c c c c c c}
+\hline
+神经核团 & STN & GPe & GPi/SNr & dMSN \\
+\hline
+特征指标 & 振幅 & 平均频率 & 振幅 & 频率 & 振幅 & 平均频率 \\
+ & /mV & /Hz & /mV & /Hz & /mV & /Hz \\
+ & 93.8 & 88.32 & 106.86 & 69.98 & 119.73 & 129.12 \\
+\hline
+神经核团 & iMSN & Cortex & Thalamus \\
+\hline
+特征指标 & 振幅 & 平均频率 & 振幅 & 平均频率 & 振幅 & 频率/Hz \\
+ & /mV & /Hz & /mV & /Hz & /mV & /Hz \\
+ & 111.84 & 116.01 & 102.98 & 41.94 & 103.16 & 48.93 \\
+\hline
+\end{tabular}
+\end{table}
+
+较不同高频电刺激下的特征指标和正常特征指标，优化高频电刺激参数。问题 4 模型建立流程图如图 5.4.1 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{问题 4 的模型建立流程图}
+\label{fig:5.4.1}
+\end{figure}
+
+\subsection{5.4.2 问题 4 的模型建立}
+
+\subsubsection{5.4.2.1 神经核团确定最佳靶点模型的建立}
+
+根据基底神经节核团模型确定施加刺激后的靶点 STN 与 GPi 的数学模型，并分别观察在刺激靶点 STN 与靶点 GPi 下的各核团电位发放的特征指标。根据问题三中的正常状态特征指标，利用最小二乘法求解出最佳刺激靶点。
+
+\subsubsection{A. 建立靶点 STN 和 GPi 的模型}
+
+根据问题三中 PD 状态下的基底神经节内部神经核团模型，我们可以对神经核团靶点 STN 和 GPi 建立如下模型。此外我们需要加一个外加高频电刺激去刺激 STN 与 GPi，这里我们以高频正弦交流为外加刺激，这个刺激的幅值和频率也均有限制。因此核团 STN 与 GPi 的模型如下，需要注意的是他们具有相同的模型框架：
+
+\begin{equation}
+\begin{cases}
+C \dfrac{dV_{i}}{dt} = -g_{N_{a}} m_{i}^{3} h_{i} \left( V_{i} - V_{N_{a}} \right) - g_{K} n_{i}^{4} \left( V_{i} - V_{K} \right) - g_{L} \left( V_{i} - V_{L} \right) + I_{external(i)} \\
++ \sum_{j=1}^{5} k_{i,j} \left( V_{i} - V_{j} \right) + \sum_{d=1}^{m(d)} I_{synapse(d)} \\
+\dfrac{dm_{i}}{dt} = - \left( (a_{m})_{i} + (b_{m})_{i} \right) m_{i} + (a_{m})_{i} \\
+\dfrac{dh_{i}}{dt} = - \left( (a_{h})_{i} + (b_{h})_{i} \right) h_{i} + (a_{h})_{i} \\
+\dfrac{dn_{i}}{dt} = - \left( (a_{n})_{i} + (b_{n})_{i} \right) n_{i} + (a_{n})_{i}
+\end{cases}
+\tag{14}
+\end{equation}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+I_{synapse(s,k,i)} &= g_{(s,k,i)} r_{(s,k,i)} \left[ V_{post(k,i)} - E \right] \\
+\frac{dr_{(s,k,i)}}{dt} &= \alpha S \left[ V_{pre(s,i)} \right] \left[ 1 - r_{(s,k,i)} \right] - \beta r_{(s,k,i)} \\
+S \left[ V_{pre(s,i)} \right] &= \left[ 1 + \exp \left( -\frac{V_{pre(s,k,i)} - V_P}{k_P} \right) \right]^{-1} \\
+s.t. & \begin{cases}
+i = 1, 2, 3, 4, 5 \\
+j = 1, 2, 3, 4, 5 \\
+0 \leq m(d) \leq 3 \\
+s \leq 7 \\
+k \leq 7
+\end{cases}
+\end{aligned}
+\right.
+\tag{15}
+\end{equation}
+
+初始条件为：$V_i(t) = V(0)$, $n_i(t) = n(0)$, $m_i(t) = m(0)$, $h_i(t) = h(0)$。
+
+\section*{B. 最小二乘计算模型}
+
+以问题三中给出的正常状态的基底神经节电位发放特征指标作为参考，我们用正弦交流分别刺激神经核团 STN 和 GPi，以刺激后的基底神经节电位发放的特征指标与正常的特征指标之差最小为目标，此处特征指标主要指膜电位的幅值和频率，建立如下目标函数：
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\min V_{STN} &= \sum_{i=1}^{N} \left( V_{simulate}(i) - V_{normal}(i) \right)^2 \\
+\min V_{GPi} &= \sum_{i=1}^{N} \left( V_{simulate}(i) - V_{normal}(i) \right)^2 \\
+\min f_{STN} &= \sum_{i=1}^{N} \left( f_{simulate}(i) - f_{normal}(i) \right)^2 \\
+\min f_{GPi} &= \sum_{i=1}^{N} \left( f_{simulate}(i) - f_{normal}(i) \right)^2
+\end{aligned}
+\right.
+\tag{16}
+\end{equation}
+
+\begin{equation}
+s.t. \begin{cases}
+0.35 < g_{AMPA} < 1 \\
+0.25 < g_{GABA} < 1.25 \\
+0 < A < 40 \, \text{mV} \\
+0 < f < 200 \, \text{Hz} \\
+N = 7
+\end{cases}
+\end{equation}
+
+其中，$i$ 是指第 $i$ 个神经核团，$V_{simulate}(i)$ 指的是刺激 STN 或者 GPi 下核团膜电位的幅值，$V_{normal}(i)$ 指的是正常状态下核团膜电位的幅值。$f_{simulate}(i)$ 指的是刺激 STN 或者 GPi 下的核团膜电位的频率，$f_{normal}(i)$ 指的是正常状态下的核团膜电位的频率。
+
+\subsection*{5.4.2.2 刺激参数模型建立}
+
+以问题三中给出的正常状态的基底神经节电位发放特征指标作为参考，我们用高频脉冲和高频正弦交流分别刺激最佳靶点，并观察核团的电位发放的特征指标。此外，我们考虑到目前微小芯片已经被植入到动物身上来观察治疗效果，所以我们还考虑芯片的使用寿命情况。其中，高频脉冲和高频正弦交流刺激满足：
+
+\begin{equation}
+I_D = i_D H \left( \sin \left( \frac{2 \pi t}{\rho_D} \right) \right) \left( 1 - H \left( \sin \left( \frac{2 \pi (t + \delta_D)}{\rho_D} \right) \right) \right) \text{ or } I_D = A_D \sin (2 \pi f_D t)
+\tag{17}
+\end{equation}
+
+$I_{D}$ 为外加的高频电刺激。这里我们考虑高频脉冲刺激和高频正弦交流刺激。这里 $H(\cdot)$ 表示的是符号函数，$i_{D}$，$\delta_{D}$，$\rho_{D}$ 分别为高频脉冲刺激的幅值、脉冲占空比和周期。$A_{D}$ 和 $f_{D}$ 分别为高频正弦交流刺激的幅值和频率。
+
+\section*{A. 最小二乘计算模型}
+
+我们用高频脉冲和高频正弦交流分别刺激最佳靶点，并以刺激后的核团电位发放的特征指标与正常的核团电位发放的特征指标之差最小为目标，此处特征指标主要指膜电位的幅值和频率，建立如下目标函数：
+
+\begin{equation}
+\begin{cases}
+\min V_{\sin} = \sum_{i=1}^{N} (V_{\text{simulate}}(i) - V_{\text{normal}}(i))^{2} \\
+\min V_{\text{pulse}} = \sum_{i=1}^{N} (V_{\text{simulate}}(i) - V_{\text{normal}}(i))^{2} \\
+\min f_{\sin} = \sum_{i=1}^{N} (f_{\text{simulate}}(i) - f_{\text{normal}}(i))^{2} \\
+\min f_{\text{pulse}} = \sum_{i=1}^{N} (f_{\text{simulate}}(i) - f_{\text{normal}}(i))^{2}
+\end{cases},
+\tag{18}
+\end{equation}
+
+\begin{equation}
+s.t.
+\begin{cases}
+0.35 < g_{\text{AMPA}} < 1 \\
+0.25 < g_{\text{GABA}} < 1.25 \\
+0 < A < 40 \, \text{mV} \\
+0 < f < 200 \, \text{Hz} \\
+N = 7
+\end{cases}
+\end{equation}
+
+其中，$i$ 是指第 $i$ 个神经核团，$V_{\text{simulate}}(i)$ 指的是高频电刺激下的核团电位发放的幅值，$V_{\text{normal}}(i)$ 指的是正常状态下核团电位发放的幅值。$f_{\text{simulate}}(i)$ 指的是高频电刺激下的核团电位的发放频率，$f_{\text{normal}}(i)$ 指的是正常状态下的核团电位发放的频率。
+
+\section*{B. 外接刺激源的功率约束}
+
+外接刺激源需要长时间处于工作状态下，所以越小的功率消耗可以延长使用寿命，我们以这个为出发角度，建立如下目标对象：
+
+\begin{equation}
+P_{\min} = U_{\min} I_{\min}
+\tag{19}
+\end{equation}
+
+\begin{equation}
+s.t.
+\begin{cases}
+0 < I_{\min} < 1 \, \text{mA} \\
+0 < U_{\min} < 40 \, \text{mV}
+\end{cases}
+\end{equation}
+
+因此建立总的目标函数：
+
+\begin{equation}
+\begin{cases}
+\min V_{\sin} = \sum_{i=1}^{N} (V_{\text{simulate}}(i) - V_{\text{normal}}(i))^{2} \\
+\min V_{\text{pulse}} = \sum_{i=1}^{N} (V_{\text{simulate}}(i) - V_{\text{normal}}(i))^{2} \\
+\min f_{\sin} = \sum_{i=1}^{N} (f_{\text{simulate}}(i) - f_{\text{normal}}(i))^{2} \\
+\min f_{\text{pulse}} = \sum_{i=1}^{N} (f_{\text{simulate}}(i) - f_{\text{normal}}(i))^{2} \\
+P_{\min} = I_{\min} U_{\min}
+\end{cases},
+\tag{20}
+\end{equation}
+
+\begin{equation}
+s.t.
+\begin{cases}
+0.35 < g_{AMPA} < 1 \\
+0.25 < g_{GABA} < 1.25 \\
+0 < A < 40\text{mV} \\
+0 < f < 200\text{Hz} \\
+P_{\text{min}} = U_{\text{min}} I_{\text{min}} \\
+0 < I_{\text{min}} < 1\text{mA} \\
+0 < U_{\text{min}} < 40\text{mV} \\
+N = 7
+\end{cases}
+\tag{21}
+\end{equation}
+
+\subsection{5.4.3 问题 4 的模型求解}
+
+\subsubsection{5.4.3.1 最佳靶点模型的求解}
+
+为了方便求解模型，神经元初值 $(V_i(0), m_i(0), h_i(0), n_i(0))$ 选取为 $(0, 0, 0, 0)$。
+
+\textbf{Step1:} 确定靶点 STN 和 GPi 的模型初值为 $V_i(0) = 0, m_i(0) = 0, n_i(0) = 0, h_i(0) = 0$，并施加正弦交流电刺激分别作用于核团 STN 和 GPi。
+
+\textbf{Step2:} 枚举多个不同的正弦交流刺激，并将其分别刺激靶点 STN 与 GPi，观察核团的电位发放指标，并筛选出在刺激靶点 STN 时，与健康状态特征指标最相近的特征指标，以及在刺激靶点 GPi 时，与正常状态特征指标最相近的特征指标。并通过图表刻画出这种指标。
+
+\textbf{Step3:} 利用最小二乘法求解出刺激靶点后的特征指标与正常的特征指标之差，找出最佳刺激靶点。
+
+\subsubsection{5.4.3.2 最佳刺激参数的求解}
+
+\textbf{Step1:} 枚举多个高频脉冲和高频正弦交流分别刺激最佳靶点，观察核团电位发放的特征指标。
+
+\textbf{Step2:} 利用最小二乘法求解出刺激靶点后的特征指标与正常的特征指标之差，找出最佳电刺激模式。
+
+\textbf{Step3:} 根据最佳的电刺激模式，枚举多个具有不同刺激强度和刺激频率的高频电刺激，利用最小二乘法找出最佳的刺激频率和刺激强度。
+
+\subsection{5.4.4 问题 4 的结果分析}
+
+\subsubsection{5.4.4.1 最佳靶点模型求解的结果分析}
+
+我们在用大量的正弦交流刺激靶点 STN 与 GPi 后，我们初步确定了与健康状态特征最相近的特征指标，如表 8 所示，并用折线图将其表现出，如图 5.4.2 所示。
+
+\begin{table}[h]
+\centering
+\caption{刺激 STN 和 GPi 与健康状态下的核团电位发放的特征指标}
+\begin{tabular}{c c c c c}
+\hline
+核团 & 健康状态下核团电位发放 & 刺激 STN 下的核团电位发放 & 刺激 GPi 下的核团电位发放 \\
+ & 的频率（左）和幅值（右） & 的频率（左）和幅值（右） & 的频率（左）和幅值（右） \\
+\hline
+STN & 88.48 Hz & 102.7 mV & 81.32 Hz & 98.6 mV & 78.38 Hz & 109.26 mV \\
+Gpe & 162.02 Hz & 50.48 mV & 158.72 Hz & 51.76 mV & 150.77 Hz & 46.33 mV \\
+Gpi/SNr & 108.99 Hz & 97.75 mV & 104.59 Hz & 92.43 mV & 112.72 Hz & 105.62 mV \\
+dMSN & 39.79 Hz & 147.71 mV & 30.07 Hz & 140.22 mV & 56.38 Hz & 121.52 mV \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{tabular}{l c c c c c} 
+iMSN & $98.75\,\text{Hz}$ & $121.92\,\text{mV}$ & $89.23\,\text{Hz}$ & $119.87\,\text{mV}$ & $72.63\,\text{Hz}$ & $113.72\,\text{mV}$ \\
+Cortex & $75.94\,\text{Hz}$ & $116.82\,\text{mV}$ & $72.597\,\text{Hz}$ & $109.18\,\text{mV}$ & $69.632\,\text{Hz}$ & $101.51\,\text{mV}$ \\
+Thalamus & $100.09\,\text{Hz}$ & $78.55\,\text{mV}$ & $106.92\,\text{Hz}$ & $76.88\,\text{mV}$ & $111.68\,\text{Hz}$ & $77.19\,\text{mV}$ \\
+\end{tabular}
+
+显然，由表中数据，我们可以求得最小二乘计算模型中的参数如下：
+\begin{equation}
+\left\{
+\begin{aligned}
+\min V_{\text{STN}} &= 324.45 \\
+\min V_{\text{GPi}} &= 1374.09 \\
+\min f_{\text{STN}} &= 289.99 \\
+\min f_{\text{GPi}} &= 1315.11
+\end{aligned}
+\right.
+\tag{22}
+\end{equation}
+
+可以看出，刺激靶点 STN 作用下的核团电位发放的特征指标与健康状态下核团电位发放的特征指标之差远远小于刺激靶点 GPi，并且由图 5.4.2 可以看出，刺激靶点 STN 作用下的核团电位发放特征指标与健康状态更加接近。综上所述，靶点 STN 为最佳刺激靶点。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.48\textwidth]{image1.png}
+\caption{刺激STN与刺激GPi下的各核团的膜电位频率}
+\end{figure}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.48\textwidth]{image2.png}
+\caption{刺激STN与刺激GPi下的各核团的膜电位幅值}
+\end{figure}
+
+图 5.4.2 刺激靶点 STN 与 Gpi 作用下的各核团电位发放特征指标
+
+\subsection*{5.4.4.2 最优刺激参数求解的结果分析}
+
+\subsubsection{A. 电刺激模式求解的结果分析}
+
+我们控制高频脉冲刺激和高频正弦交流刺激具有相同的刺激强度和刺激频率，并在此条件下观察核团电位发放的特征指标。我们枚举了三种刺激强度和刺激频率，核团电位的发放指标如表 9 和表 10 所示。同时，我们用折线图展示了在不同刺激模式下，核团电位发放特征指标与健康状态特征指标的逼近程度。
+
+\begin{table}[h]
+\centering
+\caption{高频脉冲电刺激下的核团发放电位特征指标与健康状态下的电位发放特征指标}
+\begin{tabular}{c c c c c c c} 
+\hline
+\multirow{4}{*}{神经核团} & \multirow{4}{*}{\begin{tabular}{c} 健康状态电位 \\ 发放幅值 \\ (mV) \end{tabular}} & \multirow{4}{*}{\begin{tabular}{c} 健康状态电位 \\ 发放频率 \\ (Hz) \end{tabular}} & \begin{tabular}{c} ($I=10\mu\text{A}, f$ \\ $=100\,\text{Hz}$) \end{tabular} & \begin{tabular}{c} ($I=10\mu\text{A}, f$ \\ $=100\,\text{Hz}$) \end{tabular} & \begin{tabular}{c} ($I=15\mu\text{A}, f$ \\ $=150\,\text{Hz}$) \end{tabular} & \begin{tabular}{c} ($I=15\mu\text{A}, f$ \\ $=150\,\text{Hz}$) \end{tabular} & \begin{tabular}{c} ($I=18\mu\text{A}, f$ \\ $=200\,\text{Hz}$) \end{tabular} & \begin{tabular}{c} ($I=18\mu\text{A}, f$ \\ $=200\,\text{Hz}$) \end{tabular} \\
+ & & & 下核团电位发放幅值(mV) & 下核团电位发放频率(Hz) & 下核团电位发放幅值(mV) & 下核团电位发放频率(Hz) & 下核团电位发放幅值(mV) & 下核团电位发放频率(Hz) \\
+\hline
+STN & 88.48 & 102.7 & 90.56 & 83.22 & 85.36 & 108.63 & 95.2 & 112.6 \\
+Gpe & 162.02 & 50.48 & 52.76 & 150.28 & 165.1 & 46.49 & 175.6 & 60.48 \\
+Gpi/SNr & 108.99 & 97.75 & 93.26 & 105.67 & 105.7 & 93.6 & 115.4 & 109.7 \\
+dMSN & 39.79 & 147.71 & 142.61 & 30.96 & 45.02 & 143.5 & 55.4 & 160.7 \\
+iMSN & 98.76 & 121.92 & 118.77 & 110.66 & 93.12 & 118.6 & 103.6 & 127.9 \\
+Cortex & 75.94 & 116.82 & 112.87 & 80.068 & 72.1 & 112.5 & 78.062 & 120.3 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{高频正弦电刺激下的核团发放电位特征指标与健康状态下的电位发放特征指标}
+\begin{tabular}{c c c c c c c c}
+\hline
+Thalam & 100.09 & 78.55 & 80.55 & 90.62 & 105.3 & 76.55 & 110.3 & 76.57 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c c c c c}
+\hline
+神经核团 & 健康状态电位发放幅值/mV & 健康状态电位发放频率/Hz & ($I=10\mu$A, $f=10$Hz)下各核团电位发放幅值/mV & ($I=10\mu$A, $f=100$Hz)下各核团电位发放频率/Hz & ($I=15\mu$A, $f=150$Hz)下各核团电位发放幅值/mV & ($I=15\mu$A, $f=150$Hz)下各核团电位发放频率/Hz & ($I=18\mu$A, $f=200$Hz)下各核团电位发放频率/Hz \\
+\hline
+STN & 88.48 & 102.7 & 83.22 & 108.96 & 95.72 & 88.6 & 80.7 & 120.6 \\
+Gpe & 162.02 & 50.48 & 150.28 & 49.56 & 155.9 & 40.7 & 140.7 & 62.77 \\
+Gpi & 108.99 & 97.75 & 105.67 & 88.46 & 115.6 & 106.9 & 120.6 & 115.72 \\
+dMSN & 39.79 & 147.71 & 30.96 & 159.66 & 35.08 & 156.8 & 32.2 & 168.6 \\
+iMSN & 98.76 & 121.92 & 110.66 & 141.5 & 120.6 & 128.6 & 115.7 & 132.6 \\
+Cortex & 75.94 & 116.82 & 80.068 & 120.84 & 94.2 & 120.61 & 100.62 & 125.4 \\
+Th & 100.09 & 78.55 & 90.62 & 90.36 & 95.6 & 72.5 & 92.56 & 92.88 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.45\textwidth]{image1.png}
+\caption{脉冲高频刺激下各核团电位发放幅值}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.45\textwidth]{image2.png}
+\caption{正弦波高频刺激下各核团电位发放幅值}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.45\textwidth]{image3.png}
+\caption{脉冲高频刺激下各核团电位发放频率}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.45\textwidth]{image4.png}
+\caption{正弦波高频刺激下各核团电位发放频率}
+\end{figure}
+
+显然，由表中数据，我们可以求得最小二乘计算模型中的参数如下：
+
+\begin{equation}
+\begin{cases}
+\min V_{\sin} = 449.91 \\
+\min V_{\text{pulse}} = 143.07 \\
+\min f_{\sin} = 426.9 \\
+\min f_{\text{pulse}} = 131.52
+\end{cases}
+\tag{23}
+\end{equation}
+
+\section*{B. 刺激强度与刺激频率参数优化求解的结果分析}
+
+由A部分的电刺激模式求解分析中，可以看出，当外加刺激频率在100Hz~150Hz频率，高频脉冲刺激作用下核团电位发放特征指标与健康状态特征指标很接近，因此我们着重考虑这个频段内的核团电位发放的幅值。经过上述问题的分析与求解，固定刺激强度为15mV，不同刺激频率下的核团电位发放幅值如表11所示，红色标注的是最接近健康状态的特征指标，即最优解。
+
+\begin{table}[h]
+\centering
+\caption{刺激强度一定，不同刺激频率下的核团电位发放幅值(mV)}
+\begin{tabular}{l c c c c c c}
+\hline
+ & 100Hz & 110Hz & 120Hz & 130Hz & 140Hz & 150Hz \\
+\hline
+STN & 80 & 87 & 94 & \textcolor{red}{101.3} & 110.6 & 115.7 \\
+Gpe & 22.56 & 30.26 & 40.97 & \textcolor{red}{49.98} & 56.23 & 60.24 \\
+Gpi/SNr & 79.56 & 85.24 & 92.78 & \textcolor{red}{98.75} & 103.26 & 109.77 \\
+dMSN & 114.98 & 123.46 & 135.76 & \textcolor{red}{148.2} & 153.45 & 160.23 \\
+iMSN & 88.67 & 97.28 & 109.22 & \textcolor{red}{119.8} & 128.7 & 135.4 \\
+Cortex & 92.16 & 99.34 & 107.26 & \textcolor{red}{115.99} & 120.03 & 125.21 \\
+Thalamus & 61.26 & 67.79 & 75.34 & \textcolor{red}{78.1} & 83.6 & 89.27 \\
+\hline
+\end{tabular}
+\end{table}
+
+由A部分的电刺激模式求解分析中，可以看出，当外加刺激强度在10mV~15mV频率，高频脉冲刺激作用下核团电位发放特征指标与健康状态特征指标很接近，因此我们着重考虑这个频段内的核团电位发放的幅值。经过上述所求频率最优解，固定刺激频率为130Hz，不同刺激强度下的核团电位发放频率如表12所示，红色标注的是最接近健康状态的特征指标，即最优解。
+
+\begin{table}[h]
+\centering
+\caption{刺激频率一定，不同刺激强度下的核团电位发放频率(Hz)}
+\begin{tabular}{l c c c c c c}
+\hline
+ & 10mV & 11mV & 12mV & 13mV & 14mV & 15mV \\
+\hline
+STN & 72.56 & 80.13 & \textcolor{red}{87.48} & 96.52 & 103.4 & 109.53 \\
+Gpe & 142.06 & 154.63 & \textcolor{red}{160.02} & 173.56 & 184.14 & 193.26 \\
+Gpi/SNr & 88.16 & 92.46 & \textcolor{red}{110.99} & 117.36 & 128.54 & 137.26 \\
+dMSN & 28.96 & 35.46 & \textcolor{red}{37.79} & 45.23 & 52.14 & 59.18 \\
+iMSN & 75.36 & 85.12 & \textcolor{red}{100.75} & 109.36 & 120.05 & 135.4 \\
+Cortex & 60.13 & 68.59 & \textcolor{red}{79.94} & 84.52 & 96.23 & 109.25 \\
+Thalamus & 72.56 & 80.13 & \textcolor{red}{98.09} & 96.52 & 103.4 & 109.53 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{(a) 刺激强度一定时，不同电刺激频率下的核团电位发放频率。(b) 刺激频率一定时，不同电刺激强度下的核团电位发放幅值。}
+    \label{fig:5.4.5}
+\end{figure}
+
+\section{5.5 问题 5 的模型建立与求解}
+
+\subsection{5.5.1 问题 5 的模型分析}
+
+针对问题 5，要求在直接通路或者间接通路中模型回答是否还有其他最优电刺激靶点。在问题 4 中已经对刺激靶点 STN 和靶点 GPi 进行了探究，直接通路中有两个靶点是在问题 4 中讨论过的。因此，从寻找范围最大化角度出发，问题 5 采用间接通路模型。采用问题 4 中优化后的高频电刺激，分别对靶点 Cortex、靶点 Str 和靶点 GPe 进行刺激，将刺激后的特征指标与正常状态的特征指标无限逼近，建立最小二乘模型，探求除了靶点 STN 和靶点 GPi 以外的其他最优刺激靶点。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{问题 5 模型搭建流程图}
+    \label{fig:5.5.1}
+\end{figure}
+
+\subsection{5.5.2 问题 5 的模型建立}
+
+通过对问题 5 的分析，选择间接通路的神经通路，因此需要建立施加脉冲刺激的靶点 Cortex、靶点 Str 和靶点 GPe 的数学模型。通过与正常状态的特征指标进行比较，利用最小二乘法求解出其他最优刺激靶点。
+
+\subsubsection{A. 建立靶点 Cortex、Str 和 GPe 的数学模型模型}
+
+与问题 4 中建立的最佳靶点模型相同，只需将外加高频电刺激替换为问题 4 中确定的脉冲高频电刺激。
+
+\begin{equation}
+\begin{cases}
+C\frac{dV_{i}}{dt}=-g_{N_{a}}m_{i}^{3}h_{i}\left(V_{i}-V_{N_{a}}\right)-g_{K}n_{i}^{4}\left(V_{i}-V_{K}\right)-g_{L}\left(V_{i}-V_{L}\right)+I_{external(i)} \\
++\sum_{j=1}^{5}k_{i,j}\left(V_{i}-V_{j}\right)+\sum_{d=1}^{m(d)}I_{synapse(d)} \\
+\frac{dm_{i}}{dt}=-\left((a_{m})_{i}+(b_{m})_{i}\right)m_{i}+(a_{m})_{i} \\
+\frac{dh_{i}}{dt}=-\left((a_{h})_{i}+(b_{h})_{i}\right)h_{i}+(a_{h})_{i} \\
+\frac{dn_{i}}{dt}=-\left((a_{n})_{i}+(b_{n})_{i}\right)n_{i}+(a_{n})_{i}
+\end{cases}
+\tag{24}
+\end{equation}
+
+\begin{equation}
+\begin{cases}
+I_{synapse(s,k,i)}=g_{(s,k,i)}r_{(s,k,i)}\left[V_{post(k,i)}-E\right] \\
+\frac{dr_{(s,k,i)}}{dt}=\alpha S\left[V_{pre(s,i)}\right]\left[1-r_{(s,k,i)}\right]-\beta r_{(s,k,i)}, \\
+S\left[V_{pre(s,i)}\right]=\left[1+\exp\left(-\frac{V_{pre(s,k,i)}-V_{P}}{k_{P}}\right)\right]^{-1} \\
+s.t.
+\begin{cases}
+i=1,2,3,4,5 \\
+j=1,2,3,4,5 \\
+0\leq m(d)\leq 3 \\
+s\leq 7 \\
+k\leq 7
+\end{cases}
+\end{cases}
+\tag{25}
+\end{equation}
+
+\section*{B. 最小二乘计算模型}
+
+同样以问题 3 中求得的正常状态的基底神经节电位发放特征指标作为参考，以最优脉冲高频电分别刺激靶点 Cortex、Str 和 GPe，以刺激后的基底神经节电位发放的特征指标和正常的特征指标之差作为目标，作差的特征指标为神经元核团中神经元的幅值和频率，建立的目标函数如下：
+
+\begin{equation}
+\begin{cases}
+\min V_{\text{Cortex}}=\sum_{i=1}^{N}\left(V_{\text{simulate}}(i)-V_{\text{normal}}(i)\right)^{2} \\
+\min V_{\text{Str}}=\sum_{i=1}^{N}\left(V_{\text{simulate}}(i)-V_{\text{normal}}(i)\right)^{2} \\
+\min V_{\text{GPe}}=\sum_{i=1}^{N}\left(V_{\text{simulate}}(i)-V_{\text{normal}}(i)\right)^{2} \\
+\min f_{\text{Cortex}}=\sum_{i=1}^{N}\left(f_{\text{simulate}}(i)-f_{\text{normal}}(i)\right)^{2} \\
+\min f_{\text{Str}}=\sum_{i=1}^{N}\left(f_{\text{simulate}}(i)-f_{\text{normal}}(i)\right)^{2} \\
+\min f_{\text{GPe}}=\sum_{i=1}^{N}\left(f_{\text{simulate}}(i)-f_{\text{normal}}(i)\right)^{2}
+\end{cases}
+\tag{26}
+\end{equation}
+
+\begin{equation}
+s.t.
+\begin{cases}
+0.35 < g_{AMPA} < 1 \\
+0.25 < g_{GABA} < 1.25 \\
+0 < A < 40\text{mV} \\
+0 < f < 200\text{Hz} \\
+N = 7
+\end{cases}
+\tag{27}
+\end{equation}
+
+其中，$i$ 是指第 $i$ 个神经核团，$V_{simulate}(i)$ 指的是刺激靶点 Cortex、Str 和 GPe 下核团膜电位的幅值，$V_{normal}(i)$ 指的是正常状态下各核团膜电位的幅值。$f_{simulate}(i)$ 指的是刺激靶点 Cortex、Str 和 GPe 下的各核团膜电位的频率，$f_{normal}(i)$ 指的是正常状态下的各核团膜电位的频率。
+
+\subsection*{5.5.3 问题 5 的模型求解}
+
+\textbf{Step1：} 同样需要确定靶点 Cortex、Str 和 GPe 的模型初值为 $V_i(0)=0$，$m_i(0)=0$，$n_i(0)=0$，$h_i(0)=0$，并施加脉冲高频电刺激分别作用于靶点 Cortex、Str 和 GPe；
+
+\textbf{Step2：} 使用最优参数的脉冲高频电分别刺激靶点 Cortex、Str 和 GPe，计算并记录各核团的电位发放特征指数。将刺激靶点后的特征值特征值指数与问题 3 中选取的正常状态下的电位发放的特征指数进行比较，可以得到大量的数据；
+
+\textbf{Step3：} 计算脉冲高频电刺激靶点 Cortex、Str 和 GPe 后的各核团电位发放的特征指数与正常状态的特征指数之差，利用最小二乘法模型得出结果，通过分析与正常状态最相近的结果判断其他最优刺激靶点。
+
+\subsection*{5.5.4 问题 5 的结果分析}
+
+根据模型求解的步骤，利用 Matlab 仿真软件得到刺激靶点 Cortex、Str 和 GPe 后各核团的电位发放特征指数，可以得到大量的数据，选取其中一组数据进行展示如表 13 所示。
+
+\begin{table}[h]
+\centering
+\caption{刺激靶点 Cortex、Str 和 GPe 后各神经核团电位发放的特征指标}
+\begin{tabular}{c c c c c c c c}
+\hline
+\multirow{3}{*}{神经核团} & \multirow{3}{*}{\begin{tabular}{c} 正常 \\ 状态幅值 \\ /mV \end{tabular}} & \begin{tabular}{c} 刺激靶点 \\ 正常 \\ 状态 \\ 频率 \\ /Hz \end{tabular} & \begin{tabular}{c} 刺激靶点 \\ Cortex 后 \\ 的幅值 \\ /mV \end{tabular} & \begin{tabular}{c} 刺激靶点 \\ Cortex 后 \\ 的频率/ \\ Hz \end{tabular} & \begin{tabular}{c} 刺激靶 \\ 点 GPe \\ 后的幅 \\ 值/mV \end{tabular} & \begin{tabular}{c} 刺激靶 \\ 点 GPe \\ 后的频 \\ 率/Hz \end{tabular} & \begin{tabular}{c} 刺激靶 \\ 点 Str \\ 后的幅 \\ 值/mV \end{tabular} & \begin{tabular}{c} 刺激靶 \\ 点 Str \\ 后的频 \\ 率/Hz \end{tabular} \\
+\hline
+STN & 15.65 & 102.7 & 22.25 & 108.27 & 19.88 & 99.87 & 21.78 & 85.42 \\
+GPe & 47.71 & 50.48 & 57.42 & 58.67 & 55.25 & 45.2 & 35.83 & 66.52 \\
+GPi/SNr & 34.3 & 97.75 & 43.24 & 92.38 & 40.25 & 100.25 & 37.25 & 62.28 \\
+dMSN & -20.8 & 147.71 & -22.27 & 151.74 & -15.28 & 150.23 & 20.12 & 135.12 \\
+iMSN & 25.19 & 121.92 & 28.36 & 127.72 & 26.38 & 119.55 & 32.33 & 112.2 \\
+Cortex & 7.068 & 116.82 & 14.28 & 123.35 & 10.28 & 122.38 & 31.23 & 40.37 \\
+Thalamus & 27.52 & 78.55 & 38.57 & 78.37 & 35.33 & 79.88 & 25.56 & 46.38 \\
+\hline
+\end{tabular}
+\end{table}
+
+为了能够直观的观察和分析所得的大量数据，绘制了刺激靶点 Cortex、Str 和 GPe 后各神经核团电位发放的特征指标折线图，并与正常状态下电位发放的特征指标进行比较，如图 5.5.2 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{刺激靶点 Cortex、Str 和 GPe 下的各核团电位发放幅值和频率折线图}
+    \label{fig:5.5.2}
+\end{figure}
+
+通过表格数据和根据数据得到的刺激靶点 Cortex、Str 和 GPe 下的各核团电位发放幅值和频率折线图可以直观的观察到，刺激靶点 GPe 后的膜电位幅值和频率都与正常状态下的核团放电电位中的幅值和频率更加接近。因此，除了问题 4 中探究出的最佳刺激靶点 STN，间接通路中的 GPe 靶点是另一个最优刺激靶点。
+
+\section{六、模型评价}
+
+\subsection{6.1 模型的优点}
+
+(1) 采用的神经元模型是学术界研究公认的经典 Hodgkin-Huxley 模型，它所包含的参数具有明确的生理学含义，在神经元行为模拟方面，在研究突触整合、树突结构以及其他与单个神经元的动态特性相关的问题时都是有力的研究工具。
+
+(2) 构建耦合神经核团时耦合突触选择简答的电突触耦合，为后续的分析提供了一定的方便，同时引入了 ISI 分岔图确认耦合强度。为了避免核团模型过于简单，神经核团的耦合结构选取了更接近人脑结果的全连接方式构建神经核团。
+
+(3) 神经核团耦合神经节采用更接近人脑的化学突触，构建结构参考题目和所给附件具有一定的科学性。对于耦合强度和外加激励的选定，作者参考了学术界已有的成果并且仿真大量数据，对结果进项最小二乘法等回归分析方法确定了耦合强度和外加激励的选定。
+
+(4) 求解使用的最小二乘法能通过最小化误差的平方和寻找数据的最佳函数匹配，能简便地求得未知的数据，并使得这些求得的数据与实际数据之间误差的平方和为最小。
+
+\subsection{6.2 模型的缺点}
+
+(1) 为了分析方便构建神经核团模型时选取的耦合方法为电耦合，同时所有神经核团内的耦合参数设为一致，导致模拟神经核团系统对比人脑神经核团具有简单性。
+
+(2) 神经核团构建神经节的耦合参数的确定太过主观，没有提出一种合理的有说服性的选取方法。
+
+(3) 对比健康神经节、帕金森神经节和对各个靶点的外加激励刺激具有主观性，并没有列举大量的刺激方法进行总结。
+
+(4) 最小二乘法是线性估计，已经默认了是线性的关系，使用有一定局限性
+
+\subsection{6.3 模型的改进}
+
+首先对于神经核团的耦合方式，可以改进为更为适合人脑的化学耦合方式。其次单个核团的神经元个数可以选择更多的神经元。对于激励信号的选取，本文只考虑了外加刺激信号但是没有考虑能耗的问题，不便于在实际应用中实现小型化和便携化，可以将功率作
+
+\section*{七、参考文献}
+
+\begin{enumerate}
+    \item Schuepbach W M M, Rau J, Knudsen K, et al. Neurostimulation for Parkinson's disease with early motor complications.[J]. N Engl J Med, 368(7):610-622,2013.
+    \item Wang H F, Yu J T, Tang S W, et al. Efficacy and safety of cholinesterase inhibitors and memantine in cognitive impairment in Parkinson's disease, Parkinson's disease dementia, and dementia with Lewy bodies: systematic review with meta-analysis and trial sequential analysis[J]. Journal of Neurology Neurosurgery \& Psychiatry, 86(2):135-43, 2015.
+    \item Leung, Isabella, H, et al. Cognitive training in Parkinson disease A systematic review and meta-analysis[J]. Neurology: Official Journal of the American Academy of Neurology, 85(21):1843-1851,2015.
+    \item 张雨萌,张秀华.欧拉离散化下广义系统的终端滑模控制[J], 科学技术创新, 13-14, 2020(03).
+    \item Rapp B E. Numerical Methods for Solving Differential Equations[J]. Microfluidics: Modelling, Mechanics and Mathematics, 549-593, 2017.
+    \item Forsythe G E, Malcolm M A, Moler C B. Computer Methods for Mathematical Computations[C]// Prentice Hall Professional Technical Reference. Prentice Hall Professional Technical Reference, 1977.
+    \item Destexhe A, Mainen Z F, Sejnowski T J. Kinetic Models of Synaptic Transmission[J]. methods in neuronal modeling, 1998.
+\end{enumerate}
