@@ -1,0 +1,1782 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{吸波材料与微波暗室问题的数学建模}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+本文讨论了吸波材料与微波暗室问题，分别建立了三维镜像模型以及动态平衡方程组模型，使用 MATLAB 软件进行求解，最后给出相关结论。
+
+针对问题 1，参照镜像法的思想，通过建立反射面的镜像，对二维和三维的问题，分别建立平面标量几何和空间矢量几何模型。在给定垂直反射率，并假设入射角 $\theta_{i}$ 服从均匀分布的前提下，分析最终反射波线的方向、反射次数、反射波的辐射强度与尖劈角 $\alpha$ 的定性定量关系，并得出以下结论：尖劈角 $\alpha$ 越小，反射波平均辐射强度越小，吸波效果越好；当尖劈角 $\alpha \approx \frac{\pi}{4}$ 时，吸波效果最差。
+
+针对问题 2，参照电磁场理论矩量法的思想，对墙面划分微元，分析暗室内一次辐射源和二次辐射源的相互辐射过程。然后对每个微元 $D_{j}$ 的辐射通量 $\Delta \Phi_{j}(t)$ 建立下面的动态平衡方程组：
+\[
+\Delta \Phi_{j}(t) = \sum_{\substack{k=1 \\ k \neq j}}^{1464} a_{jk} \Delta \Phi_{k}(t) + b_{j}, \quad \text{其中 } a_{jk} \text{ 和 } b_{j} \text{ 为常数矩阵}
+\]
+
+使用 MATLAB 软件，并结合最小二乘法求解。在此基础上计算不同反射率情况下的 $\gamma$ 值，在时间 $t \in [0, 4]$ 内，得到以下结论：
+
+\begin{tabular}{l l}
+学校 & 南京邮电大学 \\
+\hline
+参赛队号 & 10293022 \\
+\hline
+队员姓名 & 1. 钮历宇 \\
+ & 2. 尹庆标 \\
+ & 3. 刘颖 \\
+\hline
+\end{tabular}
+
+同时, 关于问题 2, 我们还通过 MATLAB 软件的图形用户界面 GUI, 制作了一个微波暗室吸波材料预测软件。
+
+在问题 2 的模型推广方面, 使用更为常见的半波偶极子天线 (全向天线) 代替余弦辐射体天线, 通过计算, 得到以下结论: 当 $\rho=0.05$ 时, $\gamma \leq 0.1080$, 不符合任意时刻 $\gamma \leq 0.03$ 的要求, 需要使用吸波效果更好的吸波材料。
+
+关键词: 镜像法、动态平衡方程组、阈值、图形用户界面 GUI
+\end{abstract}
+
+\tableofcontents
+
+\section{问题重述}
+\dotfill 4
+
+\section{问题假设}
+\dotfill 5
+
+\section{符号说明及名词解释}
+\dotfill 5
+
+\section{问题分析}
+\dotfill 7
+
+\section{问题一}
+\dotfill 7
+
+\subsection{二维镜像的构造}
+\dotfill 8
+
+\subsection{二维模型的建立}
+\dotfill 9
+
+\subsection{二维模型的求解}
+\dotfill 13
+
+\subsection{三维镜像面的构造}
+\dotfill 15
+
+\subsection{三维模型的建立}
+\dotfill 16
+
+\subsection{三维模型的求解}
+\dotfill 21
+
+\section{问题二}
+\dotfill 22
+
+\subsection{建模前的准备}
+\dotfill 22
+
+\subsection{问题二模型——动态平衡方程组模型}
+\dotfill 24
+
+\subsubsection{一次辐射源——视在天线}
+\dotfill 24
+
+\subsubsection{二次辐射源——墙体微元 $D_{j}$}
+\dotfill 27
+
+\subsubsection{动态平衡方程组的建立}
+\dotfill 30
+
+\subsubsection{静区反射一直射功率比 $\gamma$}
+\dotfill 32
+
+\subsection{问题二模型的求解}
+\dotfill 32
+
+\subsubsection{动态平衡方程组的求解}
+\dotfill 32
+
+\subsubsection{反射一直射功率比值 $\gamma$ 与垂直反射率 $\rho$ 的关系}
+\dotfill 33
+
+\subsubsection{微波暗室吸波材料预测软件的制作}
+\dotfill 35
+
+\section{问题二模型的推广}
+\dotfill 36
+
+\subsection{半波偶极子线天线（全向天线）的介绍}
+\dotfill 36
+
+\subsection{使用半波偶极子天线代替余弦辐射体}
+\dotfill 37
+
+\subsection{半波偶极子的求解}
+\dotfill 39
+
+\section{模型的评价}
+\dotfill 41
+
+\section{吸波材料与微波暗室问题的数学建模}
+
+\subsection{一、问题重述}
+
+\subsubsection{问题 1：尖劈形状吸波体的性能分析}
+
+设有一个尖劈形状吸波体，尖劈的长度沿 \(x\) 方向为无限长。由射向角 \(\theta\)（\(z\) 轴正向与入射线负方向的夹角）和方位角 \(\varphi\)（\(x\) 轴正向与射线在 \(xOy\) 平面上投影的夹角）确定入射波线的方向，只考虑波在两种不同介质界面处的反射，不考虑边缘处的绕射。
+
+假设尖劈材料的电性能参数各处均匀，垂直入射的反射率为 \(\rho\)，斜入射时的反射率满足前述的余弦法则，设入射波线的辐射强度为 1 单位。
+
+试建立入射波线在一个尖劈几何空缺间反射过程的数学模型，即分别刻画最终反射波线的方向，反射次数，反射波的辐射强度与已知反射率、诸几何参数之间的定量关系。
+
+\subsubsection{问题 2：导弹导引仿真实验用的微波暗室的性能研究}
+
+设暗室的宽 \(B=18\)，高 \(H=14\)，长 \(L=15\)，\(b=1\)，线阵列的圆弧半径 \(R=14\)，单位均为米。所有墙面铺设同一规格的吸波体（上述数据均从吸波体的顶端平面算起）。在暗室右端中心的 \(s \times s\) 的小方块面积处是安置导引头的部位，称为 “静区”。静区小方块的中心点与目标模拟阵列圆弧的圆心重合。静区接收到的电磁能量直接对导弹的导引仿真有重要影响，根据导引仿真要求，静区从诸墙面得到的反射信号的功率之和与从信号源直接得到的微波功率之比 \(\gamma\)，始终满足 \(\gamma \leq 0.03\)。设 \(s=0.3 \, \text{m}\)。
+
+目标模拟器对导引头的视在目标运动从左端开始，以匀角速运动到右端，前后共 4 秒，视在天线中心轴线对准静区中心，中心轴线处的发射功率强度随时间线性增大，结束时比初始时增大了一倍。并假设：
+
+（1）视在天线发射功率强度分布满足余弦辐射体；
+
+（2）只考虑所有墙面对辐射的反射，不计入墙面的散射；
+
+（3）不计入模拟器的天线及其安装支架，以及导引头本身对辐射的影响；
+
+若暗室铺设平板形吸波材料，其垂直反射率 \(\rho=0.50\)。试建立合适的数学模型，在上述假设下，根据提供的数据，通过对模型的分析与数值计算，判断这样的微波暗室能否能满足仿真技术要求？在此弹目相对运动过程中，何时的 \(\gamma\) 值最小？
+
+进一步，若暗室改为铺设尖劈形吸波材料，由于沿尖劈形吸波体各平面处的吸波效果不是常数，所以常用统计的方法求出其平均值，称此平均值为平均反射率。现设此平均反射率已经求出，为 \(\rho=0.05\)（相当于尖劈形吸波体被换成另一种吸波性能更好材料的平板形吸波体的垂直反射率），请你再次用模型进行计算，根据结果判断，这样的暗室是否能满足仿真技术要求？何时的 \(\gamma\) 值最小？
+
+\section{问题假设}
+
+根据题意，可以进行如下假设：
+
+\begin{enumerate}
+    \item 假设尖劈的长度沿x方向为无限长。
+    \item 假设入射线是一条想象中的辐射线（实际上是在一个微小立体角内辐射）。
+    \item 假设视在天线发射功率强度分布满足余弦辐射体。
+    \item 假设只考虑所有墙面对辐射的反射，不计入墙面的散射。
+    \item 假设不计入模拟器的天线及其安装支架，以及导引头本身对辐射的影响。
+\end{enumerate}
+
+\section{符号说明及名词解释}
+
+\subsection{符号说明}
+
+\textbullet{} 问题一的符号说明
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & 第一种情况 & 第二种情况 & 第三种情况 \\
+ & ($0 < \theta_{i} \leq \alpha$) & ($\theta_{i} > \alpha$ 且与某一反射面垂直) & ($\theta_{i} > \alpha$ 且未与任何镜像垂直) \\
+\hline
+反射波线的方向 $\theta_{r}$ & $-\theta_{i}$ & $(2k_{\text{max}} - 1)\alpha - \frac{\pi}{2}$ & $\begin{aligned} &-\pi + \theta_{i} + 6\alpha \text{ (N为奇数时)} \\ &\pi - \theta_{i} - 2N\alpha \text{ (N为偶数时)} \end{aligned}$ \\
+\hline
+反射次数 N & 1 & $\frac{\frac{\pi}{2} - \theta_{i}}{\alpha}$ & $\left\lfloor \frac{\left[\pi - 2(\theta_{i} - \alpha)\right]}{2\alpha} \right\rfloor$ \\
+\hline
+反射波的辐射强度 & $\rho \cos \alpha_{i}$ & $\rho^{2k_{\text{max}} - 1} \cdot \left\{\prod_{k=1}^{k_{\text{max}} - 1} \cos \left[2(k_{\text{max}} - k)\alpha\right]\right\}^{2}$ & $\prod_{j=1}^{N} \rho \cos \left|\frac{\pi}{2} - (\theta_{i} + (2k - 1)\alpha)\right|$ \\
+\hline
+\end{tabular}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|l|}
+\hline
+$P_{r}$ & 反射波功率 \\
+\hline
+$P_{i}$ & 入射波功率 \\
+\hline
+$\rho$ & 反射率 \\
+\hline
+$\overrightarrow{n_{k}}$ & 反射面k的法向量 \\
+\hline
+$\theta_{nk}$ & $\overrightarrow{n_{k}}$ 的空间夹角，射向角（z轴正向与入射线负方向的夹角） \\
+\hline
+$\varphi_{nk}$ & $\overrightarrow{n_{k}}$ 的空间夹角，方位角（x轴正向与射线在xOy平面上投影的夹角） \\
+\hline
+$\overrightarrow{e_{i}}$ & 入射波线的方向 \\
+\hline
+$\overrightarrow{e_{r}}$ & 反射波线的方向 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{itemize}
+    \item 问题二的符号说明
+\end{itemize}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|l|}
+\hline
+符号 & 符号说明 \\
+\hline
+$I_{N}$ & 天线轴线方向辐射强度 \\
+\hline
+$I_{i}$ & 与法线方向成i角方向的辐射强度 \\
+\hline
+B & 暗室的宽度 \\
+\hline
+H & 暗室的高度 \\
+\hline
+L & 暗室的长度 \\
+\hline
+R & 线阵列的圆弧半径 \\
+\hline
+$\gamma$ & 静区从诸墙面得到的反射信号的功率之和与从信号源直接得到的微波功率之比 \\
+\hline
+$D_{j}$ & 墙体分块后的微元（$j=1,2,\dots,1465$） \\
+\hline
+$I_{Np}(t)$ & 视在天线P在时间t时的发射功率 \\
+\hline
+$I_{p}(i,t)$ & 在t时刻，P点向与法线方向成i角的辐射强度 \\
+\hline
+$\Phi_{XY}(t)$ & Y点接收到的来自X点的辐射通量 \\
+\hline
+$I_{XY}(t)$ & Y点接收到的来自X点的辐射强度 \\
+\hline
+$E$ & 辐射照度 \\
+\hline
+$M$ & 辐射出射度 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{名词解释}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|l|}
+\hline
+名词 & 名词解释 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c|c}
+\hline
+射向角 & 入射线负方向与 $z$ 轴正向的夹角 \\
+\hline
+入射角 & 入射线与法线的夹角 \\
+\hline
+方位角 & $x$ 轴正向与射线在 $xOy$ 平面上投影的夹角 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{问题分析}
+
+无回波暗室能够屏蔽外界干扰信号，通过内墙（包括地面与天顶面）敷设的吸波体，吸收各类反射信号，使室内反射大为减弱，被测设备接收到的“似乎”只有测试信号源发出的实验所需信号。这样，它为测试设备提供了一个几乎没有反射信号的“自由空间”。
+
+问题一，要求对于尖劈形状吸波体进行性能分析，由题目中给出的示意图可知，假设有一条辐射线，如果满足一定的入射角度，则其可以射入两个尖劈吸波体之间的几何空缺间，经过多次反射，或者透射过尖劈后进入相邻尖劈空间形成反射。因为多次透射后进入相邻空间的反射，其能量已极小，工程上可以不计，因此本题我们也不予考虑。
+
+本题要求建立入射波线在一个尖劈几何空缺间反射过程的数学模型，分别刻画最终反射波线的方向，反射次数，反射波的辐射强度与已知反射率、诸几何参数之间的定量关系。因此，我们先建立二维空间的数学模型，然后推广到三维空间。
+
+问题二，由题目中要求，在圆弧 $A, B$ 中间存在一个“视在天线”，从某端点开始，以匀角速运动到另一端。在此过程中，天线向外辐射电磁波。有的电磁波直接辐射到“静区”，被“静区”吸收，有的电磁波辐射到墙面。
+
+静区接收到的电磁能量直接对导弹的导引仿真有重要影响，根据导引仿真要求，静区从诸墙面得到的反射信号的功率之和与从信号源直接得到的微波功率之比，始终满足 $\gamma \leq 0.03$。由此可知，暗室墙壁铺设的吸收材料的性能对于吸收电磁波的能力高低很关键。
+
+对于暗室，需要同时考虑暗室六个墙面相互之间的影响和作用，而不单纯只有视在天线作用，因此我们建立了动态平衡方程组的数学模型。
+
+\section{问题一}
+
+本题要求建立入射波线在一个尖劈几何空缺间反射过程的数学模型，分别刻画最终反射波线的方向，反射次数，反射波的辐射强度与已知反射率、诸几何参数之间的定量关系。因此，我们先建立二维空间的数学模型，然后推广到三维空间。
+
+关于以上电磁波传播的问题，通过麦克斯韦方程组的推导波动方程能够得到理论上的真实解。但是具体到本题，在忽略电磁波极化、散射等影响的条件下，使用光学几何，构造镜像的方法求解，不仅能降低计算的复杂度，也能得到一定程度上可接受的解。
+
+基于以上的考虑，我们使用镜像法的思想，从二维的情况入手，再进一步推广到三维的情况，建立了在尖劈空隙间的多次反射模型。
+
+\subsection{二维镜像的构造}
+
+在模型建立之前，在尖劈角 $\alpha$ 已知的条件下，我们首先构造各个反射面的镜像。
+
+\begin{itemize}
+    \item 镜像构造方法：以反射面 1 为镜面，做出“尖劈 1 的右侧面”关于反射面 1 的镜像，即反射面 2；然后以反射面 2 为镜面，做出反射面 1 关于反射面 2 的镜像，即反射面 3；依次类推。
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{镜像构造示意图}
+    \label{fig:mirror_construction}
+\end{figure}
+
+由图 \ref{fig:mirror_construction}，对于反射面 $k$，当 $k$ 为偶数时，镜像面 $k$ 的原像为“尖劈 1 的右侧面”；当 $k$ 为奇数时，镜像面 $k$ 的原像为“尖劈 2 的左侧面”。
+
+\begin{itemize}
+    \item 镜像的长度 $L$：
+
+    镜像的长度 $L$ 等于尖劈侧面的长度，即：
+    \begin{align*}
+        \angle AFO &= \frac{\pi}{2} - \alpha_{i3}, \quad \angle OAF = 6\alpha, \\
+        \angle AOF &= \theta_{i} - \alpha, \quad \angle AFO + \angle OAF + \angle AOF = \pi \\
+        \angle AFO &= \pi - (\angle OAF + \angle AOF) = \pi - (\theta_{i} - \alpha + 6\alpha)
+    \end{align*}
+    则在构造镜像时，每个镜像的长度均为 $L$。
+
+    \item 镜像个数 $K$ 的判断
+
+    下面在尖劈角 $\alpha$ 已知的条件下，判断反射面的个数 $K$：
+
+    做出“尖劈 1 的右侧面”的延长线，所有的镜像应该在尖劈 1 的右侧面的延长线的右侧。因为，在“尖劈 1 右侧面”的延长线的左侧的镜像，入射线是无法到达的。因此，反射面总个数 $K$ 为：
+    \begin{align*}
+\theta_{r} &= \angle JDM = \angle JDH - \angle MDH \\
+&= -\left[\pi - (\theta_{i} - \alpha + 6\alpha)\right] + \alpha \\
+&= -\pi + \theta_{i} + 6\alpha
+\end{align*}
+    其中：$\lfloor \bullet \rfloor$ 表示向下取整。
+\end{itemize}
+
+\subsection{二维模型的建立}
+
+经过分析，在尖劈角 $\alpha$ 已知的条件下，假设入射角 $\theta_{i}$ 服从 $[0, \frac{\pi}{2})$ 的均匀分布。针对不同的入射线射向角 $\theta_{i}$，反射过程分为以下 3 种情况：
+
+\[
+\begin{cases}
+\text{情况①：无法进入尖劈几何空缺间} \\
+\text{情况②：与某反射面垂直，原路返回} \\
+\text{情况③：射入几何空缺但不与任何反射面垂直}
+\end{cases}
+\]
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{image1.png}
+    \caption{情况①}
+    \label{fig:case1}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{image2.png}
+    \caption{情况②}
+    \label{fig:case2}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{image3.png}
+    \caption{情况③}
+    \label{fig:case3}
+\end{figure}
+
+图 5.2-5.4 显示了 3 种情况射线的反射轨迹，下面针对 3 种不同的情况，分析反射波线的射向角 $\theta_{r}$、反射次数 $N$ 和反射波的辐射强度 $I_{\text{反射}}$ 与入射波线的射向角 $\theta_{i}$ 以及尖劈角 $\alpha$ 的定量关系。
+
+\subsubsection{情况①: 无法进入尖劈几何空缺 ($0 < \theta_{i} \leq \alpha$)}
+
+由图 5.2，当 $0 < \theta_{i} \leq \alpha$ 时，入射线无法进入两个尖劈间的几何空缺。这时，我们认定入射波经反射面 $z=0$ 反射一次，即 $N=1$。由几何知识，容易得到：
+\begin{itemize}
+    \item 射向角 $\theta_{r}$: $\theta_{r} = -\theta_{i}$ \tag{5.3}
+    \item 反射次数 $N$: $N = 1$ \tag{5.4}
+    \item 反射波的辐射强度 $I_{\text{反射}}$: $I_{\text{反射}} = \rho \cos \alpha_{i} \cdot I_{\text{入射}} = \rho \cos \theta_{i} \cdot 1 = \rho \cos \theta_{i}$ \tag{5.5}
+\end{itemize}
+
+注：当 $\theta_{r}$ 为负数时，代表反射波线指向 $z$ 轴左侧。
+
+情况②: 入射线与某一反射面 $k_{\max }$ 垂直
+
+由前面分析可知, 当入射线与反射面 $k_{\max }$ 垂直入射后, 将立即沿原路逆向返回。
+
+求射向角 $\theta_{i} 、 \theta_{r}$ 和反射次数 $N$
+
+- 反射波线射向角 $\theta_{r}$ :
+
+通过平面几何推导, 可以得出 $\theta_{i}$ 与尖劈角 $\alpha$ 的关系如下:
+
+\[
+\theta_{i}+(2 k_{\max }-1) \alpha=\frac{\pi}{2}
+\tag{5.6}
+\]
+
+因此, 入射线射向角 $\theta_{i}$ :
+
+\[
+\theta_{i}=\frac{\pi}{2}-(2 k_{\max }-1) \alpha
+\tag{5.7}
+\]
+
+因为入射线最终原路逆向返回, 因此, 射向角 $\theta_{r}$ :
+
+\[
+\theta_{r}=-\theta_{i}=\left(2 k_{\max }-1\right) \alpha-\frac{\pi}{2}
+\tag{5.8}
+\]
+
+- 反射次数 $N$ :
+
+\[
+N=2 k_{\max }-1=\frac{\frac{\pi}{2}-\theta_{i}}{\alpha}
+\tag{5.9}
+\]
+
+- 反射波辐射强度 $I_{\text {反射 }}$ :
+
+对于入射波线的第 $j$ 次反射, 其反射面为 $k$, 则:
+
+\[
+k=\begin{cases}j, j \leq k_{\max } \\ 2 k_{\max }-j, k_{\max } \leq j \leq N\end{cases}
+\tag{5.10}
+\]
+
+结合图 5.4, 经过平面几何推导, 我们可以得出第 $j$ 次反射的入射角 $\alpha_{i j}$ 与尖劈角 $\alpha$ 的关系如下:
+
+\[
+\alpha_{i j}=\frac{\pi}{2}-\left(\theta_{i}+(2 k-1) \alpha\right)
+\tag{5.11}
+\]
+
+因此, 反射波辐射强度 $I_{\text {反射 }}$ 为:
+
+\begin{align}
+\theta_{r} &= \pi - (\theta_{i} - \alpha + 2N\alpha) - \alpha \tag{5.18} \\
+&= \pi - \theta_{i} - 2N\alpha
+\end{align}
+\begin{align}
+  \theta_{r} &= \theta_{i} \tag{5.26} \\
+  \varphi_{r} &= \varphi_{i} \tag{5.27}
+  \end{align}
+\begin{align}
+  I_{\text{反射}} &= I_{\text{入射}} \cdot (\rho \cos \alpha_{i1}) \tag{5.29} \\
+  &= I_{\text{入射}} \cdot \rho \cdot (\rho \cos \theta_{i})
+  \end{align}
+
+情况③: 入射线未与任何反射面垂直
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{镜像外接圆}
+    \label{fig:5.5}
+\end{figure}
+
+如图 5.5 所示, 以尖劈 1 底端的右端点 A 为圆心, 尖劈侧面长度 L 为半径作圆。则 K-1 次镜像的右端点都在圆 A 上。
+
+其中:
+\begin{align}
+  \overrightarrow{e_{r}} &= \overrightarrow{e_{x}} \sin \theta_{r} \cos \varphi_{r} + \overrightarrow{e_{y}} \sin \theta_{r} \sin \varphi_{r} + \overrightarrow{e_{z}} \cos \theta_{r} \tag{5.30} \\
+  &= \overrightarrow{e_{x}} \sin \theta_{i} \cos \varphi_{i} + \overrightarrow{e_{y}} \sin \theta_{i} \sin \varphi_{i} + \overrightarrow{e_{z}} \cos \theta_{i}
+  \end{align}
+
+\begin{itemize}
+    \item 反射次数 N:
+\end{itemize}
+
+假设入射线与 \( k_{\text{max}} \) (\( k = 1, 2, \ldots, k_{\text{max}} \)) 条反射面相交, 通过推导, 可得反射次数 \( N \) 为:
+\begin{align}
+I_{\text{反射}_j} &= I_{\text{反射}_{j-1}} \cdot \left( \rho \cos \left\langle -\overrightarrow{e_{i}}, \overrightarrow{n_{k}} \right\rangle \right) \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \frac{\overrightarrow{n_{k}} \cdot (-\overrightarrow{e_{i}})}{\left| \overrightarrow{n_{k}} \right| \left| -\overrightarrow{e_{i}} \right|} \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \left\{ \sin \theta_{i} \sin \varphi_{i} \cos \left[ (2k-1)\alpha \right] - \cos \theta_{i} \sin (2k-1)\alpha \right\}
+\tag{5.35}
+\end{align}
+
+其中: \(\lfloor \cdot \rfloor\) 表示向下取整。
+
+\begin{itemize}
+    \item 反射波辐射强度 $I_{\text{反射}}$：
+
+    为了求解 $I_{\text{反射}}$，需要求出每次反射时的入射角 $\alpha_{i}$。结合图 5.5，通过平面几何推导可得：
+    \begin{align}
+I_{\text{反射}} &= I_{\text{入射}} \prod_{j=1}^{N} \rho \cdot \left\{ \sin \theta_{i} \sin \varphi_{i} \cos (2j-1)\alpha - \cos \theta_{i} \sin (2j-1)\alpha \right\} \\
+&= I_{\text{入射}} \rho^{N} \prod_{k=1}^{k_{\text{max}}-1} \left\{ \sin \theta_{i} \sin \varphi_{i} \cos (2k-1)\alpha - \cos \theta_{i} \sin (2k-1)\alpha \right\}^{2}
+\tag{5.36}
+\end{align}
+
+    由上，可以算得反射波辐射强度 $I_{\text{反射}}$：
+    \begin{align*}
+        \angle AFO &= \frac{\pi}{2} - \alpha_{i3}, \quad \angle OAF = 6\alpha, \\
+        \angle AOF &= \theta_{i} - \alpha, \quad \angle AFO + \angle OAF + \angle AOF = \pi \\
+        \angle AFO &= \pi - (\angle OAF + \angle AOF) = \pi - (\theta_{i} - \alpha + 6\alpha)
+    \end{align*}
+
+    \item 反射波线射向角 $\theta_{r}$：
+
+    由图 5.6，下面以 $k_{\text{max}} = 3$ 为例，说明如何求反射波线射向角 $\theta_{r}$：
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{image.png} % 替换为实际图片路径
+        \caption{镜像面与实际反射面角度换算}
+        \label{fig:5.6}
+    \end{figure}
+
+    ① 当 N 为奇数时，最后一个反射面是尖劈 2 的左侧面。
+
+    如图 5.6 所示，在 $\triangle OAF$ 中，
+    \begin{align*}
+        \angle AFO &= \frac{\pi}{2} - \alpha_{i3}, \quad \angle OAF = 6\alpha, \\
+        \angle AOF &= \theta_{i} - \alpha, \quad \angle AFO + \angle OAF + \angle AOF = \pi \\
+        \angle AFO &= \pi - (\angle OAF + \angle AOF) = \pi - (\theta_{i} - \alpha + 6\alpha)
+    \end{align*}
+
+    根据镜像原理，与反射面 3 相交相当于与反射面 1 相交。因此可以把 OF 还原到出射线 DJ。此时 $\angle AFO = \angle JDH$。
+\end{itemize}
+
+\begin{align*}
+\theta_{r} &= \angle JDM = \angle JDH - \angle MDH \\
+&= -\left[\pi - (\theta_{i} - \alpha + 6\alpha)\right] + \alpha \\
+&= -\pi + \theta_{i} + 6\alpha
+\end{align*}
+
+其他依次类推，可得出通式，
+
+N为奇数时，反射波线的射向角 $\theta_{r}$ 为：
+\begin{align*}
+\theta_{r} &= \angle JDM = \angle JDH - \angle MDH \\
+&= -\left[\pi - (\theta_{i} - \alpha + 6\alpha)\right] + \alpha \\
+&= -\pi + \theta_{i} + 6\alpha
+\end{align*}
+
+②当N为偶数时，最后一个反射面是尖劈1的右侧面。
+
+其与N为奇数的差别在于角度相反。方法类似，推导出通式：
+
+N为偶数时，反射波线的射向角 $\theta_{r}$ 为：
+\begin{align}
+\theta_{r} &= \pi - (\theta_{i} - \alpha + 2N\alpha) - \alpha \tag{5.18} \\
+&= \pi - \theta_{i} - 2N\alpha
+\end{align}
+
+\subsection{二维模型的求解}
+
+\subsubsection{定性分析}
+
+由建立的模型可知，针对入射线不同入射的角度分为三种情况，分别求出每种情况的反射波线的方向、反射次数、反射波的辐射强度表达式如下表。（$\rho$ 为反射率，$2\alpha$ 为尖劈角）。
+
+表5.1 入射线不同入射的角度，反射波线的方向、反射次数、反射波的辐射强度
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & 第一种情况 & 第二种情况 & 第三种情况 \\
+ & ($0 < \theta_{i} \leq \alpha$) & ($\theta_{i} > \alpha$ 且与某一反射面垂直) & ($\theta_{i} > \alpha$ 且未与任何镜像垂直) \\
+\hline
+反射波线的方向 $\theta_{r}$ & $-\theta_{i}$ & $(2k_{\text{max}} - 1)\alpha - \frac{\pi}{2}$ & $\begin{aligned} &-\pi + \theta_{i} + 6\alpha \text{ (N为奇数时)} \\ &\pi - \theta_{i} - 2N\alpha \text{ (N为偶数时)} \end{aligned}$ \\
+\hline
+反射次数 N & 1 & $\frac{\frac{\pi}{2} - \theta_{i}}{\alpha}$ & $\left\lfloor \frac{\left[\pi - 2(\theta_{i} - \alpha)\right]}{2\alpha} \right\rfloor$ \\
+\hline
+反射波的辐射强度 & $\rho \cos \alpha_{i}$ & $\rho^{2k_{\text{max}} - 1} \cdot \left\{\prod_{k=1}^{k_{\text{max}} - 1} \cos \left[2(k_{\text{max}} - k)\alpha\right]\right\}^{2}$ & $\prod_{j=1}^{N} \rho \cos \left|\frac{\pi}{2} - (\theta_{i} + (2k - 1)\alpha)\right|$ \\
+\hline
+\end{tabular}
+
+\subsubsection{反射强度均值随尖劈角 \(\alpha\) 的变化}
+
+设入射线的反射强度 \(\rho=0.5\)，射向角 \(\theta\) 服从 \([0, \frac{\pi}{2})\) 上的均匀分布。让尖劈角 \(\alpha\) 在 \([0, \frac{\pi}{4})\) 间取值，计算反射波平均辐射强度 \(\overline{I_{\text{反射}}}\)。观察 \(\overline{I_{\text{反射}}}\) 随尖劈角 \(\alpha\) 的变化。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{尖劈角 \(\alpha\) 取不同值时，反射强度均值的变化（射向角的取值范围 \(0 < \theta < \pi/2, \rho=0.5\)）}
+    \label{fig:5.7}
+\end{figure}
+
+图 5.7 尖劈角 \(\alpha\) 取不同值时，反射强度均值的变化
+
+由图 5.7 可以看出，当 \(\alpha\) 取值越小时，反射波线辐射强度的均值 \(\overline{I_{\text{反射}}}\) 越小，在尖锥体间隙间反射的次数越多，在尖劈间隙中的反射损耗越大，经尖劈反射出去的能量越小，吸波能力越强。
+
+\subsubsection{反射次数随入射线的射向角 \(\theta\) 和尖劈角 \(\alpha\) 的变化}
+
+当反射率 \(\rho=0.5\) 时，反射次数 \(N\) 随入射线射向角 \(\theta\) 和尖劈角 \(\alpha\) 的变化。其中下表列出了在 \(\theta\) 和 \(\alpha\) 在不同取值的情况下，反射次数 \(N\) 的取值。
+
+\begin{table}[h]
+    \centering
+    \caption{\(\theta\), \(\alpha\) 的不同取值，反射次数 \(N\) 的取值}
+    \label{tab:5.2}
+    \begin{tabular}{|c|c c c c c c|}
+        \hline
+        反射次数 \(N\) & \(\theta_1=\frac{\pi}{18}\) & \(\theta_2=\frac{\pi}{12}\) & \(\theta_3=\frac{\pi}{9}\) & \(\theta_4=\frac{\pi}{6}\) & \(\theta_5=\frac{\pi}{4}\) & \(\theta_6=\frac{\pi}{3}\) \\
+        \hline
+        \(\alpha_1=\frac{\pi}{36}\) & 17 & 15 & 15 & 13 & 9 & 7 \\
+        \hline
+        \(\alpha_2=\frac{\pi}{18}\) & 1 & 8 & 7 & 7 & 5 & 3 \\
+        \hline
+        \(\alpha_3=\frac{\pi}{12}\) & 1 & 1 & 5 & 6 & 3 & 3 \\
+        \hline
+        \(\alpha_4=\frac{\pi}{10}\) & 1 & 1 & 4 & 4 & 3 & 2 \\
+        \hline
+        \(\alpha_5=\frac{\pi}{9}\) & 1 & 1 & 1 & 3 & 3 & 2 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+由表可以看出，当 \(\theta\) 值一定时，尖劈角 \(\alpha\) 取值越小，反射次数越多。
+
+\subsection{三维镜像面的构造}
+
+和二维的情况类似，针对更一般的三维的情况，同样使用镜像法的方法求解。然而二维平面标量几何的方法在三维的情况里已经不再适用，而应该使用空间矢量几何的方法进行建模。
+
+\subsubsection{球坐标系与直角坐标系}
+
+针对三维的情况，首先在题目直角坐标系 \(O-xyz\) 的基础上，建立球坐标系 \(O-r\theta\varphi\)，如图 5.8 所示
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{ball_coordinate_system.png}
+    \caption{球坐标系 \(O-r\theta\varphi\) 示意图}
+\end{figure}
+
+对于空间中任意方向的单位矢量 \(\overrightarrow{e_{0}}\)，\(\left|\overrightarrow{e_{0}}\right|=1\)，在已知 \(\overrightarrow{e_{0}}\) 在球坐标系下 \(\theta\) 和 \(\varphi\) 时，可以用 \(\theta\) 和 \(\varphi\) 来进行球坐标系与直角坐标系的转换：
+
+\begin{align}
+I_{\text{反射}_j} &= I_{\text{反射}_{j-1}} \cdot \rho \cdot \cos \left\langle -\overrightarrow{e_{i}}, \overrightarrow{n_{k}} \right\rangle \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \frac{\overrightarrow{n_{j}} \cdot (-\overrightarrow{e_{i}})}{\left| \overrightarrow{n_{j}} \right| \left| -\overrightarrow{e_{i}} \right|} \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \left\{ \sin \theta_{i} \sin \varphi_{i} \cos (2j-1)\alpha - \cos \theta_{i} \sin (2j-1)\alpha \right\}
+\tag{5.43}
+\end{align}
+
+\subsubsection{三维镜像面的建立}
+
+与二维的情况类似，在建立模型之前，首先在空间中建立尖劈面的三维镜像。如图 5.9 所示
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{3d_mirror_image.png}
+    \caption{三维镜像}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{3d_mirror_normal_vector.png}
+    \caption{三维镜像的法向量}
+\end{figure}
+
+如图 5.10，对于两个尖劈面及其镜像面，可以求解其法向量 \(\overrightarrow{n_{k}}\)，\(k=0,1,2,\ldots,K\)。
+
+(1) 当 $k=0$ 时, $\overrightarrow{n}_{0}$ 即尖劈 1 右侧面的法向量, 此时 $\overrightarrow{n}_{0}$ 的空间夹角 $\theta_{n_{0}}$ 和 $\varphi_{n_{0}}$:
+
+\[
+\theta_{n_{0}}=\frac{\pi}{2}-\alpha, \quad \varphi_{n_{0}}=\frac{\pi}{2}
+\]
+
+由式 5.19, 可用直角坐标系表示 $\overrightarrow{n}_{0}$, 即
+
+\[
+\begin{aligned}
+\overrightarrow{n}_{0} & =\overrightarrow{e}_{x} \sin \theta_{n_{0}} \cos \varphi_{n_{0}}+\overrightarrow{e}_{y} \sin \theta_{n_{0}} \cos \varphi_{n_{0}}+\overrightarrow{e}_{z} \cos \theta_{n_{0}} \\
+& =\overrightarrow{e}_{y} \cos \alpha+\overrightarrow{e}_{z} \sin \alpha
+\end{aligned}
+\]
+
+(2) 当 $k>0$ 时, $\forall k=1,2, \ldots, K$, 由空间几何推导可得, 此时 $\overrightarrow{n}_{k}$ 的空间夹角 $\theta_{n_{k}}$ 和 $\varphi_{n_{k}}$ 为,
+
+\[
+\theta_{n_{k}}=\left|\frac{\pi}{2}-(2 k-1) \alpha\right|
+\]
+
+\[
+\varphi_{n_{k}}=-\frac{\pi}{2}
+\]
+
+由式 5.19, 可用直角坐标系表示 $\overrightarrow{n}_{k}$, 即,
+
+\[
+\forall k=1,2, \ldots, K
+\]
+
+\[
+\begin{aligned}
+\overrightarrow{n}_{k} & =\overrightarrow{e}_{x} \sin \theta_{n_{k}} \cos \varphi_{n_{k}}+\overrightarrow{e}_{y} \sin \theta_{n_{k}} \cos \varphi_{n_{k}}+\overrightarrow{e}_{z} \cos \theta_{n_{k}} \\
+& =-\overrightarrow{e}_{y} \cos \left[(2 k-1) \alpha\right]+\overrightarrow{e}_{z} \sin \left[(2 k-1) \alpha\right]
+\end{aligned}
+\]
+
+\subsection{三维模型的建立}
+
+假设入射波线的方向 $\overrightarrow{e}_{i}$, 在球坐标系下, 假设其射向角 $\theta_{i}$ 服从 $[0, \pi)$ 的均匀分布, 方位角 $\varphi_{i}$ 服从 $[0,2 \pi)$ 的均匀分布。由式 5.19, 有
+
+\[
+\overrightarrow{e}_{i}=\overrightarrow{e}_{x} \sin \theta_{i} \cos \varphi_{i}+\overrightarrow{e}_{y} \sin \theta_{i} \sin \varphi_{i}+\overrightarrow{e}_{z} \cos \theta_{i}
+\]
+
+与二维的情况类似, 在三维空间中, 对不同的入射波线的方向 $\overrightarrow{e}_{i}$, 具有以下 3 种情况:
+
+\[
+\begin{cases}
+\text { 情况①: 无法进入尖劈几何空缺间 } \\
+\text { 情况②: 与某反射面垂直, 原路返回 } \\
+\text { 情况③: 射入几何空缺但不与任何反射面垂直 }
+\end{cases}
+\]
+
+下面分情况进行讨论:
+
+情况①: 无法进入尖劈几何空缺 $(0 < \theta_{i} \leq \alpha)$
+
+- **反射次数 N:**
+
+  入射波线射不进几何空缺, 只在几何空缺外发生一次反射, 即 $N=1$, 其反射面为 $z=0$ , 反射面的法向量为 $\overrightarrow{e_{z}}$。
+
+- **辐射强度 $I_{\text{反射}}$:**
+
+  由几何推导可知, 反射波线 $\overrightarrow{e_{r}}$ 在球坐标系下的射向角 $\theta_{r}$ 和方位角 $\varphi_{r}$ 为:
+  \begin{align}
+  \theta_{r} &= \theta_{i} \tag{5.26} \\
+  \varphi_{r} &= \varphi_{i} \tag{5.27}
+  \end{align}
+
+  第 1 次反射的入射角 $\alpha_{i1}$ 为:
+  \begin{align}
+\overrightarrow{e_{r}} &= \overrightarrow{e_{x}} \sin \theta_{r} \cos \varphi_{r} + \overrightarrow{e_{y}} \sin \theta_{r} \sin \varphi_{r} + \overrightarrow{e_{z}} \cos \theta_{r} \\
+&= \overrightarrow{e_{x}} \sin (\theta_{i} + 2N\alpha) \cos \varphi_{i} + (-1)^{N} \overrightarrow{e_{y}} \sin (\theta_{i} + 2N\alpha) \sin \varphi_{i} - \overrightarrow{e_{z}} \cos (\theta_{i} + 2N\alpha)
+\tag{5.49}
+\end{align}
+
+  反射波线的辐射强度 $I_{\text{反射}}$ 为:
+  \begin{align}
+  I_{\text{反射}} &= I_{\text{入射}} \cdot (\rho \cos \alpha_{i1}) \tag{5.29} \\
+  &= I_{\text{入射}} \cdot \rho \cdot (\rho \cos \theta_{i})
+  \end{align}
+
+- **反射波线的方向 $\overrightarrow{e_{r}}$:**
+
+  由式 5.19, 球面坐标系与直角坐标系的关系, 可求得反射波线的方向 $\overrightarrow{e_{r}}$:
+  \begin{align}
+  \overrightarrow{e_{r}} &= \overrightarrow{e_{x}} \sin \theta_{r} \cos \varphi_{r} + \overrightarrow{e_{y}} \sin \theta_{r} \sin \varphi_{r} + \overrightarrow{e_{z}} \cos \theta_{r} \tag{5.30} \\
+  &= \overrightarrow{e_{x}} \sin \theta_{i} \cos \varphi_{i} + \overrightarrow{e_{y}} \sin \theta_{i} \sin \varphi_{i} + \overrightarrow{e_{z}} \cos \theta_{i}
+  \end{align}
+
+情况②: 入射线与某一反射面 $k_{\max }$ 垂直
+
+入射线与反射面 $k_{\max }$ 垂直入射后, 沿原路逆向返回。
+
+- **反射次数 N:**
+
+  因为入射线先与入射面 1 相交, 因此, 原路返回后, 光线最后相交的面依然为入射面 1 。则其反射次数 $N$ 肯定为奇数。
+
+  与二维类似, 由 $\theta_{i} + (2 k_{\max } - 1) \alpha = \frac{\pi}{2}, \quad k_{\max } = 1, 2, \ldots, K$ 可得:
+
+  反射波线的射向角 $\theta_{r}$ :
+
+\begin{align}
+\Phi_{\overrightarrow{PQ}}(t) &= \int d\Phi = \int_S I_p(i, t) \cdot \frac{\cos \left[ \theta_{\overrightarrow{PQ}}(t) \right]}{r_{\overrightarrow{PQ}}^2(t)} \, dS \\
+&\approx I_p(i, t) \big|_{i = 0} \cdot \frac{\cos \left[ \theta_{\overrightarrow{PQ}}(t) \right]}{r_{\overrightarrow{PQ}}^2(t)} \cdot \Delta S, \\
+&= \left( 1 + \frac{t}{4} \right) I_0 \cdot \frac{\cos \left( \frac{\pi}{8} - \frac{\pi t}{16} \right)}{\left| \overrightarrow{P(t)Q} \right|^2} \cdot (0.3)^2
+\tag{6.14}
+\end{align}
+
+因此，反射次数 \( N \) 为：
+\begin{align}
+\Delta \Phi_{j \text { 出射 }}(t) &= \int I_{j}(i, \varphi) d w = \int_{0}^{2 \pi} \int_{0}^{\frac{\pi}{2}} I_{j}(i, \varphi) \sin i d i d \varphi \\
+&= 2 \pi \int_{0}^{\frac{\pi}{2}} I_{N_{j}}(t) \cos i \sin i d i \\
+&= I_{N_{j}}(t) \left[ 2 \pi \int_{0}^{\frac{\pi}{2}} \cos i \sin i d i \right] \\
+&= I_{N_{j}}(t) \cdot \pi
+\end{align}
+
+- **辐射强度 \( I_{\text{反射}} \)：**
+
+对于第 \( j \) 次反射，首先找出其反射面 \( k \)，有：
+\begin{align}
+I_{j}(i, t) &= I_{N_{j}}(t) \cdot \cos i \\
+&= \frac{1}{\pi} \Delta \Phi_{j \text { 出射 }}(t) \cdot \cos i, \quad i \in \left[ 0, \frac{\pi}{2} \right]
+\end{align}
+
+则第 \( j \) 次反射的入射角 \( \alpha_{ij} \) 有，
+\begin{align}
+I_{p}(\theta, t) &= I_{N_{P}}(t) \cdot \sin \theta \\
+&= I_{0} \left( 1 + \frac{t}{4} \right) \cdot \sin \theta \\
+&= I_{0} \left( 1 + \frac{t}{4} \right) \cdot \sqrt{1 - \left( \frac{\overrightarrow{P(t)Z} \cdot \overrightarrow{e_{z}}}{\left| \overrightarrow{P(t)Z} \right| \cdot \left| \overrightarrow{e_{z}} \right|} \right)^{2}}
+\tag{7.3}
+\end{align}
+
+因此，可以得到第 \( j \) 次反射后的辐射强度 \( I_{\text{反射}_j} \) 与反射前的辐射强度 \( I_{\text{反射}_{j-1}} \) 的递推公式：
+\begin{align}
+I_{\text{反射}_j} &= I_{\text{反射}_{j-1}} \cdot \left( \rho \cos \left\langle -\overrightarrow{e_{i}}, \overrightarrow{n_{k}} \right\rangle \right) \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \frac{\overrightarrow{n_{k}} \cdot (-\overrightarrow{e_{i}})}{\left| \overrightarrow{n_{k}} \right| \left| -\overrightarrow{e_{i}} \right|} \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \left\{ \sin \theta_{i} \sin \varphi_{i} \cos \left[ (2k-1)\alpha \right] - \cos \theta_{i} \sin (2k-1)\alpha \right\}
+\tag{5.35}
+\end{align}
+
+综合上面的递推公式，可得最终反射波线的辐射强度 \( I_{\text{反射}} \)：
+\begin{align}
+I_{\text{反射}} &= I_{\text{入射}} \prod_{j=1}^{N} \rho \cdot \left\{ \sin \theta_{i} \sin \varphi_{i} \cos (2j-1)\alpha - \cos \theta_{i} \sin (2j-1)\alpha \right\} \\
+&= I_{\text{入射}} \rho^{N} \prod_{k=1}^{k_{\text{max}}-1} \left\{ \sin \theta_{i} \sin \varphi_{i} \cos (2k-1)\alpha - \cos \theta_{i} \sin (2k-1)\alpha \right\}^{2}
+\tag{5.36}
+\end{align}
+
+- **反射波线的方向 \( \overrightarrow{e_{r}} \)：**
+
+下面推导反射波线的方向。反射波线的射向角 \( \theta_{r} \) 和方位角 \( \varphi_{r} \) 分别为：
+\begin{equation}
+\theta_{r} = \theta_{i}
+\tag{5.37}
+\end{equation}
+
+\begin{equation}
+\varphi_{r} = -\varphi_{i}
+\tag{5.38}
+\end{equation}
+
+可以得到反射波线的方向向量 $\overrightarrow{e_{r}}$ 为:
+\begin{equation}
+\overrightarrow{e_{r}} = -\overrightarrow{e_{i}} = -\overrightarrow{e_{x}} \sin \theta_{i} \cos \varphi_{i} - \overrightarrow{e_{y}} \sin \theta_{i} \sin \varphi_{i} - \overrightarrow{e_{z}} \cos \theta_{i}
+\tag{5.39}
+\end{equation}
+
+情况③: 入射线未与任何反射面垂直
+
+在大多数的情况下, 反射波线将进入空缺反射, 但不与任何反射面垂直, 最终被直接反射出去。
+
+- **反射次数 N:**
+
+与二维的情况类似, 对于反射次数 N, 有:
+\begin{equation}
+N = \left\lfloor \frac{\pi - 2(\theta_{i} - \alpha)}{2\alpha} \right\rfloor
+\tag{5.40}
+\end{equation}
+
+- **辐射强度 $I_{\text{反射}}$:**
+
+对于入射波线的第 j 次反射, 对于其反射面 k, 有:
+\begin{equation}
+k = j
+\tag{5.41}
+\end{equation}
+
+第 j 次反射的反射角 $\alpha_{ij}$, 有:
+\begin{equation}
+\alpha_{ij} = \left\langle -\overrightarrow{e_{i}}, \overrightarrow{n_{k}} \right\rangle
+\tag{5.42}
+\end{equation}
+
+因此, 可以得到第 j 次反射后的辐射强度 $I_{\text{反射}_j}$ 与反射前的辐射强度 $I_{\text{反射}_{j-1}}$ 的递推公式:
+\begin{align}
+I_{\text{反射}_j} &= I_{\text{反射}_{j-1}} \cdot \rho \cdot \cos \left\langle -\overrightarrow{e_{i}}, \overrightarrow{n_{k}} \right\rangle \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \frac{\overrightarrow{n_{j}} \cdot (-\overrightarrow{e_{i}})}{\left| \overrightarrow{n_{j}} \right| \left| -\overrightarrow{e_{i}} \right|} \\
+&= I_{\text{反射}_{j-1}} \cdot \rho \cdot \left\{ \sin \theta_{i} \sin \varphi_{i} \cos (2j-1)\alpha - \cos \theta_{i} \sin (2j-1)\alpha \right\}
+\tag{5.43}
+\end{align}
+
+综合上面的递推公式, 可得最终反射波线的辐射强度 $I_{\text{反射}}$ 为:
+\begin{equation}
+I_{\text{反射}} = I_{\text{入射}} \rho^{N} \prod_{j=1}^{N} \left\{ \sin \theta_{i} \sin \varphi_{i} \cos (2j-1)\alpha - \cos \theta_{i} \sin (2j-1)\alpha \right\}
+\tag{5.44}
+\end{equation}
+
+\begin{itemize}
+    \item 反射波线的方向 $\overrightarrow{e_{r}}$
+\end{itemize}
+
+下面推导反射波线的方向:
+
+由二维可知:
+
+反射次数 N 为奇数时, 反射波线的射向角 $\theta_{r}$ 为:
+\begin{equation}
+\theta_{r} = \left| -\pi + \theta_{i} + 2N\alpha \right|, \quad \varphi_{r} = -\varphi_{i}
+\tag{5.45}
+\end{equation}
+
+反射次数 N 为偶数时, 反射波线的射向角 $\theta_{r}$ 为:
+\begin{equation}
+\theta_{r} = \left| \pi - \theta_{i} - 2N\alpha \right|, \quad \varphi_{r} = \varphi_{i}
+\tag{5.46}
+\end{equation}
+
+综上所述: $\forall N$,
+\begin{equation}
+\theta_{r} = \left| \pi - \theta_{i} - 2N\alpha \right|
+\tag{5.47}
+\end{equation}
+
+对于反射波线的方位角 $\varphi_{r}$, 有:
+\begin{equation}
+\varphi_{r} = (-1)^{N} \varphi_{i}
+\tag{5.48}
+\end{equation}
+
+综上, 结合式 5.19, 可以得到反射波线的方向向量 $\overrightarrow{e_{r}}$ 为:
+\begin{align}
+\overrightarrow{e_{r}} &= \overrightarrow{e_{x}} \sin \theta_{r} \cos \varphi_{r} + \overrightarrow{e_{y}} \sin \theta_{r} \sin \varphi_{r} + \overrightarrow{e_{z}} \cos \theta_{r} \\
+&= \overrightarrow{e_{x}} \sin (\theta_{i} + 2N\alpha) \cos \varphi_{i} + (-1)^{N} \overrightarrow{e_{y}} \sin (\theta_{i} + 2N\alpha) \sin \varphi_{i} - \overrightarrow{e_{z}} \cos (\theta_{i} + 2N\alpha)
+\tag{5.49}
+\end{align}
+
+\subsection{三维模型的求解}
+
+\subsubsection{定性分析}
+
+由建立的模型可知，针对入射线不同入射的角度分为三种情况，分别求出每种情况的反射波线的方向、反射次数、反射波的辐射强度表达式如下表。（$\rho$ 为反射率，$2\alpha$ 为尖劈角）。
+
+\begin{table}[h]
+\centering
+\caption{不同情况下，反射波线的方向、反射次数、反射波的辐射强度}
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & 第一种情况 & 第二种情况 & 第三种情况 \\
+ & ($0 < \theta_i \leq \alpha$) & ($\theta_i > \alpha$) 与某一反射面垂直 & ($\theta_i > \alpha$ 未与任何镜像垂直) \\
+\hline
+反射波线的方向矢量 $\overrightarrow{e_r}$ & $\overrightarrow{e_x} \sin \theta_i \cos \varphi_i + \overrightarrow{e_y} \sin \theta_i \sin \varphi_i$ & $-\overrightarrow{e_x} \sin \theta_i \cos \varphi_i - \overrightarrow{e_y} \sin \theta_i \sin \varphi_i$ & $\overrightarrow{e_x} \sin (\theta_i + 2N\alpha) \cos \varphi_i + (-1)^N \overrightarrow{e_y} \sin (\theta_i + 2N\alpha) \sin \varphi_i$ \\
+ & $+ \overrightarrow{e_z} \cos \theta_i$ & $- \overrightarrow{e_z} \cos \theta_i$ & $- \overrightarrow{e_z} \cos (\theta_i + 2N\alpha)$ \\
+\hline
+反射次数 N & 1 & $\dfrac{\dfrac{\pi}{2} - \theta_i}{2}$ & $\left\lfloor \dfrac{\pi - 2(\theta_i - \alpha)}{2\alpha} \right\rfloor$ \\
+\hline
+反射波的辐射强度 $I_{\text{反射}}$ & $I_{\text{入射}} \cdot \rho \cdot (\rho \cos \theta_i)$ & $I_{\text{入射}} \rho^N \prod_{k=1}^{k_{\text{max}}-1} \left\{ \sin \theta_i \sin \varphi_i \cos [(2k-1)\alpha] - \cos \theta_i \sin [(2k-1)\alpha] \right\}^2$ & $I_{\text{入射}} \rho^N \prod_{j=1}^N \left\{ \sin \theta_i \sin \varphi_i \cos [(2j-1)\alpha] - \cos \theta_i \sin [(2j-1)\alpha] \right\}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{反射强度均值随尖劈角 $\alpha$ 的变化}
+
+设入射线的反射强度 $\rho = 0.5$，射向角 $\theta$、方位角 $\varphi$ 分别服从 $[0, \frac{\pi}{2})$ 和 $[0, 2\pi)$ 的均匀分布。让尖劈角 $\alpha$ 在 $[0, \frac{\pi}{4})$ 间取值，计算反射波平均辐射强度 $\overline{I_{\text{反射}}}$。观察 $\overline{I_{\text{反射}}}$ 随尖劈角 $\alpha$ 的变化。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{尖劈角 $\alpha$ 取不同值时，反射强度均值的变化（射向角的取值范围 $0 < \theta < \pi/2$，$0 < \varphi < 2\pi$，$\rho = 0.5$）}
+\end{figure}
+
+当 $\alpha$ 取值越小时，反射强度的均值越小，在尖锥体间隙间反射的次数越多。
+
+在尖劈间隙中的路径损耗越大，经尖劈反射出去的能量越小，吸波能力越好。
+
+\section{问题二}
+
+由题目中要求，在圆弧 A,B 中间存在一个“视在天线”，从某端点开始，以匀角速运动到另一端。在此过程中，天线向外辐射电磁波。有的电磁波直接辐射到“静区”，被“静区”吸收，有的电磁波辐射到墙面。而墙面在接收到电磁波的辐射后，将作为新的余弦辐射体，向四周墙体及静区辐射能量。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{问题 2 的诸参数示意图}
+    \label{fig:6.1}
+\end{figure}
+
+静区接收到的电磁能量直接对导弹的导引仿真有重要影响，根据导引仿真要求，静区从诸墙面得到的反射信号的功率之和与从信号源直接得到的微波功率之比，始终满足 $\gamma \leq 0.03$。由此可知，建立合适的数学模型，以分析墙体吸波材料对仿真系统的影响，进一步评价吸波材料的性能，指导微波暗室吸波材料的选取将具有重大的实践意义。
+
+针对本题，基于光学几何理论的计算方法需要计算多次反射，模型繁杂，不好实现。因此，计算多次反射的光学几何模型并不可取。
+
+对于暗室，需要同时考虑暗室六个墙面相互之间的影响和作用，而不单纯只有视在天线作用。
+
+基于以上几点考虑，参照电磁场理论矩量法（微元法）的思想，针对墙体各处辐射通量，建立动态平衡方程组的数学模型进行求解。
+
+\subsection{建模前的准备}
+
+\subsubsection{划分微元——墙体分块}
+
+首先把暗室墙面划分为多个微元 $D_j$，每个微元均为 $1m \times 1m$ 的小正方形，其面积 $\Delta S = 1m^2$。
+
+由暗室的尺寸：$B = 18m$，$H = 14m$，$L = 15m$，可知，这种 $1m \times 1m$ 的小正方形一共有 $(18 \times 14 + 18 \times 15 + 15 \times 14) \times 2 = 1464$ 个。
+
+针对静区，作特殊处理，把其作为第 1465 个微元，其面积 $\Delta S' = 0.3 \times 0.3 = 0.09m^2$。静区只作被照射的微元，而不能作反射体。如图
+
+\subsubsection{余弦辐射体分析}
+
+由附录 2，本题中将采用余弦辐射体的辐射简化模型。余弦辐射体示意图如下所示:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{余弦辐射体示意图}
+    \label{fig:cosine_radiator}
+\end{figure}
+
+图 6.3 余弦辐射体示意图
+
+由附录 2 中的式 (f2.2)，可以得到余弦辐射体各方向上的辐射强度 \(I_i\) 为:
+
+\begin{equation}
+I_i =
+\begin{cases}
+I_N \cos i, & -\frac{\pi}{2} \leq i \leq \frac{\pi}{2} \\
+0, & \text{其他}
+\end{cases}
+\tag{6.1}
+\end{equation}
+
+在本题中，将以下两个辐射源视作余弦辐射体:
+
+\begin{enumerate}
+    \item 视在天线（一次辐射源）
+    \item 墙体微元 \(D_j\)（二次辐射源）
+\end{enumerate}
+
+由于视在天线本身能发射辐射能，将其视作一次辐射源；而墙体微元 \(D_j\) 是在受到视在天线及其他墙体的辐射照射后，才反射辐射能，故视作二次辐射源。
+
+\subsection{问题二模型——动态平衡方程组模型}
+
+总体来看，暗室中共存在以下四种辐射
+\[
+\left\{
+\begin{aligned}
+& \text{一次辐射源} \left\{
+\begin{aligned}
+& \text{天线对静区的辐射} \\
+& \text{天线对墙体的辐射}
+\end{aligned}
+\right. \\
+& \text{二次辐射源} \left\{
+\begin{aligned}
+& \text{墙体对静区的辐射} \\
+& \text{墙体对墙体的辐射}
+\end{aligned}
+\right.
+\end{aligned}
+\right.
+\]
+
+下面首先分析一次辐射源和二次辐射源对空间任意一点的辐射强度，然后分析以上四种辐射的辐射通量，接着针对墙体每个微元 $D_j$ 的辐射通量 $\Delta\Phi_j(t)$ 建立动态平衡方程组：
+\[
+\Delta\Phi_j(t) = \sum_{\substack{k=1 \\ k \neq j}}^{1464} a_{jk} \Delta\Phi_k(t) + b_j, \text{ 其中 } a_{jk} \text{ 和 } b_j \text{ 为常数矩阵}
+\]
+
+最后通过求解多元线性方程组，进一步讨论 $\gamma$ 值与垂直反射率 $\rho$ 的关系。
+
+\subsubsection{一次辐射源——视在天线}
+
+(1) 视在天线辐射强度 $I_p(i, t)$
+
+下面推导视在天线辐射强度 $I_p(i, t)$。
+
+如图 6.4 所示，视在天线 P 在 A、B 之间匀速运动，总张角 $\beta_{\text{总}} = \frac{\pi}{4}$。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{image.png} % 替换为实际图片路径
+\caption{视在天线运动时角度示意图}
+\end{figure}
+
+静区中心圆点 Q 的坐标 $(x_Q, y_Q, z_Q)$ 为：
+\begin{equation}
+\left\{
+\begin{aligned}
+x_Q &= 0 \\
+y_Q &= 15 \\
+z_Q &= 0
+\end{aligned}
+\right.
+\tag{6.2}
+\end{equation}
+
+假设目标模拟器对导引头的视在目标运动从 A 端开始，以匀角速运动到 B 端，前后共 4 秒，因此可以得出 $\alpha$、$\beta$ 随时间的函数关系，即：
+
+\begin{equation}
+\alpha(t) = \frac{\pi}{16}t, \quad t \in \left[0, 4\right]
+\tag{6.3}
+\end{equation}
+
+\begin{equation}
+\beta(t) = \frac{\pi}{8} - \frac{\pi/4}{4} \cdot t = \frac{\pi}{8} - \frac{\pi}{16} \cdot t, \quad t \in \left[0, 4\right]
+\tag{6.4}
+\end{equation}
+
+同时，可求出 P 点随时间的运动轨迹，即可得出 P 点的坐标 \((x_p(t), y_p(t), z_p(t))\) 为：
+
+\begin{equation}
+\begin{cases}
+x_p(t) = -|\overrightarrow{PQ}|\sin[\beta(t)] = -14\sin\left(\frac{\pi}{8} - \frac{\pi t}{16}\right) \\
+y_p(t) = |\overrightarrow{OQ}| - |\overrightarrow{PQ}|\cos[\beta(t)] = 15 - 14\cos\left(\frac{\pi}{8} - \frac{\pi t}{16}\right) \\
+z_p(t) = 0
+\end{cases}
+\tag{6.5}
+\end{equation}
+
+则由矢量几何的知识，可得向量 \(\overrightarrow{PQ}(t)\) 随时间变化：
+
+\begin{equation}
+\begin{aligned}
+\overrightarrow{PQ}(t) &= \vec{e}_x(x_Q - x_p(t)) + \vec{e}_y(y_Q - y_p(t)) + \vec{e}_z(z_Q - z_p(t)) \\
+&= \vec{e}_x\left(14\sin\left(\frac{\pi}{8} - \frac{\pi t}{16}\right)\right) + \vec{e}_y\left(14\cos\left(\frac{\pi}{8} - \frac{\pi t}{16}\right)\right)
+\end{aligned}
+\tag{6.6}
+\end{equation}
+
+设视在天线初始时发射功率为 \(I_0\)，则视在天线 P 在 t 时刻的发射功率 \(I_{Np}(t)\) 为：
+
+\begin{equation}
+I_{Np}(t) = \left(1 + \frac{t}{4}\right)I_0, \quad t \in [0, 4]
+\tag{6.7}
+\end{equation}
+
+本题中，假设 \(I_0 = 1\)。
+
+如图 6.5 所示，假设空间中某点 \(Z(x_z, y_z, z_z)\)：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{视在天线对墙壁上某一点的辐射强度示意图}
+\end{figure}
+
+P 指向 Z 的向量 \(\overrightarrow{PZ}(t)\) 为：
+
+\begin{equation}
+\overrightarrow{PZ}(t) = \vec{e}_x(x_z - x_p(t)) + \vec{e}_y(y_z - y_p(t)) + \vec{e}_z(z_z - z_p(t))
+\tag{6.8}
+\end{equation}
+
+设 $\overrightarrow{P(t)Q}$ 与 $\overrightarrow{P(t)Z}$ 的夹角为 $i$，有
+\begin{equation}
+i = \left\langle \overrightarrow{P(t)Q}, \overrightarrow{P(t)Z} \right\rangle = \arccos \frac{\overrightarrow{P(t)Q} \cdot \overrightarrow{P(t)Z}}{\left| \overrightarrow{P(t)Q} \right| \cdot \left| \overrightarrow{P(t)Z} \right|}
+\tag{6.9}
+\end{equation}
+因此，P 点向空间中任意一个 Z 点的辐射强度 $I_p(i, t)$ 为：
+\begin{equation}
+I_p(i, t) = I_{N_P}(t) \cdot \cos i = I_0 \left( 1 + \frac{t}{4} \right) \cdot \frac{\overrightarrow{P(t)Q} \cdot \overrightarrow{P(t)Z}}{\left| \overrightarrow{P(t)Q} \right| \cdot \left| \overrightarrow{P(t)Z} \right|}
+\tag{6.10}
+\end{equation}
+
+(2) 天线对静区的辐射通量 $\Phi_{\overrightarrow{PQ}}(t)$
+
+本题中将天线简化为余弦辐射体，结合天线向任意方向的辐射强度，可以推导出在任意时刻，天线对静区的辐射通量 $\Phi_{\overrightarrow{PQ}}(t)$。
+
+首先，由题目中给出的位置关系，计算天线到静区的辐射距离 $r_{PQ}(t)$ 和辐射入射角 $\theta_{PQ}(t)$ 为：
+\begin{equation}
+r_{PQ}(t) = \left| \overrightarrow{PQ} \right| = 14
+\tag{6.11}
+\end{equation}
+\begin{equation}
+\theta_{PQ}(t) = \beta(t) = \frac{\pi}{8} - \frac{\pi}{16} \cdot t
+\tag{6.12}
+\end{equation}
+由天线的辐射方向，可得 $\overrightarrow{PQ}$ 方向的辐射强度 $I_{\overrightarrow{PQ}}(i, t)$：
+\begin{equation}
+I_{\overrightarrow{PQ}}(i, t) = I_{N_P}(t) \cdot \cos i \big|_{i = \left( \overrightarrow{PQ}, \overrightarrow{PQ} \right)} = I_0 \left( 1 + \frac{t}{4} \right)
+\tag{6.13}
+\end{equation}
+则由积分公式，可以推导出天线对静区的辐射通量 $\Phi_{\overrightarrow{PQ}}(t)$ 为：
+\begin{align}
+\Phi_{\overrightarrow{PQ}}(t) &= \int d\Phi = \int_S I_p(i, t) \cdot \frac{\cos \left[ \theta_{\overrightarrow{PQ}}(t) \right]}{r_{\overrightarrow{PQ}}^2(t)} \, dS \\
+&\approx I_p(i, t) \big|_{i = 0} \cdot \frac{\cos \left[ \theta_{\overrightarrow{PQ}}(t) \right]}{r_{\overrightarrow{PQ}}^2(t)} \cdot \Delta S, \\
+&= \left( 1 + \frac{t}{4} \right) I_0 \cdot \frac{\cos \left( \frac{\pi}{8} - \frac{\pi t}{16} \right)}{\left| \overrightarrow{P(t)Q} \right|^2} \cdot (0.3)^2
+\tag{6.14}
+\end{align}
+
+(3) 天线对墙体的辐射通量 $\Phi_{\overrightarrow{PD_j}}(t)$
+
+下面计算天线对墙体的辐射通量 $\Phi_{\overrightarrow{P D_{j}}}(t)$。由前面的分析可知，我们把墙体划分为 1464 个微元，由微元 $D_{j}, j=1 \ldots 1464$ 的坐标 $\left(x_{D_{j}}, y_{D_{j}}, z_{D_{j}}\right)$ 和 $\mathbf{P}(t)$ 点的坐标，可以得出辐射距离 $r_{P D_{j}}(t)$ 和辐射入射角 $\theta_{\overrightarrow{P D_{j}}}(t)$ 分别为：
+
+\begin{equation}
+r_{P D_{j}}(t)=\left|\overrightarrow{P(t) D_{j}}\right|=\sqrt{\left[x_{p}(t)-x_{D_{j}}\right]^{2}+\left[y_{p}(t)-y_{D_{j}}\right]^{2}+\left[z_{p}(t)-z_{D_{j}}\right]^{2}}
+\tag{6.15}
+\end{equation}
+
+\begin{equation}
+\theta_{\overrightarrow{P D_{j}}}(t)=\arccos \frac{(-\overrightarrow{P(t) D_{j}}) \cdot \overrightarrow{n_{D_{j}}}}{\left|-\overrightarrow{P(t) D_{j}}\right|\left|\overrightarrow{n_{D_{j}}}\right|}=\left\langle-\overrightarrow{P(t) D_{j}}, \overrightarrow{n_{D_{j}}}\right\rangle
+\tag{6.16}
+\end{equation}
+
+由天线的辐射方向，可得 $\overrightarrow{P D_{j}}$ 方向的辐射强度 $I_{\overrightarrow{P D_{j}}}(i, t)$ 为：
+
+\begin{equation}
+I_{\overrightarrow{P D_{j}}}(t)=I_{P}(i, t) \mid_{i=\left\langle-\overrightarrow{P(t) D_{j}}, \overrightarrow{n_{D_{j}}}\right\rangle}=I_{0}\left(1+\frac{t}{4}\right) \cdot \frac{\overrightarrow{P(t) Q} \cdot \overrightarrow{P(t) D_{j}}}{\left|\overrightarrow{P(t) Q}\right|\left|\overrightarrow{P(t) D_{j}}\right|}
+\tag{6.17}
+\end{equation}
+
+则其墙体处的辐射通量 $\Phi_{\overrightarrow{P D_{j}}}(t)$ 通过积分可得：
+
+\begin{equation}
+\Phi_{\overrightarrow{P D_{j}}}(t)=\int d \Phi=\int_{S} I_{\overrightarrow{P D_{j}}}(t) \cdot \frac{\cos \left[\theta_{\overrightarrow{P D_{j}}}(t)\right]}{r_{\overrightarrow{P D_{j}}}^{2}(t)} d S
+\tag{6.18}
+\end{equation}
+
+\begin{equation}
+\approx I_{0}\left(1+\frac{t}{4}\right) \cdot \frac{\overrightarrow{P(t) Q} \overrightarrow{P(t) D_{j}}}{\left|\overrightarrow{P(t) Q}\right|\left|\overrightarrow{P(t) D_{j}}\right|} \cdot \frac{\cos \left[\theta_{\overrightarrow{P D_{j}}}(t)\right]}{r_{\overrightarrow{P D_{j}}}^{2}(t)} \cdot \Delta S
+\end{equation}
+
+\begin{equation}
+=I_{0}\left(1+\frac{t}{4}\right) \cdot \frac{\overrightarrow{P(t) Q} \overrightarrow{P(t) D_{j}}}{14 \cdot\left|\overrightarrow{P(t) D_{j}}\right|} \cdot \frac{-\overrightarrow{P(t) D_{j}} \cdot \overrightarrow{n_{D_{j}}}}{\left|-\overrightarrow{P(t) D_{j}}\right|\left|\overrightarrow{n_{D_{j}}}\right|} \cdot \frac{1}{\left|\overrightarrow{P(t) D_{j}}\right|^{2}} \cdot 1
+\end{equation}
+
+\subsubsection{二次辐射源——墙体微元 $D_{j}$}
+
+(1) 墙体微元的辐射强度 $I_{j}(i, t)$
+
+由上面的分析，把每个小正方形 $D_{j}$ 看作一个余弦辐射体。下面计算面积为 $\Delta S$ 的微元 $D_{j}$ （$1 \mathrm{~m} \times 1 \mathrm{~m}$ 的小正方形）上辐射强度 $I_{j}(i, t)$。
+
+微元 $D_{j}$ 的辐射出射度 $M_{j}$ 为：
+
+\begin{equation}
+M_{j}(t)=\frac{d \Phi_{j}^{\text {出射 }}(t)}{d S} \approx \frac{\Delta \Phi_{j}^{\text {出射 }}(t)}{\Delta S}
+\tag{6.19}
+\end{equation}
+
+微元 $D_{j}$ 的辐射照度 $E_{j}$ 为：
+
+\begin{equation}
+E_{j}(t)=\frac{d \Phi_{j}(t)}{d S} \approx \frac{\Delta \Phi_{j}(t)}{\Delta S}
+\tag{6.20}
+\end{equation}
+
+又由辐射出射度 \(M_{j}\) 与辐射照度 \(E_{j}\) 的关系
+
+\begin{equation}
+M_{j}(t)=\rho E_{j}(t)
+\tag{6.21}
+\end{equation}
+
+联立式 6.19、6.20、6.21，可得
+
+\begin{equation}
+\Delta \Phi_{j \text { 出射 }}(t)=M_{j}(t) \Delta S=\rho E_{j}(t) \Delta S=\rho \Delta \Phi_{j}(t)
+\tag{6.22}
+\end{equation}
+
+对于每个墙体微元 \(D_{j}\)，\(D_{j}\) 的出射通量 \(\Delta \Phi_{j \text { 出射 }}(t)\) 为：
+
+\begin{align}
+\Delta \Phi_{j \text { 出射 }}(t) &= \int I_{j}(i, \varphi) d w = \int_{0}^{2 \pi} \int_{0}^{\frac{\pi}{2}} I_{j}(i, \varphi) \sin i d i d \varphi \\
+&= 2 \pi \int_{0}^{\frac{\pi}{2}} I_{N_{j}}(t) \cos i \sin i d i \\
+&= I_{N_{j}}(t) \left[ 2 \pi \int_{0}^{\frac{\pi}{2}} \cos i \sin i d i \right] \\
+&= I_{N_{j}}(t) \cdot \pi
+\end{align}
+\tag{6.23}
+
+整理得：
+
+\begin{equation}
+I_{N_{j}}(t)=\frac{1}{\pi} \Delta \Phi_{j \text { 出射 }}(t)=\frac{1}{\pi} \rho \Delta \Phi_{j \text { 出射 }}(t)
+\tag{6.24}
+\end{equation}
+
+因此，微元 \(D_{j}\) 的辐射强度 \(I_{j}(i, t)\) 为：
+
+\begin{align}
+I_{j}(i, t) &= I_{N_{j}}(t) \cdot \cos i \\
+&= \frac{1}{\pi} \Delta \Phi_{j \text { 出射 }}(t) \cdot \cos i, \quad i \in \left[ 0, \frac{\pi}{2} \right]
+\end{align}
+\tag{6.25}
+
+(2) 墙体对静区的辐射通量 \(\Phi_{\overline{D_{j} Q}}(t)\)
+
+静区除了受到天线的直接照射外，还通过墙体各处所在的二次辐射源的照射，下面推导墙体对静区的辐射通量 \(\Phi_{\overline{D_{j} Q}}(t)\)。
+
+由 \(D_{j}\) 的坐标 \((x_{D_{j}}, y_{D_{j}}, z_{D_{j}})\) 和静区点 \(\mathbf{Q}\) 的坐标，可以得出辐射距离 \(r_{\overline{D_{j} Q}}\) 和辐射入射角 \(\theta_{\overline{D_{j} Q}}\) 分别为：
+
+\begin{equation}
+r_{\overline{D_{j} Q}}=\left| \overline{D_{j} Q} \right|=\sqrt{(x_{Q}-x_{D_{j}})^{2}+(y_{Q}-y_{D_{j}})^{2}+(z_{Q}-z_{D_{j}})^{2}}
+\tag{6.26}
+\end{equation}
+
+\begin{equation}
+\theta_{\overline{D_{j}Q}} = \arccos \frac{(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{Q}}}{\left| -\overrightarrow{D_{j}Q} \right| \cdot \left| \overrightarrow{n_{Q}} \right|}
+\tag{6.27}
+\end{equation}
+
+由各墙体微元对静区的辐射方向，可得到辐射强度 $I_{\overline{D_{j}Q}}(t)$：
+
+\begin{equation}
+I_{\overline{D_{j}Q}}(t) = I_{D_{j}}(i, t) \bigg|_{i = \langle -\overrightarrow{D_{j}Q}, \overrightarrow{n_{j}} \rangle} = \frac{(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{j}}}{\left| \overrightarrow{D_{j}Q} \right| \cdot \left| \overrightarrow{n_{j}} \right|} \cdot I_{N_{j}}(t)
+\tag{6.28}
+\end{equation}
+
+通过积分，可以得到墙体 $D_{j}$ 对静区 Q 的辐射通量 $\Phi_{\overline{D_{j}Q}}(t)$：
+
+\begin{equation}
+\begin{aligned}
+\Phi_{\overline{D_{j}Q}}(t) &= \int d\Phi = \int_{S} I_{\overline{D_{j}Q}}(t) \frac{\cos(\theta_{\overline{D_{j}Q}})}{r_{\overline{D_{j}Q}}} ds \\
+&\approx I_{N_{j}}(t) \cdot \frac{(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{Q}}}{\left| -\overrightarrow{D_{j}Q} \right| \cdot \left| \overrightarrow{n_{Q}} \right|} \cdot \frac{(\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{D_{j}}}}{\left| \overrightarrow{D_{j}Q} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{D_{j}Q} \right|^{2}} \cdot \Delta S' \\
+&= \frac{1}{\pi} \Delta\Phi_{j\text{出射}}(t) \cdot \frac{[(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{Q}}] \cdot [(\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{D_{j}}}] }{\left| \overrightarrow{D_{j}Q} \right|^{4}} \cdot (0.3)^{2} \\
+&= \frac{1}{\pi} \rho \Delta\Phi_{j}(t) \cdot \frac{[(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{Q}}] \cdot [(\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{D_{j}}}] }{\left| \overrightarrow{D_{j}Q} \right|^{4}} \cdot (0.3)^{2}
+\end{aligned}
+\tag{6.29}
+\end{equation}
+
+(3) 墙体对墙体的辐射通量 $\Phi_{\overline{D_{j}D_{k}}}(t)$
+
+$\forall j, k = 1 \ldots 1464$ 且 $j \neq k$，计算 $D_{j}$ 对 $D_{k}$ 的辐射通量 $\Phi_{\overline{D_{j}D_{k}}}(t)$。
+
+由小正方形的 $D_{j}$ 的坐标 $(x_{D_{j}}, y_{D_{j}}, z_{D_{j}})$ 和静区 Q 点的坐标，可以得出辐射距离 $r_{\overline{D_{j}D_{k}}}$ 和辐射入射角 $\theta_{\overline{D_{j}D_{k}}}$ 分别为：
+
+\begin{equation}
+r_{\overline{D_{j}D_{k}}} = \left| \overrightarrow{D_{j}D_{k}} \right| = \sqrt{(x_{D_{j}} - x_{D_{k}})^{2} + (y_{D_{j}} - y_{D_{k}})^{2} + (z_{D_{j}} - z_{D_{k}})^{2}}
+\tag{6.30}
+\end{equation}
+
+\begin{equation}
+\theta_{\overline{D_{j}D_{k}}} = \arccos \frac{(-\overrightarrow{D_{j}D_{k}}) \cdot \overrightarrow{n_{D_{k}}}}{\left| -\overrightarrow{D_{j}D_{k}} \right| \cdot \left| \overrightarrow{n_{D_{k}}} \right|} = \langle -\overrightarrow{D_{j}D_{k}}, \overrightarrow{n_{D_{k}}} \rangle
+\tag{6.31}
+\end{equation}
+
+定义 $\overrightarrow{n_{j}}$ 表示 $D_{j}$ 所在墙面向房间内部的法向量，则：
+
+- 若 $\overrightarrow{n_{j}} = \overrightarrow{n_{k}}$，即 $D_{j}$ 和 $D_{k}$ 在同一面墙上，相互间无法接收到彼此的照射，则：
+
+  - 辐射强度：$I_{\overline{D_{j}D_{k}}}(t) = 0$
+  - 辐射通量：$\Phi_{\overline{D_{j}D_{k}}}(t) = 0$
+
+- 若 $\overrightarrow{n_{j}} \neq \overrightarrow{n_{k}}$，即 $D_{j}$ 和 $D_{k}$ 不在同一面墙上，相互间可以接收到彼此的照射，
+
+则：
+
+辐射强度：
+\begin{equation}
+I_{\overrightarrow{D_{j}D_{k}}}(t) = I_{D_{j}}(i,t) \bigg|_{i=\text{a}\langle\overrightarrow{D_{j}D_{k}},\overrightarrow{n_{D_{j}}}\rangle} = \frac{\overrightarrow{D_{j}D_{k}}\cdot\overrightarrow{n_{D_{j}}}}{\left|\overrightarrow{D_{j}D_{k}}\right|\cdot\left|\overrightarrow{n_{D_{j}}}\right|} \cdot I_{N_{j}}(t)
+\tag{6.32}
+\end{equation}
+
+辐射通量：
+\begin{equation}
+\Phi_{\overrightarrow{D_{j}D_{k}}}(t) = \int d\Phi = \int_{S} I_{\overrightarrow{D_{j}D_{k}}}(t) \frac{\cos(\theta_{\overrightarrow{D_{j}D_{k}}})}{\frac{r_{\overrightarrow{D_{j}D_{k}}}}{2}} ds
+\tag{6.33}
+\end{equation}
+\begin{equation}
+\approx I_{N_{j}}(t) \cdot \frac{(\overrightarrow{D_{j}D_{k}})\cdot\overrightarrow{n_{D_{j}}}}{\left|\overrightarrow{D_{j}D_{k}}\right|\cdot\left|\overrightarrow{n_{D_{j}}}\right|} \cdot \frac{(-\overrightarrow{D_{j}D_{k}})\cdot\overrightarrow{n_{D_{k}}}}{\left|-\overrightarrow{D_{j}D_{k}}\right|\cdot\left|\overrightarrow{n_{D_{k}}}\right|} \cdot \frac{1}{\left|\overrightarrow{D_{j}D_{k}}\right|^{2}} \cdot \Delta S
+\end{equation}
+
+\subsubsection{动态平衡方程组的建立}
+
+上节推导了暗室里四种辐射的辐射通量。针对 1464 个微元 $D_{j}$ 的辐射照度 $\Delta\Phi_{j}(t)$，建立动态平衡方程组进行求解。
+
+由前面的分析可知，对于某个小正方形 $D_{j}$，其接收到的辐射通量来自于两个部分。一是视在天线在运动过程中对它的辐射，二是其他每个微元等价的余弦辐射体对它的辐射。有以下定性关系：
+
+微元 $D_{j}$ 的辐射照度 = 其他微元对 $D_{j}$ 的辐射通量之和 + 天线对 $D_{j}$ 的辐射通量
+
+根据这个思想，列出动态平衡方程组：
+\begin{equation}
+\forall j=1,2,...,1464, \quad \Delta\Phi_{j}(t) = \sum_{k=1}^{1464} \Phi_{\overrightarrow{D_{k}D_{j}}}(t) + \Phi_{\overrightarrow{PD_{j}}}(t)
+\tag{6.34}
+\end{equation}
+
+其中：$\Delta\Phi_{j}(t)$ 表示每个 $D_{j}$ 接收到的辐射总通量；$\Phi_{\overrightarrow{D_{k}D_{j}}}(t)$ 表示 $D_{j}$ 接收到的由小正方形 $D_{k}$ 作为二次辐射源的辐射通量；$\Phi_{\overrightarrow{PD_{j}}}(t)$ 表示 $D_{j}$ 接收到的由视在天线发出的辐射通量。
+
+其中，由式 6.33 和式 6.25 可得：
+
+\begin{equation}
+\Phi_{\overrightarrow{D_{k}D_{j}}}(t) = I_{N_{k}}(t) \cdot \frac{\overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{k}}}}{\left| \overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{k}}} \right|} \cdot \frac{(-\overrightarrow{D_{k}D_{j}}) \cdot \overrightarrow{n_{D_{j}}}}{\left| -\overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{D_{k}D_{j}} \right|^{2}} \cdot \Delta S
+\end{equation}
+\begin{equation}
+= \left[ \frac{1}{\pi} \cdot \rho \cdot \Delta \Phi_{k}(t) \right] \cdot \frac{\overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{k}}}}{\left| \overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{k}}} \right|} \cdot \frac{(-\overrightarrow{D_{k}D_{j}}) \cdot \overrightarrow{n_{D_{j}}}}{\left| -\overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{D_{k}D_{j}} \right|^{2}} \cdot \Delta S
+\end{equation}
+\begin{equation}
+= \left[ \frac{1}{\pi} \cdot \rho \cdot \frac{\left( \overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{k}}} \right) \cdot \left( -\overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{j}}} \right)}{\left| \overrightarrow{D_{k}D_{j}} \right|^{4}} \cdot \Delta S \right] \cdot \Delta \Phi_{k}(t)
+\tag{6.35}
+\end{equation}
+
+又由式 6.18 得：
+\begin{equation}
+\Phi_{\overrightarrow{PD_{j}}}(t) = I_{0} \left( 1 + \frac{t}{4} \right) \cdot \frac{\overrightarrow{P(t)Q} \overrightarrow{P(t)D_{j}}}{14 \cdot \left| \overrightarrow{P(t)D_{j}} \right|} \cdot \frac{\overrightarrow{-P(t)D_{j}} \cdot \overrightarrow{n_{D_{j}}}}{\left| \overrightarrow{-P(t)D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{P(t)D_{j}} \right|^{2}}
+\tag{6.36}
+\end{equation}
+
+整理可得：
+\begin{equation}
+\Delta \Phi_{j}(t) = \sum_{k=1}^{1464} \Phi_{\overrightarrow{D_{k}D_{j}}}(t) + \Phi_{\overrightarrow{PD_{j}}}(t)
+\end{equation}
+\begin{equation}
+= \sum_{k=1}^{1464} \left\{ I_{N_{k}}(t) \cdot \frac{\overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{k}}}}{\left| \overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{k}}} \right|} \cdot \frac{(-\overrightarrow{D_{k}D_{j}}) \cdot \overrightarrow{n_{D_{j}}}}{\left| -\overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{D_{k}D_{j}} \right|^{2}} \cdot \Delta S \right\} + \left[ I_{0} \left( 1 + \frac{t}{4} \right) \cdot \frac{\overrightarrow{P(t)Q} \overrightarrow{P(t)D_{j}}}{14 \cdot \left| \overrightarrow{P(t)D_{j}} \right|} \cdot \frac{\overrightarrow{-P(t)D_{j}} \cdot \overrightarrow{n_{D_{j}}}}{\left| \overrightarrow{-P(t)D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{P(t)D_{j}} \right|^{2}} \right]
+\end{equation}
+\begin{equation}
+= \sum_{k=1}^{1464} \left\{ \left[ \frac{1}{\pi} \cdot \rho \cdot \Delta \Phi_{k}(t) \right] \cdot \frac{\overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{k}}}}{\left| \overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{k}}} \right|} \cdot \frac{(-\overrightarrow{D_{k}D_{j}}) \cdot \overrightarrow{n_{D_{j}}}}{\left| -\overrightarrow{D_{k}D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{D_{k}D_{j}} \right|^{2}} \cdot \Delta S \right\} + \left[ I_{0} \left( 1 + \frac{t}{4} \right) \cdot \frac{\overrightarrow{P(t)Q} \overrightarrow{P(t)D_{j}}}{14 \cdot \left| \overrightarrow{P(t)D_{j}} \right|} \cdot \frac{\overrightarrow{-P(t)D_{j}} \cdot \overrightarrow{n_{D_{j}}}}{\left| \overrightarrow{-P(t)D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{P(t)D_{j}} \right|^{2}} \right]
+\end{equation}
+\begin{equation}
+= \sum_{k=1}^{1464} \left\{ \left[ \frac{1}{\pi} \cdot \rho \cdot \frac{\left( \overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{k}}} \right) \cdot \left( -\overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{j}}} \right)}{\left| \overrightarrow{D_{k}D_{j}} \right|^{4}} \cdot \Delta S \right] \cdot \Delta \Phi_{k}(t) \right\} + \left[ I_{0} \left( 1 + \frac{t}{4} \right) \cdot \frac{\overrightarrow{P(t)Q} \overrightarrow{P(t)D_{j}}}{14 \cdot \left| \overrightarrow{P(t)D_{j}} \right|} \cdot \frac{\overrightarrow{-P(t)D_{j}} \cdot \overrightarrow{n_{D_{j}}}}{\left| \overrightarrow{-P(t)D_{j}} \right| \cdot \left| \overrightarrow{n_{D_{j}}} \right|} \cdot \frac{1}{\left| \overrightarrow{P(t)D_{j}} \right|^{2}} \right]
+\tag{6.37}
+\end{equation}
+
+将式 6.37 写为矩阵的形式，有：
+\begin{equation}
+\begin{pmatrix}
+\Delta \Phi_{1}(t) \\
+\Delta \Phi_{2}(t) \\
+\vdots \\
+\vdots \\
+\Delta \Phi_{1464}(t)
+\end{pmatrix}
+=
+\begin{pmatrix}
+A_{1,1} & A_{1,2} & \ldots & A_{1,1464} \\
+A_{2,1} & A_{2,2} & \ldots & A_{2,1464} \\
+\vdots & \vdots & \ddots & \vdots \\
+\vdots & \vdots & \ddots & \vdots \\
+A_{1464,1} & A_{1464,2} & \ldots & A_{1464,1464}
+\end{pmatrix}
+\begin{pmatrix}
+\Delta \Phi_{1}(t) \\
+\Delta \Phi_{2}(t) \\
+\vdots \\
+\vdots \\
+\Delta \Phi_{1464}(t)
+\end{pmatrix}
++
+\begin{pmatrix}
+\Phi_{\overrightarrow{PD_{1}}}(t) \\
+\Phi_{\overrightarrow{PD_{2}}}(t) \\
+\vdots \\
+\vdots \\
+\Phi_{\overrightarrow{PD_{1464}}}(t)
+\end{pmatrix}
+\tag{6.38}
+\end{equation}
+
+式 6.38 是带有 1464 个未知量，共有 1464 个方程的方程组，可化为如下的形式：
+\begin{equation}
+\Delta \Phi(\mathbf{t}) = \mathbf{A} \Delta \Phi(\mathbf{t}) + \mathbf{B}
+\end{equation}
+\begin{equation}
+\Leftrightarrow \quad (\mathbf{E} - \mathbf{A}) \Delta \Phi(\mathbf{t}) = \mathbf{B}
+\tag{6.39}
+\end{equation}
+
+解上述非齐次多元线性方程组，可得到各微元 $D_{j}$ 的辐射照度 $\Delta \Phi_{j}(t)$。
+
+\subsubsection{静区反射一直射功率比$\gamma$}
+
+6.2.3 节推导出了各微元 $D_{j}$ 的辐射照度 $\Delta \Phi_{j}(t)$，可以进一步求解静区从诸墙面得到的反射信号的功率之和与从信号源直接得到的微波功率之比 $\gamma$。
+
+由式 6.14 可知，静区从视在天线直接得到的照度 $\Phi_{\overrightarrow{PQ}}(t)$ 为：
+\begin{equation}
+\begin{aligned}
+\Phi_{\overrightarrow{PQ}}(t) &= \int d \Phi = \int_{S} I_{p}(i, t) \cdot \frac{\cos \left[\theta_{\overrightarrow{PQ}}(t)\right]}{r_{\overrightarrow{PQ}}^{2}(t)} d S \\
+&\approx I_{p}(i, t) \bigg|_{i=0} \cdot \frac{\cos \left[\theta_{\overrightarrow{PQ}}(t)\right]}{r_{\overrightarrow{PQ}}^{2}(t)} \cdot \Delta S \\
+&= \left(1 + \frac{t}{4}\right) I_{0} \cdot \cos \left(\frac{\pi}{8} - \frac{\pi t}{16}\right) \cdot \frac{1}{\left|P(t) Q\right|^{2}} \cdot (0.3)^{2}
+\end{aligned}
+\tag{6.40}
+\end{equation}
+即静区从信号源得到的功率：
+\begin{equation}
+W_{\text{直射Q}} = \Phi_{\overrightarrow{PQ}}(t)
+\tag{6.41}
+\end{equation}
+由式 6.19 得：
+\begin{equation}
+\Phi_{\overrightarrow{D_{j}Q}}(t) = \frac{1}{\pi} \rho \Delta \Phi_{j}(t) \cdot \frac{(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{Q}} \cdot (\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{D_{j}}}}{\left|\overrightarrow{D_{j}Q}\right|^{4}} \cdot (0.3)^{2}
+\tag{6.42}
+\end{equation}
+即静区从诸墙面得到的反射信号功率：
+\begin{equation}
+W_{\text{反射Q}} = \sum_{j=1}^{1464} \Phi_{\overrightarrow{D_{j}Q}}(t)
+\tag{6.43}
+\end{equation}
+则静区从诸墙面得到的反射信号的功率之和与从信号源直接得到的微波功率之比 $\gamma$ 为：
+\begin{equation}
+\gamma = \frac{W_{\text{反射Q}}}{W_{\text{直射Q}}} = \frac{\sum_{j=1}^{1464} \left[\frac{1}{\pi} \rho \Delta \Phi_{j}(t) \cdot \frac{(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{Q}} \cdot (\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{D_{j}}}}{\left|\overrightarrow{D_{j}Q}\right|^{4}} \cdot (0.3)^{2}\right]}{\left(1 + \frac{t}{4}\right) I_{0} \cdot \cos \left(\frac{\pi}{8} - \frac{\pi t}{16}\right) \cdot \frac{1}{\left|P(t) Q\right|^{2}} \cdot (0.3)^{2}}
+\tag{6.44}
+\end{equation}
+
+\subsection{问题二模型的求解}
+
+\subsubsection{动态平衡方程组的求解}
+
+对关于微元 $D_{j}$ 的辐射照度 $\Delta \Phi_{j}(t)$，其动态平衡方程组为：
+
+\begin{equation}
+(\mathbf{E} - \mathbf{A}) \Delta \Phi(t) = \mathbf{B}
+\tag{6.45}
+\end{equation}
+
+使用 MATLAB 软件，运用最小二乘法进行求解，计算得到 $\Delta \Phi_j(t)$。
+
+$\Delta \Phi_j(t)$ 在墙面各处分布如下图所示:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{$\Delta \Phi_j(t)$ 在 1、4、6 墙面各处分布图}
+    \label{fig:6.6}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{$\Delta \Phi_j(t)$ 在 2、3、5 墙面各处分布图}
+    \label{fig:6.7}
+\end{figure}
+
+由图 \ref{fig:6.6} 和图 \ref{fig:6.7} 可以看出，相对于 6 面（静区所在面），5 面（视在天线的背面）的辐射照度非常低。这是由于余弦辐射体辐射强度的方向性所决定的，即视在天线的背面只能接收到很少的一次辐射。
+
+\subsubsection{反射一直射功率比值 $\gamma$ 与垂直反射率 $\rho$ 的关系}
+
+针对题目的要求，判断在使用 $\rho = 0.5$ 的平板材料和 $\rho = 0.05$ 的尖劈材料的情况下，是否符合功率比值 $\gamma \leq 0.03$ 的要求。
+
+(1) $\rho = 0.5$ 的情况
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{}
+    \label{fig:6.8}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{反射功率之和与直射功率之比 $\gamma$ 随运动时间 $t$ 的变化 ($\rho=0.5$)}
+    \label{fig:6.8}
+\end{figure}
+
+图 6.8 反射功率之和与直射功率之比随时间 $t$ 的变化 ($\rho=0.5$)
+
+图 6.8 表征了到达静区的反射功率与直射功率之比 $\gamma$ 与运动时刻 $t$ 的关系，当 $t\approx1.4, \alpha\approx16^\circ$ 和 $t\approx2.6, \alpha\approx29^\circ$ 时，$\gamma$ 值取得最小值 0.2034；当 $t\approx0, \alpha\approx0^\circ$ 和 $t\approx4, \alpha\approx45^\circ$ 时，$\gamma$ 值取得最大值 0.2089，不满足题目中 $\gamma\leq0.03$ 的仿真要求。
+
+\subsubsection{$\rho=0.05$ 的情况}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{反射功率之和与直射功率之比 $\gamma$ 随运动时间 $t$ 的变化 ($\rho=0.05$)}
+    \label{fig:6.9}
+\end{figure}
+
+图 6.9 反射功率之和与直射功率之比随时间 $t$ 的变化 ($\rho=0.05$)
+
+由图 6.9 可以看出，当 $t\approx1.4, \alpha\approx16^\circ$ 和 $t\approx2.6, \alpha\approx29^\circ$ 的时候，$\gamma$ 值取得最小
+
+0.0203；当 \( t \approx 0, \alpha \approx 0^\circ \) 和 \( t \approx 4, \alpha \approx 45^\circ \) 时，\( \gamma \) 值取得最大值 0.0209，满足题目中 \( \gamma \leq 0.03 \) 的仿真要求。即此反射率 \( \rho = 0.05 \) 符合技术指标要求，适合作微波暗室墙体吸波材料。
+
+（3）垂直反射率 \( \rho \) 的阈值
+
+对垂直反射率 \( \rho \)，在 \( \rho \in (0, 1] \) 的范围内，以 0.01 为步长，计算所得的 \( \gamma \) 值。判断符合 \( \gamma \leq 0.03 \) 要求时反射率 \( \rho \) 的阈值。
+
+\( \gamma \) 值与垂直反射率 \( \rho \) 的关系如图 6.10 所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{\( \gamma \) 值与垂直反射率 \( \rho \) 的关系}
+\label{fig:6.10}
+\end{figure}
+
+可以看出，\( \gamma \) 与 \( \rho \) 基本服从线性关系。使用 MATLAB 的 cftool 线性拟合工具，对 \( \gamma \) 和 \( \rho \) 作线性拟合，得到的 \( \gamma - \rho \) 服从以下线性关系：
+
+\begin{equation}
+\gamma = 0.4178 \rho + 2.097 \times 10^{-17}
+\tag{6.46}
+\end{equation}
+
+计算可得，当 \( \rho \leq 0.0718 \) 时，\( \gamma \leq 0.03 \)，即 \( \rho \) 的阈值 \( \rho_{\text{max}} = 0.0718 \)。
+
+\subsubsection{微波暗室吸波材料预测软件的制作}
+
+使用前面建立的动态平衡方程组模型，结合 MATLAB 图形用户界面 GUI，制作了一个微波暗室吸波材料预测软件，方便科研人员对吸波材料性能进行预测。
+
+如图 6.11 所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{微波暗室吸波材料预测软件界面}
+\label{fig:6.11}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{微波暗室吸波材料预测软件}
+    \label{fig:6.11}
+\end{figure}
+
+输入参数：垂直反射率 $\rho$、天线初始发射功率强度 $I_{0}$
+
+返回图像：1. 到达静区的直射功率随时间的变化
+
+2. 到达静区的反射功率之和随时间的变化
+
+3. 到达静区反射功率和与直射功率之比 $\gamma$ 随时间的变化
+
+本软件面向广大微波暗室吸波材料科研人员，操作简单，计算效率较高，精度较优，适用性较强。
+
+\section{问题二模型的推广}
+
+\subsection{半波偶极子线天线（全向天线）的介绍}
+
+在本题中，视在天线被简化为余弦辐射体，不具有一般性。由电磁场的理论可知，更为常见的天线为图 \ref{fig:7.1} 所示的半波偶极子线天线，其长度为半个波长。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{image2.png}
+    \caption{半波偶极子线天线}
+    \label{fig:7.1}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image3.png}
+    \caption{半波偶极子线天线辐射强度示意图}
+    \label{fig:7.2}
+\end{figure}
+
+图 7.2 表示了半波偶极子线天线在各个辐射方向上的辐射强度。与余弦辐射体不同的是，半波偶极子是一个全向天线，即在水平面上它向各个方向的辐射强度相等。
+
+在球面坐标系下，半波偶极子线天线各方向的辐射强度为：
+\begin{equation}
+I_{p}(\theta, t) = I_{N_{P}}(t) \cdot \sin \theta
+\tag{7.1}
+\end{equation}
+假设天线中心点为 P，辐射点为 Z，则辐射 \(\theta\) 角为：
+\begin{equation}
+\theta = \left\langle \overrightarrow{P(t)Z}, \overrightarrow{e_{z}} \right\rangle = \arccos \frac{\overrightarrow{P(t)Z} \cdot \overrightarrow{e_{z}}}{\left| \overrightarrow{P(t)Z} \right| \cdot \left| \overrightarrow{e_{z}} \right|}
+\tag{7.2}
+\end{equation}
+因此，该天线在 \(\overrightarrow{P(t)Z}\) 方向上的辐射强度为：
+\begin{align}
+I_{p}(\theta, t) &= I_{N_{P}}(t) \cdot \sin \theta \\
+&= I_{0} \left( 1 + \frac{t}{4} \right) \cdot \sin \theta \\
+&= I_{0} \left( 1 + \frac{t}{4} \right) \cdot \sqrt{1 - \left( \frac{\overrightarrow{P(t)Z} \cdot \overrightarrow{e_{z}}}{\left| \overrightarrow{P(t)Z} \right| \cdot \left| \overrightarrow{e_{z}} \right|} \right)^{2}}
+\tag{7.3}
+\end{align}
+本题中，假设 \(I_{0} = 1\)。
+
+\subsection{使用半波偶极子天线代替余弦辐射体}
+
+图 7.3 表征了在原有暗室中，用半波偶极子天线代替余弦辐射体的情况。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{半波偶极子线天线在暗室中的示意图}
+\end{figure}
+
+假设半波偶极子运动轨迹与余弦辐射体相一致，t=0 时刻最大辐射方向的辐射强度为 \(I_{0}\)，计算天线在静区中运动的 \(\gamma\) 值的变化，并与余弦辐射体的结果相比较，得出相应的结论，进一步指导暗室材料的选取。
+
+\subsubsection{一次辐射分析}
+
+(1) 天线对静区的辐射通量 $\Phi_{\overrightarrow{PQ}}(t)$
+
+由上式的推导，再结合 6.2.1 的相关公式，可以推导出天线向静区的辐射照度 $\Phi_{\overrightarrow{PQ}}(t)$：
+
+辐射距离：$r_{PQ}(t)=\left|\overrightarrow{PQ}\right|=14$ \tag{7.4}
+
+辐射入射角：$\theta_{PQ}(t)=\beta(t)=\frac{\pi}{8}-\frac{\pi}{16} \cdot t$ \tag{7.5}
+
+辐射强度：
+
+\[
+\Delta \Phi_{j}(t) = \sum_{\substack{k=1 \\ k \neq j}}^{1464} a_{jk} \Delta \Phi_{k}(t) + b_{j}, \quad \text{其中 } a_{jk} \text{ 和 } b_{j} \text{ 为常数矩阵}
+\]
+\tag{7.6}
+
+将上面式 7.4、7.5、7.6 代入式 6.40，则：
+
+辐射通量：
+
+\[
+\begin{cases}
+\text{情况①：无法进入尖劈几何空缺间} \\
+\text{情况②：与某反射面垂直，原路返回} \\
+\text{情况③：射入几何空缺但不与任何反射面垂直}
+\end{cases}
+\]
+\tag{7.7}
+
+(2) 天线对墙体的辐射通量 $\Phi_{\overrightarrow{P D_{j}}}(t)$
+
+同理，可以逐渐推导出天线对墙体各微元的辐射通量 $\Phi_{\overrightarrow{P D_{j}}}(t)$
+
+辐射距离：$r_{P D_{j}}(t)=\left|\overrightarrow{P(t) D_{j}}\right|=\sqrt{\left[x_{p}(t)-x_{D_{j}}\right]^{2}+\left[y_{p}(t)-y_{D_{j}}\right]^{2}+\left[z_{p}(t)-z_{D_{j}}\right]^{2}}$ \tag{7.8}
+
+辐射入射角：
+
+\[
+\theta_{i}+(2 k_{\max }-1) \alpha=\frac{\pi}{2}
+\tag{5.6}
+\]
+\tag{7.9}
+
+辐射强度：
+
+\[
+\theta_{i}=\frac{\pi}{2}-(2 k_{\max }-1) \alpha
+\tag{5.7}
+\]
+\tag{7.10}
+
+将上面三式代入，可得：
+
+辐射通量：
+
+\begin{equation}
+\Phi_{\overrightarrow{PD_{j}}}(t) = \int d\Phi = \int_{S} I_{\overrightarrow{PD_{j}}}(t) \cdot \frac{\cos\left[\theta_{\overrightarrow{PD_{j}}}(t)\right]}{r_{\overrightarrow{PD_{j}}}(t)^{2}} \, dS
+\end{equation}
+\begin{equation}
+\approx I_{0}\left(1 + \frac{t}{4}\right) \cdot \sqrt{1 - \left(\frac{\overrightarrow{P(t)Z} \cdot \overrightarrow{e_{z}}}{\left|\overrightarrow{P(t)Z}\right| \cdot \left|\overrightarrow{e_{z}}\right|}\right)^{2}} \cdot \frac{(-\overrightarrow{P(t)D_{j}}) \cdot \overrightarrow{n_{D_{j}}}}{\left|-\overrightarrow{P(t)D_{j}}\right| \left|\overrightarrow{n_{D_{j}}}\right|} \cdot \frac{1}{\left|\overrightarrow{P(t)D_{j}}\right|^{2}} \Delta S
+\tag{7.11}
+\end{equation}
+
+\subsubsection{二次辐射分析}
+
+(1) 墙体对静区的辐射通量 $\Phi_{\overrightarrow{D_{j}Q}}(t)$
+
+与 6.2.2 节中余弦辐射体的情况一致，墙体对静区的辐射通量为：
+\begin{equation}
+\Phi_{\overrightarrow{D_{j}Q}}(t) = \frac{1}{\pi} \rho \Delta \Phi_{j}(t) \cdot \frac{(-\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{Q}} \cdot (\overrightarrow{D_{j}Q}) \cdot \overrightarrow{n_{D_{j}}}}{\left|\overrightarrow{D_{j}Q}\right|^{4}} \cdot (0.3)^{2}
+\tag{7.12}
+\end{equation}
+
+(2) 墙体对墙体的辐射通量 $\Phi_{\overrightarrow{D_{j}D_{k}}}(t)$
+
+同上，可得墙体对墙体的辐射通量：
+\begin{equation}
+\Phi_{\overrightarrow{D_{j}D_{k}}}(t) = I_{N_{j}}(t) \cdot \frac{(\overrightarrow{D_{j}D_{k}}) \cdot \overrightarrow{n_{D_{j}}}}{\left|\overrightarrow{D_{j}D_{k}}\right| \cdot \left|\overrightarrow{n_{D_{j}}}\right|} \cdot \frac{(-\overrightarrow{D_{j}D_{k}}) \cdot \overrightarrow{n_{D_{k}}}}{\left|-\overrightarrow{D_{j}D_{k}}\right| \cdot \left|\overrightarrow{n_{D_{k}}}\right|} \cdot \frac{1}{\left|\overrightarrow{D_{j}D_{k}}\right|^{2}} \cdot \Delta S
+\tag{7.13}
+\end{equation}
+
+\subsubsection{动态平衡方程}
+
+由式 6.34，建立同样的动态平衡方程组：
+\begin{equation}
+\forall j = 1 \ldots 1464,
+\end{equation}
+\begin{equation}
+\Delta \Phi_{j}(t) = \sum_{k=1}^{1464} \Phi_{\overrightarrow{D_{k}D_{j}}}(t) + \Phi_{\overrightarrow{PD_{j}}}(t)
+\end{equation}
+\begin{equation}
+= \sum_{k=1}^{1464} \left\{ \frac{1}{\pi} \cdot \rho \cdot \frac{\overrightarrow{D_{k}D_{j}} \cdot \overrightarrow{n_{D_{k}}}}{\left|\overrightarrow{D_{k}D_{j}}\right| \cdot \left|\overrightarrow{n_{D_{k}}}\right|} \cdot \frac{(-\overrightarrow{D_{k}D_{j}}) \cdot \overrightarrow{n_{D_{j}}}}{\left|-\overrightarrow{D_{k}D_{j}}\right| \cdot \left|\overrightarrow{n_{D_{j}}}\right|} \cdot \frac{1}{\left|\overrightarrow{D_{k}D_{j}}\right|^{2}} \cdot \Delta S \right\} \Delta \Phi_{k}(t) + \Phi_{\overrightarrow{PD_{j}}}(t)
+\tag{7.14}
+\end{equation}
+
+\subsection{半波偶极子的求解}
+
+求解动态平衡方程，得到在 $t=2$ 时刻，墙体各处总辐射通量 $\Delta \Phi_{j}$，如图 7.4 和图 7.5 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{半波偶极子在 1、4、6 墙面辐射照度分布图}
+    \label{fig:7.4}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{半波偶极子在 2、3、6 墙面辐射照度分布图}
+    \label{fig:7.5}
+\end{figure}
+
+分析可得，与余弦辐射体相比，由于采用了全向天线，各墙面接收到的辐射通量更为均匀，且面 5 接收到的辐射通量比采用余弦辐射体时更多，这也使得静区从二次辐射源得到的辐射照度增加。
+
+进一步计算，得到在平均反射率为 $\rho=0.5$ 和 $\rho=0.05$ 时，$\gamma$ 值随时间的变化。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{半波偶极子反射功率和与直射功率之比 $\gamma$ 的值与运动时间 $t$ 的关系 ($\rho=0.5$)}
+    \label{fig:7.6}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{半波偶极子反射功率和与直射功率之比 $\gamma$ 的值与运动时间 $t$ 的关系 ($\rho=0.05$)}
+    \label{fig:7.7}
+\end{figure}
+
+由图 \ref{fig:7.6} 和图 \ref{fig:7.7}，可以得到以下结论：
+
+- $\rho=0.5$ 时，$\gamma$ 在 $t=0$ 和 $t=4$ 的时刻达到最大值 1.1079，在 $t=2$ 时刻达到最小值 1.0805，不符合 $\gamma \leq 0.03$ 的要求。
+- $\rho=0.05$ 时，$\gamma$ 在 $t=0$ 和 $t=4$ 的时刻达到最大值 0.1108，在 $t=2$ 时刻达到最小值 0.1080，不符合 $\gamma \leq 0.03$ 的要求。
+
+可见，暗室反射率 $\rho=0.05$ 在采用定向天线（余弦辐射体）时是符合 $\gamma \leq 0.03$ 要求的；但若采用更常见的全向天线（半波偶极子），则需要反射率 $\rho$ 更低的吸波材料，才可满足仿真技术要求。
+
+\section{模型的评价}
+
+在建立模型的时候，综合考虑了六个墙体之间的相互影响和作用，建立了动态平衡的方程组，并不需要讨论电磁波在墙体间的多次反射。在求解模型的过程中，参考了电磁场数值计算中矩量法的思想，使模型求解更加简便。
+
+在求解模型的同时，还创新性地用 MATLAB 做出了 GUI 图形用户界面，通过所提供的界面，可以很方便地进行参数的设置，得到理想中的结果。最后对此模型作了进一步的推广，得出了结论：若采用更常见的全向天线（半偶极子），则需要反射率 $\rho$ 更低的吸波材料，才可满足仿真技术要求。
+
+然而在模型建立的过程中，对墙体分块时，相对于暗室的大小来说，取微元块的面积略大。如果对墙体分块更小，会提高计算的精确度；而且把墙面微元当作二次反射源时，都简化为微元的中心点来近似计算，如果能进一步进行改进，可以得到更精确的结果。
+
+\section{参考文献}
+
+[1] 姜启源，邢文训，谢金星，杨顶辉，大学数学实验，北京：清华出版社，2005
+
+[2] 林雪松，周婧，林德新，MATLAB7.0 应用集锦，北京：机械工业出版社，2006
+
+[3] 徐立勤，曹伟，电磁场与电磁波理论，北京：科学出版社，2008
+
+[4] 刘顺华等，电磁波屏蔽及吸波材料，北京：化学工业出版社，2007
+
+\end{document}
+
+% Missing placeholders restored
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{暗室墙面分块示意图}
+    \label{fig:wall_division}
+\end{figure}

@@ -1,0 +1,877 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\begin{document}
+
+\begin{center}
+\includegraphics[width=0.2\textwidth]{image1.png} \quad
+\includegraphics[width=0.2\textwidth]{image2.png} \quad
+\includegraphics[width=0.2\textwidth]{image3.png} \quad
+\includegraphics[width=0.2\textwidth]{image4.png}
+\end{center}
+
+\begin{center}
+\textbf{中国研究生创新实践系列大赛} \\
+\textbf{“华为杯”第十八届中国研究生} \\
+\textbf{数学建模竞赛}
+\end{center}
+
+\begin{tabular}{ccc}
+\hline 使用符号 & 说明 & 单位 \\
+\hline
+\(C\) & 神经元的膜电容 & \(\mu \mathrm{F}\) \\
+\(V(t)\) & 神经元的膜电位 & \(\mathrm{mV}\) \\
+\(m(t), h(t), n(t)\) & 细胞膜内外离子通道的电导特性 & —— \\
+\(I_{\text {external }}\) & 外界对神经元的刺激影响 & \(\mu \mathrm{A}\) \\
+\(I_{\text {synapse }}\) & 神经元之间的化学突触电流 & \(\mu \mathrm{A}\) \\
+\(I_{\text {synapse }}^{A M P A}\) & 兴奋突触电流 & \(\mu \mathrm{A}\) \\
+\(I_{\text {synapse }}^{G A B A}\) & 抑制突触电流 & \(\mu \mathrm{A}\) \\
+\(V_{p r e}\) & 突触前电压 & \(\mathrm{mV}\) \\
+\(V_{p o s t}\) & 突触后电压 & \(\mathrm{mV}\) \\
+\hline
+\end{tabular}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+参赛队号 & 21106980211 \\
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+队员姓名 & 1. 赵圆圆 \\
+ & 2. 王斐童 \\
+ & 3. 刘康鸿 \\
+\end{tabular}
+\end{table}
+
+\title{帕金森病的脑深部电刺激治疗建模研究}
+\author{}
+\date{}
+\maketitle
+
+\begin{abstract}
+本文主要讨论神经元及其网络回路对电信号的传递作用，结合生物动力学和生物化学探究基底神经节回路在帕金森病病理和治疗中起到的作用。根据 Hodgkin-Huxley 模型建立单个神经元模型，通过求解微分方程得到数值解以表征生物信号。结合突触连接理论和基底节网络模型构建神经节回路，向基底神经节的不同位置加入不同参数刺激，通过观测回路中神经元各项特征指标分析帕金森病病理并探求 DBS 最佳刺激靶点，优化刺激信号的各项参数。
+
+对于问题一，根据 Hodgkin-Huxley 模型，考虑钠钾离子通道对神经元细胞膜的影响，就单一神经元建立简化模型。根据 Hodgkin-Huxley 方程，利用 MATLAB 仿真输入刺激信号，运用欧拉迭代得到数值解，即生物神经元细胞膜间电压的变化情况，进而得到单个神经元细胞电位发放的特征参数。通过改变输入刺激的各项参数对比，得到直流激励下，电流为 $6.27 \mu \mathrm{A} / \mathrm{cm}^{2}$ 时产生极限环，峰发放频率与刺激强度正相关；交流激励下，通过双参数分离分别分析振幅和频率对电位发放的影响，频率以 $0.039 \mathrm{rad} / \mathrm{ms}$ 作为基准时，起振振幅位于 $5.2759$ 与 $5.2760$ 之间，振幅以 $17.9$ 作为基准时，最高振动频率为 $2.3257 \mathrm{rad} / \mathrm{ms}$ 附近。以 Neuron 仿真软件作为验证，模型测试结果与 MATLAB 符合。
+
+对于问题二，在 Hodgkin-Huxley 模型的基础上，我们首先以锥形房室模型构建神经元细胞以房室为单位划分成不同区域，将连续的神经元离散化；凭借化学突触模型建立神经元突触间的信息交互，构建单个神经元与其相关联神经元之间的信息传导关系；凭借神经元及突触的耦合模型构建微分方程组；提出稀疏模型神经元网络由于网络异步性更能突出单个神经元的信息特性，满足研究需求；以基底神经节网络作为依据形成基底神经节回路模型，并以此模拟神经节网络中不同位置神经元的电位发放。
+
+对于问题三，在问题二构建的模型基础上，我们通过减少 SNc 输入信号刺激和改变回路连接关系，模拟 PD 患者的基本神经结网络，模拟得到其神经元电位发放特征参数并与正常人的神经回路对比，发现有许多神经核团出现了静息现象，如纹状体的 dMSN 和 iMSN、GPe、STN 均出现了未充分放电现象。且 GPe 的簇发放周期变短，TH 的簇发放周期变长。
+
+对于问题四，对 PD 状态的基底节网络给予额外的输入刺激，用于模拟 DBS 过程，通过改变刺激输入的靶点、幅值、频率、模式得到不同位置下的神经元电位发放响应。由于
+
+生物电信号通过多维度反馈外界信息，我们很难通过一般特征指标完成其与正常状态的生物电信号的描述和横向比较，因此我们通过优化 EI（Error Index）得到 EIO（Error Index Optimized），以此作为基础对比优化各项刺激参数，得到结果如下：SNc 与 GPi 中 SNc 更适合作为刺激靶点，使用脉冲电流刺激效果更佳，最佳刺激参数中幅值为 32.5\(\mu\)A，频率为 150-180Hz。
+
+对于问题五，基于前文的 DBS 仿真方法继续研究，对 PD 状态施加额外输入刺激并改变其施加位置后，对其放电效果和正常状态下的放电效果对比，发现模型中不存在其他最优靶点。提出由于可以同步刺激多个神经核团，神经核团存在空间维度的复杂性，存在更优刺激靶点的可能。除此之外，回路外也存在有治疗意义的刺激靶点，其功效有待进一步研究。
+
+关键词：神经元；Hodgkin-Huxley 模型；基底神经节回路；靶点；DBS EI
+\end{abstract}
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+帕金森病是一种常见的神经退行性疾病，主要病理改变是多巴胺能神经元减少及脑内多巴胺水平下降，主要临床表现为静止性震颤、肌强直、运动迟缓、姿势改变等运动症状。脑深部电刺激(DBS)是帕金森病治疗的一个重要手段。通过精确定位，将电极植入脑内特定的靶点，输入高频电刺激，改变相应核团的兴奋性，进而改善 PD 患者震颤、僵直、运动迟缓等症状，具有损伤小、可逆等优点。脑深部电刺激治疗帕金森病的机理来自基底神经节，目前在帕金森病治疗中最常用的靶点是苍白球内侧核(GPi)和丘脑底核(STN)，底丘脑核是基底神经节环路中唯一的兴奋性谷氨酸能核团，不仅是经典间接通路中的关键节点，而且接受皮层的直接投射从而构成超直接通路，甚至被认为是驱动整个基底神经节活动的起搏器。有研究表明苍白球退行性变与帕金森患者的姿势障碍及步态不稳密切相关，壳核体积下降与 FOG 分值提示的严重性相关，海马体积与步速相关，壳核体积及海马体积与患者冻结步态、行走速度相关苍白球位于大脑两侧半球深部，其下行纤维通过红核、黑质、网状结构等影响脊髓下运动神经元。苍白球病变可出现肌张力增高、动作减少及静止性震颤等症状。GPi 刺激能够对这些结构产生调控作用，从而改善患者的症状。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{基底神经节内部神经核团连接示意图}
+    \label{fig:basal_ganglia}
+\end{figure}
+
+基底核对运动功能的调节主要是通过与大脑皮质-基底核-丘脑-大脑皮质环路的联系而实现。在这一环路中，纹状体接受大脑感觉运动皮质的传入纤维，其传出纤维分别经过两条通路抵达基底核传出纤维内侧苍白球/黑质网状(GPi/SNr)。直接通路由大脑皮质—纹状体—苍白球内侧部/GPi/SNr 复合体—丘脑腹外侧核—大脑皮质组成。间接通路由大脑皮质—纹状体—苍白球外侧部/丘脑底核—苍白球内侧部 GPi/SNr 复合体—丘脑腹外侧核—大脑皮质组成。直接通路会抑制 GPi/SNr，易化运动；间接通路会兴奋 GPi/SNr，抑制运动。黑质致密部 SNc 发出的多巴胺能纤维投射到纹状体，进一步协调控制基底核运动环路。在直接通路中，多巴胺与纹状体上的 D1 受体结合，激活直接通路；在间接通路中，多巴胺与纹状体上的 D2 受体结合，抑制间接通路。两者失衡时，帕金森疾病可能就会产生。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{正常状态和PD状态下基底神经节内部神经核团连接示意图}
+    \label{fig:basal_ganglia_connections}
+\end{figure}
+
+\subsection{问题的相关信息}
+
+附件 1 给出了神经元 Hodgkin-Huxley 模型，神经元之间的突触连接理论；
+
+附件 2 给出了神经元的电位发放类型（峰发放和簇发放）以及描述不同类型电位发放的特征指标；
+
+附件 3 给出了神经计算专业词汇中文英文对照表。
+
+\subsection{需要解决的问题}
+
+脑深部电刺激治疗帕金森病一共有五个问题需要进行研究。
+
+问题一：利用给出的神经元 Hodgkin-Huxley 模型（附件 1），数值模拟外界刺激（包括直流刺激和交流刺激）情况下，单个神经元的电位发放情况，并给出神经元电位发放的特征指标。
+
+问题二：根据问题 1 的神经元 Hodgkin-Huxley 模型，结合附件 1 中神经元之间的突触连接理论，建立基底神经节神经回路的理论模型，计算基底神经节内部神经元的电位发放（每个神经团块可以简化为 5-10 个神经元）。
+
+问题三：根据建立的基底神经节回路模型，理论分析正常状态（图 2 中 Healthy 回路）和帕金森病态（图 2 的 PD 回路中去掉黑质 SNc）基底神经节回路电位发放的特征指标。
+
+问题四：利用建立的基底神经节回路模型，对帕金森病态的基底神经节靶点添加高频电刺激，可以模拟脑深部电刺激治疗帕金森病的状态。请模型确定最佳刺激靶点，是刺激靶点 STN，还是刺激靶点 GPi；请模型优化刺激的参数，如电刺激强度，电刺激频率和电刺激模式等。
+
+问题五：在直接通路的神经通路中，或者间接通路的神经通路中，模型回答脑深部电刺激治疗是否存在其它最优电刺激靶点。
+
+\section{模型假设}
+
+为实现模型的建立与分析，结合实际情况，现对该问题作出如下合理假设：
+
+1) 假设以钠、钾离子通道为主，不考虑钙等其他粒子的影响；
+
+2) 假设神经元间结构分布稀松；
+
+3) 假设不同神经核团的神经元模型一致；
+
+4) 将 Striatum 神经核团假设成两个神经核团 dMSN 和 iMSN 进行考虑；
+
+\section{符号说明}
+
+注：由于使用符号众多，这里只列出重要的一些，公式中涉及的其他符号、参数等都会在公式后注明。
+
+\begin{tabular}{ccc}
+\hline 使用符号 & 说明 & 单位 \\
+\hline
+\(C\) & 神经元的膜电容 & \(\mu \mathrm{F}\) \\
+\(V(t)\) & 神经元的膜电位 & \(\mathrm{mV}\) \\
+\(m(t), h(t), n(t)\) & 细胞膜内外离子通道的电导特性 & —— \\
+\(I_{\text {external }}\) & 外界对神经元的刺激影响 & \(\mu \mathrm{A}\) \\
+\(I_{\text {synapse }}\) & 神经元之间的化学突触电流 & \(\mu \mathrm{A}\) \\
+\(I_{\text {synapse }}^{A M P A}\) & 兴奋突触电流 & \(\mu \mathrm{A}\) \\
+\(I_{\text {synapse }}^{G A B A}\) & 抑制突触电流 & \(\mu \mathrm{A}\) \\
+\(V_{p r e}\) & 突触前电压 & \(\mathrm{mV}\) \\
+\(V_{p o s t}\) & 突触后电压 & \(\mathrm{mV}\) \\
+\hline
+\end{tabular}
+
+\section{问题分析与解决思路}
+
+帕金森病的脑深部电刺激治疗共五问，通过构建神经元及其回路模型，了解神经元工作模式，并计算神经元在不同外部刺激下的工作指标。通过对比正常状态和帕金森病态下的神经元网络特征指标了解帕金森症对人体的影响。并通过所建立的基底神经节回路模型比较现有的脑深部刺激治疗效果，尝试寻找更优的刺激靶点，并调整刺激参数以达到优化 DBS 的效果。
+
+\subsection{问题一的分析}
+
+在神经元中，细胞膜两侧的离子发生流动形成了浓度差，从而导致了细胞膜内外电位差的变化，进而产生了生物电。当可兴奋的细胞受到刺激时，在静息电位的基础上会产生扩布电位变化过程，这一过程叫做动作电位。运用 Hodgkin-Huxley 模型，利用欧拉迭代法求解得到数值解，可以对神经元受到刺激后的动作电位进行仿真。仿真完成后，可进一步通过调整过刺激的类型、幅度、频率体现神经元的特征和在不同刺激下的响应，得到动作电位的相关特征指标。此外，我们阅读相关文献后对题目中 \( b_{\mathrm{n}} \) 的计算公式进行了更正，详细说明见附录。
+
+\subsection{问题二的分析}
+
+问题二是问题一的基础上，加入了突触模型，在突触连接理论的帮助下，结合动力学和生物学原理，确认不同模块神经元间耦合关系，可以构建基底神经元回路模型。通过该模型可以仿真计算各个神经核团的电位发放。
+
+\subsection{问题三的分析}
+
+问题三中，为了模拟帕金森病态下的基底神经节网络工作过程，可以通过减小对灰质的刺激以及对回路连接关系进行重新建模来完成。对正常状态和帕金森病态施加相同的刺激，仿真整个回路模型就可以得到不同状态下各个神经核团的放电位图。
+
+\subsection{问题四的分析}
+
+问题四中，可通过对 PD 状态下的基底节网络数值输入新的额外刺激模拟 DBS 过程，通过改变额外刺激输入的神经核团、幅值、频率、模式得到不同位置下的神经元电位发放响应，但由于生物电信号通过多维度反馈外界信息，我们很难通过一般特征指标完成对生物电信号的描述和横向比较，因此我们需要建立新的指标对其刺激效果进行评价，以此作为基础对比优化各项刺激参数。
+
+\subsection{问题五的分析}
+
+问题五中，基于前文的 DBS 仿真方法继续研究，对 PD 状态施加额外输入刺激并改变其施加位置后，对其放电效果和正常状态下的放电效果对比，寻找最有靶点。
+
+\section{模型的建立与求解}
+
+\subsection{问题一的模型建立与求解}
+
+基底神经节回路具有复杂的运行规律，为搭建起可靠的基底神经节回路模型，我们逐步分析其运行原理并以模型的形式加以说明。
+
+\subsubsection{神经元的基础结构}
+
+神经元（neuron）即神经细胞，是构成神经系统的结构和功能的基本单位。是神经系统最基本的结构和功能单位。神经元分为细胞体和突起两部分。细胞体由细胞核、细胞膜、细胞质组成，具有联络和整合输入信息并传出信息的作用。突起有树突和轴突两种。一个神经元可以有一个或多个树突，但轴突一般只能有一个。树突短而分枝多，直接由细胞体扩张突出，形成树枝状，其作用是接受其他神经元轴突传来的冲动并传给细胞体。轴突长而分枝少，为粗细均匀的细长突起，常起于轴丘，其作用是接受外来刺激，再由细胞体传出。轴突除分出侧枝外，其末端形成树枝样的神经末梢。末梢分布于某些组织器官内，形成各种神经末梢装置。感觉神经末梢形成各种感受器；运动神经末梢分布于骨骼肌肉，形成运动终极。神经元的模型如下图3所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{neuron_structure.png}
+    \caption{神经元结构及其组成示意图}
+    \label{fig:neuron_structure}
+\end{figure}
+
+\subsubsection{Hodgkin-Huxley 模型}
+
+神经系统中的神经元通过突触相互沟通，在静息状态下，神经细胞膜内外存在由离子浓度不同而形成的电位差，其主要调节形式是以细胞膜内外的离子通道进行作用。当神经系统受到外界刺激时，膜电位可以产生电位发放节律，发放形成的波峰包含神经系统的编码。1952 年由 Hodgkin 和 Huxley 提出了 HH 模型，该模型显示细胞膜电位的离子变化可以由 Hodgkin-Huxley 方程来描述，若想完全理解神经传导的编码，就必须研究外界刺激对细胞膜电位的影响，了解神经元之间的相互连接作用，通过细胞电位的发放模式理解确定神经系统传导的编码过程。
+
+Hodgkin-Huxley 模型电路如图 4 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{hh_model_circuit.png}
+    \caption{Hodgkin-Huxley 模型电路}
+    \label{fig:hh_model_circuit}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png} % 替换为实际的图像文件名
+    \caption{Hodgkin-Huxley 模型电路示意图}
+    \label{fig:hodgkin_huxley_circuit}
+\end{figure}
+
+在外界刺激的条件下，Hodgkin-Huxley 模型可用下面的方程来刻画：
+\begin{align}
+a_{m} &= \frac{0.1 (V + 40)}{1 - e^{-0.1 (V + 40)}}, \quad a_{h} = 0.07 e^{-0.05 (V + 65)}, \quad a_{n} = \frac{0.01 (V + 55)}{1 - e^{-0.1 (V + 55)}} \\
+b_{m} &= 4 e^{-(V + 65) / 18}, \quad b_{h} = \frac{1}{1 + e^{-0.1 (V + 35)}}, \quad b_{n} = 0.125 e^{-(V + 65) / 80}
+\end{align}
+
+在 Hodgkin-Huxley 模型中 C 表示神经元的膜电容，C=1μF。V(t)表示神经元的膜电位。m(t), h(t), n(t) 描述细胞膜内外离子通道的电导特性。
+
+\begin{equation}
+g_{N_{a}} = 120 \, \text{mS/cm}^2, \, g_{k} = 36 \, \text{mS/cm}^2, \, g_{L} = 0.3 \, \text{mS/cm}^2
+\end{equation}
+分别对应钠离子、钾离子和泄漏电流关于细胞膜的电导系数的最大值。$V_{N_{a}} = 50 \, \text{mV}, \, V_{k} = -77 \, \text{mV}, \, V_{L} = -54.5 \, \text{mV}$ 分别对应钠离子、钾离子和泄漏电流的反向电压。模型中离子通道的开关函数分别是：
+\begin{align}
+a_{m} &= \frac{0.1 (V + 40)}{1 - e^{-0.1 (V + 40)}}, \quad a_{h} = 0.07 e^{-0.05 (V + 65)}, \quad a_{n} = \frac{0.01 (V + 55)}{1 - e^{-0.1 (V + 55)}} \\
+b_{m} &= 4 e^{-(V + 65) / 18}, \quad b_{h} = \frac{1}{1 + e^{-0.1 (V + 35)}}, \quad b_{n} = 0.125 e^{-(V + 65) / 80}
+\end{align}
+
+当具有激发性质的神经细胞受到直流电流刺激时，若刺激较小，刺激很快就被淹没掉，细胞又回到原来的极化状态，不会产生动作电位；足够大的直流电流影响，神经元形成峰发放，膜电位产生周期放电现象。这些放电波峰产生的时间、速度、高度和峰间隔与外界刺激的强度有直接关系。
+
+\subsubsection{相关参数的选取}
+
+在 Hodgkin-Huxley 模型中，控制相关变量的参数设置能够代表细胞的种类和活跃度。如神经元静息电位范围是 -60mV 到 -90mV [1]。与题目中所给定的参数，如 Na、K、泄漏电流的反向电压，钠离子、钾离子和泄漏电流关于细胞膜的电导系数的最大值不同，m、h、
+
+n 以及膜间静息电压可以在合适的范围内进行选择，他们可以在一定程度上决定非线性电导电性能的时间依赖性和离子通道的当前密度 \({ }^{[2]}\) 。在此次仿真中选取静息电位 \(V(0-)\) \(=-65.0352 \mathrm{mV}\) 。
+
+\[
+\begin{cases}
+\alpha_{m}=\frac{0.1(V+40)}{1-\exp(-(V+40) / 10)} \\
+\beta_{m}=4 \exp(-(V+65) / 18) \\
+\alpha_{h}=0.07 \exp(-(V+65) / 20) \\
+\beta_{h}=\frac{1}{\exp(-(V+35) / 10)+1} \\
+\alpha_{n}=\frac{0.01(V+55)}{1-\exp(-(V+55) / 10)} \\
+\beta_{n}=0.125 \exp(-(V+65) / 80)
+\end{cases}
+\]
+
+m、h、n 初值可以由以下公式求得：
+
+\[
+\begin{cases}
+m_{\infty}(V)=\frac{\alpha_{m}}{\alpha_{m}+\beta_{m}} \\
+h_{\infty}(V)=\frac{\alpha_{h}}{\alpha_{h}+\beta_{h}} \\
+n_{\infty}(V)=\frac{\alpha_{n}}{\alpha_{n}+\beta_{n}}
+\end{cases}
+\]
+
+根据参考文献 \({ }^{[3]}\) 并结合以上公式，我们选取 \(m=0.05277533 ; h=0.5970275 ; n=0.3172745\) 作为初值条件进行仿真。
+
+考虑到单个细胞的简单情况，忽略神经元之间的耦合，假设神经元之间连接稀疏，相互联系无法同步 \({ }^{[4]}\)，在短时间内考虑单个细胞对突触做出的反应对研究神经网络也是有意义的。
+
+\subsubsection{仿真结果展示与分析（matlab 仿真结果）}
+
+（1）直流刺激后神经元的电位变化
+
+本文首先以直流电流刺激神经元细胞模型，直流刺激特征参数较少，主要考虑其幅值的影响。若刺激十分微弱，神经元细胞未能产生动作电位，刺激效果将很快淹没掉，不能形成持续性电位发放，这与实际生物体中对外界刺激的反应相类似。故起振刺激电流大小是决定细胞反应的关键因素。
+
+通过查阅相关文献 \({ }^{[5]}\)，在 \(I \approx 6.3 \mu \mathrm{A} / \mathrm{cm}^{2}\) 处会产生极限环，如图 5 所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{不同强度直流刺激下神经元电位发放的变换}
+    \label{fig:5}
+\end{figure}
+
+为了更好地体现直流刺激幅值与神经细胞特征指标间的联系，我们测绘出直流刺激和电位发放平均高度以及平均时间间隔的关系图如下图 \ref{fig:6} 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{直流刺激强度与峰发放平均高度的关系}
+    \label{fig:6}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image3.png}
+    \caption{直流刺激强度与峰发放频率的关系}
+    \label{fig:7}
+\end{figure}
+
+图 \ref{fig:6} 所示，随着刺激电流强度的增大，动作电位从无到有，并先增加后减少，我们选取外界刺激强度变化范围从 $5.8\mu\text{A}/\text{cm}^2$ 到 $6.27\mu\text{A}/\text{cm}^2$，在电流为 $7.7\mu\text{A}/\text{cm}^2$ 处达到最大值。
+
+31.33V，随后逐渐降低。图 7 中可以发现，随着刺激强度，放电频率加快，连个相邻波峰间的间距缩短，并且我们观察到，频率与刺激强度呈现正相关的趋势，1926 年，诺贝尔奖获得者 Adrian 提出第一个神经编码的假说，称为同构编码假说，即所谓的频率编码观点，认为神经脉冲发放的平均频率编码了外界环境刺激的强度 \({ }^{[6]}\) 。直流刺激下，实验数据印证了这一观点。同时我们提出，刺激强度与平均高度关系呈现倒钩型，及生物细胞存在接受最佳刺激点，这可以对电治疗的刺激强度选择提供参考，该结论对之后治疗帕金森病的电刺激参数选取提供了参考。
+
+同时，我们在模型运行中发现了如下问题有待进一步研究。当直流刺激强度不断增加，在 \(120 \mathrm{~ms}\) 附近会出现陡增的极高反向电压。不同于超极化现象，该反转电压数量级极大，直接导致细胞损毁，怀疑和细胞的凋零有关。在之后的模型建立中可以此作为限制条件或解释某些特殊现象。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image1.png}
+\caption{直流刺激下电位发放的异常}
+\end{figure}
+
+\subsubsection{交流刺激后神经元的电位变化}
+
+使用交流电流刺激对神经元反应进行测量时，由于振幅和频率两个因素的影响，其电位振荡更为复杂，波形也出现多处异常。为了更好地分析独立变量对因变量的影响，我们采取蒙特卡罗方法，分离相关变量。首先选取交流刺激 \(I_{\mathrm{ac}}=17.9 \sin (0.039 t) \mu \mathrm{A}\) 作为基准 \({ }^{[5]}\)，得到如图 9 神经元反应。其特征指标如表 1 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image2.png}
+\caption{交流刺激下神经元电位发放}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{交流刺激下神经元特征指标}
+\begin{tabular}{l c c c c c c}
+\hline
+\hline
+特征指标 & 振幅 & 最高峰 & 静息间隔 & 激活时间 & 峰峰间距 & 簇发放周期 & 占空度 \\
+\hline
+测试数据 & 79.76 & 45.87 & 109.47 & 51.61 & 14.60 & 161.08 & 0.32 \\
+\hline
+\end{tabular}
+\end{table}
+
+显然其发放峰值不稳定，但形成了规律性的周期变换，周期内出现明显的反向放电，称为超极化，显示出反转电位，波形呈现出舌型，舌部电压稳定，而正向电压出现发放簇，考虑到多参数复杂性，在时间、高度、数目等特征指标内包含神经传导的信息，可以通过电位发放峰的特征指标完成对生物信息的编码\cite{ref4}。
+
+通过相关文献\cite{ref8}，我们可以知晓刺激的幅值与频率可以影响放电峰的波形和特征指标等。现在首先研究幅值 $A$ 对发放峰的影响。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image1.png}
+\caption{不同强度交流刺激下神经元电位发放的变换}
+\end{figure}
+
+同直流研究相同，图 10 中我们首先观测到在较低的刺激幅度下神经元细胞几乎不会对外界刺激做出反应，刺激的影响超过一定程度时，神经元会出现类似基准反应的簇发放电位。为了探求起振的较精确点，我们采取二分无限逼近法，最终得到其起振电压幅值（角频率选取基准频率）在 5.2759 与 5.2760 之间，如图 11 所示。这可以帮助我们在基底回路模型中完成相关变量的限制。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image2.png}
+\caption{交流刺激起振强度}
+\end{figure}
+
+与直流刺激不同，交流刺激更重要的是研究频率变换对神经元的影响。频率影响会改簇发放的波和周期等相关参数，研究仿真结果如图 12 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{不同频率交流刺激下神经元电位发放的波形变换}
+    \label{fig:12}
+\end{figure}
+
+如图 12 所示，当频率很低时，$\omega=0.01\text{rad/ms}$ 时，簇发放同一周期内存在 12 个发放峰，随着角频率增大，发放峰不断减少，当 $\omega=0.15\text{rad/ms}$ 时，形成峰发放模式。说明交流刺激的频率变换能在不止一个维度上改变神经元的生物电效应，通过交流刺激来治疗神经疾病值得深究。
+
+同时我们发现频率过高时，生物神经元细胞将无法对外界高频刺激产生响应，刺激的频率在某一范围内，神经元才会出现类似基准反应的簇发放电位，如下图所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{不同频率交流刺激下神经元电位发放的幅值变换}
+    \label{fig:13}
+\end{figure}
+
+为了探求该限制条件的较精确值，我们同样采取二分无限逼近法，最终得到其频率上线（振幅选取基准振幅）在 $2.3257 \, \text{rad/ms}$ 附近。这也可以帮助我们在基底回路模型中完成相关变量的限制。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{交流刺激下神经元电位发放的截至角频率}
+    \label{fig:14}
+\end{figure}
+
+为了更好地反映刺激频率变换和神经元电位发放之间的关系，我们绘制二者关系如下图 15 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{膜间电压和交流刺激角频率的关系}
+    \label{fig:15}
+\end{figure}
+
+膜间电压在角频率增加后随着高峰消失，膜间电压从正向响应转换为静息电压附近的抖动，图像中呈现出断崖式下降，下降节点与之前所求的限制电位接近，仿真结果相互印证。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{电位发放频率或时间间隔和交流刺激角频率的关系}
+    \label{fig:16}
+\end{figure}
+
+同时研究中为了进一步反映刺激频率变换和神经元电位发放之间的关系，我们绘制交流刺激角频率和发放峰频率之间的关系，其结果规律十分复杂。但转换成间隔时间后，明显发现在较稳定的阶段出现激增的毛刺，认为该结果可能与谐振有关，及在刺激达到某些值时模型出现谐振峰，使某些发放峰周期性增大或减小，电位发放形成类似于簇发放的发放形式，从而改变发放类型使之形成特殊的特征指标，间隔时间用周期性变换的周期作为新指标。
+
+\subsection{仿真结果展示与分析（Neuron 仿真结果分析）}
+
+(1) Neuron 软件介绍
+
+NEURON 软件由杜克大学和耶鲁大学的研究人员合作开发，是用于为单个神经元和神经元网络建模的仿真环境。NEURON 为在神经元和神经元网络中实现电信号和化学信号的生物学模型提供了强大而灵活的环境，可以用于实验与数据密切相关的问题，尤其是那些具有复杂解剖学和生理学特性的神经元问题。它适用于模拟具有复杂几何结构和丰富离子通道的神经元和它们所组成的神经环路。该软件的特点是，在进行数值模拟时，用户只需考虑神经元的几何形状参数，生物物理参数以及神经元之间的连接关系等信息，而不需要考虑背后的数值求解方法。软件的这种特点可以使用户专注于思考关心的科学问题本身而不是其背后的数学模型和数值分析处理。故在建模过程中，我们仅以此作为验证和逻辑演算的参考工具。
+
+(2) Neuron 仿真结果
+
+我们将强度为 15A 直流刺激给到神经元细胞，经过 Neuron 软件仿真得到如下波形，神经元细胞产生峰发放，对比 matlab 建模结果，如图 17 所示，其振幅、频率、超极化程度都十分吻合。后续仍将使用 Neuron 完成简单的模型搭建以帮助核对模型的精确及稳定程度。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{HH 模型在 neuron（左）和 matlab（右）仿真软件中运行结果对比}
+    \label{fig:17}
+\end{figure}
+
+\subsection{基底神经节回路的模型建立}
+
+首先在第一问的基础上，根据问题 1 的神经元 Hodgkin-Huxley 模型，结合附件 1 中神经元之间的突触连接理论，建立基底神经节神经回路的理论模型，计算基底神经节内部神经元的电位发放（每个神经团块可以简化为 5-10 个神经元）。
+
+\subsubsection{锥体房室模型}
+
+问题一中，采用了中间神经元模型对问题进行刻画，对神经元放电的数值模拟具有丰富的结果，其基础是 Hodgkin-Huxley 的离子通道模型。而研究神经元之间的突触传递过程中时，要对神经元的具体胞体结构进行探究。在使用 Neuron 软件进行仿真过程中也发现，进行两个神经元间的神经信息传递时，需要对两个神经元的胞体和树突进行参数设置，在
+
+第二个神经元树突上设置突触类型，将第一个神经元胞体与第二个神经元突触进行连接，从而实现神经信息传递的仿真。
+
+锥体房室模型就是将空间上连续的单个神经元根据其形态特征离散成若干个房室，每个房室用一个微分方程刻画，房室之间相互连接后整体描述神经元的时空变化。理论上来说，划分的房室越多，仿真结果越精确。
+
+锥体神经元模型忽略树突房室的离子电流，仅考虑胞体房室的离子电流。第 \( i \) 个房室的膜电容用 \( C_i \) 表示，第 \( i \) 个房室的膜电压用 \( V_i \) 表示，第 \( i \) 个房室和第 \( i+1 \) 个房室之间的耦合强度用 \( k_{i,i+1} \) 表示，在胞体房室上施加的外界刺激电流用 \( I_{\text{stim}} \) 表示，胞体房室的离子电流总和用 \( I_{\text{ions}} \) 表示，包括快速钠电流、持续钠电流、A-型瞬间钾电流、滞后整顿钾电流和 M-型钾电流，泄漏电流用 \( I_L \) 表示，模型中各种离子通道的最大电导分别用 \( g_{\text{Na}} \)，\( g_{\text{Nap}} \)，\( g_{\text{DR}} \)，\( g_{\text{A}} \)，\( g_{\text{M}} \)，\( g_{\text{L}} \) 和 \( g_{\text{M}} \) 表示，钠离子、钾离子和氯离子的平衡电位分别用 \( E_{\text{Na}} \)，\( E_{\text{K}} \) 和 \( E_{\text{L}} \) 表示。本文采用 Hodgkin-Huxley 方程描述离子通道，各离子通道的门控变量分别用 \( m \)，\( h \)，\( w \)，\( n \)，\( a \)，\( b \) 和 \( u \) 表示，且满足最后一个方程，方程中 \( x \) 代表 \( m \)，\( h \)，\( w \)，\( n \)，\( a \)，\( b \) 和 \( u \)。模拟神经元放电活动常用房室模型，该模型在很多计算神经科学工作者中被广泛使用，它是将空间上连续的单个神经元根据其形态特征离散成若干个房室，每个房室用一个微分方程刻画，房室之间相互连接后整体描述神经元的时空变化。理论上讲，划分的房室越多，仿真结果越精确。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image.png} % 替换为实际图片路径
+    \caption{1, 2和4—树突房室；3—胞体房室}
+    \label{fig:18}
+\end{figure}
+
+图 18 是锥体神经元房室模型结构示意图，其数学模型用如下方程组描述：
+
+\begin{equation}
+\begin{cases}
+C_1 \frac{dV_1}{dt} = -g_1 V_1 + k_{1,2} (V_2 - V_1) \\
+C_2 \frac{dV_2}{dt} = -g_2 V_2 + k_{1,2} (V_1 - V_2) + k_{2,3} (V_3 - V_2) \\
+C_3 \frac{dV_3}{dt} = I_{\text{stim}} - I_{\text{ions}} - I_L + k_{2,3} (V_2 - V_3) + k_{3,4} (V_4 - V_3) \\
+C_4 \frac{dV_4}{dt} = -g_4 V_4 + k_{3,4} (V_3 - V_4) \\
+I_{\text{ions}} = I_{N_a} + I_{N_{\text{ap}}} + I_{DR} + I_A + I_M \\
+I_{N_a} = g_{N_a} m^3 h (V_3 - E_{N_a}) \\
+I_{N_{\text{ap}}} = g_{N_{\text{ap}}} \omega (V_3 - E_{N_a}) \\
+I_{DR} = g_{DR} n^4 (V_3 - E_k) \\
+I_A = g_A ab (V_3 - E_k) \\
+I_M = g_M u^2 (V_3 - E_k) \\
+I_L = g_L (V_3 - E_L) \\
+\frac{dx}{dt} = \frac{x_{\infty} - x}{\tau_x}
+\end{cases}
+\end{equation}
+
+\subsubsection{化学突触模型}
+
+神经元之间通过突触建立连接进行信息交互，由结构及功能区分为化学突触和电突触，化学突触在人的神经系统中大量存在且结构也比电突触复杂。对于化学突触，当突触前神经元的动作电位传递到轴突的末端（terminal）时，突触前神经元会释放神经递质（又称递质）。神经递质会和突触后神经元上的受体结合，从而引起突触后神经元膜电位的改变，这种改变称为突触后电位。根据神经递质种类的不同，突触后电位可以是兴奋性的或抑制性的。题目给出了突触传递的两种常用的突触模型，分别为兴奋性突触模型 AMPA 和抑制性突触模型 GABA，其表达式分别为:
+
+\[
+\left\{
+\begin{aligned}
+I_{\text{synapse}}^{\text{AMPA}} &= g_{\text{AMPA}} * r * \left( V_{\text{post}} - E_{\text{AMPA}} \right), \\
+\frac{dr}{dt} &= \alpha_{\text{AMPA}} * S\left( V_{\text{pre}} \right) * \left( 1 - r \right) - \beta_{\text{AMPA}} * r, \\
+S\left( V_{\text{pre}} \right) &= \frac{1}{1 + \exp \left( -\frac{V_{\text{pre}} - V_p}{k_p} \right)}
+\end{aligned}
+\right.
+\]
+\[
+\left\{
+\begin{aligned}
+I_{\text{synapse}}^{\text{GABA}} &= g_{\text{GABA}} * r * \left( V_{\text{post}} - E_{\text{GABA}} \right), \\
+\frac{dr}{dt} &= \alpha_{\text{GABA}} * S\left( V_{\text{pre}} \right) * \left( 1 - r \right) - \beta_{\text{GABA}} * r, \\
+S\left( V_{\text{pre}} \right) &= \frac{1}{1 + \exp \left( -\frac{V_{\text{pre}} - V_p}{k_p} \right)}.
+\end{aligned}
+\right.
+\]
+
+以兴奋性突触模型为例，AMPA 受体是一种离子型受体，也就是说，当它被神经递质结合后会立即打开离子通道，从而引起突触后神经元膜电位的变化。模型中 $I_{\text{synapse}}^{\text{AMPA}}$ 表示突触后电流，$g_{\text{AMPA}}$ 表示最大突触电导，$r$ 是无量纲常数，在区间 $[0, 1]$ 上取值，可以理解成突触后膜上化学门控离子通道的开放比例，如 $r = 0.5$ 时，表示突触后膜上化学门控离子通道开放了一半；$V_{\text{post}}$ 表示突触后电位；$E_{\text{AMPA}}$ 表示突触平衡电位（可以通过取值的差异来刻画不同的突触类型）；$S(V_{\text{pre}})$ 是突触前膜电位的函数。
+
+在化学突触耦合的神经元之间对刺激进行的传导过程中，以神经元 Neuron(0) 为研究对象，需要同时考虑影响其电位的所有兴奋性及抑制性突触。设共有 $n$ 个神经元对其进行信息传递，其中 Neuron(1)~Neuron(i) 上突触为兴奋性突触，Neuron(i+1)~Neuron(n) 为抑制性突触，则以整体的模型如下图所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{neuron_synapse_diagram.png}
+\caption{单个神经元受其他神经元突触影响关系示意图}
+\end{figure}
+
+\begin{equation}
+\left\{
+\begin{aligned}
+C \frac{dV}{dt} &= -g_{Na} m^3 h (V - V_{Na}) - g_K n^4 (V - V_K) - g_L (V - V_L) + I_{\text{external}} + I_{\text{synapse}} \\
+\frac{dm}{dt} &= -(a_m + b_m)m + a_m, \\
+\frac{dh}{dt} &= -(a_h + b_h)h + a_h, \\
+\frac{dn}{dt} &= -(a_n + b_n)n + a_n \\
+C \frac{dV}{dt} &= -g_{Na} m^3 h (V - V_{Na}) - g_K n^4 (V - V_K) - g_L (V - V_L) + I_{\text{external}} + I_{\text{synapse}} \\
+\frac{dm}{dt} &= -(a_m + b_m)m + a_m, \\
+\frac{dh}{dt} &= -(a_h + b_h)h + a_h, \\
+\frac{dn}{dt} &= -(a_n + b_n)n + a_n \\
+I_{\text{synapse}} &= \sum_{k=1}^{i} g_{AMPA} * r * \big(V_0 - E_{AMPA}\big) + \sum_{k=i+1}^{n} g_{GABA} * r * \big(V_0 - E_{AMPA}\big), \\
+\frac{dr}{dt} &= \sum_{k=1}^{i} \big(\alpha_{AMPA} * S\big(V_k\big) * (1 - r) - \beta_{AMPA} * r\big) + \sum_{k=i+1}^{n} \big(\alpha_{GABA} * S\big(V_k\big) * (1 - r) - \beta_{GABA} * r\big), \\
+S\big(V_k\big) &= \frac{1}{1 + \exp\Big(-\frac{V_k - V_p}{k_p}\Big)}, k = 0, 1, 2, \dots, n.
+\end{aligned}
+\right.
+\end{equation}
+
+\subsubsection{神经元及突触的耦合模型}
+
+对于两个 HH 神经元通过化学突触进行信息传递，其耦合模型的数学描述式如下方程：
+
+\begin{equation}
+\left\{
+\begin{aligned}
+C \frac{dV_1}{dt} &= -g_{Na} m_1^3 h_1 (V_1 - V_{Na}) - g_K n_1^4 (V_1 - V_K) - g_L (V_1 - V_L) + I_{\text{external,1}} + I_{\text{synapse,1}} \\
+\frac{dm_1}{dt} &= -(a_m + b_m)m_1 + a_m, \frac{dh_1}{dt} = -(a_h + b_h)h_1 + a_h, \frac{dn_1}{dt} = -(a_n + b_n)n_1 + a_n \\
+C \frac{dV_2}{dt} &= -g_{Na} m_2^3 h_2 (V_2 - V_{Na}) - g_K n_2^4 (V_2 - V_K) - g_L (V_2 - V_L) + I_{\text{external,2}} + I_{\text{synapse,2}} \\
+\frac{dm_2}{dt} &= -(a_m + b_m)m_2 + a_m, \frac{dh_2}{dt} = -(a_h + b_h)h_2 + a_h, \frac{dn_2}{dt} = -(a_n + b_n)n_2 + a_n \\
+I_{\text{synapse}} &= g_{AMPA} * r_2 * \big(V_2 - E_{AMPA}\big) \\
+\frac{dr_2}{dt} &= \alpha_{AMPA} * S\big(V_1\big) * (1 - r_2) - \beta_{AMPA} * r_2 \\
+S\big(V_1\big) &= \frac{1}{1 + \exp\Big(-\frac{V_1 - V_p}{k_p}\Big)}
+\end{aligned}
+\right.
+\end{equation}
+
+\subsubsection{基底节网络模型}
+
+经典的基底神经节神经团块结构中，神经信息的传导包括两条相互平行的信号传递通路：直接通路（Cortex→Str→GPi/SNr）和间接通路（Cortex→Str→GPe→STN→GPi/SNr），如下图所示，为了便于考虑 SNc 在核团间发生神经信息传递中的作用，对模型进行简化。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{基底神经节内部神经团连接关系示意图}
+\end{figure}
+
+黑质（SNc）会产生多巴胺对通过纹状体（Str）的 dMSN、iMSN 受体进行刺激，其作用并不是单纯的兴奋或抑制，而是一种调节作用。人处于不同的环境下，调节作用或为兴奋或为抑制。而本文对这个关系进行一定的简化，将黑质（SNc）对纹状体中 dMSN 受体的调节作用定为兴奋作用，而将黑质（SNc）对纹状体中 iMSN 受体的调节作用定为抑制作用，假设不同类型的神经核团神经核团可以视为 5-10 个神经元构成，其形成网络交互性强，造成网络同步，表征出的性态与所研究的突触连接理论冲突。
+
+当单个神经元表现出不同的本征振荡频率时，网络同步无法维持，由于神经放电的相对独立性，异步化的细胞触发会导致更多的超极化现象，其阐述的神经信号更贴近第一问中采用的 HH 模型电位发放特征指标\cite{HH_model}. 综上所述，我们更愿意以稀疏模型作为本文的研究方向。Erdos 和 Renyi 在 1960 年所研究的网络依赖性和 BarKay 等人在 1990 年与 Wang 等人在 1995 年于其他神经网络模型中发现的临界连通性我们则以突触连接理论作为阐释依据。Alejandro Pascual\cite{Pascual}通过 HH 模型研究 DSB 对 PD 病人的治疗和 Jonathan E.Rubin\cite{Rubin}利用突触连接理论模型来分析帕金森病的治疗都采取一个神经元代替整个神经核团的模式，证明该方法具有研究价值和普适意义。故假设核团间信息的传递关系为一对一。建立后的模型示意图如下：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{基底神经节内部神经核团连接关系示意图}
+    \label{fig:basal_ganglia}
+\end{figure}
+
+其简化得算法如下:
+
+1) 设置变量: 核团数目 $k$，运行时间点个数 $D$，$V(k,D)$，$I_{external}(k), m(k), h(k), n(k), r(k,D), I_{synapse}(k)$
+
+2) 设置步长变量 $dt$，并赋初值为 2;
+
+3) 判断运行时间点个数是否小于等于 $D$，如果小于等于 $D$，继续下一步，否则，结束;
+
+4) 设置变量 $i$ 表示第 $i$ 个核团，并赋初值为 1;
+
+5) 判断运行次数是否小于等于 $k$，如果小于等于 $k$，继续下一步，否则，$dt$ 加一，返回第三步;
+
+6) 计算第 $i$ 个神经核团的突触电流 $I_{external}(i)$;
+
+7) 计算第 $i$ 个神经核团的 $V(i,dt)$;
+
+8) 更新变量 $m(i), h(i), n(i)$;
+
+9) 设置变量 $ii$ 并赋初值 1;
+
+10) 判断运行次数是否小于等于 $k$，如果小于等于 $k$，继续下一步，否则，$ii$ 加一，返回第九步;
+
+11) 判断第 $i$ 个神经核团是否对第 $ii$ 个神经核团有突触刺激作用，如果有，继续下一步，否则，进行第十三步;
+
+12) 更新变量 $r(ii,dt)$;
+
+13) $i$ 加一，返回第五步。
+
+\subsection{求解与分析}
+
+\subsubsection{问题二的求解}
+
+根据 5.2.4 的基底节网络模型，在 Matlab 中利用欧拉迭代算法可以进行数值解的求解。通过给输入皮层神经核团 (Cor) $17.5\cos(0.15t)\mu A$ 的交流信号电刺激，得到基底神经节回路的八种神经核团在 Cortex 受到交流刺激后的放电情况如下图所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{交流刺激下基底神经节回路电位发放}
+\end{figure}
+
+给 Cor 神经核团输入交流刺激后，Cor、GPe 电位发放体现为为峰发放，SNc 为簇发放，dMSN、iMSN 产生非周期性的峰发放，GPi、STN、TH 并未产生电位发放。为详细介绍基底神经节内部神经元的电位发放，我们绘制下表：
+
+\begin{table}[h]
+    \centering
+    \caption{交流刺激 Cor 神经核团时回路内各神经核团电位发放特征指标}
+    \begin{tabular}{l c c c}
+        \hline
+        神经核团 & 峰峰值 & 周期 & 活跃周期 \\
+        \hline
+        Cor & 113.41 & 45.62 & — \\
+        SNc & 114.24 & 86.49 & 42.01 \\
+        GPi & 144.83 & 19.20 & — \\
+        dMSN & 116.79 & — & — \\
+        iMSN & 116.20 & — & — \\
+        \hline
+    \end{tabular}
+\end{table}
+
+其中某些特征指标不存在用“—”代替
+
+\subsection{问题三的求解}
+
+\subsubsection{目标细胞的选择}
+
+此问中我们将对比正常人员与患帕金森病人员其基底神经元回路中特征指标的区别。回路中存在多种神经元细胞，其功能各异，对帕金森病理的影响关联程度也不尽相同。为了更好反映帕金森病理逻辑，我们查阅相关文献做出以下分析。
+
+帕金森疾病的不同症状受到不同苍白球通路的调节。基底神经节广泛的调控多种行为，包括运动控制和认知功能相关的行为，并且被发现在帕金森疾病（PD）中受到破坏。然而，不同基底神经节核在环路水平上的差异仍没有被完全阐明。有研究表明苍白球退行性变与帕金森患者的姿势障碍及步态不稳密切相关，苍白球位于大脑两侧半球深部，其下行纤维通过红核、黑质、网状结构等影响脊髓下运动神经元。苍白球病变可出现肌张力增高、动作减少及静止性震颤等症状。大多数苍白球神经元表达小清蛋白（parvalbumin, PV），调节 GPe-PV 神经元能够缓解 PD 中的运动异常。
+
+来自美国加州大学的 Byungkook Lim 团队，近期发现不同的苍白球通路分别调控 PD 不同阶段的行为异常，为理解 PD 中不同行为异常相关的环路提供新的思路。外侧苍白球（GPe）是中央基底神经节核，通过强烈的抑制性输出影响多种下游脑区，异常的 GPe 神经元活性与帕金森病人和帕金森动物模型中的运动异常密切相关。
+
+内侧苍白球（GPi）可以有效改善患者的运动功能和抑郁状态。GPi 刺激能够对这些病变结构产生调控作用，从而改善患者的症状。目前研究认为帕金森病相关的抑郁与杏仁核的改变有关，杏仁核的萎缩程度与抑郁症状严重程度密切相关。帕金森病患者中脑黑质致密部和腹侧背盖区的多巴胺能神经元和中缝背核的 5-HT 能神经元变性缺失，神经通路受损，从而产生抑郁症状。GPi 在解剖学上的位置与皮质-基底节-丘脑皮层环路相关，而其中边缘环路又与认知、情感、行为调节密切相关。GPi 就是通过对这些神经通路进行有效刺激，从而达到缓解抑郁症状的目的。
+
+综上可知，苍白球能显著表征 PD 患者相关功能的完备性，同时其发放指标能很好反应底层神经节系统的生物特性与外部刺激之间的联系，故选取 GPe 和 GPi 作为观测目标细胞。
+
+\subsubsection{仿真结果展示与分析}
+
+\paragraph{整体求解}
+
+为了分析帕金森病态下，基底神经节回路电位发放指标的不同，可以通过不给 SNc 信号刺激，用以模拟黑质(SNc)没有多巴胺的条件。
+
+正常状态下神经节的仿真通过给输入皮层神经核团(Cor)和黑质(SNc)一个相同的交流信号电刺激，得到八种神经核团在 Cortex 受到该交流刺激的放电情况。帕金森病态下神经节的仿真通过只给输入皮层神经核团(Cor)一个与正常状态下相同的刺激，得到八种神经核团在 Cortex 受到该交流刺激的放电情况。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{正常状态和PD状态下电位发放示意图}
+    \label{fig:23}
+\end{figure}
+
+由图可以观察得到，有许多神经核团出现了静息现象，如纹状体的dMSN和iMSN、GPe、STN均出现了未充分放电现象。GPe的簇发放周期变短，TH的簇发放周期变长。dMSN中可以观测到，不同刺激下，PD患者放电状态出现正常和异常情况，这表明了电刺激能够完成对PD患者的治疗，且电刺激的参数改变会影响治疗效果。Cor作为输出生物信息的核心之一，这里仅用于观察回路内电位发放效果。
+
+\paragraph{指定GPi、GPe观测结果}
+
+由于在基底神经节模型中，神经元之间的刺激传递是较为复杂的，其电位发放不能简单地归结为峰发放或者簇发放。为了更加详尽的描述基底神经节回路中电位发放的特征指标，根据图中结果，将GPi神经元电位发放近似为簇发放，并读取其峰峰间距、簇发放周期及激活时间；将GPe神经元电位发放近似为峰发放，并读取其峰峰间距和周期。GPi、GPe的读数方法也可以参考应用于其他神经元核团。
+
+读取GPi、GPe的数据得到下表：
+
+\begin{table}
+\centering
+\caption{交流刺激幅值不同时、正常和PD状态下各神经核团电位发放特征指标}
+\begin{tabular}{c c c c c c}
+\hline
+ & \multicolumn{2}{c}{幅值：17.5\(\mu\)A} & \multicolumn{2}{c}{幅值：25\(\mu\)A} & \\
+ & (正常状态) & (正常状态) & (PD状态) & (PD状态) & \\
+\hline
+GPi & 峰峰间距/mV & 17.20 & 14.33 & 13.87 & 14.31 \\
+GPi & 簇发放周期/ms & 40.7 & 43.8 & 83.5 & 60.4 \\
+GPi & 激活时间/ms & 32.9 & 6.1 & — & — \\
+GPe & 峰峰间距/mV & 115.03 & 115.07 & 114.05 & 112.64 \\
+GPe & 周期/ms & 22.1 & 20.1 & 84.2 & — \\
+\hline
+\end{tabular}
+\end{table}
+
+“—”表示未读出数据
+
+据表得，在相同的电流刺激下，帕金森病态下的GPi神经元和GPe神经元的峰峰间距均低于正常状态下的峰峰间距；帕金森病态下的GPi神经元的簇发放周期大于正常状态下且GPe神经元的放电周期也长于正常状态。此外，观察正常状态下，给与不同电流的刺激幅值时数据，得出电流的幅值越大，GPi的激活时间越小。
+
+\subsection{问题四的求解}
+
+\subsubsection{靶点的选择}
+
+对于帕金森病的研究，现今最常见的手段是以高频电刺激STN，其适应证是患者对L-DOPA反应良好。研究表明通过STN-DBS高频脉冲刺激可以降低STN的过度激活，抑制从STN到其他靶点投射的谷氨酸能神经纤维的活性，从而降低兴奋性神经元的过度激活，具有神经保护、减缓PD病程进展的作用。STN-DBS能很好的控制PD症状关期的运动不能、肌肉僵直、步态不稳、姿势平衡性和肌张力障碍等均有改善。目前，多数学者赞成STN作为DBS的首选靶点。国内用DBS治疗PD主流的靶点为STN。但必须意识到，STN-DBS对认知功能并没有明显疗效，且存在一定的潜在手术风险和并发症。
+
+而刺激GPi与刺激STN相似，电刺激GPi对L-DOPA导致的运动障碍同样有效，并且患者能良好耐受，且对言语和神经、心理功能方面无明显损害。但是，GPi-DBS对于运动迟缓的改善不如刺激STN明显，且不会降低L-DOPA剂量；对认知功能和行为并发症，只有同时刺激STN和GPi才有效\cite{ref10}。总体而言，刺激STN的疗效要优于GPi，尤其在对症状控制的全面性和显著降低L-DOPA用量等方面。但是，尚缺乏长期大规模的RCT证据\cite{ref11}。
+
+\subsubsection{特征参数的选择}
+
+PD患者的病情表征可以用信号劣化的放电峰表示\cite{ref8}，有文献采取电位发放的不完全峰面积和正常峰面积的比值作为指标\cite{ref12}，称为EI，这种表征方式涵盖了包括电位发放形式、幅值、频率等生物编码信息，能在一个统一的维度上表征生物电信号的信息表达了，也可以以此观测电刺激对的治疗作用。但除却表征方式单一，计算标准模糊等缺点外，对峰
+
+\subsubsection{仿真结果展示与分析}
+
+基于问题三的求解中，分别向正常状态和帕金森病态输入为 \(17.5\cos(0.15t)\mu A\) 交流电信号刺激的情况进行后续研究。对帕金森病态的基底神经节靶点添加高频电刺激，可以模拟脑深部电刺激治疗帕金森病的基底神经节中神经元的放电状态。为了便于观察，结合 PD 病理，我们主要集中观测 GPi、GPe、STN、Cor 四种神经核团的放电情况，其中 Cor 为其输出核心，是研究的重点。为满足神经元正常工作状态，限制电压坐标轴的范围于 \([-80, 40]\) 中，方便正常状态、帕金森病态以及添加高频电刺激后的放电情况进行对比。
+
+\paragraph{确定最佳刺激靶点}
+
+对 SNc 和 Cor 神经核团均给予相同的 \(17.5 \times \cos(0.15 \times t) \mu A\) 的电流刺激，以此来模拟黑质产生多巴胺，即正常状态下的基底节网络发放图；去掉对黑质的信号刺激，同时改变基底节网络的连接方式的数学模型，用于仿真帕金森病态下的电位发放。通过对 STN 和 GPi 神经核团分别输入高频方波刺激，以模拟 STN-DBS 治疗和 STN-GPi 治疗，经过数学模型的计算，得出正常状态下和帕金森状态下，STN-DBS 和 GPi-DBS 四种发放图如下图所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{不同 DBS 与正常和 PD 状态下神经核团电位发放图}
+    \label{fig:24}
+\end{figure}
+
+刺激 \( G Pi \) 与 \( STN \) 皆可唤起 \( STN \) 的电位发放，其间接通道开启，能够对神经回路的稳定起到帮助，二者同时也可以弥补 \( Cor \) 电位发放的缺失。皮层和 \( G Pi \) 主要是信息输出的神经元。Cortes 是 \( BG \) 网络的输出核群，\( G Pi \) 是 \( BG \) 的输出核群。他们经常保持活跃，拥有丰富的信息。观察皮层的放电位图，可以发现 \( PD \) 的放电图存在信息缺失，二者刺激皆对 \( PD \) 患者有所帮助。不同的是，刺激 \( STN \)，对 \( G Pi \) 没有明显的起振效果，说明 \( STN \) 在治疗后持续性上有所缺失，但能够帮助患者短期内抑制帕金森病的部分病症；刺激 \( G Pi \) 后，其 \( G Pe \) 频率更高，可能会出现部分治疗副作用，形成新的并发症，害人体健康。故认为刺激 \( STN \) 可作为电刺激治疗的靶点。
+
+我们将 EIO 的计算方式如图所示，并将结果罗列如下表：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{EIO 计算模型示意图}
+    \label{fig:eio_model}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{刺激 \( G Pi \)、\( STN \) 靶点与患病和未患病 \( G Pe \) 电位参数对比表}
+    \label{tab:stimulation_parameters}
+    \begin{tabular}{l c c c}
+        \hline
+        神经元种类及刺激靶位 & 静息电位面积 & 发放峰面积 & EIO \\
+        \hline
+        \( G Pe(DSB-STN) \) & 2428436.52 & 244335.15 & 9.94 \\
+        \( G Pe(DBS-GPi) \) & 2343040.41 & 323651.63 & 7.24 \\
+        \( G Pe(PD) \) & 2428648.29 & 243144.25 & 11.13 \\
+        \( G Pe(Normal) \) & 1503558.94 & 104627.25 & 14.37 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+表中显示，刺激 \( G Pi \) 明显增大其 EIO 值，这是由于发放峰增加的原因，这对人体可能造成不利影响。
+
+\paragraph{优化电刺激强度}
+
+前文已经明确了刺激 \( STN \) 的效果较好，该小节对 DSB 使用的脉冲刺激的强度进行优化。控制电刺激信号的频率为 \( 150Hz \)，分别在神经核团 \( STN \) 输入幅值为 \( 17.5\mu A \)、\( 23.4\mu A \)、\( 29.5\mu A \)、\( 32.5\mu A \)、\( 38.5\mu A \)、\( 42.5\mu A \) 的方波进行刺激，得到基底神经节内部四个神经核团的电位发放情况如下图所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{电位发放情况}
+    \label{fig:potential_discharge}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{不同强度刺激下电位发放示意图}
+    \label{fig:26}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{不同幅值刺激下电位发放示意图}
+    \label{fig:27}
+\end{figure}
+
+上述图片对比发现，Cor 神经元的电位发放情况皆有较大改良，这表示脉冲电流的幅值改变在 Cor 神经元上治疗效果影响较小；但在 GPe 神经元上差别明显，发现随电压幅值增加电位发放峰呈现先疏后密的规律，通过 EIO 值能明显得到在 32.5μA 附近出现最佳治疗效果，EIO 测量值如下表所示。
+
+\begin{table}[h]
+\centering
+\caption{不同刺激电流强度下 GPe 神经元电位 EIO 对比}
+\begin{tabular}{c c c c}
+\hline
+刺激电流强度 & 静息电位面积 & 发放峰面积 & EIO \\
+\hline
+未患病者 & 104627.25 & 1503558.94 & 14.37 \\
+A=17.5 & 294608.43 & 2078290.86 & 7.05 \\
+A=23.5 & 314347.11 & 2198407.25 & 6.99 \\
+A=29.5 & 293008.4 & 2078632.55 & 7.09 \\
+A=32.5 & 258421.29 & 2379790.86 & 9.21 \\
+A=38.5 & 291826.35 & 2108177.10 & 7.22 \\
+A=42.5 & 307891.95 & 2108708.35 & 6.85 \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{优化电刺激频率}
+
+接着上述的求解，选定幅值为 32.5μA 的刺激电流。经过阅读相关文献，得出 150~180Hz 的脉冲刺激常用于在医学上对患帕金森病的患者进行 DBS 治疗，为了优化其参数，运用 150Hz 作为频率刺激神经元网络与未患病者做对比得到如下图所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{150HzDBS 下与未患病者电位发放示意图}
+\end{figure}
+
+刺激后，神经元网络明显得到改善，效果明显，但和未患病者对比，其 STN 所呈现 EIO 值明显增大，甚至改变了发放的形式，故以此作为优化方向。为探求更好的刺激频率，分别设置电流的频率为 90Hz~140Hz，每次递增 10Hz 进行仿真对比，得到的神经核团的放电电位图如下图所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{不同频率刺激下电位发放示意图}
+    \label{fig:frequency}
+\end{figure}
+
+降低刺激频率后，STN 的 EIO 有所下降，但其 GPe 出现不规则发放峰导致 EIO 增大，可能会导致后续的并发症。故频率方面，降低频率可以致使 STN 神经电位特征指标与未患病者更为接近，但可能会增加治疗风险，故仍选取 150~180Hz 作为最佳刺激频率。
+
+\paragraph{优化电刺激模式}
+
+脉冲刺激的运用在医学上较为广泛，本文尝试以一些常见的信号进行刺激尝试找到更优秀的刺激源。对直流刺激和正弦信号刺激后的神经元电位发放分别进行分析。直流信号电流幅值选取 32.5\(\mu\)A，正弦交流信号取用 150Hz，幅值为 32.5\(\mu\)A，得到的发放图如下所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{不同信号刺激电位发放示意图}
+    \label{fig:signal}
+\end{figure}
+
+据图可以得出，正弦与直流激励都无法使 GPi 起振，利用直流信号进行 STN-DBS 时，其 STN 的电位发放呈现出异常放电模式，Cor 有比较明显的改善，说明对 DBS 治疗有一定的效果；利用正弦信号进行 STN-DBS 时，STN 表现出正常放电状态，但 Cor 改善不明。
+
+\subsection{问题五的求解}
+
+(1) 仿真结果展示和分析
+
+对于问题 5，在帕金森状态的模型中，依次对直接通路和间接通路中的 Cor、dMSN、iMSN、SNc、GPi、GPe、STN、TN 神经核团进行刺激信号的输入，得到的放电图如下所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{刺激回路内不同靶点电位发放示意图}
+\end{figure}
+
+模型仿真显示，首先对于 GPi 而言，除了直接刺激 GPi 核团本身，很难造成其起振，这可能与 GPi 在回路中受到抑制为主，而 SNc 产生的多巴胺对其存在的激励作用可能是实际治疗中考虑的主要因素。对于 GPe 而言，对 dMSN、iMSN、GPi 以及 GPe 本身都会造成其电位发放紊乱。STN 的波形反馈有 dMSN、iMSN、GPe 起到一定帮助，而 GPi 和 STN 直接受到刺激时，其波形与正常人相似。最为关键的 Cor 核团上，仅 STN 和 GPi 受到刺激时能较为完整的还原正常人电位发放，其余刺激帮助较小或几乎没有帮助。依据本文模型可得，脑深部电刺激治疗的最优电刺激靶点仅在 GPi 和 STN 中选择。
+
+(2) 拓展与分析
+
+目前我们模型所研究的是基底神经元回路模型中的各个神经核团作为靶点，仅单一刺激一个神经核团，并且将其视为一个基点，不考虑神经核团本身的空间维度问题，这都可以作为该模型的拓展。现阶段主流的 GPi 刺激会结合 STN 同步刺激，达到更好的治疗效果。题目中要求对比 GPi 和 STN 的治疗效果，所以并未考虑二者的综合作用。除此之外，在早期研究中，也尝试用刺激 Vim 达到治疗 PD 的作用。
+
+\section{模型的改进与分析}
+
+\subsection{模型的优点}
+
+1) 综合考虑了基底神经节细化后各部分的组织结构功能，建立的整体模型更加精确可信；
+
+2) 对于问题一中，对直流、交流刺激的幅值、交流刺激的频率对单个神经元电位发放的影响都进行了探究，得到全面结果，解释了神经元细胞的部分行为，为问题二中的模型建立构建理论基础，并为后续的求解提供限制条件；
+
+3) 利用 Neuron 软件进行辅助仿真，结果准确性得以保证；
+
+4) 采用稀疏网络作为模型参考，保证神经元放电的相对独立性，对病理及治疗效果有更明确的展示；
+
+5) 创新性构造新的指标参数 EIO，在 EI 参数基础上进行优化，囊括了对峰发放和簇发放的指标同步表示，量化神经元发放电位的生物信息，使神经元发放电位的工作状态可以近似使用该指标进行描述；
+
+6) 本文的实验结果能够解释帕金森患病者的某些病症以及 DBS 治疗的效果，可以使用数学工具进行靶点刺激的优化分析。
+
+\subsection{模型的缺陷}
+
+1) 在实际情况下，不同神经核团的神经元细胞参数有所不同，但由于相关文献中其不同参数的取值存在争议，本文并没有加以考虑；
+
+2) 通过稀疏网络，将神经核团简化为一单一神经元进行计算，但一个神经核团包含的神经元个数较多，其相互影响可能会造成神经核团间信息传递时的电位计算产生误差，这个数值很难在微分方程中得以体现。
+
+\subsection{模型的改进}
+
+1) 可以考虑建立闭环负反馈系统，利用 Cor 放电图的某些确定的特征指标作为反馈，对刺激信号的频率/幅值进行控制，这样可以使整体模型更加智能化，使最终得到的神经元放电情况更接近于正常态；
+
+2) 对问题四中的刺激信号进行优化时，可以再次缩小合适的选择范围，寻找更加精确的刺激信号频率、幅值等。但这需要非常大的运算量，可以考虑改进算法或使用更强大的计算机。
+
+\section{七、参考文献}
+
+[1] 茅一鸣. 基于神经元峰电位的大鼠前肢运动解码[D]. 浙江大学, 2019.
+
+[2] Y. Romanyshyn, S. Yelmanov, H. Vaskiv and I. Grybyk, "Bifurcations Features of the Hodgkin-Huxley Neuron Model," 2020 IEEE 15th International Conference on Advanced Trends in Radioelectronics, Telecommunications and Computer Engineering (TCSET), 2020, pp. 886-889, doi: 10.1109/TCSET49122.2020.235564.
+
+[3] 尚蕾, 逯迈. 具有生物属性的小规模电子神经网络抗扰特性仿真研究[J]. 航天医学与医学工程, 2021, 34(02):137-145.
+
+[4] Wang X J and Buzsáki G. Gamma oscillation by synaptic inhibition in a hippocampal interneuronal network model. [J]. The Journal of neuroscience : the official journal of the Society for Neuroscience, 1996, 16(20): 6402-13.
+
+[5] 刘深泉, 关毅璋. 外界刺激与神经细胞电位发放的关系[J]. 华南理工大学学报(自然科学版), 2004(02):80-84.
+
+[6] 王海侠, 陆启韶, 郑艳红. 神经元模型的复杂动力学: 分岔与编码[J]. 动力学与控制学报, 2009, 7(04):293-296.
+
+[7] 刘利华, 刘深泉. 化学突触传递的数值模拟[J]. 北京生物医学工程, 2011, 30(02):117-119+126.
+
+[8] S.G.Lee, S.Kim Parameter dependence of stochastic resonance in the stochastic Hodgkin-Huxley neuron: Phys Rev E, 60(1999), pp. 826-830
+
+[9] Pascual A, Modolo J, Bcutcr A. Is a computational model useful to understand the effect of deep brain stimulation in parkinson's disease? [J]. Journal of Integrative Neuroscience, 2006, 5(4): 541-559
+
+[10] Rubin JE, Terman D. High frequency stimulation of the subthalamic nucleus eliminates pathological thalamic rhythmicity in a computational model [J]. Journal of Computations Neuroscience, 2004, 16:211-235
+
+[11] Komotar et al., 2010 R. Komotar, R. Starke, E. Connolly, R. Goodman Pallidal vs subthalamic deep brain stimulation for Parkinson disease Neurosurgery, 67 (4) (2010), pp. 25-27
+
+[12] 王军, 张旺明. 脑深部电刺激术治疗帕金森病患者及手术靶点的选择[J]. 中国神经精神疾病杂志, 2011, 37(06):379-382.
+
+[13] Xiaofeng XIE, Shenquan LIU, Xuemiao PAN, Lei WANG Numerical analysis of parkinson's disease in a basal ganglia network model [C]. ICCN 2011, Japan: Hokkaido (In press)
+
+[14] 汪雷. 神经元与神经元回路的模型分析[D]. 华南理工大学, 2011.
+
+[15] 张云鹏. 基于多传感闭环控制的神经调控系统研究[D]. 长春理工大学, 2019.
+
+\end{document}

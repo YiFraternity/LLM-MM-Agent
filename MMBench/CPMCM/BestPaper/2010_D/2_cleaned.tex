@@ -1,0 +1,1329 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{特殊工件磨削加工问题研究}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+本文对特殊工件的磨削加工过程进行抽象、建模和求解；根据工件母线方程设计加工方案，并对方案进行了误差分析，然后提出修整策略。
+
+磨床是通过下台、中台的平移变换和上台的旋转变换，使得工件母线始终与砂轮相切。为了便于坐标变换和建模，建立两个平面直角坐标系：底座和砂轮所在的刚性坐标系\{A\}和工件母线所在坐标系\{B\}，其中，母线方程通过横轴正方向平移$b$变换到坐标系\{B\}。在\{A\}下设定加工基准，加工基准由砂轮的初始位置和上台的初始旋转角构成。根据工件母线方程设定砂轮几何尺寸，同时发现圆柱形砂轮是轮式砂轮圆弧半径趋近无穷时的特殊情况。
+
+建立三层优化模型：第一层保证误差最小化（误差分析包括局部误差和全局误差，局部误差是运动轨迹与母线方程在坐标系\{B\}下$y$方向偏差的最大值，全局误差是偏差的均值），通过优化工件在坐标系\{B\}下的磨削步长，得出指令的脉冲序列；第二层以磨削用时最小化为目标，优化脉冲指令的发射时间；第三层以脉冲频率变化最小为目标，用三次样条插值优化脉冲分布，以使工作台稳定运行和加工表面光滑。
+
+问题1和问题2中，认为切点位于垂直于砂轮转轴的中截面上，在坐标系\{A\}下是固定点，并在建模过程中要求工件母线始终在该点与砂轮接触并相切。根据母线方程，利用坐标变换，误差分析策略等建立优化模型，确定加工基准、砂轮尺寸、脉冲数及分布，得出问题1和问题2中工件加工时耗分别为$46.75\,\text{min}$和$50.95\,\text{min}$。
+
+问题3和问题4实际上分别是对问题1和问题2策略的修整。这两个问题中的切点不断变化，以使得砂轮圆弧表面均匀磨损。问题3中的切点在坐标系\{A\}下沿$x$正向平移；问题4中的切点在坐标系\{A\}下沿砂轮圆弧旋转。模型思想分别类同问题1和问题2，得到问题3和问题4中工件加工时耗分别为$45.19\,\text{min}$和$48.08\,\text{min}$。
+
+文章最后对模型进行了评价，并针对不足的地方提出改进策略。
+\end{abstract}
+
+\textbf{关键词：} 特殊工件磨削 \quad 加工基准 \quad 坐标变换 \quad 脉冲指令工序 \quad 三层优化
+
+\tableofcontents
+
+\section{目录}
+\begin{itemize}
+    \item[] 1 问题重述 \dotfill 2
+    \item[] 2 基本假设 \dotfill 2
+    \item[] 3 符号说明 \dotfill 2
+    \item[] 4 基本理论 \dotfill 3
+    \begin{itemize}
+        \item[] 4.1 坐标变换 \dotfill 3
+        \begin{itemize}
+            \item[] 4.1.1 坐标平移变换 \dotfill 3
+            \item[] 4.1.2 坐标旋转变换 \dotfill 4
+            \item[] 4.1.3 一般变换 \dotfill 4
+        \end{itemize}
+        \item[] 4.2 曲率的概念及计算 \dotfill 5
+        \begin{itemize}
+            \item[] 4.2.1 曲率的概念 \dotfill 5
+            \item[] 4.2.2 曲率的计算公式 \dotfill 6
+        \end{itemize}
+    \end{itemize}
+    \item[] 5 问题分析 \dotfill 6
+    \begin{itemize}
+        \item[] 5.1 设定坐标系 \dotfill 6
+        \item[] 5.2 加工基准分析 \dotfill 7
+        \item[] 5.3 砂轮尺寸几何分析 \dotfill 8
+        \item[] 5.4 机理分析 \dotfill 9
+        \item[] 5.5 误差原理 \dotfill 10
+        \item[] 5.6 脉冲分布 \dotfill 11
+    \end{itemize}
+    \item[] 6 模型的建立与求解 \dotfill 11
+    \begin{itemize}
+        \item[] 6.1 问题 1 和问题 2 的模型建立与求解 \dotfill 11
+        \begin{itemize}
+            \item[] 6.1.1 问题 1 和问题 2 的模型建立 \dotfill 11
+            \item[] 6.1.2 问题 1 和问题 2 的模型求解 \dotfill 13
+        \end{itemize}
+        \item[] 6.2 问题 3 的模型建立与求解 \dotfill 16
+        \begin{itemize}
+            \item[] 6.2.1 修整策略 \dotfill 16
+            \item[] 6.2.2 问题 3 的模型建立 \dotfill 16
+            \item[] 6.2.3 问题 3 的模型求解 \dotfill 17
+        \end{itemize}
+        \item[] 6.3 问题 4 的模型建立与求解 \dotfill 19
+        \begin{itemize}
+            \item[] 6.3.1 修整策略 \dotfill 19
+            \item[] 6.3.2 问题 4 的模型建立 \dotfill 19
+            \item[] 6.3.3 问题 4 的模型求解 \dotfill 20
+        \end{itemize}
+    \end{itemize}
+    \item[] 7 模型的评价与改进 \dotfill 21
+    \begin{itemize}
+        \item[] 7.1 模型的评价 \dotfill 21
+        \item[] 7.2 模型的改进 \dotfill 22
+        \begin{itemize}
+            \item[] 7.2.1 模型 1 的改进 \dotfill 22
+            \item[] 7.2.2 模型 2 的改进 \dotfill 22
+            \item[] 7.2.3 模型 3 的改进 \dotfill 23
+            \item[] 7.2.4 模型 4 的改进 \dotfill 23
+        \end{itemize}
+    \end{itemize}
+    \item[] 8 参考文献 \dotfill 23
+    \item[] 9 附件 \dotfill 23
+\end{itemize}
+
+\section{问题重述}
+
+某科研单位和工厂研制了一种大型精密内外圆曲线磨床，用来加工具有复杂母线旋转体的特殊工件。本题的研究内容是：运用数学建模的方法，根据旋转体工件的光滑母线方程 \( y = f(x) \)，给出一个合理的加工方案，在尽可能短的时间内完成磨削，并作加工误差分析。
+
+根据上述要求，需依次研究下列 4 个问题（单位：mm）：
+
+问题 1 和问题 2 为在给定母线方程以及砂轮样式的前提下，给出加工方案，并对方案作误差分析。
+
+问题 3 和问题 4 中为了使砂轮表面的磨损尽量均匀，需要分别针对问题 1 和 2 的条件，给出新的修整策略。给出加工方案，并对方案作误差分析。
+
+\section{基本假设}
+
+1. 不考虑各组步进电机、变速器，功放伺服机构和精密丝杠——螺母副的各种误差；\\
+2. 认为控制脉冲宽度的时间尺度不大于 ms 级（\(10^{-3}\) 秒），即认为打磨是瞬间完成的；\\
+3. 三工作台的可移动范围足够大，能满足工件的加工要求；\\
+4. 工件在预加工后留给磨削的加工余量可确保一次磨削成形，砂轮尺寸可任意选择。\\
+5. 砂轮与工件开始接触磨削前，工作台应有一小段预运动，加工方案从预动后开始。\\
+6. 砂轮在预动过程中可以在底座上往复调节，即可调节到与夹具基准面刚好接触的位置。\\
+7. 砂轮的旋转轴不会碰到工件工作箱；\\
+8. 工件母线方程一阶、二阶可导；\\
+9. 对于工件，磨削过程是从左至右进行的；\\
+10. 加工基准的砂轮初始位置为初始切点位置。
+
+\section{符号说明}
+
+\begin{tabular}{|c|l|}
+\hline 符号 & 含义 \\
+\hline \(\{*\}\) & 坐标系，本题中“*”代表 \(A\)、\(B\)、\(C\) \\
+\hline \(b\) & 工件工作箱的夹具基准面到中台转轴的距离，\(b = 250 \, \text{mm}\) \\
+\hline \(R\) & 中台转轴到上工作台的控制丝杠——螺母副中心线的距离，\(R = 300 \, \text{mm}\) \\
+\hline \(\varphi\) & 砂轮直径 \\
+\hline \(a\) & 砂轮厚度 \\
+\hline \(\Delta a\) & 砂轮厚度微元 \\
+\hline \(r\) & 轮式砂轮横断面外轮廓线半径 \\
+\hline \(\alpha\) & 轮式砂轮横断面外轮廓线张角，\(\alpha \leq 180^\circ\) \\
+\hline \(\Delta \alpha\) & 轮式砂轮横断面外轮廓线张角微元 \\
+\hline \(\rho\) & 母线的曲率半径 \\
+\hline \(\phi\) & 初始切点处砂轮的法向量方向角 \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|l|}
+\hline
+$\theta_{0}$ & 步进电机的步进角度, $\theta_{0}=1^{\circ}$ \\
+\hline
+$h$ & 丝杆的螺距, $h=12mm$ \\
+\hline
+$\omega$ & 变速器的传动比, $\omega=10:1$ \\
+\hline
+$\Delta x$ & 磨床下台理论平移量 \\
+\hline
+$\Delta y$ & 磨床中台理论平移量 \\
+\hline
+$\Delta \theta$ & 磨床上台理论旋转角度 \\
+\hline
+$\Delta \theta_{0}$ & 加工基准内上台的初始旋转角 \\
+\hline
+$\Delta x^{\prime}$ & 磨床下台实际平移量 \\
+\hline
+$\Delta y^{\prime}$ & 磨床中台实际平移量 \\
+\hline
+$\Delta \theta^{\prime}$ & 磨床上台实际旋转角度 \\
+\hline
+$n_{x}$ & 磨床下台移动距离 $\Delta x$ 对应的脉冲数 \\
+\hline
+$n_{y}$ & 磨床中台移动距离 $\Delta y$ 对应的脉冲数 \\
+\hline
+$n_{\theta}$ & 磨床上台旋转角度 $\Delta \theta$ 对应的脉冲数 \\
+\hline
+\end{tabular}
+
+\section{基本理论}
+
+\subsection{坐标变换}
+
+平面中任意点 $P$ 在不同坐标系中的描述是不同的, 平面上任意一点 $P$ 相对于平面直角坐标系 $\{A\}$ 的位置, 可以用 $2 \times 1$ 列向量 ${ }^{A} \vec{p}$ (称位置矢量) 来表示
+
+\begin{align}
+\Delta \theta &= \arctan \left( -\frac{1}{f'(x_0 + \Delta x + b)} \right) - \arctan \left( -\frac{1}{f'(x_0 + b)} \right) \\
+&= \arctan \left( \frac{1}{f'(x_0 + b)} \right) - \arctan \left( \frac{1}{f'(x_0 + \Delta x + b)} \right)
+\tag{5-8}
+\end{align}
+
+其中 $p_{x}, p_{y}$ 是点 $P$ 在坐标系 $\{A\}$ 中的两个坐标分量。
+
+下面描述坐标系之间的变换关系。
+
+\subsubsection{坐标平移变换}
+
+假设坐标系 $\{B\}$ 与 $\{A\}$ 的方位相同, 但是原点不重合, 如图 4-1 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{coordinate_translation.png}
+\caption{坐标平移变换}
+\end{figure}
+
+用位置矢量 ${ }^{A} \vec{P}_{B 0}\left(p_{xB 0}, p_{yB 0}\right)$ 描述坐标系 $\{B\}$ 的原点在坐标系 $\{A\}$ 中的位置, 把 ${ }^{A} \vec{P}_{B 0}$
+
+称为坐标系 $\{B\}$ 相对于坐标系 $\{A\}$ 的平移矢量。如果点 $P$ 在坐标系 $\{B\}$ 中的位置矢量 ${ }^{B} \vec{P}\left(p_{x B}, p_{y B}\right)$，则它相对于坐标系 $\{A\}$ 的位置矢量 ${ }^{A} \vec{P}\left(p_{x A}, p_{y A}\right)$ 可由矢量叠加得出，即
+\begin{align}
+\begin{bmatrix}
+p_{x_0} \\
+p_{y_0}
+\end{bmatrix}
+&=
+\begin{bmatrix}
+\cos(\theta + \Delta \theta) & -\sin(\theta + \Delta \theta) \\
+\sin(\theta + \Delta \theta) & \cos(\theta + \Delta \theta)
+\end{bmatrix}
+\begin{bmatrix}
+x_0 + \Delta x_0 \\
+f(x_0 + \Delta x_0 + b)
+\end{bmatrix}
++
+\begin{bmatrix}
+p_{xB} + \Delta x \\
+p_{yB} + \Delta y
+\end{bmatrix} \\
+\Rightarrow \Delta x &= p_{x_0} - \cos(\theta + \Delta \theta)(x_0 + \Delta x_0) + \sin(\theta + \Delta \theta)f(x_0 + \Delta x_0 + b) - p_{xB}
+\tag{5-9} \\
+\Rightarrow \Delta y &= p_{y_0} - \sin(\theta + \Delta \theta)(x_0 + \Delta x_0) - \cos(\theta + \Delta \theta)f(x_0 + \Delta x_0 + b) - p_{yB}
+\tag{5-10}
+\end{align}
+或
+\begin{align}
+\Delta x &= p_{x_{o}} + 2r\sin\frac{\alpha}{2} - r\sin\left(\frac{1}{2} - \frac{k}{m}\right)\alpha \nonumber \\
+&\quad - \cos(\theta + \Delta\theta)(k\Delta x_{0} - b) + \sin(\theta + \Delta\theta)f(k\Delta x_{0}) - p_{xB} \tag{6-24} \\
+\Delta y &= p_{y_{o}} + 2r\cos\frac{\alpha}{2} - r\cos\left(\frac{1}{2} - \frac{k}{m}\right)\alpha \nonumber \\
+&\quad - \sin(\theta + \Delta\theta)(k\Delta x_{0} - b) - \cos(\theta + \Delta\theta)f(k\Delta x_{0}) - p_{yB} \tag{6-25}
+\end{align}
+
+\subsubsection{坐标旋转变换}
+
+假设坐标系 $\{B\}$ 与 $\{A\}$ 的坐标原点相同，但是坐标轴方位不同，如图4-2所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{image.png} % 替换为实际图像文件名
+\caption{坐标旋转变换}
+\end{figure}
+
+为了确定空间某刚体 $B$ 的方位，另设一个直角坐标系 $\{B\}$ 与此刚体固接。用坐标系 $\{B\}$ 的三个单位主矢量 $\vec{x}_{\mathrm{B}}$、$\vec{y}_{\mathrm{B}}$ 相对于坐标系 $\{A\}$ 的方向余弦组成的 $2 \times 2$ 矩阵 ${ }_{B}^{A} R$ 来表示刚体 $B$ 相对于坐标系 $\{A\}$ 的方位，${ }_{B}^{A} R$ 表达式如下：
+\begin{align}
+p_{x} &= \left[p_{x_{o}} + 2r\sin\frac{\alpha}{2} - r\sin\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{xB} - \Delta x'\right]\cos(\theta + \Delta\theta') \nonumber \\
+&\quad + \left[p_{y_{o}} + 2r\cos\frac{\alpha}{2} - r\cos\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{yB} - \Delta y'\right]\sin(\theta + \Delta\theta') \tag{6-26} \\
+p_{y} &= -\left[p_{x_{o}} + 2r\sin\frac{\alpha}{2} - r\sin\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{xB} - \Delta x'\right]\sin(\theta + \Delta\theta') \nonumber \\
+&\quad + \left[p_{y_{o}} + 2r\cos\frac{\alpha}{2} - r\cos\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{yB} - \Delta y'\right]\cos(\theta + \Delta\theta') \tag{6-27}
+\end{align}
+或
+\begin{equation}
+{ }_{B}^{A} R=\left[\begin{array}{ll}
+r_{11} & r_{12} \\
+r_{21} & r_{22}
+\end{array}\right]
+\tag{4-5}
+\end{equation}
+${ }_{B}^{A} R$ 称为旋转矩阵，上标 $A$ 代表参考坐标系 $\{A\}$，下标 $B$ 代表被描述的坐标系 $\{B\}$。
+
+坐标系 $\{A\}$ 旋转角 $\theta$ 到坐标系 $\{B\}$ 的旋转矩阵为：
+\begin{equation}
+{ }_{B}^{A} R=\left[\begin{array}{cc}
+\cos \theta & -\sin \theta \\
+\sin \theta & \cos \theta
+\end{array}\right]
+\tag{4-6}
+\end{equation}
+$\theta$ 为坐标系 $\{A\}$ 的 $x$ 轴正方向与坐标系 $\{B\}$ 的 $x$ 轴正方向之间的夹角。
+
+任意一点 $P$ 在两个不同的坐标系中 $\{A\}$、$\{B\}$ 的描述 ${ }^{A} \vec{P}$ 和 ${ }^{B} \vec{P}$，具有下面的变换关系：
+\begin{equation}
+{ }^{A} \vec{P}={ }_{B}^{A} R \cdot{ }^{B} \vec{P}
+\tag{4-7}
+\end{equation}
+或
+\begin{equation}
+\left[\begin{array}{l}
+p_{x A} \\
+p_{y A}
+\end{array}\right]=\left[\begin{array}{cc}
+\cos \theta & -\sin \theta \\
+\sin \theta & \cos \theta
+\end{array}\right]\left[\begin{array}{l}
+p_{x B} \\
+p_{y B}
+\end{array}\right]
+\tag{4-8}
+\end{equation}
+
+\subsubsection{一般变换}
+
+一般的情况是坐标系 $\{B\}$ 与 $\{A\}$ 的方位不相同，而且坐标原点的位置也不重合，如
+
+图4-3所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{坐标一般变换}
+    \label{fig:coordinate_transform}
+\end{figure}
+
+这种情况下，我们用矢量 ${}^{A}\vec{P}_{B_{0}}$ 描述坐标系 $\{B\}$ 的原点相对于 $\{A\}$ 的位置；用旋转矩阵 ${}^{A}_{B}R$ 描述 $\{B\}$ 相对于 $\{A\}$ 的方位。任意一点 $P$ 在两个不同的坐标系中 $\{A\}$、$\{B\}$ 的描述 ${}^{A}\vec{P}$ 和 ${}^{B}\vec{P}$，具有下面的变换关系：
+
+\begin{equation}
+{}^{A}\vec{P} = {}^{A}_{B}R \cdot {}^{B}\vec{P} + {}^{A}\vec{P}_{B_{0}}
+\tag{4-9}
+\end{equation}
+
+或
+\begin{equation}
+\begin{bmatrix}
+p_{xA} \\
+p_{yA}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cos\theta & -\sin\theta \\
+\sin\theta & \cos\theta
+\end{bmatrix}
+\begin{bmatrix}
+p_{xB} \\
+p_{yB}
+\end{bmatrix}
++
+\begin{bmatrix}
+p_{xB_{0}} \\
+p_{yB_{0}}
+\end{bmatrix}
+\tag{4-10}
+\end{equation}
+
+一般变换对应的逆变换为：
+
+\begin{equation}
+{}^{B}\vec{P} = \left({}^{A}_{B}R\right)^{-1} \left({}^{A}\vec{P} - {}^{B}\vec{P}_{B_{0}}\right)
+\tag{4-11}
+\end{equation}
+
+或
+\begin{equation}
+\begin{bmatrix}
+p_{xB} \\
+p_{yB}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cos\theta & -\sin\theta \\
+\sin\theta & \cos\theta
+\end{bmatrix}^{-1}
+\begin{bmatrix}
+p_{xA} - p_{xB_{0}} \\
+p_{yA} - p_{yB_{0}}
+\end{bmatrix}
+\tag{4-12}
+\end{equation}
+
+\subsection{曲率的概念及计算}
+
+曲率是刻画曲线弯曲程度的数学量，是一个局部概念。
+
+\subsubsection{曲率的概念}
+
+设曲线 $C$ 具有连续转动的切线，在 $C$ 上选定一点 $M_{0}$，作为度量弧的基点。如图 4-4。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{曲率计算示意图}
+    \label{fig:curvature_diagram}
+\end{figure}
+
+设曲线 $C$ 上的点 $M$ 对应于弧 $s$，切线的倾角为 $\alpha$，曲线上另一点 $M'$ 对应于弧 $s + \Delta s$，切线的倾角为 $\alpha + \Delta\alpha$。那么，弧段 $MM'$ 的长度为 $|s|$，当切点从 $M$ 移到点 $M'$ 时，切线
+
+转过的角度为 $|\Delta \alpha|$。比值 $\left|\frac{\Delta \alpha}{\Delta s}\right|$ 表示单位弧段上的切线转角，刻画了 $MM'$ 的平均弯曲程度。称它为弧长段 $MM'$ 的平均曲率。记作 $\overline{k}$，$\overline{k}=\left|\frac{\Delta \alpha}{\Delta s}\right|$。当 $\Delta s \to 0$ 时（即：$M \to M'$），上述平均曲率的极限就称做曲线在点 $M$ 处的曲率，记作 $k$，$k=\lim_{\Delta s \to 0}\left|\frac{\Delta \alpha}{\Delta s}\right|$，当 $\lim_{\Delta s \to 0} \frac{\Delta \alpha}{\Delta s}=\frac{d \alpha}{d s}$ 存在时，有 $k=\left|\frac{d \alpha}{d s}\right|$。
+
+\subsubsection{曲率的计算公式}
+
+设曲线的直角坐标方程为 $y=f(x)$，且 $f(x)$ 具有二阶导数。$\tan \alpha=y'(\alpha$ 是曲线的切线与 $x$ 轴正向夹角)，两边对 $x$ 求导得 $\sec^2 \alpha \cdot \frac{d \alpha}{d x}=y''$，$\frac{d \alpha}{d x}=\frac{y''}{1+\tan^2 \alpha}=\frac{y''}{1+(y')^2}$，$d \alpha=\frac{y''}{1+(y')^2} d x$，又 $d s=\sqrt{1+(y')^2} d x$，据曲率计算公式有
+
+\[
+k=\left|\frac{d \alpha}{d s}\right|=\frac{|y''|}{\left[1+(y')^2\right]^{3/2}}
+\tag{4-13}
+\]
+
+一般称 $\rho=\frac{1}{k}$ 为曲线在某一点的曲率半径。曲线上一点处的曲率半径越大，曲线在该点处的曲率越小（曲线越平坦）；曲率半径越小，曲率越大（曲线越弯曲）。
+
+\section{问题分析}
+
+本题需运用数学建模的方法，根据旋转体工件的母线方程 $y=f(x)$，给出一个合理的加工方案，在尽可能短的时间内完成磨削，并作加工误差分析。
+
+加工方案指为了完成加工任务的各个步骤（含具体内容）以及相应的数据，包括如何确定加工基准，如何选择加工次序，如何选择砂轮几何尺寸，如何确定三组控制步进电机在各时间段（自主进行时间分段）中各自应发的脉冲数和这些脉冲在该时段的分布等。
+
+误差分析主要包括实际加工曲线与理论曲线在整体与局部的误差，误差的来源分析，采用什么数学量来表示上述误差，以及所采取的措施在减少加工误差方面的实际效果等。
+
+加工方案的合理性主要指加工几何误差和加工表面光滑性要求。
+
+\subsection{设定坐标系}
+
+本题中涉及到磨床上上台的旋转，下台和中台的平移，为清晰地描述它们的运动关系，设立如下三个平面直角坐标系。如图 5-1。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{坐标系示意图}
+\label{fig:5-1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{坐标系示意图}
+    \label{fig:coordinate_system}
+\end{figure}
+
+坐标系 $\{A\}$，底座两对称轴构成的直角坐标系，原点为两坐标轴的交点。坐标系 $\{A\}$ 是刚性坐标系，砂轮位于该坐标系。
+
+坐标系 $\{B\}$，上台两对称轴构成的直角坐标系，原点为两坐标轴的交点（即中台转轴）。
+
+坐标系 $\{C\}$，以夹具基准面的垂直投影为纵坐标，上台横轴为横坐标，其交点为坐标原点。坐标系 $\{C\}$ 与坐标系 $\{B\}$ 位于同一平面内，只是做了横轴方向的平移。原始工件母线方程根据坐标系 $\{C\}$ 设定。
+
+\subsection{加工基准分析}
+
+首先对磨床上台、中台、下台的位置初始化。初始状态为三个台的对称轴在俯视条件下完全重合，此时的坐标原点为 $(0,0)$，上台的旋转角为 $0$。
+
+母线的初始方程为 $y = f(x), x \in [c, d]$，建立在坐标系 $\{C\}$ 中。根据坐标平移变换，则在坐标系 $\{B\}$ 中，母线方程就变为 $y = f(x + b), x \in [c - b, d - b]$。对于坐标系 $\{B\}$，母线是刚性物体。在坐标系 $\{B\}$ 中，工件母线始终与砂轮相切。为了满足始终相切，对坐标系 $\{B\}$ 做旋转变换和平移变换，其中，平移变换是通过下台和中台的移动实现的，旋转变换是通过上台的旋转实现的。
+
+由假设 6，设定加工基准时不需要调节下台和中台，仅仅需要调节上台使得工件母线起点 $(x = 0)$ 与砂轮相切。在坐标系 $\{B\}$ 上，母线在 $x = -b$ 处的法线为：
+
+\begin{equation}
+y - f(0) = -\frac{1}{f'(0)}(x + b)
+\tag{5-1}
+\end{equation}
+
+则上台初始的旋转角 $\Delta \theta_0$ 为
+
+\begin{equation}
+\Delta\theta_{0} = -\arctan\left(-\frac{1}{f'(0)}\right) - \phi
+\tag{5-2}
+\end{equation}
+
+其中 \(\phi\) 为初始切点处砂轮的法向量方向角。
+
+\(\Delta\theta_{0}\) 的正负表示上台的旋转方向，为负表示逆时针方向旋转，为正表示顺时针方向旋转。
+
+工件的母线起点在坐标系 \(\{B\}\) 中的坐标为 \((-b, f(0))\)，该点经过旋转变换，在坐标系 \(\{A\}\) 中的坐标 \((p_{x_{0}}, p_{y_{0}})\) 为
+
+\begin{equation}
+\begin{bmatrix}
+p_{x_{0}} \\
+p_{y_{0}}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cos\Delta\theta_{0} & -\sin\Delta\theta_{0} \\
+\sin\Delta\theta_{0} & \cos\Delta\theta_{0}
+\end{bmatrix}
+\begin{bmatrix}
+-b \\
+f(0)
+\end{bmatrix}
+=
+\begin{bmatrix}
+-b\cos\Delta\theta_{0} - f(0)\sin\Delta\theta_{0} \\
+-b\sin\Delta\theta_{0} + f(0)\cos\Delta\theta_{0}
+\end{bmatrix}
+\tag{5-3}
+\end{equation}
+
+\((p_{x_{0}}, p_{y_{0}})\) 即为砂轮在坐标系 \(\{A\}\) 中的坐标。
+
+得到加工基准：在坐标系 \(\{A\}\) 中，上台旋转的角度为 \(\Delta\theta_{0} = -\arctan\left(-\frac{1}{f'(0)}\right) - \phi\)，砂轮位置为 \((-b\cos\Delta\theta_{0} - f(0)\sin\Delta\theta_{0}, -b\sin\Delta\theta_{0} + f(0)\cos\Delta\theta_{0})\)。
+
+\subsection{砂轮尺寸几何分析}
+
+在坐标系 \(\{B\}\) 或 \(\{C\}\) 中，砂轮与工件始终相切。我们在坐标系 \(\{C\}\) 内进行分析，以确定出砂轮几何尺寸。
+
+1. 确定砂轮圆弧半径 \(r\)
+
+在坐标系 \(\{C\}\) 内，工件母线方程为 \(y = f(x)\)。根据 4.2 所述曲率半径的算法，可以求出母线的二阶导数 \(f''(x)\) 和曲率半径 \(\rho(x)\)。要确保工件与砂轮始终相切，在磨削外表面时，在 \(f''(x) \geq 0\) 的 \(x\) 区间内，曲率半径的最小值为 \(\min \rho(x)\)，此时应满足 \(r \leq \min \rho(x)\) 即可确保在打磨过程中工件与砂轮始终相切，我们取值为 \(r = \min \rho(x)\)；若 \(f''(x) \geq 0\) 的 \(x\) 区间为 \(\varnothing\)，则 \(r = +\infty\)，即为圆柱形砂轮。
+
+2. 确定砂轮的直径 \(\varphi\)
+
+要使得砂轮磨削到工件的所有部位，砂轮的半径 \(\frac{\varphi}{2}\) 必须不小于母线方程的最大值和最小值之差，即
+
+\begin{equation}
+\varphi \geq 2\left[\max f(x) - \min f(x)\right]
+\tag{5-4}
+\end{equation}
+
+根据目前市场上的砂轮规格，取直径 \(\varphi\) 的区间为 \([150\text{mm}, 300\text{mm}]\)。考虑到本文磨削的工件横坐标跨度为 \(600\text{mm}\)，则砂轮直径取值为：
+
+\begin{equation}
+\varphi = \max\left\{150, 2\left[\max f(x) - \min f(x)\right]\right\}
+\tag{5-5}
+\end{equation}
+
+3. 确定砂轮厚度 \(a\)
+
+砂轮的厚度 \(a \leq 2r\) 且为常数，当 \(r\) 比较小时，令 \(a = 2r\)；一般情况下，\(r\) 都比较大，可通过目前普遍采用的砂轮尺寸来确定。在本论文中，当 \(r \leq 10\text{mm}\)，取 \(a = 2r\)，其他情况取 \(a = 20\text{mm}\)。
+
+4. 确定砂轮圆弧张角 \(\alpha\)
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image.png}
+    \caption{砂轮张角求解示意图}
+    \label{fig:5-2}
+\end{figure}
+
+由图 \ref{fig:5-2} 的几何关系容易得到:
+\begin{equation}
+\sin \frac{\alpha}{2} = \frac{a}{2r} \Rightarrow \alpha = 2 \arcsin \frac{a}{2r}
+\tag{5-6}
+\end{equation}
+
+$a$ 一定，当 $\alpha \to 0$，砂轮的弧度越趋于平缓，到达极端情况 $\alpha = 0$ 时，轮式砂轮就变成圆柱形砂轮。所以，圆柱形砂轮是轮式砂轮的特殊情况。
+
+\subsection{机理分析}
+
+在坐标系 $\{B\}$ 中，曲线方程 $y = f(x + b)$，对 $\forall (x_0, y_0)$，当 $x_0 \to x_0 + \Delta x_0$，则有 $f(x_0) \to f(x_0 + \Delta x_0 + b)$，即 $\Delta y_0 = f(x_0 + \Delta x_0 + b) - f(x_0 + b)$。点 $(x_0, y_0)$ 处的法线方程为：
+\begin{equation}
+y - y_0 = -\frac{1}{f'(x_0 + b)}(x - x_0), \quad y_0 = f(x_0 + b)
+\tag{5-7}
+\end{equation}
+
+当磨削过程进行到点 $(x_0, y_0)$ 时，设坐标系 $\{B\}$ 转过的角度为 $\theta$，坐标的平移总量为 $p_{xB}, p_{yB}$。
+
+\subsubsection{确定脉冲数(正变换)}
+
+当 $x_0 \to x_0 + \Delta x_0$，法线转过的角度 $\Delta \theta$ 为：
+\begin{align}
+\Delta \theta &= \arctan \left( -\frac{1}{f'(x_0 + \Delta x + b)} \right) - \arctan \left( -\frac{1}{f'(x_0 + b)} \right) \\
+&= \arctan \left( \frac{1}{f'(x_0 + b)} \right) - \arctan \left( \frac{1}{f'(x_0 + \Delta x + b)} \right)
+\tag{5-8}
+\end{align}
+
+为了保证工件与砂轮始终相切，需要将坐标系 $\{B\}$ 内的点 $(x + \Delta x_0, f(x + \Delta x_0 + b))$ 变换到坐标系 $\{A\}$ 下砂轮的初始位置 $(p_{x_0}, p_{y_0})$ 处，变换方程为：
+\begin{align}
+\begin{bmatrix}
+p_{x_0} \\
+p_{y_0}
+\end{bmatrix}
+&=
+\begin{bmatrix}
+\cos(\theta + \Delta \theta) & -\sin(\theta + \Delta \theta) \\
+\sin(\theta + \Delta \theta) & \cos(\theta + \Delta \theta)
+\end{bmatrix}
+\begin{bmatrix}
+x_0 + \Delta x_0 \\
+f(x_0 + \Delta x_0 + b)
+\end{bmatrix}
++
+\begin{bmatrix}
+p_{xB} + \Delta x \\
+p_{yB} + \Delta y
+\end{bmatrix} \\
+\Rightarrow \Delta x &= p_{x_0} - \cos(\theta + \Delta \theta)(x_0 + \Delta x_0) + \sin(\theta + \Delta \theta)f(x_0 + \Delta x_0 + b) - p_{xB}
+\tag{5-9} \\
+\Rightarrow \Delta y &= p_{y_0} - \sin(\theta + \Delta \theta)(x_0 + \Delta x_0) - \cos(\theta + \Delta \theta)f(x_0 + \Delta x_0 + b) - p_{yB}
+\tag{5-10}
+\end{align}
+
+由上可知，一组 $(\Delta x, \Delta y, \Delta \theta)$ 即可表征工件在磨床的三层工作台上的运动情况。$\Delta x, \Delta y, \Delta \theta$ 有正负情况，为正表示表示工作台向坐标轴的正向移动或顺时针旋转；为负表示工作台向坐标轴的负向移动或逆时针旋转。
+
+以下分析将 \(\Delta x, \Delta y, \Delta \theta\) 转化成脉冲信号:
+
+每一个脉冲信号代表的位移 \(s_0\) 为:
+\[
+s_0 = \frac{\varphi_0 h}{360 \omega} \tag{5-11}
+\]
+其中, \(\theta_0\) 为步进电机的步进角度, \(h\) 为丝杆的螺距, \(\omega\) 为变速器的传动比。
+
+下台和中台移动 \(\Delta x\), \(\Delta y\) 对所对应的脉冲数 \(n_x\), \(n_y\) 为分别为:
+\[
+n_x = \left\lVert \frac{\Delta x}{s_0} \right\rVert = \left\lVert \frac{360 \omega \Delta x}{\theta_0 h} \right\rVert \tag{5-12}
+\]
+\[
+n_y = \left\lVert \frac{\Delta y}{s_0} \right\rVert = \left\lVert \frac{360 \omega \Delta y}{\theta_0 h} \right\rVert \tag{5-13}
+\]
+
+上台旋转 \(\Delta \theta\) 所对应的脉冲数 \(n_\theta\) 为:
+\[
+n_\theta = \left\lVert \frac{R \tan(\Delta \theta)}{s_0} \right\rVert = \left\lVert \frac{360 \omega R \tan(\Delta \theta)}{\theta_0 h} \right\rVert \tag{5-14}
+\]
+
+注: \(\left\lVert * \right\rVert\) 表示对 “*” 四舍五入取整, 脉冲的正负表示电机的转动方向。
+
+根据正变换得到工序指令 \((n_x, n_y, n_\theta)\)。
+
+\subsubsection{脉冲轨迹还原(逆变换)}
+
+因脉冲指令 \((n_x, n_y, n_\theta)\) 必须是整数, 所以该组指令不能保证将 \((x_0 + \Delta x_0, f(x_0 + \Delta x_0 + b))\) 定位到目标点 \((p_{x_0}, p_{y_0})\), 而是定位到一个很接近的点 \((p_x, p_y)\)。
+
+根据(5-12), 可得 \(x\) 方向上的实际平移量 \(\Delta x'\) 为:
+\[
+\Delta x' = n_x s_0 \tag{5-15}
+\]
+
+同理
+\[
+\Delta y' = n_y s_0 \tag{5-16}
+\]
+\[
+\Delta \theta' = \arctan \frac{n_\theta s_0}{R} \tag{5-17}
+\]
+
+根据坐标逆变换, 还原脉冲轨迹 \((p_x, p_y)\), 即
+\[
+\begin{bmatrix}
+p_{x_0} \\
+p_{y_0}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cos(\theta + \Delta \theta') & -\sin(\theta + \Delta \theta') \\
+\sin(\theta + \Delta \theta') & \cos(\theta + \Delta \theta')
+\end{bmatrix}
+\begin{bmatrix}
+p_x \\
+p_y
+\end{bmatrix}
++
+\begin{bmatrix}
+p_{xB} + \Delta x' \\
+p_{yB} + \Delta y'
+\end{bmatrix}
+\]
+\[
+\Rightarrow p_x = (p_{x_0} - p_{xB} - \Delta x') \cos(\theta + \Delta \theta') + (p_{y_0} - p_{yB} - \Delta y') \sin(\theta + \Delta \theta') \tag{5-18}
+\]
+\[
+\Rightarrow p_y = -(p_{x_0} - p_{xB} - \Delta x') \sin(\theta + \Delta \theta') + (p_{y_0} - p_{yB} - \Delta y') \cos(\theta + \Delta \theta') \tag{5-19}
+\]
+
+\subsection{误差原理}
+
+工序指令集磨削出的曲线方程为 \(y = p(x)\), 母线方程为 \(y = f(x)\), 在 \(\forall x_i\) 处的偏差为 \(|p(x_i) - f(x_i)|\), 为了便于计算, 将 \(x\) 离散成 \(M\) 个点。则局部误差为 \(|p(x_i) - f(x_i)|\), 全局误差为局部误差的均值, 即 \(\frac{\sum_{i=1}^M |p(x_i) - f(x_i)|}{M}\), 建立目标函数
+\[
+\min_{\Delta I} \left\{ 10^{-\sigma} \max_i \left\{ |p(x_i) - f(x_i)| \right\} + \frac{\sum_{i=1}^M |p(x_i) - f(x_i)|}{M} \right\} \tag{5-20}
+\]
+式中, \(\sigma\) 表示局部误差与全局误差的数量级之差, 以确保优化目标视局部误差和全局误差同等重要。通过优化 \(\Delta I\), 可得出一组误差最小的工序指令集。
+
+\section{脉冲分布}
+
+脉冲指令执行过程是一个时间序列，为了减小前后两个脉冲发射时间间隔之差，本文采用三次样条对累积时间和累积脉冲数的样本点进行插值，以求得平滑变化的相邻脉冲发射时间间隔。具体分析如下：
+
+假设通过模型计算出工序指令为：$t_{i},(1 \leq i \leq N)$,
+
+\begin{equation}
+\begin{pmatrix}
+n_{x1} & n_{y1} & n_{\theta1} & t_{1} \\
+n_{x2} & n_{y2} & n_{\theta2} & t_{2} \\
+\vdots & \vdots & \vdots & \vdots \\
+n_{xN} & n_{yN} & n_{\theta N} & t_{N}
+\end{pmatrix}
+\tag{5-21}
+\end{equation}
+
+对上式做累积计算得到
+
+\begin{equation}
+\begin{pmatrix}
+|n_{x1}| & |n_{y1}| & |n_{\theta1}| & t_{1} \\
+\sum\limits_{j=1}^{2}|n_{xj}| & \sum\limits_{j=1}^{2}|n_{yj}| & \sum\limits_{j=1}^{2}|n_{\theta j}| & \sum\limits_{j=1}^{2}t_{j} \\
+\vdots & \vdots & \vdots & \vdots \\
+\sum\limits_{j=1}^{N}|n_{xj}| & \sum\limits_{j=1}^{N}|n_{yj}| & \sum\limits_{j=1}^{N}|n_{\theta j}| & \sum\limits_{j=1}^{N}t_{j}
+\end{pmatrix}
+\tag{5-22}
+\end{equation}
+
+分别对时间序列 $\left(\sum\limits_{j=1}^{i}t_{j},\sum\limits_{j=1}^{i}|n_{xj}|\right),\left(\sum\limits_{j=1}^{i}t_{j},\sum\limits_{j=1}^{i}|n_{yj}|\right),\left(\sum\limits_{j=1}^{i}t_{j},\sum\limits_{j=1}^{i}|n_{\theta j}|\right),(1 \leq i \leq N)$ 做三次样条插值，可得到每个脉冲的发射时间间隔，即得到脉冲分布。
+
+\section{模型的建立与求解}
+
+\subsection{问题 1 和问题 2 的模型建立与求解}
+
+\subsubsection{问题 1 和问题 2 的模型建立}
+
+问题 1 和问题 2 考虑砂轮与工件切点固定不变，切点位于与砂轮转轴垂直的最大中截面上，其法线方向角为 $\frac{\pi}{2}$，可求得磨削问题 1 和问题 2 中的工件的加工基准。上台初始旋转角为：
+
+\begin{equation}
+\Delta \theta_{0} = -\arctan\left(-\frac{1}{f'(0)}\right) - \frac{\pi}{2}
+\tag{6-1}
+\end{equation}
+
+砂轮初始位置
+
+\begin{equation}
+\begin{cases}
+p_{xo} = -b\cos\Delta\theta_{0} - f(0)\sin\Delta\theta_{0} \\
+p_{yo} = -b\sin\Delta\theta_{0} + f(0)\cos\Delta\theta_{0}
+\end{cases}
+\tag{6-2}
+\end{equation}
+
+将母线以步长 $\Delta l$ 离散化，得到点对序列
+
+\[
+(-b, f(0)), (\Delta l - b, f(\Delta l)), \cdots, (i\Delta l - b, f(i\Delta l)), \cdots, (N\Delta l - b, f(N\Delta l))
+\]
+
+根据机理，一个步长 $\Delta l$ 可得到一组磨床工序指令
+
+\begin{equation}
+\begin{pmatrix}
+n_{x_1} & n_{y_1} & n_{\theta_1} \\
+n_{x_2} & n_{y_2} & n_{\theta_2} \\
+\vdots & \vdots & \vdots \\
+n_{x_N} & n_{y_N} & n_{\theta_N}
+\end{pmatrix}
+\tag{6-3}
+\end{equation}
+
+因为脉冲指令 $(n_x, n_y, n_\theta)$ 是取整之后的结果，所以按照得到的工序指令磨削工件所得的表面曲线与母线存在误差。在此，以 $\Delta I$ 为优化变量，以误差最小为目标建立优化模型。
+
+工序指令集磨削出的曲线方程为 $y = p(x)$，母线方程为 $y = f(x)$，在 $\forall x_i$ 处的偏差为 $|p(x_i) - f(x_i)|$，为了便于计算，将 $x$ 离散成 $M$ 个点。则局部误差为 $|p(x_i) - f(x_i)|$，全局误差为局部误差的均值，即 $\frac{\sum\limits_{i=1}^M |p(x_i) - f(x_i)|}{M}$，建立目标函数
+
+\begin{equation}
+\min_{\Delta I} \left\{ 10^{-\sigma} \max_i \left\{ |p(x_i) - f(x_i)| \right\} + \frac{\sum\limits_{i=1}^M |p(x_i) - f(x_i)|}{M} \right\}
+\tag{6-4}
+\end{equation}
+
+式中，$\sigma$ 表示局部误差与全局误差的数量级之差，以确保优化目标视局部误差和全局误差同等重要。通过优化 $\Delta I$，可得出一组误差最小的工序指令集。
+
+求得的指令集保证了加工误差最小，下面来分析如何节省加工时间。
+
+根据题目，控制脉冲宽度的时间尺度不大于 ms 级 ($10^{-3}$ 秒)，可以认为是瞬时发射，而不考虑其发射时间。另外，对步进电机的控制脉冲的最高工作频率不大于每秒 100 脉冲，即脉冲的发射时间不能少于 $1/100 \, \text{s}$，则有
+
+\begin{equation}
+\begin{cases}
+\Delta t_x \geq \frac{1}{100} \\
+\Delta t_y \geq \frac{1}{100} \\
+\Delta t_\theta \geq \frac{1}{100}
+\end{cases}
+\tag{6-5}
+\end{equation}
+
+工件工作箱主轴转动速度设定为每分钟 250——300 转，每转动 100 转，花费的时间是 $20 \, \text{s} \sim 24 \, \text{s}$，在这段时间内，工件与砂轮的切点在工件工作箱的旋转轴方向上的移动量不超过 $4 \, \text{mm}$，即 $x$ 方向上的脉冲数不超过 1200 个 ($4/s_0$)，即脉冲频率区间为 $[50, 60]$，本文取区间上限，即 60，则得到下台电机发射脉冲时间间隔约束为
+
+\begin{equation}
+\Delta t_x \geq \frac{1}{60}
+\tag{6-6}
+\end{equation}
+
+综合 (6-5)、(6-6)，得到
+
+\begin{equation}
+\begin{cases}
+\Delta t_x \geq \frac{1}{60} \\
+\Delta t_y \geq \frac{1}{100} \\
+\Delta t_\theta \geq \frac{1}{100}
+\end{cases}
+\tag{6-7}
+\end{equation}
+
+每条工序指令时间的执行时间 $t_i$ 为
+
+\begin{equation}
+t_{i} = \max \left\{ \Delta t_{x} n_{xi}, \Delta t_{y} n_{yi}, \Delta t_{\theta} n_{\theta i} \right\}
+\tag{6-8}
+\end{equation}
+
+以磨削工件总时间最小化为目标，建立如下模型
+
+\begin{equation}
+\min T = \sum_{i=1}^{k} t_{i}
+\tag{6-9}
+\end{equation}
+
+该模型以式(6-6)为约束。通过模型计算出工序指令的最小发射时间 \( t_{i}, (1 \leq i \leq N) \),
+
+\begin{equation}
+\begin{pmatrix}
+n_{x1} & n_{y1} & n_{\theta 1} & t_{1} \\
+n_{x2} & n_{y2} & n_{\theta 2} & t_{2} \\
+\vdots & \vdots & \vdots & \vdots \\
+n_{xN} & n_{yN} & n_{\theta N} & t_{N}
+\end{pmatrix}
+\tag{6-10}
+\end{equation}
+
+脉冲指令执行过程是一个时间序列，为了减小前后两个脉冲发射时间间隔之差，本文采用三次样条对累积时间和累积脉冲数的样本点进行插值，以求得平滑变化的相邻脉冲发射时间间隔。具体分析如下：
+
+对(6-10)做累积计算得到
+
+\begin{equation}
+\begin{pmatrix}
+|n_{x1}| & |n_{y1}| & |n_{\theta 1}| & t_{1} \\
+\sum_{j=1}^{2} |n_{xj}| & \sum_{j=1}^{2} |n_{yj}| & \sum_{j=1}^{2} |n_{\theta j}| & \sum_{j=1}^{2} t_{j} \\
+\vdots & \vdots & \vdots & \vdots \\
+\sum_{j=1}^{N} |n_{xj}| & \sum_{j=1}^{N} |n_{yj}| & \sum_{j=1}^{N} |n_{\theta j}| & \sum_{j=1}^{N} t_{j}
+\end{pmatrix}
+\tag{6-11}
+\end{equation}
+
+分别对时间序列 \(\left( \sum_{j=1}^{i} t_{j}, \sum_{j=1}^{i} |n_{xj}| \right)\), \(\left( \sum_{j=1}^{i} t_{j}, \sum_{j=1}^{i} |n_{yj}| \right)\), \(\left( \sum_{j=1}^{i} t_{j}, \sum_{j=1}^{i} |n_{\theta j}| \right)\), \((1 \leq i \leq N)\) 做三次样条插值，可得到每个脉冲的发射时间间隔，即得到脉冲分布。
+
+\subsubsection{问题 1 和问题 2 的模型求解}
+
+考虑到优化变量 \(\Delta I\) 的取值范围较小，而且式(6-3)的最优化有非常典型的非线性特征。为了求得更加精确的解。这里利用遍历算法，以 \(0.01 \, \text{mm}\) 为步长，以下界 \(0\) 上界 \(4 \, \text{mm}\) 为边界进行遍历，最终求得加工方案为：
+
+\begin{tabular}{|c|l|}
+\hline 符号 & 含义 \\
+\hline \(\{*\}\) & 坐标系，本题中“*”代表 \(A\)、\(B\)、\(C\) \\
+\hline \(b\) & 工件工作箱的夹具基准面到中台转轴的距离，\(b = 250 \, \text{mm}\) \\
+\hline \(R\) & 中台转轴到上工作台的控制丝杠——螺母副中心线的距离，\(R = 300 \, \text{mm}\) \\
+\hline \(\varphi\) & 砂轮直径 \\
+\hline \(a\) & 砂轮厚度 \\
+\hline \(\Delta a\) & 砂轮厚度微元 \\
+\hline \(r\) & 轮式砂轮横断面外轮廓线半径 \\
+\hline \(\alpha\) & 轮式砂轮横断面外轮廓线张角，\(\alpha \leq 180^\circ\) \\
+\hline \(\Delta \alpha\) & 轮式砂轮横断面外轮廓线张角微元 \\
+\hline \(\rho\) & 母线的曲率半径 \\
+\hline \(\phi\) & 初始切点处砂轮的法向量方向角 \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|l|}
+\hline
+$\theta_{0}$ & 步进电机的步进角度, $\theta_{0}=1^{\circ}$ \\
+\hline
+$h$ & 丝杆的螺距, $h=12mm$ \\
+\hline
+$\omega$ & 变速器的传动比, $\omega=10:1$ \\
+\hline
+$\Delta x$ & 磨床下台理论平移量 \\
+\hline
+$\Delta y$ & 磨床中台理论平移量 \\
+\hline
+$\Delta \theta$ & 磨床上台理论旋转角度 \\
+\hline
+$\Delta \theta_{0}$ & 加工基准内上台的初始旋转角 \\
+\hline
+$\Delta x^{\prime}$ & 磨床下台实际平移量 \\
+\hline
+$\Delta y^{\prime}$ & 磨床中台实际平移量 \\
+\hline
+$\Delta \theta^{\prime}$ & 磨床上台实际旋转角度 \\
+\hline
+$n_{x}$ & 磨床下台移动距离 $\Delta x$ 对应的脉冲数 \\
+\hline
+$n_{y}$ & 磨床中台移动距离 $\Delta y$ 对应的脉冲数 \\
+\hline
+$n_{\theta}$ & 磨床上台旋转角度 $\Delta \theta$ 对应的脉冲数 \\
+\hline
+\end{tabular}
+
+对加工方案进行误差分析，可以发现误差较小。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{trajectory_comparison.png}
+\caption{实际曲线和理论曲线整体及局部放大对比}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{error_histogram.png}
+\caption{误差分布}
+\end{figure}
+
+14
+
+\begin{table}
+\centering
+\caption{问题2的加工方案}
+\begin{tabular}{|p{5cm}|p{15cm}|}
+\hline
+加工基准 & 坐标系$\{A\}$下坐标(-223.14, 188.62)，上台转角-9.04° \\
+\hline
+砂轮的几何尺寸 & 厚度$a=20\text{mm}$，直径$\varphi=150\text{mm}$ \\
+ & 外轮廓线半径$r=718.27\text{mm}$，外轮廓线张角$\alpha=1.60^\circ$ \\
+\hline
+迭代步长 & 坐标系$\{B\}$下：$0.6\text{mm}$ \\
+\hline
+指令组数 & 1000组 \\
+\hline
+总耗时(min) & 50.94711 \\
+\hline
+误差(mm) & 平均误差$=7.1928e-4$；最大误差$=0.029$； \\
+\hline
+加工次序时间分段脉冲数 &
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+加工次序 & 下台脉冲数 & 中台脉冲数 & 上台脉冲数 & 指令持续时间(s) \\
+\hline
+1 & -149 & 40 & 53 & 2.48 \\
+\hline
+2 & -149 & 39 & 53 & 2.48 \\
+\hline
+3 & -149 & 40 & 53 & 2.48 \\
+\hline
+4 & -149 & 39 & 53 & 2.48 \\
+\hline
+$\dots$ & $\dots$ & $\dots$ & $\dots$ & $\dots$ \\
+\hline
+\end{tabular} \\
+ & 详细结果参见附件Excel：“结果.xls”中表《问题2》 \\
+\hline
+脉冲分布 &
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={脉冲数},
+    ylabel={脉冲分布图},
+    xmin=0, xmax=16,
+    ymin=0, ymax=3000,
+    xtick={0,2,4,6,8,10,12,14,16},
+    ytick={0,500,1000,1500,2000,2500,3000},
+    legend pos=outer north east,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot[
+    color=blue,
+    mark=none,
+    ]
+    coordinates {
+    (0,0) (2,500) (4,1000) (6,1500) (8,2000) (10,2500) (12,2750) (14,2900) (16,3000)
+    };
+    \addlegendentry{Nx}
+
+\addplot[
+    color=red,
+    mark=none,
+    ]
+    coordinates {
+    (0,0) (2,450) (4,900) (6,1350) (8,1800) (10,2250) (12,2500) (14,2750) (16,2900)
+    };
+    \addlegendentry{Ny}
+
+\addplot[
+    color=green,
+    mark=none,
+    ]
+    coordinates {
+    (0,0) (2,400) (4,800) (6,1200) (8,1600) (10,2000) (12,2250) (14,2500) (16,2750)
+    };
+    \addlegendentry{N0}
+
+\end{axis}
+\end{tikzpicture}
+\\
+\hline
+\end{tabular}
+\end{table}
+
+对加工方案进行误差分析，可以发现误差较小。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image1.png}
+\caption{实际曲线和理论曲线整体及局部放大对比}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{error_histogram.png}
+    \caption{误差分布}
+    \label{fig:error_distribution}
+\end{figure}
+
+\subsection{问题 3 的模型建立与求解}
+
+\subsubsection{修整策略}
+
+为了加工过程中使砂轮表面的磨损尽量均匀，应该使砂轮与工件的切点不只是固定的一个点，而是在砂轮表面移动。在坐标系 $\{A\}$ 中，当工件前进时，使用 6.1 中的模型只能求得砂轮表面相同切点下的加工方案。而为了使切点在砂轮表面的不同位置，那么工件就需要在法线方向平移。而平移的过程就是修整策略的核心。如图 \ref{fig:adjustment_strategy} 所示，利用 6.1 中的模型，工件应该移动到位置 1，切点位置为切点 1，而为了使工件和砂轮的切点移动到切点 2，那么工件在移动到这个位置的时候，还应该在切点处沿法线方向平移，实际位置为经过平移修正的位置 2。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{adjustment_strategy.png}
+    \caption{模型 1 的修整策略示意图}
+    \label{fig:adjustment_strategy}
+\end{figure}
+
+而由于在坐标系 $\{A\}$ 中，工件的修整过程沿直线运动，那么只需要下平台和中平台移动。根据修整策略，建立的模型如下。
+
+\subsubsection{问题 3 的模型建立}
+
+为了使砂轮表面磨损均匀，厚度为 $a$ 的砂轮中厚度 $\Delta a$ 截面（垂直于砂轮旋转轴）磨削工件母线的范围为 $\Delta x_{0}$。若设 $m$ 为砂轮厚度的等分数，有
+
+\begin{equation}
+m = \frac{d - c}{\Delta x_{0}} = \frac{a}{\Delta a} \Rightarrow \Delta a = \frac{a \Delta x_{0}}{d - c} = \frac{a}{m}
+\tag{6-12}
+\end{equation}
+
+加工基准：
+
+在坐标系 $\{A\}$ 下，轮式砂轮圆弧起点处法线方向角为 $\phi = \frac{\pi}{2}$，上台旋转角为：
+\begin{equation}
+\Delta \theta_{0} = -\arctan \left(-\frac{1}{f'(0)}\right) - \frac{\pi}{2}
+\tag{6-13}
+\end{equation}
+根据式 (5-3)，可求得砂轮的初始位置 $(p_{x_{0}}, p_{y_{0}})$，运行到第 $k$ 个指令集 ($0 \leq k \leq m$) 的切点为 $(p_{x_{0}} + k\Delta a, p_{y_{0}})$。
+
+根据式 (5-5)，求得 $\Delta \theta$，执行第 $k$ 个指令集的变换方程为
+\begin{equation}
+\begin{bmatrix}
+p_{x_{0}} + k\Delta a \\
+p_{y_{0}}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cos(\theta + \Delta \theta) & -\sin(\theta + \Delta \theta) \\
+\sin(\theta + \Delta \theta) & \cos(\theta + \Delta \theta)
+\end{bmatrix}
+\begin{bmatrix}
+k\Delta x_{0} - b \\
+f(k\Delta x_{0})
+\end{bmatrix}
++
+\begin{bmatrix}
+p_{xB} + \Delta x \\
+p_{yB} + \Delta y
+\end{bmatrix}
+\end{equation}
+\begin{equation}
+\Rightarrow \Delta x = p_{x_{0}} + k\Delta a - \cos(\theta + \Delta \theta)(k\Delta x_{0} - b) + \sin(\theta + \Delta \theta)f(k\Delta x_{0}) - p_{xB}
+\tag{6-14}
+\end{equation}
+\begin{equation}
+\Rightarrow \Delta y = p_{y_{0}} - \sin(\theta + \Delta \theta)(k\Delta x_{0} - b) - \cos(\theta + \Delta \theta)f(k\Delta x_{0}) - p_{yB}
+\tag{6-15}
+\end{equation}
+根据式 (5-12)、(5-13)、(5-14) 可求得 $\left(n_{x}, n_{y}, n_{\theta}\right)$，根据式 (5-15)、(5-16)、(5-17) 可求得 $\Delta x', \Delta y', \Delta \theta'$，逆变换为：
+\begin{equation}
+\Rightarrow p_{x} = (p_{x_{0}} + k\Delta a - p_{xB} - \Delta x')\cos(\theta + \Delta \theta') + (p_{y_{0}} - p_{yB} - \Delta y')\sin(\theta + \Delta \theta')
+\tag{6-16}
+\end{equation}
+\begin{equation}
+\Rightarrow p_{y} = -(p_{x_{0}} + k\Delta a - p_{xB} - \Delta x')\sin(\theta + \Delta \theta') + (p_{y_{0}} - p_{yB} - \Delta y')\cos(\theta + \Delta \theta')
+\tag{6-17}
+\end{equation}
+其余同问题 1 的模型。
+
+\subsubsection{问题 3 的模型求解}
+
+利用 6.1.2 中所述的遍历算法，可以求得加工方案为：
+
+\begin{table}[h]
+\centering
+\caption{问题 3 的加工方案}
+\begin{tabular}{|l|l|}
+\hline
+加工基准 & 坐标系 $\{A\}$ 下坐标 (-247.80, 134.15)，上台转角 -0.94° \\
+\hline
+砂轮的几何尺寸 & 厚度 $a = 20 \, \text{mm}$，直径 $\varphi = 150 \, \text{mm}$ \\
+\hline
+迭代步长 & 坐标系 $\{B\}$ 下：1.72 mm \\
+\hline
+指令组数 & 349 组 \\
+\hline
+总耗时 (min) & 45.1897 \\
+\hline
+误差 (mm) & 平均误差 = 7.4151e-4；最大误差 = 0.025； \\
+\hline
+\multirow{8}{*}{加工次序时间分段脉冲数} &
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+加工次序 & 下台脉冲数 & 中台脉冲数 & 上台脉冲数 & 指令持续时间 (s) \\
+\hline
+1 & -551 & -95 & -117 & 9.18 \\
+\hline
+2 & -551 & -94 & -117 & 9.18 \\
+\hline
+3 & -552 & -91 & -117 & 9.20 \\
+\hline
+4 & -552 & -90 & -117 & 9.20 \\
+\hline
+$\dots$ & $\dots$ & $\dots$ & $\dots$ & $\dots$ \\
+\hline
+\end{tabular} \\
+\hline
+\multicolumn{2}{|l|}{详细结果参见附件 Excel：“结果.xls” 中表《问题 3》} \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{脉冲分布图}
+    \label{fig:pulse_distribution}
+\end{figure}
+
+对加工方案进行误差分析，可以发现误差较小。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{实际曲线和理论曲线整体及局部放大对比}
+    \label{fig:curve_comparison}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{误差分布}
+    \label{fig:error_distribution}
+\end{figure}
+
+\subsection{问题 4 的模型建立与求解}
+
+\subsubsection{修整策略}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{模型 2 的修整策略示意图}
+    \label{fig:6-8}
+\end{figure}
+
+此问题的修改策略和 6.2.1 中的修整策略类似，不同的地方在于，砂轮采用了轮式。砂轮与工件的切点围绕砂轮圆弧方程变化，切点处的法向量不断旋转变化（如图 \ref{fig:6-8} 所示），建立了的模型如下。
+
+\subsubsection{问题 4 的模型建立}
+
+在坐标系 $\{A\}$ 下，轮式砂轮圆弧起点处法线方向角 $\phi = \frac{\pi}{2} - \frac{\alpha}{2}$，上台旋转角为：
+\begin{equation}
+\Delta \theta_0 = -\arctan\left(-\frac{1}{f'(0)}\right) - \left(\frac{\pi}{2} - \frac{\alpha}{2}\right)
+\tag{6-18}
+\end{equation}
+
+根据 (5-3)，求得砂轮的初始位置
+\begin{equation}
+\{p_{x_0}, p_{y_0}\} = \left(-b\cos\Delta\theta_0 - f(0)\sin\Delta\theta_0, -b\sin\Delta\theta_0 + f(0)\cos\Delta\theta_0\right)
+\tag{6-19}
+\end{equation}
+
+在坐标系 $\{A\}$ 下，砂轮圆弧的方程为：
+\begin{equation}
+\left[x - \left(r\sin\frac{\alpha}{2} + p_{x_0}\right)\right]^2 + \left[y - \left(r\cos\frac{\alpha}{2} + p_{y_0}\right)\right]^2 = r^2
+\tag{6-20}
+\end{equation}
+
+将角度 $m$ 等分，有
+\begin{equation}
+m = \frac{d - c}{\Delta x_0} = \frac{\alpha}{\Delta \alpha} \Rightarrow \Delta \alpha = \frac{\alpha \Delta x_0}{d - c} = \frac{\alpha}{m}
+\tag{6-21}
+\end{equation}
+
+第 $k$ 次 ($0 \leq k \leq m$) 的切点为：
+\begin{equation}
+\left(p_{x_0} + 2r\sin\frac{\alpha}{2} - r\sin\left(\frac{1}{2} - \frac{k}{m}\right)\alpha, p_{y_0} + 2r\cos\frac{\alpha}{2} - r\cos\left(\frac{1}{2} - \frac{k}{m}\right)\alpha\right)
+\tag{6-22}
+\end{equation}
+
+坐标系 $\{B\}$ 的旋转角为：
+\begin{equation}
+\Delta \theta = \arctan\left(\frac{1}{f'((k-1)\Delta x)}\right) - \arctan\left(\frac{1}{f'(k\Delta x)}\right) + \Delta \alpha
+\tag{6-23}
+\end{equation}
+
+根据坐标变换有
+
+\begin{align}
+\Delta x &= p_{x_{o}} + 2r\sin\frac{\alpha}{2} - r\sin\left(\frac{1}{2} - \frac{k}{m}\right)\alpha \nonumber \\
+&\quad - \cos(\theta + \Delta\theta)(k\Delta x_{0} - b) + \sin(\theta + \Delta\theta)f(k\Delta x_{0}) - p_{xB} \tag{6-24} \\
+\Delta y &= p_{y_{o}} + 2r\cos\frac{\alpha}{2} - r\cos\left(\frac{1}{2} - \frac{k}{m}\right)\alpha \nonumber \\
+&\quad - \sin(\theta + \Delta\theta)(k\Delta x_{0} - b) - \cos(\theta + \Delta\theta)f(k\Delta x_{0}) - p_{yB} \tag{6-25}
+\end{align}
+
+根据式(5-12)、(5-13)、(5-14)可求得 $\left(n_{x}, n_{y}, n_{\theta}\right)$，根据式(5-15)、(5-16)、(5-17)可求得 $\Delta x', \Delta y', \Delta\theta'$，逆变换为：
+
+\begin{align}
+p_{x} &= \left[p_{x_{o}} + 2r\sin\frac{\alpha}{2} - r\sin\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{xB} - \Delta x'\right]\cos(\theta + \Delta\theta') \nonumber \\
+&\quad + \left[p_{y_{o}} + 2r\cos\frac{\alpha}{2} - r\cos\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{yB} - \Delta y'\right]\sin(\theta + \Delta\theta') \tag{6-26} \\
+p_{y} &= -\left[p_{x_{o}} + 2r\sin\frac{\alpha}{2} - r\sin\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{xB} - \Delta x'\right]\sin(\theta + \Delta\theta') \nonumber \\
+&\quad + \left[p_{y_{o}} + 2r\cos\frac{\alpha}{2} - r\cos\left(\frac{1}{2} - \frac{k}{m}\right)\alpha - p_{yB} - \Delta y'\right]\cos(\theta + \Delta\theta') \tag{6-27}
+\end{align}
+
+\subsubsection{问题 4 的模型求解}
+
+利用 6.1.2 中所述的遍历算法，可以求得加工方案为：
+
+\begin{table}[h]
+\centering
+\caption{问题 4 的加工方案}
+\begin{tabular}{|p{5cm}|p{15cm}|}
+\hline
+加工基准 & 坐标系 $\{A\}$ 下坐标 $(-225.74, 185.49)$，上台转角 $-8.24^\circ$ \\
+\hline
+砂轮的几何尺寸 & 厚度 $a = 20\,\text{mm}$，直径 $\varphi = 150\,\text{mm}$ \\
+& 外轮廓线半径 $r = 718.27\,\text{mm}$，外轮廓线张角 $\alpha = 1.60^\circ$ \\
+\hline
+迭代步长 & 坐标系 $\{B\}$ 下：$0.68\,\text{mm}$ \\
+\hline
+指令组数 & 883 组 \\
+\hline
+总耗时 (min) & 48.08 \\
+\hline
+误差 (mm) & 平均误差 $= 7.2679 \times 10^{-4}$；最大误差 $= 0.028$ \\
+\hline
+\multirow{10}{*}{加工次序时间分段脉冲数} & \begin{tabular}{|c|c|c|c|c|}
+\hline
+加工次序 & 下台脉冲数 & 中台脉冲数 & 上台脉冲数 & 指令持续时间 (s) \\
+\hline
+1 & -311 & -137 & -179 & 5.18 \\
+\hline
+2 & -311 & -136 & -179 & 5.18 \\
+\hline
+3 & -311 & -134 & -180 & 5.18 \\
+\hline
+4 & -312 & -133 & -180 & 5.20 \\
+\hline
+$\dots$ & $\dots$ & $\dots$ & $\dots$ & $\dots$ \\
+\hline
+\multicolumn{5}{|c|}{详细结果参见附件 Excel：“结果.xls” 中表《问题 4》} \\
+\hline
+\end{tabular} \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{脉冲分布图}
+    \label{fig:pulse_distribution}
+\end{figure}
+
+对加工方案进行误差分析，可以发现误差较小。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{实际曲线和理论曲线整体及局部放大对比}
+    \label{fig:curve_comparison}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{误差分布}
+    \label{fig:error_distribution}
+\end{figure}
+
+\section{模型的评价与改进}
+
+\subsection{模型的评价}
+
+本文先后进行了问题分析，模型建立，数据处理，基于最小误差的遍历求解，加工方案的确定，误差分析等工作。对模型中几个关键问题进行分析，包括坐标系的设定、加工基准的确定、砂轮几何尺寸对问题的影响、机理分析、误差分析以及如何确定脉冲分布。
+
+问题1和问题2转化为以全局误差和局部误差为目标的最优化问题，并且根据问题
+
+的特性提出了较为快捷的遍历算法，并且用 matlab 求解得到合理的加工方案。
+
+问题 3 提出了一种能使圆柱型砂轮表面的磨损尽量均匀的修整策略，可利用下台和中台的移动实现。而问题 4 则提出了一种基于轮式砂轮的修整策略，可利用下中上台的移动实现，并且用 matlab 求解得到合理的加工方案。
+
+总体来说，本文较好的解决了题目中提出的 4 个问题，但还存在一些不足需要改进，改进方案如下。
+
+\subsection{模型的改进}
+
+\subsubsection{模型 1 的改进}
+
+改进 1：在模型 1 中考虑的磨削轨迹为连接控制点的折线 $p_1(x)$，而实际轨迹是经过控制点的切线所连成的折线 $p_2(x)$，应用 $p_2(x)$ 替代 $p_1(x)$。如图 7-1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{模型 1 的改进 1 示意图}
+    \label{fig:7-1}
+\end{figure}
+
+改进 2：模型建立中是以 $|p(x) - f(x)|$ 的均值为全局误差，可以采用 $p(x)$ 和 $f(x)$ 围成的面积 $\int |p(x) - f(x)| dx$ 来度量全局误差。如图 7-2 所示。
+
+结合改进 1 和改进 2，步长 $\Delta l$ 优化模型（或误差优化模型）改进为：
+\begin{equation}
+\min_{\Delta l} \left\{ 10^{-\sigma} \max_i \left\{ \left| p(x_i) - f(x_i) \right| \right\} + \int \left| p_2(x) - f(x) \right| dx \right\}
+\tag{7-1}
+\end{equation}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{模型 1 的改进 2 示意图}
+    \label{fig:7-2}
+\end{figure}
+
+\subsubsection{模型 2 的改进}
+
+在模型 2 中考虑的磨削轨迹为连接控制点的折线 $p_1(x)$，而实际轨迹是与控制点相切的圆弧围成的曲线 $p_3(x)$。全局误差和步长 $\Delta l$ 优化模型也可做相应的改进，如图 7-3。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{模型 2 的改进示意图}
+    \label{fig:7-3}
+\end{figure}
+
+\subsubsection{模型 3 的改进}
+
+考虑模型 3 时，用相等比例的 $\Delta a$ 磨削相等比例的母线横坐标的变化量 $\Delta x_{0}$ 来起到砂轮磨损均匀效果。这种方法有不妥之处，可改进为相等比例的 $\Delta a$ 磨削相等比例的母线变化量 $\Delta e$，即
+
+\begin{equation}
+\frac{\Delta e}{e} = \frac{\Delta a}{a}
+\tag{7-2}
+\end{equation}
+
+其中，$e = \int \sqrt{1 + [f'(x)]^2} dx$ 是母线长度。通过母线长度积分反解出移动 $\Delta e$ 对应的母线横轴的移动量 $\Delta x_{0}$，进而通过机理得出工序指令。
+
+\subsubsection{模型 4 的改进}
+
+可做同模型 3 类似的改进，如下
+
+\begin{equation}
+\frac{\Delta e}{e} = \frac{\Delta \alpha}{\alpha}
+\tag{7-3}
+\end{equation}
+
+其余同模型 3 的改进。
+
+\section{参考文献}
+
+[1]. 王晓东 编著，算法设计与分析 [M]，北京：清华大学出版社，2003 年 8 月：266
+
+[2]. 林锉云，董加礼 编著，多目标优化的方法与理论 [M]，吉林：吉林教育出版社，1992.8
+
+[3]. 求是科技，Matlab7.0 从入门到精通人民邮电出版社，2006
+
+[4]. 刑文训，谢金星，现代优化计算方法，清华大学出版社，2005
+
+[5]. 黄宣国，空间解析几何与微分几何，复旦大学出版社，2003
+
+[6]. 张艳军，周瑾，梁敏，2007 年全国研究生数学建模大赛：机械臂运动路径设计问题，武汉大学
+
+\section{附件}
+
+附件 1：结果（excel）
+
+附件 2：程序源代码
+
+\end{document}
+
+% Missing placeholders restored
+\includegraphics[width=0.5\textwidth]{image.png}

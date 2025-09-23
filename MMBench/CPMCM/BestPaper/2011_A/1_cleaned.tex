@@ -1,0 +1,839 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{基于光子结构猜想的波动性现象建模仿真研究}
+\author{}
+\date{}
+
+\begin{document}
+
+\begin{center}
+\textbf{全国第八届研究生数学建模竞赛}
+\end{center}
+
+\maketitle
+
+\begin{abstract}
+本文结合龚祖同院士的光子类氢原子结构论和北大俎栋林教授的光子电磁场结构，提出了两种猜想相统一的理论假设。
+
+基于理论假设详细回答了对光波内在性质解释最基本的三个问题，并对光子运动方向发生改变的过程以及光子运动到光屏上的光强分布等作出了详细的定性分析。
+
+根据定性分析的结论对单缝衍射、双缝干涉以及多缝干涉中光强与光子尺度、细缝宽度等参数的关系建立了定量数学建模，通过与经典波动光学中光强分布公式的对比，验证了模型的合理性。
+
+最后提出了细缝吸引光子模型，同时基于本文理论假设验证了偏阵光学中马吕斯定律的正确性。
+
+关键词：光子结构；统一理论；光强分布；建模仿真
+\end{abstract}
+
+\section*{目录}
+\begin{itemize}
+    \item 一、问题重述 \dotfill 3
+    \item 二、问题分析及解题思路 \dotfill 3
+    \item 三、定性分析 \dotfill 4
+        \begin{itemize}
+            \item 3.1 问题1的定性分析 \dotfill 4
+            \item 3.2 问题2的定性分析 \dotfill 5
+            \item 3.3 问题3的定性分析 \dotfill 6
+        \end{itemize}
+    \item 四、建立模型 \dotfill 6
+        \begin{itemize}
+            \item 4.1 单缝衍射过程建模 \dotfill 6
+            \item 4.2 双缝干涉过程建模 \dotfill 13
+            \item 4.3 多缝干涉过程建模 \dotfill 15
+        \end{itemize}
+    \item 五、仿真实验 \dotfill 16
+        \begin{itemize}
+            \item 5.1 单缝衍射中光强分布仿真实验 \dotfill 16
+            \item 5.2 双缝干涉中光强分布仿真实验 \dotfill 19
+            \item 5.3 多缝干涉中光强分布仿真实验 \dotfill 22
+        \end{itemize}
+    \item 六、讨论与猜想 \dotfill 24
+        \begin{itemize}
+            \item 6.1 细缝对光子吸引模型 \dotfill 25
+            \item 6.2 对马吕斯定律的验证 \dotfill 26
+        \end{itemize}
+    \item 参考文献 \dotfill 26
+\end{itemize}
+
+\section{一、问题重述}
+
+光既可以是粒子，又同时是波，但究竟以粒子还是波的形式出现，只决定于实验。仔细分析可以发现，对光波的内在性质的解释需要解决三个问题：
+\begin{itemize}
+    \item 问题 1：光通常是按直线前进的，为什么光经过细缝后前进方向会发生改变？为什么必须是光通过很窄的细缝才会使前进方向发生改变？
+    \item 问题 2：若干个光子同时作用的最终效果如何确定？是否仅取决于光子的个数？
+    \item 问题 3：光通过偏振片的真实过程是什么？
+\end{itemize}
+
+龚祖同院士猜想，光子构造可能是负电荷在一个球形的轨道上围绕正电荷旋转。因此光线通过一个小孔或一条细缝时，如果其中一个电荷与小孔或狭缝边沿发生碰撞，光子的运动方向就会改变，由此产生衍射。最近，北京大学又有学者提出光子是一个按光速直线前进的电磁场的猜想，单个光子只有左旋光子、右旋光子两种。由于从两条细缝到达屏幕上同一点的距离不同，由此产生双缝干涉。由于正常光线中包含各种相位的光子对，在同时与偏振镜片碰撞时，这时各种相位的光子对会重新组合，由此大约 $50\%$ 的光线可以通过偏振镜片。
+
+上述关于光子波粒二象性的猜想在一定程度上能够自圆其说，但应该经过定量计算的检验。题目的任务是建立仿真这些猜想的数学模型，例如：单缝衍射中衍射缝的尺寸以及光子模型中的尺度、频率等参数对衍射屏上光强的空间分布形式的影响；双缝干涉试验中两条缝之间的距离、缝的宽度与干涉光图样的光强空间分布形式的关系等，并将模型得到的结果与诺贝尔物理奖获得者玻恩的光学经典名著《光学原理》中的光的衍射、双缝干涉、多缝干涉的强度近似公式进行比较。也完全可以提出改进，而且也可以提出自己的猜想，设法做出尽可能多的数学仿真。
+
+\section{二、问题分析及解题思路}
+
+光的波粒二象性已经困惑了人们一百年的历史，这一问题能否解决关乎未来物理界的发展方向。许多科学家致力于这方面的研究，如问题重述部分提到的龚祖同院士以及北京大学俎栋林教授的不同猜想。
+
+基于对上述两种猜想的分析与综合，本文认为：光子的类氢原子结构与它是一个按光速直线前进的电磁场的结构是可以统一的，即：光子的结构是以 $\varepsilon^{+}$ 为阳核以 $\varepsilon^{-}$ 为阴卫的类氢结构，而阴卫 $\varepsilon^{-}$ 的旋转方向可以决定光子是左旋光子或右旋光子，因而它带有互相垂直的电场和磁场，并且都与运动方向垂直。这是文章的理论基础。
+
+因此，在分析光子本身结构时采取以 $\varepsilon^{+}$ 为阳核以 $\varepsilon^{-}$ 为阴卫的类氢结构，在计算多个光子共同作用产生的场强时采用电场矢量叠加的方法。利用这样的模型，从光的粒子性出发，可以定性分析出关乎波的内在性质的三个问题；建立模型可以仿真出单缝衍射、双缝干涉以及多缝干涉三个物理过程中光强分布与
+
+缝宽、光子半径等参数的定量关系；最后基于上述两种猜想的启发可以提出自己的讨论与猜想。
+
+本文解决问题的思路如图 2.1 所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{解决问题的思路}
+\label{fig:2.1}
+\end{figure}
+
+\section{三、定性分析}
+
+在经典的波动光学理论中分析光的衍射、干涉现象时，一般都把光看作电磁波。因满足一定的波动性质，当波阵面通过小孔时会发生衍射或者干涉现象。现在要利用光的粒子性解释光的波动性现象，需要基于前面提出的光子的类氢原子结构与它是一个按光速直线前进的电磁场的结构是可以统一的理论。
+
+\subsection{3.1 问题 1 的定性分析}
+
+光通常是按直线前进的，为什么经过细缝后前进方向会发生改变？为什么必须是光通过很窄的细缝才会使前进方向发生改变？
+
+首先讨论为什么光经过细缝后前进方向会发生改变。在龚祖同院士的光子结构模型中，负电荷 $\varepsilon^-$ 围绕正电荷 $\varepsilon^+$ 做旋转运动。因此，在单个光子的运动轨迹中，正电荷 $\varepsilon^+$ 沿着直线方向运动，而负电荷 $\varepsilon^-$ 在空间是以螺旋线前进的，是投影在一个与前进方向平行的平面上的正弦曲线。假设光束遇到的细缝尺寸 $d$ 足够小，以光束中的一个光子为研究对象，它在通过细缝时，其中一个电荷会与细缝边沿发生弹性碰撞或非弹性碰撞或被边缘吸引，因此这个光子的正负电荷会分离；以整个光束为研究对象，在透过细缝的过程中有相当一部分光子中
+
+的正电荷和负电荷会发生分离，有些光子的正电荷透过细缝，有些光子的负电荷透过细缝，这个过程是完全随机的，但透过细缝的正负电荷可以重新组合成新的光子。这样，在复杂的碰撞过程以后新组成的光子运动方向是随机的，也就偏离了原来的直线方向。这个过程如图 3.1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{光子通过细缝运动方向发生改变示意图}
+    \label{fig:3.1}
+\end{figure}
+
+其次讨论为什么光通过很窄的细缝才会使前进方向发生改变。显然，如果缝比较宽，则与细缝边缘发生碰撞的光子比例就会大大减少，直至几乎看不出来衍射；相反，如果缝比较狭小，则与细缝边缘发生碰撞的光子比例就会大大增加，衍射现象也就会更加明显。在第四部分的建模中，将会利用概率模型对该问题进行定量阐述。
+
+\subsection{3.2 问题 2 的定性分析}
+
+若干个光子同时作用的最终效果如何确定？是否仅取决于光子的个数？
+
+首先讨论若干个光子同时作用的最终效果。在单缝衍射中，光束通过了细缝以后，产生了不同方向的光子，在光屏上同一点的光强是由来自不同方向的光子共同作用而成的，其总强度与不同方向的电场叠加后的场强有关。由于光子有旋转，因而它们具有相位，这相位随光程而变化。因此的不同相位的电场产生的总场强的标量值决定于光程差。以两个电场叠加为例，当光程差为 $\pi$ 的整数倍时，各电场相加，总场强加强；当光程差为 $\pi/2$ 的奇数倍时，总场强相消，因此产生了明暗分布的衍射条纹。同理也可以解释双缝干涉和多缝干涉中的明暗条纹的产生过程，这也就是多个光子同时作用的最终效果。
+
+其次讨论是否仅取决于光子个数的问题。我们认为答案是否定的，因为光子产生场强的方向也是必不可少的因素。
+
+\subsection{3.3 问题 3 的定性分析}
+
+光通过偏振片的真实过程是什么?
+
+实际上，附件二中讲了定性内容，只要光子数量非常大，相位均匀分布，就可以实现附件二讲的重新组合，得到与实验大致吻合的结果，所以基本不用进行验证。
+
+\section{四、建立模型}
+
+上述定性分析中，提到了细缝的尺寸以及光子半径等尺度参数，它们究竟多大才会使光子与其碰撞并且改变运动方向? 尺寸的大小会对衍射或者干涉产生怎样的影响? 下面本文将围绕此问题对单缝衍射过程、双缝干涉过程、多缝干涉过程进行建模。
+
+\subsection{4.1 单缝衍射过程建模}
+
+单缝衍射过程的定性分析中，已经明确发生衍射的条件是光子与细缝边缘发生碰撞或被吸引。此处假设只有光子与狭缝发生碰撞才发生衍射（吸引模型在最后的猜想部分进行分析），那么细缝的尺寸 $d$ 就会影响光子与其发生碰撞的概率。直观来看，细缝尺寸 $d$ 越大，与细缝边缘发生碰撞的光子比例就会大大减少，直至几乎看不出来衍射。根据龚祖同院士的光子结构论，光子中的负电荷 $\varepsilon^{-}$ 具有旋转半径 $r$。那么发生碰撞的光子数的比例就与狭缝尺寸 $d$、旋转半径 $r$ 有关。
+
+下面着重研究细缝尺寸 $d$、旋转半径 $r$ 与光子发生碰撞的概率 $P$ 之间的数学关系。
+
+（1）发生碰撞的光子数
+
+假设细缝宽度为 $d$，长度方向没有限制。下面根据 $d$ 与 $r$ 的关系讨论光子与细缝相碰撞的概率，可分为 $d<r$，$r\leq d\leq 2r$，$d>2r$ 三种情况。
+
+1) $d<r$
+
+在 $d<r$ 时，光子通过细缝横截面示意图如图 4.1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{光子通过细缝时示意图 ($d<r$)}
+    \label{fig:4.1}
+\end{figure}
+
+设处于光子结构中心的正电荷 $\varepsilon^{+}$ 相对于细缝中心线的位置为 $x$。在图 \ref{fig:4.1} 中处于 $\theta$ 角范围内的负电荷 $\varepsilon^{-}$ 是不会与细缝边缘发生碰撞的，只有当负电荷 $\varepsilon^{-}$ 处于阴影部分时，才会与细缝边缘发生碰撞；当正电荷 $\varepsilon^{+}$ 处于区间 $(-d/2, d/2)$ 时，是不会与细缝发生碰撞的，只有负电荷可能与细缝发生碰撞；当正电荷 $\varepsilon^{+}$ 处于区间 $(-d/2-r, -d/2) \cup (d/2, d/2+r)$ 时，肯定会与细缝发生碰撞，负电荷有可能和细缝不碰撞。
+
+由此可以得到在 $d<r$ 的情况下，$\varepsilon^{+}$ 的位置为 $x$ 时 $\varepsilon^{-}$ 与狭缝未发生碰撞的概率：
+
+\begin{align*}
+N_{\text{衍}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} (1-p(x))\rho\,dx + \int_{-\frac{d}{2}-r}^{-\frac{d}{2}} p(x)\rho\,dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}}^{\frac{d}{2}} \rho \left[1-\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})\right]dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} \frac{\rho}{\pi}(\arccos\frac{2x-d}{2r})dx \\
+&= d\,\rho - \frac{2\rho}{\pi} \left(d\,\arcsin\frac{d}{r} - r + r\sqrt{1-\frac{d^2}{r^2}}\right)
+\end{align*}
+
+对于一部分光子，其正电荷 $\varepsilon^{+}$ 和负电荷 $\varepsilon^{-}$ 都没有与细缝发生碰撞，这部分光子可以看成是“直射”透过细缝，它们的运动方向不会改变，因而不会发生衍射，这部分光子数量记为 $N_{\text{直}}$；有些光子的正电荷通过细缝但是负电荷被细缝挡住，有些光子的正电荷被细缝挡住但负电荷通过细缝，这些透过细缝的正负电荷组成新的光子，这部分光子的运动方向是发生了改变的，会产生后面的衍射，这部分光子数目记为 $N_{\text{衍}}$。
+
+令细缝的宽度方向上光子的线密度为 $\rho$。因此“直射”过细缝的光子数为：
+
+\begin{align*}
+N_{\text{衍}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} (1-p(x))\rho\,dx + \int_{-\frac{d}{2}-r}^{-\frac{d}{2}} p(x)\rho\,dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}}^{\frac{d}{2}} \rho \left[1-\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})\right]dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} \frac{\rho}{\pi}(\arccos\frac{2x-d}{2r})dx \\
+&= d\,\rho - \frac{2\rho}{\pi} \left(d\,\arcsin\frac{d}{r} - r + r\sqrt{1-\frac{d^2}{r^2}}\right)
+\end{align*}
+
+发生碰撞而产生的衍射的光子数为:
+\begin{align*}
+N_{\text{衍}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} (1-p(x))\rho\,dx + \int_{-\frac{d}{2}-r}^{-\frac{d}{2}} p(x)\rho\,dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}}^{\frac{d}{2}} \rho \left[1-\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})\right]dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} \frac{\rho}{\pi}(\arccos\frac{2x-d}{2r})dx \\
+&= d\,\rho - \frac{2\rho}{\pi} \left(d\,\arcsin\frac{d}{r} - r + r\sqrt{1-\frac{d^2}{r^2}}\right)
+\end{align*}
+
+2) $r \leq d \leq 2r$
+
+仿照上述分析，可以得到在 $r \leq d \leq 2r$ 的情况下，$\varepsilon^+$ 的位置为 $x$ 时 $\varepsilon^-$ 与狭缝未发生碰撞的概率:
+\begin{align*}
+N_{\text{直}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}}^{\frac{d}{2}-r} \frac{\rho}{\pi}(\pi-\arccos\frac{2x+d}{2r})dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} \frac{\rho}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})dx + \int_{r-\frac{d}{2}}^{\frac{d}{2}} \frac{\rho}{\pi}\arccos\frac{2x-d}{2r}dx \\
+&= 2\,\rho\,d - \rho\,r - \frac{2\,\rho\,r}{\pi} - \frac{2\,\rho}{\pi}(d-r)\arccos(\frac{d-r}{r}) - \frac{2\,\rho}{\pi}(d-r)\arcsin(\frac{d-r}{r}) \\
+&= \rho\,d - \frac{2\,\rho\,r}{\pi}
+\end{align*}
+
+令细缝的宽度方向上光子的线密度为 $\rho$，由此“直射”过细缝的光子数为:
+\begin{align*}
+N_{\text{直}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}}^{\frac{d}{2}-r} \frac{\rho}{\pi}(\pi-\arccos\frac{2x+d}{2r})dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} \frac{\rho}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})dx + \int_{r-\frac{d}{2}}^{\frac{d}{2}} \frac{\rho}{\pi}\arccos\frac{2x-d}{2r}dx \\
+&= 2\,\rho\,d - \rho\,r - \frac{2\,\rho\,r}{\pi} - \frac{2\,\rho}{\pi}(d-r)\arccos(\frac{d-r}{r}) - \frac{2\,\rho}{\pi}(d-r)\arcsin(\frac{d-r}{r}) \\
+&= \rho\,d - \frac{2\,\rho\,r}{\pi}
+\end{align*}
+
+发生碰撞而产生的衍射的光子数为:
+\begin{align*}
+N_{\text{衍}} &= \int_{-\frac{d}{2}-r}^{\frac{d}{2}-r} p(x)\rho\,dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} (1-p(x))\rho\,dx + \int_{r-\frac{d}{2}}^{\frac{d}{2}+r} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}-r}^{\frac{d}{2}-r} \left[1-\frac{1}{\pi}(\arccos\frac{2x+d}{2r})\right]\rho\,dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} \left[1-\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})\right]\rho\,dx \\
+&\quad + \int_{r-\frac{d}{2}}^{\frac{d}{2}+r} \frac{1}{\pi}(\arccos\frac{2x-d}{2r})\rho\,dx \\
+&= \rho\,d - \rho\,r - \frac{2\,\rho}{\pi}(d-r)\arccos\frac{d-r}{r} + \frac{2\,\rho}{\pi}(d-r)\arcsin\frac{d-r}{r} + \frac{4\,\rho\,r}{\pi}\sqrt{1-\frac{(d-r)^2}{r^2}}
+\end{align*}
+
+3) \(d > 2r\) 的情况
+
+在 \(d > 2r\) 时，光子通过细缝的横截面示意图如图 4.2 所示。
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_a.png}
+        \subcaption{(a)}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_b.png}
+        \subcaption{(b)}
+    \end{minipage}
+    \caption{光子通过细缝时示意图（\(d > 2r\)）}
+    \label{fig:4.2}
+\end{figure}
+
+设处于光子结构中心的正电荷 \(\varepsilon^+\) 相对于细缝中心线的位置为 \(x\)。在图 4.2(a) 中，正电荷 \(\varepsilon^+\) 处于区间 \((-d/2 + r, \, d/2 - r)\) 时正负电荷都不会与狭缝相碰撞；在图 4.2(b) 中，正电荷 \(\varepsilon^+\) 处于区间 \((d/2 - r, \, d/2 + r) \cup (-d/2 - r, \, r - d/2)\)，处于 \(\theta\) 角范围内的负电荷 \(\varepsilon^-\) 是不会与细缝边缘发生碰撞的，只有当负电荷 \(\varepsilon^-\) 处于阴影部分的区域时，才会与细缝边缘发生碰撞。由此，根据上图可以得到 \(\varepsilon^+\) 的位置为 \(x\) 时 \(\varepsilon^-\) 与细缝未发生碰撞的概率：
+
+\begin{align*}
+N_{\text{衍}} &= \int_{-\frac{d}{2}-r}^{\frac{d}{2}-r} p(x)\rho\,dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} (1-p(x))\rho\,dx + \int_{r-\frac{d}{2}}^{\frac{d}{2}+r} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}-r}^{\frac{d}{2}-r} \left[1-\frac{1}{\pi}(\arccos\frac{2x+d}{2r})\right]\rho\,dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} \left[1-\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})\right]\rho\,dx \\
+&\quad + \int_{r-\frac{d}{2}}^{\frac{d}{2}+r} \frac{1}{\pi}(\arccos\frac{2x-d}{2r})\rho\,dx \\
+&= \rho\,d - \rho\,r - \frac{2\,\rho}{\pi}(d-r)\arccos\frac{d-r}{r} + \frac{2\,\rho}{\pi}(d-r)\arcsin\frac{d-r}{r} + \frac{4\,\rho\,r}{\pi}\sqrt{1-\frac{(d-r)^2}{r^2}}
+\end{align*}
+
+令细缝的宽度方向上光子的线密度为 \(\rho\)。此时“直射”过细缝的光子数为：
+
+\begin{align*}
+N_{\text{直}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} p(x)\rho\,dx \\
+&= \int_{-\frac{d}{2}}^{\frac{d}{2}-r} \frac{\rho}{\pi}(\pi-\arccos\frac{2x+d}{2r})dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} \frac{\rho}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})dx + \int_{r-\frac{d}{2}}^{\frac{d}{2}} \frac{\rho}{\pi}\arccos\frac{2x-d}{2r}dx \\
+&= 2\,\rho\,d - \rho\,r - \frac{2\,\rho\,r}{\pi} - \frac{2\,\rho}{\pi}(d-r)\arccos(\frac{d-r}{r}) - \frac{2\,\rho}{\pi}(d-r)\arcsin(\frac{d-r}{r}) \\
+&= \rho\,d - \frac{2\,\rho\,r}{\pi}
+\end{align*}
+
+发生碰撞而产生的衍射光子数为：
+
+\begin{equation}
+N_{\text{衍}} = \int_{\frac{d}{2}-r}^{\frac{d}{2}+r} [1-p(x)]\rho\,dx + \int_{-\frac{d}{2}-r}^{-\frac{d}{2}+r} [1-p(x)]\rho\,dx
+\end{equation}
+\begin{equation}
+= \int_{\frac{d}{2}-r}^{\frac{d}{2}+r} \rho \left[1-\frac{1}{\pi}\arccos\frac{2x-d}{2r}\right]dx + \int_{-\frac{d}{2}-r}^{-\frac{d}{2}+r} \rho \frac{1}{\pi}\arccos\frac{2x+d}{2r}dx
+\end{equation}
+\begin{equation}
+= 2\rho r
+\end{equation}
+
+由于光的强度正比于光子的数目，因此令总的光强为 \(I_{\text{总}}\)，衍射的光强为 \(I_{\text{衍}}\)，直射的光强为 \(I_{\text{直}}\)，可以得到：
+
+\begin{equation}
+I_{\text{衍}} = \frac{N_{\text{衍}}}{N_{\text{衍}}+N_{\text{直}}}I_{\text{总}}
+\end{equation}
+
+其中入射的总光强 \(I_{\text{总}}\) 与缝宽 \(d\) 成正比，可令 \(I_{\text{总}} = Kd\)（\(K\) 为比例系数）。根据上述三种情况下计算出的 \(N_{\text{直}}\) 与 \(N_{\text{衍}}\)，\(I_{\text{衍}}\) 就变为关于细缝宽度 \(d\) 的分段函数：
+
+\begin{equation}
+I_{\text{衍}}(d) =
+\begin{cases}
+K\left[d-\frac{2}{\pi}(d\arcsin\frac{d}{r}-r+r\sqrt{1-\frac{d^2}{r^2}})\right] & d<r \\
+K\frac{\pi d-\pi r-2(d-r)\arccos\frac{d-r}{r}+2(d-r)\arcsin\frac{d-r}{r}+4r\sqrt{1-\frac{(d-r)^2}{r^2}}}{2\pi d-\pi r-2r-2(d-r)\arccos\frac{d-r}{r}+2(d-r)\arcsin\frac{d-r}{r}+4r\sqrt{1-\frac{(d-r)^2}{r^2}}}d & r\leq d\leq 2r \\
+K\frac{2\pi rd}{\pi d+(2\pi-2)r} & d>2r
+\end{cases}
+\end{equation}
+
+其中 \(r\) 是光子的旋转半径，在光子波长 \(\lambda\) 一定的情况下，它是常数。
+
+(2) 衍射条纹光强分布
+
+在上述分析中，光束通过细缝后会产生直射光子和衍射光子。在光屏上同一点的光强是由来自不同方向的光子共同作用而成的，其总强度与不同方向光子的电场叠加后的场强有关。由于光子有旋转，因而它们具有相位，这相位随光程而变化。因此的不同相位光子的电场产生的总场强的标量值决定于光程差。只考虑衍射部分的光子，在这之前已经假定衍射光子在各个不同方向上均匀分布。
+
+考虑将细缝分割成 \(N\) 个等宽 \(\Delta y = \frac{d}{N}\) 的小区域。凸透镜将平行光束聚焦到屏上 \(P\) 点，假定 \(\Delta y << \lambda\)，这样来自同一给定区域的所有光子均同相位，而相邻两光子相对程差为 \(\delta = \Delta y\sin\theta\)。相对相移 \(\Delta\beta\) 由如下比值给出：\(\frac{\Delta\beta}{2\pi} = \frac{\delta}{\lambda} = \frac{\Delta y\sin\theta}{\lambda}\)，进一步得出：\(\Delta\beta = \frac{2\pi}{\lambda}\Delta y\sin\theta\)。假定第一个光子到达屏上 \(P\) 点时的电场为：
+
+\begin{equation}
+E_1 = E_{10}\sin\omega
+\end{equation}
+
+来自与光子 1 相邻的光子 2 的电场有相移 \(\Delta\beta\)，其电场为：
+
+\begin{equation}
+E_{2} = E_{10} \sin(\omega t + \Delta \beta) \text{；由于每个相邻的分量相对于前一个均有相同的位移，故第 } N \text{ 个电场为：}
+\end{equation}
+
+\begin{equation}
+E_{N} = E_{10} \sin(\omega t + (N-1)\Delta \beta) \tag{4.12}
+\end{equation}
+
+总电场是这些单个光子电场贡献的加和：
+
+\begin{equation}
+E = E_{1} + E_{2} + \cdots + E_{N} = E_{10} \left[ \sin \omega t + \sin(\omega t + \Delta \beta) + \cdots + \sin(\omega t + (N-1)\Delta \beta) \right] \tag{4.13}
+\end{equation}
+
+注意，点 \( N \) 与点 \( 1 \) 之间的总相移是：
+
+\begin{equation}
+\beta = N \Delta \beta = \frac{2\pi}{\lambda} N \Delta y \sin \theta = \frac{2\pi}{\lambda} d \sin \theta \tag{4.14}
+\end{equation}
+
+此处 \( N \Delta y = d \)，利用代数和三角几何关系： \( \cos(\alpha - \beta) - \cos(\alpha + \beta) = 2 \sin \alpha \sin \beta \) 可以得到：
+
+\begin{equation}
+\cos(\omega t - \frac{\Delta \beta}{2}) - \cos(\omega t + \frac{\Delta \beta}{2}) = 2 \sin \omega t \sin \frac{\Delta \beta}{2} \tag{4.15}
+\end{equation}
+
+\begin{equation}
+\cos(\omega t + \frac{\Delta \beta}{2}) - \cos(\omega t + \frac{3\Delta \beta}{2}) = 2 \sin(\omega t + \Delta \beta) \sin \frac{\Delta \beta}{2} \tag{4.16}
+\end{equation}
+
+\begin{equation}
+\cos(\omega t + \frac{3\Delta \beta}{2}) - \cos(\omega t + \frac{5\Delta \beta}{2}) = 2 \sin(\omega t + 2\Delta \beta) \sin \frac{\Delta \beta}{2} \tag{4.17}
+\end{equation}
+
+\begin{equation}
+\cos[\omega t + (N-\frac{1}{2})\Delta \beta] - \cos[\omega t + (N-\frac{3}{2})\Delta \beta] = 2 \sin[\omega t + (N-1)\Delta \beta] \sin \frac{\Delta \beta}{2} \tag{4.18}
+\end{equation}
+
+将各项相加，并注意到除两项之外左边的所有项相消：
+
+\begin{equation}
+\cos(\omega t - \frac{\Delta \beta}{2}) - \cos[\omega t - (N-\frac{1}{2})\Delta \beta] = 2 \sin \frac{\Delta \beta}{2} \left[ \sin \omega t + \sin(\omega t + \Delta \beta) + \cdots + \sin(\omega t + (N-1)\Delta \beta) \right]
+\end{equation}
+
+左边剩下的两项相加有：
+
+\begin{equation}
+\cos(\omega t - \frac{\Delta \beta}{2}) - \cos[\omega t - (N-\frac{1}{2})\Delta \beta] = 2 \sin[\omega t + (N-1)\Delta \beta] \sin \frac{N\Delta \beta}{2}
+\end{equation}
+
+因此有结果：
+
+\begin{equation}
+\left[ \sin \omega t + \sin(\omega t + \Delta \beta) + \cdots + \sin(\omega t + (N-1)\Delta \beta) \right] = \frac{\sin[\omega t + (N-1)\frac{\Delta \beta}{2}] \sin \frac{\beta}{2}}{\sin \frac{\Delta \beta}{2}} \tag{4.19}
+\end{equation}
+
+故总电场为：
+
+\begin{equation}
+E = E_{10} \left[ \frac{\sin \frac{\beta}{2}}{\sin \frac{\Delta \beta}{2}} \right] \sin(\omega t + (N-1)\Delta \beta) \tag{4.20}
+\end{equation}
+
+光强正比于 \( E^2 \) 的时间平均值
+
+\begin{equation}
+\overline{E}^{2} = E_{10}^{2} \left[ \frac{\sin \frac{\beta}{2}}{\sin \frac{\Delta \beta}{2}} \right]^{2} \frac{1}{T} \int_{0}^{T} \left[ \sin (\omega t + (N-1) \Delta \beta) \right] dt = \frac{1}{2} E_{10}^{2} \left[ \frac{\sin \frac{\beta}{2}}{\sin \frac{\Delta \beta}{2}} \right]^{2}
+\tag{4.21}
+\end{equation}
+
+可以将光强表示为:
+
+\begin{equation}
+I = \frac{I_{0}}{N^{2}} \left[ \frac{\sin \frac{\beta}{2}}{\sin \frac{\Delta \beta}{2}} \right]^{2}
+\tag{4.22}
+\end{equation}
+
+这里引入因子 $N^{2}$ 是为了保证 $I_{0}$ 对应于中央主极大的光强 $\beta = 0 (\theta = 0)$。在 $\Delta \beta \to 0$ 的极限情形下，$N \sin \frac{\Delta \beta}{2} \approx N \frac{\Delta \beta}{2} = \frac{\beta}{2}$。于是光强变为:
+
+\begin{equation}
+I = I_{0} \left[ \frac{\sin \frac{\beta}{2}}{\frac{\beta}{2}} \right]^{2} = I_{0} \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2}
+\tag{4.23}
+\end{equation}
+
+上式就是衍射条纹的光强分布函数，通过上式可知，光强分布是关于缝宽 $d$、角度 $\theta$ 的函数 $I(d, \theta)$。
+
+再根据 4.1.1 中结论，需要对上述光强的值做出如下修正：当缝宽为 $d$ 时，衍射部分的光强为 $I_{\text{衍}}(d)$，光屏上的分布的光强的总和应该等于衍射的光强 $I_{\text{衍}}$，即
+
+\begin{equation}
+I_{\text{衍}} = \int_{-\infty}^{+\infty} I(\beta) d\beta = I_{0} \int_{-\infty}^{+\infty} \left( \frac{\sin \beta}{\beta} \right)^{2} d\beta
+\tag{4.24}
+\end{equation}
+
+而 $\int_{-\infty}^{+\infty} \left( \frac{\sin \beta}{\beta} \right)^{2} d\beta = \pi$，故有
+
+\begin{equation}
+I_{0} = \frac{1}{\pi} I_{\text{衍}}(d)
+\tag{4.25}
+\end{equation}
+
+则
+
+\begin{equation}
+I(d, \theta) = I_{0} \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2} = \frac{1}{\pi} I_{\text{衍}}(d) \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2}
+\tag{4.26}
+\end{equation}
+
+以缝宽 $d > 2r$ 的情况为例，衍射部分的光强为 $I_{\text{衍}}(d) = K \frac{2\pi r d}{\pi d + (2\pi - 2)r}$，则
+
+于是
+\begin{equation}
+I_{0} = \frac{1}{\pi} I_{\text{衍}} = \frac{2 K r d}{\pi d + (2 \pi - 2) r}
+\tag{4.27}
+\end{equation}
+
+\begin{equation}
+I(d, \theta) = I_{0} \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2} = \frac{1}{\pi} I_{\text{衍}} \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2} = \frac{2 K r d}{\pi d + (2 \pi - 2) r} \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2}
+\tag{4.28}
+\end{equation}
+
+根据 \( r = \frac{n^{2} \hbar c}{2 \pi k e^{2}} \lambda \)，取光量子数 \( n = 1 \)，有 \( r \approx 20 \lambda \)，上式可以近似为：
+
+\begin{equation}
+I(d, \theta) = \frac{2 K d}{\frac{\pi d}{20 \lambda} + (2 \pi - 2)} \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2}
+\tag{4.29}
+\end{equation}
+
+通过上式可以看到：缝宽 \( d \) 越小，其修正因子 \( \frac{2 K d}{\frac{\pi d}{20 \lambda} + (2 \pi - 2)} \) 越小，但衍射因子 \( \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2} \) 越大。这说明缝宽 \( d \) 越小，衍射现象越明显，但整体光强度变小；对应的现象是缝宽 \( d \) 越小，条纹明暗分布越明显，但所有条纹的亮度减弱，这是符合客观事实的。
+
+\subsection{4.2 双缝干涉过程建模}
+
+根据 4.1.1 中的分析，同样可以建立光的双缝干涉过程的数学模型。在双缝干涉过程中，光通过细缝后光子的运动方向发生改变的过程与在单缝衍射中的过程是一致的。我们先令两个缝的宽度 \( d \) 都很小（\( d \ll r \)），以至于所有光子的运动方向都能改变参与到干涉现象，下面分析干涉条纹的光强分布。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{杨氏双缝干涉光子运动示意图}
+\end{figure}
+
+如图 4.3 所示，在干涉中，屏上 $P$ 点的光强是与不同方向上的光子共同作用的电场场强有关的。由于双缝 $S_{1}$, $S_{2}$ 的宽度相等，则到达 $P$ 点的光子中各有一半来自于两个细缝。分别选取来自缝 $S_{1}$、$S_{2}$ 中的一个光子，可以对这一对光子的电场叠加的效果进行分析。将结论推广到所有光子对共同作用的效果，就形成了干涉的光强分布。
+
+屏上 $P$ 点总的瞬时电场 $\overline{E}$ 等于两个光子的电场的矢量和：$\overline{E}=\overline{E_{1}}+\overline{E_{2}}$。同时坡印亭通量 $S$ 正比于总电场的平方：
+\[
+S \propto \overline{E}^{2}=(\overline{E_{1}}+\overline{E_{2}})^{2}=\overline{E_{1}}^{2}+\overline{E_{2}}^{2}+2 \overline{E_{1}} \cdot \overline{E_{2}}.
+\tag{4.30}
+\]
+取 $S$ 的时间平均，可得 $P$ 点总的光强 $I$ 为：
+\[
+I=\overline{S} \propto \overline{E_{1}^{2}}+\overline{E_{2}^{2}}+2 \overline{\overline{E_{1}} \cdot \overline{E_{2}}}
+\tag{4.31}
+\]
+其中，交叉项 $2 \overline{\overline{E_{1}} \cdot \overline{E_{2}}}$ 表示两光子电场之间的关联。
+
+由于光子有旋转，因而它们具有相位。可令来自缝 1 和缝 2 的波在 $P$ 点电场分量分别为：$E_{1}=E_{0} \sin \omega t$ 以及 $E_{2}=E_{0} \sin (\omega t+\phi)$，这里假定波从细缝出来时具有同样的振幅 $E_{0}$，为简单起见，我们将 $P$ 点取为原点，由于来自缝 2 的光子到 $P$ 点要多走额外的程差 $\delta$，故 $E_{2}$ 相对来自缝 1 的 $E_{1}$ 有一个额外的相移。对于干涉增强，程差 $\delta=\pi$ 对应于 $\phi=2 \pi$ 的相移。于是有：
+\[
+\frac{\delta}{\lambda}=\frac{\phi}{2 \pi}
+\tag{4.32}
+\]
+或者说：
+\[
+\phi=\frac{2 \pi}{\lambda} \delta=\frac{2 \pi}{\lambda} a \sin \theta
+\tag{4.33}
+\]
+假定两个光子电场指向相同的方向，运用三角函数恒等式得到：
+\[
+E=E_{1}+E_{2}=E_{0}\left[\sin \omega t+\sin (\omega t+\phi)\right]=2 E_{0} \cos \left(\frac{\phi}{2}\right) \sin \left(\omega t+\frac{\phi}{2}\right)
+\tag{4.34}
+\]
+光强 $I$ 正比于总电场平方的时间平均值：
+\[
+I \propto \overline{E^{2}}=4 E_{0}^{2} \cos ^{2}\left(\frac{\phi}{2}\right) \cdot \frac{1}{T} \int_{0}^{T} \sin ^{2}\left(\omega t+\frac{\phi}{2}\right)=2 E_{0}^{2} \cos ^{2}\left(\frac{\phi}{2}\right)
+\tag{4.35}
+\]
+或
+\[
+I=I_{0} \cos ^{2}\left(\frac{\phi}{2}\right)
+\tag{4.36}
+\]
+这里 $I_{0}$ 是屏上最大光强，进一步有：
+\[
+I=I_{0} \cos ^{2}\left(\frac{\pi a \sin \theta}{\lambda}\right)
+\tag{4.37}
+\]
+对于其他光子对，它们共同作用的效果与上式一样，因此上式就是干涉中屏
+
+幕上光的强度分布函数。
+
+我们已经看到单缝衍射和双缝干涉的光强分布:
+\begin{equation}
+I = \frac{1}{\pi} I_{\text{衍}}(d) \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^2
+\tag{4.38}
+\end{equation}
+\begin{equation}
+I = I_0 \cos^2 \left( \frac{\pi a \sin \theta}{\lambda} \right)
+\tag{4.39}
+\end{equation}
+
+假定现在两个细缝是有宽度的，每个缝的宽为 \( d \)，缝间距为 \( a \)。这样双缝干涉的条纹将包括单缝衍射条纹。条纹的总光强就是两个函数的乘积：
+\begin{equation}
+I = \frac{1}{\pi} I_{\text{衍}}(d) \cos^2 \left( \frac{\pi a \sin \theta}{\lambda} \right) \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^2
+\tag{4.40}
+\end{equation}
+上述方程的第一项和第二项分别表示“干涉因子”和“衍射因子”。前者产生的是干涉亚结构，而后者则形成干涉峰的数目趋于极限时的包络线。
+
+\subsection{4.3 多缝干涉过程建模}
+
+所谓多缝就是在一块不透光的屏上可有很多条等间距、等宽度的通关窄缝，实际上只不过是把双缝换成多缝而已，而干涉条纹的形成也和双缝类似，差别只是双光束干涉变成多光束干涉。下面先计算其光强分布。
+
+实际上，从每一条缝射发出的光子到 \( P \) 点的光强都相同，其值由单缝衍射的强度分布决定。相邻两缝放出的光子在 \( P \) 点的电场强度有：
+\begin{equation}
+\delta = k \Delta = k a \sin \theta
+\tag{4.41}
+\end{equation}
+的相位差。所以，通过各缝的光子在 \( P \) 点所引起的电场的总复振幅为：
+\begin{equation}
+E_P = E_{0P} \left[ 1 + e^{-i \delta} + e^{-i 2 \delta} + \cdots + e^{-i (N-1) \delta} \right] = E_{0P} \sum_{l=0}^{N-1} e^{-i l \delta}
+\tag{4.42}
+\end{equation}
+式中，\( E_{0P} \) 是单缝衍射在 \( P \) 点的复振幅，其值为：
+\begin{equation}
+E_{0P} = E_0 \frac{\sin \beta}{\beta}
+\tag{4.43}
+\end{equation}
+又因为：
+\begin{equation}
+\sum_{l=0}^{N-1} e^{-i l \delta} = \frac{1 - e^{-i N \delta}}{1 - e^{-i \delta}} = \frac{e^{-i \frac{N}{2} \delta} \left( e^{i \frac{N}{2} \delta} - e^{-i \frac{N}{2} \delta} \right)}{e^{-i \frac{1}{2} \delta} \left( e^{i \frac{1}{2} \delta} - e^{-i \frac{1}{2} \delta} \right)} = \frac{\sin \frac{N}{2} \delta}{\sin \frac{1}{2} \delta} e^{-i \frac{N-1}{2} \delta}
+\tag{4.44}
+\end{equation}
+所以：
+
+\begin{equation}
+E_{p} = E_{0_{p}} e^{-i\frac{N-1}{2}\delta} \frac{\sin \frac{N}{2}\delta}{\sin \frac{1}{2}\delta} = E_{0} \frac{\sin \beta}{\beta} \frac{\sin \frac{N}{2}\delta}{\sin \frac{1}{2}\delta} e^{-i\frac{N-1}{2}\delta}
+\tag{4.45}
+\end{equation}
+
+$P$ 点的光强为:
+
+\begin{equation}
+I_{p} \propto E_{p}^{2}
+\tag{4.46}
+\end{equation}
+
+故:
+
+\begin{equation}
+I_{p} = I_{0} \left( \frac{\sin \beta}{\beta} \right)^{2} \left( \frac{\sin \frac{N}{2}\delta}{\sin \frac{1}{2}\delta} \right)^{2}
+\tag{4.47}
+\end{equation}
+
+式中 $I_{0}$ 是中心点的光强, $\beta = \frac{1}{2} k \Delta = \frac{1}{2} k d \sin \theta$ 是单缝边缘两点到达 $P$ 点的相位差。$\delta = k \Delta = k a \sin \theta$ 是相邻两缝到达 $P$ 点的相位差。
+
+同样, 如果我们考虑光强幅度的修正因子, 则
+
+\begin{equation}
+I_{p} = \frac{1}{\pi} I_{\text{衍}}(d) \left( \frac{\sin \beta}{\beta} \right)^{2} \left( \frac{\sin \frac{N}{2}\delta}{\sin \frac{1}{2}\delta} \right)^{2} = \frac{1}{\pi} I_{\text{衍}}(d) \left( \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right)^{2} \left[ \frac{\sin \frac{N \pi a \sin \theta}{\lambda}}{\frac{\pi a \sin \theta}{\lambda}} \right]^{2}
+\tag{4.48}
+\end{equation}
+
+\section{五、仿真实验}
+
+\subsection{5.1 单缝衍射中光强分布仿真实验}
+
+在第四部分, 本文已经得到了考虑光子结构之后修正的单缝衍射光强分布:
+
+\begin{equation}
+I(d, \theta) = \frac{1}{\pi} I_{\text{衍}}(d) \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^{2}
+\end{equation}
+
+其中 $d$ 为单缝的宽度。下面研究在缝宽 $d$ 和波长 $\lambda$ 变化时光强的变化情况。在研究波动性现象的实验中, 缝宽的大小一般都是微米到毫米这个量级, 假设缝宽 $d = 0.05 \, \text{mm}$, 可见光的最大波长为 $770 \, \text{nm}$, 那么光子的旋转半径 $r \approx 20 \lambda = 0.0076 \, \text{mm}$, 此时 $\frac{d}{r} > 2$。因此为方便起见, 本文在仿真中均考虑 $d > 2r$ 的情况, 即利用公式 (4.29), 其中
+
+\begin{equation}
+\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}
+\end{equation}
+
+为修正因子。于是可以得到修正后的光强分布公式:
+
+\begin{equation}
+I(d, \theta) = \frac{1}{\pi} \frac{\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}}{\frac{\pi d \sin \theta}{\lambda}} \left[ \frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}} \right]^2
+\tag{5.1}
+\end{equation}
+
+(1) 波长 $\lambda = 380 \, \text{nm}$，改变缝宽 $d$ 的大小，对比光强分布的变化：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{波长 $\lambda = 380 \, \text{nm}$，缝宽 $d$ 分别为 $0.02 \, \text{mm}$, $0.05 \, \text{mm}$, $0.1 \, \text{mm}$, $0.5 \, \text{mm}$ 时的单缝衍射效果图和光强分布图}
+    \label{fig:5.1}
+\end{figure}
+
+(2) 缝宽 $d = 0.02 \, \text{mm}$，改变波长 $\lambda$ 的大小，对比光强分布的变化：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{缝宽 $d=0.02\,\text{mm}$，波长分别为 $380\,\text{nm}$, $477.5\,\text{nm}$, $653\,\text{nm}$, $770\,\text{mm}$ 时的单缝衍射效果图和光强分布图}
+    \label{fig:5.2}
+\end{figure}
+
+对比图 \ref{fig:5.1} 和图 \ref{fig:5.2} 的结果可知，在单缝衍射中：
+
+1) 波长 $\lambda$ 一定时，随着缝宽 $d$ 的增大，衍射条纹的宽度越小，但是最大光强的幅度增大。即：缝宽越大时，光屏上观察到的条纹越明亮，但是条纹也变得越细窄，衍射效果越不明显。
+
+2) 缝宽 $d$ 一定时，随着波长 $\lambda$ 的增大，衍射条纹的宽度越大，并且最大光强的幅度增大。即：波长越大时，光屏上观察到的条纹越明亮，但是条纹也变得越宽，衍射效果越明显。
+
+在 5.1 式中，修正因子
+\[
+\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}
+\]
+是缝宽 $d$ 的增函数，是波长 $\lambda$ 的增函数，它决定条纹亮度的变化；衍射因子
+\[
+\left[\frac{\sin\frac{\pi d \sin\theta}{\lambda}}{\frac{\pi d \sin\theta}{\lambda}}\right]^2
+\]
+是 $\frac{d}{\lambda}$ 的振荡函数，它决定条纹分布的情况。因此波长 $\lambda$ 一定时，随着缝宽 $d$ 的增大，$\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}$ 增大，
+
+\[
+\left[\frac{\sin\frac{\pi d \sin\theta}{\lambda}}{\frac{\pi d \sin\theta}{\lambda}}\right]^2
+\]
+
+减小，故出现条纹亮度增大，但分布不明显的结果，如图 5.1 所示；
+
+缝宽 \(d\) 一定时，随着波长 \(\lambda\) 的增大，\(\frac{\frac{2Kd}{\pi d}}{\frac{\pi d}{20\lambda} + (2\pi - 2)}\) 增大，\(\left[\frac{\sin\frac{\pi d \sin\theta}{\lambda}}{\frac{\pi d \sin\theta}{\lambda}}\right]^2\) 增大，故出现条纹亮度增加，且分布越明显的结果，如图 5.2 所示。
+
+\subsection{5.2 双缝干涉中光强分布仿真实验}
+
+在第四部分，已经得到了考虑光子结构之后修正的双缝干涉光强分布：
+
+\[
+I = \frac{1}{\pi} I_{\text{衍}}(d) \cos^2\left(\frac{\pi a \sin\theta}{\lambda}\right) \left[\frac{\sin\frac{\pi d \sin\theta}{\lambda}}{\frac{\pi d \sin\theta}{\lambda}}\right]^2
+\]
+
+其中 \(d\) 为单缝的宽度，\(a\) 为缝间距离。
+
+在双缝干涉中，它的明暗条纹是由双缝的干涉和每个单缝各自的衍射共同作用的效果。只是如果缝宽很小的情况下，认为衍射的现象不明显，即衍射因子
+
+\[
+\left[\frac{\sin\frac{\pi d \sin\theta}{\lambda}}{\frac{\pi d \sin\theta}{\lambda}}\right]^2
+\]
+
+的值很接近 1。因此一般情况下的双缝干涉光强分布公式中没有衍射因子 \(\left[\frac{\sin\frac{\pi d \sin\theta}{\lambda}}{\frac{\pi d \sin\theta}{\lambda}}\right]^2\) 这一项。下面考虑缝宽 \(d\) 的影响，研究在缝宽 \(d\)、缝间距 \(a\) 和波长 \(\lambda\) 的变化时，光强的变化情况。我们利用修正后的光强分布公式：
+
+\[
+I(d, \theta) = \frac{1}{\pi} \frac{\frac{2Kd}{\pi d}}{\frac{\pi d}{20\lambda} + (2\pi - 2)} \cos^2\left(\frac{\pi a \sin\theta}{\lambda}\right) \left[\frac{\sin\frac{\pi d \sin\theta}{\lambda}}{\frac{\pi d \sin\theta}{\lambda}}\right]^2
+\]
+
+(1) 波长 \(\lambda = 770 \, \text{nm}\)，缝间距 \(a = 2 \, \text{mm}\)，改变缝宽 \(d\) 的大小，对比光强分布的变化：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{波长 $\lambda=770$nm，缝宽 $d$ 分别为 $0.01$mm, $0.05$mm, $0.5$mm, $1$mm 时的单缝衍射效果图和光强分布图}
+    \label{fig:5.3}
+\end{figure}
+
+(2) 缝宽 $d=0.05$mm，缝间距 $a=2$mm，改变波长 $\lambda$ 的大小，对比光强分布的变化:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{缝宽 $d=0.05$mm，波长分别为 $380$nm, $477.5$nm, $653$nm, $770$mm 时的单缝衍射效果图和光强分布图}
+    \label{fig:5.4}
+\end{figure}
+
+(3) 缝宽 \( d=0.5 \, \text{mm} \)，缝间距 \( a=2 \, \text{mm} \)，改变波长 \( \lambda \) 的大小，对比光强分布的变化：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{缝宽 \( d=0.5 \, \text{mm} \)，波长分别为 \( 380 \, \text{nm} \), \( 477.5 \, \text{nm} \), \( 653 \, \text{nm} \), \( 770 \, \text{mm} \) 时的单缝衍射效果图和光强分布图}
+    \label{fig:5.5}
+\end{figure}
+
+分析 5.2 中的实验，对比图 5.3、图 5.4 和图 5.5 的结果可知，在双缝干涉中：
+
+1) 波长 \( \lambda \) 一定时，随着缝宽 \( d \) 的增大，条纹的最大光强的幅度增大，干涉条纹越明亮。但随着缝宽 \( d \) 的增大，衍射效果也越加明显。即：当缝宽 \( d \) 增大到一定程度时，光屏上观察到两侧条纹开始变暗。
+
+2) 缝宽 \( d \) 一定时，随着波长 \( \lambda \) 的增大，干涉条纹的宽度越大，并且最大光强的幅度增大。即：波长越大时，光屏上观察到的条纹越明亮，但是条纹也变得越宽，干涉效果越明显。
+
+3) 在图 5.4 中缝宽 \( d \) 比较小，衍射不明显，光强分布基本上是干涉因子决定的；但在图 5.5 中缝宽 \( d \) 比较大，衍射比较明显，光强分布由于干涉因子和衍射因子共同决定。
+
+以上两个结论符合式 (5.2) 所描述的情况。在 5.2 式中，修正因子
+\[
+\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}
+\]
+随缝宽 \( d \) 的增函数，是波长 \( \lambda \) 的增函数，它决定条纹亮度的变化。衍射因子与
+
+干涉因子的乘积 $cos^2\left(\frac{\pi a \sin \theta}{\lambda}\right)\left[\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right]^2$ 是 $\frac{d}{\lambda}$ 的振荡函数，它决定条纹分布的情况。因此波长 $\lambda$ 一定时，随着缝宽 $d$ 的增大，$\frac{2 K d}{\frac{\pi d}{20 \lambda} + (2 \pi - 2)}$ 增大，$\left[\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right]^2$ 减小，故出现中心条纹亮度增大，衍射效果越明显的结果，如图 5.3 所示；缝宽 $d$ 一定时，随着波长 $\lambda$ 的增大，$\frac{2 K d}{\frac{\pi d}{20 \lambda} + (2 \pi - 2)}$ 增大，$\left[\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right]^2$ 增大，故出现条纹亮度增加，且分布越明显的结果，如图 5.4 和 5.5 所示。
+
+\subsection{5.3 多缝干涉中光强分布仿真实验}
+
+在第四部分中，已经得到了考虑光子结构之后修正的多缝干涉光强分布：
+\[
+I_{P} = \frac{1}{\pi} I_{\text{衍}}(d) \left(\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right)^2 \left[\frac{\sin \frac{N \pi a \sin \theta}{\lambda}}{\frac{\pi a \sin \theta}{\lambda}}\right]^2,
+\]
+其中 $d$ 为单缝的宽度，$a$ 为缝间距离。
+
+在多缝干涉中，光强分布涉及到的物理量比较多。为实验的方便，我们固定一些物理量：光栅常量为 4，狭缝数 $N = 4$。研究在缝宽 $d$、缝间距 $a$ 和波长 $\lambda$ 的变化时，光强的变化情况。我们利用修正后的光强分布公式：
+\[
+I_{P} = \frac{1}{\pi} \frac{2 K d}{\frac{\pi d}{20 \lambda} + (2 \pi - 2)} \left(\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right)^2 \left[\frac{\sin \frac{N \pi a \sin \theta}{\lambda}}{\frac{\pi a \sin \theta}{\lambda}}\right]^2 \tag{5.3}
+\]
+
+(1) 波长 $\lambda = 380 \, \text{nm}$，改变缝宽 $d$ 的大小，对比光强分布的变化：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{衍射图像和光强分布图}
+    \label{fig:1}
+\end{figure}
+
+图 5.6 波长 $\lambda=380\text{nm}$，缝宽 $d$ 分别为 $0.002\text{mm}, 0.005\text{mm}, 0.01\text{mm}, 0.02\text{mm}$ 时的单缝衍射效果图和光强分布图
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{衍射图像和光强分布图}
+    \label{fig:2}
+\end{figure}
+
+图 5.7 缝宽 $d=0.008\text{mm}$，波长分别为 $380\text{nm}, 477.5\text{nm}, 653\text{nm}, 770\text{mm}$ 时的单缝衍射效果图和光强分布图
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{光强分布图}
+    \label{fig:3}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image4.png}
+    \caption{光强分布图}
+    \label{fig:4}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image5.png}
+    \caption{光强分布图}
+    \label{fig:5}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image6.png}
+    \caption{光强分布图}
+    \label{fig:6}
+\end{figure}
+
+通过 5.3 中的实验，对比图 5.6 和图 5.7 的结果可知，在多缝干涉中：
+
+1) 波长 $\lambda$ 一定时，随着缝宽 $d$ 的增大，衍射条纹的宽度越小，但是最大光强的幅度增大。即：缝宽越大时，光屏上观察到的条纹越明亮，但是条纹也变得越细窄，衍射效果越不明显。
+
+2) 缝宽 $d$ 一定时，随着波长 $\lambda$ 的增大，衍射条纹的宽度越大，并且最大光强的幅度增大。即：波长越大时，光屏上观察到的条纹越明亮，但是条纹也变得越宽，衍射效果越明显。
+
+以上两个结论符合式 (5.3) 所描述的情况。在 5.3 式中，修正因子
+
+\[
+\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}
+\]
+
+随缝宽 $d$ 的增大，是波长 $\lambda$ 的增函数，它决定条纹亮度的变化。衍射因子
+
+\[
+\left[\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right]^2
+\]
+
+是 $\frac{d}{\lambda}$ 的振荡函数，它决定条纹分布的情况。因此波长 $\lambda$ 一定时，随着缝宽 $d$ 的增大，
+
+\[
+\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}
+\]
+
+增大，$\left[\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right]^2$ 减小，故出现条纹亮度增大，但分布不明显的结果，如图 5.6 所示；缝宽 $d$ 一定时，随着波长 $\lambda$ 的增大，
+
+\[
+\frac{2Kd}{\frac{\pi d}{20\lambda} + (2\pi - 2)}
+\]
+
+增大，$\left[\frac{\sin \frac{\pi d \sin \theta}{\lambda}}{\frac{\pi d \sin \theta}{\lambda}}\right]^2$ 增大，故出现条纹亮度增加，且分布越明显的结果，如图 5.7 所示。
+
+在本部分，通过实例仿真，得到了与诺贝尔物理奖获得者玻恩的光学经典名著《光学原理》P374 中的光的衍射、双缝干涉、多缝干涉的强度近似公式和图像相近的结论，尤其是修正因子的引入使得光强近似公式和图像分布更加符合实际情况。通过研究波长 $\lambda$ 以及缝宽 $d$ 对光强的影响，验证了公式的正确性，而且达到了与实际情况相符的结果。
+
+\section{六、讨论与猜想}
+
+自从爱因斯坦 1905 年提出光子概念以来，光的波粒二象性始终困扰着绝大多数人，至今仍然无法令常人像对其他物理现象一样地信服。事实上，无论是龚祖同院士还是俎栋林教授的观点也都仅仅是猜想，那么，猜想基础上的建模与仿真也就必定存在某些问题。题目中也提到“尤其对这样难度空前的问题，能够完全解释倒是不正常的”。但是科学的进步正是基于循环的“猜想——验证——否定——猜想”的过程，每一个猜想都会为未来的观点创立打下基础。
+
+基于此，本文三位作者也提出了自己的一些想法：一个是对前面没有深入研究的细缝对光子吸引模型的探讨；另一个是基于光子结构论对偏振现象中经典公式马吕斯定律的验证。
+
+\subsection{6.1 细缝对光子吸引模型}
+
+在前面的模型中，本文基于光子与细缝碰撞理论采用概率模型进行了光强分布的计算，并且进行了光强分布的仿真，得到了比较好的效果。但是，根据龚祖同院士的理论，由于光子可以看作负电荷绕正电荷旋转的类氢原子模型，那么根据库伦定律，做绕核旋转的阴卫电荷完全会受到细缝所提供的力的作用，进而改变运动方向，这也就揭示了通常按直线前进的光在经过狭缝的时候为什么会改变运动方向。那么到底狭缝多大才会对运动的光子产生力的作用使它改变方向呢？由于微观状态下细缝不再视为平面，这里不妨考虑一个原子对光子的力的作用。基于此，本文建立了如下的简单定量模型：
+
+假设该细缝原子中原子核所带电量为 \( Ne^+ \)（\( N \) 为整数），运动光子距离该原子核的距离为 \( d \)；光子中阴卫电子所带电量为 \( \varepsilon^- = xe^- \)（\( x \) 表示分数），中间正电荷所带电量为 \( \varepsilon^+ = xe^+ \)，半径为 \( r \)，静电力常数为 \( K \)。则光子运动方向发生改变的条件为：
+\[
+\frac{K \cdot xe^- \cdot Ne^+}{d^2} > \frac{K \cdot xe^- \cdot xe^+}{r^2}
+\]
+即
+\[
+d < \sqrt{\frac{N}{x}} r
+\]
+
+根据龚祖同院士的理论，\( r = \frac{n^2 \hbar c}{2\pi ke^2} \lambda \)。取 \( n=1 \)，带入相关参数计算可得：
+\[
+r \approx 20\lambda
+\]。参考龚祖同院士《光子结构论》表 1 中的第一组可见光数据，即
+\[
+\lambda = 0.6563 \times 10^{-6} \, \text{m} \, , \quad \text{相应的 } x = \frac{h}{m_e c \lambda} = 3.27 \times 10^{-6}
+\]。剩下的问题是 \( N \) 如何确定，也就是到底多少个正电荷在作用于光子的阴卫电子？在这里取最小值为 \( N=1 \)，代入数据计算可得：\( d < 7.3 \, \text{mm} \)，也就是说这是狭缝对光子作用的最大距离。考虑到实际情况，在 \( 7.3 \, \text{mm} \) 的情况下，衍射效应已经微乎其，说明这种猜想存在问题。而且在这里取 \( N=1 \)，而实际中的原子数目难以计数。出现种问题的原因在于，我们对微观状态下相互之间力的作用建模过于简化，但可以肯定的是这种力必然存在，只是对于作用的细节没有完全考虑清楚。这种猜想可以作为未来的一种研究方向。
+
+\subsection{6.2 对马吕斯定律的验证}
+
+经典波动理论中，作为基础的左、右旋圆偏振光可以组合出线偏振、椭圆偏振、部分偏振等光束，它描述了电磁场的电矢量的各种不同的振动方向与方式。在附件 2 中，北京大学祖栋林教授提出光子是一个按光速直线前进的电磁场的理论，且这个电磁场按照由光的波长所决定的角速度围绕上述前进直线旋转，相位由电场在 \(X\) 方向的投影或磁场在 \(Y\) 方向的投影所决定，其旋转方向也只有左旋、右旋两种。由于正常光线中包含处于各种相位的光子对，在同时与偏振镜片碰撞时，这时各种相位的光子对会重新组合，产生平行于、垂直于偏振镜光轴的光子对，平行于偏振镜光轴的光子对能够通过偏振镜，而垂直于偏振镜光轴的光子对则被偏振镜阻挡。在这里本文假定沿 \(X\) 方向偏振的光子处在 \(\varphi_{x}\) 态，沿 \(Y\) 方向偏振的光子处在 \(\varphi_{y}\) 态，这两种状态可以定义为光子的两种基态，光子对状态的确定可以基于二者的线性组合。在这里我们取光子对连续穿过两片偏振片建立数学模型来验证经典的马吕斯定律。
+
+如图，光子对通过第一块偏振化方向 \(x'\) 与 \(X\) 轴成 \(\theta\) 角的偏振片以后，出射的光子对将处在状态：
+\[
+\varphi_{x'} = \cos \theta \varphi_{x} + \sin \theta \varphi_{y}
+\]
+假如接下来光子对继续通过一块偏振化方向沿 \(X\) 轴的偏振片，出射光的光子只会处在 \(\varphi_{x}\) 态，光子出现在 \(\varphi_{x}\) 态的概率振幅可用 \(\varphi_{x} \varphi_{x'}\) 表示，将
+\[
+\varphi_{x'} = \cos \theta \varphi_{x} + \sin \theta \varphi_{y}
+\]
+带入可得：
+\[
+\varphi_{x} \varphi_{x'} = \cos \theta \varphi_{x} \varphi_{x} + \sin \theta \varphi_{x} \varphi_{y} = \cos \theta
+\]
+所以一对光子通过第二块偏振片的概率振幅为 \(\cos \theta\)，概率就是 \(\cos \theta^2\)。如果入射光中有 \(N\) 个光子对，则有 \(N \cos \theta^2\) 通过第二块偏振片，带有的总能量是入射光能量的 \(\cos \theta^2\) 倍，即：\(I = I_0 \cos \theta^2\)，也就有粒子的观点证明了经典马吕斯定律。
+
+\section{参考文献}
+
+[1] Max Born, Principles of Optics, 电子工业出版社, 347-369 页, 2005 年。 \\
+[2] 廖延彪, 《光学原理与应用》, 电子工业出版社, 353-255 页, 2006 年。 \\
+[3] 董林, 《Matlab 使用详解》, 电子工业出版社, 2009 年。 \\
+[4] 龚祖同, A Theory of the Photon Structure, ACTA PHOTONICA SINICA, Vol.28 No.1 1999。
+
+\begin{enumerate}
+    \item[5] D. Zu, The classical structure model of single photon and classical point of view with regard to wave-particle duality of photon, Progress In Electromagnetics Research Letters, Vol. 1, 109–118, 2008.
+    \item[5] Roy J. Glauber, One hundred years of light quanta.
+    \item[6] 张全法 郭茂田 何金田, 衍射和干射现象的计算机仿真, 微电子学与计算机, 2001 年第 3 期.
+    \item[7] Quentin A. Turchette,* David E. Pritchard, and David W Keith, Numerical model of a multiple-grating interferometer, Opt. Soc. Am. Vol. 9, No. 9/September 1992/J.
+\end{enumerate}
+
+\end{document}
+
+% Missing placeholders restored
+\begin{tabular}{l l}
+学校 & 国防科学技术大学 \\
+\hline
+参赛队号 & 90002057 \\
+\hline
+队员姓名 & \begin{tabular}{l l}
+1. & 李麟 \\
+2. & 王龙华 \\
+3. & 唐国明 \\
+\end{tabular}

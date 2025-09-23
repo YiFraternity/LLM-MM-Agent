@@ -1,0 +1,834 @@
+\title{微蜂窝环境中无线接收信号的特性分析}
+
+\begin{document}
+
+\begin{center}
+\textbf{第十届华为杯全国研究生数学建模竞赛}
+\end{center}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l}
+学校 & 解放军信息工程大学 \\
+\hline
+参赛队号 & 90005008 \\
+\hline
+队员姓名 & 1. 刘璐 \\
+ & 2. 肖帅芳 \\
+ & 3. 李明亮 \\
+\end{tabular}
+\end{table}
+
+\begin{center}
+\textbf{题目} \quad 微蜂窝环境中无线接收信号的特性分析
+\end{center}
+
+\begin{abstract}
+本文针对微蜂窝环境中无线接收信号的特性分析问题，将射线跟踪方法与随机性模型相结合，建立了基于虚拟源树的二维射线跟踪模型和宽带多径模型，并采用 Matlab 软件对模型进行求解和验证。
+
+\textbf{(1) 基本问题：} 利用射线追踪法获取电磁波的传输路径主要存在两个难题。一是由于发射角量化精度不够，导致丢失路径；二是随着反射和绕射次数的增加，算法复杂度急剧上升。针对这一问题，本文采用基于虚拟源的射线追踪法获取路径。首先，算法无需进行发射角量化，不易丢失路径；再次，根据城市模型的特性，提出了“虚拟墙”、“透光区”以及“光扇区”等概念，用来判定虚拟源的有效性，能够大幅度降低算法复杂度。同时，本文利用树状结构存储电磁波的反射与绕射信息，通过深度优先算法建立搜索树，在创建多叉树的同时，也完成了有效路径的获取，无须再次遍历，算法效率较高。
+
+通过分析多对收发点的路径信息，获得了关于电磁波传输路径的三点规律：“十字路口”的传输路径很丰富；两点距离越远，传输路径数相对越少；传输路径数目关于地理位置是连续变化的。利用这些规律，能够在一定程度上指导基站设计和天线阵列方向图选择。
+
+\textbf{(2) 宽带问题：} 现实环境中电波的传播过程是随机过程，射线跟踪方法是确定性方法，无法全面的描述多径传播的随机性。基于此，本文首先引入随机的初始相位对多径传播模型进行校正，使其具有随机性，然后利用时间平均代替集平均的方式，分析多波传播过程的包络统计特性，并且利用分布拟合检验方法对其概率密度函数进行判断，发现多径传播的包络服从莱斯分布，并且与发射节点和目的节点位置有关，最后，针对存在多个单频信号的宽带模型，利用统计学工具，对模型进行简化分析，通过计算相关性，包络特性，概率密度函数等参量，发现当只存在单径传输时，各个频点信号的包络近似相同，即信道是平坦衰落。而各个频点的合成信号的包络随机变化，并且服从瑞利分布，当存在多径，但是在单个频点传输时，多径的合成包络随机变化，并且服从瑞利分布，上述性质均与实际相符，从而验证了所提模型的合理性。
+
+关键词：射线跟踪方法；虚拟源；多叉树；多波干涉
+\end{abstract}
+
+\maketitle
+
+\section{目录}
+
+\section{一、问题重述}
+\dotfill \textbf{-4-}
+
+\section{二、模型的假设}
+\dotfill \textbf{-5-}
+\subsection{2.1 基本问题的假设}
+\dotfill \textbf{-5-}
+\subsection{2.2 宽带问题的假设}
+\dotfill \textbf{-5-}
+
+\section{三、符号说明}
+\dotfill \textbf{-6-}
+
+\section{四、问题的分析}
+\dotfill \textbf{-6-}
+\subsection{4.1 基本问题的分析}
+\dotfill \textbf{-6-}
+\subsection{4.2 宽带问题的分析}
+\dotfill \textbf{-6-}
+
+\section{五、问题的求解}
+\dotfill \textbf{-7-}
+\subsection{5.1 基本问题的求解}
+\dotfill \textbf{-7-}
+\subsubsection{5.1.1 问题1的求解}
+\dotfill \textbf{-7-}
+\subsubsection{5.1.2 问题2的求解}
+\dotfill \textbf{-13-}
+\subsubsection{5.1.3 问题3的求解}
+\dotfill \textbf{-14-}
+\subsubsection{5.1.4 基本问题小结}
+\dotfill \textbf{-14-}
+\subsection{5.2 宽带问题的求解}
+\dotfill \textbf{-15-}
+\subsubsection{5.2.1 问题4的求解}
+\dotfill \textbf{-15-}
+\subsubsection{5.2.2 问题5的求解}
+\dotfill \textbf{-19-}
+\subsubsection{5.2.3 宽带问题小结}
+\dotfill \textbf{-24-}
+
+\section{六、模型的评价与改进}
+\dotfill \textbf{-25-}
+
+\section{参考文献}
+\dotfill \textbf{-25-}
+
+\section{附录}
+\dotfill \textbf{-25-}
+
+\section{一、问题重述}
+
+近年来，移动通信发展迅速，人们对系统容量的要求越来越高，频谱资源越来越紧缺。微蜂窝、微微蜂窝系统由于采用频谱复用技术缓解这个矛盾而得到广泛应用，这些系统的小区半径小于一千米，造成微蜂窝之间原来的统计相似关系丢失，从而使传统的基于测量数据的统计方法的电波传播预测模型失效。
+
+射线跟踪是一种被广泛用于移动通信和个人通信环境（街道微蜂窝和室内微微蜂窝）中的预测无线电波传播特性的技术，由于移动通信中使用的超高频微波和光同属电磁波，有一定近似性，按光学方法辨认出多路径信道中收、发射机间所有主要的传播路径。一旦这些传播路径被辨认后，就可根据电波传播理论来计算每条传播路径信号的幅度、相位、延迟和极化，然后结合天线方向图和系统带宽就可得到到达接收点的所有传播路径的相干合成结果。
+
+对于城市微蜂窝的二维模型，建筑群可被划分为一定的“块”，建筑物（即图 1 中带有灰色阴影的多边形）则被定义为“多边形”，多边形的“边”代表建筑物的表面，多边形的“顶点”则代表了建筑物的拐角。这种简化了的市区平面图大致反映出城市的主体结构，利用它进行射线跟踪，可以得到较为准确的路径损耗。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{渥太华市区部分区域二维视图}
+    \label{fig:1}
+\end{figure}
+
+\subsection{一、基本问题：}
+
+(1) 电波从发射天线出发，向空间各个方向均匀发射。为了能够进行数值计算，我们需要将总的发射能量均匀地分配到若干条射线上，这个过程称之为发射角量化过程。显然，规定的射线条数越多，量化就越精细，计算量也就越大。因此请根据实际情况，首先选择定量化的精细程度，然后跟踪确定发射机 \( \text{Tx} \)（坐标为 \((500, 200)\)）和接收机 \( \text{Rx} \)（坐标为 \((250, 350)\)）间的主要传播路径，并可视化展示在图 1 中。
+
+(2) 如图 1 所示，在路径 \( \text{AB} \)（两点坐标分别为 \((300, 350)\) 和 \((500, 350)\)）上以 \( 50 \, \text{m} \) 为间隔取 5 个位置准备放置发射机；在路径 \( \text{CD} \)（两点分别为 \((450, 300)\) 和 \((450, 200)\)）上以 \( 25 \, \text{m} \) 为间隔取 5 个位置准备放置接收机；这样有 25 种发射机-接收机组合。请问哪一个
+
+组合收发机间的传播路径最多，哪一个组合最少？
+
+(3) 将(2)中所有发射机-接收机组合的传播路径进行比对，请寻找尽可能多的规律。
+
+\subsection{二、宽带问题}
+
+(4) 两个或两个以上的波相遇时，在一定情况下会相互影响，这种现象叫干涉现象。声波、光波和其他电磁波等都有此现象。考虑如下的多波干涉问题：对于(2)中提到的 CD 路径上的所有接收点，从发射机出发的电波都有多个传播途径（可能是多次反射传播、多次绕射传播或是反射与绕射的任意组合传播）到达这些点，这些频率相同、振动方向相同、初相位相同的简谐波（即正弦波）在各个接收点相遇叠加，出现某些接收点振动始终加强、而在另一些接收点振动始终减弱的现象，这种现象称为多波干涉现象。
+
+上述接收点处，多波干涉形成的接收信号可以描述为
+
+\[
+f(\omega, t) = \sum_{i=1}^{Q} A_i e^{j(\omega t + kr_i)}
+\]
+
+上式中，$Q$ 为到达某接收点的传播途径总数；$A_i$ 和 $r_i$ 分别为到达接收点的第 $i$ 条传播路径的信号电场强度和长度；$kr_i$ 为长度为 $r_i$ 的传播路径上的相位积累；$\omega = 2\pi f = 2\pi c / \lambda$（$c$ 为光速，值为 $3 \times 10^8 \, m/s$）。
+
+请针对上述 25 种情况，对这种多波干涉的振幅 $|f(w, t)|$ 进行统计学分析，包括：
+
+一、二阶矩特性，不同路径到达信号的相关性及概率密度分布函数；
+
+(5) 继续考虑图 1，从发射机同时发射一组功率相同的电波，频率从 $2000 \, \text{Mhz}$ 到 $2100 \, \text{Mhz}$，间隔近似 $1 \, \text{Mhz}$，这样我们总共要同时发射 101 个单频信号。每个单频信号都会形成(4)中提到的多波干涉问题，多个单频信号会形成宽带多波干涉现象，请对这种宽带多波干涉现象进行数学建模，并分析合成波的包络统计特性，如同一频率、不同路径信号之间，同一路径、不同频率信号之间的相关性等。
+
+\section{二、模型的假设}
+
+\subsection{2.1 基本问题的假设}
+
+(1) 在很大的一个频率范围内，信号传播的路径和频率无关；
+
+(2) 假设微蜂窝环境下建筑物的高度高于基站天线的高度，从而将三维问题近似地简化成二维问题，只存在两种传播机制：反射和绕射；
+
+(3) 准确的建筑物信息，电磁波在该传播过程中符合几何光学定律；
+
+(4) 建筑物表面的电性能参数各处均匀。
+
+\subsection{2.2 宽带问题的假设}
+
+(1) 多波干涉过程是各态历经的平稳随机过程；
+
+(2) 传播路径的初始相位服从 $[0, 2\pi]$ 上均匀分布。
+
+\section{三、符号说明}
+
+\begin{tabular}{|c|c|}
+\hline 符号 & 符号说明 \\
+\hline $|f(w,t)|$ & 多波干涉振幅 \\
+$l$ & 25种组合中的第$l$种组合 \\
+$Q_{l}$ & 第$l$种组合的多径条数 \\
+$A_{li}$ & 第$l$种组合的第$i$径接收信号电场强度 \\
+$E_{i}$ & 分配给第$i$径的能量 \\
+$P_{i0}$ & 第$i$径中第一条径的长度 \\
+$S_{i}$ & 第$i$径中$j$次反射的出射线长度 \\
+$L_{ij}$ & 第$i$径中$j$次绕射的出射线长度 \\
+$d_{i}$ & 第$i$径中绕射的次数 \\
+\hline
+\end{tabular}
+
+\section{四、问题的分析}
+
+\subsection{4.1 基本问题的分析}
+
+射线追踪法是模拟搜索无线路径的常用方法，但该算法往往计算量过大，以至于无法获得令人满意的结果。为了简化计算压力，人们常采用发射角量化法，将发射射线从无穷转换成有限多，通过追踪每一根射线的路径，判断其能否到达接收方，以获得最终有效路径。若发射角量化过大，往往容易出现路径丢失的现象；反之，若量化较细密，则计算复杂度依旧很大。
+
+本文从另一个角度——基于虚拟源树的射线跟踪法，尝试去获取到达接收节点的有效路径。该算法无需量化发射角，理论上能够找到所有可能的路径。应用有效虚拟源法的关键是既要不遗漏一切有效的源，又要剔除所有无效像点。在拥堵的城市环境中，充满层层叠叠的遮挡，如何能够做到既快速又准确无误的判断，是第一题的重点。
+
+\subsection{4.2 宽带问题的分析}
+
+在该问题中，多波干涉的幅度与多径的条数、每条路径的信号电场强度和相位累积、电波的频率等变量有关。射线跟踪方法是确定性方法，对于位置确定的发送节点和接收节点，当利用射线跟踪算法求解基本问题时，多波干涉过程的诸参量均是确定的，不存
+
+在随机性。而电波的多径传播过程是一个随机过程，确定性的模型无法模拟这一过程，因此，本文首先通过引入各条路径的随机初始相位，对多波干涉模型进行校正，使模型具有随机性。在此基础上，以时间平均代替集平均，求解随机过程的一阶矩，二阶矩，及不同路径到达信号的相关性，最后利用利用分布拟合检验方法 \cite{ref1}，求解振幅的概率密度分布。
+
+\section{五、问题的求解}
+
+\subsection{基本问题的求解}
+
+采用虚拟源的思想，并利用射线跟踪算法求解传播路径问题。如图 \ref{fig:three_nodes} 所示，首先定义三类节点：发射节点、反射节点和绕射节点。在此基础上，建立射线传播的树状结构，同时获取所需的路径信息。算法充分利用地理位置信息，在多叉树的建立过程中，尽量减少无效节点的加入，以降低射线跟踪的复杂度。该算法无发射角量化过程，依靠判断虚拟源是否“有效”完成多叉搜索树的建立，同时获取有效路径。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{three_nodes.png}
+    \caption{三类节点}
+    \label{fig:three_nodes}
+\end{figure}
+
+\subsubsection{5.1.1问题 1 的求解}
+
+为了求解问题，首先读取城市微蜂窝的二维模型，并存储建筑物的方位。可以看出，本题建筑物布局大多为“横平竖直”结构，利用此特性可以简化处理复杂度。为了方便阐述本文方法，先简单介绍一些算法模型的意义。
+
+\textbf{虚拟墙}
+
+基于虚拟源的射线跟踪算法复杂度较高，且随墙面个数呈幂指数增长的关系 \cite{ref2}，若能通过某种方法减少搜索墙面的次数，则可以大大减少计算复杂度。
+
+本文利用了墙壁“虚拟合并”的思想，将同一条直线上的墙壁被视为“相同”（如图 \ref{fig:virtual_wall} 所示），而原先的墙仅仅是该“虚拟墙”的一个可达面。这是因为节点关于这些墙壁的镜像点都重合，无需重复搜索。如表 \ref{tab:wall_reduction} 所示，合并后的虚拟墙面数比真实墙面减少了 40\%，大大减少了算法后续遍历的复杂度。而在现实中的城市规划布局中，街道建筑往往也具有这种平整性，因此虚拟墙的概念具有一定的应用价值。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{virtual_wall.png}
+    \caption{虚拟墙示意图}
+    \label{fig:virtual_wall}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        类型 & 真实墙面数 & 虚拟墙面数 \\
+        \hline
+        原始 & 100 & 60 \\
+        \hline
+    \end{tabular}
+    \caption{墙面合并前后对比}
+    \label{tab:wall_reduction}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{墙壁虚拟合并示意图}
+    \label{fig:wall_merge}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{虚拟合并前后的墙壁数目对比}
+    \label{tab:wall_comparison}
+    \begin{tabular}{|c|c|}
+        \hline
+        真实墙壁数目 & 虚拟墙壁数目 \\
+        \hline
+        80 & 48 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{透光区}
+镜像节点是源节点关于墙面的对称的虚拟源，其本身不并不发射线。如图 4 所示，若源节点发出的射线被遮挡，则仅有部分墙面能够收到光线，称这部分区域为该墙面的透光区。可以看出三种墙面之间的关系为：透光区 \(<\) 真实墙 \(<\) 虚拟墙。
+
+\subsection{光扇区}
+虚拟源与其相应透光区的连线扫过的区域，会形成如图所示的扇区，称其为光扇区。只有光扇区内的墙面才有可能产生下一次反射。利用光扇区的这一特性，能够进一步减少遍历墙面的个数。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{概念示意图}
+    \label{fig:concept}
+\end{figure}
+
+本算法利用虚拟墙、透光区以及光扇区等概念，在最大程度上减少了无关节点被引入虚拟源树中的情况。通俗的说，只有被源节点照亮的墙，才能产生镜像。在程序实现中，节点被加入树中的充要条件为：该节点对应的反射墙中至少有一点处于光扇区，且该点与虚拟源节点之间无遮拦物存在。
+
+用 MATLAB 实现该算法，虚拟源节点类包含的属性和方法如表 \ref{tab:virtual_source_node} 所示。其中，最重要的函数 `getAllImages()` 用来遍历所有虚拟墙，寻找并增加所有有效镜像点。
+
+\begin{table}[h]
+    \centering
+    \caption{虚拟源节点类}
+    \label{tab:virtual_source_node}
+    \begin{tabular}{c|c}
+        \hline
+        属性: & 方法: \\
+        \hline
+        $Pos;$ & $imageNode()$ \% 建立镜像函数 \\
+        $Type;$ & $isReachableRx()$ \% 判断能否直达接收节点 \\
+        $LitWall;$ & $getAllImages()$ \% 遍历所有虚拟墙，寻找有效镜像点 \\
+        $RflctLvl;$ & \\
+        $ChildNum;$ & \\
+        $CurrentSearch;$ \% 当前搜索的镜像点序号 & \\
+        $Prev;$ \% 指向源节点的指针 & \\
+        $Next;$ \% 指向下一个镜像节点的指针 & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+采用深度优先算法，建立虚拟源点多叉树，树的每一个分支代表一个路径，若当前路径能够到达接收节点，则为有效路径。从图 5 中可以看到，虚拟源点树的建立过程，就是路径搜索的过程，当树建立完成后，路径也就搜索完毕。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{求解问题 1 的流程图}
+    \label{fig:flowchart}
+\end{figure}
+
+图 6 为在 7 次反射约束下光线的可达区域，可以看出此时没有能够到达接收点 \(Rx\) 的路径。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{七次反射约束下光线的可达区域}
+    \label{fig:reflection}
+\end{figure}
+
+当考虑绕射时，可以将“有效的”绕射点看作虚拟源，并添加至搜索树。这里的“有效”的充要条件是 1、绕射点在虚拟源相应的光扇区内；2、绕射点与虚拟源之间无遮拦。此时，仅需在原来节点类基础上稍作修改，增加遍历墙角、寻找有效绕射点的方法。
+
+\begin{table}[h]
+    \centering
+    \caption{虚拟源节点类(考虑绕射)}
+    \label{tab:virtual_source}
+    \begin{tabular}{c|c}
+        \hline
+        属性: & 方法: \\
+        \hline
+        $Pos;$ & $imageNode()$ \quad \% 建立虚拟源函数 \\
+        $Type;$ & $isReachableRx()$ \quad \% 判断能否直达接收节点 \\
+        $LitWall;$ & $getAllImages()$ \quad \% 遍历所有虚拟墙，寻找有效镜像点 \\
+        $RflctLvl;$ & $getAllCorners()$ \quad \% 遍历所有墙角，寻找有效绕射点 \\
+        $ChildNum;$ & \\
+        $CurrentSearch;$ & \\
+        $Prev;$ & \\
+        $Next;$ & \\
+        $DfrctLvl;$ & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+用类似的深度优先搜索算法完成虚拟源树的构造，如图 \ref{fig:tree} 所示，同时保存有效路径，其流程图如图 \ref{fig:flowchart} 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{tree.png}
+    \caption{虚拟源树}
+    \label{fig:tree}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{flowchart.png}
+    \caption{流程图}
+    \label{fig:flowchart}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{virtual_source_tree.png}
+    \caption{虚拟源树}
+    \label{fig:virtual_source_tree}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{depth_first_search_algorithm.png}
+    \caption{含绕射的深度优先搜索算法}
+    \label{fig:depth_first_search_algorithm}
+\end{figure}
+
+采用该算法，对题目 1 所要求的四种情况进行计算，共获得 96 条从 \( \mathrm{Tx} \) 到 \( \mathrm{Rx} \) 的主要路径，绘制如图 9 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{问题 1 结果展示}
+    \label{fig:9}
+\end{figure}
+
+\subsubsection{5.1.2问题 2 的求解}
+
+如图 10 所示，对发送天线和接收天线分别标号。用前面所叙述的基于虚拟源的射线跟踪法，获取两两之间的传输路径。获得的路径数目如表 4 所示。可见发 3->收 2 以及发 4->收 2 之间的传播路径最多，均大于 400；而发 5->收 5 的传输路径最少，仅有 66 个。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{节点间相互位置关系}
+    \label{fig:10}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{传输路径数目}
+\begin{tabular}{c|c|c|c|c|c}
+\hline
+\multirow{2}{*}{\begin{tabular}{c} 发射端位置 \\ 接收端位置 \end{tabular}} & 1 & 2 & 3 & 4 & 5 \\ \hline
+1 & 126 & 103 & 255 & 312 & 107 \\ \hline
+2 & 170 & 161 & 458 & 431 & 147 \\ \hline
+3 & 117 & 97 & 322 & 375 & 98 \\ \hline
+4 & 101 & 92 & 322 & 368 & 88 \\ \hline
+5 & 75 & 74 & 313 & 345 & 66 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{5.1.3 问题3的求解}
+
+由问题2中的25种情况来看，有以下几种因素会对路径数量产生较大影响。
+
+\textbf{> 距离}
+
+将上述25种组合的距离与到达路径数目进行统计，得到下图11所示的距离——到达路径数的关系图。从中可以看到，二者之间路径数目的分布与距离成阶梯下降的关系。因此，可以判定一般情况下，发送方与接收方距离越接近，二者之间的到达路径越丰富。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{到达路径数目与距离的关系}
+\end{figure}
+
+\textbf{> “十字路口”}
+
+由表（4）可以看出，当发送端为3或4时，路径最多；同样，接收端为2时，接收路径最多；分析发3、发4以及收2可以发现，这三个节点的共同特性是都在“十字路口”附近。因此，规律之二为“十字路口”位置的多径信息最丰富，因此，可以在十字路口等开阔地带架设基站，以达到增大覆盖范围的目的。
+
+\textbf{> 阴影区}
+
+由表（4），可以看出，这三种组合：发1->收5，发2->收5，发5->收5的路径最少，从位置关系上看，收5几乎被围在一个矩形建筑群内，相对于两端的发送节点形成了一个阴影区。
+
+\textbf{> 连续性}
+
+由表（4）可以看出，相邻的两个节点的接收路径数目相差不大，因此可以认为，路径数目关于方位是连续变化的。
+
+\subsection{5.1.4 基本问题小结}
+
+本节利用虚拟源思想，设计了一种低复杂度的射线跟踪算法，完成了发射点到接收点的路径搜索。利用了“虚拟墙”、“透光区”、“光扇区”等概念辅助算法设计，完成节点有效性的判决，避免了无效节点的混入，减少了计算复杂度。利用深度优先的搜索算法，完成虚拟源树状结构的建立的同时，即可获得有效路径，无须再次遍历，算法效率较高。经个人笔记本(DEL L INSPIRON 6400)测试，本模型的一次路径搜索时间，平均为 300s 左右。
+
+\section{5.2 宽带问题的求解}
+
+\subsection{5.2.1 问题 4 的求解}
+
+本题要求针对问题 2 的 25 种情况，对多波干涉的振幅 $|f(w, t)|$ 进行统计学分析，包括：一、二阶矩特性，不同路径到达信号的相关性及概率密度分布函数。但是由于射线跟踪方法是确定性方法，无法全面的反映多径传播的随机属性，并且无法准确的预测到达射线的相位，因此，我们通过引入随机的初始相位 $\theta_{i}$ 对模型进行校正，校正后的多波干涉接收信号可表示成：
+
+\begin{equation}
+f_{l}(w, t)=\sum_{i=1}^{Q_{l}} A_{li} e^{j\left(w t+k r_{li}+\theta_{i}\right)}
+\tag{5.1}
+\end{equation}
+
+其中，$l$ 表示 25 种组合中的第 $l$ 种组合，$Q_{l}$ 表示第 $l$ 种组合的多径条数，$A_{li}$ 表示第 $l$ 种组合的第 $i$ 径接收信号电场强度，$\theta_{i}$ 在 $[0, 2\pi]$ 上服从均匀分布。由射线跟踪算法的建模过程可知：
+
+\begin{align}
+A_{li}(w) &= \left(E_{i} \times \left(\frac{e^{jk p_{i0}}}{p_{i0}}\right) \times 0.8^{s_{i}} \times \prod_{j=1}^{s_{i}} \left(\frac{e^{jk p_{ij}}}{p_{ij}}\right) \times \prod_{j=1}^{d_{i}} D_{ij}(w, \mathbf{L}_{ij})\right)_{l} \\
+r_{li} &= \sum_{j=0}^{s_{i}} p_{ij} + \sum_{j=1}^{d_{i}} L_{ij}, i \in Q_{l}
+\end{align}
+
+其中，在第 $l$ 种组合发射和接收节点组合下，$E_{i}$ 表示分配给第 $i$ 径的能量，$p_{i0}$ 表示第 $i$ 径中第一条径的长度，$s_{i}$ 表示第 $i$ 径中反射的次数，$p_{ij}$ 表示第 $i$ 径中 $j$ 次反射的出射线长度，$d_{i}$ 表示第 $i$ 径中绕射的次数，$\mathbf{L}_{ij}$ 表示第 $i$ 径中 $j$ 次绕射的出射线长度，$D_{ij}(w, \mathbf{L}_{ij})$ 表示第 $i$ 径中 $j$ 次绕射的绕射系数。
+
+在单频情况下，第 $l$ 种组合的多波干涉振幅可表示成：
+
+\begin{equation}
+Z_{l}(t)=\left|f_{l}(w, t)\right|=\left|f_{l}(t)\right|=\left|\sum_{i=1}^{Q_{l}}\left|A_{li}\right| e^{j\left(k r_{li}+\beta_{li}+\theta_{i}\right)}\right|
+\tag{5.3}
+\end{equation}
+
+其中，$\beta_{li}$ 表示 $A_{li}$ 的相位。由式 (5.3) 可得，$k r_{li}+\beta_{li}$ 是确知量，此随机过程的分布取
+
+决于 $\theta_{i}$，不随时间改变，因此，$Z_{i}(t)$ 是各态历经的平稳随机过程，从而能够采用时间平均代替集平均的方式来求解 $Z_{i}(t)$ 的统计特性。在利用射线追踪法求解得到发射节点到达接收节点的路径之后，通过式 (5.2) 计算过程，我们能够获得各种发射接收节点组合情况下的各个路径分量的参数 $\left|A_{li}\right|, kr_{li} + \beta_{li}, l \in [1, 25], i \in [1, Q_{i}]$。在此基础上，通过做 $N$ 次试验，每次试验中在 $[0, 2\pi]$ 上随机选取 $\theta_{i}$ 的方式，可以获得样本函数 $Z_{i}(t)$ 的离散化随机样本序列 $\{Z_{l_1}, Z_{l_2}, \ldots, Z_{l_n}, \ldots Z_{l_N}\}$。通过对样本序列的统计分析来分析 $Z_{i}(t)$ 的统计特性，$Z_{i}(t)$ 的统计特性主要包括两方面：
+
+- $Z_{i}(t)$ 的一、二阶矩特性，不同路径到达信号的相关性：
+
+当 $N$ 足够大时，第 $l$ 种组合的一阶矩 $E\left[Z_{l}(t)\right]$，二阶矩 $E\left[Z_{l}(t)^{2}\right]$，自相关函数 $R_{l}(\tau)$ 和以及与第 $m$ 种组合的互相关函数 $R_{lm}(\tau), l, m \in [1, 25], l \neq m$，可采用计算公式
+\[
+E\left[Z_{l}(t)\right] = \frac{1}{N} \sum_{n=1}^{N} Z_{ln}, \quad E\left[Z_{l}(t)^{2}\right] = \frac{1}{N} \sum_{n=1}^{N} Z_{ln}^{2}
+\]
+来求解一阶矩、二阶距，25 种组合的计算结果如表 5 所示：
+
+\begin{table}[h]
+\centering
+\caption{一阶矩、二阶距，$\sigma_{l}^{2}$ 计算结果}
+\begin{tabular}{|c|c|c|c|}
+\hline
+收发组合 & 一阶矩 & 二阶距 & $\sigma_{l}^{2}$ \\
+\hline
+(1, 1) & 1.81E-04 & 4.02E-08 & 2.06E-08 \\
+\hline
+(1, 2) & 2.90E-03 & 8.49E-06 & 5.36E-06 \\
+\hline
+(1, 3) & 9.14E-04 & 1.03E-06 & 5.37E-07 \\
+\hline
+(1, 4) & 1.04E-02 & 1.31E-04 & 7.01E-05 \\
+\hline
+(1, 5) & 5.08E-03 & 2.64E-05 & 1.65E-05 \\
+\hline
+(2, 1) & 1.40E-04 & 2.42E-08 & 1.24E-08 \\
+\hline
+(2, 2) & 1.66E-03 & 2.80E-06 & 1.74E-06 \\
+\hline
+(2, 3) & 1.36E-02 & 1.91E-04 & 1.19E-04 \\
+\hline
+(2, 4) & 7.89E-03 & 7.76E-05 & 3.97E-05 \\
+\hline
+(2, 5) & 2.91E-03 & 8.72E-06 & 5.38E-06 \\
+\hline
+(3, 1) & 7.44E-05 & 6.83E-09 & 3.48E-09 \\
+\hline
+(3, 2) & 1.16E-03 & 1.35E-06 & 8.51E-07 \\
+\hline
+(3, 3) & 5.95E-04 & 4.38E-07 & 2.27E-07 \\
+\hline
+(3, 4) & 3.58E-02 & 1.29E-03 & 8.15E-04 \\
+\hline
+(3, 5) & 2.05E-03 & 4.29E-06 & 2.67E-06 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+(4,1) & 5.83E-05 & 4.20E-09 & 2.17E-09 \\
+\hline
+(4,2) & 8.96E-04 & 8.09E-07 & 5.11E-07 \\
+\hline
+(4,3) & 6.18E-04 & 4.74E-07 & 2.40E-07 \\
+\hline
+(4,4) & 9.16E-03 & 9.96E-05 & 5.33E-05 \\
+\hline
+(45) & 1.59E-03 & 2.60E-06 & 1.61E-06 \\
+\hline
+(5,1) & 3.69E-05 & 1.65E-09 & 8.71E-10 \\
+\hline
+(5,2) & 8.42E-05 & 8.46E-09 & 4.57E-09 \\
+\hline
+(5,3) & 6.25E-04 & 4.80E-07 & 2.51E-07 \\
+\hline
+(5,4) & 1.79E-02 & 3.75E-04 & 2.01E-04 \\
+\hline
+(5,5) & 3.01E-04 & 1.04E-07 & 5.78E-08 \\
+\hline
+\end{tabular}
+\end{table}
+
+在此基础上，利用公式 $R_{l}(\tau)=\frac{1}{N}\sum_{n=1}^{N}Z_{ln}Z_{l(n+\tau)}$，$R_{lm}(\tau)=\frac{1}{N}\sum_{n=1}^{N}Z_{ln}Z_{m(n+\tau)}$ 来求解此随机过程的相关性，相关性结果举例如图 12、13 所示，由图 12 可知组合 (4,4) 的接收信号功率明显大于其余几种组合，这是由组合 (4,4) 的发射节点和接收节点位置决定的，由图 13 可知，不同组合之间包络的相关性很弱，即可认为不同的多径信道相互独立。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{自相关结果举例}
+    \label{fig:12}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{互相关结果举例}
+    \label{fig:cross_correlation_example}
+\end{figure}
+
+\section{Z_{l}(t) 的概率密度函数：}
+
+对 \( Z_{l}(t) \) 进行分解得：
+
+\begin{equation}
+Z_{l}(t) = \left| \sum_{i=1}^{Q_{l}} |A_{li}| e^{j(kr_{li} + \beta_{li} + \theta_{i})} \right| = \left| \sum_{i=1}^{Q_{l}} |A_{li}| \cos\left(kr_{li} + \beta_{li} + \theta_{i}\right) + j \sum_{i=1}^{Q_{l}} |A_{li}| \sin\left(kr_{li} + \beta_{li} + \theta_{i}\right) \right|
+\tag{5.4}
+\end{equation}
+
+\[
+= \sqrt{\left( \sum_{i=1}^{Q_{l}} |A_{li}| \cos\left(kr_{li} + \beta_{li} + \theta_{i}\right) \right)^{2} + \left( \sum_{i=1}^{Q_{l}} |A_{li}| \sin\left(kr_{li} + \beta_{li} + \theta_{i}\right) \right)^{2}}
+\]
+
+令 \( T_{lc} = \sum_{i=1}^{Q_{l}} |A_{li}| \cos\left(kr_{li} + \beta_{li} + \theta_{i}\right) \)，\( T_{ls} = \sum_{i=1}^{Q_{l}} |A_{li}| \sin\left(kr_{li} + \beta_{li} + \theta_{i}\right) \)。当 \( Q_{l} \) 很大时，由中心极限定理得，\( T_{lc} \)，\( T_{ls} \) 均服从高斯分布且相互独立 \({}^{[3]}\)，此时，由于 \( Z_{l}(t) = \sqrt{T_{lc}^{2} + T_{ls}^{2}} \)，当组合中存在主射径（一次反射，直射）时，\( Z_{l}(t) \) 服从莱斯分布，当组合中不存在主射径时，\( Z_{l}(t) \) 服从瑞利分布。而具体到本问题，由于 \( Q_{l} \) 值有限，此结论不一定成立。本文利用分布拟合检验方法对样本的概率密度函数进行检验。首先根据经验，对第 \( l \) 种组合，建立需要检验的假设：
+
+\[
+H_{l0}：Z_{l}(t) \text{ 服从莱斯分布，概率密度函数为 } f_{l}(z) = \frac{z}{\sigma_{l}^{2}} \exp\left(-\frac{z^{2} + A^{2}}{2\sigma_{l}^{2}}\right) I_{0}\left(\frac{Ax}{\sigma_{l}^{2}}\right);
+\]
+
+\[
+H_{l1}：Z_{l}(t) \text{ 不服从莱斯分布。}
+\]
+
+因为 在 $H_{l_{0}}$ 中，$\sigma_{l}^{2}$，$A^{2}$ 是未知的，所以必须首先估计 $\sigma_{l}^{2}$，$A^{2}$。$A$ 是主射径的电场强度，$\sigma_{l}^{2}=\frac{2}{\pi}E\left[Z_{l}(t)\right]^{2}$，不存在主射径时，$A=0$。将第 $l$ 种组合的一阶矩和主射径强度代入上式，可分别计算得出 25 种组合的 $\sigma_{l}^{2}$ 数值，如表 6 所示。
+
+在 $H_{l_{0}}$ 下，$Z_{l}(t)$ 可能取值的全体 $\Omega$ 为区间 $\left[0,+\infty\right)$，将区间 $\left[0,+\infty\right)$ 分为 $k$ 个互不相交的子集 $B_{0}, B_{1}, \ldots, B_{k-1}$。令 $f_{li}$ 表示 $N$ 次试验中观察值 $Z_{l1}, Z_{l2}, \ldots, Z_{ln}, \ldots Z_{lN}$ 落入 $B_{i}$ 的个数，$p_{li}=\int_{B_{i}} f_{l}(z) dz$ 表示当 $Z_{l}(t)$ 服从 $H_{l_{0}}$ 中所假设的分布时，事件 $B_{i}$ 的概率。在此基础上，定义 $\chi^{2}=\sum_{i=0}^{k-1} \frac{f_{li}^{2}}{N p_{li}}-N$。对于给定的显著性水平 $\alpha$，由 $\chi^{2}$ 拟合检验法得：
+
+当 $\chi^{2}<\chi_{\alpha}^{2}(k-r-1)$ 时，$H_{l_{0}}$ 成立；
+
+当 $\chi^{2} \geqslant \chi_{\alpha}^{2}(k-r-1)$ 时，$H_{l_{0}}$ 不成立。
+
+其中，当所假设的分布函数不含未知参数时 $r=0$，否则 $r=1$。由于在计算概率时，$\sigma_{l}^{2}$ 由估计得到，因此设 $r=1$。根据实践经验，在选择集合 $B_{i}$ 的区间时，应使得 $N p_{li} \geqslant 5$，因此，本文设 $k=15$。在显著性水平 $\alpha=0.05$ 的情况下，抽取 10 组进行计算，所得结果如表 7 所示，并由此断定 $Z_{l}(t)$ 服从莱斯分布。
+
+\begin{table}[h]
+\centering
+\caption{分布拟合检验结果}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+第一组 & 第二组 & 第三组 & 第三组 & 第三组 & 第三组 & 第三组 & 第三组 & 第三组 & 第三组 \\
+\hline
+$H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ & $H_{l_{0}}$ \\
+成立 & 成立 & 成立 & 成立 & 成立 & 成立 & 成立 & 成立 & 成立 & 成立 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{5.2.2问题 5 的求解}
+
+本题要求对宽带多波干涉现象进行数学建模，并分析合成波的包络统计特性。由式 (5.1) 知，宽带多波的合成接收信号可表示成：
+
+\begin{equation}
+W_{l}(t)=\sum_{m=1}^{M} f\left(w_{m}, t\right)=\sum_{m=1}^{M} \sum_{i=1}^{Q_{l}} A_{li}\left(w_{m}\right) e^{j\left(w_{m} t+k r_{l}+\theta_{im}\right)}
+\tag{5.5}
+\end{equation}
+
+\begin{equation}
+w_{m}=2 \pi\left(2000+m\right) \times 10^{6}
+\end{equation}
+
+其中，$l$ 表示图 1 给定的发射和接收节点路径，$M=101$ 表示单频信号的频率个数，$w_{m}$ 表示第 $m$ 个单频信号的角频率。由地图信息知，在当前发射和接收节点组合下，不存在主
+
+射径，并且合成信号的包络如图 14 所示，从图中可发现，合成信号的包络呈现随机分布，但是由于 \( W_{l}(t) \) 构造复杂，很难直接求解其包络的统计特性，因此本文对合成信号的包络统计特性进行简化分析，分以下两种情况讨论：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{宽带合成信号的包络}
+    \label{fig:14}
+\end{figure}
+
+\begin{itemize}
+    \item 单频情况下，多波合成信号的统计特性：
+\end{itemize}
+
+通过观察图 15 可发现单频多波合成信号的包络具有随机性，在问题 4 的求解中，本文已经对单频情况下多波合成信号的统计特性进行了分析，在当前发射和接收节点组合下，合成信号的包络统计特性服从瑞利分布，经过推导可得其概率密度函数为
+\[
+f_{w}(z) = \frac{z}{\sigma_{l}^{2}} \exp \left(-\frac{z^{2}}{2 \sigma_{l}^{2}}\right), \quad \sigma_{l}^{2} = 6.76 \times 10^{-10},
+\]
+如图 15 所示，推导所得到概率密度函数和统计得到的概率密度函数基本吻合。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{单频多径合成信号的包络（2GHz）}
+    \label{fig:15}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{单频多径合成信号包络的概率密度函数（2GHz）}
+    \label{fig:16}
+\end{figure}
+
+除此之外，在选定波频率 $f_{m}=2\times10^{9}\,\text{GHz}$ 的情况下，将各径按照到达的先后顺序进行排序，通过射线追踪算法，由式（5.2）可以获得多径信号的各径幅度集合
+\begin{equation}
+A_{l}=\left\{\left|A_{l_{1}}\right|,\left|A_{l_{2}}\right|,\ldots,\left|A_{l_{Q_{l}}}\right|\right\}_{w_{m}}
+\end{equation}
+利用射线跟踪法模拟多径传播过程时，$A_{l}$ 的各径幅度分布和各径相关函数 $R_{m}(\tau)$ 如图 17 所示，分别反映了各径信道衰落的随机性，并且由于各径的幅度呈现稀疏的分布特性，因此 $A_{l}$ 具有良好的自相关特性。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{$A_{l}$的各径幅度与自相关函数$R_{m}(\tau)$}
+    \label{fig:17}
+\end{figure}
+
+\textbf{单径情况下，宽带合成信号的统计特性：}
+
+在单径情况下，由图18可知，多个单频信号的叠加使得合成信号包络具有随机性，第$i$径的宽带合成信号包络可表示成：
+
+\begin{equation}
+\begin{split}
+|W_{li}(t)| &= \left| A_{li}(w_{m}) \right| \left| \sum_{m=1}^{M} e^{j(w_{m}t + kr_{li} + \theta_{m})} \right| \\
+&= \left| A_{li}(w_{m}) \right| \sqrt{\left| \sum_{m=1}^{M} \cos(w_{m}t + kr_{li} + \theta_{m}) \right|^{2} + \left| \sum_{m=1}^{M} \sin(w_{m}t + kr_{li} + \theta_{m}) \right|^{2}}
+\end{split}
+\tag{5.6}
+\end{equation}
+
+式（5.4）与式（5.6）结构类似。同样地，可通过分布假设检验法证明$|W_{li}(t)|$服从瑞利分布，概率分布函数为$f_{w}(z) = \frac{z}{\sigma_{l}^{2}} \exp(-\frac{z^{2}}{2\sigma_{l}^{2}})$，$\sigma_{l}^{2} = 5.89 \times 10^{-11}$，具体过程此处不再赘述。
+
+如图19所示，推导所得到的概率密度函数和统计得到的概率密度函数基本吻合。除此之外，在选定第$i$径的情况下，通过射线追踪算法，由式（5.2）可以获得各个频点的接收信号幅度分量集合$C_{li} = \left\{ \left| A_{li}(w_{1}) \right|, \left| A_{li}(w_{2}) \right|, \ldots, \left| A_{li}(w_{M}) \right| \right\}, i \in [1, Q_{l}]$，由图20可发现同一频点接收信号在不同径上的强度不同，这反映了多径传播过程是频率选择性的衰落，并且不同频点信号在同一径上的接收强度近似相同，这反映了当不存在多径（只有单径传输）时，信道在频域是平坦的，即信道的衰落过程是平坦衰落。除此之外，$|W_{li}(t)|$的自相关函数$R_{m}(\tau)$如图21所示，从图中可看出$R_{m}(\tau)$类似于冲击响应，对其做傅里叶变换，可得白化的功率谱，这再次验证了在单径情况下，信道的衰落是平坦的。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{单径宽带合成信号的包络（第一径）}
+    \label{fig:18}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{单径宽带合成信号包络的概率密度函数（第一径）}
+    \label{fig:19}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{单径上各个频点波形的接收信号幅度}
+    \label{fig:20}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{$\left|W_{li}(t)\right|$的自相关函数$R_{m}\left(\tau\right)$（第一径）}
+    \label{fig:21}
+\end{figure}
+
+\subsection{5.2.3宽带问题小结}
+
+本节首先引入随机的初始相位对多径传播模型进行校正，使其具有随机性，然后，将射线跟踪方法提供的路径、场强等信息做为条件，利用时间平均代替集平均的方式，分析多波传播过程的包络统计特性，并且利用分布拟合检验方法对其概率密度函数进行判断，最后，针对存在多个单频信号的宽带模型，利用统计学工具，对模型进行简化分析，通过计算相关性、包络特性、概率密度函数等参量，发现所提模型与实际相符，从而验证了所提模型的合理性。
+
+所得结论如下：当只存在单径传输时，各个频点信号的包络近似相同，即信道是平坦衰落。而各个频点的合成信号的包络随机变化，并且服从瑞利分布，当存在多径，但是在单个频点传输时，多径的合成包络随机变化，并且服从瑞利分布。
+
+\section{六、模型的评价与改进}
+
+为了研究城市微蜂窝环境中无线接收信号的特性，本文建立了基于虚拟源的二维射线跟踪模型。提出了“虚拟墙”、“透光区”以及“光扇区”等概念，用来判定虚拟源的有效性，能够大幅度降低算法复杂度。同时，本文利用树状结构存储电磁波的反射与绕射信息，通过深度优先算法建立搜索树，在创建多叉树的同时，也完成了有效路径的获取，无须再次遍历，算法效率较高。针对宽带多波干涉问题，本文建立了宽带多径传播模型，采用射线跟踪这种确定性信道建模方法获取信道数据，对广泛应用的随机信道模型进行修正，这样得到的模型更贴近于实际运用场景。
+
+在高层建筑物林立的城市中心，当发射天线高度较低时，电波的传播主要是在建筑物侧面及侧边，建筑物上方的传播路径可忽略，这种情况下，二维模型是可以接受的。但这种模型显然无法描述城市中常见的立交桥及斜面情况，为此需要建立更为精确的三维模型，这将成为未来研究的一个热点。随机信道模型与确定性方法的结合，可以得到更加实用的信道模型，但学术界对此方法的研究还刚刚开始，此种方法尚未研究清楚，这将成为研究信道模型的一个新领域。
+
+\section{参考文献}
+
+[1] 盛骤，谢式千，潘承毅，概率论与数理统计，北京：高等教育出版社，2007
+
+[2] Kouyoumjian R G, Pathak P H. A uniform geometrical theory of diffraction for an edge in a perfectly conducting surface[J]. Proceedings of the IEEE, 1974, 62(11): 1448-1461
+
+[3] 樊昌信，曹丽娜，通信原理，北京：国防工业大学出版社，2006
+
+\section{附录}
+
+\subsubsection{程序运行界面}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{程序运行界面}
+\end{figure}
+
+\begin{itemize}
+    \item 部分核心代码
+\end{itemize}
+
+\begin{verbatim}
+function hasImgs = getAllImages(sNode,walls) %建立 sNode 的所有镜像结点
+    totalWallNum = length(walls);
+    wallIndex = [];
+    for i=1:totalWallNum, %逐个扫描所有的墙
+        if (i ~= sNode.Nwall.WallIndex) && ...%忽略自己的墙
+            ~((walls(i).K==1 && walls(i).C==sNode.Position(1)) || (walls(i).K==0 && walls(i).C==sNode.Position(2)));
+            area = getLit(sNode,walls(i));%第 i 面墙的光照区
+            if( ~isempty(area) )
+                wallIndex = [wallIndex,i];
+                walls(i).Segment = area; %更新 wall 的信息，以传递给节点属性
+                walls(i).SegmentNum = length(area)/2;
+            end
+        end
+    end
+    if(isempty(wallIndex))
+        hasImgs = false;
+    else
+        hasImgs = true;
+        % 对有光照区的墙面，构造镜像点；
+        imageNode(sNode,walls(wallIndex));
+    end
+end
+
+%% 建立虚拟源树并寻找路径
+function ways = getPath(RflNum,DfrNum)
+    global BUILDING G CORNER WALL txPos rxPos
+    %% 为了显示第一层节点个数，
+    fprintf('Total Search: %d\n', totalSearch );
+    %%
+    root = imageNode(txPos);
+    p = root;
+    tag = root.CurrentSearch;
+
+    tic
+    i = 0;
+
+    validNum =0;
+    ways =[];
+\end{verbatim}
+
+\begin{verbatim}
+while ( 1 )
+    if(p.IsValid && p.RflctLvl==RflNum && p.DfrctLvl==DfrNum) % 发现符合条件的可达路径
+        path = [rxPos]; % 记录路径
+        validNum = validNum + 1;
+        q = p;
+        while(q ~= root)
+            if(q.IsCorner) % 绕射节点
+                path = [q.Position; path];
+            else % 反射节点
+                a = path(1,:);
+                b = q.Position;
+                c = q.Nwall.C;
+                if(q.Nwall.K == 0) % 水平节点
+                    crossx = a(1) + (a(1) - b(1)) * (c - a(2)) / (a(2) - b(2));
+                    crossy = c;
+                else % 垂直节点
+                    crossx = c;
+                    crossy = b(2) + (a(2) - b(2)) * (c - b(1)) / (a(1) - b(1));
+                end
+                cross = [crossx crossy];
+                path = [cross; path];
+            end
+            q = q.Prev;
+        end
+        path = [txPos; path];
+        ways{validNum} = path;
+    end
+
+    hasImg = false;
+    hasCorner = false;
+    if(p.DfrctLvl < DfrNum) % 没达到绕射次数
+        hasCorner = getAllCorners(p); % 寻找绕射点
+    end
+    if(p.RflctLvl < RflNum) % 没达到反射次数
+        hasImg = getAllImages(p, WALL); % 寻找镜像节点
+    end
+
+    if(p.RflctLvl < RflNum || p.DfrctLvl < DfrNum) % 需要回溯的情况
+        if(~(hasImg || hasCorner)) % 还能往下走，但无孩子则回溯
+            p = p.Prev;
+        end
+    end
+end
+\end{verbatim}
+
+\begin{verbatim}
+else
+    p = p.Prev;
+end
+
+while ( p.CurrentSearch == p.ChildNum && p != root) % 若当前节点已经搜索完毕，则回溯
+    p = p.Prev;
+end
+if(p==root && p.CurrentSearch==p.ChildNum)% 若根节点搜完，则退出
+    break;
+end
+p.CurrentSearch = p.CurrentSearch+1;% 更新当前节点搜索值
+p = p.Next(p.CurrentSearch);% 搜索下一个孩子
+
+if(tag != root.CurrentSearch)
+    fprintf('Now Search: %d/%d\n',full(root.CurrentSearch),totalSearch);
+    tag = root.CurrentSearch;
+end
+
+end
+toc
+\end{verbatim}
+
+\end{document}
