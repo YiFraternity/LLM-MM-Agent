@@ -18,9 +18,8 @@
 关键字：随机存贮，K-S 检验，频率替换，遍历搜索，马氏链模型
 \end{abstract}
 
-\section{仓库容量有限条件下的随机存贮管理问题}
 
-\subsection{问题重述}
+\section{问题重述}
 
 工厂生产需定期地定购各种原料，商家销售要成批地购进各种商品。无论是原料或商品，都有一个怎样存贮的问题。存得少了无法满足需求，影响利润；存得太多，存贮费用就高。因此说存贮管理是降低成本、提高经济效益的有效途径和方法。本问题主要考虑的是在销售速率固定，交货时间为一随机变量的情况下，商场如何确定最优的订货点 $L^*$ 来使的其总的损失费用达到最低。
 
@@ -52,7 +51,7 @@
     \item $p(X)$：交货时间的概率密度函数
 \end{itemize}
 
-\subsection{解题思路}
+\subsubsection{解题思路}
 
 假设随机变量 $X$（交货时间）的密度函数已知为 $p(x)$。考虑某个周期内平均每天的损失费用设为 $g(L)$，求其最小时 $L$ 的取值 $L^*$。因为 $L \leq Q_0$ 和 $L > Q_0$ 时 $g(L)$ 的表达式是不同的，所以分三步来求 $L^*$。
 
@@ -62,7 +61,7 @@
     \item $L^* = \begin{cases} L_1^* & g(L_1^*) \leq g(L_2^*) \\ L_2^* & g(L_1^*) > g(L_2^*) \end{cases}$
 \end{enumerate}
 
-\subsection{具体步骤}
+\subsubsection{具体步骤}
 
 第一步：考虑 $L \leq Q_0$ 时一个周期内平均每天的损失费用 $f(L, X)$。因为在一个周期内可能会发生 $0 \leq X \leq \frac{L}{r}$（会发生缺货）或 $X > \frac{L}{r}$（不会缺货）的情况。分别考虑得到费用函数为：
 
@@ -339,9 +338,9 @@ L_{2}^{*} & E[f(L_{1}^{*}, X)] > E[f(L_{2}^{*}, X)]
 \end{cases}
 \]
 
-\section{问题 2}
+\subsection{问题 2}
 
-\subsection{缺货天数的数据分析}
+\subsubsection{缺货天数的数据分析}
 
 这里首先要找出缺货天数 \( X \) 服从何种分布，下面根据题目给出的到货天数的记录判断 \( X \) 服从的分布。
 
@@ -349,8 +348,7 @@ L_{2}^{*} & E[f(L_{1}^{*}, X)] > E[f(L_{2}^{*}, X)]
 
 这里以商品三的缺货天数为例来检验 \( X \) 是否服从上述三种连续型分布。
 
-\subsection{One-Sample Kolmogorov-Smirnov Test}
-
+\begin{table}
 \begin{tabular}{|l|l|}
 \hline
  & VAR00002 \\
@@ -370,12 +368,13 @@ Kolmogorov-Smirnov Z & 1.981 \\
 Asymp. Sig. (2-tailed) & .001 \\
 \hline
 \end{tabular}
+\caption{One-Sample Kolmogorov-Smirnov Test}
+\end{table}
 
 \footnotetext[1]{a. Test distribution is Normal.}
 \footnotetext[1]{b. Calculated from data.}
 
-\subsection{One-Sample Kolmogorov-Smirnov Test 2}
-
+\begin{table}
 \begin{tabular}{|l|l|}
 \hline
  & VAR00002 \\
@@ -390,12 +389,12 @@ Kolmogorov-Smirnov Z & 4.456 \\
 Asymp. Sig. (2-tailed) & .000 \\
 \hline
 \end{tabular}
+\caption{One-Sample Kolmogorov-Smirnov Test 2}
+\end{table}
+\footnotetext[1]{a. Test distribution is Uniform.}
+\footnotetext[1]{b. Calculated from data.}
 
-a. Test distribution is Uniform. \\
-b. Calculated from data.
-
-\subsection{One-Sample Kolmogorov-Smirnov Test 3}
-
+\begin{table}
 \begin{tabular}{|l|l|}
 \hline
  & VAR00002 \\
@@ -409,15 +408,16 @@ Kolmogorov-Smirnov Z & 3.132 \\
 Asymp. Sig. (2-tailed) & .000 \\
 \hline
 \end{tabular}
-
-a. Test Distribution is Exponential. \\
-b. Calculated from data.
+\caption{One-Sample Kolmogorov-Smirnov Test 3}
+\end{table}
+\footnotetext[1]{a. Test Distribution is Exponential.}
+\footnotetext[1]{b. Calculated from data.}
 
 上面三张表分别体现的是检验缺货天数 \( X \) 是否服从正态分布、均匀分布和指数分布，上述三表中的相伴概率值分别为 0.001，0.000 和 0.000，均小于 0.05，说明 \( X \) 不服从上述三种连续型分布。
 
 因此在这里我们就假定 \( X \) 不是连续型的随机变量，另一方面，当我们假定 \( X \) 是离散型的随机变量时，可以大大简化实际问题的求解难度。
 
-\subsection{程序实现}
+\subsubsection{程序实现}
 
 考虑到问题 2 中 \( L \) 是正整数，当 \( 0 < L \leq Q_0 \)，则 \( L \) 可能的取值最多为 \( Q_0 \) 个，则对每个 \( L \) 的可能取值求其 \( E[f(L, X)] \)，计算 \( Q_0 \) 次就可得到 \( L_1^* \)。这比 \( \frac{dE[f(L, X)]}{dL} = 0 \)，来求得 \( L_1^* \) 更方便。
 
@@ -486,9 +486,9 @@ Asymp. Sig. (2-tailed) & .000 \\
 
 通过上述算法我们得出 $\min E[f(L, X)] = 10.55$，$L^* = 34$。
 
-\section{问题 3}
+\subsection{问题 3}
 
-\subsection{模型假设}
+\subsubsection{模型假设}
 
 \begin{enumerate}
     \item 各种商品的订货时间是相同的，而且到货时间也是相同的；
@@ -496,7 +496,7 @@ Asymp. Sig. (2-tailed) & .000 \\
     \item 商品的每天的销售是一个连续的状态，而不考虑成离散的状态。
 \end{enumerate}
 
-\subsection{符号说明}
+\subsubsection{符号说明}
 
 \begin{itemize}
     \item $m$：商品的种类数
@@ -520,7 +520,7 @@ Asymp. Sig. (2-tailed) & .000 \\
     \item $E[f(L, X)]$: $m$ 种商品在一个订货周期内的平均总损失费用的期望
 \end{itemize}
 
-\subsection{模型建立}
+\subsubsection{模型建立}
 
 问题 3 是讨论多种商品需要订货的问题。但由于所有商品每次订货都是在同一时间从同一供应站订货，所以可以以问题 1 中的单一商品存贮模型为基础，建立多种商品的随机存贮模型。但必须注意，问题 1 模型的考虑是以商品的数量为基准的，而问题 3 的模型是以商品的体积为基准考虑。
 
@@ -610,9 +610,9 @@ E[f(L^*, X)] = \min E[f(L, X)] = \int_0^\infty \sum_{i=1}^m f_i(L_i, x)p(x)dx
 
 但由于 \(X\) 的分布未知，同时 \(Q_i\) 和 \(Q_{0i}\) 都是未知量；而且在问题 1 的单品种存贮模型中我们知道 \(L^*\) 的求解是十分困难的。所以对于多品种商品的存贮问题，直接解上面的模型是十分困难的。同时 \(L_i = 0\) 情况的存在，增加了其求解难度。因此在实际问题的解决中，我们可以用上面的模型作为基础，并假设 \(L_i > 0\) 对任意的 \(i\) 都成立，即排除 \(L_i = 0\) 的情况，通过计算机编程，建立类似于问题 2 中的合适算法求解上述模型。在问题 4 的解决中我们可以看到这样的解题思路。
 
-\section{问题 4}
+\subsection{问题 4}
 
-\subsection{问题分析}
+\subsubsection{问题分析}
 
 由于货物到达商场的时间 \(X\) 是整数，所以可以认为 \(X\) 服从 1 天到 3 天之间的均匀分布实际上是一种离散分布，等价于 \(P(X=1) = P(X=2) = P(X=3) = \frac{1}{3}\)。问题 2 中原来的商品单价是以商品的个数为单位考虑的；而要利用问题 3 中的多品种商品存贮模型，则必须以商品的体积为单位进行考虑，所以我们对问题 2 中损失费用的单价进行转化处理，将它除以每单位商品的体积得到模型所需要的单价，如下表：
 
@@ -632,11 +632,11 @@ Asymp. Sig. (2-tailed) & .000 \\
 
 由于每种商品的个数是有限的，所以我们可以参照问题 2 中的求解办法，采用遍历搜索算法。但是由于 $Q_{i}$ 和 $Q_{0i}$ 都是未知量，这对于我们利用 (3.1) 以及 (3.2) 进行遍历搜索的求解增加了很大难度。所以我们可以对 $Q_{i}$ 和 $Q_{0i}$ 也进行遍历搜索，对于搜索的每一个 $Q_{i}$ 和 $Q_{0i}$，作为已知参数，然后利用问题 2 的模型求解 $L^{*}$。
 
-\subsection{优化的 $Q_{i}$ 和 $Q_{0i}$ 的遍历搜索算法}
+\subsubsection{优化的 $Q_{i}$ 和 $Q_{0i}$ 的遍历搜索算法}
 
 在这个问题中，$Q_{i}$ 和 $Q_{0i} \ (i=1,2,3)$ 总共有六个参数，那么在算法中就起码有六次嵌套的循环。$Q_{i}<Q=10$，所以如果以 0.01 为循环的步长，那么光一个 $Q_{i}$ 的搜索就有 1000 次循环，$Q_{i}$ 和 $Q_{0i}$ 总共的循环次数大约 $10$ 的 $36$ 次方，运算的次数和时间是非常惊人的，也让计算机无法承受。因此，我们对遍历搜索算法进行改进。先使步长为 1，则总循环次数不超过 $10$ 的 $6$ 次方，通过对 $Q_{i}$ 和 $Q_{0i}$ 进行遍历，然后再遍历 $L_{i}$，求得较优的 $E[f(L,X)]$ 以及确定对应的 $Q_{i}$ 和 $Q_{0i}$。由于是以步长 1 进行遍历搜索，所以 $Q_{i}$ 和 $Q_{0i}$ 的误差半径不超过 1。然后我们再取步长为 0.1，对 $Q_{i}$ 和 $Q_{0i}$ 在 1 的误差半径的范围内进行遍历搜索，则每一重的循环次数不超过 20，求得更优的 $E[f(L,X)]$ 以及确定对应的 $Q_{i}$ 和 $Q_{0i}$。由于第二次是以步长 0.1 进行遍历搜索，所以 $Q_{i}$ 和 $Q_{0i}$ 的误差半径不超过 0.1。最后又以步长 0.01 对 $Q_{i}$ 和 $Q_{0i}$ 在 0.1 的误差半径的范围内进行遍历搜索，同样每次循环次数不超过 20，这样我们最后求得了 $\min E[f(L,X)]$ 以及确定对应的 $Q_{i}$，$Q_{0i}$ 以及 $L^{*}$。
 
-\subsection{$L^{*}$ 的遍历搜索求解}
+\subsubsection{$L^{*}$ 的遍历搜索求解}
 
 在进行 $Q_{i}$ 和 $Q_{0i}$ 的每一次遍历取值以后，我们可以对每一个 $L_{i}$ 进行遍历求解。因为我们有等式 $\frac{Q_{i}-L_{i}}{v_{i}r_{i}}=k \quad i=1,2,..m$，所以我们实际上只需要对 $L_{1}$ 进行遍历，而 $L_{2}$ 和 $L_{3}$ 都可以通过这个等式确定。通过循环比较可以求得最优解 $\min E[f(L,X)]$ 以及 $L^{*}$。
 
@@ -650,9 +650,9 @@ Asymp. Sig. (2-tailed) & .000 \\
 
 通过 matlab 编程求解，最后解得 $E[f(L^*,X)] = \min E[f(L,X)] = 17.494$，$L^* = 7.3333$，$L_1^* = 1.55$，$L_2^* = 1.8$，$L_3^* = 3.9833$，$Q_1 = 2.05$，$Q_2 = 2.30$，$Q_3 = 5.65$，$Q_{01} = 1.27$，$Q_{02} = 1.68$，$Q_{03} = 3.05$。
 
-\section{问题 5}
+\subsection{问题 5}
 
-\subsection{问题假设}
+\subsubsection{问题假设}
 
 为了方便讨论，我们只考虑一种商品的随机存贮模型。并在问题 1 的基础上补充了以下假定：
 
@@ -662,9 +662,9 @@ Asymp. Sig. (2-tailed) & .000 \\
     \item $X$ 的概率分布 $P_X(x)$ 是离散的。
 \end{enumerate}
 
-\subsection{模型建立}
+\subsubsection{模型建立}
 
-因为 $\{R_t\}$ 是马氏过程，所以 
+因为 $\{R_t\}$ 是马氏过程，所以
 \[
 P(R_{t+1} = r_{t+1} \mid R_1 = r_1, \ldots, R_t = r_t) = P(R_{t+1} = r_{t+1} \mid R_t = r_t).
 \]
@@ -675,15 +675,15 @@ P(R_{t+1} = r_{t+1} \mid R_1 = r_1, \ldots, R_t = r_t) = P(R_{t+1} = r_{t+1} \mi
 
 由于总损失费用与 $c_1$ 有关，而 $c_1 = c(t)$ 是跟时间 $t$ 有关的；同时总损失费用也和 $R_t$ 有关，所以可以设总损失费用函数为 $f_t(L, R_t, X)$。
 
-首先对 $f_t(L, R_t, X)$ 关于 $X$ 求期望 
+首先对 $f_t(L, R_t, X)$ 关于 $X$ 求期望
 \[
 E_X[f_t(L, R_t, X)] = \sum_{x=0}^\infty f_t(L, R_t, x)P_X(x),
 \]
-再对 $E[f(L_t, R_t, X)]$ 关于 $R_t$ 求期望 
+再对 $E[f(L_t, R_t, X)]$ 关于 $R_t$ 求期望
 \[
 E_{R_t}(E_X[f_t(L, R_t, X)]),
 \]
-再令 
+再令
 \[
 g(L) = \min_{t \in T} E_{R_t}(E_X[f_t(L, R_t, X)]).
 \]
@@ -706,9 +706,7 @@ g(L) = \min_{t \in T} E_{R_t}(E_X[f_t(L, R_t, X)]).
     \item 钱敏平, 龚光鲁著. 随机过程论. 北京: 北京大学出版社, 1992. 10
 \end{enumerate}
 
-\textbf{附录:}
-
-\textbf{程序代码:}
+\section{附录:}
 
 \begin{verbatim}
 %求解问题 2 商品一

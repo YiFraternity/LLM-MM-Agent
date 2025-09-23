@@ -26,15 +26,6 @@ N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M}{4} \right\rfloor \right\rf
 
 \end{abstract}
 
-\section{全国第三届研究生数学建模竞赛}
-
-\begin{center}
-\includegraphics[width=0.5\textwidth]{image.png}
-\end{center}
-
-\section{题目}
-学生面试中教师安排的优化与算法
-
 \section{一、问题的提出}
 
 自 2003 年以来，教育部为深化高校录取制度改革，进一步扩大了高校在招生中的自主权，北京大学、清华大学等 22 所高校实行了部分招生计划自主招生。2004 年，实行自主招生的高校数目进一步扩大到 28 所，选拔方式也进一步多样化。06 年 4 月复旦大学通过“面试”录取新生，彻底摒弃了已实施多年的高考笔试制度，由面试直接录取新生，这是对高校进一步扩大自主权改革的又一次全新探索与尝试。
@@ -67,30 +58,24 @@ N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M}{4} \right\rfloor \right\rf
 
 \subsubsection{（二）符号说明}
 
-$\nu$: 聘请老师的个数
-
-$N$: 面试学生的个数
-
-$X$: 聘请的老师构成的集合 $X = \{1, \cdots, \nu\}$
-
-$B_{i}$: 由 $X$ 中的 $k$ 个老师组成的子集，称之为区组，其中 $b$ 为区组数目，
-\[
-N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \right\rfloor \right\rfloor \quad \text{和} \quad N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \right\rfloor \left\lfloor \frac{M-2}{2} \right\rfloor \right\rfloor
-\]
-
-$B_{j}^{'}$: 区组 $B_{i} = (x_{i}, \underbrace{x_{j}, \circ, \cdots, \circ}_{k-2 \text{个}})$ 中形如 $(x_{j}, \circ, \cdots, \circ)$ 的子区组
-
-$N_{i}$: 由 $x_{i}$ 老师面试的学生个数
-
-$N_{i,j}$: 由 $x_{i}, x_{j}$ 老师面试的学生个数
-
-$\lambda(x_{i}, x_{j})$: $X$ 中任意一对老师 $(x_{i}, x_{j})$ 在区组中恰好同时出现的次数
-
-$\{x_{i}, x_{j}\}$: $i, j$ 两个老师组成的二元集 $(x_{i}, x_{j} \in \{1, \cdots, \nu\})$
-
-$\{x_{i}, x_{j}, x_{k}\}$: $i, j, k$ 三个老师组成的三元集 $(x_{i}, x_{j}, x_{k} \in \{1, \cdots, \nu\})$
-
-$\lfloor x \rfloor$: 表示对实数 $x$ 下取整
+\begin{description}
+    \item[$\nu$] 聘请老师的个数
+    \item[$N$] 面试学生的个数
+    \item[$X$] 聘请的老师构成的集合，$X = \{1, \cdots, \nu\}$
+    \item[$B_{i}$] 由 $X$ 中的 $k$ 个老师组成的子集，称之为区组，其中 $b$ 为区组数目：
+    \[
+    N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \right\rfloor \right\rfloor
+    \quad \text{和} \quad
+    N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \right\rfloor \left\lfloor \frac{M-2}{2} \right\rfloor \right\rfloor
+    \]
+    \item[$B_{j}^{'}$] 区组 $B_{i} = (x_{i}, \underbrace{x_{j}, \circ, \cdots, \circ}_{k-2 \text{个}})$ 中形如 $(x_{j}, \circ, \cdots, \circ)$ 的子区组
+    \item[$N_{i}$] 由 $x_{i}$ 老师面试的学生个数
+    \item[$N_{i,j}$] 由 $x_{i}, x_{j}$ 老师面试的学生个数
+    \item[$\lambda(x_{i}, x_{j})$] $X$ 中任意一对老师 $(x_{i}, x_{j})$ 在区组中恰好同时出现的次数
+    \item[$\{x_{i}, x_{j}\}$] $i, j$ 两个老师组成的二元集，$(x_{i}, x_{j} \in \{1, \cdots, \nu\})$
+    \item[$\{x_{i}, x_{j}, x_{k}\}$] $i, j, k$ 三个老师组成的三元集，$(x_{i}, x_{j}, x_{k} \in \{1, \cdots, \nu\})$
+    \item[$\lfloor x \rfloor$] 表示对实数 $x$ 下取整
+\end{description}
 
 \subsubsection{（三）模型分析与求解}
 
@@ -109,11 +94,28 @@ $\lfloor x \rfloor$: 表示对实数 $x$ 下取整
 (1) 对于任意两位学生的“面试组”保证没有两位相同面试老师的情形，必须要求任意一对老师 $\{x_i, x_j\}$ 在区组 $B_i (1 \leq i \leq b)$ 中至多出现一次，且为了保证聘请的老师数 $M$ 尽可能的少，我们遵循的一个原则是让任意一对老师 $\{x_i, x_j\}$ 在区组 $B_i (1 \leq i \leq b)$ 中尽可能都出现一次，按 BIBD 策略，即 $\lambda = 1$, $k = 4$, $v = M$ 的填充设计。
 
 我们先考虑更一般的情况，随意给定一面试老师 $x_i \in X$，$X$ 是 $M$ 元素集，区组设计 $(X, B)$，设 $x_i$ 元素在区组中出现的次数为 $r = r(x_i)$，不妨假设这些区组为 $B_1, B_2, \ldots, B_r$，形如：
-\begin{align*}
-B_1 &= (x_i, \underbrace{\circ, \ldots, \circ}_{k-1 \text{个}}) \\
-&\quad \underbrace{\quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \
 
-最大可能的填充数为：
+\[
+B_{1} = (x_{i}, \underbrace{\circ, \cdots, \circ}_{k-1 \text{个}}) \\
+\vdots \\
+B_{r} = (x_{i}, \underbrace{\circ, \cdots, \circ}_{k-1 \text{个}})
+\]
+
+其中 “$\circ$” 代表除了 $x_{i}$ 的其他 $v-1$ 个面试老师，且两两互不相同。
+
+由于任意一对老师 $\{x_{i}, x_{j}\}(i \neq j)$ 在区组 $B_{i}(1 \leq i \leq b)$ 中至多出现 $\lambda$ 次，用这 $v-1$ 个面试老师填充 $B_{i}(i=1,\ldots,r)$ 中的圆圈 “$\circ$”，则 $X$ 中 $x_{i}$ 以外的 $v-1$ 个面试老师出现在这 $r$ 组中的次数为 $\lambda(v-1)$。则包含 $x_{i}$ 元素的区组中至多出现的次数，即
+
+\[
+r = \frac{\lambda(v-1)}{k-1}
+\]
+
+由 $x_{i}$ 老师面试的学生个数 $N_{i}$ 至多为：
+
+\[
+N_{i} \leq \left\lfloor \frac{\lambda(v-1)}{k-1} \right\rfloor
+\]
+
+面试老师个数为 $v$，即 $x_{i}$ 有 $v$ 种取法。考虑到每个区组重复计算 $k$ 次，因此最大可能的填充数为：
 \[
 \left\lfloor \frac{\nu}{k} \left\lfloor \frac{\lambda(\nu-1)}{k-1} \right\rfloor \right\rfloor.
 \]
@@ -141,43 +143,40 @@ N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \right\rfloor \right\
 B_1 = (x_i, x_j, \underbrace{\circ, \cdots, \circ}_{k-2 \text{ 个}}).
 \]
 
-[MATHENV:1]
+\begin{equation}
+    B_r = \left( x_i, \underbrace{x_j, \circ, \ldots, \circ}_{k-2 \text{ 个}} \right);
+\end{equation}
 其中“$\circ$”代表除了 $x_i, x_j$ 面试老师的其他 $\nu-2$ 个面试老师，且两两互不相同。
 
 由于任意一对老师 $\{x_i, x_j, x_k\} (i, j, k$ 互不相同) 在区组 $B_i (1 \leq i \leq b)$ 中至多出现 $\lambda$ 次，用剩下的 $\nu-2$ 个面试老师填充 $B_i (i = 1, \ldots, r)$ 中的圆圈“$\circ$”，则 $X$ 中 $x_i, x_j$ 以外的 $\nu-2$ 个老师出现在这 $r$ 组中的次数为 $\lambda(\nu-2)$，则包含 $x_i, x_j$ 元素的区组中至多出现的次数，即由 $x_i, x_j$ 老师面试的学生个数 $N_{i,j}$ 至多为：
-[MATHENV:2]
+
+\begin{equation}
+    \left\lfloor \frac{\lambda(\nu-2)}{k-2} \right\rfloor
+\end{equation}
 
 对于面试老师 $x_j \in X$，在确定 $x_i \in X$ 后，面试老师 $x_j$ 则有 $\nu-1$ 种取法：
-[MATHENV:1]
+\begin{align}
+    B_1 &= \left( x_i, \underbrace{x_j, \circ, \ldots, \circ}_{k-1 \text{ 个}} \right) \\
+    &\vdots \\
+    B_r &= \left( x_i, \underbrace{x_j, \circ, \ldots, \circ}_{k-1 \text{ 个}} \right)
+\end{align}
 
 不妨设形如 $\left( x_j, \circ, \ldots, \circ \right)$ 的 $k-1$ 元集记做区组 $B_i (1 \leq i \leq r)$ 的子区组 $B_j' (1 \leq j \leq r)$：
-[MATHENV:2]
+\begin{align}
+    B_1' &= \left( x_j, \circ, \ldots, \circ \right) \\
+    &\vdots \\
+    B_r' &= \left( x_j, \circ, \ldots, \circ \right)
+\end{align}
 其中，$B_j' (1 \leq j \leq r)$ 的元素是取自区组 $B_i (1 \leq i \leq r)$ 的后 $k-1$ 个元素。
 
 因此对于区组 $B_i (1 \leq i \leq r)$ 的子区组 $B_j' (1 \leq j \leq r)$ 最大可能的填充数为：
-\begin{align*}
-(4,10) & (a,e) (b,f) (c,i) (d,j) (g,k) (h,l) & (7,8) & (a,b) (c,d) (e,f) (g,h) (i,j) (k,l) \\
-(4,11) & (a,h) (b,g) (c,l) (d,k) (e,j) (f,i) & (7,9) & (a,k) (b,l) (c,e) (d,f) (g,i) (h,j) \\
-(4,12) & (a,g) (b,h) (c,k) (d,l) (e,i) (f,j) & (7,10) & (a,l) (b,k) (c,f) (d,e) (g,j) (h,i) \\
-(5,6) & (a,b) (c,d) (e,f) (g,h) (i,j) (k,l) & (7,11) & (a,e) (b,f) (c,i) (d,j) (g,k) (h,l) \\
-(5,7) & (a,c) (b,d) (e,g) (f,h) (i,k) (j,l) & (7,12) & (a,f) (b,e) (c,j) (d,i) (g,l) (h,k) \\
-(5,8) & (a,d) (b,c) (e,h) (f,g) (i,l) (j,k) & (8,9) & (a,l) (b,k) (c,f) (d,e) (g,j) (h,i) \\
-(5,9) & (a,g) (b,h) (c,k) (d,l) (e,i) (f,j) & (8,10) & (a,k) (b,l) (c,e) (d,f) (g,i) (h,j) \\
-(5,10) & (a,h) (b,g) (c,l) (d,k) (e,j) (f,i) & (8,11) & (a,f) (b,e) (c,j) (d,i) (g,l) (h,k) \\
-(5,11) & (a,i) (b,j) (c,g) (d,h) (e,k) (f,l) & (8,12) & (a,e) (b,f) (c,i) (d,j) (g,k) (h,l) \\
-(5,12) & (a,j) (b,i) (c,h) (d,g) (e,l) (f,k) \\
-(6,7) & (a,d) (b,c) (e,h) (f,g) (i,l) (j,k) & (9,10) & (a,b) (c,d) (e,f) (g,h) (i,j) (k,l) \\
-(6,8) & (a,c) (b,d) (e,g) (f,h) (i,k) (j,l) & (9,11) & (a,c) (b,d) (e,g) (f,h) (i,k) (j,l) \\
-(6,9) & (a,h) (b,g) (c,l) (d,k) (e,j) (f,i) & (9,12) & (a,d) (b,c) (e,h) (f,g) (i,l) (j,k) \\
-(6,10) & (a,g) (b,h) (c,k) (d,l) (e,i) (f,j) & (10,11) & (a,d) (b,c) (e,h) (f,g) (i,l) (j,k) \\
-(6,11) & (a,j) (b,i) (c,h) (d,g) (e,l) (f,k) & (10,12) & (a,c) (b,d) (e,g) (f,h) (i,k) (j,l) \\
-(6,12) & (a,i) (b,j) (c,g) (d,h) (e,k) (f,l) \\
-(11,12) & (a,b) (c,d) (e,f) (g,h) (i,j) (k,l)
-\end{align*}
+\begin{equation}
+    \left\lfloor \frac{\nu-1}{k-1} \left\lfloor \frac{\lambda(\nu-2)}{k-2} \right\rfloor \right\rfloor
+\end{equation}
 
 而 $x_i$ 有 $\nu$ 种取法，因此最大可能的填充数为：
 \begin{equation}
-\left\lfloor \frac{\nu}{k} \left\lfloor \frac{\nu-1}{k-1} \left\lfloor \frac{\lambda(\nu-2)}{k-2} \right\rfloor \right\rfloor \right\rfloor.
+    \left\lfloor \frac{\nu}{k} \left\lfloor \frac{\nu-1}{k-1} \left\lfloor \frac{\lambda(\nu-2)}{k-2} \right\rfloor \right\rfloor \right\rfloor.
 \end{equation}
 
 特别地，问题一考虑 $\lambda=1$，$k=4$，$\nu=M$ 的情况，即满足我们题目中所要求的约束条件，则可得到任三位面试老师不重复的 4 元组的个数至多为：
@@ -194,8 +193,7 @@ N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \left\lfloor \frac{M-
 \[
 N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \left\lfloor \frac{M-2}{2} \right\rfloor \right\rfloor \right\rfloor
 \]
-\tag{2}
-\]
+
 当学生数 $N$ 给定时，可得到 $M$ 的下界。
 
 \section{问题二：约束条件下学生与面试老师之间分配模型}
@@ -204,10 +202,13 @@ N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \left\lfloor \frac{M-
 
 问题二要求我们满足四个约束条件 ($Y1 \sim Y4$) 下，建立学生与面试老师之间的分配模型，并就 $N=379$，$M=24$ 的情形给出具体的分配方案（每位老师面试哪些学生）及该方案满足 $Y1 \sim Y4$ 这些要求的情况。
 
-- Y1. 每位老师面试的学生数量应尽量均衡；
-- Y2. 面试不同考生的“面试组”成员不能完全相同；
-- Y3. 两个考生的“面试组”中有两位或三位老师相同的情形尽量的少；
-- Y4. 被任意两位老师面试的两个学生集合中出现相同学生的人数尽量的少。
+\begin{enumerate}[label=Y\arabic*.]
+    \item 每位老师面试的学生数量应尽量均衡；
+    \item 面试不同考生的“面试组”成员不能完全相同；
+    \item 两个考生的“面试组”中有两位或三位老师相同的情形尽量少；
+    \item 被任意两位老师面试的两个学生集合中出现相同学生的人数尽量少。
+\end{enumerate}
+
 
 \subsection{(二) 模型分析}
 
@@ -225,23 +226,55 @@ N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \left\lfloor \frac{M-
 
 其中 $Y_3'$：任意两位老师重复出现在一个面试组中的重复数尽可能均衡。
 
-\section{(三) 模型求解}
+\subsection{(三) 模型求解}
 
 为了使得我们的分配方案更加合理，找到满足这些目标的最佳设计方案，我们采取的策略是：目标规划遗传算法。借助遗传算法实施来解决多目标优化问题（Multi-objective Optimization Problem），使整个过程朝着更优解的方向进行。
 
-\section{1、遗传编码设计}
+\subsubsection{1、遗传编码设计}
 
 本文将面试不同考生的“面试组”4 个成员做为一个基因片段，基因片段的异同与基因片段中数字的排列无关（例如：两个基因片段 1234 与 1324 在本文认为是一样的）。基因片段中的单个基因为面试老师的序号，从而按照学生序列构造由面试老师序号组成的染色体。
 
+\begin{figure}[H]
+    \centering
+    \setlength{\fboxrule}{0.8pt}
+    \fbox{%
+        \begin{minipage}{0.8\textwidth}
+            \centering
+            \textbf{基因片段} \\[6pt]
+            染色体：\quad 1\;2\;3\;4 \quad 1\;2\;3\;5 \quad 1\;2\;3\;6 \quad $\cdots$ \\[6pt]
+            学生A对应的4个面试老师
+        \end{minipage}
+    }
+\end{figure}
+
+\noindent
+\subsubsection{2、初始种群的产生} \\
+
+由于题目 Y2 条件对每个学生遇到的面试老师做了限制（面试不同考生的“面试组”成员不能完全相同），染色体的构成也因此有了最低的限制条件，因此不能采用随机产生染色体的方法来建立初始种群。所以本文先通过贪婪算法搜索出几个仅符合 Y2 条件的染色体，构造出初始种群。
+
+\subsubsection{3、交叉算子}
+
+传统遗传算法中的交叉运算是对单独的基因进行交叉，但由于在本题中染色的特征是由“面试组”中的4个成员构成的基因片段，所以本文在交叉运算中实行对基因片段的交叉而不是单独基因的交叉。
+
 \begin{center}
-[TABLEENV:1]
+\begin{tabular}{c c c c c c c}
+染色体A: & \fbox{1 2 3 4} & \fbox{1 2 3 5} & \fbox{1 2 3 6} & \dots \\
+ & & & & \rotatebox{90}{$\mid$} \\
+染色体B: & \fbox{1 2 3 4} & \fbox{1 2 4 5} & \fbox{1 2 5 6} & \dots \\
+ & & & & \rotatebox{90}{$\downarrow$} \\
+ & & & & \text{整个基因片段} \\
+ & & & & \text{的交叉} \\
+染色体A: & \fbox{1 2 3 4} & \fbox{1 2 4 5} & \fbox{1 2 3 6} & \dots \\
+ & & & & \rotatebox{90}{$\mid$} \\
+染色体B: & \fbox{1 2 3 4} & \fbox{1 2 3 5} & \fbox{1 2 5 6} & \dots \\
+\end{tabular}
 \end{center}
 
 同时根据Y2的要求，染色体A中要交叉的基因片段在不能与染色体B中任何基因片段相同，染色体B中要交叉的基因片段在不能与染色体A中任何基因片段相同。
 
 本文采用多点交叉的策略，本文中采用动态的交叉概率 $P_c$ 控制交叉操作的使用频率。
 
-\section{4、变异算子}
+\subsubsection{4、变异算子}
 
 本文采用基本位变异（Simple Mutation）的方式来实现变异运算，以变异概率 $P_m$ 指定一位或者某几位基因座上的值座变异运算，其具体操作过程如下：
 
@@ -249,15 +282,17 @@ N \leq \left\lfloor \frac{M}{4} \left\lfloor \frac{M-1}{3} \left\lfloor \frac{M-
 
 (2) 对每一个变异基因，随机产生[1..M]中的数值，从而产生新的基因片段（该基因片段不能与该染色体中其它的基因片段相同，基因片段中的基因不能重复）。
 
-\begin{center}
-\textbf{两个基因发生变异的情况}
-\end{center}
 
-\begin{center}
-[TABLEENV:2]
-\end{center}
+\begin{figure}
+    \begin{tabular}{c c c c c c c}
+    变异前 & \fbox{1 2 3 4} & \fbox{1 2 3 5} & \fbox{1 2 3 6} & \dots \\
+     & & & & \rotatebox{90}{$\mid$} \\
+    变异后 & \fbox{1 2 3 4} & \fbox{6 2 3 5} & \fbox{4 2 3 6} & \dots \\
+    \end{tabular}
+\caption{两个基因发生变异的情况}
+\end{figure}
 
-\section{5、适应度函数 $F$}
+\subsubsection{5、适应度函数 $F$}
 
 通过一个染色体中的基因序列，即一分配方案，可建立如下邻接矩阵：
 \[
@@ -333,11 +368,11 @@ F=w_{1} \frac{f_{1}(\alpha)}{f_{1}(\alpha-1)}+w_{2} \frac{f_{2}(\alpha)}{f_{2}(\
 
 其中 $w_{1}$、$w_{2}$ 为相应的权系数，可根据对 $Y_{1}, Y_{3}$ 三个要求条件的重视程度赋予 $w_{1}$、$w_{2}$ 不同大小的数值，总和为 1 保持不变。
 
-6、选择算子
+\subsubsection{6、选择算子}
 
 本文采用竞争择优的选择方法，从而保留后代中较高适应度的个体，使整个进化过程朝着更优解的方向进行。
 
-7、控制参数
+\subsubsection{7、控制参数}
 
 （1）交叉概率 $P_{c}$
 
@@ -351,29 +386,83 @@ F=w_{1} \frac{f_{1}(\alpha)}{f_{1}(\alpha-1)}+w_{2} \frac{f_{2}(\alpha)}{f_{2}(\
 
 为了保证遗传算法的全局收敛性，就要维持解群体中个体的多样性，避免有效基因的丢失。另一方面，为了加快收敛速度，就要使解群体较快地向最优状态转移，这又会减少群体多样性，容易陷入局部最优。因此，本文将进化过程划分为突和渐进两个阶段。由于在一开始采用贪婪法产生的种群有着很大的相似性，所以要将交叉概率 $P_{c}$ 和变异概率 $P_{m}$ 设置为较大的数值，本文中将 $P_{c}$ 和 $P_{m}$ 的初始数值设置为 0.6 与 0.3。通过较频繁的变异和交叉产生新的基因片段和染色体，扩大解的搜索空间避免陷入局部极值。之后随着进化的过程逐渐调小 $P_{c}$ 与 $P_{m}$ 的值，使其加快收敛速度。
 
-\section{8、流程描述（具体程序见附录一）}
+\subsubsection{8、流程描述（具体程序见附录一）}
 
-[FIGUREENV:1]
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[node distance=1.5cm, auto, >=latex']
+        \node [block] (init) {种群生成};
+        \node [block, below of=init] (cross) {交叉};
+        \node [block, below of=cross] (mutate) {变异};
+        \node [block, below of=mutate] (fitness) {适应度估计};
+        \node [block, below of=fitness] (select) {选择};
+        \node [block, below of=select] (terminate) {是否达到终止代数};
+        \node [block, below of=terminate, node distance=2cm] (end) {结束};
 
-\section{9、实验结果及评价}
+        \path [line] (init) -- (cross);
+        \path [line] (cross) -- (mutate);
+        \path [line] (mutate) -- (fitness);
+        \path [line] (fitness) -- (select);
+        \path [line] (select) -- (terminate);
+        \path [line] (terminate) -- node [near start] {Y} (end);
+        \path [line] (terminate) -| node [near start] {N} ([xshift=2cm]terminate.east) |- (init);
+    \end{tikzpicture}
+\end{figure}
+
+\subsubsection{9、实验结果及评价}
 
 (1) 从B矩阵（$AA^T$）观察分析
 
 下面给出1、5、10、15、20、25、30代中较高适应度的染色体对应的B矩阵（见附录二）图形（水平坐标为老师序号，垂直坐标为学生数目）：
 
-[FIGUREENV:2]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{1st Generation}
+    \label{fig:b_matrix}
+\end{figure}
 
-[FIGUREENV:3]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{5th Generation}
+    \label{fig:c_matrix}
+\end{figure}
 
-[FIGUREENV:4]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{10th Generation}
+    \label{fig:c_matrix}
+\end{figure}
 
-[FIGUREENV:5]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{15th Generation}
+    \label{fig:c_matrix}
+\end{figure}
 
-[FIGUREENV:6]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{20th Generation}
+    \label{fig:c_matrix}
+\end{figure}
 
-[FIGUREENV:7]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{25th Generation}
+    \label{fig:c_matrix}
+\end{figure}
 
-[FIGUREENV:8]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{image.png}
+    \caption{30th Generation}
+    \label{fig:c_matrix}
+\end{figure}
 
 从以上进化过程看出，矩阵的对角元即各位老师面试的学生数目趋于均衡，矩阵的非对角元即不同老师面试的共同学生数目也趋于均衡。从而说明我们设置的等价限制条件是有效的，模型的建立是合理的。
 
@@ -386,9 +475,40 @@ F=w_{1} \frac{f_{1}(\alpha)}{f_{1}(\alpha-1)}+w_{2} \frac{f_{2}(\alpha)}{f_{2}(\
 
 所以无法满足每两位学生的“面试组”中共同老师不超过 1，但可以满足共同老师数不超过 2。从下面给出的遗传算法中 1 至 30 代染色体对应的 C 矩阵 $(A^T A)$ 中 0、1、2、3（从左至右）出现的次数及所占的比例中，可看出 3 出现的频率逐代降低并趋近于 0，也就是说是已经逼近最优解。
 
-[TABLEENV:3]
-
-[TABLEENV:4]
+\begin{table}
+\begin{tabular}{llll}
+    5678 [3.95\%] & 60928 [42.42\%] & 65572 [45.65\%] & 11084 [7.72\%] \\
+    12738 [8.87\%] & 67674 [47.11\%] & 54598 [38.01\%] & 8252 [5.74\%] \\
+    21176 [14.74\%] & 68538 [47.71\%] & 46924 [32.67\%] & 6624 [4.61\%] \\
+    24778 [17.25\%] & 71458 [49.75\%] & 41650 [29.00\%] & 5376 [3.74\%] \\
+    29630 [20.63\%] & 72238 [50.29\%] & 37012 [25.77\%] & 4382 [3.05\%] \\
+    33534 [23.35\%] & 72196 [50.26\%] & 33778 [23.52\%] & 3754 [2.61\%] \\
+    39496 [27.50\%] & 70496 [49.08\%] & 30048 [20.92\%] & 3222 [2.24\%] \\
+    40446 [28.16\%] & 70300 [48.94\%] & 29416 [20.48\%] & 3100 [2.16\%] \\
+    45450 [31.64\%] & 69412 [48.32\%] & 25848 [17.99\%] & 2552 [1.78\%] \\
+    49800 [34.67\%] & 67656 [47.10\%] & 23580 [16.42\%] & 2226 [1.55\%] \\
+    53350 [37.14\%] & 66462 [46.27\%] & 21494 [14.96\%] & 1956 [1.36\%] \\
+    55516 [38.65\%] & 65722 [45.75\%] & 20260 [14.10\%] & 1764 [1.23\%] \\
+    57646 [40.13\%] & 65098 [45.32\%] & 18918 [13.17\%] & 1600 [1.11\%] \\
+    58640 [40.82\%] & 64582 [44.96\%] & 18496 [12.88\%] & 1544 [1.07\%] \\
+    59638 [41.52\%] & 64224 [44.71\%] & 17974 [12.51\%] & 1426 [0.99\%] \\
+    60474 [42.10\%] & 63708 [44.35\%] & 17730 [12.34\%] & 1350 [0.94\%] \\
+    61186 [42.60\%] & 63460 [44.18\%] & 17264 [12.02\%] & 1352 [0.94\%] \\
+    62220 [43.32\%] & 63040 [43.89\%] & 16766 [11.67\%] & 1236 [0.86\%] \\
+    63110 [43.94\%] & 62440 [43.47\%] & 16448 [11.45\%] & 1264 [0.88\%] \\
+    63252 [44.03\%] & 62520 [43.53\%] & 16264 [11.32\%] & 1226 [0.85\%] \\
+    64336 [44.79\%] & 62090 [43.23\%] & 15694 [10.93\%] & 1142 [0.80\%] \\
+    65050 [45.29\%] & 61478 [42.80\%] & 15688 [10.92\%] & 1046 [0.73\%] \\
+    64954 [45.22\%] & 61888 [43.09\%] & 15348 [10.68\%] & 1072 [0.75\%] \\
+    65348 [45.49\%] & 61606 [42.89\%] & 15248 [10.62\%] & 1060 [0.74\%] \\
+    65532 [45.62\%] & 61516 [42.83\%] & 15092 [10.51\%] & 1122 [0.78\%] \\
+    65604 [45.67\%] & 61534 [42.84\%] & 15060 [10.48\%] & 1064 [0.74\%] \\
+    65808 [45.81\%] & 61278 [42.66\%] & 15124 [10.53\%] & 1052 [0.73\%] \\
+    65668 [45.72\%] & 61444 [42.78\%] & 15116 [10.52\%] & 1034 [0.72\%] \\
+    65864 [45.85\%] & 61226 [42.62\%] & 15116 [10.52\%] & 1056 [0.74\%] \\
+    65874 [45.86\%] & 61248 [42.64\%] & 15170 [10.56\%] & 970 [0.68\%] \\
+    \end{tabular}
+\end{table}
 
 具体分配方案（每位老师面试哪些学生）见附录三。
 
@@ -501,10 +621,9 @@ N \leq \left\lfloor \frac{M}{4} \right\rfloor \cdot \left\lfloor \frac{M}{4} \ri
 \hline
  & bc & & bf & & ed & & be & cd \\
 \hline
+ & de & & ce & & cf & & df & ef \\
 \end{array}
 \]
-
-[TABLEENV:1]
 
 由于区组数 45 达到不等式 (4) 上界的最优解，可见不等式是紧的。
 
@@ -559,9 +678,6 @@ N \leq \left\lfloor \frac{M}{4} \cdot \left\lfloor \frac{M}{4} \right\rfloor \ri
 (4,7) & (a,j) (b,i) (c,h) (d,g) (e,l) (f,k) \\
 (4,8) & (a,i) (b,j) (c,g) (d,h) (e,k) (f,l) \\
 (4,9) & (a,f) (b,e) (c,j) (d,i) (g,l) (h,k) \\
-\end{align*}
-
-\begin{align*}
 (4,10) & (a,e) (b,f) (c,i) (d,j) (g,k) (h,l) & (7,8) & (a,b) (c,d) (e,f) (g,h) (i,j) (k,l) \\
 (4,11) & (a,h) (b,g) (c,l) (d,k) (e,j) (f,i) & (7,9) & (a,k) (b,l) (c,e) (d,f) (g,i) (h,j) \\
 (4,12) & (a,g) (b,h) (c,k) (d,l) (e,i) (f,j) & (7,10) & (a,l) (b,k) (c,f) (d,e) (g,j) (h,i) \\

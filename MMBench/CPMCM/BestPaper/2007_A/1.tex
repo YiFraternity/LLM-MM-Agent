@@ -97,24 +97,10 @@
 其一，固定比例法，就是调查样本容量是总体的固定比例；
 
 其二，置信区间法，就是运用差异性区间、样本分布以及平均数标准或百分率标准误差等，通过公式计算算出样本容量大小，计算公式为：
-\begin{align}
-\therefore \text{原式} &= \frac{z}{2} \left\{ \frac{f_1 \left( \frac{x_{\max}}{2} (s_0 + 1) \right)}{s_0 + 1} \left[ f_2 \left( \frac{z}{x_{\max}} \right) + f_2 \left( \frac{z}{x_{\max}} \frac{t_1 + 1}{s_0 + 1} \right) \right] + \frac{f_1 \left( \frac{x_{\max}}{2} (s_1 + 1) \right)}{s_1 + 1} \right. \nonumber \\
-&\quad \left. \left[ f_2 \left( \frac{z}{x_{\max}} \frac{t_0 + 1}{s_1 + 1} \right) + f_2 \left( \frac{z}{x_{\max}} \right) \right] \right\} \tag{28} \\
-\text{令： } c_1 &= \frac{1}{x_{\max}}, \tag{29} \\
-c_2 &= \frac{t_1 + 1}{x_{\max} (s_0 + 1)} = \frac{t_1 + 1}{x_{\max} (t_0 + 1)} = \frac{t_1 + 1}{(t_0 + 1)} c_1 \tag{30} \\
-c_3 &= \frac{1}{x_{\max}} \frac{t_0 + 1}{s_1 + 1} = \frac{1}{x_{\max}} \frac{t_0 + 1}{t_1 + 1} = \frac{t_0 + 1}{t_1 + 1} c_1, \tag{31} \\
-c_5 &= \frac{x_{\max}}{2} (s_0 + 1), \tag{32} \\
-c_6 &= \frac{x_{\max}}{2} (s_1 + 1). \tag{33} \\
-\text{则：原式} &= \frac{z}{2} \left\{ \frac{f_1(c_5)}{s_0 + 1} \left[ f_2(c_1 z) + f_2(c_2 z) \right] + \frac{f_1(c_6)}{s_1 + 1} \left[ f_2(c_3 z) + f_2(c_1 z) \right] \right\} \tag{34} \\
-\because \quad f_1(x) &= \frac{1}{\sqrt{2 \pi} c \sigma_x} e^{-\frac{(x - \mu_x)^2}{2 \sigma_x^2}} \tag{35} \\
-f_2(y) &= \frac{1}{n h_n} \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{y - Y_i}{h_n} - \mu)^2} \tag{36} \\
-\text{原式} &= \frac{z}{2} \left\{ \frac{f_1(c_5)}{s_0 + 1} \left[ \frac{1}{n h_n} \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_1 z - Y_i}{h_n} - \mu)^2} + \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_2 z - Y_i}{h_n} - \mu)^2} \right] \right. \nonumber \\
-&\quad \left. + \frac{f_1(c_6)}{s_1 + 1} \left[ \frac{1}{n h_n} \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_3 z - Y_i}{h_n} - \mu)^2} + \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_1 z - Y_i}{h_n} - \mu)^2} \right] \right\} \tag{37} \\
-\text{令： } 2 \sqrt{2 \pi} n h_n &= l \tag{38} \\
-&= \frac{z}{l} \left\{ \frac{f_1(c_5)}{s_0 + 1} \left[ \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_2 z - Y_i}{h_n} - \mu)^2} + \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_1 z - Y_i}{h_n} - \mu)^2} \right] \right. \nonumber \\
-&\quad \left. + \frac{f_1(c_6)}{s_1 + 1} \left[ \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_3 z - Y_i}{h_n} - \mu)^2} + \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)} e^{-\frac{1}{2 \sigma^2} (\ln \frac{c_1 z - Y_i}{h_n} - \mu)^2} \right] \right\} \tag{39} \\
-\text{令： } b1 &= \frac{f_1(c_5)}{(s_0 + 1) l}, b2 = \frac{f_1(c_6)}{(s_1 + 1) l} \tag{40}
-\end{align}
+\begin{equation}
+n = \frac{Z_{\alpha/2}^2 \times p \times (1-p)}{E^2}
+\tag{1}
+\end{equation}
 
 \subsubsection{抽样方案的设计}
 
@@ -204,13 +190,37 @@ f_2(y) &= \frac{1}{n h_n} \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)}
 
 其主要采用随机问卷调查的方法来进行，问卷包括内容根据实际的需要而定，一般应包括食物名单，食物频数，问卷调查法可调查过去某一非严格指定时间范围内（如一周，一月，一年等）各种食物消耗的频率及数量，进而获得进食量绝对值，根据此方法得到的食物和营养素摄取量将个体划分为不同等级，食物频数问卷调查法既能获得个体在过去一段时间对象的膳食模式及饮食习惯，又能量化食物及营养素摄入量。其特点是：灵活、简单、数据量大，但相对而言数据精度不是很好，该方法一般用于研究食物和营养素摄入量与疾病的关系（表1综合给出了五种方案的比较）。
 
-\section{表1 五种方案的比较}
-
-\begin{tabular}{|c|}
+\begin{table}[h]
+\centering
+\caption{五种方案的比较}
+\begin{tabular}{|c|c|c|c|}
 \hline
-题号 A \\
+ & 优点 & 缺点 & 应用 \\
+\hline
+称重法 & 准确 & 费时、费力 \\
+ & & 不适用大规模 \\
+\hline
+查账法 & 简单易行， & 时间短不够准确， \\
+ & 省时、人、物 & 代表性有影响 \\
+\hline
+24小时回顾法 & 简单易行， & 主观，不太 \\
+ & 省时、人、物 & 准确，回忆偏倚 \\
+\hline
+化学分析法 & 更准确 & 费时、力、财 \\
+\hline
+食物频率法 & 应答者负担轻，应答 & 量化不准确（偏高）， \\
+ & 率高，经济、方便； & 遗漏 \\
+ & 可调查长期 & \\
+\hline
+ & & & 家庭、个人、团体 \\
+ & & & 账目清楚的机关 \\
+ & & & 部队学校 \\
+ & & & 家庭、个人 \\
+ & & & 科研、治疗膳食 \\
+ & & & 个人，膳食习惯与某些慢性疾病的关系 \\
 \hline
 \end{tabular}
+\end{table}
 
 \subsubsection{食品摄取量调查技术路线模型}
 
@@ -251,10 +261,17 @@ f_2(y) &= \frac{1}{n h_n} \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)}
 
 这里所谓“标准”指的是国家标准。对食品这样分类主要是由于中国居民消费的食品种类比其他国家居民消费的种类要复杂得多, 细分将达数千种以上, 在调查过程中如果详细分类, 调查工作量大, 而如果随意粗糙分类, 工作量虽然小, 但影响精度, 而且意义不大。因此我们根据各种污染物在这些食品中的分布情况进行区间分类。比如要得出铅(Pb)在各种食物中的分布, 我们可以按国家标准把食品大致分为三分类(表 3)(单位: $\mathrm{mg} / \mathrm{kg}$)。
 
-\begin{tabular}{l l l l}
-参赛队号 & 9005210 & 参赛学校 & 空军工程大学理学院 \\
-参赛队员姓名 & 陆陶荣 & 张立森 & 朱丰 \\
+\begin{table}
+\centering
+\caption{根据铅含量对食品按区间模糊分类}
+\begin{tabular}{c c c c}
+\hline \hline
+分类区间 & $(0,0.2]$ & $(0.2,0.5]$ & $(0.5,2]$ \\
+\hline
+类别 & a & b & c \\
+\hline \hline
 \end{tabular}
+\end{table}
 
 由于每一类包含百种食品, 可以简单地将各类别表示出来, 即 $a=\{$ 标准较低类, 如蔬菜, 水果, 蛋类 $\}$, $b=\{$ 标准中等类, 如肉类, 鱼类, 奶制品, 小食品 $\}$, $c=\{$ 标准较高类, 如饮料, 罐头, 皮蛋 $\}^{[9]}$ 。
 
@@ -264,7 +281,7 @@ f_2(y) &= \frac{1}{n h_n} \sum_{i=1}^n \frac{h_n}{\sqrt{2 \pi} \sigma (y - Y_i)}
 
 由于缺失详细调查数据, 我们无法对所要求的人群充分调查, 所以根据经验我们将其分布近似正态分布, 但由于正态随机变量可以取负值, 而这与根据实际情况不符, 为此我们在正态分布的基础上, 构造一个函数来近似人群食物摄入量的密度函数, 即截尾正态分布函数 $f(x)$.
 
-定义 1 若随机变量 $X$ 有密度函数
+\textbf{定义 1} 若随机变量 $X$ 有密度函数
 
 \begin{equation}
 f(x)=
@@ -496,14 +513,14 @@ h_{opt} = a_{2}^{-2/5} \left[ \int K^{2}(u) du \right]^{1/5} \left[ \int (f''(y)
 
 为合理、有效的评估食物中的污染物含量，通过分析，建立食物的摄入量与污染物分布的联合分布模型。为简单起见，只考虑两种模型数据匹配的情况。该模型的建立主要依据 Gauss 型求积公式，在给出该公式之前，我们先定义正交多项式和 Legendre 多项式。
 
-定义 3：对于任意实变量 \( x \)，满足：
+\textbf{定义 3}：对于任意实变量 \( x \)，满足：
 \[
 \psi_{n+1}(x) = A \omega_{n+1}(x) = A \prod_{i=0}^{n} (x - x_i),
 \tag{16}
 \]
 其中，\( A \) 为常数，\( x_i \) 为 \( \psi_{n+1}(x) \) 的零点，则称 \( \psi_{n+1}(x) \) 为 \( n+1 \) 正交多项式。
 
-定义 4：对于任意实变量 \( x \)，满足：
+\textbf{定义 4}：对于任意实变量 \( x \)，满足：
 \[
 P_n(x) = \frac{1}{2^n n!} \frac{d^n}{dx^n} \left[ (x^2 - 1)^n \right]
 \tag{17}
@@ -785,6 +802,3 @@ l(z) = (f_1(x)g_1(x))*(f_2(x)g_2(x))*\ldots*(f_n(x)g_n(x))
 [9] 王茂起,王天竹.2000-2001 年中国食品污染物监测研究 [M]. 卫生研究,2003,32(4):322-326.
 
 \end{document}
-
-% Missing placeholders restored
-\includegraphics[width=0.4\textwidth]{image.png}

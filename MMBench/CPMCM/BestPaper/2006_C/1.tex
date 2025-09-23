@@ -10,14 +10,6 @@
 
 \maketitle
 
-\begin{center}
-\textbf{\Large 全国第三届研究生数学建模竞赛}
-\end{center}
-
-\begin{center}
-\includegraphics[width=0.5\textwidth]{image.png}
-\end{center}
-
 \begin{abstract}
 本文讨论了维修线性流量阀时的内筒设计问题。首先我们建立了一个理论模型，设存在某曲线 \( f(x) \) 满足过流面积与内筒旋转角度成严格线性关系，计算得此曲线不存在。然后建立了一个简单的模型，假设内筒孔为正方形，并考察了其过流面积与内筒旋转角度的关系。我们发现其过流面积虽不与内筒旋转角度成严格线性关系，但较接近线性。在此基础上，考虑到尽量减少摩擦，我们从圆锥曲线角度来改进模型。通过适当地变动圆锥曲线参数，寻找使得过流面积与内筒旋转角度的渐近线性效果最好的曲线，结果显示椭圆方案最好。通过对椭圆参数取不同值得到过流面积与旋转角度的数据，然后进行线性回归。以残差平方和均值最小为目标函数，在一个合理的范围内得到：大小按外筒孔为单位圆的比例，内筒孔右半部分是 \( a=4 \), \( b=1.2 \) 的椭圆弧，左半部分是单位圆弧的光滑曲线，作为最好渐近线性的内筒孔设计方案。
 
@@ -106,7 +98,7 @@ x_2 &= \frac{b^2(t - a - 1) + \sqrt{b^4(a + 1 - t)^2 - (b^2 - a^2)(t^2b^2 - 2atb
 
 求解可知上述的 \( k \) 不存在，也就是说过流面积与内筒的旋转角度不能成严格的线性关系。
 
-\subsection{近似线性的设计}
+\subsubsection{近似线性的设计}
 
 据上述讨论，我们知道过流面积与内筒旋转角度不能成严格线性关系，那么我们下面的问题就是设计出合理的内筒孔形状，使得过流面积与内筒旋转角度近似成线性关系，使其与严格线性关系的误差最小，从而优化维修内筒线性流量阀问题。
 
@@ -202,49 +194,46 @@ x_2 &= \frac{b^2(t - a - 1) + \sqrt{b^4(a + 1 - t)^2 - (b^2 - a^2)(t^2b^2 - 2atb
 
 \begin{enumerate}
     \item 当内筒旋转角度很小，两筒孔刚相交时，其交点的 $X$ 坐标记为：$x_1 \leq -1 \leq x_2 \leq 1$
-    
-    图 4.6
-    
     \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{image2.png}
 \end{figure}
-    
+
     其阴影面积积分为
-    
+
     \begin{align*}
 S &= \int_{-1}^{x_2} \sqrt{1-x^2} \, dx + \int_{x_2}^{t-1} b \sqrt{1-\frac{(x+a+1-t)^2}{a^2}} \, dx \\
 &= \frac{1}{2} \left( x_2 \sqrt{1-x_2^2} + \arcsin x_2 \right) + \frac{\pi}{4} + \frac{\pi}{4} ab \\
 &\quad - \frac{b}{2a} \left[ (x_2+a+1-t) \sqrt{a^2-(x_2+a+1-t)^2} + a^2 \arcsin \frac{x_2+a+1-t}{a} \right]
 \end{align*}
-    
+
     当平动距离 $t=2$ 时，相交情况如下图，其面积积分与情况（1）相同，图 4.7
-    
+
     \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{image1.png}
     \caption{}
 \end{figure}
-    
+
     \item 当内筒继续旋转，过流面积较大时，此时交点记为 $-1 \leq x_1 \leq x_2 \leq 1$，图 4.8
-    
+
     \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{image2.png}
     \caption{}
 \end{figure}
-    
+
     其阴影面积积分得：
-    
+
     \begin{align*}
 S &= \int_{-1}^{x_1} \sqrt{1-x^2} \, dx + \int_{x_1}^{x_2} b \sqrt{1-\frac{(x+a+1-t)^2}{a^2}} \, dx + \int_{x_2}^1 \sqrt{1-x^2} \, dx \\
 &= \frac{1}{2} \left( x_1 \sqrt{1-x_1^2} + \arcsin x_1 \right) - \frac{1}{2} \left( x_2 \sqrt{1-x_2^2} + \arcsin x_2 \right) + \frac{\pi}{2} \\
 &\quad + \frac{b}{2a} \left[ (x_2+a+1-t) \sqrt{a^2-(x_2+a+1-t)^2} + a^2 \arcsin \frac{x_2+a+1-t}{a} \right] \\
 &\quad - \frac{b}{2a} \left[ (x_1+a+1-t) \sqrt{a^2-(x_1+a+1-t)^2} + a^2 \arcsin \frac{x_1+a+1-t}{a} \right]
 \end{align*}
-    
+
     \item 当内筒旋转到过流面积最大时，其面积就是单位圆孔的面积，阴影部分面积 $S = \frac{\pi}{2}$
-    
+
     \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{image.png}
@@ -290,10 +279,6 @@ S &= \int_{-1}^{x_1} \sqrt{1-x^2} \, dx + \int_{x_1}^{x_2} b \sqrt{1-\frac{(x+a+
 
 按照上述分析，我们设计的内筒孔曲线形状为椭圆曲线与圆的组合体，即它是由左边的一段圆弧和右边的椭圆弧所组成的一个光滑的封闭曲线（如下图）。
 
-\subsection{内筒孔曲线设计示意图}
-
-\textbf{图 4.11}
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{image.png}
@@ -314,11 +299,12 @@ S &= \int_{-1}^{x_1} \sqrt{1-x^2} \, dx + \int_{x_1}^{x_2} b \sqrt{1-\frac{(x+a+
 
 通过对问题一的分析，可以确定比较理想的内筒曲线图形应该同问题一的结果类似，如下：
 
-\textbf{图 2.1}
-
-\includegraphics[width=0.6\textwidth]{image1.png}
-
-注：此图为内筒孔的大致形状
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image1.png}
+    \caption{内筒孔的大致形状}
+    \label{fig:inner-hole}
+\end{figure}
 
 但还需对曲线形状进行调整使其满足问题分析中的（1）（2）两条件。
 
@@ -330,43 +316,49 @@ S &= \int_{-1}^{x_1} \sqrt{1-x^2} \, dx + \int_{x_1}^{x_2} b \sqrt{1-\frac{(x+a+
 
 其中 $t$ 是椭圆曲线的平动距离，$t > 0$。
 
-\textbf{图 5.2}
-
-\includegraphics[width=0.6\textwidth]{image2.png}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image2.png}
+    \caption{图 5.2}
+    \label{fig:inner-hole}
+\end{figure}
 
 其中阴影部分的面积为过流面积，其面积积分由于平动距离 $t$ 的变动而需分情况讨论：
 
 \begin{enumerate}
     \item 当内筒旋转角度很小，两筒孔刚相交时，如下示意图
-    
-    \textbf{图 5.3}
-    
+
+    \begin{figure}[htbp]
+    \centering
     \includegraphics[width=0.6\textwidth]{image3.png}
-    
+    \caption{图 5.3}
+    \label{fig:inner-hole}
+    \end{figure}
+
+    \includegraphics[width=0.6\textwidth]{image3.png}
+
     其阴影面积随平动距离变化缓慢；
-    
+
     \item 当内筒继续旋转，过流面积较大时，示意图如下
-    
-    图 5.4
-    
-    \begin{figure}[h]
+
+    \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.6\textwidth]{image1.png}
     \caption{图 5.4}
-\end{figure}
-    
+    \label{fig:inner-hole}
+    \end{figure}
+
     其阴影面积随平动距离的变化趋于平稳，且线性性更佳。
-    
+
     \item 当内筒继续旋转，过流面积达到很大时，即过流面积接近外孔的面积。示意图如下
-    
-    图 5.5
-    
-    \begin{figure}[h]
+
+    \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.6\textwidth]{image2.png}
     \caption{图 5.5}
-\end{figure}
-    
+    \label{fig:inner-hole}
+    \end{figure}
+
     其阴影面积随平动距离的变化而变化缓慢。
 \end{enumerate}
 
