@@ -1,6 +1,20 @@
-\section{机械臂运动路径设计问题}
+\documentclass[12pt]{article}
+\usepackage{ctex}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{geometry}
+\geometry{left=3cm,right=3cm,top=2.5cm,bottom=2.5cm}
 
-\subsection{1. 问题的简述}
+\title{机械臂运动路径设计问题}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{1. 问题的简述}
 
 机器人最主要的操作机构是各种形态的机械臂，机械臂的动作形态是是由三种不同的单位动作——旋转、回转、伸缩组合而成的。旋转或回转是指机械臂产生相对转动，两者的不同仅在于转动部件的轴线与转动轴线是否同轴\footnote{1}。旋转如笔帽的转动，回转如摇柄的转动，伸缩指机械臂产生直线运动，引进伸缩动作，运动范围可以得到扩大。机器人机械手具有的独立的单位动作组合数称之为自由度。一个物体在三维空间中的位置和姿态分别需要三个独立的坐标才能得到确定。所以，能使手爪达到任意空间位置并具有任意姿态的机械手最少需要六个自由度。自由度是表达机器人通用性、灵活性的主要指标，自由度越多，机械臂越灵活，可达的空间更广泛。当然自由度越多，机械结构越复杂，从而控制也越困难。
 
@@ -34,13 +48,13 @@
 
 3. 有一项任务是在工件内壁点焊四个小零件，它们在内表面上的位置到 $xy$ 平面的投影为 $(320,-104)、(120,106)、(190,-125)$ 和 $(255,88)$。要求机械臂从圆台的上部开口处伸进去到达这些点进行加工，为简捷起见，不妨不计焊条等的长度，只考虑指尖的轨迹。
 
-\subsection{2. 问题的分析}
+\section{2. 问题的分析}
 
 机械臂的运动属于运动学的范畴。运动学研究旨在解决机器人的手臂转向何方。机械臂的运动学要研究两个问题：运动学正问题——已知各关节位移变量的值，要求机械臂指尖在空间的位置和姿态，这实际上是建立运动学方程的过程；运动学逆问题——指定指尖的空间位置和姿态，要求出各关节位移变量的相应值，这实际上是求解运动学的过程。
 
 本文中的问题属于运动学逆问题，即已知初始状态求机械臂指尖到达目标点或者沿一定的轨迹曲线到达目标点的指令序列。运动学逆问题直接求解较困难。本文设计几何算法和牛顿迭代法求解自由空间中机械臂的运动逆问题。
 
-\subsection{符号约定与模型假设}
+\section{符号约定与模型假设}
 
 为简化问题，作如下假设：机械臂连杆的粗细忽略不计。
 
@@ -67,9 +81,7 @@ d: & & \text{机械臂指尖最终达到的位置与目标点之间的距离}
 \caption{}
 \end{figure}
 
-对角度方向作如下约定：机械臂的关节旋转时，约定顺时针方向为负。坐标系变换时，约定顺时针方向为正。假设 $\overline{FB}$ 相对于 $\overline{AF}$ 的旋转角为 $\theta_1$，$\overline{DH}$ 到 $\overline{BC}$ 的回转角为 $\theta_2$，$\overline{BC}$ 到 $\overline{CD}$ 的回
-
-转角为 $\theta_{3}$，$\overline{GD}$ 相对于 $\overline{CG}$ 的旋转角为 $\theta_{4}$，$\overline{CD}$ 到 $\overline{DE}$ 的回转角为 $\theta_{5}$，$\overline{HE}$ 相对于 $\overline{DH}$ 的旋转角为 $\theta_{6}$，由于 $\theta_{6}$ 控制手指的转动，用于操纵工具，它不影响机械臂指尖的定位问题，因此，本文不考虑 $\theta_{6}$ 对问题的影响。
+对角度方向作如下约定：机械臂的关节旋转时，约定顺时针方向为负。坐标系变换时，约定顺时针方向为正。假设 $\overline{FB}$ 相对于 $\overline{AF}$ 的旋转角为 $\theta_1$，$\overline{DH}$ 到 $\overline{BC}$ 的回转角为 $\theta_2$，$\overline{BC}$ 到 $\overline{CD}$ 的回转角为 $\theta_{3}$，$\overline{GD}$ 相对于 $\overline{CG}$ 的旋转角为 $\theta_{4}$，$\overline{CD}$ 到 $\overline{DE}$ 的回转角为 $\theta_{5}$，$\overline{HE}$ 相对于 $\overline{DH}$ 的旋转角为 $\theta_{6}$，由于 $\theta_{6}$ 控制手指的转动，用于操纵工具，它不影响机械臂指尖的定位问题，因此，本文不考虑 $\theta_{6}$ 对问题的影响。
 
 \subsubsection{4.1.1 A、B、C、D 坐标的确定}
 
@@ -107,18 +119,21 @@ x_{D} & y_{D} & z_{D}
 
 其中：
 
-\begin{align*}
-f(\Theta) &= f(\theta_1, \theta_2, \theta_3, \theta_4, \theta_5, \theta_6): & \text{指尖任意姿态:} \\
-f^0(\Theta) &= f\left(\theta_1^0, \theta_2^0, \theta_3^0, \theta_4^0, \theta_5^0, \theta_6^0\right): & \text{初始姿态:} \\
-f(\tilde{\Theta}) &= f\left(\tilde{\theta}_1, \tilde{\theta}_2, \tilde{\theta}_3, \tilde{\theta}_4, \tilde{\theta}_5, \tilde{\theta}_6\right): & \text{最终达到的姿态:} \\
-d: & & \text{机械臂指尖最终达到的位置与目标点之间的距离}
-\end{align*}
+\begin{equation}
+T_{2}=\left[\begin{array}{ccc}
+\cos 0 & \cos \frac{\pi}{2} & \cos \frac{\pi}{2} \\
+\cos \frac{\pi}{2} & \cos \left(\frac{\pi}{2}+\theta_{2}+\theta_{3}\right) & \cos \left(\theta_{2}+\theta_{3}\right) \\
+\cos \frac{\pi}{2} & \cos \left(\pi+\theta_{2}+\theta_{3}\right) & \cos \left(\frac{\pi}{2}+\theta_{2}+\theta_{3}\right)
+\end{array}\right]
+\end{equation}
 
-\begin{align*}
-x_{E}^{\prime} &= 65 \sin \theta_{4} \sin \theta_{5} \\
-y_{E}^{\prime} &= 65 \cos \theta_{5} \\
-z_{E}^{\prime} &= 65 \sin \theta_{5} \cos \theta_{4}
-\end{align*}
+\begin{equation}
+T_{1}=\left[\begin{array}{ccc}
+\cos \theta_{1} & \cos \left(\frac{\pi}{2}+\theta_{1}\right) & \cos \frac{\pi}{2} \\
+\cos \left(\frac{\pi}{2}-\theta_{1}\right) & \cos \left(\theta_{1}\right) & \cos \frac{\pi}{2} \\
+\cos \frac{\pi}{2} & \cos \left(\frac{\pi}{2}\right) & \cos 0
+\end{array}\right]
+\end{equation}
 
 机器臂指尖E点在新坐标系下的坐标为:
 \begin{align*}
@@ -157,14 +172,16 @@ z_{E} &= 140 + 255 \cos \theta_{2} + 255 \cos \left(\theta_{2} + \theta_{3}\righ
 1) 对任意目标点 $\mathbf{Q}\left(x_{Q}, y_{Q}, z_{Q}\right)$，计算 $\mathbf{A}(0,0,0)$ 与点 $\mathbf{H}\left(x_{Q}, y_{Q}, 0\right)$ 之间的距离 $AH$；
 
 2) 围绕 $z$ 轴旋转机械臂平面 $ABCD$（即 $yoz$）到 $ABH$ 平面，
-\begin{align*}
-x_{E} &= \sin \theta_{1} \left[-255 \sin \theta_{2} - 255 \sin \left(\theta_{2} + \theta_{3}\right)\right] + 65 \cos \theta_{1} \sin \theta_{4} \sin \theta_{5} \\
-&\quad + \sin \theta_{1} \left[-65 \cos \theta_{5} \sin \left(\theta_{2} + \theta_{3}\right) - 65 \cos \left(\theta_{2} + \theta_{3}\right) \cos \theta_{4} \sin \theta_{5}\right] \\
-y_{E} &= \cos \theta_{1} \left[-255 \sin \theta_{2} - 255 \sin \left(\theta_{2} + \theta_{3}\right)\right] - 65 \sin \theta_{1} \sin \theta_{4} \sin \theta_{5} \\
-&\quad + \cos \theta_{1} \left[-65 \cos \theta_{5} \sin \left(\theta_{2} + \theta_{3}\right) - 65 \cos \left(\theta_{2} + \theta_{3}\right) \cos \theta_{4} \sin \theta_{5}\right] \\
-z_{E} &= 140 + 255 \cos \theta_{2} + 255 \cos \left(\theta_{2} + \theta_{3}\right) + 65 \cos \left(\theta_{2} + \theta_{3}\right) \cos \theta_{5} \\
-&\quad - 65 \cos \theta_{4} \sin \left(\theta_{2} + \theta_{3}\right) \sin \theta_{5}
-\end{align*}
+\begin{equation}
+\text{旋转角 } \theta_{1} =
+\begin{cases}
+arctg\left|\dfrac{x_{Q}}{y_{Q}}\right|, & x_{Q} \geq 0, y_{Q} > 0 \\
+\pi - arctg\left|\dfrac{x_{Q}}{y_{Q}}\right|, & x_{Q} \geq 0, y_{Q} < 0 \\
+-arctg\left|\dfrac{x_{Q}}{y_{Q}}\right|, & x_{Q} \leq 0, y_{Q} > 0 \\
+arctg\left|\dfrac{x_{Q}}{y_{Q}}\right| - \pi, & x_{Q} \leq 0, y_{Q} < 0
+\end{cases}
+\tag{确定 $\theta_{1}$}
+\end{equation}
 
 2) 建立新坐标系，把 $ABH$ 平面作为新的 $yoz$ 坐标面，新 $y$ 轴与 $AH$ 重合，正向为 $\overline{AH}$ 方向，$z$ 轴不变。根据图（2），$\overline{AB}$ 到 $\overline{BC}$ 的转角为 $\theta_{2}$，$\overline{BC}$ 到 $\overline{CD}$ 的转角为 $\theta_{3}$，$\overline{CD}$ 到 $\overline{DE}$ 的转角为 $\theta_{5}$，则 $ABE$ 平面上机械臂指尖位置为：
 \begin{align*}
@@ -219,7 +236,12 @@ z_{E} &= z'_{E} = BC\sin(\theta_{2}) + CD\sin(\theta_{2} + \theta_{3}) + DE\sin(
     \node at (3,6) [above] {D};
 \end{tikzpicture}
 
-\subsection{图 (4)}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{图 (4)}
+    \label{fig:4}
+\end{figure}
 
 如果不考虑避碰问题，则 1)、2)、3)、4) 可以同时进行。
 
@@ -521,11 +543,9 @@ d = \sqrt{(20 - 19.985)^2 + (-200 + 199.855)^2 + (120 - 119.986)^2} = 0.179408 \
 
 由图可以看出，焊接点很好的逼近了裂缝，经过误差分析，发现焊接点的平均误差为 0.188mm。
 
-\subsubsection{考虑障碍物时，应用牛顿迭代算法求解}
+\subsubsection{6.2.2 考虑障碍物时，应用牛顿迭代算法求解}
 
-当考虑平台对机械臂的阻碍以及机械臂各关节弯角限制时，直接利用牛顿迭代法是不行的，因为其在迭代运算过程中未考虑是否发生碰撞，也未考虑机械臂各关节弯角的限制，在这里给出一种
-
-改进的利用牛顿迭代法的轨迹控制算法。算法的基本思想是，在固定其中两个关节弯角时，通过调整其他三个关节弯角可以到达的目标点可能是多个，这样可以连续找到多个目标点，在最后到达的目标点调整那两个固定的关节弯角，再利用这一对固定值，搜索此时通过调整其他三个关节弯角可以达到的目标点，如此重复执行，由于在判断目标点是否可达时加入了弯角和碰撞判断因素，因此可以起到考虑机械臂的阻碍以及机械臂各关节弯角限制时的空间曲线轨迹控制。
+当考虑平台对机械臂的阻碍以及机械臂各关节弯角限制时，直接利用牛顿迭代法是不行的，因为其在迭代运算过程中未考虑是否发生碰撞，也未考虑机械臂各关节弯角的限制，在这里给出一种改进的利用牛顿迭代法的轨迹控制算法。算法的基本思想是，在固定其中两个关节弯角时，通过调整其他三个关节弯角可以到达的目标点可能是多个，这样可以连续找到多个目标点，在最后到达的目标点调整那两个固定的关节弯角，再利用这一对固定值，搜索此时通过调整其他三个关节弯角可以达到的目标点，如此重复执行，由于在判断目标点是否可达时加入了弯角和碰撞判断因素，因此可以起到考虑机械臂的阻碍以及机械臂各关节弯角限制时的空间曲线轨迹控制。
 
 假设机械臂达到姿态 \((90^\circ, \theta_2, \theta_3, \theta_4, \theta_5)\)，可以调整 \((90^\circ, \theta_2, \theta_3, \theta_4, \theta_5)\)，使其处于一种既不发生碰撞，又满足机械臂各关节弯角限制要求，在具体实现时，可以微量调整，记此状态为 \(\Theta_0 = (\theta_1^0, \theta_2^0, \theta_3^0, \theta_4^0, \theta_5^0)\)，其中 \(\theta_1^0\) 也可以不为 \(90^\circ\)，但对于本题中这一特定位置的平台，立 \(\theta_1^0 = 90^\circ\) 便于计算讨论。同时，仍然对裂纹进行离散化，取若干个离散点去逼近裂纹。下面描述算法步骤：
 
@@ -703,9 +723,7 @@ z'_{E} &= BC\sin(\theta_{2}) + CD\sin(\theta_{2} + \theta_{3}) + DE\sin(\theta_{
 
 \subsubsection{6.3.2 圆台内表面盲区的分析}
 
-由于机械臂的连杆长度固定，每个关节的旋转范围受限制，圆台内表面必有机械臂指尖不能达
-
-到的地方，即为机械臂工作的盲区。在这些因素中，对盲区影响比较大的是连杆的长度与关节 \( C \) 的转角 \( \theta_5 \) 的活动范围。而连杆的长度是固定的，所以盲区主要受 \( \theta_5 \) 的活动范围限制。 \( \theta_5 \) 的活动范围为 \( -138^\circ \sim 138^\circ \)，则盲区点 \( (x_n, y_n, z_n) \) 满足 \( 42 \leq x_n \leq 210 \)，关键是求 \( z_n \) 的范围。其算法如下：
+由于机械臂的连杆长度固定，每个关节的旋转范围受限制，圆台内表面必有机械臂指尖不能达到的地方，即为机械臂工作的盲区。在这些因素中，对盲区影响比较大的是连杆的长度与关节 \( C \) 的转角 \( \theta_5 \) 的活动范围。而连杆的长度是固定的，所以盲区主要受 \( \theta_5 \) 的活动范围限制。 \( \theta_5 \) 的活动范围为 \( -138^\circ \sim 138^\circ \)，则盲区点 \( (x_n, y_n, z_n) \) 满足 \( 42 \leq x_n \leq 210 \)，关键是求 \( z_n \) 的范围。其算法如下：
 
 以平面族 \( y = t \) （\( -168 \leq t \leq 168 \)）去切圆台，对于圆台的每一个剖切面，作如下分析：
 

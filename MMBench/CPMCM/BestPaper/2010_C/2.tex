@@ -76,9 +76,9 @@
     \item 附录 \dotfill 45
 \end{itemize}
 
-\section{问题重述}
+\section{1.问题重述}
 
-\subsection{背景分析}
+\subsection{1.1背景分析}
 
 被称为“人的生命活动中枢”的神经系统，其解剖结构和生理功能的复杂程度，已远远超过了目前人类的认识能力。尤其是脊椎动物的神经系统是一个非常复杂的生物网络，协调且控制着基本的身体动作，对外界的刺激做出各种反射。高级哺乳动物的神经系统是由 2500-5000 类神经元产生 25000-100000 个轴突连接在其中所组成的一个网络 [1]，而无脊椎动物要相对简单许多。多少年来，人类为探索其奥秘在进行着不懈的努力。大脑是生物体内结构和功能最复杂的组织，人类脑计划（Human Brain Project, HBP）的提出就是要对全世界的神经信息学数据库建立共同的标准，多学科整合分析大量数据，加速人类对脑的认识。在过去的 20 多年里，随着新技术的不断涌现，生物学家们逐渐能够对神经元的物理和化学变化进行探测。共聚焦显微镜和双光子激发荧光显微技术的出现让我们对于神经元的三维结构和动态变化能够进行更加详尽的观察，空间上能够精确到微米级别，时间上能精确到毫秒级别。这些定量分析手段和荧光染色技术相结合就使得我们能够对神经元内的某种特定的分子进行时空分析。
 
@@ -93,7 +93,7 @@
     \label{fig:neuron_shapes}
 \end{figure}
 
-\subsection{问题提出}
+\subsection{1.2问题提出}
 
 对神经元特性的认识，最基本问题是神经元的分类。目前，神经元有目前有以下几种分类法，根据突起的多少可将神经元分为三种：（1）多极神经元（multipolar neuron），有一个轴突和多个树突；（2）双极神经元（bipolar neuron），有两个突起，一个是树突，另一个是轴突；（3）假单极神经元（pseudounipolar neuron），从胞体发出一个突起，距胞体不远又呈“T”形分为两支，一支分布到外周的其他组织的器官，称周围突（peripheral process）；另一支进入中枢神经系统，称中枢突 (central process)。假单极神经元的这两个分支，按神经冲动的传导方向，中枢突是轴突，周围突是树突；但周围突细而长，与轴突的形态类似，故往往通称轴突。
 
@@ -113,7 +113,7 @@
     \item 神经元的实际形态是随着时间的流逝，树突和轴突不断地生长而发生变化的，能预测神经元形态的生长变化吗？这些形态变化对你们确定的几何形态特征有什么影响。
 \end{enumerate}
 
-\section{模型假设}
+\section{二、模型假设}
 
 \begin{enumerate}
     \item 假设附件A中的每个神经元空间形态数据都正确的描述了本类别神经元的基本信息，没有错类描述或者变异。
@@ -124,7 +124,7 @@
     \item 类别假设：第一类是运动神经元、第二类是普肯野神经元、第三类是锥体神经元、第四类中间神经元、第五类是感觉神经元。
 \end{enumerate}
 
-\section{符号约定}
+\section{三、符号约定}
 
 \begin{tabular}{l l}
 \textbf{符号} & \textbf{含义} \\
@@ -163,7 +163,7 @@ $P$ & 标准化的父分支起始直径 \\
 $R'$ & 服从均匀分布的随机变量（位于 $0$-$1$ 之间） \\
 \end{tabular}
 
-\section{问题分析、建模与求解}
+\section{四、问题分析、建模与求解}
 
 \subsection{4.1 问题一}
 
@@ -365,7 +365,7 @@ F_i = \{ f_1, f_2, \cdots f_k, \cdots f_{|F_i|} \}
 
 在构建训练集时候需要归一化。
 
-\paragraph{差分特征选择}
+\paragraph{4.1.2.2差分特征选择}
 
 特征选择是模式识别中的关键技术之一。一般情况下，只有在特征矢量中包含足够多的类别信息，才能通过分类器实现正确分类。由于特征是否包含足够多的信息很难确定，为了提高识别率，总是最大限度地提取特征信息，结果不仅使特征维数增大，而且其中可能存在较多的无效和冗余特征。因此，选择合适的特征来描述模式，对模式识别精度、训练时间和存储空间等许多方面都有较大影响，并且对分类器的构造也起着非常重要的作用。
 
@@ -698,6 +698,8 @@ $R'$ & 服从均匀分布的随机变量（位于 $0$-$1$ 之间） \\
 
 表4-5 中间神经元几何特征
 
+
+
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -747,6 +749,9 @@ id & 特征 & 值 & id & 特征 & 值 \\
 \end{tabular}
 \end{table}
 
+表4-6 感觉神经元几何特征
+
+\paragraph{(5) 感觉神经元}
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -800,6 +805,12 @@ id & 特征 & 值 & id & 特征 & 值 \\
 \end{tabular}
 \end{table}
 
+
+
+\subsubsection{4.1.3.3 分类问题}
+(1) KNN 分类 
+差分特征选择之前 我们自己寻找了10 个测试神经元进行测试，特征选择之前的正确率为80%。
+有两个椎体分到普肯野里面了。
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -855,15 +866,15 @@ id & 特征 & 值 & id & 特征 & 值 \\
 
 显然，集成之后的对于测试集的分类效果为 100\%。说明多分类器集成能够互补单个分类器的缺点，已达到更高的目的，虽然我们的测试集有限，但是多分类器的鲁棒性完全可以适应大数据的压力，有良好的泛化能力。
 
-\subsection{问题二}
+\subsection{4.2问题二}
 
-\subsubsection{问题分析}
+\subsubsection{4.2.1问题分析}
 
 附件 B 中是一些没有类别的需要进行分类的数据，那么我们完全可以用问题一的模型进行分析了，首先进行特征提取，建立特征向量，然后用多分类器系统进行分类。
 
 由于可能要面对新类型的神经元，为了在不错分的情况下将新神经元检测出来并且能够观察到其离哪一类神经元最近，我们必须引入新模型和变量。
 
-\subsubsection{模型建立}
+\subsubsection{4.2.2模型建立}
 
 这里，我们引入一个新的变量 $\xi_{i}$，我们称之为类别 $C_{i}$ 的边界，这个变量通过训练集中的数据和之前的质心 $F_{center_{i}}$ 得到：
 
@@ -1006,13 +1017,13 @@ B-17 和 B-18 其实是一类神经元，都没有胞体和杆，经查阅资料
 
 在差分 KNN 和 SVM 分类问题中，出现了不稳定的神经元，还没有分析过的是 7、8、9，经过观察数据，发现其胞体和茎的数量都是 0，在其他训练数据中只有感觉神经元是这样的，但是 7、8、9 的神经元形态又类似于运动神经元，所以产生了错分问题。对于 7、8、9 这类神经元，其实得定义新的神经元。由于其胞体和茎都是 0，可以用突触终端、无胞突触等词汇进行启发式描述。
 
-\subsection{问题三}
+\subsection{4.3问题三}
 
-\subsubsection{问题分析}
+\subsubsection{4.3.1问题分析}
 
 这个问题其实在考虑问题一和二模型的泛化能力以及启发式。
 
-\subsubsection{模型建立}
+\subsubsection{4.3.2模型建立}
 
 要做到对所有神经元进行分类，是十分困难的事情。通过优化问题一二的模型可以达到泛化的目的。
 
@@ -1022,7 +1033,7 @@ B-17 和 B-18 其实是一类神经元，都没有胞体和杆，经查阅资料
     \item 关于命名方式，一种是根据严格的定义进行命名，像是单极神经元、二极、多极神经元等；另外，针对一些特殊情况命名，像是当发现没有胞体和茎的时候，可以用突触末端、无胞体突触等词汇进行命名；另外，就是根据最相近的类别进行类比命名了，例如：B-4，类锥体神经元。
 \end{enumerate}
 
-\subsubsection{求解与验证}
+\subsubsection{4.3.3求解与验证}
 
 我们又将B中新数据加入到我们的训练集当中，又从互联网数据库中找到了一些神经元，加入到我们的数据库中，不知名的神经元我们给命名。很明显，如果再对B进行分类，结果将会大大改善，准确率近乎100%:
 
@@ -1033,17 +1044,17 @@ B-17 和 B-18 其实是一类神经元，都没有胞体和杆，经查阅资料
     \label{fig:4-28}
 \end{figure}
 
-\subsection{问题四}
+\subsection{4.4问题四}
 
-\subsubsection{问题分析}
+\subsubsection{4.4.1问题分析}
 
 由于我们提出了差分特征选择模型，所以很显然能够区分任何两个神经元，及时他们是一种，只要有一点不同，差分特征选择模型总能找到不同。我们一共给出了三对数据进行说明，分别是猪鼠普肯野、猫鼠运动神经元、人猫锥体神经元。
 
-\subsection{4.4.2 模型建立}
+\subsubsection{4.4.2 模型建立}
 
 问题一的差分特征提取模型，这里差分类别是2
 
-\subsection{4.4.3 求解与验证}
+\subsubsection{4.4.3 求解与验证}
 
 (1) 猪鼠普肯野神经元
 
@@ -1069,7 +1080,7 @@ B-17 和 B-18 其实是一类神经元，都没有胞体和杆，经查阅资料
 
 针对选择的特征分析真实数据，然后映射到具体几何特征的含义，通过具体特征意义分析，这两种差距还是在大小上。
 
-\section{表4-7 猪鼠普肯野特征对比}
+表4-7 猪鼠普肯野特征对比
 
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline 特征id & Pig1 & Pig2 & Pig3 & Rat1 & Rat2 & Rat3 \\
@@ -1259,6 +1270,11 @@ B-17 和 B-18 其实是一类神经元，都没有胞体和杆，经查阅资料
 \hline
 \end{tabular}
 
+
+(3) 人猫锥体神经元  我们寻找到差分参数 centerδ =0.29，然后分析出能够区分人猫锥体神经元的13
+种特征，其特征id 是：16、17、18、19、23、30、31、32、34、36、37、38。 
+针对选择的特征分析真实数据，映射到真实数据分析，主要是体现在距离和
+角度上，看来大小相似，形态相差很大，我们仿真验证一下：
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -1360,9 +1376,9 @@ B-17 和 B-18 其实是一类神经元，都没有胞体和杆，经查阅资料
 \end{tabular}
 \end{table}
 
-\subsection{问题五}
+\subsection{4.5问题五}
 
-\subsubsection{问题分析}
+\subsubsection{4.5.1问题分析}
 
 大量实验表明，神经元的实际形态并不是一成不变的。随着时间的变化，同一个神经元的轴突和树突都在发生着改变，或生长，或萎缩。神经元在干细胞定向分化之后，由单个细胞体开始成长过程。大多数神经元在定向分化之后就不分裂；如果它们受到损伤，损伤程度严重的就会凋亡，损伤程度较轻的则可能会得到修复；它们是长寿的细胞，在机体衰老时才开始逐渐衰亡；它们的长寿对于神经系统工作的连续性起到了保证作用。
 
@@ -1474,7 +1490,7 @@ P = k_1 e^{k_2}
     \label{fig:4-33}
 \end{figure}
 
-\subsection{模型流程图}
+\subsubsection{4.5.2.2模型流程图}
 
 \begin{figure}[h]
     \centering
@@ -1487,7 +1503,7 @@ P = k_1 e^{k_2}
 
 由于在模型中需要考虑扭矩角度和分支角度的变换问题，因此本模型涉及了空间三维坐标系的变换过程，部分涉及到笛卡尔坐标的变换，详细变换过程见附录 1。
 
-\subsection{4.5.3 预测模型的求解}
+\subsubsection{4.5.3 预测模型的求解}
 
 \subsubsection{4.5.3.1 模型训练数据的调整}
 
@@ -1518,901 +1534,7 @@ $75.4\%$ 概率为 $0.112 \pm 0.035$ (高斯分布)
 \end{tabular}
 \end{table}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image1.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image2.png}
-\end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image3.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image4.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image5.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image6.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image7.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image8.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image9.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image10.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image11.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image12.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image13.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image14.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image15.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image16.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image17.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image18.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image19.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image20.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image21.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image22.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image23.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image24.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image25.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image26.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image27.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image28.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image29.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image30.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image31.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image32.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image33.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image34.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image35.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image36.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image37.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image38.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image39.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image40.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image41.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image42.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image43.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image44.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image45.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image46.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image47.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image48.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image49.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image50.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image51.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image52.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image53.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image54.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image55.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image56.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image57.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image58.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image59.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image60.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image61.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image62.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image63.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image64.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image65.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image66.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image67.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image68.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image69.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image70.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image71.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image72.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image73.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image74.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image75.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image76.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image77.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image78.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image79.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image80.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image81.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image82.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image83.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image84.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image85.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image86.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image87.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image88.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image89.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image90.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image91.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image92.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image93.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image94.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image95.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image96.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image97.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image98.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image99.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image100.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image101.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image102.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image103.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image104.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image105.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image106.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image107.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image108.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image109.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image110.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image111.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image112.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image113.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image114.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image115.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image116.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image117.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image118.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image119.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image120.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image121.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image122.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image123.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image124.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image125.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image126.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image127.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image128.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image129.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image130.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image131.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image132.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image133.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image134.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image135.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image136.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image137.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image138.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image139.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image140.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image141.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image142.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image143.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image144.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image145.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image146.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image147.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image148.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image149.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image150.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image151.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image152.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image153.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image154.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image155.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image156.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image157.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image158.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image159.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image160.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image161.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image162.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image163.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image164.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image165.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image166.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image167.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image168.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image169.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image170.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image171.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image172.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image173.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image174.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image175.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image176.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image177.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image178.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image179.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image180.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image181.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image182.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image183.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image184.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image185.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image186.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image187.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image188.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image189.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image190.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image191.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image192.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image193.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image194.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image195.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image196.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image197.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image198.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image199.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image200.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image201.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image202.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image203.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image204.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image205.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image206.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image207.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image208.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image209.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image210.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image211.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image212.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image213.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image214.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image215.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image216.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image217.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image218.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image219.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image220.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image221.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image222.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image223.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image224.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image225.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image226.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image227.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image228.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image229.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image230.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image231.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image232.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image233.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image234.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image235.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image236.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image237.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image238.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image239.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image240.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image241.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image242.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image243.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image244.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image245.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image246.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image247.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image248.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image249.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image250.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image251.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image252.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image253.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image254.png}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{image255.png}
-    \hfill
-    \includegraphics[width=0.45\textwidth]{image256.png}
-\end{figure}
 
 \begin{figure}[h]
     \centering
@@ -2426,7 +1548,10 @@ $75.4\%$ 概率为 $0.112 \pm 0.035$ (高斯分布)
     \includegraphics[width=0.45\textwidth]{image259.png}
     \hfill
     \includegraphics[width
-
+\subsubsection{4.5.4 模型结果验证}    
+建立起生长模型之后，由于具体神经元对模型参数的特异性要求，因此我们
+在测试模型结果的过程中只考虑小鼠的海马区普肯野神经元的模拟和预测情况。
+针对模型结果，我们从两方面进行了验证，一方面通过对一个小鼠海马区普肯野
 神经元进行模拟，在这个神经元的基础上进行下一步的预测。具体如图 4-36 所示
 
 \begin{figure}[h]
@@ -2438,7 +1563,7 @@ $75.4\%$ 概率为 $0.112 \pm 0.035$ (高斯分布)
 
 第二方面我们模拟单个普肯野神经元从定向分化后的生长和分支轨迹。具体的几何形态特征结果可见附件 2 中。然后利用问题一二的模型进行分类，分类正确，说明不影响分类问题。
 
-\section{模型评价与推广}
+\section{5模型评价与推广}
 
 本文针对神经元分类问题设计并实现了基于多分类其系统的分类模型，针对不同神经元的形态差异，使用了差分特征选择模型对不同类别的神经元进行特征选择，并改善 KNN 的分类效果。差分特征选择还能很好的区分不同物种相同神经元的不同。
 
