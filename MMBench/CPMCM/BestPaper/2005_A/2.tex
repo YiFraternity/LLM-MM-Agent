@@ -46,7 +46,7 @@
 
 \subsubsection{（一）第一种行车时间估计模型}
 
-\subsubsubsection{假设}
+\paragraph{假设}
 
 (1) 在各路段中车辆单向行驶。
 
@@ -61,7 +61,7 @@
 
 (4) 车辆在时刻 $t_n$ 通过各个测段的行驶时间 $T(X_{i,j}, t_n)$ 服从正态分布。
 
-\subsubsubsection{模型建立}
+\paragraph{模型建立}
 
 \paragraph{(1) 基本单元模型}
 
@@ -111,7 +111,7 @@ T_v(X_{i,j}) = \frac{\sum_{n=1}^N T_v(X_{i,j}, t_n)}{N}
 \end{equation}
 式中 \( N \) 表示该测段测量数据个数。
 
-\subsubsubsection{3、模型求解}
+\paragraph{3、模型求解}
 
 \begin{table}[h]
 \centering
@@ -175,7 +175,7 @@ T_v(X_{i,j}) = \frac{\sum_{n=1}^N T_v(X_{i,j}, t_n)}{N}
     \label{fig:5}
 \end{figure}
 
-\subsubsubsection{结果分析及评价}
+\paragraph{结果分析及评价}
 
 \paragraph{相关性分析}
 
@@ -256,7 +256,7 @@ CF =
 
 \subsubsection{(二) 第二种时间估计模型}
 
-\subsubsubsection{1、模型假设}
+\paragraph{1、模型假设}
 
 (1) 在各路段中车辆单向行驶。
 
@@ -293,7 +293,7 @@ v_{f}(X_{i,j}) = \text{Max} \left\{ \frac{v(X_{i}, t_{n}) + v(X_{j}, t_{n})}{2},
 
 (6) 滞留量不能为负，当进入车辆数小于驶出数量时，认为没有滞留车辆，滞留量为零。
 
-\subsubsubsection{2、模型建立}
+\paragraph{2、模型建立}
 
 \paragraph{(1) 自由通过时间计算模型}
 
@@ -366,7 +366,7 @@ T_{c}(X_{i,j})=\frac{\sum\limits_{n=1}^{N}T_{c}(X_{i,j},t_{n})}{N}
 \end{equation}
 式中 $N$ 表示该测段测量数据个数。
 
-\subsubsubsection{3、模型求解}
+\paragraph{3、模型求解}
 
 \begin{table}[h]
 \centering
@@ -457,7 +457,7 @@ $T_{T}(X_{i,j})$ (s) & 52.40 & 33.84 & 53.42 & 27.29 & 166.95 \\
 
 \subsubsection{（一）不考虑各个路段行驶时间的相关性}
 
-\subsubsubsection{1. 假设}
+\paragraph{1. 假设}
 
 (1) 各个路段的行驶时间 $T$ 都服从正态分布。
 
@@ -473,7 +473,7 @@ $T_{T}(X_{i,j})$ (s) & 52.40 & 33.84 & 53.42 & 27.29 & 166.95 \\
 
 (7) 在各路段中车辆单向行驶。
 
-\subsubsubsection{2、建立模型}
+\paragraph{2、建立模型}
 
 根据以上假设和分析，可以建立第 \( i \) 个路段上广义行驶费用的线性方程：
 
@@ -514,7 +514,7 @@ Y(t) = \min \left( \sum_{j} Y_{i}(t) \right)
 
 那么，最优路线的选择问题就转化为类似求解最短路径的问题，可以采用图论中的 Dijkstra 算法求解。
 
-\subsubsubsection{3、模型求解}
+\paragraph{3、模型求解}
 
 Dijkstra 算法是典型最短路算法，用于计算一个节点到其他所有节点的最短路径。主要特点是以起始点为中心向外层层扩展，直到扩展到终点为止。其算法描述如下：
 

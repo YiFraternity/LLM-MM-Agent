@@ -492,7 +492,7 @@ C(t + \Delta t) = q \cdot N_2(t) + C(t) +
     \item 假设$\beta$与$m$和$N-n$成线性关系。
 \end{enumerate}
 
-\subsubsubsection{来客速率$\lambda$}
+\paragraph{来客速率$\lambda$}
 
 来客速率$\lambda$是指单位时间内顾客增加的数量，假设$\lambda$服从负指数分布，则：
 \[
@@ -511,7 +511,7 @@ f(\Delta t) =
 \frac{\lambda_{1}}{\lambda_{2}} = \frac{\text{居民出租车出行人次}}{\text{出租车日客运总量-居民出租车出行人次}}
 \]
 
-\subsubsubsection{服务速率 \(\mu\)}
+\paragraph{服务速率 \(\mu\)}
 
 出租车服务速率 \(\mu\) 是指平均每辆车单位时间服务完的批次数，假设 \(\mu\) 服从负指数分布。
 
@@ -531,7 +531,7 @@ u \cdot e^{-u \cdot \Delta t} & \Delta t > 0 \\
 \frac{1}{\mu} = \frac{\text{载客里程数}}{\text{每日载客趟次} \times \text{出租车平均速度}}
 \]
 
-\subsubsubsection{单车对单人服务速率 \(\beta\)}
+\paragraph{单车对单人服务速率 \(\beta\)}
 
 \(\beta\) 可以理解为在某一时刻只有一辆空车和一个等待顾客时，该车遇到该顾客所需要的时间的倒数。假设 \(\beta\) 服从负指数分布。 \(\beta\) 参数与城市的道路设施状况和城市的规模相关，如果城市设施良好，则 \(\beta\) 变大；城市规模越大，\(\beta\) 越小。
 
@@ -547,7 +547,7 @@ u \cdot e^{-u \cdot \Delta t} & \Delta t > 0 \\
 \beta = \frac{1}{\text{平均等待时间 (s)}} = 0.000001908 \, (1/s) \, .
 \]
 
-\subsubsubsection{状态及状态转移}
+\paragraph{状态及状态转移}
 
 设 \(N\) 为现时刻总出租车数，\(n\) 为现时刻正在服务的车辆数，则 \(N-n\) 表示现时刻空车数。
 
@@ -602,7 +602,7 @@ u \cdot e^{-u \cdot \Delta t} & \Delta t > 0 \\
 
 上式的意义表示：稳定状态下，转移到 $(m,n)$ 状态的速率等于从 $(m,n)$ 状态转移出去的速率。
 
-\subsubsubsection{模型建立}
+\paragraph{模型建立}
 
 设 $A(N \times N, N \times N)$ 为系统 $N \times N$ 状态到 $N \times N$ 状态的转移速率矩阵，则
 \begin{equation}
@@ -630,7 +630,7 @@ A(m_1 \times n_1, m_2 \times n_2) \cdot \overrightarrow{P_{N \times N}} &= 0 \\
 \right.
 \end{equation}
 
-\subsubsubsection{模型求解}
+\paragraph{模型求解}
 
 通过服务系统模型，假设 \(\lambda\)，\(\beta\)，\(\mu\) 已知，根据出租车数量就可以解得乘客平均等待时间和出租车。
 
@@ -662,7 +662,7 @@ A(m_1 \times n_1, m_2 \times n_2) \cdot \overrightarrow{P_{N \times N}} &= 0 \\
 
 \subsubsection{最优化模型}
 
-\subsubsubsection{模型建立}
+\paragraph{模型建立}
 
 顾客总体的抱怨度和顾客的平均等待时间相关，等待时间越大，抱怨越大，等待的时间越小，抱怨越小。定义抱怨函数如下：
 
@@ -725,7 +725,7 @@ n_1 u & m_2 = m_1, n_1 - n_2 = 1 \\
 
 用 \( \alpha \) 来表示政府在顾客因素和出租车公司因素之间的折中，\( \alpha = 1 \) 表示只考虑顾客抱怨程度的预测，\( \alpha = 0 \) 表示只考虑出租车公司因素的预测。
 
-\subsubsubsection{模型求解}
+\paragraph{模型求解}
 
 首先根据初始的出租车系统平均服务速率、顾客平均到达速率以及城市道路的基本状况参数 $\beta$，设定初始出租车总量。解出平稳状态时，整个系统处于各个状态的概率。根据概率值计算顾客平均等待时间和出租车空载概率。由此结合设定的政府调控系数，计算需要优化目标的概率。
 
@@ -741,7 +741,7 @@ n_1 u & m_2 = m_1, n_1 - n_2 = 1 \\
 
 需要说明的是，预测所得到的各年的最佳出租车数量是基于用户平均等待时间不大于 2 分钟（根据 2004 年的数据实际计算用户平均等待时间为 2 分钟），空载率不高于 $52.1\%$（2004 年的实际计算结果）的情况。
 
-\subsubsubsection{模型的验证}
+\paragraph{模型的验证}
 
 为了验证模型的合理性，我们采用蒙特卡罗模拟对建立的模型进行模拟。模拟中采用的部分定义如下：
 
