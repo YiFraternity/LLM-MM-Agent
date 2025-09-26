@@ -118,15 +118,9 @@ def latex_to_json(latex_content):
         'subparagraph': 5,
     }
 
-    # 构建一个正则表达式，用于匹配所有层级命令
-    # - \\(section|subsection|...) 匹配命令本身
-    # - \*? 匹配可选的星号 (例如 \section*{...})
-    # - \s* 匹配0或多个空格
-    # - \{([^}]+)\} 捕获花括号内的标题内容
     command_pattern = '|'.join(hierarchy.keys())
     pattern = re.compile(r'\\(' + command_pattern + r')\*?\s*\{([^}]+)\}')
 
-    # 只处理 \begin{document} 和 \end{document} 之间的内容
     doc_match = re.search(r'\\begin\{document\}(.*?)\\end\{document\}', latex_content, re.DOTALL)
     if not doc_match:
         print("警告: 未找到 \\begin{document} 环境。将尝试解析整个文件。")
@@ -134,34 +128,19 @@ def latex_to_json(latex_content):
     else:
         doc_content = doc_match.group(1)
 
-    # 使用正则表达式分割文档内容
-    # re.split会返回一个列表，其中包含被分割的文本和捕获的组
-    # 格式为: [content_before_first_match, command1, title1, content1, command2, title2, content2, ...]
     parts = pattern.split(doc_content)
-
-    # 最终的JSON输出结果
     result_tree = []
-
-    # 使用一个字典来追踪每个层级的当前父节点
-    # level_parents[0] 指向根节点列表 (result_tree)
-    # level_parents[1] 指向当前 section 节点
-    # level_parents[2] 指向当前 subsection 节点，依此类推
     level_parents = {0: {"children": result_tree}}
-
-    # 处理文档开头到第一个section之间的内容（前言/摘要部分）
     preamble_content = parts[0].strip()
     if preamble_content:
-        # 你可以自定义这部分的标题
         preamble_node = {
             "title": "前言",
             "content": preamble_content,
             "children": []
         }
         result_tree.append(preamble_node)
-        # 如果前言部分存在，它将作为第一个1级节点
         level_parents[1] = preamble_node
 
-    # 迭代处理分割后的部分，步长为3（command, title, content）
     for i in range(1, len(parts), 3):
         command = parts[i]
         title = parts[i+1].strip()
@@ -171,29 +150,20 @@ def latex_to_json(latex_content):
         if not level:
             continue
 
-        # 创建新节点
         new_node = {
             "title": title,
             "content": content,
             "children": []
         }
 
-        # 找到正确的父节点并添加新节点
-        # 一个 level N 的节点，其父节点是 level N-1
         parent_node = level_parents.get(level - 1)
         if not parent_node:
-            # 如果出现层级跳跃（例如section直接到subsubsection），则挂载到最近的上级
-            # 查找比当前level小的最接近的父级
             parent_level = max(k for k in level_parents if k < level)
             parent_node = level_parents[parent_level]
 
         parent_node["children"].append(new_node)
 
-        # 更新当前层级的父节点为新创建的节点
         level_parents[level] = new_node
-
-        # 清理掉所有比当前层级更深的旧父节点，以确保层级正确
-        # 例如，当遇到一个新的 section (level 1) 时，之前记录的 subsection (level 2) 应该被清除
         keys_to_delete = [k for k in level_parents if k > level]
         for k in keys_to_delete:
             del level_parents[k]
