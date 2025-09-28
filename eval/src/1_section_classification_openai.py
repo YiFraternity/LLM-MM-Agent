@@ -224,17 +224,14 @@ def main():
     latex_files: List[str] = []
     if args.latex_files:
         if isinstance(args.latex_files, str):
-            # 如果是一个字符串，直接作为单个文件路径处理
             latex_files = [args.latex_files]
         else:
-            # 如果是列表，按原方式处理
             for pattern in args.latex_files:
                 latex_files.extend(glob.glob(pattern, recursive=True))
     elif args.input_dir:
         search_pattern = str(Path(args.input_dir) / '**' / 'latex' / 'solution.tex')
         latex_files.extend(glob.glob(search_pattern, recursive=True))
     else:
-        # Sensible default: search whole repo for typical solution.tex paths
         default_pattern = str(Path('output') / '**' / 'latex' / 'solution.tex')
         latex_files.extend(glob.glob(default_pattern, recursive=True))
 
@@ -248,7 +245,7 @@ def main():
     prompts_yaml = load_yaml(args.prompt_template_file)
     classification_prompt = prompts_yaml['classification']
 
-    # 3) Process each LaTeX file
+    # Keep track of total processed
     total_items = 0
     for latex_file in latex_files:
         try:
@@ -277,30 +274,39 @@ def main():
 
             # Process contents in batches
             results = []
+            seen_ids = set()  # 用于在本次运行中去重（避免重复写入相同 section）
             for i in tqdm(range(0, len(contents), args.batch_size), desc="Processing sections"):
                 batch = contents[i:i + args.batch_size]
 
-                # Process each item in the batch
                 for content_info in batch:
                     try:
+                        # 构造一个简单的唯一 id（基于文件路径 + section 路径）
+                        cur_section_path = '->'.join(content_info.get('title_path', []))
+                        unique_id = f"{content_info.get('source_latex_file', '')}:::{cur_section_path}"
+                        if unique_id in seen_ids:
+                            # 如果已经处理过，跳过（本次运行内去重）
+                            print(f"Skipping duplicate section: {unique_id}")
+                            continue
+
                         result = process_content_with_openai(
                             content_info,
                             prompt_template=classification_prompt,
                             model=args.model
                         )
+
+                        # 标记已见并写入单条结果，避免重复
+                        seen_ids.add(unique_id)
                         results.append(result)
 
-                        # Write results after each successful processing
-                        write_jsonl(results, args.output)
+                        # —— 关键修改：每次只写入当前这条 result（而不是整个 results）
+                        write_jsonl(result, args.output)
 
                         # Add delay between requests to avoid rate limiting
                         time.sleep(args.request_delay)
 
                     except Exception as e:
-                        print(f"Error processing section: {e}")
-                        # Save partial results
-                        if results:
-                            write_jsonl(results, args.output)
+                        print(f"Error processing section {content_info.get('title_path')}: {e}")
+                        # 遇到单条异常：跳过该条，继续下一条。已写入的结果不会丢失（因为是逐条写入）
                         continue
 
             total_items += len(results)

@@ -2,6 +2,7 @@
 #
 
 import json
+import argparse
 from collections import defaultdict
 from typing import Dict, List, Union
 import re
@@ -101,13 +102,25 @@ def search_index(index: Dict[tuple, List[Dict]], query: tuple) -> List[Dict]:
     return index.get(query, [])
 
 if __name__ == "__main__":
-    # Paths
-    input_file = "eval/output/2010_D/2.model_generate_section_classification_output.jsonl"
-    output_file = "eval/output/2010_D/2.model_generate_inverted_index.json"
+    parser = argparse.ArgumentParser(description='Build inverted index from section classification output.')
+    parser.add_argument('-i', '--input', required=True,
+                      help='Input JSONL file containing section classification output')
+    parser.add_argument('-o', '--output', required=True,
+                      help='Output JSON file to save the inverted index')
+
+    # Parse arguments
+    args = parser.parse_args()
 
     # Build and save the index
-    print(f"Building inverted index from {input_file}...")
-    index = build_inverted_index(input_file)
-    save_inverted_index(index, output_file)
-    print(f"Inverted index saved to {output_file}")
-    print(f"Total unique keys in index: {len(index)}")
+    print(f"Building inverted index from {args.input}...")
+    try:
+        index = build_inverted_index(args.input)
+        save_inverted_index(index, args.output)
+        print(f"Inverted index saved to {args.output}")
+        print(f"Total unique keys in index: {len(index)}")
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+        exit(1)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        exit(1)

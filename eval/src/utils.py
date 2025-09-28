@@ -32,6 +32,32 @@ def load_yaml(config_file):
     with open(config_file, 'r', encoding='utf-8') as file:
         return yaml.safe_load(file)
 
+def load_subtasks_from_criteria(criteria_file: str) -> tuple[list, dict]:
+    """
+    Load subtasks from criteria JSON file
+
+    Args:
+        criteria_file: Path to the criteria JSON file
+
+    Returns:
+        tuple: (subtasks_list, subtask_mapping)
+    """
+    try:
+        criteria = load_json(criteria_file)
+        # Extract subtask keys that start with 'subtask_'
+        subtask_keys = [key for key in criteria.keys() if key.startswith('subtask_')]
+        subtask_keys.sort()  # Ensure consistent ordering
+
+        # Create subtasks list and mapping
+        subtasks = [f'子任务{int(key.split("_")[1])}' for key in subtask_keys]
+        subtask_ens = {f'子任务{int(key.split("_")[1])}': key for key in subtask_keys}
+
+        print(f"Loaded {len(subtasks)} subtasks from criteria file")
+        return subtasks, subtask_ens
+
+    except Exception as e:
+        print(f"Error loading subtasks from criteria file: {e}")
+        raise
 
 def batch_standardize_json(texts: List[str], llm) -> List[Dict]:
     """
