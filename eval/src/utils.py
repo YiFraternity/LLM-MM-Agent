@@ -209,3 +209,75 @@ def load_llm(model_name_or_path, tokenizer_name_or_path=None, gpu_num=1, lora_mo
     }
     sampling_params = SamplingParams(**kwargs)
     return llm, sampling_params
+
+def latex_to_json(latex_content):
+    """
+    解析LaTeX文件内容，并将其转换为树状结构的字典列表。
+
+    Args:
+        latex_content: 包含LaTeX源码的字符串。
+
+    Returns:
+        一个列表，其中每个元素都是一个代表section的字典。
+    """
+
+    # 定义LaTeX命令的层级
+    hierarchy = {
+        'section': 1,
+        'subsection': 2,
+        'subsubsection': 3,
+        'paragraph': 4,
+        'subparagraph': 5,
+    }
+
+    command_pattern = '|'.join(hierarchy.keys())
+    pattern = re.compile(r'\\(' + command_pattern + r')\*?\s*\{([^}]+)\}')
+
+    doc_match = re.search(r'\\begin\{document\}(.*?)\\end\{document\}', latex_content, re.DOTALL)
+    if not doc_match:
+        print("警告: 未找到 \\begin{document} 环境。将尝试解析整个文件。")
+        doc_content = latex_content
+    else:
+        doc_content = doc_match.group(1)
+
+    parts = pattern.split(doc_content)
+    result_tree = []
+    level_parents = {0: {"children": result_tree}}
+    preamble_content = parts[0].strip()
+    if preamble_content:
+        preamble_node = {
+            "title": "前言",
+            "content": preamble_content,
+            "children": []
+        }
+        result_tree.append(preamble_node)
+        level_parents[1] = preamble_node
+
+    for i in range(1, len(parts), 3):
+        command = parts[i]
+        title = parts[i+1].strip()
+        content = parts[i+2].strip()
+
+        level = hierarchy.get(command)
+        if not level:
+            continue
+
+        new_node = {
+            "title": title,
+            "content": content,
+            "children": []
+        }
+
+        parent_node = level_parents.get(level - 1)
+        if not parent_node:
+            parent_level = max(k for k in level_parents if k < level)
+            parent_node = level_parents[parent_level]
+
+        parent_node["children"].append(new_node)
+
+        level_parents[level] = new_node
+        keys_to_delete = [k for k in level_parents if k > level]
+        for k in keys_to_delete:
+            del level_parents[k]
+
+    return result_tree

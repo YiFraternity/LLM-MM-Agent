@@ -1,6 +1,9 @@
+# Description: 构建倒排索引
+#
+
 import json
 from collections import defaultdict
-from typing import Dict, List, Any, Set, Union
+from typing import Dict, List, Union
 import re
 
 from utils import(
@@ -15,14 +18,14 @@ def extract_subtasks_dimensions(task_dimension: Union[Dict[str, str], List[Dict[
             if '子任务' in subtask or 'subtask' in subtask.lower() or re.search(r'\d', subtask):
                 return (
                     subtask,
-                    dim.get('dimension', '')
+                    dim.get('dimensions', '')
                 )
     elif isinstance(task_dimension, dict):
         subtask = task_dimension.get('subtask', '')
         if '子任务' in subtask or 'subtask' in subtask.lower() or re.search(r'\d', subtask):
             return (
                 subtask,
-                task_dimension.get('dimension', '')
+                task_dimension.get('dimensions', '')
             )
     return None
 
@@ -99,8 +102,8 @@ def search_index(index: Dict[tuple, List[Dict]], query: tuple) -> List[Dict]:
 
 if __name__ == "__main__":
     # Paths
-    input_file = "eval/section_classification_output.jsonl"
-    output_file = "eval/inverted_index.json"
+    input_file = "eval/output/2010_D/2.model_generate_section_classification_output.jsonl"
+    output_file = "eval/output/2010_D/2.model_generate_inverted_index.json"
 
     # Build and save the index
     print(f"Building inverted index from {input_file}...")
@@ -108,8 +111,3 @@ if __name__ == "__main__":
     save_inverted_index(index, output_file)
     print(f"Inverted index saved to {output_file}")
     print(f"Total unique keys in index: {len(index)}")
-
-    # Example search
-    example_query = "加工外表面母线"
-    results = search_index(index, example_query)
-    print(f"\nExample search for '{example_query}' returned {len(results)} results")

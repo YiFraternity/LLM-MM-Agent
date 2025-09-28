@@ -26,13 +26,11 @@ dimensions = {
     '结果分析': 'result_analysis',
 }
 
-subtasks = ['子任务1', '子任务2', '子任务3', '子任务4']
-subtask_ens = {
-    '子任务1': 'subtask_1',
-    '子任务2': 'subtask_2',
-    '子任务3': 'subtask_3',
-    '子任务4': 'subtask_4',
-}
+# Initialize subtasks and subtask_ens as empty dictionaries
+subtasks = []
+subtask_ens = {}
+
+# These will be populated after loading the criteria file
 
 evaluation_prompts = load_yaml('eval/eval_prompt.yaml')['evaluation_prompts']
 
@@ -102,6 +100,16 @@ if __name__ == '__main__':
 
     criteria_file = 'MMBench/CPMCM/criteria/2010_D.json'
     criteria_dict = load_json(criteria_file)
+    
+    # Dynamically populate subtasks from criteria file
+    subtask_keys = [key for key in criteria_dict.keys() if key.startswith('subtask_')]
+    subtask_keys.sort()  # Ensure consistent ordering
+    
+    subtasks = [f'子任务{int(key.split("_")[1])}' for key in subtask_keys]
+    subtask_ens = {f'子任务{int(key.split("_")[1])}': key for key in subtask_keys}
+    
+    print(f"Found {len(subtasks)} subtasks in criteria file: {subtasks}")
+    
     prompt_dict = []
     for dimension in dimensions.keys():
         for subtask in subtasks:
