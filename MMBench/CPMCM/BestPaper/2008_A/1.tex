@@ -113,10 +113,14 @@ h &= -5.1662 \times 10^{-16}V^2 + 3.7352 \times 10^{-7}V + 683.16
 
 地球上的任意点都拥有其唯一地理身份证，即经纬度 $(\alpha, \beta)$ 和海拔 $(e)$。这样，可以在堰塞湖这个区域 $W$ 建立一个三维空间坐标系，将这个区域的每一点的地理身份证换算成已建立三维空间坐标系中的 $X$、$Y$、$Z$ 坐标，如下：
 
-\begin{align*}
-\tau &= 2712000(s)； \\
-b &= 462.3612(m)；
-\end{align*}
+\begin{equation}
+\begin{cases}
+x = f(\alpha, \beta) \\
+y = g(\alpha, \beta) \\
+z = e
+\end{cases}
+\tag{3-2}
+\end{equation}
 
 其中，为了方便处理，选取竖直方向为 $Z$ 方向，且以 0 海拔平面作为 $z = 0$ 平面。
 
@@ -324,11 +328,6 @@ V + \Delta V = V_0 + \iint_{(x,y) \in D_1} (h + \Delta h - s(x,y)) \, dx dy
 \hline
 \end{tabular}
 \end{table}
-
-（2）基于修正模型的搜索方法
-对于基于水位高程—蓄水量的修正模型得到的方程（3-8），因为方程比较
-复杂，只能通过计算机搜索，方法同前面水位高程—蓄水量修正模型的变动部分
-求解方法，结果表3.1.
 
 \begin{figure}[h]
     \centering

@@ -27,87 +27,6 @@
 关键词：位点（SNPs），卡方检验，逻辑回归，典型关联分析（CCA）
 \end{abstract}
 
-\section*{“华为杯”第十三届全国研究生数学建模竞赛}
-
-\begin{tabular}{|c|l|}
-\hline A & 主等位基因 (major allele) \\
-\hline X & 基因型信息 (genotype) \\
-\hline Y & 表现型信息 (phenotype) \\
-\hline $MAF$ & 最小等位基因频率 \\
-\hline $\chi^2$ & 卡方统计量 \\
-\hline $dif$ & 卡方统计量的自由度 \\
-\hline $p$-value & 假设检验中的显著性水平 (P值) \\
-\hline $\beta$ & 回归模型的回归系数 \\
-\hline $SE_{\beta_1}$ & 回归系数 $\beta_1$ 的标准差 \\
-\hline
-\end{tabular}
-
-\section*{题目}
-
-具有遗传性疾病和性状的遗传位点分析
-
-\section{目录}
-
-\begin{itemize}
-    \item[] 1、问题重述 \dotfill 1
-    \begin{itemize}
-        \item[] 1.1、问题背景 \dotfill 1
-        \item[] 1.2、问题提出 \dotfill 2
-    \end{itemize}
-    \item[] 2、模型假设 \dotfill 2
-    \item[] 3、符号说明 \dotfill 3
-    \item[] 4、问题一模型建立与求解 \dotfill 3
-    \begin{itemize}
-        \item[] 4.1、问题描述及分析 \dotfill 3
-        \item[] 4.2、模型建立 \dotfill 3
-        \item[] 4.3、问题求解及分析 \dotfill 4
-    \end{itemize}
-    \item[] 5、问题二模型建立与求解 \dotfill 4
-    \begin{itemize}
-        \item[] 5.1、问题描述及分析 \dotfill 4
-        \item[] 5.2、SNP质量筛选 \dotfill 4
-        \begin{itemize}
-            \item[] 5.2.1、最小等位基因频率 (MAF) 控制 \dotfill 5
-            \item[] 5.2.2、Hary-Weinberg 平衡控制 \dotfill 5
-        \end{itemize}
-        \item[] 5.3、模型建立 \dotfill 6
-        \begin{itemize}
-            \item[] 5.3.1、卡方检验 (chi-square test) \dotfill 6
-            \item[] 5.3.2、逻辑回归 (Logistic regression) \dotfill 7
-        \end{itemize}
-        \item[] 5.4、问题求解及分析 \dotfill 8
-        \begin{itemize}
-            \item[] 5.4.1、卡方检验求解 \dotfill 9
-            \item[] 5.4.2、逻辑回归模型求解 \dotfill 9
-        \end{itemize}
-        \item[] 5.5、求解分析及评价 \dotfill 10
-    \end{itemize}
-    \item[] 6、问题三模型建立与求解 \dotfill 11
-    \begin{itemize}
-        \item[] 6.1、问题描述及分析 \dotfill 11
-        \item[] 6.2、模型建立 \dotfill 11
-        \item[] 6.3、模型求解 \dotfill 13
-        \begin{itemize}
-            \item[] 6.3.1、逻辑回归模型求解 \dotfill 13
-            \item[] 6.3.2、SKAT 检验模型求解 \dotfill 14
-        \end{itemize}
-        \item[] 6.4、求解分析及评价 \dotfill 15
-    \end{itemize}
-    \item[] 7、问题四模型建立与求解 \dotfill 16
-    \begin{itemize}
-        \item[] 7.1、问题描述及分析 \dotfill 16
-        \item[] 7.2、模型建立 \dotfill 17
-        \begin{itemize}
-            \item[] 7.2.1、metaCCA 算法 \dotfill 17
-        \end{itemize}
-        \item[] 7.3、模型求解 \dotfill 19
-        \item[] 7.4、求解分析及评价 \dotfill 20
-    \end{itemize}
-    \item[] 8、模型总结与评价 \dotfill 20
-    \item[] 参考文献 \dotfill 21
-    \item[] 附录 \dotfill 22
-\end{itemize}
-
 \section{问题重述}
 
 \subsection{问题背景}
@@ -166,9 +85,12 @@
 
 \section{模型假设}
 
-\begin{itemize}
+\begin{itemize}  
     \item 假设样本的数据真实，来源可靠，且样本的患病及SNP信息正确；
     \item 假设样本具有普遍性且样本数量足够，可以用来反映性状表现型与位点或基因的关联性。
+    \item 假设每个SNP 位点在所有样本中的分型成功率均在75%以上，即符合SNP
+    分型成功比例控制，可以通过该质量检测标准；
+    \item 假设每个SNP 位点均可通过孟德尔错误控制检测标准。
 \end{itemize}
 
 \section{符号说明}
@@ -429,7 +351,7 @@ W = \frac{\beta_1^2}{SE_{\beta_1}^2}
 
 其中 \( SE_{\beta_1} \) 表示 \( \beta_1 \) 的标准误差，变量 \( W \) 的分布可以近似为自由度为 1 的 \( \chi^2 \) 分布。其 \( P \) 值可以查图 5.1 得到。
 
-\section{问题求解及分析}
+\subsection{问题求解及分析}
 
 首先我们分别用最小等位基因频率（MAF）控制和 Hary-Weinberg 平衡控制两项指标对题目所给的 9445 个 SNP 位点进行了 SNP 质量筛选。
 
@@ -439,7 +361,7 @@ Hary-Weinberg 平衡控制筛选时，设置 \( P \) 值的阈值为 0.01，其�
 
 接下来，我们分别利用卡方检验和逻辑回归模型两种方法对剩余的 9348 个位点进行了关联性分析。
 
-\subsection{卡方检验求解}
+\subsubsection{卡方检验求解}
 
 对每个位点，分别在 500 个病例组样例和 500 个对照组样例中统计基因型出现的频率，得到 $2 \times 3$ 的列联表。利用卡方检验方法，每一个位点都可以得到一个 $P$ 值，$P$ 值越小，说明该位点基因型与患病相关的可能性越高。
 
@@ -469,7 +391,7 @@ Hary-Weinberg 平衡控制筛选时，设置 \( P \) 值的阈值为 0.01，其�
     \end{tabular}
 \end{table}
 
-\subsection{逻辑回归模型求解}
+\subsubsection{逻辑回归模型求解}
 
 根据问题一中数值编码方式，将题目所给的 genotype.dat 转化为 1000 个 9445 维的数据，每一维对应了一个位点的基因编码，即 $(X_i, i=1,2,3\ldots1000)$。
 
@@ -627,9 +549,9 @@ Q_{\rho=0} = \sum_{j=1}^M w_j^2 \left[ \sum_{i=1}^N (Y_i - \hat{\mu}_{i,0}) X_{i
 
 上述统计量 $Q_{\rho=0}$ 近似服从自由度为 1 的卡方分布（$\chi_1^2$）。
 
-\section{模型求解}
+\subsection{模型求解}
 
-\subsection{逻辑回归模型求解}
+\subsubsection{逻辑回归模型求解}
 
 根据问题一中数值编码方式，将题目所给的 300 个基因用 $m$ 个位点编码 phenotype.txt 分别对应了 1000 个样本的表现型，即 $(Y_i, i=1,2,3 \ldots 1000)$。
 
@@ -644,7 +566,7 @@ Q_{\rho=0} = \sum_{j=1}^M w_j^2 \left[ \sum_{i=1}^N (Y_i - \hat{\mu}_{i,0}) X_{i
 
 观察此图可以发现由逻辑回归模型检验出的与遗传疾病 A 最相关的基因为 102 号基因，其次为第 217 号基因。
 
-\subsection{SKAT 检验模型求解}
+\subsubsection{SKAT 检验模型求解}
 
 SKAT 算法有 R 语言的开源的实现：PACKAGE‘SKAT’，我们进行算法求解使用的编程语言是 MATLAB 和 R 语言，其中 MATLAB 主要用于数据处理部分。我们首先要对数据进行预处理，来满足 SKAT 所需要的格式。对于我们的应用，需要的数据只有表示是否患病的向量 \( \mathbf{Y} \) 和根据第一题编码方式得到的数据矩阵 \( \mathbf{X} \)（该矩阵元素只包含 0, 1, 2 三个数值），这些数据可以直接使用 MATLAB 内置的函数 dlmwrite 来写入文件。在使用 R 语言自带的函数读取文件后，调用以下的两个函数即可求解 SKAT 模型:
 
@@ -699,6 +621,11 @@ SKAT(Z, obj, kernel = "linear.weighted")$p.value
     p-value & 0.0022 & 0.0744 & 0.1557 & 0.1921 & 0.8645 \\ \hline
     \end{tabular}
 \end{table}
+可以发现第二题中预测的最有可能与患病有关的位点 rs2273298（编号为
+2938 号）恰好位于第 102 号基因上。这一发现似乎印证了 Logistic  Regression
+结果的正确性，但是由表  6.1 可知，第 102 号基因中除了位点 rs2273298 之外的其它位点显著性水平并不理想，仅凭观察不能确定它比217 号基因的P 值小，
+rs2273298 位点位于该基因上可能只是巧合，正是由此，才导致 Logistic Regression 模型假设中，该基因的 P 值显著，而不是该基因位点的集合导致 P
+显著。此外，Logistic Regression 模型假定了位点之间的相互独立性，这在很多情况下是不成立甚至严重偏离现实的（位点之间通常存在相互关联），通过对比由两种方法得到结果的Manhattan 图，可见SAKT 检验模型的Manhattan 图中，显著性较高的基因在 Logistic  Regression 模型的 Manhattan 图中的显著性也较高，反之则不然，比如102 号基因。综上，第217 号基因或者第245 号基因是与疾病A 关联性最强的基因更有说服力
 
 \section{问题四模型建立与求解}
 
@@ -870,7 +797,7 @@ metaCCA_result = metaCCA(2, S_XY, S_XY, ...
     \label{fig:manhattan}
 \end{figure}
 
-\section{求解分析及评价}
+\subsection{求解分析及评价}
 
 解决本题我们使用了 metaCCA 算法，最后找到的位点是 rs12746773，即第 4569 个位点，其对应的 \( p \)-value \(\approx 10^{-53}\)，关联系数为 \( r = 0.3617 \)，次优的位点是 rs10915423，即第 966 个位点，对应的 \( p \)-value \(\approx 10^{-10}\)，关联系数为 \( r = 0.1834 \)。 \( P \)-value 和关联系数之间差距巨大，说明该位点与这十个性状之间具有很强的线性关联性。即与这 10 个性状关联性最强的位点是 rs12746773。
 

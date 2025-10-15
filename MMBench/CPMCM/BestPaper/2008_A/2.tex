@@ -113,11 +113,6 @@
     \item 随着水位高程增加堰塞湖蓄水量的变化率趋势总体上越来越大，但增长规律不够稳定，有些高程大的水位蓄水量增长反而慢，数据可能有误差。
 \end{itemize}
 
-[2]数字高程地图图像处理 
-湖泊总蓄水量由不同水位高程的剖面蓄水量组成，且不同水位高程剖面的蓄水量随
-着水位高程增加有增大的趋势，图5.1，图5.2 为数字高程地图处理后所得730 米、750
-米水位高程对应的横向剖面图：
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -211,11 +206,9 @@
     \item \textbf{基本体积单位}
 
     通过 5.1.1 分析，堰塞湖总蓄水量可以离散成若干个水面高程下的体积单位，为了研究方便以水位高程 709 米为基准起始点，将高程差为 1 米的蓄水量定义为一个基本体积单位，令 $i=1$，直至水位高程 750 米，$i=42$，基本体积单位蓄水量为
-    \begin{align*}
-H_{a} &= \lfloor h_{a} \rfloor \quad -- \text{上边界水面高程向下取整}; \\
-H_{b} &= \lfloor h_{b} \rfloor \quad -- \text{下边界水面高程向下取整}; \\
-&\text{令 } i = H_{a} - 709 + 1, \quad j = H_{b} - 709 + 1.
-\end{align*}
+    \begin{equation}
+        \Delta V_{i} = S_{i} \Delta h, \quad S_{i} = S_{iK} K, \Delta h_{i} = h_{i+1} - h_{i} = 1, \quad i=1,2,\cdots,42
+    \end{equation}
     式中：
     \begin{itemize}
         \item $\Delta V_{i}$ -- 第 $i$ 个基本体积单位的蓄水量；
@@ -326,17 +319,15 @@ S_{b} &= S_{j} \left( h_{b} - h_{j} \right) / \left( h_{j+1} - h_{j} \right) + S
 
 水位高程 \( h_c \) 时，依据反距离加权法，此时水位高程上下两侧的整数高程值：水位高程为 \( \lfloor h_c \rfloor \) 的横向剖面面积为 \( S_{c1K} K \)，水位高程为 \( \lfloor h_c \rfloor + 1 \) 的横向剖面面积为 \( S_{c2K} K \)，则水位高程为 \( h_c \) 时的堰塞湖横向剖面面积为
 
-\begin{align*}
-S_{a} &= S_{i} \left( h_{a} - h_{i} \right) / \left( h_{i+1} - h_{i} \right) + S_{(i+1)} \left( h_{i+1} - h_{a} \right) / \left( h_{i+1} - h_{i} \right) \\
-S_{b} &= S_{j} \left( h_{b} - h_{j} \right) / \left( h_{j+1} - h_{j} \right) + S_{(j+1)} \left( h_{j+1} - h_{b} \right) / \left( h_{j+1} - h_{j} \right) \\
-\left( \Delta h_{i} &= h_{a} - H_{a}, \Delta h_{j} = h_{b} - H_{b} \right)
-\end{align*}
+\begin{equation}
+S_c = \left( h_c - \lfloor h_c \rfloor \right) S_{c1K} K + \left( \lfloor h_c \rfloor + 1 - h_c \right) S_{c2K} K
+\end{equation}
 
 水位高程 \( h_a \) 时，依据反距离加权法，此时水位高程上下两侧的整数高程值：水位高程为 \( \lfloor h_a \rfloor \) 的横向剖面面积为 \( S_{a1K} K \)，水位高程为 \( \lfloor h_a \rfloor + 1 \) 的横向剖面面积为 \( S_{a2K} K \)，则水位高程为 \( h_a \) 时的堰塞湖横向剖面面积为
 
-\begin{align*}
-\Delta V &= V_2 - V_1 = 0.13
-\end{align*}
+\begin{equation}
+S_a = \left( h_a - \lfloor h_a \rfloor \right) S_{a1K} K + \left( \lfloor h_a \rfloor + 1 - h_a \right) S_{a2K} K
+\end{equation}
 
 水位高程 \( h_b \) 时，依据反距离加权法，此时水位高程上下两侧的整数高程值：水位高程为 \( \lfloor h_b \rfloor \) 的横向剖面面积为 \( S_{b1K} K \)，水位高程为 \( \lfloor h_b \rfloor + 1 \) 的横向剖面面积为 \( S_{b2K} K \)，则水位高程为 \( h_b \) 时的堰塞湖横向剖面面积为
 

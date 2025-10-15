@@ -17,43 +17,7 @@
 \textbf{数学建模竞赛}
 \end{center}
 
-\begin{tabular}{c|l}
-\hline
-符号 & 说明 \\
-\hline
-$i$ & 产品项编号的指标，对 $n$ 个产品项按宽度进行排序 ($w_1 \geq w_2 \geq \ldots \geq w_n$)， \\
-& 即产品项 1，产品项 2，$\ldots$，产品项 $n$ 将宽度不增，其中 $i \in I = \{1, \ldots, n\}$ \\
-$j$ & 栈编号的指标，将栈中所含产品项中宽度最大的产品项编号作为栈的编号，其中 $j \in J = \{1, \ldots, n\}$ \\
-$k$ & 条带编号的指标，将条带中所含栈的最宽栈的编号作为条带编号，其中 $k \in K$ \\
-$l$ & 原片编号的指标，将原片中所含条带的最小索引作为原片编号，其中 $l \in L$ \\
-\hline
-\end{tabular}
-
-\begin{tabular}{c|l}
-\hline
-符号 & 说明 \\
-\hline
-$L$ & 原片长度（单位：mm） \\
-$W$ & 原片宽度（单位：mm） \\
-\hline
-\end{tabular}
-
-\begin{tabular}{|c|c|c|c|c|c|c|}
-\hline 批次1原片1 & 数量：×1 & 此原片板材利用率：98.05\% & 批次1原片2 & 数量：×1 & 此原片板材利用率：98.28\% & \\
-\hline 3406 & & & 998 & & & \\
-\hline & & & 1833 & & & \\
-\hline & & & 119 & & & \\
-\hline 批次1原片3 & 数量：×1 & 此原片板材利用率：98.28\% & 批次1原片4 & 数量：×1 & 此原片板材利用率：97.35\% & \\
-\hline 1014 & & & 381 & & & \\
-\hline 3661 & & & 4711 & & & \\
-\hline 3453 & & & 3723 & & & \\
-\hline
-\end{tabular}
-
-\title{方形件排样优化与订单组批问题探析}
-\author{}
-\date{}
-\maketitle
+方形件排样优化与订单组批问题探析
 
 \begin{abstract}
 方形件排样优化与订单组批问题是计算复杂度很高的组合优化问题，在工业工程中有很广泛的应用背景。为实现个性化定制生产模式，企业会选择订单组批的方式，继而通过排样优化实现批量切割，加工完成后再按照不同客户需求进行分拣，从而提高原材料的利用率，进而降低生产成本，提高企业竞争力。
@@ -65,73 +29,10 @@ $W$ & 原片宽度（单位：mm） \\
 针对问题二：优化目标是通过订单组批的形式将订单聚类，并按照材质选择相应的排样方式，进而实现使用的板材原片数量最少。本问题的关键在于订单组批，后续排样过程可参考问题一。首先使用杰拉德距离定义了订单之间材质的相似性，以此作为层次聚类的依据，从而划分项目的组批。其次，对同一批次中的不同材质，依次对产品项使用均匀三阶段排样方式的生成算法（TUSP法）和顺序价值修正启发式算法（SVC法）获得最终的排样方案，得到B1$\sim$B5数据集的板材利用率依次为84.42\%、82.84\%、82.11\%、83.44\%和83.51\%，并根据排样方案中产品项的坐标等信息绘制各原片的排样方案效果图。
 
 最后，本文对所用算法的复杂度进行了评估，同时对模型的优缺点进行了分析。
+\textbf{关键词：} 混合整数规划模型；均匀三阶段排样方式的生成算法；顺序价值修正启发式算法；订单组批；层次聚类
 \end{abstract}
 
-\textbf{关键词：} 混合整数规划模型；均匀三阶段排样方式的生成算法；顺序价值修正启发式算法；订单组批；层次聚类
-
-\section*{目录}
-\begin{itemize}
-    \item 一、问题重述 \dotfill 3
-        \begin{itemize}
-            \item 1.1 问题背景 \dotfill 3
-            \item 1.2 问题提出 \dotfill 3
-        \end{itemize}
-    \item 二、问题分析 \dotfill 4
-        \begin{itemize}
-            \item 2.1 问题一分析 \dotfill 4
-            \item 2.2 问题二分析 \dotfill 4
-        \end{itemize}
-    \item 三、模型假设 \dotfill 5
-    \item 四、符号说明 \dotfill 5
-    \item 五、问题一：模型建立与求解 \dotfill 6
-        \begin{itemize}
-            \item 5.1 整数规划模型建立 \dotfill 6
-            \item 5.2 算法设计与建立 \dotfill 7
-                \begin{itemize}
-                    \item 5.2.1 均匀三阶段排样方式的生成算法（TUSP法） \dotfill 7
-                    \item 5.2.2 顺序价值修正启发式算法（SVC法） \dotfill 12
-                \end{itemize}
-            \item 5.3 模型求解 \dotfill 14
-                \begin{itemize}
-                    \item 5.3.1 初始化设置 \dotfill 14
-                    \item 5.3.2 求解过程 \dotfill 15
-                \end{itemize}
-            \item 5.4 求解结果与分析 \dotfill 16
-                \begin{itemize}
-                    \item 5.4.1 对于数据集A1、A2、A3、A4的排样方案效果图 \dotfill 16
-                    \item 5.4.2 结果分析 \dotfill 17
-                \end{itemize}
-        \end{itemize}
-    \item 六、问题二：模型建立与求解 \dotfill 19
-        \begin{itemize}
-            \item 6.1 混合整数规划模型建立 \dotfill 19
-            \item 6.2 算法设计与建立 \dotfill 19
-                \begin{itemize}
-                    \item 6.2.1 订单凝聚层次聚类算法 \dotfill 19
-                \end{itemize}
-            \item 6.3 模型求解 \dotfill 21
-            \item 6.4 求解结果与分析 \dotfill 21
-                \begin{itemize}
-                    \item 6.4.1 对于数据集B1、B2、B3、B4的排样方案效果图 \dotfill 21
-                    \item 6.4.2 结果分析 \dotfill 25
-                \end{itemize}
-        \end{itemize}
-    \item 七、模型分析与评价 \dotfill 25
-        \begin{itemize}
-            \item 7.1 算法复杂度分析 \dotfill 25
-            \item 7.2 模型优缺点分析 \dotfill 26
-                \begin{itemize}
-                    \item 7.2.1 模型优点分析 \dotfill 26
-                    \item 7.2.2 模型缺点分析 \dotfill 26
-                \end{itemize}
-        \end{itemize}
-    \item 八、参考文献 \dotfill 26
-    \item 九、附录 \dotfill 27
-        \begin{itemize}
-            \item 9.1 针对数据集A1、A2、A3、A4的完整排样方案效果图 \dotfill 27
-            \item 9.2 代码及注释 \dotfill 44
-        \end{itemize}
-\end{itemize}
+\tableofcontents
 
 \section{一、问题重述}
 
@@ -235,16 +136,24 @@ $W$ & 原片宽度（单位：mm） \\
 \hline
 \end{tabular}
 
-\begin{tabular}{cccccccc}
-\hline 1 & YTM-0218S & 1 & 384 & 0 & 0 & 2375 & 985 \\
-1 & YTM-0218S & 1 & 1523 & 2375 & 881 & 58 & 318 \\
-1 & YTM-0218S & 1 & 2173 & 2375 & 0 & 58 & 881 \\
-1 & YTM-0218S & 1 & 3406 & 0 & 985 & 1643 & 223.5 \\
-1 & YTM-0218S & 1 & 4079 & 1643 & 985 & 638 & 223.5 \\
-1 & YTM-0218S & 2 & 119 & 0 & 0 & 2375 & 558 \\
-1 & YTM-0218S & 2 & 449 & 2375 & 0 & 58 & 821 \\
+\begin{table}
+\centering
+\begin{tabular}{c l}
+\hline \hline
+$l_{i}$ & 产品项 $i$ 的长度（单位：mm） \\
+$w_{i}$ & 产品项 $i$ 的宽度（单位：mm） \\
+\hline \hline
+\multicolumn{2}{c}{决策变量：} \\
 \hline
+符号 & 说明 \\
+\hline
+$\alpha_{ji}$ & 产品项 $i$ 在栈 $j$ 中时取 1，否则为 0，$j \in \{1, \dots, n\}$，$i \in \{j, \dots, n\}$ \\
+$\beta_{kj}$ & 栈 $j$ 在条带 $k$ 中时取 1，否则为 0，$k \in \{1, \dots, n\}$，$j \in \{1, \dots, n\}$ \\
+$\gamma_{lk}$ & 条带 $k$ 在原片 $l$ 中时取 1，否则为 0，$l \in \{1, \dots, n\}$，$k \in \{l, \dots, n\}$ \\
+$\delta_{lij}$ & 产品项 $i$ 不是原片 $l$ 中最宽条带中最宽栈中的最宽产品项时取 1，否则为 0 \\
+\hline \hline
 \end{tabular}
+\end{table}
 
 \section{五、问题一：模型建立与求解}
 
@@ -329,7 +238,7 @@ $s.t.$
 
 均匀三阶段排样方式即为 “均匀栈的生成 $\rightarrow$ 条带生成 $\rightarrow$ 原片条带放置” 三个步骤，下面我们将分别介绍这三阶段的模型与算法，并在最后给出均匀三阶段排样方式的生成算法（Three Uniform Stripe Pattern, 后简称为 TUSP）
 
-\subsubsection{有约束的均匀栈的生成模型及算法}
+有约束的均匀栈的生成模型及算法
 
 1）均匀栈的价值确定及生成模型
 
@@ -437,7 +346,7 @@ m_j = \{w, (1, num_{j_1}), \dots, (i, num_{j_i}), \dots, (2m, num_{j_{2m}})\}.
 \end{algorithmic}
 \end{algorithm}
 
-\section{条带生成算法}
+条带生成算法
 
 我们类比上一节提出的产品项排成栈的算法，进一步将栈排条带中，从而可得到由栈生成条带的算法，由于和栈生成算法类似，下面仅简略展示条带生成算法的步骤，如下：
 
@@ -451,7 +360,7 @@ m_j = \{w, (1, num_{j_1}), \dots, (i, num_{j_i}), \dots, (2m, num_{j_{2m}})\}.
 
 在这部分我们类比产品项生成栈的算法，进行算法设计，将 $n$ 个栈放置进条带中，具体流程均与上节所述类似，在此不进行重复展示。
 
-\section{原片放置条带算法}
+\paragraph{原片放置条带算法}
 
 原片的价值最大即原片上个所排样的各条带的价值之和最大，为此下面我们进一步将条带排进原片中。在这部分我们只给出水平条带排样成原片的算法，竖直条带的完全类似。使用迭代，首先设 $Y \in \{y | 1 \leq y \leq W, y \in \mathbb{N}^*\}$ 为原片的迭代宽度，用 $Z(l, Y)$ 表示当前原片的尺寸为 $L \otimes Y$ 时，在原片上放置前 $l$ 个条带得到的最大价值，其中 $l = 1, \ldots, q$，$q$ 为上一节中生成条带的数目。
 
@@ -476,7 +385,7 @@ Z(l, Y) = \max \left\{ Z(l-1, Y), Z(l-1, Y - tw_j) + HTV(l, L, zw_j, tm_j) I_{\{
 
 根据上述设置的初值，使用递推式进行迭代计算 $Z(n, W)$，此计算结果在尺寸为 $L \otimes W$ 的原片上放置所有的 $q$ 个条带得到的最大价值，即得到了一个原片的最优排样方式或排样图。
 
-\section{均匀三阶段排样方式的生成算法（TUSP）}
+均匀三阶段排样方式的生成算法（TUSP）
 
 首先，通过 5.2.1 第 1 部分提出的均匀栈的生成算法，根据 $m$ 个产品项的各种属性和信息，我们可以将其排样成 $n$ 个栈，并储存生成栈的各种属性和信息。其次，通过 5.2.1 第 2 部分提出的条带生成算法，我们进一步可以将 $n$ 个栈生成 $q$ 个条带，并储存生成条带的各种属性和信息。最后，通过 5.2.1 第 3 部分提出的原片放置条带算法，我们就可以得到一张原片上产品项的最好排样方式（仅针对本文算法求得的最好结果）。
 
@@ -651,25 +560,34 @@ TUSP 算法框图表示如下：
     \caption{原片4 数量：×1 此原片板材利用率：98.39\%}
 \end{figure}
 
-\subsection{5.4.2 结果分析}
+\subsubsection{5.4.2 结果分析}
 
 1) 基于实际有效利用率与理论极限利用率的对比分析
 
 在本问题中，可使用实际有效利用率来表示排样方案的效果，其计算公式可由数据集中所有产品项面积和与所用所有原片面积和的商值所定义，实际有效利用率越高说明排样方案越好。由于原片均为完整未切割原片，我们可计算理论极限利用率来进行比较，如对于数据集A1，其中所有产品项面积和为248.6856平方米，需要83.54块原片，即至少需
+要 84 块，则极限利用率为 99.45%，因此排样后实际有效利用率越接近 99.45%越好(理论
+不可能超过)。 
+由输出结果可知，基于建立的模型，数据集 A1 使用 87 块原片进行排样，数据集 A2 使
+用 87 块原片进行排样，数据集 A3 使用 88 块原片进行排样，数据集 A4 使用 86 块原片进
+行排样。利用率对比如下表所示。
 
-17
-
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline 批次1原片1 & 数量：×1 & 此原片板材利用率：98.38\% & 批次1原片2 & 数量：×1 & 此原片板材利用率：95.89\% \\
-\hline 522 & & & 3123 & & \\
-\hline 4055 & & & 1417 & & \\
-\hline 3678 & & & 1121 & & 3987 \\
+\begin{table}[htbp]
+\centering
+\caption{数据集利用率比较}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{数据集} & \textbf{实际有效利用率（\%）} & \textbf{理论极限利用率（\%）} \\ \hline
+A1 & 96.02 & 99.45 \\
+A2 & 94.08 & 99.85 \\
+A3 & 95.15 & 99.68 \\
+A4 & 94.08 & 99.82 \\
 \hline
 \end{tabular}
+\end{table}
 
 由上表可知，实际有效利用率与理论极限利用率相差不大，可认为该算法有效。
 
-\section{2) 基于 SPSS 的排样效果描述性统计分析}
+2) 基于 SPSS 的排样效果描述性统计分析
 
 利用 SPSS 软件对每一数据集得到的排样结果做描述性统计分析，结果如下：
 
@@ -775,7 +693,7 @@ g(b_i) = \sum_{t=1}^{Q} h(\nu_{1u} \xi_{11} \mu_{11t}, \ldots, \nu_{1u} \xi_{1x_
 \caption{层次聚类算法概念图}
 \end{figure}
 
-\section{订单相似性分析及距离确定}
+订单相似性分析及距离确定
 
 为了能让具有较多相同材质产品项的订单组合在一起，需要建立个订单间之间材质相似性度量方法。本文采用基于杰拉德相似性系数（JSC）来度量两个订单之间材质的相似程度。定义如下：
 
@@ -802,7 +720,7 @@ D_{IJ} = \sqrt{\frac{1}{n_I n_J} \sum_{i \in I, j \in J} d_{ij}^2},
 
 其中 $d_{ij}^2$ 为订单簇 $I$ 中任一订单 $i$ 和订单簇 $J$ 任一订单 $j$ 之间的欧式距离平方。
 
-\section{订单凝聚层次聚类算法}
+订单凝聚层次聚类算法
 
 订单在进行层次聚类时，我们可以按其创建聚类订单树是采用“自底往上”的方式，故将其分为凝聚层次聚类。在本文算法构建中，首先将每个订单作为一个簇，将最近的一对簇进行合并，并重复迭代此过程，直到所有的簇都不能合并迭代终止。通过这种方式可以创建一颗有层次的嵌套聚类树，即通过计算每一个类别的订单之间的距离来确定它们之间的相似程度，距离越小，相似程度越高，然后按距离准则逐步合并，减少类数。算法流程如下：
 
@@ -889,7 +807,7 @@ D_{IJ} = \sqrt{\frac{1}{n_I n_J} \sum_{i \in I, j \in J} d_{ij}^2},
 \end{tabular}
 \end{table}
 
-\section{3. 数据集B3}
+3. 数据集B3
 
 \begin{figure}[h]
 \centering
@@ -920,7 +838,7 @@ D_{IJ} = \sqrt{\frac{1}{n_I n_J} \sum_{i \in I, j \in J} d_{ij}^2},
 \end{tabular}
 \end{table}
 
-\section{4. 数据集 B4}
+4. 数据集 B4
 
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline 批次1原片1 & 数量：×1 & 此原片板材利用率：98.05\% & 批次1原片2 & 数量：×1 & 此原片板材利用率：98.28\% & \\
@@ -947,7 +865,7 @@ D_{IJ} = \sqrt{\frac{1}{n_I n_J} \sum_{i \in I, j \in J} d_{ij}^2},
 \hline
 \end{tabular}
 
-\section{5. 数据集 B5}
+5. 数据集 B5
 
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline 批次1原片1 & 数量：×1 & 此原片板材利用率：98.38\% & 批次1原片2 & 数量：×1 & 此原片板材利用率：95.89\% \\
@@ -1044,3 +962,836 @@ B5 & 220 & 3700 & 83.5051\% \\
 [12] 张浩，面向板式产品定制生产的组批与排样协同优化方法，广东工业大学，2019.
 
 \end{document}
+
+\section{附录}
+1. 2 代码及注释
+1. 1、产品项生成栈的函数代码
+function stack=item_to_stack(item,L,W,rho)
+%输入：item的所有信息:item,原片长度：L，原片宽度：W,价值修正系数：rho;
+%输出：生成stack的所有信息：stack--一个三维数组
+%初始参数设置
+item_id=item(:,1);
+item_length=item(:,3);
+item_width=item(:,4);
+item_square=item(:,2).*item(:,3);
+item_value=rho.*item_square;
+demand=item(:,5);
+m=length(item(:,1));%item总数
+lmin=[];
+wmin=[];
+for i=1:m
+lmin(i)=min(item_length(i:m));
+wmin(i)=min(item_width(i:m));
+end
+%以item i作为主item的stack，预先设定2m个
+a=zeros(2*m+2,2);
+a(3:2*m+2,1)=[1:2*m]';
+for i=1:2*m
+stack(:,:,i)=a;
+end
+%通过循环进行item的放置
+# RL=L;%剩余高度
+# RW=W;%剩余宽度
+demand0=demand;
+for i=1:2*m
+if demand(i)==0
+return
+
+
+
+45
+else
+%对每个stack进行item的放置i
+RL=L-item_length(i);
+RW=L-item_width(i);
+# VL=0;%水平stack价值
+# VW=0;%竖直stack价值
+## ML=zeros(m,1);%存放每个item在水平stack放置的个数
+## MW=zeros(m,1);%存放每个item在竖直stack放置的个数
+%水平放置stack
+demand1=demand;
+for j=1:2*m
+num_j=0;
+%stack均匀性要求
+if item_width(j)~=item_width(i)
+return
+end
+if demand1(j)==0||item_length(j)>RL
+return
+end
+if item_length(j)>RL && RL<lmin(j)
+break
+end
+if RL<lmin(j) && RL>=lmin(j)
+return
+end
+%限制旋转前和旋转后的item只能使用一次
+if demand0-demand1(j)>=ML(j)
+return
+end
+if RL>lmin(j) && item_width(j)==item_width(i)
+if j<=m
+num_j=min(demand1(j),floor(RL/item_length(j)));
+ML(j)=ML(j)+1;
+RL=RL-num_j*item_length(j);
+VL=VL+num_j*item_value(j);
+demand1(j)=demand1(j)-1;
+else
+num_j=min(demand1(j-m),floor(RL/item_length(j-m)));
+ML(j-m)=ML(j-m)+1;
+RL=RL-num_j*item_length(j-m);
+VL=VL+num_j*item_value(j);
+demand1(j-m)=demand1(j-m)-1;
+end
+end
+
+
+
+46
+end
+%竖直放置stack
+demand2=demand;
+for j=1:2*m
+num_j=0;
+%stack均匀性要求
+if item_length(j)~=item_length(i)
+return
+end
+if demand2(j)==0||item_width(j)>RW
+return
+end
+if item_width(j)>RW && RW<wmin(j)
+break
+end
+if RW<wmin(j) && RW>=wmin(j)
+return
+end
+%限制旋转前和旋转后的item只能使用一次
+if demand0-demand1(j)>=ML(j)
+return
+end
+if RW>wmin(j) && item_length(j)==item_length(i)
+if j<=m
+num_j=min(demand2(j),floor(RW/item_width(j)));
+MW(j)=MW(j)+1;
+RW=RW-num_j*item_width(j);
+VW=VW+num_j*item_value(j);
+demand2(j)=demand2(j)-1;
+else
+num_j=min(demand2(j-m),floor(RW/item_width(j-m)));
+MW(j-m)=MW(j-m)+1;
+RW=RW-num_j*item_width(j-m);
+VW=VW+num_j*item_value(j-m);
+demand2(j-m)=demand2(j-m)-1;
+end
+end
+if VL>=VW
+a=zeros(m+2,2);
+a(3:m+2,1)=[1:m]';
+a(1,1)=VL;%表示此stack的价值
+a(1,2)=1;%表示此stack水平放置
+a(2,1)=i;%表示此stack主item
+a(2,2)=sum(ML.*item_length);%表示此stack的长度
+
+
+
+47
+a(3:m+2,2)=ML;%存放每个item放置的个数
+stack(:,:,i)=a;
+demand=demand1;
+else
+a=zeros(m+2,2);
+a(3:m+2,1)=[1:m]';
+a(1,1)=VW;%表示此stack的价值
+a(1,2)=2;%表示此stack竖直放置
+a(2,1)=i;%表示此stack主item
+a(2,2)=sum(MW.*item_width);%表示此stack的长度
+a(3:m+2,2)=MW;%存放每个item放置的个数
+stack(:,:,i)=a;
+demand=demnad2;
+end
+end
+end
+end
+1. 2、栈生成条带的函数代码
+function stripe=stack_to_stripe(item,stack,L,W)
+%生成第k个stripe的函数
+%输入：item的所有信息：item，stack的所有信息:stack,原片长度：L，原片宽度：W；
+%输出：生成stack的所有信息：stack--一个三维数组
+%储存item的信息
+item_id=item(:,1);
+item_length=item(:,3);
+item_width=item(:,4);
+item_value=rho*item_length.*item_width;
+m=length(item(:,1));%item总数
+%计算stack的长度、宽度、和编号
+stack_id=[];
+stack_length=[];
+stack_width=[];
+for i=1:m
+ss=stack(:,:,i);
+if ss(2,1)~=0
+stack_id=[stack_id;i];
+%判断已使用的stack的放置方式
+if ss(2,2)==1
+stack_length=[stack_length;sum(item_length.*ss(3:m+2,2)];
+stack_width=[stack_width;item_width(i)];
+else
+stack_length=[stack_length;item_length(i)];
+stack_width=[stack_width;sum(item_width.*ss(3:m+2,2)];
+
+
+
+48
+end
+stack_value=[stack_value;sum(item_value.*ss(3:m+2,2)];
+end
+end
+n=length(stack_id);
+%类似于item组成stack的处理方式
+slmin=[];
+swmin=[];
+for i=1:n
+slmin(i)=min(stack_length(i:n));
+swmin(i)=min(stack_width(i:n));
+end
+%每个stack的需求量
+R=ones(1,n);
+%允许一个stripe中的stack的高度不同,预先设定n个
+a=zeros(n+2,2);
+a(3:n+2,1)=[1:n]';
+for i=1:n
+stripe(:,:,i)=a;
+end
+R0=R;
+%循环放置
+for k=1:n
+if R(i)==0
+return
+else
+# VLL=0;%水平stripe价值
+# VWW=0;%竖直strope价值
+RLL=L-stack_length(k);
+RWW=W-stack_width(k);
+## MLL=zeros(n,1);%存放每个stack在水平stripe放置的个数
+## MWW=zeros(n,1);%存放每个stack在竖直stripe放置的个数
+%水平放置stripe
+dR1=R;
+for j=1:n
+if RLL>slmin(j) && stack_length(k)>=stack_length(j)
+MLL(j)=MLL(j)+1;
+RLL=RLL-stack_length(j);
+VLL=VLL+stack_value(j);
+dR1(j)=dR1(j)-1;
+end
+end
+%竖直放置stack
+dR2=R;
+
+
+
+49
+for j=1:n
+if RWW>swmin(j) && stack_width(k)>=stack_width(j)
+MWW(j)=MWW(j)+1;
+RWW=RWW-stack_width(j);
+VWW=VWW+stack_value(j);
+dR2(j)=dR2(j)-1;
+end
+end
+if VLL>=VWW
+a=zeros(n+2,2);
+a(3:n+2,1)=[1:n]';
+a(1,1)=VLL;%表示此stripe的价值
+a(1,2)=1;%表示此stripe水平放置
+a(2,1)=k;%表示此stripe中最长stack
+a(2,2)=sum(MLL.*stack_length);%表示此stripe的长度
+a(3:n+2,2)=MLL;%存放每个stack放置的个数
+stripe(:,:,k)=a;
+R=dR1;
+else
+a=zeros(n+2,2);
+a(3:n+2,1)=[1:n]';
+a(1,1)=VWW;%表示此stripe的价值
+a(1,2)=2;%表示此stripe竖直放置
+a(2,1)=k;%表示此stripe最宽stack
+a(2,2)=sum(MWW.*stack_width);%表示此stripe的宽度
+a(3:n+2,2)=MWW;%存放每个stack放置的个数
+stripe(:,:,k)=a;
+R=dR2;
+end
+end
+end
+end
+
+1. 3、条带生成原片的函数代码
+function plate=stripe_plate(item,stack,stripe,L,W)
+%生成原片的函数
+%输入：item的所有信息：item，stack的所有信息：stack,stripe的所有信息:stripe,原片长度：
+L，原片宽度：W；
+%输出：生成plate的所有信息：plate--一个三维数组
+%储存item的信息
+item_id=item(:,1);
+item_length=item(:,3);
+item_width=item(:,4);
+
+
+
+50
+item_value=rho*item_length.*item_width;
+m=length(item(:,1));%item总数
+%储存stack的信息
+%计算stack的长度、宽度、和编号
+stack_id=[];
+stack_length=[];
+stack_width=[];
+for i=1:m
+ss=stack(:,:,i);
+if ss(2,1)~=0
+stack_id=[stack_id;i];
+%判断已使用的stack的放置方式
+if ss(2,2)==1
+stack_length=[stack_length;sum(item_length.*ss(3:m+2,2)];
+stack_width=[stack_width;item_width(i)];
+else
+stack_length=[stack_length;item_length(i)];
+stack_width=[stack_width;sum(item_width.*ss(3:m+2,2)];
+end
+stack_value=[stack_value;sum(item_value.*ss(3:m+2,2)]
+end
+end
+n=length(stack_id);
+%计算stripe的长度、宽度、和编号
+stripe_id=[];
+stripe_length=[];
+stripe_width=[];
+for i=1:n
+ss=stripe(:,:,i);
+if ss(2,1)~=0
+stripe_id=[stripe_id;i];
+%判断已使用的stripe的放置方式
+if ss(2,2)==1
+stripe_length=[stripe_length;sum(stack_length.*ss(3:n+2,2)];
+stripe_width=[stripe_width;stack_width(i)];
+else
+stripe_length=[stripe_length;stack_length(i)];
+stripe_width=[stripe_width;sum(stripe_width.*ss(3:n+2,2)];
+end
+stripe_value=[stripe_value;sum(stack_value.*ss(3:n+2,2)]
+end
+end
+%stripe的个数
+q=length(stripe_id);
+
+
+
+51
+%预先设定q个plate
+a=zeros(q+2,2);
+a(3:q+2,1)=[1:q]';
+for i=1:n
+plate(:,:,i)=a;
+end
+R0=R;
+%类似于item组成stack的处理方式
+sslmin=[];
+sswmin=[];
+for i=1:q
+sslmin(i)=min(stripe_length(i:q));
+sswmin(i)=min(stripe_width(i:q));
+end
+%每个stripe的需求量
+R=ones(1,q);
+R0=R;
+for l=1:q
+if R(i)==0
+return
+else
+RLLL=L-stripe_length(k);
+RWWW=W-stripe_width(k);
+## MLLL=zeros(q,1);%存放每个stripe在X向plate放置的个数
+## MWWW=zeros(q,1);%存放每个stack在Y向plate放置的个数
+## %X向（第一阶段是水平切的）最优排样图生成
+%放置前l种条带得到的原片最大值
+Z1=zeros(q+1,W+1);
+Z1(:,1)=zeros(q+1,1);
+Z1(1,:)=zeros(1,q+1);
+for k=1:q
+for Y=1:W+1
+if Y>=stripe_width(k)
+## Z1(k+1,Y)=max(Z1(k,Y),Z1(k,Y-
+floor(stripe_width(k)))+stripe_value(k));
+MLLL(k)=MLLL(k)+1;
+RWWW=RWWW-stripe_width(k);
+dR1(k)=dR1(k)-1;
+break
+end
+end
+end
+## %Y向（第一阶段是竖直切的）最优排样图生成
+%放置前l种条带得到的原片最大值
+
+
+
+52
+Z2=zeros(q+1,W+1);
+Z2(:,1)=zeros(q+1,1);
+Z2(1,:)=zeros(1,q+1);
+for k=1:q
+for Y=1:W+1
+if Y>=stripe_length(k)
+## Z2(k+1,Y)=max(Z2(k,Y),Z2(k,Y-
+floor(stripe_length(k)))+stripe_value(k));
+MWWW(k)=MWWW(k)+1;
+RLLL=RLLL-stripe_length(k);
+dR2(k)=dR2(k)-1;
+break
+end
+end
+end
+if Z1(q+1,W+1)>=Z2(q+1,W+1)
+a=zeros(q+2,2);
+a(3:q+2,1)=[1:q]';
+a(1,1)=Z1(q+1,W+1);%表示此plate的价值
+a(1,2)=1;%表示此plateX向切割
+a(2,1)=k;%表示此plate第一条为stripe k
+a(2,2)=sum(MLLL.*stack_width);%表示此plate最后排满条带的高度
+a(3:n+2,2)=MLLL;%存放每个条带放置的个数
+plate(:,:,k)=a;
+R=dR1;
+else
+a=zeros(n+2,2);
+a(3:q+2,1)=[1:q]';
+a(1,1)=Z2(q+1,W+1);%表示此stripe的价值
+a(1,2)=2;%表示此stripe竖直放置
+a(2,1)=k;%表示此plate第一条为stripe k
+a(2,2)=sum(MWWW.*stack_length);%表示此plate最后排满条带的长度
+a(3:n+2,2)=MWWW;%存放每个条带放置的个数
+plate(:,:,k)=a;
+R=dR2;
+end
+end
+end
+end
+
+# 4、HUSP生成当前排样图函数代码
+function [stack,stripe,plate]=TUSP(item,L,W,rho)
+# %HUSP算法生成当前排样图
+
+
+
+53
+m=length(item(L,1));
+stack=item_to_stack(item,L,W,rho);
+a=size(stack);
+nn=a(3);
+stripe=stack_to_stripe(item,stack,L,W);
+b=size(stripe);
+qq=b(3);
+plate=stripe_plate(item,stack,stripe,L,W);
+%记录当前生成的排样图中价值最高的
+c=size(plate);
+value=[];
+for l=1:q(3)
+pp=plate(:,:,l);
+value_l=pp(1,1);
+value=[value,value_l];
+end
+end
+%最好排样图指标
+id_op=find(value=max(value));
+%记录最优排样图stripe
+plate_op=plate(:,:,id_op);
+stripe_output=plate(3:qq,1:2);
+stripe_used_id=find(plate_op(3:c(3),2)~=0)-2;
+stripe_used_id_demand=plate_op(stripe_used_id,2);
+%记录最优排样图的stack
+ss=stripe(:,:,stripe(:,:stripe_used_id(1)));
+stack_output_id=ss(3:nn,1);
+stack_output_id_demand=ss(3:nn,2);
+item_output_id=[1:m]';
+for i=2:length(stripe_used_id)
+ss=stripe(:,:,stripe_used_id(i));
+s1=ss(3:nn,2);
+stack_output_id_demand=stack_output_id_demand+d1;
+end
+stack_output=[stack_output_id,stack_output_id_demand];
+%记录最优排样图的item
+item_id=[1:m]';
+item_demand=zeros(m,1);
+a=find(stack_output_id_demand~=0);
+for i=1:length(a)
+aa=stack(:,:,a(i));
+item_demand=item_demand+aa(3:m,2)
+end
+item_output=[item_id,item_demand];
+
+
+
+54
+end
+
+1. 5、主文件函数代码
+%主文件——调用函数
+clc
+close all
+clear all
+%导入数据
+[item_data,~]=xlsread('data01.csv');
+% [item_data,~]=xlsread('data02.csv');
+% [item_data,~]=xlsread('data03.csv');
+% [item_data,~]=xlsread('data04.csv');
+%存储每个item的编号、长度、宽度
+item_id=item_data(:,3);
+item_length=item_data(:,1);
+item_width=item_data(:,2);
+freq=item_data(:,4);
+item=[item_id,item_length,item_width,freq];
+
+%数据预处理
+%记录长宽相同的item
+y=[];
+z=zeros(1,length(item_id));
+for i=1:length(item_id)
+y=[y,i-1];
+for j=i+1:length(item_id)
+if item_length(j)==item_length(i) && item_width(j)==item_width(i)
+y=[y,j];
+end
+end
+y=[y,1000];
+end
+%删除相同长宽的矩形项目
+a=[];
+i=1;
+while 1
+if freq(i)~=1
+for j=1:freq(i)-1
+a=[a,i+j];
+end
+end
+if i+freq(i)>=length(freq)
+break
+
+
+
+55
+end
+i=i+freq(i);
+end
+item(a,:)=[];
+
+%认为item的价值=item的面积*rho
+rho=item(:,2).*item(:,3);
+item_square=item(:,2).*item(:,3);
+item_value=rho.*item_square;
+
+%根据价值从小到大将item排列,
+[~,order]=sort(item_value,'ascend');
+item=[item(order,:),item_value(order)];
+
+%将item重新编号
+item=[[1:length(item(:,1))]',item];
+
+# %使用SVC和HUSP算法求解3CS
+%参数初始化
+E_max=10000;%迭代次数；
+## U_op=length(item);%最好排样方案中使用的原片个数
+t=item(:,6);%产品项初始单位价值
+for E=1:E_max
+c=item(:,5);%产品项的可用量
+U=0;
+J=0;
+while sum(c)>0
+# %使用TUSP算法生成当前排样图
+[stack,stripe,plate]=TUSP(item,L,W,rho);
+%计算生成的排样图中item的种类和数目
+r=zeros(length(c),1);
+for i=1:length(c)
+a=item(:,:,i);
+aa=find(a(3:length(c),2)~=0);
+r(i)=length(aa);
+end
+# %确定P的使用次数
+ff=[];
+for i=1:length(r)
+if r(i)~=0
+b=c(i)/r(i);
+ff=[ff,b];
+end
+end
+
+
+
+56
+f=min(ff);
+%更新当前排样方案的排样方式数
+J=J+1;
+%更新原片使用数量
+U=U+1;
+%更新产品项可用量
+for i=1:length(c)
+c(i)=c(i)-f*r(i);
+end
+%使用价值修正公式来修正产品项的价值
+%价值修正公式参数设置
+enta=0.75;
+tao=1.02;
+## %计算排样图P中所含产品项的总面积和原片面积之比
+s1=0;
+item_length=item(:,3);
+item_width=item(:,4);
+item_square=item(:,2).*item(:,3);
+for i=1:length(r)
+s1=s1+r(i)*item_square(i);
+end
+mu=s1/l/W;
+for i=1:length(rho)
+lambda_1=1-enta*r(i)/(r(i)+d(i));
+lambda_2=1-lambda_1;
+rho(i)=lambda_1*rho(i)+(lambda_2*(item_square(i))^tao)/mu;
+end
+end
+if U<U_op
+%记当前排样方案为最优方案
+U_op=U;
+J_OP=J;
+end
+if U_op=U && J_OP>J
+%记当前排样方案最优
+J_OP=J;
+end
+end
+
+1. 6、排样排版方案效果图绘制代码：
+import matplotlib.pyplot as plt
+import random
+import pandas as pd
+
+
+
+57
+import numpy as np
+
+from IPython.core.interactiveshell import InteractiveShell
+## InteractiveShell.ast_node_interactivity = 'all'
+
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['font.family']='sans-serif'
+
+### 颜色库
+
+colorname = pd.Series(cnames)
+
+len(cnames)
+
+### 计算每个原片的利用率
+
+import os
+os.chdir(r'E: \dataA1')
+
+df = pd.read_table('cut_program_A1.csv', sep=',')
+
+df.head()
+
+### Part 包含每个原片切割使用的板材面积，以及每个原片的板材利用率
+
+df['area'] = df.x_length * df.y_length
+Part = df.groupby('Pid').area.agg(['sum'])
+## Part['PartId'] = Part.index
+## Part['ratio'] = Part['sum']/(1220*2440)*100
+
+## 计算总的板材利用率
+sum(Part['sum'])/(1220*2440* max(df['Pid'])) *100
+
+Part.ratio = round(Part.ratio,2)
+
+# Part.to_csv(r'E: \dataA1\dataA1_板材利用率.csv',index=False)
+
+plt.hist(Part.ratio)
+
+### 绘制排样图
+
+df.head(10)
+
+PartNum = df.groupby('Pid').area.agg(['count'])
+
+
+
+58
+## PartNum['Pid'] = PartNum.index
+
+df.head(10)
+
+for i in range(1,max(df.Pid)+1):
+print('没问题',i)
+fig = plt.figure(figsize=(17,10), dpi=200)
+ax = fig.add_subplot(111)
+
+ax = plt.subplot(facecolor='#e6e6e6')  # 设置底色
+
+plt.xlim(0,2440)
+plt.ylim(0,1220)
+
+item_count = PartNum.loc[PartNum.Pid==i,'count'].reset_index(drop = True)
+
+randseries = random.sample(range(1,len(colorname)),item_count[0])
+randcolor = colorname[randseries]
+
+for k in range(item_count[0]):
+df_temp = df.loc[df.Pid==i].reset_index(drop = True)
+
+x_loc = df_temp['x_loc'][k]
+y_loc = df_temp['y_loc'][k]
+x_length = df_temp['x_length'][k]
+y_length = df_temp['y_length'][k]
+facecolor_rand = randcolor[k]
+itemid_temp = df_temp['itemid'][k]
+
+rect_temp = plt.Rectangle( (x_loc, y_loc), x_length, y_length, linewidth = 3,
+edgecolor = 'black', facecolor =  facecolor_rand)    # 坐
+标，长宽
+ax.add_patch(rect_temp)
+
+plt.annotate(itemid_temp, xy = (x_loc+10, y_loc+5), horizontalalignment = 'left',
+verticalalignment = 'bottom', size=14)
+
+Part_temp = Part[Part.PartId==i].reset_index(drop=True)
+b = Part_temp.ratio[0]
+plt.title('原片{}     数量：×1   此原片板材利用率：{}%'.format(i,b), size=24)
+
+
+
+59
+
+plt.xticks([])
+plt.yticks([])
+
+tu_name = 'Part{}'.format(i)
+plt.savefig('./tu/排样图_{}.jpg'.format(tu_name), format='jpg', dpi=200, bbox_inches='tight')
+
+1. 7、组批排版方案效果图绘制代码：
+import matplotlib.pyplot as plt
+import random
+import pandas as pd
+import numpy as np
+
+from IPython.core.interactiveshell import InteractiveShell
+## InteractiveShell.ast_node_interactivity = 'all'
+
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['font.family']='sans-serif'
+
+#各颜色对应编码
+
+colorname = pd.Series(cnames)
+
+len(cnames)
+
+# 计算每个原片的利用率
+
+import os
+os.chdir(r'E:\研究生\比赛\2022 届华为杯\数据代码B')
+
+df = pd.read_table('cut_programdataB1_English.csv', sep=',')
+
+df.head()
+
+# Part 包含每个原片切割使用的板材面积，以及每个原片的板材利用率
+
+df['area'] = df.x_length * df.y_length
+
+df['Pc+Pid'] = df['pc'].map(str) + '+' + df['Pid'].map(str)
+df['PartSumArea'] = df.groupby('Pc+Pid').area.transform('sum')
+df['ratio'] = df['PartSumArea']/(1220*2440)*100
+
+
+
+60
+PiciPart = df.loc[:,['pc', 'material', 'Pid', 'Pc+Pid', 'PartSumArea', 'ratio']]
+PiciPart = PiciPart.drop_duplicates(keep='first', inplace=False)
+
+# PiciPart.shape
+
+## 总原片数+总利用率
+
+a = df['Pc+Pid'].unique()
+len(a)
+
+## 计算总的板材利用率
+round(sum(PiciPart['PartSumArea'])/(1220*2440* len(a)) *100, 4)
+
+PiciSum = PiciPart.groupby('pc').PartSumArea.agg(['sum'])
+## PiciSum['pc'] = PiciSum.index
+PiciSum['PartNum'] = PiciPart.groupby('pc').pc.agg(['count'])
+PiciSum['PcRatio'] = PiciSum['sum']/(2440*1220*PiciSum['PartNum'])*100
+
+PiciPart.to_csv(r'E:\数据代码B\板材利用率\dataB1_每原片_板材利用率.csv',index=False)
+PiciSum.to_csv(r'E:\数据代码B\板材利用率\dataB1_每批次_板材利用率.csv',index=False)
+
+plt.hist(PiciPart.ratio)
+
+plt.hist(PiciSum.PcRatio)
+
+# 绘制排样图
+
+df.head(10)
+
+df['Pcount'] = df.groupby('Pc+Pid').area.transform('count')
+#PartNum['Pc+Pid'] = PartNum.index
+
+for l in range(1,max(df.pc)+1):
+for i in range(1,max(df.loc[df.pc==l,'Pid'])+1):
+print('没问题',i)
+fig = plt.figure(figsize=(17,10), dpi=80)
+ax = fig.add_subplot(111)
+
+ax = plt.subplot(facecolor='#e6e6e6')  # 设置底色
+
+plt.xlim(0,2440)
+plt.ylim(0,1220)
+
+item_count = df.loc[(df.Pid==i)&(df.pc==l),'Pcount'].reset_index(drop = True)
+
+
+
+61
+
+randseries = random.sample(range(1,len(colorname)),item_count[0])
+randcolor = colorname[randseries]
+
+for k in range(item_count[0]):
+df_temp = df.loc[(df.Pid==i)&(df.pc==l)].reset_index(drop = True)
+
+x_loc = df_temp['x_loc'][k]
+y_loc = df_temp['y_loc'][k]
+x_length = df_temp['x_length'][k]
+y_length = df_temp['y_length'][k]
+facecolor_rand = randcolor[k]
+itemid_temp = df_temp['itemid'][k]
+
+rect_temp = plt.Rectangle( (x_loc, y_loc), x_length, y_length, linewidth = 3,
+edgecolor = 'black', facecolor =  facecolor_rand)    #
+坐标，长宽
+ax.add_patch(rect_temp)
+
+plt.annotate(itemid_temp, xy = (x_loc+10, y_loc+5), horizontalalignment = 'left',
+verticalalignment = 'bottom', size=14)
+
+Part_temp = PiciPart[(PiciPart.Pid==i)&(PiciPart.pc==l)].reset_index(drop=True)
+b = round(Part_temp.ratio[0],2)
+plt.title('批次{} 原片{}    数量：×1  此原片板材利用率：{}%'.format(l,i,b), size=24)
+
+plt.xticks([])
+plt.yticks([])
+
+tu_name = 'Pici{}Part{}'.format(l,i)
+plt.savefig('./tuB1/
+排
+样
+图
+_{}.jpg'.format(tu_name),
+format='jpg',
+dpi=80,
+bbox_inches='tight')
+

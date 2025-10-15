@@ -20,78 +20,10 @@
 针对问题三：首先对数据 2.1，数据 2.2 进行排名修正，异常值处理。分析极差与成绩变动特点，深刻考虑极差阈值、极差区间的变动情况，建立极差修正模型。综合问题二最优方案（方案六），做出进一步改进，提出方案八，相比于方案六效果分别提升了 15.43\% 和 29.49\%。对于数据 2.1，spearman 系数为 0.9660，kendall 系数为 0.8427；对于数据 2.2，spearman 系数为 0.8788，kendall 系数为 0.7047，并针对一阶段（中等分段）数据，提出校正模型，对分数进行“复议”。
 
 针对问题四：提出完整的评审模型。使用基于搜索优化算法的 0-1 规划模型得出分配方案，在一阶段中使用校正模型，二阶段中使用方案八模型，最终得出成绩。方案改进方面，新颖性的提出利用量表问卷，获取专家打分倾向，进而修正模型。
+ 关键词：0-1 规划；秩相关系数；震荡因子；偏差因子
 \end{abstract}
 
-\begin{keywords}
-    0-1 规划；秩相关系数；震荡因子；偏差因子
-\end{keywords}
-
-\section*{目录}
-\begin{itemize}
-    \item[] 大规模创新类竞赛评审方案研究 \dotfill 1
-    \item[] 一、问题重述 \dotfill 3
-    \begin{itemize}
-        \item[] 1.1 问题背景 \dotfill 3
-        \item[] 1.2 问题重述 \dotfill 3
-    \end{itemize}
-    \item[] 二、模型假设与符号说明 \dotfill 3
-    \begin{itemize}
-        \item[] 2.1 模型假设 \dotfill 3
-        \item[] 2.2 符号说明 \dotfill 3
-    \end{itemize}
-    \item[] 三、问题 1 的模型建立与求解 \dotfill 4
-    \begin{itemize}
-        \item[] 3.1 问题分析 \dotfill 4
-        \item[] 3.2 模型建立与求解 \dotfill 5
-        \begin{itemize}
-            \item[] 3.2.1 指标定义 \dotfill 5
-            \item[] 3.2.2 相似性度量 \dotfill 5
-            \item[] 3.2.3 多目标 0-1 规划求解 \dotfill 5
-            \item[] 3.2.4 搜索优化算法 \dotfill 6
-        \end{itemize}
-    \end{itemize}
-    \item[] 四、问题 2 的模型建立与求解 \dotfill 7
-    \begin{itemize}
-        \item[] 4.1 问题分析 \dotfill 7
-        \item[] 4.2 模型建立与求解 \dotfill 8
-        \begin{itemize}
-            \item[] 4.2.1 描述性统计分析 \dotfill 8
-            \item[] 4.2.2 原始评审方案分析 \dotfill 14
-            \item[] 4.2.3 模型提出评估 \dotfill 18
-            \item[] 4.2.4 改进模型 \dotfill 20
-            \item[] 4.2.5 最终评估结果展示 \dotfill 25
-        \end{itemize}
-    \end{itemize}
-    \item[] 五、问题 3 的模型建立与求解 \dotfill 25
-    \begin{itemize}
-        \item[] 5.1 问题分析 \dotfill 25
-        \item[] 5.2 模型建立与求解 \dotfill 26
-        \begin{itemize}
-            \item[] 5.2.1 数据预处理 \dotfill 26
-            \item[] 5.2.2 成绩与极差变动分析 \dotfill 27
-            \item[] 5.2.3 极差调整分析 \dotfill 29
-            \item[] 5.2.4 建立极差模型 \dotfill 31
-            \item[] 5.2.5 方案六模型改进 \dotfill 33
-            \item[] 5.2.6 模型评估 \dotfill 34
-            \item[] 5.2.7 中等分段作品处理 \dotfill 34
-        \end{itemize}
-    \end{itemize}
-    \item[] 六、问题 4 的模型建立与求解 \dotfill 36
-    \begin{itemize}
-        \item[] 6.1 问题分析 \dotfill 36
-        \item[] 6.2 模型建立与求解 \dotfill 36
-        \begin{itemize}
-            \item[] 6.2.1 评审方案流程设计 \dotfill 36
-            \item[] 6.2.2 方案改进 \dotfill 37
-        \end{itemize}
-    \end{itemize}
-    \item[] 七、模型评价 \dotfill 39
-    \begin{itemize}
-        \item[] 7.1 模型的优点 \dotfill 39
-        \item[] 7.2 模型的缺点 \dotfill 39
-    \end{itemize}
-    \item[] 八、参考文献 \dotfill 40
-\end{itemize}
+\tableofcontents
 
 \section{一、问题重述}
 
@@ -133,12 +65,24 @@
 
 \subsection{2.2 符号说明}
 
-\begin{tabular}{ccccc}
-平方和 & 自由度 & 均方 & F & 显著性 \\
-回归 & 1981.321 & 2 & 990.661 & 32.893 & 0.000*** \\
-残差 & 722.83 & 24 & 30.118 & & \\
-总计 & 2704.151 & 26 & & \\
+\begin{table}[htbp]
+\centering
+\caption{符号说明表}
+\begin{tabular}{|c|l|}
+\hline
+\textbf{符号} & \textbf{含义} \\ \hline
+$v_{i,j}$ & 第 $i$ 个作品是否被第 $j$ 个专家评审 \\
+$s_{i,j}$ & 相似性度量因子 \\
+$Z_{\text{mean}}$ & 度量矩阵均值 \\
+$Z_{\text{var}}$ & 度量矩阵方差 \\
+$o(P)$ & 容忍度 \\
+$\gamma$ & 震荡因子 \\
+$\delta$ & 偏差因子 \\
+$\hat{y}$ & 最终成绩 \\
+$\bar{y}$ & 拟合成绩 \\
+\hline
 \end{tabular}
+\end{table}
 
 \section{三、问题 1 的模型建立与求解}
 
@@ -307,14 +251,25 @@ v_{i, j} \in\{0,1\}
 
 求解模型，我们最终选出最优方案的 $Z_{\text{mean}}=0.03225, Z_{\text{var}}=0.000254$，部分求解结果如表 1 所示
 
-\begin{tabular}{cccccc}
-非标准化 & 标准系数 & t & 显著性 & 95.0\%置信区间 \\
-系数 & & & & 下限值 & 上限值 \\
-B & 标准误 & Beta & & & \\
-(常量) & -354.998 & 75.101 & -4.727 & 0.000*** & -509.999 & -199.997 \\
-$\bar{y}_k$ & 2.588 & 0.32 & 0.941 & 8.09 & 0.000*** & 1.928 & 3.248 \\
-$\delta_k$ & 1.872 & 0.476 & 0.457 & 3.931 & 0.001*** & 0.889 & 2.855 \\
+\begin{table}[htbp]
+\centering
+\caption{参赛队-评委分配表}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{参赛队} & \textbf{专家一} & \textbf{专家二} & \textbf{专家三} & \textbf{专家四} & \textbf{专家五} \\ \hline
+0 & 4 & 62 & 93 & 107 & 111 \\
+1 & 14 & 60 & 62 & 73 & 76 \\
+2 & 6 & 84 & 100 & 112 & 122 \\
+3 & 45 & 82 & 109 & 114 & 124 \\
+4 & 8 & 555 & 56 & 85 & 111 \\
+5 & 1 & 2 & 17 & 37 & 42 \\
+6 & 7 & 36 & 48 & 89 & 91 \\
+7 & 39 & 40 & 54 & 68 & 107 \\
+8 & 43 & 47 & 61 & 71 & 80 \\
+9 & 17 & 34 & 60 & 65 & 73 \\
+\hline
 \end{tabular}
+\end{table}
 
 \section{四、问题 2 的模型建立与求解}
 
@@ -394,10 +349,21 @@ S_{i,j} = \frac{V_i \odot V_j}{S_{\text{scale}}} \in \mathbb{R} \quad S_{\text{s
 
 如我们可以发现，相似性最高的这 4 组数据中，每组数据仅仅与自身组的专家高度相关，但是于其余组的相关性为 0，这也印证了高度相关的组，往往与其余的专家不相关。具体的组别和相似性度量因子在表 2 中给出。
 
-\begin{tabular}{ccc}
-R^2 & 调整后的R^2 & Durbin-Watson(U) \\
-0.745 & 0.724 & 1.586 \\
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \caption{Top-8 度量组别}
+    \begin{tabular}{l r}
+        \hline
+        相似性组类 & 相似性度量因子大小（0~1） \\
+        \hline
+        P459 P212 & 0.84466 \\
+        P386 P229 & 0.82857 \\
+        P336 P233 & 0.82692 \\
+        P482 P069 & 0.82524 \\
+        \hline
+    \end{tabular}
+    \label{tab:top8}
+\end{table}
 
 以上结果均保留了 5 位小数
 
@@ -423,7 +389,7 @@ QQ 图是检验样本是否服从正态分布的常规手段，简单来说，�
 
 从组内（作品分布大致相同）来看，仅有最后一组的打分分布相似，其余几组的打分分布均不相同，为了合理印证我们的想法，确保严谨性，我们使用 KS-检验（Kolmogorov-Smirnov test）来检验同一组的专家的打分分布是否一致。
 
-\section{KS 检验\cite{ref5}\cite{ref6}}
+KS 检验\cite{ref5}\cite{ref6}
 
 在统计学中，Kolmogorov-Smirnov 检验（亦称 K-S 检验或 KS 检验）是一种连续的一维概率分布均等性的非参数检验，可用于比较一个样本与一个参考概率分布（例如：正态分布），或比较两个样本（两个样本的 K-S 检验）。对于该问题，我们使用的是两样本的 KS 检验。
 
@@ -452,12 +418,21 @@ D_{n,m} = c(\alpha) \sqrt{\frac{n+m}{n*m}}
 
 其中 \( n, m \) 为第一个样本和第二个样本的大小，在本问题，显著性水平 \( \alpha \) 取 0.05，经过查表可得 \( c(\alpha) = 1.358 \).
 
-\begin{tabular}{ccccc}
-平方和 & 自由度 & 均方 & F & 显著性 \\
-回归 & 2089.731 & 2 & 1044.865 & 40.814 & 0.000*** \\
-残差 & 614.421 & 24 & 25.601 & & \\
-总计 & 2704.151 & 26 & & \\
+\begin{table}[h]
+\centering
+\caption{3KS 检验结果}
+\begin{tabular}{c c c c}
+\hline \hline
+ & 两样本 Kolmogorov-Smirnov 检验 & & \\
+专家一 & 专家二 & Kolmogorov-Smirnov Z & 渐近显著性(双尾) \\
+\hline
+P459 & P212 & 1.610 & 0.011 \\
+P386 & P229 & 1.190 & 0.118 \\
+P336 & P233 & 3.011 & 0.000 \\
+P482 & P069 & 0.910 & 0.379 \\
+\hline \hline
 \end{tabular}
+\end{table}
 
 检验结果如表 3 所示，可以发现，如果在 \( \alpha \) 值为 0.05 的假定下，第一组和第三组的 P 值分别为 0.011, 0.000 小于 0.05，拒绝原假设，认为二者并不服从同一分布，同理第二组和第四组服从同一分布，这也就意味着不同的老师的打分倾向虽有差异，但也有相同，所以我们可以根据老师的打分信息，将其划分为不同倾向的（例如：低分、平均、高分）的分组内。
 
@@ -493,7 +468,7 @@ x_k = 50 + 10 \times \frac{a_k - \overline{a}}{s}
 
 综上所述，我们得出结论，不同专家的评阅作品得分分布有所不同，尽管在作品大多数都一致的情况下。这也就意味着专家的打分倾向具有异质性，但是大多数的专家倾向都在平均分（50）之间，少数的在两侧。
 
-\subsubsection{4.2.2 作品成绩分布分析}
+2 作品成绩分布分析
 
 我们需要分析所有作品的原始成绩以及调整之后的成绩分布，这里我们先分析题目中已知的两种方案，即方案一：取标准分之后求和；方案二：去除最低最高分后求和。
 
@@ -517,7 +492,7 @@ x_k = 50 + 10 \times \frac{a_k - \overline{a}}{s}
 
 经过检验，我们得知，原始分、方案一、方案二的所有作品的得分分布均不服从正态分布，尾部数据的偏离实际上也就表示了高分作品的数量偏多。
 
-\subsection{4.2.2 原始评审方案分析}
+\subsubsection{4.2.2 原始评审方案分析}
 
 由于题目要求我们按照不同的评审方案进行排序，现在我们仅考虑上一小节中提出的方案一与方案二，现我们需要对排名的好坏进行评估，查阅相关资料，我们考虑将肯德尔相关性检验的方法作为理论基础，用于衡量评审方案的优劣。
 
@@ -533,7 +508,7 @@ x_k = 50 + 10 \times \frac{a_k - \overline{a}}{s}
 
 事实上，方案三和方案一的区别仅仅在于是否进入两阶段，计算公式都是使用标准分计算公式，方案二仅仅适用于一阶段。由于我们需要比较方案的排序的好坏，所以我们可以使用秩检验方式作为评估指标。所以，得到不同计算模型的排序结果后，利用 Spearman 相关系数和 kendall 秩相关系数比较不同方案的优劣性。
 
-\section{Spearman 相关系数}
+Spearman 相关系数
 
 Spearman 相关系数是统计学中常用的用于衡量两个样本相关性的一个指标，它是依据两列成对等级的各对等级数之差来进行计算的，所以又称为“等级差数法”，而对于本问题中，这里的等级也就是排名，所以我们可以使用该系数来检验我们现有方案的排名优劣。斯皮尔曼相关系数被定义成等级变量之间的皮尔逊相关系数。对于样本容量为 $n$ 的样本，$n$ 个原始数据被转换成等级数据，相关系数 $\rho$ 被定义为
 
@@ -551,7 +526,7 @@ Spearman 相关系数是统计学中常用的用于衡量两个样本相关性�
 
 其中，$d_{i}$ 表示第 $i$ 对样本的等级之差，$n$ 表示样本数量。
 
-\section{Kendall 秩相关系数}
+Kendall 秩相关系数
 
 在统计学中，kendall 秩相关系数评估了给定相同对象集的两组秩之间的相似程度，是用于测量两组数据之间序列关联的统计量。该系数依赖于将一个秩次顺序转换为另一个秩次顺序所需的逆序对的数量。kendall 系数有两个计算公式，一个是 Tau-a，另一个是 Tau-b。两者的区别是 Tau-b 可以处理有相同值的情况，即并列。Tau-a 的计算公式如下所示
 
@@ -583,7 +558,7 @@ Spearman 相关系数是统计学中常用的用于衡量两个样本相关性�
 
 上述结果均保留5位小数
 
-\section*{需要注意的是，由于题目已知条件，我们知道，一等奖作品排序是评委协商之后认定的，所以我们把这前27个排名作为基准，来对所有的方案进行评估。}
+需要注意的是，由于题目已知条件，我们知道，一等奖作品排序是评委协商之后认定的，所以我们把这前27个排名作为基准，来对所有的方案进行评估。}
 
 方案二直接将原始分去掉极值后取平均，虽然这种方法可以提高数据集的抗噪能力避免异常值对最终结果的不利影响，但它对消弱不同评委间的评分差异性没有帮助，从表中数据可以看到其 spearman 相关系数和 kendall 系数都很小，仅有 0.21119 和 0.13814，并且 P 值都大于 0.05，不拒绝原假设，认为这两个系数的结果都不是很显著。
 
@@ -601,17 +576,20 @@ Spearman 相关系数是统计学中常用的用于衡量两个样本相关性�
 
 上图为分别前27支参赛队（一等奖），前352支进入二阶段的参赛队，以及未进入二阶段的队伍的秩差图，由于未进入二阶段参赛队的排名是在方案一的基础上对参赛队成绩求均值得出的，也就意味着没有秩差，但是实际上的秩差图都有不小的偏差。于是，我们观察数据1，选取了其中4支队伍的成绩作为修正示例。
 
-\begin{tabular}{c c c c}
+\begin{table}
+\centering
+\caption{表5 数据1排名修正}
+\begin{tabular}{c c c}
 \hline
-最终得分 & 排名 & 奖项 & 调整后排名 \\
+成绩 & 排名 & 修正后排名 \\
 \hline
-215.48 & 623 & 二等奖 & 621 \\
-215.48 & 622 & 二等奖 & 621 \\
-215.48 & 625 & 二等奖 & 621 \\
-215.48 & 621 & 二等奖 & 621 \\
-215.46 & 624 & 二等奖 & 625 \\
+271.4 & 756 & 757 \\
+271.42 & 757 & 756 \\
+271.39 & 758 & 759 \\
+271.4 & 759 & 757 \\
 \hline
 \end{tabular}
+\end{table}
 
 \section{修正后方案一秩差图}
 
@@ -650,7 +628,7 @@ Spearman 相关系数是统计学中常用的用于衡量两个样本相关性�
 
 综上所述，我们认为使用去除最高和最低分的方案二效果是最差的，使用文中提出的标准分的方案较好，并且使用二阶段优于单纯使用一阶段的方式，所以基于上述分析，我们提出一种基于原始分的“标准化”方式，并且沿用题中的二阶段进行方案设计。
 
-\subsection{4.2.3 模型提出评估}
+\subsubsection{4.2.3 模型提出评估}
 
 原题目中的提出的标准分计算公式如（4.10）式所示，这种计算方式实际上就是基于机器学习中的 $Z$-score 标准化提出的，但是使用这个公式需要基于样本的正态假定之下，这样才能使得缩放后的样本服从 $N(50, 10^2)$，为了打破正态假定的限制，我们提出以下标准分计算公式。
 
@@ -661,7 +639,7 @@ Spearman 相关系数是统计学中常用的用于衡量两个样本相关性�
 
 $x_{k,i}$ 表示第 $k$ 个作品的第 $i$ 个评委的打分，其中 $\sigma(a_{k,i})$ 为缩放方式，$x_{k,i}$ 原题目中为 $\frac{a_{k,i} - \bar{a}}{s}$。我们提出以下两个新的缩放方式。
 
-\subsubsection{均值标准化}
+均值标准化
 
 \begin{equation}
 \text{Mean-scale}(a_{k,i}) = \frac{a_{k,i} - \bar{a}_i}{\max(a_i) - \min(a_i)}
@@ -670,7 +648,7 @@ $x_{k,i}$ 表示第 $k$ 个作品的第 $i$ 个评委的打分，其中 $\sigma(
 
 其中，$\bar{a} = \frac{1}{n} \sum_{k=1}^n a_{k,i}$，$a_k$ 表示某位专家给出的第 $k$ 个成绩，该方法可以将 $a_k$ 缩放到 $[-1, 1]$ 之间，并且不用考虑作品分布的问题。
 
-\subsubsection{最大最小标准化}
+最大最小标准化
 
 \begin{equation}
 \text{Maxmin-scale}(a_{k,i}) = \frac{a_{k,i} - \min(a_i)}{\max(a_i) - \min(a_i)}
@@ -696,7 +674,7 @@ $x_{k,i}$ 表示第 $k$ 个作品的第 $i$ 个评委的打分，其中 $\sigma(
 
 我们发现单纯将缩放方式进行替换，效果极差，4.2.1 节中，指出不同评委的打分倾向不同，一份作品在观点不同的评委手上，打的分数自然不同，所以我们需要对公式 (4.10) 进行修正，需要将评委的打分倾向考虑在内。
 
-\section{震荡因子}
+震荡因子
 
 我们的标准分计算公式中的 50 为所有老师提供了一个相同的打分基准，但单纯地加入基准分无法平衡打分的震荡区间。从各个老师的打分分布图中可以看到，所有老师都倾向于打高分，因此高分区间会密集地存在很多次优等作品。
 
@@ -753,11 +731,11 @@ $x_{k,i}$ 表示第 $k$ 个作品的第 $i$ 个评委的打分，其中 $\sigma(
 
 我们发现，对于方案五同样是序号为 6 和 10 的极端样本得到了显著的改善，但是我们发现无论是方案四还是方案五改进之后，序号为 17 的样本秩差都显著变大了，为了探究原因，我们找到了该样本，发现该样本是所有 27 个一等奖作品中第二次评审分标准差极差最大的作品，高达 36.21，所以我们需要根据题目所给数据在考虑极差的情况下进一步改进模型。
 
-\subsection{4.2.4 改进模型}
+\subsubsection{4.2.4 改进模型}
 
 虽然加入了震荡因子，使得方案四和方案五的效果得到了显著的提升，但是并没有超过原有的标准分方案，我们认为，这实际上是合理的，这是因为我们作为权威排名比较的 27 支一等奖队伍的成绩，本身就是基于标准分计算公式综合复议成绩，然后按最终成绩排名的。所以我们需要从数据入手来优化模型，由于我们并不知道复议的成绩如何计算，此时我们仅仅知道原始分、标准分、极差等信息。由于是否复议取决
-
-\section{图 19 散点图矩阵}
+于二阶段的标准分极差，所以我们需要从该方面入手，探求函数关系。
+{图 19 散点图矩阵
 
 图 19 为最终成绩与方案四成绩、方案五成绩，以及极差之间的散点关系矩阵，我们发现变量之间存在一定的线性关系，但是由于方案四和方案五的共线性较强，所以我们考虑对两个方案分别建立模型。
 
@@ -775,7 +753,12 @@ y_k = f(\bar{y}_k, \delta_k) + \varepsilon_i \tag{4.15}
 \delta_k = g\left(x_{k,6}, x_{k,7}, x_{k,8}\right) = g\left(\text{Max}\{x_{k,6}, x_{k,7}, x_{k,8}\} - \text{min}\{x_{k,6}, x_{k,7}, x_{k,8}\}\right) \tag{4.16}
 \end{equation}
 
-\section{表8 拟合优度检验}
+
+其中𝑥𝑘,6表示第𝑘个作品第6 位评委打的标准分（也就是二阶段的第一位评委） 
+我们使用多元线性回归拟合模型，结果如下所示
+
+
+表8 拟合优度检验
 \begin{tabular}{ccc}
 R^2 & 调整后的R^2 & Durbin-Watson(U) \\
 0.733 & 0.71 & 1.303 \\
@@ -783,7 +766,7 @@ R^2 & 调整后的R^2 & Durbin-Watson(U) \\
 
 由表8可知，$R^2$为0.733，表示拟合结果较好。
 
-\section{表9 方案四方差分析表}
+表9 方案四方差分析表
 \begin{tabular}{ccccc}
 平方和 & 自由度 & 均方 & F & 显著性 \\
 回归 & 1981.321 & 2 & 990.661 & 32.893 & 0.000*** \\
@@ -793,8 +776,7 @@ R^2 & 调整后的R^2 & Durbin-Watson(U) \\
 * p<0.1；** p<0.05；*** p<0.01
 
 拟合优度为0.733，方差分析的P值为0.000，在显著性水平为0.05的情况下，拒绝原假设，认为自变量和因变量之间存在显著关系，并且拟合优度为0.733，拟合效果较好。
-
-\section{表10 方案四系数显著性检验表}
+表10 方案四系数显著性检验表
 \begin{tabular}{cccccc}
 非标准化 & 标准系数 & t & 显著性 & 95.0\%置信区间 \\
 系数 & & & & 下限值 & 上限值 \\
@@ -813,13 +795,13 @@ $\delta_k$ & 1.872 & 0.476 & 0.457 & 3.931 & 0.001*** & 0.889 & 2.855 \\
 
 其中$\bar{y}_k$表示使用方案四计算出的第$k$个作品最终得分，我们使用$\hat{y}_k$取代$\bar{y}_k$，并将该方案命名为方案六。
 
-\section{表11 拟合优度检验}
+表11 拟合优度检验
 \begin{tabular}{ccc}
 R^2 & 调整后的R^2 & Durbin-Watson(U) \\
 0.745 & 0.724 & 1.586 \\
 \end{tabular}
 
-\section{表12 方案五方差分析表}
+表12 方案五方差分析表
 \begin{tabular}{ccccc}
 平方和 & 自由度 & 均方 & F & 显著性 \\
 回归 & 2089.731 & 2 & 1044.865 & 40.814 & 0.000*** \\
@@ -866,13 +848,7 @@ $\delta_{k}$ & 2.093 & 0.476 & 0.511 & 4.394 & 0.000*** & 1.11 & 3.076 \\
 \centering
 \includegraphics[width=\textwidth]{image2.png}
 \caption{方案六（左）与方案七（右）残差图}
-\end{figure}
-
-\begin{table}
-\centering
-\caption{改进后方案结果}
-\begin{tabular}{c c c c c c}
-\hline
+\end{figure}line
 阶段 & 方案 & spearman & P值 & Tau\_b & P值 \\
 \hline
  & 方案三 (baseline) & 0.71429 & 0.00003 & 0.58974 & 0.00000 \\
@@ -895,6 +871,7 @@ $\delta_{k}$ & 2.093 & 0.476 & 0.511 & 4.394 & 0.000*** & 1.11 & 3.076 \\
     \caption{方案六（左）和方案七（右）的秩差图}
 \end{figure}
 
+\subsubsection{4.2.5 最终评估结果展示}
 我们发现相比于之前的方案四和方案五，上图的秩差大部分均控制在了 25 以内，并且极端值的秩差也都在 70 以内，说明模型的效果具有较大的提升。
 
 \begin{table}
@@ -999,9 +976,9 @@ $\delta_{k}$ & 2.093 & 0.476 & 0.511 & 4.394 & 0.000*** & 1.11 & 3.076 \\
 
 我们发现，对于数据 2.2 而言，并没有出现专家评阅作品数量极少的情况出现，一阶段中的评阅数量都在 120~125 之间，二阶段都在 53~70 之间。所以对于该部分，我们不做异常值处理。
 
-\subsection{5.2.2 成绩与极差变动分析}
+\subsubsection{5.2.2 成绩与极差变动分析}
 
-\subsubsection{(1) 成绩变动分析}
+(1) 成绩变动分析
 
 经历二阶段的成绩难免会有所变动，不分阶段评审也就意味着直接使用一阶段的五位评委成绩进行加权，得出排名，最终成绩为五位评委打分之和。二阶段为前五位评委得分的均值加上后三位评委的打分作为最终得分，即不分阶段的最终成绩是 5 份成绩之和，分阶段的最终成绩是 4 份成绩之和。所以我们认为直接对成绩进行比较是没有意义的，最终结果肯定是总体呈下降趋势，所以，我们考虑使用排名的变动来分析，是否经历二阶段对参赛队的影响。
 
@@ -1025,7 +1002,7 @@ $\delta_{k}$ & 2.093 & 0.476 & 0.511 & 4.394 & 0.000*** & 1.11 & 3.076 \\
 
 对于二阶段的方案，我们发现，数据 2.1 分布做了一定的修正，成绩的峰度变大，数据分布向中心靠拢，数据 2.2 对于成绩修正的效果更加明显，几乎都从右偏分布修正到了对称分布，所以我们认为二阶段对于成绩的优势在于对数据进行修正，使得数据是中心对称的。
 
-\subsection{极差变动分析}
+极差变动分析
 
 \begin{figure}[h]
     \centering
@@ -1049,7 +1026,7 @@ $\delta_{k}$ & 2.093 & 0.476 & 0.511 & 4.394 & 0.000*** & 1.11 & 3.076 \\
 
 所以，我们得出结论，两阶段评审方案的效果是优于一阶段评审的，不仅对最终成绩进行了“正态”修正，还使得极差变小，分布均匀。一阶段的优点仅仅在于耗费的资源较少，可以减少一定的人力物力消耗。
 
-\subsection{5.2.3 极差调整分析}
+\subsubsection{5.2.3 极差调整分析}
 
 简单观察数据，我们发现，仅有二阶段的三位评委的评审成绩涉及到是否复议，一阶段的五位评委的评阅成绩并不会复议，并且是否需要调整与二阶段标准分的极差相关，所以我们需要探求极差与是否调整（复议）之间的关系。
 
@@ -1077,7 +1054,7 @@ $\delta_{k}$ & 2.093 & 0.476 & 0.511 & 4.394 & 0.000*** & 1.11 & 3.076 \\
 
 并且我们在问题二中引入的偏差因子的方案在效果上达到了最优，当时是通过偏差因子来拟合函数关系，并且偏差因子是由极差构成的，所以我们有理由认为，方案六（未经历调整阶段）与真实得分之间的差距可以由极差拟合，在问题2中我们已经考虑了复议前极差。现在，我们需要进一步将调整后极差作为影响因素考虑在内。
 
-\subsection{5.2.4 建立极差模型}
+\subsubsection{5.2.4 建立极差模型}
 
 现在，我们合并数据 2.1 和 2.2，并且只考虑重新评审的样本，我们需要建立以下函数关系
 
@@ -1099,7 +1076,7 @@ $\delta_{k}$ & 2.093 & 0.476 & 0.511 & 4.394 & 0.000*** & 1.11 & 3.076 \\
 
 我们认为，如果在一个区间内复议的样本量较多，那么应该对区间作更加细致的划分，从而更好的拟合函数关系式。基于上述目的，我们提出以下模型。
 
-\section{极差修正模型}
+极差修正模型
 
 第一步，我们在残差区间内（大于 20）作 $N$ 等分，然后我们统计各个区间内的复议作品个数。
 \begin{equation}
@@ -1132,7 +1109,7 @@ f_{N}(\delta_{k}) & = w_{N} \delta_{k} \quad \text{if } \delta_{k} \in [r_{2N-1}
 
 并且考虑两两区间重合，$r_{3} - r_{2} = r_{5} - r_{4} = \cdots = r_{2N-1} - r_{2N-2} = \varepsilon$，$r_{1} = 20 - \varepsilon$，当 $\delta_{k}$ 落入第一个重合区间 $[r_{3}: r_{2}]$ 时，$w = \frac{w_{1} + w_{2}}{2}$，$f(\delta_{k}) = w \delta_{k}$，依次类推。
 
-\section{模型求解}
+模型求解
 
 \begin{figure}[h]
 \centering
@@ -1178,7 +1155,7 @@ f_7(\delta_k) &= 0.086\delta_k \quad \text{if } \delta_k \in [32.67, 36.19]
 
 最终拟合出来的结果如图 34 所示，可以发现，除了在第一个区间效果不是很好，在其余区间效果较好，大部分数据斜率相近。
 
-\subsection{5.2.5 方案六模型改进}
+\subsubsection{5.2.5 方案六模型改进}
 
 我们在问题二中提出的所有模型，均不考虑复议的影响，所以使用一个偏差因子进行修正，此时，我们考虑将复议后极差作为新的影响因子，替换原始因子，所以方案六被修正为
 \begin{equation}
@@ -1236,7 +1213,7 @@ $\bar{\delta}_k$ & -0.114 & 0.053 & -0.027 & -2.15 & 0.000*** \\
 
 我们在方案六的基础上进一步考虑了复议极差，将其命名为方案八，下文与此相同。
 
-\subsection{5.2.6 模型评估}
+\subsubsection{5.2.6 模型评估}
 
 我们对方案八进行模型评估，评估结果如表22所示
 
@@ -1255,7 +1232,7 @@ $\bar{\delta}_k$ & -0.114 & 0.053 & -0.027 & -2.15 & 0.000*** \\
 
 我们发现，使用新的偏差因子之后，模型的效果极好，在2.1的小数据中spearman系数甚至达到了0.9660，这意味着排名近乎正确，并且我们的基准数据是进入二阶段的所有作品。虽然在大数据集2.2中效果有所下降，但是相对而言，仍然比我们之前提出的方案六（最佳模型）效果要好。
 
-\subsection{5.2.7 中等分段作品处理}
+\subsubsection{5.2.7 中等分段作品处理}
 
 我们认为，中等分段的作品为排名在进入二阶段作品之后的，区间长度为二阶段作品的数量作品集合。我们使用模型八对中等作品得分进行“复议”。
 
@@ -1458,5 +1435,916 @@ f_{7}(\delta_{k}) & = 0.086\delta_{k} \quad \text{if } \delta_{k} \in [32.67, 36
 
 \end{document}
 
-% Missing placeholders restored
-\includegraphics[width=0.9\textwidth]{image.png}
+\section{附录}
+import numpy as np
+import pandas as pd
+# 定义矩阵的行数和列数
+num_rows = 3000
+num_cols = 125
+# 循环生矩阵
+n_circle = 3000
+z_multi = []
+z_var = []
+matrix_all = []
+for m in range(n_circle):
+# 单个生成矩阵
+matrix = np.zeros((num_rows, num_cols))
+# 单个生成p 矩阵
+p_matrix = np.zeros((num_cols, num_cols))
+for i in range(num_rows):
+row_sum = 0
+available_cols = list(range(num_cols))
+while row_sum < 5 and available_cols:
+col_idx = np.random.choice(available_cols)
+# 赋值为1
+value = 1
+matrix[i, col_idx] = value
+row_sum = np.sum(matrix[i, :])
+available_cols.remove(col_idx)
+# 对矩阵进行筛选
+col_sums = np.sum(matrix, axis=0)
+# 检查列加和是否满足条件，筛选矩阵
+#if  all(100 <= col_sum <= 140 for col_sum in col_sums) or
+(len(col_sums) - sum(1 for col_sum in col_sums if 100 <= col_sum <=
+140) >= 25):
+if len(col_sums)-sum(1 for col_sum in col_sums if 100 <= col_sum <=
+140)<=25:
+# 计算矩阵的相关性和方差
+for i in range(num_cols):
+for j in range(num_cols):
+a = sum(matrix[:,i])
+b = sum(matrix[:,j])
+p_matrix[i, j] = np.dot(matrix[:, i], matrix[:,
+j])/max(a,b)
+# 计算相关性z_multi
+z_multi_now = 0
+z_var_now = 0
+p_sanjiao = []
+for i in range(num_cols):
+for j in range(num_cols):
+if i < j:
+p_sanjiao.append(p_matrix[i, j])
+
+
+
+42
+z_multi_now = np.sum(p_sanjiao)
+z_var_now = np.var(p_sanjiao)
+z_multi.append(z_multi_now)
+z_var.append(z_var_now)
+matrix_all.append(matrix)
+else:
+continue
+# 最大z_muti
+min_var = min(z_var)
+# 找到最大值的索引
+min_index = z_var.index(min_var)
+print("最小值:", min_var)
+print("最小值的索引:", min_index)
+best_matrix = matrix_all[min_index]
+p_best_matrix = np.zeros((num_cols, num_cols))
+for i in range(num_cols):
+for j in range(num_cols):
+a = sum(best_matrix[:,i])
+b = sum(best)
+p_best_matrix[i, j] = np.dot(best_matrix[:, i], best_matrix[:,
+j]) / max(a,b)
+# 找出前5 行中数字为1 的列索引
+num_rows_to_check = 10
+num_cols_to_check = 10
+result = []
+for row in best_matrix[:num_rows_to_check]:
+indices = np.where(row == 1)[0]  # 找到值为1 的列索引
+result.append(indices[:5])  # 取前5 个索引
+result = pd.DataFrame(result)
+import pandas as pd
+col_sums = np.sum(best_matrix,axis = 0)
+
+# 计算相似性度量
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+path = r'C:\Users\wyl\Desktop\2023 年中国研究生数学建模竞赛赛题\C 题'
+data_name = '数据1.xlsx'
+data = pd.read_excel(path+'/'+data_name,sheet_name='Sheet2')
+
+master_enc = data.iloc[:,1:].values
+num_master = len(np.unique(master_enc))  # 97
+
+rank = data.iloc[:,0].values
+num_term = len(np.unique(rank))  # 2015
+master = np.unique(master_enc)
+
+V = pd.DataFrame(0,index=rank,columns=master)
+master_enc = pd.DataFrame(master_enc,index=rank)
+
+
+
+43
+for i in rank:
+col = master_enc.loc[i,:].values
+# V.loc[i,col] = 1
+
+S = pd.DataFrame(0,index=master,columns=master)
+for i in master:
+for j in master:
+scale = np.max((V.loc[:,i].sum(),V.loc[:,j].sum()))
+## S.loc[i,j] = np.dot(V.loc[:,i],V.loc[:,j])/scale
+
+plt.figure(figsize=(12,8))
+plt.matshow(S.values)
+plt.xticks(range(len(master)),master,rotation=90)
+plt.yticks(range(len(master)),master)
+plt.colorbar()
+plt.tight_layout()
+
+import seaborn as sns
+plt.figure(figsize=(10,12))
+sns.heatmap(S.values,xticklabels=master,yticklabels=master,cmap='viridi
+s')
+plt.tight_layout()
+
+s_u = np.tril(S.values,k=-1)
+import torch
+s_u = torch.from_numpy(s_u)
+_,idx = torch.topk(s_u.reshape(-1),k=4)
+idx = [[i//97,i%97] for i in idx]
+
+top_idx = []
+top_score = []
+for i,j in idx:
+r,c = master[i.item()],master[j.item()]
+s = S.loc[r,c]
+top_idx.extend([r,c])
+top_score.append(s)
+print(f'专家的编码为 {r}  {c}')
+print(f'相似度因子为 {s}')
+
+top_S = S.loc[sorted(top_idx),sorted(top_idx)]
+
+sns.heatmap(top_S.values,
+xticklabels=sorted(top_idx),
+yticklabels=sorted(top_idx),
+cmap='viridis')
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+top_idx
+np.round(top_score,5)
+top_score
+plt.hist(s_u.numpy().reshape(-1))
+
+
+
+44
+plt.xlabel('score',fontsize=20)
+plt.ylabel('freq',fontsize=20)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.tight_layout()
+
+问题二
+图5 专家原始分分布图
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+from scipy.stats import kendalltau
+from scipy.stats import spearmanr
+from scipy.stats import kurtosis,skew
+
+%matplotlib inline
+plt.rcParams['font.sans-serif']=['SimHei']
+plt.rcParams['axes.unicode_minus']=False
+warnings.filterwarnings('ignore')
+
+prof_scores=pd.read_excel('专家评分分布.xlsx',sheet_name='五位专家')
+print(prof_scores)
+code=list(set(prof_scores.code.values))[:9]
+print(code)
+raw_scores=[]
+std_scores=[]
+for i in range(len(code)):
+raw_scores.append(prof_scores[prof_scores.code==code[i]].raw)
+std_scores.append(prof_scores[prof_scores.code==code[i]].stand)
+print(raw_scores)
+print(std_scores)
+data=raw_scores
+labels=code
+# print(labels)
+fig=plt.figure(figsize=(22,18))
+for i in range(1,10):
+fig.add_subplot(3,3,i)
+plt.hist((data[i-
+1].values),bins=15,color=sns.color_palette("Pastel1",10)[i],density=
+True)
+data[i-1].plot(kind='kde',color='gray')
+plt.xlabel(labels[i-1],fontsize=18)
+plt.ylabel("频率",fontsize=18)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+plt.show()
+fig.savefig('专家原始打分.png',dpi=300)
+
+
+
+45
+
+图8 专家打分均值直方图
+
+data=[scores.avg,scores.std1,scores.end]
+labels=['原始分','标准分','复议分']
+print(labels)
+fig=plt.figure(figsize=(6,5))
+for i in [1]:
+fig.add_subplot(1,1,i)
+plt.hist((data[i-
+1].values),bins=35,color=sns.color_palette("Pastel1",10)[i],density=
+True)
+data[i-1].plot(kind='kde',color='gray')
+plt.xlabel(labels[i-1],fontsize=16)
+plt.ylabel("频率",fontsize=16)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
+plt.show()
+fig.savefig('专家均值分布对比.png',dpi=300)
+
+图11 方案一秩差图
+rank_data=pd.read_excel('专家评分分布.xlsx',sheet_name='排名')
+print(rank_data)
+rank_data['end_rank']=np.array(rank_data.end_score.rank(method='min'
+,ascending=False),dtype=np.int)
+print(rank_data)
+
+rank_data['plan1_rank']=np.array(rank_data.plan1.rank(method='min',a
+scending=False),dtype=np.int)
+rank_data['plan1_drank']=rank_data.plan1_rank-rank_data.end_rank
+
+plan1_color=['red' if rank_data.plan1_drank[i]>0 else 'green' for i
+in range(len(rank_data.plan1_drank))]
+rank_data
+
+num1=27 # 获奖人数
+num2=352
+x=list(range(len(rank_data.plan1_drank)))
+fig=plt.figure(figsize=(22,7))
+fig.add_subplot(1,3,1)
+plt.vlines(x=x[:num1],ymin=0,ymax=rank_data.plan1_drank[:num1],color
+=rank_data.plan1_color[:num1],linewidth=5)
+plt.ylabel('秩差距',fontsize=20) # 添加斜体字符
+plt.xlabel('参赛队伍',fontsize=20)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.grid(linestyle='-.',alpha=0.7)
+
+
+
+46
+fig.add_subplot(1,3,2)
+x=list(range(len(rank_data.plan1_drank)))
+plt.vlines(x=x[num1:num2],ymin=0,ymax=rank_data.plan1_drank[num1:num
+2],color=rank_data.plan1_color[num1:num2],linewidth=5)
+plt.ylabel('秩差距',fontsize=20) # 添加斜体字符
+plt.xlabel('参赛队伍',fontsize=20)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.grid(linestyle='-.',alpha=0.7)
+
+fig.add_subplot(1,3,3)
+x=list(range(len(rank_data.plan1_drank)))
+plt.vlines(x=x[num2:],ymin=0,ymax=rank_data.plan1_drank[num2:],color
+=rank_data.plan1_color[num2:],linewidth=5)
+plt.ylabel('秩差距',fontsize=20) # 添加斜体字符
+plt.xlabel('参赛队伍',fontsize=20)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.grid(linestyle='-.',alpha=0.7)
+plt.tight_layout()
+plt.show()
+
+fig.savefig('方案1 秩差图 .png',dpi=300)
+
+图17 散点图矩阵
+
+import seaborn as sns
+import statsmodels.api as sm
+lm_data=pd.read_excel('专家评分分布.xlsx',sheet_name='回归特征')
+# print(lm_data)
+data=lm_data.iloc[:28,1:5]
+print(data)
+# 使用seaborn 绘制散点图矩阵
+fig=plt.figure(figsize=(20,16))
+g=sns.pairplot(data,kind='reg')
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.show()
+* savefig('散点图系数矩阵.png')
+
+自定义标准分计算
+
+data=[rank_data.plan1,rank_data.plan2,rank_data.plan3,rank_data.plan
+4,rank_data.plan6]
+for d in data:
+kurt = kurtosis(d)
+
+
+
+47
+skewness = skew(d)
+print("峰度：", kurt)
+print("偏度：", skewness)
+
+raw_data=pd.read_excel('专家评分分布.xlsx',sheet_name='五位专家')
+print(raw_data)
+pr_dict={}
+code_list=list(set(raw_data.code))
+# code_list
+
+for c in code_list:
+temp=raw_data.raw.values[raw_data.code==c].tolist()[:102]
+pr_dict[c]=temp
+
+df_raw=pd.DataFrame(pr_dict)
+df_raw.to_csv('df_raw.csv')
+raw_data['scores']=list(range(raw_data.shape[0]))
+print(raw_data)
+param_data=pd.read_excel('专家评分分布.xlsx',sheet_name='参数')
+param_data.index=code_list
+print(param_data)
+for i,c in enumerate(code_list):
+params=param_data.iloc[i,:].values
+#     print(params)
+
+raw1_data=pd.read_excel('专家评分分布.xlsx',sheet_name='三位专家')
+print(raw1_data)
+pr_dict1={}
+code_list1=list(set(raw1_data.code1))
+print(len(code_list1))
+
+for c in code_list1:
+temp=raw1_data.raw1.values[raw1_data.code1==c].tolist()[:66]
+pr_dict1[c]=temp
+# print(pr_dict1)
+df_raw1=pd.DataFrame(pr_dict1)
+df_raw1.to_csv('df_raw1.csv')
+
+数据预处理以及评估指标计算——肯德尔Tau_b
+
+# Tau_b
+def Tau_b(dat1,dat2,data_name):
+c = 0
+d = 0
+t_x = 0
+t_y = 0
+for i in range(len(dat1)):
+for j in range(i+1,len(dat1)):
+
+
+
+48
+if (dat1[i]-dat1[j])*(dat2[i]-dat2[j])>0:
+c = c + 1
+elif (dat1[i]-dat1[j])*(dat2[i]-dat2[j])<0:
+d = d + 1
+else:
+if (dat1[i]-dat1[j])==0 and (dat2[i]-dat2[j])!=0:
+t_x = t_x + 1
+elif (dat1[i]-dat1[j])!=0 and (dat2[i]-dat2[j])==0:
+t_y = t_y + 1
+
+tau_b = (c - d) / np.sqrt((c+d+t_x)*(c+d+t_y))
+
+print('tau_b = {0}'.format(tau_b))
+print(f'{data_name} kendalltau(dat1,dat2) =  {kendalltau(dat1,dat2)}')
+
+num0=28
+dat1 = rank_data.end_rank.values.tolist()[:num0]
+dat2 = rank_data.plan1_rank.values.tolist()[:num0]
+dat1 = imp_data.end_rank.values.tolist()[:num0]
+dat2 = imp_data.rank4.values.tolist()[:num0]
+Tau_b(dat1,dat2,'改进的最大最小')
+dat1 = imp_data.end_rank.values.tolist()[:num0]
+dat2 = imp_data.rank6.values.tolist()[:num0]
+Tau_b(dat1,dat2,'改进的减均值')
+
+数据预处理以及评估指标计算——斯皮尔曼相关系数
+
+def Sperman_rank(dat1,dat2,data_name):
+#     print('tau_b = {0}'.format(tau_b))
+print(f'{data_name}
+spearmanr(dat1,dat2)
+=
+{spearmanr(dat1,dat2)}')
+dat1 = rank_data.end_rank.values.tolist()[:num0]
+dat2 = rank_data.plan1_rank.values.tolist()[:num0]
+Sperman_rank(dat1,dat2,'plan1')
+dat1 = imp_data.end_rank.values.tolist()[:num0]
+dat2 = imp_data.rank4.values.tolist()[:num0]
+Sperman_rank(dat1,dat2,'改进的最大最小')
+dat1 = imp_data.end_rank.values.tolist()[:num0]
+dat2 = imp_data.rank6.values.tolist()[:num0]
+Sperman_rank(dat1,dat2,'改进的减均值')
+
+图18 方案六与方案七拟合效果图
+
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+import pandas as pd
+
+
+
+49
+import numpy as np
+
+## X4 = data[['plan4','range1']]
+## X6 = data[['plan6','range1']]
+y = data['end_score']
+# 添加常数列作为回归模型的截距
+X4 = sm.add_constant(X4)
+X6 = sm.add_constant(X6)
+
+model4 = sm.OLS(y, X4).fit()
+model6 = sm.OLS(y, X6).fit()
+
+# 计算预测值和置信区间
+y_pred4 = model4.predict(X4)
+y_pred6 = model6.predict(X6)
+confidence4 = model4.get_prediction(X4).conf_int()
+confidence6 = model6.get_prediction(X6).conf_int()
+# 绘制拟合图
+fig=plt.figure(figsize=(16,6))
+fig.add_subplot(1,2,1)
+plt.scatter(y,y_pred4, color='blue', label='原始数据点')  # 绘制原始数
+据点
+plt.plot([y.min(),
+y_pred4.max()],
+[y.min(),
+y_pred4.max()],
+color='red')  # 绘制回归线
+#
+plt.fill_between([y.min(),
+* max()],
+confidence4[:,
+0],
+confidence4[:, 1], color='gray', alpha=0.3, label='置信区间')  # 绘制
+置信区间
+# 添加置信度标注
+# plt.text(X4['plan4'].min(), confidence4[:, 0].min()-0.5, '95%
+Confidence', ha='left', va='top', color='gray')
+plt.legend(fontsize=13)
+plt.xlabel('y',fontsize=16)
+plt.ylabel('y_pred6',fontsize=16)
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
+
+fig.add_subplot(1,2,2)
+plt.scatter(y,y_pred6, color='blue', label='原始数据点')  # 绘制原始数
+据点
+plt.plot([y.min(),
+y_pred6.max()],
+[y.min(),
+y_pred6.max()],
+color='red')  # 绘制回归线
+#
+plt.fill_between([y.min(),
+* max()],
+confidence4[:,
+0],
+confidence4[:, 1], color='gray', alpha=0.3, label='置信区间')  # 绘制
+置信区间
+# 添加置信度标注
+# plt.text(X4['plan4'].min(), confidence4[:, 0].min()-0.5, '95%
+Confidence', ha='left', va='top', color='gray')
+plt.legend(fontsize=13)
+
+
+
+50
+plt.xlabel('y',fontsize=16)
+plt.ylabel('y_pred6',fontsize=16)
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
+
+plt.tight_layout()
+plt.show()
+fig.savefig('多因素最大最小拟合图.png')
+
+图19 方案六与方案七残差图
+
+## X4 = data[['plan4','range1']]
+## X6 = data[['plan6','range1']]
+y = data['end_score']
+# 添加常数列作为回归模型的截距
+X4 = sm.add_constant(X4)
+X6 = sm.add_constant(X6)
+
+model4 = sm.OLS(y, X4).fit()
+model6 = sm.OLS(y, X6).fit()
+
+# 计算预测值和置信区间
+y_pred4 = model4.predict(X4)
+y_pred6 = model6.predict(X6)
+# 计算残差
+residuals4 = model4.resid
+residuals6 = model6.resid
+# 绘制拟合残差图
+fig=plt.figure(figsize=(16,6))
+fig.add_subplot(1,2,1)
+plt.scatter(X4['plan4'], residuals4, color='green')
+plt.axhline(y=0, color='red', linestyle='--')  # 添加水平参考线
+plt.xlabel('plan4',fontsize=16)
+plt.ylabel('残差',fontsize=16)
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
+
+fig.add_subplot(1,2,2)
+plt.scatter(X6['plan6'], residuals6, color='green')
+plt.axhline(y=0, color='red', linestyle='--')  # 添加水平参考线
+plt.xlabel('plan6',fontsize=16)
+plt.ylabel('残差',fontsize=16)
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
+
+plt.tight_layout()
+plt.show()
+
+
+
+51
+fig.savefig('双因素最大最小残差图.png')
+
+问题三
+
+图22 专家评阅作品数量（数据2.2）
+
+# 数据预处理
+raw_data=pd.read_excel('问题三.xlsx',sheet_name='一阶段2.2')
+print(raw_data)
+
+pr_dict={}
+code_list=list(set(raw_data.code))
+print(len(code_list))
+
+for c in code_list:
+temp=raw_data.raw.values[raw_data.code==c].tolist()[:121]
+pr_dict[c]=temp
+
+df_raw=pd.DataFrame(pr_dict)
+df_raw.to_csv('./data/p3_prof122.csv')
+raw_data['scores']=list(range(raw_data.shape[0]))
+print(raw_data)
+param_data=pd.read_excel('问题三.xlsx',sheet_name='一阶段参数2.2')
+param_data.index=code_list
+print(param_data)
+for i,c in enumerate(code_list):
+params=param_data.iloc[i,:].values
+#     print(params)
+
+raw_data.loc[raw_data.code==c,'scores']=50+10*(raw_data.loc[raw_data
+.code==c,'raw']-params[2])/(params[3]-params[2])*params[1]
+df_scores=pd.DataFrame(raw_data)
+df_scores.to_csv('./data/p3_score122.csv')
+# 数据预处理
+raw1_data=pd.read_excel('问题三.xlsx',sheet_name='二阶段2.2')
+print(raw1_data)
+
+pr_dict={}
+code_list=list(set(raw1_data.code))
+print(len(code_list))
+
+for c in code_list:
+temp=raw1_data.raw.values[raw1_data.code==c].tolist()[:54]
+pr_dict[c]=temp
+
+df_raw=pd.DataFrame(pr_dict)
+df_raw.to_csv('./data/p3_prof222.csv')
+raw1_data['scores']=list(range(raw1_data.shape[0]))
+
+
+
+52
+# print(raw1_data)
+param_data=pd.read_excel('问题三.xlsx',sheet_name='二阶段参数2.2')
+param_data.index=code_list
+print(param_data)
+for i,c in enumerate(code_list):
+params=param_data.iloc[i,:].values
+#     print(params)
+
+raw1_data.loc[raw1_data.code==c,'scores']=50+10*(raw1_data.loc[raw1_
+data.code==c,'raw']-params[2])/(params[3]-params[2])*params[1]
+df_scores=pd.DataFrame(raw1_data)
+df_scores.to_csv('./data/p3_score222.csv')
+
+from collections import Counter
+
+frequency
+=
+[dict(Counter(raw_data.code)),dict(Counter(raw1_data.code))]
+labels = [list(frequency[0].keys()),list(frequency[1].keys())]
+print(labels[0])
+values = [list(frequency[0].values()),list(frequency[1].values())]
+num0=10
+num1=2
+# print(idx)
+xts=[raw_data.code.values[::num0],raw1_data.code.values[::num1]]
+print(len(xts[0]))
+xlabels=['专家编码','专家编码']
+# print(labels)
+fig=plt.figure(figsize=(12,5))
+for i in [0,1]:
+fig.add_subplot(1,2,i+1)
+#
+> plt.hist((data[i-1].values),bins=num_prof[i-
+1],color=sns.color_palette("Pastel1",10)[i],density=False)
+plt.bar(labels[i],
+values[i],color=sns.color_palette("Pastel1",10)[i+1])
+plt.xlabel(xlabels[i],fontsize=16)
+plt.ylabel("专家评阅作品个数",fontsize=16)
+plt.yticks(fontsize=10)
+if i==0:
+plt.ylim(100,125)
+plt.xticks(labels[0][::num0],xts[0],rotation=90,fontsize=8)
+else:
+plt.ylim(40,70)
+plt.xticks(labels[1][::num1],xts[1],rotation=90,fontsize=8)
+plt.show()
+fig.savefig('./data/专家评阅个数2.2 .png',dpi=300)
+
+图23 不同方案排名秩差（left:数据2.1，right:数据2.2）
+
+change_score1=pd.read_excel('问题三.xlsx',sheet_name='排名2.1')
+
+
+
+53
+print(change_score1[:4])
+change_score2=pd.read_excel('问题三.xlsx',sheet_name='排名2.2')
+# print(change_score2)
+change_score1['drank']=-
+np.array(change_score1.mm_score.rank(method='min',ascending=False),d
+type=np.int)+np.array(change_score1.score1.rank(method='min',ascendi
+ng=False),dtype=np.int)
+# print(change_score1.drank)
+change_score2['drank']=-
+np.array(change_score2.mm_score.rank(method='min',ascending=False),d
+type=np.int)+np.array(change_score2.score1.rank(method='min',ascendi
+ng=False),dtype=np.int)
+# print(change_score2.drank)
+up_color=sns.color_palette('YlOrRd_r')[:6:2] # 成绩与获奖对应三个排名的
+颜色
+# print(up_color)
+dn_color=sns.color_palette('Greens')[:6:2]
+# print(dn_color)
+
+change1_color=[]
+for i in range(len(change_score1.drank)):
+if change_score1.drank[i]>0:
+if change_score1.awards[i]=='一等奖':
+change1_color.append(up_color[0])
+elif change_score1.awards[i]=='二等奖':
+change1_color.append(up_color[1])
+else:
+change1_color.append(up_color[2])
+else:
+if change_score1.awards[i]=='一等奖':
+change1_color.append(up_color[0])
+elif change_score1.awards[i]=='二等奖':
+change1_color.append(up_color[1])
+else:
+change1_color.append(up_color[2])
+# print(change1_color)
+
+change2_color=[]
+for i in range(len(change_score2.drank)):
+if change_score2.drank[i]>0:
+if change_score2.awards[i]=='一等奖':
+change2_color.append(up_color[0])
+elif change_score2.awards[i]=='二等奖':
+change2_color.append(up_color[1])
+else:
+change2_color.append(up_color[2])
+else:
+if change_score2.awards[i]=='一等奖':
+
+
+
+54
+change2_color.append(up_color[0])
+elif change_score2.awards[i]=='二等奖':
+change2_color.append(up_color[1])
+else:
+change2_color.append(up_color[2])
+# print(change2_color)
+
+colors=[change1_color,change2_color]
+data=[change_score1.drank,change_score2.drank]
+#  分数变化图
+x=[list(range(len(change_score1.drank))),list(range(len(change_score
+1. drank)))]
+fig=plt.figure(figsize=(20,8))
+fig.add_subplot(1,2,1)
+plt.vlines(x=x[0],ymin=0,ymax=data[0],color=colors[0],linewidth=5)
+plt.axhline(y=0, color='black', linestyle='--')
+plt.ylabel('秩差距',fontsize=20) # 添加斜体字符
+plt.xlabel('参赛队伍',fontsize=20)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.grid(linestyle='-.',alpha=0.7)
+
+fig.add_subplot(1,2,2)
+plt.vlines(x=x[1],ymin=0,ymax=data[1],color=colors[1],linewidth=5)
+plt.axhline(y=0, color='black', linestyle='--')
+plt.ylabel('秩差距',fontsize=20) # 添加斜体字符
+plt.xlabel('参赛队伍',fontsize=20)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.grid(linestyle='-.',alpha=0.7)
+plt.tight_layout()
+plt.show()
+
+fig.savefig('./data/分类秩差图.png',dpi=300)
+
+极差模型与坡度图
+
+range_data=pd.read_excel('问题三.xlsx',sheet_name='极差2.1')
+# print(range_data[:4])
+r1_data=range_data[range_data.cls==0]
+r2_data=range_data[range_data.cls==1]
+# r1_data
+r2_data
+
+def loss(r1,r2): # 目标函数定义为欧氏距离
+return np.linalg.norm(r1 - r2)
+
+point1 = np.array([1, 2, 3])
+
+
+
+55
+point2 = np.array([4, 5, 6])
+loss(point1,point2)
+
+def get_theta(start,end,delta,lap):
+# break_points: 断点个数
+num=(end-start)//delta+1
+param_theta=[]
+s=start
+while s<end:
+param_theta.append([s-lap,s+delta+lap])
+s=s+delta
+return param_theta
+get_theta(20,40,2,0.5)
+
+def get_theta(start,end,break_points,lap,r1):
+# break_points: 断点个数
+num=break_points+1
+delta=(end-start)/num
+param_theta=[]
+thetas=[[start+i*delta,start+(i+1)*delta] for i in range(num)]
+num_list=[]
+for th in thetas:
+num_list.append(len(r1[(r1>th[0]) & (r1<th[1])]))
+ratio=1/np.array(num_list) # 均匀区间的倒数比例（未来使得区间内部的
+极差个数匀称）
+ratio=ratio/(sum(ratio))
+length=ratio*(end-start)
+s=start
+for l in length:
+param_theta.append([round(s-lap,2),round(s+l+lap,2)])
+s=s+l
+return param_theta
+get_theta(20,40,3,0.5,r1_data)
+
+def range_model(start,end,break_points,lap,r1_data,r2_data):
+"""
+start：普遍调整偏差的起始点
+end：偏差最大值
+delta：调整区间大小
+lap:区间重叠率（考虑边界交叉重叠影响）
+"""
+r1_data['range_pred']=r1_data.range1
+param_theta=get_theta(start,end,break_points,lap,r1_data)
+weights=[]
+for theta in param_theta:
+#         print(f'theta: {theta}')
+
+
+
+56
+r1=r1_data.range1.values
+r2=r2_data.range1.values
+c1=r1_data.cls.values
+c2=r2_data.cls.values
+r11=r1[(r1>theta[0]) & (r1<theta[1])]
+r22=r2[(r1>theta[0]) & (r1<theta[1])]
+c11=c1[(r1>theta[0]) & (r1<theta[1])]
+c22=c2[(r1>theta[0]) & (r1<theta[1])]
+w=np.mean(np.array(r22)/np.array(r11))
+weights.append(round(w,3))
+r11_pred=np.array(r11)*w
+r1_data.loc[(r1>theta[0])
+&
+(r1<theta[1]),'range_pred']=r11_pred
+obj=loss(r1_data.range_pred.values,r2_data.range1.values)
+return obj,r1_data,param_theta,weights
+
+param_theta=[[20,22],[22,24],[24,30],[30,40]]
+fig=plt.figure(figsize=(20,15))
+for i,theta in enumerate(param_theta):
+r1=r1_data.range1.values
+r2=r2_data.range1.values
+c1=r1_data.cls.values
+c2=r2_data.cls.values
+r11=r1[(r1>theta[0]) & (r1<theta[1])]
+r22=r2[(r1>theta[0]) & (r1<theta[1])]
+c11=c1[(r1>theta[0]) & (r1<theta[1])]
+c22=c2[(r1>theta[0]) & (r1<theta[1])]
+c=list(c1)+list(c2)
+r=list(r1)+list(r2)
+c111=list(c11)+list(c22)
+r111=list(r11)+list(r22)
+
+fig.add_subplot(2,2,i+1)
+plt.scatter(c,r,color='lightgray')
+plt.scatter(c111,r111,marker="*",s=50,color='red')
+plt.xticks([0,1],['复议前极差','复议后极差'],fontsize=20)
+plt.ylabel('极差',fontsize=20)
+plt.title(f'区间：{theta}',fontsize=20)
+for i in range(len(r11)):
+plt.plot([c11[i],c22[i]],[r11[i],r22[i]],color='orange')
+plt.tight_layout()
+plt.show()
+fig.savefig(f'./data/坡度图theta.png')
+
+# 网格搜索寻找最优模型
+start=20
+end=max(max(r1_data.range1.values),max(r2_data.range1.values))
+obj_list=[]
+
+
+
+57
+best_obj=np.inf
+best_data=r1_data
+best_break_points=1
+best_lap_ratio=0
+best_theta=[]
+best_weights=[]
+for break_points in [2,3,4,5,6]:
+for lap in [0.1,0.2,0.3,0.4,0.5]:
+#for break_points in [5,6,7]: 二次搜索
+#    for lap in [0.5,0.6,0.7]:
+#for break_points in [5,6,7,8]: 三次搜索
+#    for lap in [0.45,0.5,0.55,0.6]:
+
+obj,r1_data,param_theta,weights=range_model(start,end,break_points,l
+ap,r1_data,r2_data)
+obj_list.append(obj)
+if obj<best_obj:
+best_obj=obj
+best_data=r1_data
+best_break_points=break_points
+best_lap=lap
+best_theta=param_theta
+best_weights=weights
+
+print(f'最优断点个数：{best_break_points}')
+print(f'最优损失：{best_obj}')
+print(f'最优区间重叠：{best_lap}')
+print(f'区间划分：{best_theta}')
+print(f'区间划分：{best_weights}')
+
+图 31 拟合结果图
+
+# param_theta=[[20,21],[21,22],[22,24],[24,30],[30,40]]
+fig=plt.figure(figsize=(22,12))
+for i,theta in enumerate(best_theta):
+r1=r1_data.range1.values
+r2=r2_data.range1.values
+c1=r1_data.cls.values
+c2=r2_data.cls.values
+r11=r1[(r1>theta[0]) & (r1<theta[1])]
+r22=r2[(r1>theta[0]) & (r1<theta[1])]
+c11=c1[(r1>theta[0]) & (r1<theta[1])]
+c22=c2[(r1>theta[0]) & (r1<theta[1])]
+c=list(c1)+list(c2)
+r=list(r1)+list(r2)
+c111=list(c11)+list(c22)
+r111=list(r11)+list(r22)
+
+
+
+58
+fig.add_subplot(2,3,i+1)
+plt.scatter(c,r,color='lightgray')
+plt.scatter(c111,r111,marker="*",s=50,color='red')
+plt.xticks([0,1],['复议前极差','复议后极差'],fontsize=20)
+plt.ylabel('极差',fontsize=20)
+plt.title(f'区间：{theta}',fontsize=20)
+for i in range(len(r11)):
+plt.plot([c11[i],c22[i]],[r11[i],r22[i]],color='orange')
+plt.tight_layout()
+plt.show()
+fig.savefig(f'./data/坡度图data2.1.png')
+

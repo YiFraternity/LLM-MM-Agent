@@ -27,59 +27,7 @@
 关键词：信道估计 基函数 瑞利波形 调制解调
 \end{abstract}
 
-\begin{itemize}
-    \item 一、问题背景 \dotfill 1
-        \begin{itemize}
-            \item 1.1 问题的引出 \dotfill 1
-            \item 1.2 国内外研究现状分析 \dotfill 2
-        \end{itemize}
-    \item 二、问题描述 \dotfill 4
-    \item 三、专业术语及符号说明 \dotfill 5
-        \begin{itemize}
-            \item 3.1 专业术语 \dotfill 5
-            \item 3.2 符号说明 \dotfill 6
-        \end{itemize}
-    \item 四、问题一 \dotfill 7
-        \begin{itemize}
-            \item 4.1 问题分析 \dotfill 7
-            \item 4.2 模型建立 \dotfill 7
-                \begin{itemize}
-                    \item 4.2.1 基函数选择 \dotfill 7
-                    \item 4.2.2 多普勒效应 \dotfill 10
-                    \item 4.2.3 数据分段处理 \dotfill 10
-                \end{itemize}
-            \item 4.3 实例求解 \dotfill 10
-            \item 4.4 本章小结 \dotfill 16
-        \end{itemize}
-    \item 五、问题二 \dotfill 17
-        \begin{itemize}
-            \item 5.1 问题分析 \dotfill 17
-            \item 5.2 速度变更 \dotfill 17
-            \item 5.3 模型建立 \dotfill 18
-                \begin{itemize}
-                    \item 5.3.1 单信道正弦波叠加 Rayleigh 仿真方法 \dotfill 19
-                    \item 5.3.2 Zheng 模型 \dotfill 20
-                    \item 5.3.3 多个不相关 Rayleigh 波形生成 \dotfill 20
-                \end{itemize}
-            \item 5.4 实例求解 \dotfill 21
-            \item 5.5 本章小结 \dotfill 22
-        \end{itemize}
-    \item 六、问题三 \dotfill 23
-        \begin{itemize}
-            \item 6.1 问题分析 \dotfill 23
-            \item 6.2 模型建立 \dotfill 23
-                \begin{itemize}
-                    \item 6.2.1 调制与解调 \dotfill 23
-                    \item 6.2.2 16QAM \dotfill 24
-                    \item 6.2.3 信道传输与求逆 \dotfill 25
-                \end{itemize}
-            \item 6.3 实例求解 \dotfill 27
-            \item 6.4 本章小结 \dotfill 28
-        \end{itemize}
-    \item 七、总结及展望 \dotfill 29
-    \item 八、参考文献 \dotfill 30
-    \item 九、致谢 \dotfill 32
-\end{itemize}
+\tableofcontents
 
 \section{问题背景}
 
@@ -96,11 +44,10 @@
 \end{figure}
 
 通信过程的数学模型可以表示为:
-\begin{align}
-c_{i,n} &= \sigma_0 \sqrt{2/N} \tag{5-3a} \\
-f_{1,n} &= f_d \cos\left(\frac{2\pi n - \pi + \phi}{4N}\right) \tag{5-3b} \\
-f_{2,n} &= f_d \sin\left(\frac{2\pi n - \pi + \phi}{4N}\right) \tag{5-3c}
-\end{align}
+\begin{equation}
+Y = H \cdot X + W
+\tag{1-1}
+\end{equation}
 
 从式 (1-1) 可以看出, 在已知接收端信号 $Y$ 的情况下, 要得知发送端的信号 $X$, 还需要知道信道变量 $H$ 和噪声 $W$ 的统计特征。$W$ 可视为加性高斯白噪声 AWGN (Additive White Gaussian Noise), 因此问题的关键就是对 $H$ 规律的探索。
 
@@ -112,9 +59,7 @@ f_{k,1,n} &= f_d \cos\left(\frac{2\pi n - \pi + \phi}{4N} + \frac{2\pi}{4PN}\rig
 f_{k,2,n} &= f_d \sin\left(\frac{2\pi n - \pi + \phi}{4N} + \frac{2\pi}{4PN}\right)
 \end{align}
 
-式中 $L$ 为信道的多径数, $K$ 为传输信号的长度, $w[n]$ 可视为 AWGN, $h_l[n]$
-
-就是信道参数。
+式中 $L$ 为信道的多径数, $K$ 为传输信号的长度, $w[n]$ 可视为 AWGN, $h_l[n]$就是信道参数。
 
 可以看出，由于多径效应的存在，接收端接收到的信号相比于实际发送的信号在时域上被展宽，称为时延扩展。移动台与基站间的相对运动带来的多普勒效应使信道特性随时间变化 \({}^{[2-3]}\) 。运动速度越快，信道变化越快。如果我们准确地从接收端得到发端的信号，必须准确地对无线信道 \(H\) 进行估计，常用的方法包括使用训练序列（导频），即在发送端插入训练序列，在接收端根据已知导频可以估计信道。由于信道是时变的，需要周期性地插入训练信号和进行信道参数估计。在慢衰落信道情况下，使用导频是一种比较准确经济的方法，但在高速运动的快时变信道情况下，就需要频繁地增加训练信号（开销），在接收端增加相同的信道估计次数。由于导频不承载有用信息，过密的导频插入将会占用过多的传输资源，降低有用信息的传输速率，因此在快时变的信道中，希望发现新的数学模型来估计快变的信道参数，降低导频的插入频率。
 
@@ -172,13 +117,10 @@ Che-ShenYeh 等人提出了时域导频时域互相关时变估计算法 \({}^{[
     \item \textbf{NMSE}
     \begin{itemize}
         \item 归一化均方误差 (Normalized Mean Square Error, NMSE) 表征计算精度，其表达式为:
-        \begin{align}
-Y &= F y \\
-&= F \left( \sum_{m=0}^{M-1} P_m F^H \widetilde{D}_m F \right) \widetilde{x} + W \\
-&= F \left( \sum_{m=0}^{M-1} P_m F^H \widetilde{D}_m \right) F F^H D_0 F x + W \\
-&= F \left( \sum_{m=0}^{M-1} P_m F^H \widetilde{D}_m \right) D_0 A + W
-\tag{6-12}
-\end{align}
+        \begin{equation}
+            NMSE = \frac{\sum_{n=0}^{N-1} \sum_{l=0}^{L-1} \left| h_l(n) - \hat{h}_l(n) \right|^2}{\sum_{n=0}^{N-1} \sum_{l=0}^{L-1} \left| h_l(n) \right|^2}
+            \tag{3-1}
+        \end{equation}
     \end{itemize}
     \item \textbf{瑞利分布}
     \begin{itemize}
@@ -244,9 +186,7 @@ h_l[n] = \sum_{m=0}^{M-1} b_{lm} e^{j\omega_m n}, \quad l=0,\ldots,L-1
 \tag{4-3}
 \end{equation}
 
-CE-BEM 优点是具有简单的基函数，并且用 CE-BEM 模型描述的信道在频域的响应是近似带状的，这种结构在信道估计的时候有非常重要的意义，很多算法都是利用 CE-BEM 模型的结构特殊性的有点。当然此模型的缺点也比较明显，由于在建模时分辨率达不到要求导致建模时的误差较大，从而导致信道的
-
-频谱泄漏，引起吉布斯效应。
+CE-BEM 优点是具有简单的基函数，并且用 CE-BEM 模型描述的信道在频域的响应是近似带状的，这种结构在信道估计的时候有非常重要的意义，很多算法都是利用 CE-BEM 模型的结构特殊性的有点。当然此模型的缺点也比较明显，由于在建模时分辨率达不到要求导致建模时的误差较大，从而导致信道的频谱泄漏，引起吉布斯效应。
 
 \begin{itemize}
     \item 离散卡-洛基函数 BEM 模型(DKL-BEM)
@@ -420,9 +360,7 @@ N\leq\frac{1}{2f_{\text{max}}T} \tag{4-24}
 N\leq\frac{1}{2\frac{vf_{c}}{c}T}=\frac{c}{2vf_{c}T}=\frac{3\times10^{8}}{2\times180/3.6\times3\times10^{9}\times\frac{1}{200\times10^{3}}}=200 \tag{4-25}
 \end{equation}
 
-则有信道数据在 200 个点以内可以认为信道参数 \(b\) 为常值。实际计算取值 \(N=140\)；用于辨识该段信道参数的点数 \(n=36\)；基函数矩阵 \(B\) 的计算阶次
-
-$M=6$。分别比较采用复指数 BEM 模型和多项式 BEM 模型（包括 P-BEM，Legendre-BEM 和 Chebyshev-BEM 三种）对信道参数进行估计，并分别进行分段和整体的估计信道误差 (NSME) 进行对比。
+则有信道数据在 200 个点以内可以认为信道参数 \(b\) 为常值。实际计算取值 \(N=140\)；用于辨识该段信道参数的点数 \(n=36\)；基函数矩阵 \(B\) 的计算阶次$M=6$。分别比较采用复指数 BEM 模型和多项式 BEM 模型（包括 P-BEM，Legendre-BEM 和 Chebyshev-BEM 三种）对信道参数进行估计，并分别进行分段和整体的估计信道误差 (NSME) 进行对比。
 
 \begin{figure}[h]
     \centering

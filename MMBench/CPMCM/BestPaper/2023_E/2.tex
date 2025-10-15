@@ -25,104 +25,7 @@
 关键词：脑血肿与水肿分析预测、CNN 卷积神经网络；K-means 三维聚类；BP 神经网络；
 \end{abstract}
 
-\begin{center}
-\includegraphics[width=0.9\textwidth]{image.png}
-\end{center}
-
-\begin{center}
-\textbf{中国研究生创新实践系列大赛}
-\end{center}
-
-\begin{tabular}{c c c}
-MajorAxisLength & Maximum2DDiameterColumn & Maximum2DDiameterSlice \\
-MeshVolume & Sphericity & SurfaceArea \\
-\hline
-\end{tabular}
-
-\section*{目录}
-
-\begin{itemize}
-    \item[1.] 问题重述 \dotfill 5
-        \begin{itemize}
-            \item[1.1.] 问题背景 \dotfill 5
-            \item[1.2.] 问题解析 \dotfill 6
-        \end{itemize}
-    \item[2.] 模型假设与符号说明 \dotfill 8
-        \begin{itemize}
-            \item[2.1.] 模型假设 \dotfill 8
-            \item[2.2.] 符号说明 \dotfill 8
-        \end{itemize}
-    \item[3.] 问题一建模的分析与求解 \dotfill 9
-        \begin{itemize}
-            \item[3.1.] 数据集概述 \dotfill 9
-                \begin{itemize}
-                    \item[3.1.1.] 数据缺失处理 \dotfill 9
-                    \item[3.1.2.] 数据分析 \dotfill 9
-                    \item[3.1.3.] 数据异常分析 \dotfill 10
-                \end{itemize}
-            \item[3.2.] 问题（a）分析与计算过程 \dotfill 12
-                \begin{itemize}
-                    \item[3.2.1.] 问题一（a）模型建立 \dotfill 12
-                    \item[3.2.2.] 问题一（a）模型求解 \dotfill 13
-                \end{itemize}
-            \item[3.3.] 问题（b）分析与计算过程 \dotfill 14
-                \begin{itemize}
-                    \item[3.3.1.] 问题一（b）基于CNN卷积神经网络模型建立 \dotfill 14
-                    \item[3.3.2.] 问题一（b）模型求解与评价 \dotfill 17
-                \end{itemize}
-        \end{itemize}
-    \item[4.] 问题二建模的分析与求解 \dotfill 18
-        \begin{itemize}
-            \item[4.1.] 问题二（a）分析与计算过程 \dotfill 18
-                \begin{itemize}
-                    \item[4.1.1.] 问题二（a）基于多项式拟合模型建立 \dotfill 18
-                    \item[4.1.2.] 问题二（a）模型求解 \dotfill 19
-                \end{itemize}
-            \item[4.2.] 问题二（b）分析与计算过程 \dotfill 20
-                \begin{itemize}
-                    \item[4.2.1.] 数据处理与基于K-means聚类模型建立 \dotfill 20
-                    \item[4.2.2.] 问题二（b）模型的求解 \dotfill 23
-                \end{itemize}
-            \item[4.3.] 问题二（c）分析与计算过程 \dotfill 29
-                \begin{itemize}
-                    \item[4.3.1.] 问题（c）数据预处理 \dotfill 29
-                    \item[4.3.2.] 问题（c）基于多元回归分析模型建立 \dotfill 29
-                    \item[4.3.3.] 问题（c）模型求解 \dotfill 30
-                \end{itemize}
-            \item[4.4.] 问题二（d）分析与计算过程 \dotfill 31
-                \begin{itemize}
-                    \item[4.4.1.] 问题数据预处理 \dotfill 31
-                    \item[4.4.2.] 问题二（d）基于斯皮尔曼相关性分析模型建立 \dotfill 31
-                    \item[4.4.3.] 问题二（d）模型求解 \dotfill 32
-                \end{itemize}
-        \end{itemize}
-    \item[5.] 问题三建模的分析与求解 \dotfill 35
-        \begin{itemize}
-            \item[5.1.] 问题三（a）建模的分析与求解 \dotfill 35
-                \begin{itemize}
-                    \item[5.1.1.] 数据处理与基于BP神经网络模型建立 \dotfill 35
-                    \item[5.1.2.] 问题三（a）模型的求解 \dotfill 38
-                \end{itemize}
-            \item[5.2.] 问题三（b）建模的分析与求解 \dotfill 39
-                \begin{itemize}
-                    \item[5.2.1.] 数据的处理与整合 \dotfill 39
-                    \item[5.2.2.] 问题三（b）模型的求解 \dotfill 40
-                \end{itemize}
-            \item[5.3.] 问题三（c）建模的分析与求解 \dotfill 41
-                \begin{itemize}
-                    \item[5.3.1.] 数据处理 \dotfill 41
-                    \item[5.3.2.] 数据分析 \dotfill 43
-                \end{itemize}
-        \end{itemize}
-    \item[6.] 问题解决的模型评价与改进 \dotfill 48
-        \begin{itemize}
-            \item[6.1.] 模型的优点 \dotfill 48
-            \item[6.2.] 模型的缺点 \dotfill 48
-        \end{itemize}
-    \item[] 参考文献 \dotfill 49
-    \item[] 附录一 \dotfill 50
-    \item[] 附录二 \dotfill 58
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -183,13 +86,29 @@ MeshVolume & Sphericity & SurfaceArea \\
 
 \subsection{符号说明}
 
-\begin{tabular}{c c}
-评价指标 & 数值 \\
+\begin{table}[htbp]
+\centering
+\caption{变量说明表}
+\begin{tabular}{|c|l|}
 \hline
-根均方差（RMSE） & 0.43109 \\
-平均相对误差（MAE） & 0.34281 \\
+\textbf{变量名称} & \textbf{变量说明} \\ \hline
+$Sheet\_i\_j$ & 表格 i 第 j 列数据，x 表示附表 1 \\
+$X_i$ & 第 i 个特征序列 \\
+$x_{ij}$ & 第 i 个特征变量的第 j 个取值 \\
+$\varepsilon_i(k)$ & 灰色关联系数 \\
+$r_{0i}$ & 灰色关联度 \\
+TSS & 总平方和 \\
+RSS & 残差平方和 \\
+$T_u$ & 发病到首次检查的时间间隔 \\
+$T_i$ & 第 i 次随访时间点 \\
+$\rho$ & 灰色关联分辨系数 \\
+$\alpha$ & BP 神经网络学习系数 \\
+$\eta$ & 血肿体积变化率 \\
+$\Psi$ & 水肿体积变化率 \\
+$\kappa$ & 斯皮尔曼相关系数 \\
 \hline
 \end{tabular}
+\end{table}
 
 \section{问题一建模的分析与求解}
 
@@ -222,14 +141,14 @@ MeshVolume & Sphericity & SurfaceArea \\
 
 故选择最小-最大归一化（Min-Max Scaling）
 
-\begin{align}
-\text{HM\_ACA\_R}_{i\_\text{volume}} &= \text{HM\_ACA\_R\_Radio} \times \text{HM\_volume}_i \tag{5-10} \\
-\text{ED\_ACA\_R}_{i\_\text{volume}} &= \text{ED\_ACA\_R\_Radio} \times \text{ED\_volume}_i \tag{5-11}
-\end{align}
+\begin{equation}
+x' = \frac{x - \min(x)}{\max(x) - \min(x)}
+\tag{3-1}
+\end{equation}
 
 线性函数将原始数据线性化的方法转换到 $[0, 1]$ 的范围，计算结果为归一化后的数据，$x$ 为原始数据，$\min(x)$ 和 $\max(x)$ 代表原始数据集中的最小和最大值。具体的归一化处理内容如下。其中将患者血压分为舒张压和收缩压，并将其和年龄和发病到首次检查时间间隔一并归一化处理，将表 1 患者首次检查的流水号以及表 3 共计 576 次检查的流水号进行匹配处理，筛选出 160 名患者首次检查影像信息，并对其进行归一化处理。归一化处理后的表格数据分别为 `Sheet_1`, `Sheet_3`，使得数据处于同一尺度。
 
-\subsection{离散数据分析}
+\paragraph{离散数据分析}
 
 在机器学习中，在处理离散数据时，通常需要进行特征工程，将离散数据转换为适合机器学习算法的特征表示形式。这可能包括独热编码、嵌入表示、特征哈希等技术，以确保机器学习模型能够有效地处理这些数据。
 
@@ -393,7 +312,7 @@ T_e = T_{48h_{\text{max}}} - T_{\text{first}}
 \caption{问题一研究思路图}
 \end{figure}
 
-\subsubsection{特征工程}
+\paragraph{特征工程}
 
 定义特征序列，其中序列中的值已经进行了归一化处理。其中离散型特征为 \(X_{\text{i}}\)，连续性数据为 \(\vec{X}_{\text{i}}\)。
 
@@ -486,27 +405,29 @@ r_{0i} = \frac{1}{m} \sum_{k=1}^m \varepsilon_i(k)
 
 从连续特征值中选择关联度最高的5个特征序列，从离散特征值中选择关联度最高的10个特征序列作为训练特征。如表\ref{tab:3-1}即为筛选后的结果。
 
-\begin{tabular}{c c c}
+\begin{table}[htbp]
+\centering
+\caption{特征序列筛选}
+\begin{tabular}{|l|l|l|l|l|}
 \hline
-p4 & 644.4 & (-395.5, 1684) \\
-p5 & -4146 & (-1.186e+04, 3569) \\
-p6 & 1.943e+04 & (4528, 3.434e+04) \\
+\textbf{特征} & \textbf{描述} & \textbf{特征1} & \textbf{特征2} \\ \hline
+卒中病史 & 糖尿病史 & 房颤史 \\
+冠心病史 & 脑室引流 & 年龄 \\
+发病到首次影像检查时间间隔 & 收缩压 & 舒张压 \\
 \hline
-\end{tabular}
-
-\begin{tabular}{c c c}
 MajorAxisLength & Maximum2DDiameterColumn & Maximum2DDiameterSlice \\
 MeshVolume & Sphericity & SurfaceArea \\
 \hline
 \end{tabular}
+\end{table}
 
-\section{CNN神经网络预测}
+\paragraph{CNN神经网络预测}
 
 将通过灰色关联度筛选出的特征序列作为变量，考虑到具有是时序数据，则在Matlab工具箱中利用CNN卷积神经网络进行预测。CNN由多个卷积层、池化层、全连接层和输出层组成。
 
 首先，将数据集划分为训练集和测试集，采用前100例患者的数据，将归一化、标准化的数据集$S_{\text{merged}}$、$X_{\text{merged}}$、Sheet_1和Sheet_3进行整合后传入CNN，最后可以使用RMSE和MAE值指标来评估模型的性能。
 
-\subsection{问题一（b）模型求解与评价}
+\subsubsection{问题一（b）模型求解与评价}
 
 通过CNN卷积神经网络进行预测后的关于160例患者是否会发生血肿扩张概率在图3-10中展示，同时表3-2是通过验证后的模型评价。
 
@@ -609,16 +530,19 @@ f(x) = p_{1} \cdot x^{5} + p_{2} \cdot x^{4} + p_{3} \cdot x^{3} + p_{4} \cdot x
 
 其中，如表 4-1 中 $p_{1}$ 至 $p_{6}$ 是拟合后多项式模型的系数，置信区间值为 95\%。
 
+\begin{table}[h]
+\centering
+\caption{问题二(a)模型系数值}
 \begin{tabular}{c c}
 \hline
-拟合质量指标 & 拟合质量指标值 \\
+系数 & 系数值 \\
 \hline
-SSE & 5.658e+08 \\
-R-square & 0.4854 \\
-Adjusted R-square & 0.33 \\
-RMSE & 4960 \\
+$p_{1}$ & $-0.008387 \quad (-0.02082, 0.004042)$ \\
+$p_{2}$ & $0.9283 \quad (-0.4669, 2.323)$ \\
+$p_{3}$ & $-37.17 \quad (-94.48, 20.14)$ \\
 \hline
 \end{tabular}
+\end{table}
 
 \begin{tabular}{c c c}
 \hline
@@ -691,6 +615,29 @@ y_{1}=u_{11} \tilde{x}_{1}+u_{21} \tilde{x}_{2}+\cdots+u_{n 1} \tilde{x}_{n} \\
 y_{2}=u_{12} \tilde{x}_{1}+u_{22} \tilde{x}_{2}+\cdots+u_{n 2} \tilde{x}_{n} \\
 \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cd
 
+（c）选取其中 m 个主成分，并根据特征值计算评价值
+根据上述主成分分析的模型，对原始数据中多个变量的数据集进行了降维操作，减少
+需要分析的特征变量，这样有利于数据处理，使得模型更为准确，分析更为全面。采用 PCA
+算法，对患者的个人患病史（高血压史、脑卒中病史、糖尿病史、房颤史、冠心病史、饮
+酒和吸烟史）、治疗方法（脑室引流、止血治疗、降颅压治疗、降压治疗、镇静、镇痛治
+疗、止吐护胃和营养神经）、血压和年龄计算并选取最优解。其中血压被分为舒张压和收
+缩压。
+综上，我们将多特征变量影响转化为年龄和血压两个综合条件指标及其特征信息。
+（2）K-means 三维聚类
+K-means 聚类是一种无监督学习算法，用于将数据集划分为 K 个不同的簇，每个簇包
+含具有相似特征的数据点。在三维数据中，K-means 可以用于在三维空间中找到 K 个簇，
+并将数据点分配到这些簇中。
+K-means 的原理及学习步骤：
+（a）选择簇的数量 K 以及数据点
+首先，选择要将数据划分成的簇的数量 K。这是 K-means 算法中的一个重要参数，通
+常需要根据数据的性质或任务来选择。假设我们有一个包含 N=160 个数据点的数据集，每
+个数据点是一个三维向量，可以表示为
+𝐀𝐀 = (𝐀𝐀1,𝐀𝐀2,𝐀𝐀3) （4-13）
+其中 i 是数据点的索引。
+（b）初始化聚类中心
+随机选择 K 个数据点作为初始聚类中心，这些中心将作为簇的代表。
+
+
 \begin{equation}
 C_{i} = (c_{i1}, c_{i2}, c_{i3})
 \tag{4-14}
@@ -746,11 +693,11 @@ K-means 算法的目标是找到最优的分配簇 A 和聚类中心 C，以最�
 \hline
 \end{tabular}
 
-\subsection{问题二（b）模型的求解}
+\subsubsection{问题二（b）模型的求解}
 
 对每个聚类似合完后的曲线进行特征分析。
 
-\subsubsection{聚类1曲线拟合与评价}
+{聚类1曲线拟合与评价}
 
 \begin{figure}[h]
     \centering
@@ -766,28 +713,40 @@ f(x) = p_1 \cdot x^5 + p_2 \cdot x^4 + p_3 \cdot x^3 + p_4 \cdot x^2 + p_5 \cdot
 \end{equation}
 其中，如表4-4中$p_1$至$p_6$是拟合后多项式模型的系数，置信区间值为95\%。
 
-\begin{tabular}{l l}
+\begin{table}
+\centering
+\caption{问题二(b)聚类1多项式模型系数}
+\begin{tabular}{c c c}
 \hline
-拟合质量指标 & 拟合质量指标值 \\
+系数 & 系数值 \\
 \hline
-SSE & 2.39e+09 \\
-R-square & 0.48 \\
-Adjusted R-square & 0.32 \\
-RMSE & 1.307e+04 \\
+$p_{1}$ & 0.01008 & (-0.01203, 0.03219) \\
+$p_{2}$ & -1.141 & (-3.859, 1.578) \\
+$p_{3}$ & 46.32 & (-73.63, 166.3) \\
+$p_{4}$ & -810.5 & (-3085, 1464) \\
+$p_{5}$ & 5761 & (-1.14e+04, 2.292e+04) \\
+$p_{6}$ & 1.373e+04 & (-2.232e+04, 4.979e+04) \\
 \hline
 \end{tabular}
+\end{table}
 
 该模型拟合质量共有4项指标，误差平方和 (SSE) 表示模型拟合数据的误差总和、$R^{2}$ (R-square) 表示模型对总方差的解释程度、调整后的$R^{2}$ (Adjusted R-square) 通常用于多项式拟合，它考虑了模型中的自由度。负值通常表示模型不适合拟合数据，均方根误差 (RMSE) 表示模型的预测误差的标准偏差，各项指标值如表4-5所示：
 
-\begin{tabular}{c c}
+\begin{table}[htbp]
+\centering
+\caption{问题二(b)聚类1模型拟合质量评价}
+\begin{tabular}{|c|c|}
 \hline
-$b_{5}$ & 199.8148 \\
-$b_{6}$ & -290.2422 \\
-$b_{7}$ & 147.5962 \\
+\textbf{拟合质量指标} & \textbf{拟合质量指标值} \\ \hline
+SSE & 1.533e+10 \\
+R-square & 0.4199 \\
+Adjusted R-square & 0.3345 \\
+RMSE & 2.155e+04 \\
 \hline
 \end{tabular}
+\end{table}
 
-\subsubsection{聚类2曲线拟合与评价}
+{聚类2曲线拟合与评价}
 
 \begin{figure}[h]
 \centering
@@ -804,43 +763,39 @@ f(x) = p_1 \cdot x^5 + p_2 \cdot x^4 + p_3 \cdot x^3 + p_4 \cdot x^2 + p_5 \cdot
 
 其中，如表4-6中p1至p6是模型的系数，置信区间值为95%。
 
-\begin{tabular}{l l l}
-Pons_Medulla_L 区域血肿 & 体积变化 & \\
-体积变化 & & \\
-单位时间内 ACA_R 水肿体积变化 & 单位时间内 MCA_R 水肿体积变化 & 单位时间内 PCA_R 水肿体积变化 \\
-单位时间内 Pons_Medulla_R 水肿体积变化 & 单位时间内 Cerebellum_R 水肿体积变化 & 单位时间内 ACA_L 水肿体积变化 \\
-单位时间内 MCA_L 水肿体积变化 & 单位时间内 PCA_L 水肿体积变化 & 单位时间内 Pons_Medulla_L 水肿体积变化 \\
-单位时间内 Cerebellum_L 水肿体积变化 & 年龄 & 发病到首次影像检查时间间隔 \\
-收缩压 & 舒张压 & original_shape_Elongation \\
-original_shape_Flatness & original_shape_LeastAxisLength & original_shape_MajorAxisLength \\
-original_shape_Maximum2DDiameterColumn & original_shape_Maximum2DDiameterRow & original_shape_Maximum2DDiameterSlice \\
-original_shape_Maximum3DDiameter & original_shape_MeshVolume & original_shape_MinorAxisLength \\
-original_shape_Sphericity & original_shape_SurfaceArea & original_shape_SurfaceVolumeRatio \\
-original_shape_VoxelVolume & NCCT_original_firstorder_10Percentile & NCCT_original_firstorder_90Percentile \\
+\begin{table}[htbp]
+\centering
+\caption{多项式模型系数}
+\begin{tabular}{|c|c|}
 \hline
-NCCT_original_firstorder_Energy & NCCT_original_firstorder_Entropy & NCCT_original_firstorder_InterquartileRange \\
-NCCT_original_firstorder_Kurtosis & NCCT_original_firstorder_Maximum & NCCT_original_firstorder_MeanAbsoluteDeviation \\
-NCCT_original_firstorder_Mean & NCCT_original_firstorder_Median & NCCT_original_firstorder_Minimum \\
-NCCT_original_firstorder_Range & NCCT_original_firstorder_RobustMeanAbsoluteDeviation & NCCT_original_firstorder_RootMeanSquared \\
-NCCT_original_firstorder_Skewness & NCCT_original_firstorder_Uniformity & NCCT_original_firstorder_Variance \\
+\textbf{系数} & \textbf{系数值} \\ \hline
+p1 & 0.028664 (-0.0286, 0.08588) \\
+p2 & -2.601 (-8.403, 3.2) \\
+p3 & 82.43 (-126.1, 290.9) \\
+p4 & -1123 (-4290, 2043) \\
+p5 & 6910 (-1223.604e+04, 2.605e+04) \\
+p6 & -1157 (-3.604e+04, 3.372e+04) \\
 \hline
 \end{tabular}
+\end{table}
 
 该模型拟合质量指标值如表4-7所示：
 
-\begin{tabular}{l l}
+\begin{table}[htbp]
+\centering
+\caption{问题二(b)聚类2模型拟合质量评价}
+\begin{tabular}{|c|c|}
 \hline
-\multicolumn{2}{c}{第三梯度（灰色关联度：0.60-0.65）影响因素} \\
-\hline
-糖尿病史 & 冠心病史 \\
-脑室引流 & 单位时间内 HM\_Pons\_Medulla\_R\_Ratio 水肿体积变化 \\
-单位时间内 HM\_PCA\_L\_Ratio 血肿体积变化 & 单位时间内 ED\_ACA\_R\_Ratio 水肿体积变化 \\
-单位时间内 ED\_ACA\_L\_Ratio 水肿体积变化 & 发病到首次影像检查时间间隔 \\
-original\_shape\_SurfaceVolumeRatio & \\
+\textbf{拟合质量指标} & \textbf{拟合质量指标值} \\ \hline
+SSE & 3.242e+09 \\
+R-square & 0.4388 \\
+Adjusted R-square & 0.289444 \\
+RMSE & 1.423e+04 \\
 \hline
 \end{tabular}
+\end{table}
 
-\subsubsection{聚类3曲线拟合与评价}
+{聚类3曲线拟合与评价}
 
 \begin{figure}[h]
 \centering
@@ -855,38 +810,39 @@ f(x) = p1 \cdot x^5 + p2 \cdot x^4 + p3 \cdot x^3 + p4 \cdot x^2 + p5 \cdot x + 
 \tag{4-18}
 \end{equation}
 
-其中，如表4-8中p1至p6是模型的系数，置信区间值为95%。
-
-\begin{tabular}{l l}
+\begin{table}[htbp]
+\centering
+\caption{多项式模型系数}
+\begin{tabular}{|c|c|}
 \hline
-\multicolumn{2}{c}{第四梯度（灰色关联度：0.55-0.60）影响因素} \\
-\hline
-高血压病史 & 饮酒史 \\
-止血治疗 & 降压治疗 \\
-止吐护胃 & 营养神经 \\
-单位时间内 HM\_Cerebellum\_R\_Ratio 血肿体积变化 & 单位时间内 HM\_Cerebellum\_L\_Ratio 血肿体积变化 \\
-单位时间内 ED\_Cerebellum\_R\_Ratio 水肿体积变化 & 单位时间内 ED\_Cerebellum\_L\_Ratio 水肿体积变化 \\
+\textbf{系数} & \textbf{系数值} \\ \hline
+p1 & -0.05085 (-0.08168, -0.02001) \\
+p2 & 5.279 (1.993, 8.565) \\
+p3 & -192.1 (-318.4, -65.82) \\
+p4 & 2966 (835.4, 5097) \\
+p5 & -1.842e+04 (-3.338e+04, -3465) \\
+p6 & 3.849e+04 (6137, 7.084e+04) \\
 \hline
 \end{tabular}
+\end{table}
 
 该模型拟合质量指标值如表4-9所示：
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\caption{表4-9 问题二(b)聚类3模型拟合质量评价}
-\begin{tabular}{c c}
+\caption{模型拟合质量评价}
+\begin{tabular}{|c|c|}
 \hline
-拟合质量指标 & 拟合质量指标值 \\
-\hline
+\textbf{拟合质量指标} & \textbf{拟合质量指标值} \\ \hline
 SSE & 5.408e+08 \\
 R-square & 0.8286 \\
-Adjusted R-square & 0.7507 \\
+Adjusted R-square & 0.75075007 \\
 RMSE & 7012 \\
 \hline
 \end{tabular}
 \end{table}
 
-\subsubsection{聚类4曲线拟合与评价}
+{聚类4曲线拟合与评价}
 
 \begin{figure}[h]
 \centering
@@ -936,7 +892,7 @@ RMSE & 1.307e+04 \\
 \hline
 \end{tabular}
 
-\subsubsection{聚类5曲线拟合与评价}
+{聚类5曲线拟合与评价}
 
 \begin{figure}[h]
     \centering
@@ -1457,7 +1413,6 @@ original\_shape\_MinorAxisLength & original\_shape\_SurfaceArea & NCCT\_original
 
 图 5-8 BP 神经网络测试 90 天 mRS 评分图
 
-40
 
 故最后的结果数据模型表示为:
 \begin{equation}
@@ -1573,11 +1528,30 @@ NCCT\_original\_firstorder\_Maximum & NCCT\_original\_firstorder\_Variance \\
 
 第二梯度特征值的灰色关联度在 0.65 到 0.70 之间，介于该区间内的 24 个影响因素对值对出血性脑卒中的影响力较高，如单位时间血肿体积变化、单位时间内 ED\_Pons\_Medulla\_R\_Ratio 水肿体积变化、年龄、收缩压、舒张压等。位于该梯度内的影响因素占比最高，这些因素也是出血性脑卒中预后预测应重点关注的对象。
 
-\textbf{eDeviation}
-
-\textbf{NCCT\_original\_firstorder\_Skewness} \hfill \textbf{NCCT\_original\_firstorder\_Uniformity}
-
-\bigskip
+\begin{table}[htbp]
+\centering
+\caption{第二梯度（灰色关联度：0.65-0.70）影响因素}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{单位时间血肿体积变化} & \textbf{单位时间内ED\_Pons\_Medulla\_R\_Ratio 水肿体积变化} \\
+年龄 & 收缩压 \\
+舒张压 & \textbf{original\_shape\_Elongation} \\
+\hline
+original\_shape\_Flatness & \textbf{original\_shape\_MeshVolume} \\
+original\_shape\_Sphericity & \textbf{original\_shape\_SurfaceArea} \\
+original\_shape\_VoxelVolume & \textbf{NCC\_original\_firstorder\_10Percentile} \\
+\textbf{NCC\_original\_firstorder\_90Percentile} & \textbf{NCC\_original\_firstorder\_Energy} \\
+\textbf{NCC\_original\_firstorder\_Entropy} & \textbf{NCC\_original\_firstorder\_InterquartileRange} \\
+\textbf{NCC\_original\_firstorder\_Kurtosis} & \textbf{NCC\_original\_firstorder\_MeanAbsoluteDeviation} \\
+\textbf{NCC\_original\_firstorder\_Mean} & \textbf{NCC\_original\_firstorder\_Median} \\
+\textbf{NCC\_original\_firstorder\_Minimum} & \textbf{NCC\_original\_firstorder\_Range} \\
+\textbf{NCC\_original\_firstorder\_RobustMeanAbsolute} & \textbf{NCC\_original\_firstorder\_RootMeanSquared} \\
+\hline
+\textbf{eDeviation} & \\
+\textbf{NCC\_original\_firstorder\_Skewness} & \textbf{NCC\_original\_firstorder\_Uniformity} \\
+\hline
+\end{tabular}
+\end{table}
 
 第三梯度特征值的灰色关联度在 0.60 到 0.65 之间，介于该区间内的 10 个影响因素对值对出血性脑卒中的影响力中等，如糖尿病史、冠心病史、脑室引流、单位时间内 HM\_Pons\_Medulla\_R\_Ratio、HM\_PCA\_L\_Ratio 血肿体积变化等。这些因素可以在前两个梯度的高影响力影响因素的基础上起辅助预后预测的作用，值得关注。
 
@@ -1655,7 +1629,7 @@ original\_shape\_SurfaceVolumeRatio & \\
     \item 脑室引流风险评估：对于需要脑室引流的患者，医生应仔细评估治疗的必要性，并确保引流过程安全无误。患者需要接受定期的医学监测和随访。
 \end{enumerate}
 
-\section{发病到首次影像检查时间间隔}
+发病到首次影像检查时间间隔
 
 尽早进行首次影像检查可以更早地发现脑卒中病变，有助于早期干预和治疗。
 
@@ -1711,29 +1685,691 @@ original\_shape\_SurfaceVolumeRatio & \\
 
 [14] Kurita, Takio. "Principal component analysis (PCA)." Computer Vision: A Reference Guide (2019): 1-4.
 
-\end{document}
+\section{附录：Python 代码}
+50
+附录一
+1.
+#数据预处理Matlab 代码
+1.
+clc
+1.
+clear all
+1.
+[num,txt,raw] = xlsread('time.xlsx');
+1.
+[n,m]=size(raw);
+1.
+a=ones(160,1);
+1.
+for i=1:160
+1.
+time_vecs=datevec(string(raw(i,2)));
+1.
+start_date=datenum(time_vecs);
+1.
+for j=3:14
+1.
+hours=-100000;
+1.
+if string(raw(i,j))=="NaT'"
+1.
+break ;
+1.
+else
+1.
+time_vec = datevec(string(raw(i,j)));
+1.
+serial_date = datenum(time_vec);
+1.
+hours = (serial_date - start_date) * 24;%获得日期对应时
+间做差值
+1.
+end
+1.
+if hours ~= -100000&&hours+num(i,1)<=48.00%提取48 小时内水肿
+体积数据
+1.
+a(i)=j-1;
+1.
+else
+1.
+break;
+1.
+end
+1.
+end
+1.
+end
+1.
+a
+1.
+#正态分布:
+1.
+clc;
+1.
+clear all;
+1.
+[numm,txt,raw]=xlsread('归一化后的160 个特征数据.xlsx');
+1.
+c=numm;
+1.
+for k=2:32
+1.
+b=numm(1:160,k)
+1.
+b=b';
+1.
+aa=mean(b);
+1.
+sig=std(b); %算出x 的标准偏差。
+1.
+m=zeros(1,length(b));
+1.
+i=1;
+1.
+for t=1:length(b)
 
-% Missing placeholders restored
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{bp_network_algorithm_flow.png}
-    \caption{5-5 BP 神经网络算法流程}
-\end{figure}
-\begin{table}
-\centering
-\caption{第二梯度（灰色关联度：0.65-0.70）影响因素}
-\begin{tabular}{l l}
-单位时间血肿体积变化 & 单位时间内 ED\_Pons\_Medulla\_R\_Ratio 水肿体积变化 \\
-年龄 & 收缩压 \\
-舒张压 & original\_shape\_Elongation \\
-original\_shape\_Flatness & original\_shape\_MeshVolume \\
-original\_shape\_Sphericity & original\_shape\_SurfaceArea \\
-original\_shape\_VoxelVolume & NCCT\_original\_firstorder\_10Percentile \\
-NCCT\_original\_firstorder\_90Percentile & NCCT\_original\_firstorder\_Energy \\
-NCCT\_original\_firstorder\_Entropy & NCCT\_original\_firstorder\_InterquartileRange \\
-NCCT\_original\_firstorder\_Kurtosis & NCCT\_original\_firstorder\_MeanAbsoluteDeviation \\
-NCCT\_original\_firstorder\_Mean & NCCT\_original\_firstorder\_Median \\
-NCCT\_original\_firstorder\_Minimum & NCCT\_original\_firstorder\_Range \\
-NCCT\_original\_firstorder\_RobustMeanAbsolute & NCCT\_original\_firstorder\_RootMeanSquared \\
-\end{tabular}
-\end{table}
+
+
+51
+1.
+m(t)=abs(b(t)-aa);
+1.
+if m(t)>3*sig
+1.
+n(t)=aa;%异常值使用均值代替
+1.
+num(i)=b(t);
+1.
+i=i+1;
+1.
+else
+1.
+n(t)=b(t);
+1.
+end
+1.
+end
+1.
+bb=0:1:length(n)-1;
+1.
+subplot(2,1,1);
+1.
+plot(bb,b)
+1.
+title('原特征数据分布')
+1.
+subplot(2,1,2);
+1.
+plot(bb,n);
+1.
+c(1:100,k)=n(1:100);
+1.
+title('拉依达准则均值处理异常点后特征数据分布')
+1.
+xlabel('特征索引');
+1.
+ylabel('特征数值')
+1.
+end
+1.
+c
+1.
+#箱型图:
+1.
+clc
+1.
+clear all
+1.
+close all
+1.
+[num,txt,raw] = xlsread('归一化后的160 个特征数据.xlsx');
+1.
+x = num(1:160,2:32);
+1.
+for i=1:31
+1.
+y(i)='特征'+string(i);
+1.
+end
+1.
+figure
+1.
+subplot(2,1,1)
+1.
+boxplot(x, 'Labels', y,'LabelOrientation', 'inline')
+1.
+subplot(2,1,2)
+1.
+boxplot(x,'Labels',y,'PlotStyle','compact')
+1.
+x1=quantile(x,.25);
+1.
+x3=quantile(x,.75);
+1.
+x1;
+1.
+x3;
+1.
+a=zeros(160,32);
+1.
+a(1:160,1)=num(1:160,1);
+1.
+for i=1:160
+1.
+for j=1:31
+
+
+
+52
+1.
+if x(i,j)>x3(j)+1.5*(x3(j)-x1(j))||x(i,j)<x1(j)-1.5*(x3(j)
+-x1(j))
+1.
+a(i,j+1)=1;%标记异常点
+1.
+else a(i,j+1)=0;
+1.
+end
+1.
+end
+1.
+end
+1.
+c=zeros(160,32);
+1.
+c(1:160,1)=num(1:160,1);
+1.
+for i=2:32
+1.
+total=0.0;
+1.
+sum=0.0;
+1.
+for j=1:160
+1.
+if a(j,i)==0
+1.
+total=total+num(j,i);
+1.
+sum=sum+1;
+1.
+end
+1.
+end
+1.
+total=total/sum;
+1.
+total
+1.
+for j=1:160
+1.
+if a(j,i)==1
+1.
+c(j,i)=total;%异常值按均值替代
+1.
+else
+1.
+c(j,i)=num(j,i);
+1.
+end
+1.
+end
+1. end
+1.
+%CNN 神经网络Matlab 代码
+1.
+clc;clear;close all
+1.
+[num,txt,raw] = xlsread('灰色关联前十五数据(第一题).xlsx');
+1.
+n=100;
+1.
+train_x=num(1:80,1:15);
+1.
+train_y=num(1:80,16);
+1.
+test_x=num(81:100,1:15);
+1.
+test_y=num(81:100,16);
+1.
+train_x=train_x';
+1.
+train_y=train_y';
+1.
+test_x=test_x';
+1.
+test_y=test_y';
+1.
+%改
+1.
+pre_x=num(1:160,1:15);
+
+
+
+53
+1.
+pre_x=pre_x';
+1.
+%
+1.
+method=@mapminmax;
+1.
+% method=@mapstd;
+1.
+[train_x,train_ps]=method(train_x);
+1.
+test_x=method('apply',test_x,train_ps);
+1.
+%改
+1.
+pre_x=method('apply',pre_x,train_ps);
+1.
+%
+1.
+[train_y,output_ps]=method(train_y);
+1.
+test_y=method('apply',test_y,output_ps);
+1.
+trainD=reshape(train_x,[15,1,1,80]);%训练集输入
+1.
+testD=reshape(test_x,[15,1,1,20]);%测试集输入
+1.
+%改
+1.
+pre_x=reshape(pre_x,[15,1,1,160]);
+1.
+%
+1.
+targetD = train_y;%训练集输出
+1.
+targetD_test
+= test_y;%测试集输出
+1.
+layers = [
+1.
+imageInputLayer([15 1 1]) %输入层参数设置
+1.
+convolution2dLayer([3,1],16,'Padding','same')%设置卷积核函数
+1.
+reluLayer%relu 激活函数
+1.
+maxPooling2dLayer([2 1],'Stride',2)
+1.
+fullyConnectedLayer(384) %全连接层神经元
+1.
+reluLayer%relu 激活函数
+1.
+fullyConnectedLayer(384) %全连接层神经元
+1.
+fullyConnectedLayer(1) % 输出层神经元
+1.
+regressionLayer];%添加回归层
+1.
+options = trainingOptions('adam', ...
+1.
+'MaxEpochs',60, ...
+1.
+'MiniBatchSize',16, ...
+1.
+'InitialLearnRate',0.01, ...
+1.
+'GradientThreshold',1, ...
+1.
+'Verbose',false,...
+1.
+'Plots','training-progress',...
+1.
+'ValidationData',{testD,targetD_test'});
+1.
+% 训练
+1.
+net = trainNetwork(trainD,targetD',layers,options);
+1.
+% 预测
+1.
+YPred = predict(net,testD);
+1.
+% 结果
+1.
+YPred=double(YPred');
+1.
+% 反归一化
+
+
+
+54
+1.
+predict_value=method(YPred,0,1);predict_value=double(predict_value)
+;
+1.
+true_value=method(targetD_test,0,1);true_value=double(true_value);
+1.
+%预测所有
+1.
+pre_y = predict(net,pre_x);
+1.
+pre_y=double(pre_y');
+1.
+pv=method(pre_y,0,1);pv=double(pv);
+1.
+%true_value=method(targetD_test,output_ps);true_value=double(true_
+value);
+1.
+pv=pv';
+1.
+pv
+1.
+%
+1.
+figure
+1.
+plot(true_value,'-*','linewidth',3)
+1.
+hold on
+1.
+plot(predict_value,'-s','linewidth',3)
+1.
+legend('实际值','预测值')
+1.
+grid on
+1.
+#BP 神经网络Matlab 代码
+1.
+clear
+1.
+close all
+1.
+clc
+1.
+[num,txt,raw] = xlsread('特征数据.xlsx');
+1.
+input=num(1:130,1:17);
+%载入输入数据
+1.
+output=num(1:130,18);
+%载入输出数据
+1.
+input_train = input(1:80,:)';
+1.
+output_train =output(1:80,:)';
+1.
+input_test = input(1:130,:)';
+1.
+output_test =output(1:130,:)';训练预测数据
+1.
+inputnum=2;
+1.
+hiddennum=5;
+1.
+# outputnum=1; %节点个数
+1.
+[inputn,inputps]=mapminmax(input_train);%归一化到[-1,1]之间，inputps
+用来作下一次同样的归一化
+1.
+[outputn,outputps]=mapminmax(output_train);
+1.
+net=newff(inputn,outputn,hiddennum,{'tansig','purelin'},'trainlm');
+% 模型建立
+1.
+W1= net. iw{1, 1};
+1.
+B1 = net.b{1};
+1.
+W2 = net.lw{2,1};
+1.
+## B2 = net. b{2};各层阈值设置
+1.
+net.trainParam.epochs=1000;
+
+
+
+55
+1.
+net.trainParam.lr=0.01;
+1.
+net.trainParam.goal=0.00001;
+1.
+net=train(net,inputn,outputn);
+1.
+inputn_test=mapminmax('apply',input_test,inputps);%神经网络参数配置
+1.
+an=sim(net,inputn_test);
+1.
+test_simu=mapminmax('reverse',an,outputps); %反归一化
+1.
+for i=1:130
+1.
+if test_simu(1,i)<=0.5
+1.
+test_simu(1,i)=0;
+1.
+else if test_simu(1,i)<=1.5
+1.
+test_simu(1,i)=1;
+1.
+else if test_simu(1,i)<=2.5
+1.
+test_simu(1,i)=2;
+1.
+else if test_simu(1,i)<=3.5
+1.
+test_simu(1,i)=3;
+1.
+else if test_simu(1,i)<=4.5
+1.
+test_simu(1,i)=4
+1.
+else if test_simu(1,i)<=5.5
+1.
+test_simu(1,i)=5
+1.
+else
+1.
+test_simu(1,i)=6;
+1.
+end
+1.
+end
+1.
+end
+1.
+end
+1.
+end
+1.
+end
+1.
+end%阈值计算
+1.
+%test_simu
+1.
+% test_simu=test_simu';
+1.
+error=test_simu-output_test;
+%预测值和真实值的误差
+1.
+figure('units','normalized','position', [0.119,0.2,0.38,0.5];
+1.
+plot(output_test,'bo-')
+1.
+hold on
+1.
+plot(test_simu,'r*-')
+1.
+hold on
+1.
+%plot(error,'square','MarkerFaceColor','b')
+1.
+legend('期望值','预测值')
+1.
+xlabel('验证集序号')
+1.
+ylim([0 7])
+1.
+ylabel('患者90 天mRS 评分')
+1.
+title('BP 神经网络验证集的预测值与实际值对比图')%画图
+
+
+
+56
+1.
+#热力图Matlab 代码
+1.
+clc
+1.
+clear all
+1.
+[num,txt,raw] = xlsread('热力图数据.xlsx');
+1.
+%correlationmatrix=corrcoef(num);
+1.
+labels={'脑室引流','止血治疗','降颅压治疗','降压治疗','镇静、镇痛治疗
+','止吐护胃','营养神经','血肿体积变化','水肿体积变化'
+1.
+};
+1.
+h=heatmap(labels,labels,num,'Title','表格型热力图相关系数矩阵');
+1.
+colormap('jet')
+1.
+#灰色关联分析Matlab 代码
+1.
+clc;clear;close all;
+1.
+[num,txt,raw] = xlsread('72 个特征数据.xlsx');
+1.
+a=zeros(130,73);
+1.
+a(1:130,1)=num(1:130,73);
+1.
+a(1:130,2:73)=num(1:130,1:72);
+1.
+data=a;
+1.
+data1=mapminmax(data',0,1);%标准化
+1.
+data1=data1';
+1.
+data2=abs(data1(:,2:end)-data1(:,1));
+1.
+d_max=max(max(data2));
+1.
+d_min=min(min(data2));
+1.
+%灰色关联矩阵
+1.
+a=0.5;
+%分辨系数
+1.
+data3=(d_min+a*d_max)./(data2+a*d_max);
+1.
+xishu=mean(data3);
+1.
+yy=[1:72];
+1.
+plot(yy,xishu);
+1.
+set(gca,'fontsize',20);
+1.
+xlabel('特征值序号');
+1.
+ylabel('灰色关联度');
+1.
+title('各特征值与患者90 天mRS 评分之间关联度');
+1.
+mark=zeros(1,72);
+1.
+a1=0;
+1.
+b1=0;
+1.
+for i=1:20%获得关联性最强的前20 个特征数据
+1.
+a1=-1;
+1.
+b1=0;
+1.
+for j=1:72
+1.
+if mark(1,j)==0&&xishu(1,j)>=a1
+1.
+a1=xishu(1,j);
+1.
+b1=j
+
+
+
+57
+1.
+end
+1.
+end
+1.
+mark(1,b1)=1;
+1.
+end
+1.
+mark
+1.
+#K-means 三维聚类Matlab 代码
+1.
+clc;
+1.
+clear all;
+1.
+[num,txt,raw] = xlsread('聚类1.xlsx');
+1.
+x = num(1:160,1);
+1.
+y = num(1:160,2);
+1.
+z = num(1:160,3);
+1.
+x=x';
+1.
+y=y';
+1.
+z=z';
+1.
+k = 5;
+1.
+[resX resY resZ record] = Kmean3D(x,y,z,k);%聚类
+1.
+for i = 1:length(record)
+1.
+scatter3(resX(i,1:record(i)),resY(i,1:record(i)),resZ(i,1:rec
+ord(i)),'*','LineWidth',1);
+1.
+hold on
+1.
+end
+1.
+xlabel('年龄');
+1.
+ylabel('收缩压/mmHg');
+1.
+zlabel('舒张压/mmHg');
+1.
+set(gca,'FontSize',18);
+1.
+for i = 1:length(record)
+1.
+scatter3(mean(resX(i,1:record(i)),2)',mean(resY(i,1:record(i))
+,2)',mean(resZ(i,1:record(i)),2)','Marker','square','MarkerEdgeColor','k','
+MarkerFaceColor','k')
+1.
+end
+1.
+legend('聚类1','聚类2','聚类3','聚类4','聚类5','聚类中心点')
+
+
+
+58
+附录二
+答案表数据：
+
+
+
+59

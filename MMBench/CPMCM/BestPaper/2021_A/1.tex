@@ -33,48 +33,11 @@
 首先提出了一种“模方法”去评价不同矩阵的相关程度，并使用“聚类父子节点算法”将其聚类，将矩阵间具有相关关系的矩阵归类为相关矩阵组。利用相关矩阵组中的矩阵进行奇异值分解后右奇异向量的相关性，减少了后续对原始矩阵非必要的奇异值分解。“近似矩阵分解的概率算法—随机奇异值分解”实现了高效查找原始矩阵的低阶近似矩阵，对原矩阵的奇异值分解过程可以转化为对其相应的低阶近似矩阵进行奇异值分解，这极大的提高了计算速度。
 
 其次为了降低矩阵求逆运算的复杂度，首先将 Strassen 算法与矩阵分治的思想相结合，提出了一种基于 Strassen 算法的矩阵求逆算法，降低了计算复杂度，经测试后能够将 1024 维矩阵的求逆运算时间降低 41.5\%；接着抓住需求当中 Hermite 阵求逆这一点进行算法优化，提出了一种改进的 Strassen 求逆算法，即将 Strassen 求逆算法中的一些乘法运算替换为简单映射，进一步降低了计算复杂度；最后将 Coppersmith-Winograd 算法引入改进的 Strassen 算法中，替换掉其中的基于 Strassen 算法的矩阵乘法运算，极大地降低了求逆过程的运算复杂度。通过 1024 维矩阵测试后发现，最终使用 Coppersmith-Winograd 算法优化的改进 Strassen 求逆算法的运行时间相较于原始求逆算法降低了 46.9\%。最后基于随机奇异值分解提出的“降维分块压缩算法”，实现了在基本还原数据原貌的同时，最大化的进行矩阵压缩。而后的解压过程，只需要通过简单的矩阵乘法及数据升维来实现。
-\end{abstract}
 
 \textbf{关键字：} 相关矩阵 模方法 聚类父子节点算法 随机奇异值分解 改进的 Strassen 求逆算法 降维分块压缩算法
+\end{abstract}
 
-\section*{目录}
-
-\section{问题重述}
-\subsection{问题的背景} \dotfill 3
-\subsection{问题的提出} \dotfill 4
-
-\section{问题分析}
-\subsection{问题1分析} \dotfill 4
-\subsection{问题2分析} \dotfill 5
-\subsection{问题3分析} \dotfill 5
-
-\section{模型的假设} \dotfill 5
-
-\section{符号定义与说明} \dotfill 6
-
-\section{模型建立与求解}
-\subsection{模型一建立与求解} \dotfill 6
-\subsection{模型一建立与求解} \dotfill 6
-\subsubsection{模方法} \dotfill 6
-\subsubsection{聚类父子节点法} \dotfill 7
-\subsubsection{近似矩阵分解的概率算法——随机奇异值分解} \dotfill 8
-\subsubsection{改进的 Strassen 算法和 Coppersmith-Winograd 算法} \dotfill 11
-\subsubsection{问题1求解} \dotfill 24
-\subsection{模型二建立与求解} \dotfill 25
-\subsubsection{Huffman 编码解码——无损压缩} \dotfill 25
-\subsubsection{分块压缩算法} \dotfill 28
-\subsubsection{问题2求解} \dotfill 35
-\subsection{模型三建立与求解} \dotfill 39
-\subsubsection{模型三的建立} \dotfill 39
-\subsubsection{问题3的求解} \dotfill 39
-
-\section{模型总结与评价}
-\subsection{模型优点} \dotfill 42
-\subsection{模型缺点与改进方向} \dotfill 42
-
-\section{参考文献} \dotfill 43
-
-\section{A 我的 MATLAB 源程序 \dotfill 44}
+\tableofcontents
 
 \section{问题重述}
 
@@ -88,7 +51,7 @@
 \caption{对角矩阵的压缩存储}
 \end{figure}
 
-\section{问题的提出}
+\subsection{问题的提出}
 
 题目给出 data1—data6 共 6 个数据集，其内部的数据以矩阵的形式表达。要求充分挖掘矩阵内部及矩阵之间的相关性，通过建立相应的数学模型和算法，解决以下问题：
 
@@ -211,7 +174,7 @@ r(\mathbf{B}_{1}',\mathbf{B}_{2}')=\frac{\text{Cov}(\mathbf{B}_{1}',\mathbf{B}_{
     \label{fig:2}
 \end{figure}
 
-\subsection{5.2.2 聚类父子节点法}
+\subsubsection{5.2.2 聚类父子节点法}
 
 由上述模方法，可以求得题目所给 $\mathbf{H}$ 矩阵每一行中 384 个矩阵 $\mathbf{H}_{j,k}$ 之间的相关系数，筛选出相关系数大于 0.95 的矩阵关系。以 Data1 数据集 $\mathbf{H}$ 矩阵的第一行为例，表1给出了相关性显著的矩阵编号。可以看出，第 1 个矩阵与第 2 个矩阵具有高度相关性，第 2 个矩阵与第 3 个矩阵具有高度相关性，可是，第 1 个矩阵与第 3 个矩阵不具有高度相关性，由此可以知道，高度相关性不具备传递性，这种关系不是一个等价关系。
 
@@ -242,7 +205,7 @@ r(\mathbf{B}_{1}',\mathbf{B}_{2}')=\frac{\text{Cov}(\mathbf{B}_{1}',\mathbf{B}_{
 \caption{表1的聚类步骤}
 \end{figure}
 
-\subsection{近似矩阵分解的概率算法——随机奇异值分解}
+\subsubsection{近似矩阵分解的概率算法——随机奇异值分解}
 
 低秩矩阵逼近:
 
@@ -333,7 +296,7 @@ Step3: $\mathbf{U} = \mathbf{Q} \widetilde{\mathbf{U}}$.
 
 虽然存在一个最小 $\mathbf{Q}$ 来解决 $p=0$ 的固定秩问题，但是使用少量附加列的机会提供了一种灵活性，这对于我们讨论的计算方法的有效性是至关重要的。固定秩问题的算法可以适用于解决固定精度问题，其间的联系是基于这样的观察，即我们可以增量地建立基矩阵 $\mathbf{Q}$，并且在计算的任何一点，我们都可以廉价地估计 $||\mathbf{A} - \mathbf{Q}\mathbf{Q}^*\mathbf{A}||$ 的残留误差，因此进一步的我们采取下面的方法来得到 $\mathbf{Q}$。
 
-### 增量方式构建 $\mathbf{Q}$:
+增量方式构建 $\mathbf{Q}$:
 
 假定 $\mathbf{A}$ 是一个 $m \times n$ 的矩阵，$\varepsilon$ 是计算容差。我们寻找一个整数 $l$ 和一个 $m \times l$ 的正交矩阵 $\mathbf{Q}$，使得，
 
@@ -365,7 +328,7 @@ end
 
 当我们观测 $r$ 个连续的矩阵范数小于 $\varepsilon / (10\sqrt{2/\pi})$ 的 $\widetilde{\mathbf{q}}^{(i)}$ 时，跳出增量方式构建基矩阵 $\mathbf{Q}$ 的循环过程。本小节算法代码见附录。
 
-### 5.2.4 改进的 Strassen 算法和 Coppersmith-Winograd 算法
+\subsubsection{5.2.4 改进的 Strassen 算法和 Coppersmith-Winograd 算法}
 
 参阅历史文献可知，矩阵求逆的计算复杂度与矩阵乘法的计算复杂度在均使用 $O(\bullet)$ 的方式进行度量时是相同的，因此，降低矩阵乘法的计算复杂度可以有效地降低矩阵求逆的计算复杂度。
 
@@ -563,7 +526,7 @@ T^1(N) = T(m) + T(N) + 8m^2n + 8mn^2 + mn
 \end{figure}
 
 更深层次的去考虑 Strassen 算法的底层运算，如下图中左图所示，在我们之前的程序中处理器需要计算完 \(\mathbf{M}\) 矩阵后才会去计算 \(\mathbf{C}\) 矩阵，在计算 \(\mathbf{C}\) 矩阵时先前计算得到的 7 个 \(\mathbf{M}\) 矩阵仍然占用大量内存空间，需要 \(\mathbf{C}\) 矩阵运算完毕之后才会去释放 \(\mathbf{M}\) 矩阵所占用的内存空间，且 \(\mathbf{M}\) 矩阵运算期间没有任何其他运算进行，这种算法的运行效率是较低的。考
-
+虑在此基础上进行一些改进，如下图右图所示，将一些C矩阵的加减运算放置到M矩阵计算时运行，C矩阵的运算结束后就可以释放掉不再被需要的M矩阵的存储空间，虽然这样可能会增加一些加减法运算，但是并行运算的效率提升和内存的占用降低带来的的性能提升要远高于传统运算方法。
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image.png} % 替换为实际的图像文件名
@@ -585,286 +548,6 @@ D+ &= \gamma_1 M \\
 
 下面流程图14更加详细的讲述改进算法是如何提升运行效率的，从图中可以看到，相较于传统 Strassen 算法，改进的 Strassen 算法在各层循环中均将计算分为两块进行，将 C 矩阵的加减运算进一步划分为两部分，虽然一定程度上增加了处理器的运算负担，但是大大降低了运算过程中存储空间的占用。若以比特为单位计算，对于复数矩阵中单个复数元素，其实部和虚部均采用 32 比特单精度浮点表示，可令运算过程中存储器的峰值占用从 \(7 \times 64N^2 \, \text{bit}\) 降至 \(64N^2 \, \text{bit}\)。
 
-```latex
-\begin{tikzpicture}[node distance=2cm, auto,>=latex', every node/.style={font=\small}]
-    % Define styles
-    \tikzstyle{block} = [draw, rectangle, minimum height=1cm, minimum width=1.5cm]
-    \tikzstyle{sum} = [draw, circle, node distance=1.5cm]
-    \tikzstyle{input} = [coordinate]
-    \tikzstyle{output} = [coordinate]
-    \tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
-
-    % Place nodes
-    \node [input, name=input] {};
-    \node [block, right of=input, node distance=3cm] (Dj) {$D_j$};
-    \node [block, right of=Dj, node distance=1.5cm] (Cj) {$C_j$};
-    \node [sum, right of=Cj, node distance=3cm] (sum1) {$+$};
-    \node [block, right of=sum1, node distance=1.5cm] (Yj) {$Y_j$};
-    \node [block, right of=Yj, node distance=1.5cm] (Xj) {$X_j$};
-    \node [block, right of=Xj, node distance=3cm] (Wj) {$W_j$};
-    \node [block, right of=Wj, node distance=1.5cm] (vj) {$v_j$};
-    \node [block, below of=Cj, node distance=3cm] (Dj2) {$D_j$};
-    \node [block, right of=Dj2, node distance=1.5cm] (Cj2) {$C_j$};
-    \node [sum, right of=Cj2, node distance=3cm] (sum2) {$+$};
-    \node [block, right of=sum2, node distance=1.5cm] (Yp) {$Y_p$};
-    \node [block, right of=Yp, node distance=1.5cm] (Xp) {$X_p$};
-    \node [block, right of=Xp, node distance=3cm] (Wp) {$W_p$};
-    \node [block, right of=Wp, node distance=1.5cm] (vp) {$v_p$};
-    \node [block, below of=Cj2, node distance=3cm] (Di) {$D_i$};
-    \node [block, right of=Di, node distance=1.5cm] (Ci) {$C_i$};
-    \node [sum, right of=Ci, node distance=3cm] (sum3) {$+$};
-    \node [block, right of=sum3, node distance=1.5cm] (Yi) {$Y_i$};
-    \node [block, right of=Yi, node distance=1.5cm] (Xi) {$X_i$};
-    \node [block, below of=Ci, node distance=3cm] (Di2) {$D_i$};
-    \node [block, right of=Di2, node distance=1.5cm] (Ci2) {$C_i$};
-    \node [sum, right of=Ci2, node distance=3cm] (sum4) {$+$};
-    \node [block, right of=sum4, node distance=1.5cm] (AR) {$A_R$};
-    \node [block, below of=Ci2, node distance=3cm] (update) {update $C_{ij}, D_{ij}$};
-    \node [block, right of=update, node distance=1.5cm] (mR) {$m_R$};
-    \node [block, right of=mR, node distance=1.5cm] (AR2) {$A_R$};
-    \node [block, right of=AR2, node distance=1.5cm] (kc) {$k_c$};
-    \node [block, below of=AR2, node distance=3cm] (AR3) {$A_R$};
-    \node [block, right of=AR3, node distance=1.5cm] (kc2) {$k_c$};
-    \node [block, below of=AR3, node distance=3cm] (AR4) {$A_R$};
-    \node [block, right of=AR4, node distance=1.5cm] (kc3) {$k_c$};
-    \node [block, below of=AR4, node distance=3cm] (AR5) {$A_R$};
-    \node [block, right of=AR5, node distance=1.5cm] (kc4) {$k_c$};
-    \node [block, below of=AR5, node distance=3cm] (AR6) {$A_R$};
-    \node [block, right of=AR6, node distance=1.5cm] (kc5) {$k_c$};
-    \node [block, below of=AR6, node distance=3cm] (AR7) {$A_R$};
-    \node [block, right of=AR7, node distance=1.5cm] (kc6) {$k_c$};
-    \node [block, below of=AR7, node distance=3cm] (AR8) {$A_R$};
-    \node [block, right of=AR8, node distance=1.5cm] (kc7) {$k_c$};
-    \node [block, below of=AR8, node distance=3cm] (AR9) {$A_R$};
-    \node [block, right of=AR9, node distance=1.5cm] (kc8) {$k_c$};
-    \node [block, below of=AR9, node distance=3cm] (AR10) {$A_R$};
-    \node [block, right of=AR10, node distance=1.5cm] (kc9) {$k_c$};
-    \node [block, below of=AR10, node distance=3cm] (AR11) {$A_R$};
-    \node [block, right of=AR11, node distance=1.5cm] (kc10) {$k_c$};
-    \node [block, below of=AR11, node distance=3cm] (AR12) {$A_R$};
-    \node [block, right of=AR12, node distance=1.5cm] (kc11) {$k_c$};
-    \node [block, below of=AR12, node distance=3cm] (AR13) {$A_R$};
-    \node [block, right of=AR13, node distance=1.5cm] (kc12) {$k_c$};
-    \node [block, below of=AR13, node distance=3cm] (AR14) {$A_R$};
-    \node [block, right of=AR14, node distance=1.5cm] (kc13) {$k_c$};
-    \node [block, below of=AR14, node distance=3cm] (AR15) {$A_R$};
-    \node [block, right of=AR15, node distance=1.5cm] (kc14) {$k_c$};
-    \node [block, below of=AR15, node distance=3cm] (AR16) {$A_R$};
-    \node [block, right of=AR16, node distance=1.5cm] (kc15) {$k_c$};
-    \node [block, below of=AR16, node distance=3cm] (AR17) {$A_R$};
-    \node [block, right of=AR17, node distance=1.5cm] (kc16) {$k_c$};
-    \node [block, below of=AR17, node distance=3cm] (AR18) {$A_R$};
-    \node [block, right of=AR18, node distance=1.5cm] (kc17) {$k_c$};
-    \node [block, below of=AR18, node distance=3cm] (AR19) {$A_R$};
-    \node [block, right of=AR19, node distance=1.5cm] (kc18) {$k_c$};
-    \node [block, below of=AR19, node distance=3cm] (AR20) {$A_R$};
-    \node [block, right of=AR20, node distance=1.5cm] (kc19) {$k_c$};
-    \node [block, below of=AR20, node distance=3cm] (AR21) {$A_R$};
-    \node [block, right of=AR21, node distance=1.5cm] (kc20) {$k_c$};
-    \node [block, below of=AR21, node distance=3cm] (AR22) {$A_R$};
-    \node [block, right of=AR22, node distance=1.5cm] (kc21) {$k_c$};
-    \node [block, below of=AR22, node distance=3cm] (AR23) {$A_R$};
-    \node [block, right of=AR23, node distance=1.5cm] (kc22) {$k_c$};
-    \node [block, below of=AR23, node distance=3cm] (AR24) {$A_R$};
-    \node [block, right of=AR24, node distance=1.5cm] (kc23) {$k_c$};
-    \node [block, below of=AR24, node distance=3cm] (AR25) {$A_R$};
-    \node [block, right of=AR25, node distance=1.5cm] (kc24) {$k_c$};
-    \node [block, below of=AR25, node distance=3cm] (AR26) {$A_R$};
-    \node [block, right of=AR26, node distance=1.5cm] (kc25) {$k_c$};
-    \node [block, below of=AR26, node distance=3cm] (AR27) {$A_R$};
-    \node [block, right of=AR27, node distance=1.5cm] (kc26) {$k_c$};
-    \node [block, below of=AR27, node distance=3cm] (AR28) {$A_R$};
-    \node [block, right of=AR28, node distance=1.5cm] (kc27) {$k_c$};
-    \node [block, below of=AR28, node distance=3cm] (AR29) {$A_R$};
-    \node [block, right of=AR29, node distance=1.5cm] (kc28) {$k_c$};
-    \node [block, below of=AR29, node distance=3cm] (AR30) {$A_R$};
-    \node [block, right of=AR30, node distance=1.5cm] (kc29) {$k_c$};
-    \node [block, below of=AR30, node distance=3cm] (AR31) {$A_R$};
-    \node [block, right of=AR31, node distance=1.5cm] (kc30) {$k_c$};
-    \node [block, below of=AR31, node distance=3cm] (AR32) {$A_R$};
-    \node [block, right of=AR32, node distance=1.5cm] (kc31) {$k_c$};
-    \node [block, below of=AR32, node distance=3cm] (AR33) {$A_R$};
-    \node [block, right of=AR33, node distance=1.5cm] (kc32) {$k_c$};
-    \node [block, below of=AR33, node distance=3cm] (AR34) {$A_R$};
-    \node [block, right of=AR34, node distance=1.5cm] (kc33) {$k_c$};
-    \node [block, below of=AR34, node distance=3cm] (AR35) {$A_R$};
-    \node [block, right of=AR35, node distance=1.5cm] (kc34) {$k_c$};
-    \node [block, below of=AR35, node distance=3cm] (AR36) {$A_R$};
-    \node [block, right of=AR36, node distance=1.5cm] (kc35) {$k_c$};
-    \node [block, below of=AR36, node distance=3cm] (AR37) {$A_R$};
-    \node [block, right of=AR37, node distance=1.5cm] (kc36) {$k_c$};
-    \node [block, below of=AR37, node distance=3cm] (AR38) {$A_R$};
-    \node [block, right of=AR38, node distance=1.5cm] (kc37) {$k_c$};
-    \node [block, below of=AR38, node distance=3cm] (AR39) {$A_R$};
-    \node [block, right of=AR39, node distance=1.5cm] (kc38) {$k_c$};
-    \node [block, below of=AR39, node distance=3cm] (AR40) {$A_R$};
-    \node [block, right of=AR40, node distance=1.5cm] (kc39) {$k_c$};
-    \node [block, below of=AR40, node distance=3cm] (AR41) {$A_R$};
-    \node [block, right of=AR41, node distance=1.5cm] (kc40) {$k_c$};
-    \node [block, below of=AR41, node distance=3cm] (AR42) {$A_R$};
-    \node [block, right of=AR42, node distance=1.5cm] (kc41) {$k_c$};
-    \node [block, below of=AR42, node distance=3cm] (AR43) {$A_R$};
-    \node [block, right of=AR43, node distance=1.5cm] (kc42) {$k_c$};
-    \node [block, below of=AR43, node distance=3cm] (AR44) {$A_R$};
-    \node [block, right of=AR44, node distance=1.5cm] (kc43) {$k_c$};
-    \node [block, below of=AR44, node distance=3cm] (AR45) {$A_R$};
-    \node [block, right of=AR45, node distance=1.5cm] (kc44) {$k_c$};
-    \node [block, below of=AR45, node distance=3cm] (AR46) {$A_R$};
-    \node [block, right of=AR46, node distance=1.5cm] (kc45) {$k_c$};
-    \node [block, below of=AR46, node distance=3cm] (AR47) {$A_R$};
-    \node [block, right of=AR47, node distance=1.5cm] (kc46) {$k_c$};
-    \node [block, below of=AR47, node distance=3cm] (AR48) {$A_R$};
-    \node [block, right of=AR48, node distance=1.5cm] (kc47) {$k_c$};
-    \node [block, below of=AR48, node distance=3cm] (AR49) {$A_R$};
-    \node [block, right of=AR49, node distance=1.5cm] (kc48) {$k_c$};
-    \node [block, below of=AR49, node distance=3cm] (AR50) {$A_R$};
-    \node [block, right of=AR50, node distance=1.5cm] (kc49) {$k_c$};
-    \node [block, below of=AR50, node distance=3cm] (AR51) {$A_R$};
-    \node [block, right of=AR51, node distance=1.5cm] (kc50) {$k_c$};
-    \node [block, below of=AR51, node distance=3cm] (AR52) {$A_R$};
-    \node [block, right of=AR52, node distance=1.5cm] (kc51) {$k_c$};
-    \node [block, below of=AR52, node distance=3cm] (AR53) {$A_R$};
-    \node [block, right of=AR53, node distance=1.5cm] (kc52) {$k_c$};
-    \node [block, below of=AR53, node distance=3cm] (AR54) {$A_R$};
-    \node [block, right of=AR54, node distance=1.5cm] (kc53) {$k_c$};
-    \node [block, below of=AR54, node distance=3cm] (AR55) {$A_R$};
-    \node [block, right of=AR55, node distance=1.5cm] (kc54) {$k_c$};
-    \node [block, below of=AR55, node distance=3cm] (AR56) {$A_R$};
-    \node [block, right of=AR56, node distance=1.5cm] (kc55) {$k_c$};
-    \node [block, below of=AR56, node distance=3cm] (AR57) {$A_R$};
-    \node [block, right of=AR57, node distance=1.5cm] (kc56) {$k_c$};
-    \node [block, below of=AR57, node distance=3cm] (AR58) {$A_R$};
-    \node [block, right of=AR58, node distance=1.5cm] (kc57) {$k_c$};
-    \node [block, below of=AR58, node distance=3cm] (AR59) {$A_R$};
-    \node [block, right of=AR59, node distance=1.5cm] (kc58) {$k_c$};
-    \node [block, below of=AR59, node distance=3cm] (AR60) {$A_R$};
-    \node [block, right of=AR60, node distance=1.5cm] (kc59) {$k_c$};
-    \node [block, below of=AR60, node distance=3cm] (AR61) {$A_R$};
-    \node [block, right of=AR61, node distance=1.5cm] (kc60) {$k_c$};
-    \node [block, below of=AR61, node distance=3cm] (AR62) {$A_R$};
-    \node [block, right of=AR62, node distance=1.5cm] (kc61) {$k_c$};
-    \node [block, below of=AR62, node distance=3cm] (AR63) {$A_R$};
-    \node [block, right of=AR63, node distance=1.5cm] (kc62) {$k_c$};
-    \node [block, below of=AR63, node distance=3cm] (AR64) {$A_R$};
-    \node [block, right of=AR64, node distance=1.5cm] (kc63) {$k_c$};
-    \node [block, below of=AR64, node distance=3cm] (AR65) {$A_R$};
-    \node [block, right of=AR65, node distance=1.5cm] (kc64) {$k_c$};
-    \node [block, below of=AR65, node distance=3cm] (AR66) {$A_R$};
-    \node [block, right of=AR66, node distance=1.5cm] (kc65) {$k_c$};
-    \node [block, below of=AR66, node distance=3cm] (AR67) {$A_R$};
-    \node [block, right of=AR67, node distance=1.5cm] (kc66) {$k_c$};
-    \node [block, below of=AR67, node distance=3cm] (AR68) {$A_R$};
-    \node [block, right of=AR68, node distance=1.5cm] (kc67) {$k_c$};
-    \node [block, below of=AR68, node distance=3cm] (AR69) {$A_R$};
-    \node [block, right of=AR69, node distance=1.5cm] (kc68) {$k_c$};
-    \node [block, below of=AR69, node distance=3cm] (AR70) {$A_R$};
-    \node [block, right of=AR70, node distance=1.5cm] (kc69) {$k_c$};
-    \node [block, below of=AR70, node distance=3cm] (AR71) {$A_R$};
-    \node [block, right of=AR71, node distance=1.5cm] (kc70) {$k_c$};
-    \node [block, below of=AR71, node distance=3cm] (AR72) {$A_R$};
-    \node [block, right of=AR72, node distance=1.5cm] (kc71) {$k_c$};
-    \node [block, below of=AR72, node distance=3cm] (AR73) {$A_R$};
-    \node [block, right of=AR73, node distance=1.5cm] (kc72) {$k_c$};
-    \node [block, below of=AR73, node distance=3cm] (AR74) {$A_R$};
-    \node [block, right of=AR74, node distance=1.5cm] (kc73) {$k_c$};
-    \node [block, below of=AR74, node distance=3cm] (AR75) {$A_R$};
-    \node [block, right of=AR75, node distance=1.5cm] (kc74) {$k_c$};
-    \node [block, below of=AR75, node distance=3cm] (AR76) {$A_R$};
-    \node [block, right of=AR76, node distance=1.5cm] (kc75) {$k_c$};
-    \node [block, below of=AR76, node distance=3cm] (AR77) {$A_R$};
-    \node [block, right of=AR77, node distance=1.5cm] (kc76) {$k_c$};
-    \node [block, below of=AR77, node distance=3cm] (AR78) {$A_R$};
-    \node [block, right of=AR78, node distance=1.5cm] (kc77) {$k_c$};
-    \node [block, below of=AR78, node distance=3cm] (AR79) {$A_R$};
-    \node [block, right of=AR79, node distance=1.5cm] (kc78) {$k_c$};
-    \node [block, below of=AR79, node distance=3cm] (AR80) {$A_R$};
-    \node [block, right of=AR80, node distance=1.5cm] (kc79) {$k_c$};
-    \node [block, below of=AR80, node distance=3cm] (AR81) {$A_R$};
-    \node [block, right of=AR81, node distance=1.5cm] (kc80) {$k_c$};
-    \node [block, below of=AR81, node distance=3cm] (AR82) {$A_R$};
-    \node [block, right of=AR82, node distance=1.5cm] (kc81) {$k_c$};
-    \node [block, below of=AR82, node distance=3cm] (AR83) {$A_R$};
-    \node [block, right of=AR83, node distance=1.5cm] (kc82) {$k_c$};
-    \node [block, below of=AR83, node distance=3cm] (AR84) {$A_R$};
-    \node [block, right of=AR84, node distance=1.5cm] (kc83) {$k_c$};
-    \node [block, below of=AR84, node distance=3cm] (AR85) {$A_R$};
-    \node [block, right of=AR85, node distance=1.5cm] (kc84) {$k_c$};
-    \node [block, below of=AR85, node distance=3cm] (AR86) {$A_R$};
-    \node [block, right of=AR86, node distance=1.5cm] (kc85) {$k_c$};
-    \node [block, below of=AR86, node distance=3cm] (AR87) {$A_R$};
-    \node [block, right of=AR87, node distance=1.5cm] (kc86) {$k_c$};
-    \node [block, below of=AR87, node distance=3cm] (AR88) {$A_R$};
-    \node [block, right of=AR88, node distance=1.5cm] (kc87) {$k_c$};
-    \node [block, below of=AR88, node distance=3cm] (AR89) {$A_R$};
-    \node [block, right of=AR89, node distance=1.5cm] (kc88) {$k_c$};
-    \node [block, below of=AR89, node distance=3cm] (AR90) {$A_R$};
-    \node [block, right of=AR90, node distance=1.5cm] (kc89) {$k_c$};
-    \node [block, below of=AR90, node distance=3cm] (AR91) {$A_R$};
-    \node [block, right of=AR91, node distance=1.5cm] (kc90) {$k_c$};
-    \node [block, below of=AR91, node distance=3cm] (AR92) {$A_R$};
-    \node [block, right of=AR92, node distance=1.5cm] (kc91) {$k_c$};
-    \node [block, below of=AR92, node distance=3cm] (AR93) {$A_R$};
-    \node [block, right of=AR93, node distance=1.5cm] (kc92) {$k_c$};
-    \node [block, below of=AR93, node distance=3cm] (AR94) {$A_R$};
-    \node [block, right of=AR94, node distance=1.5cm] (kc93) {$k_c$};
-    \node [block, below of=AR94, node distance=3cm] (AR95) {$A_R$};
-    \node [block, right of=AR95, node distance=1.5cm] (kc94) {$k_c$};
-    \node [block, below of=AR95, node distance=3cm] (AR96) {$A_R$};
-    \node [block, right of=AR96, node distance=1.5cm] (kc95) {$k_c$};
-    \node [block, below of=AR96, node distance=3cm] (AR97) {$A_R$};
-    \node [block, right of=AR97, node distance=1.5cm] (kc96) {$k_c$};
-    \node [block, below of=AR97, node distance=3cm] (AR98) {$A_R$};
-    \node [block, right of=AR98, node distance=1.5cm] (kc97) {$k_c$};
-    \node [block, below of=AR98, node distance=3cm] (AR99) {$A_R$};
-    \node [block, right of=AR99, node distance=1.5cm] (kc98) {$k_c$};
-    \node [block, below of=AR99, node distance=3cm] (AR100) {$A_R$};
-    \node [block, right of=AR100, node distance=1.5cm] (kc99) {$k_c$};
-    \node [block, below of=AR100, node distance=3cm] (AR101) {$A_R$};
-    \node [block, right of=AR101, node distance=1.5cm] (kc100) {$k_c$};
-    \node [block, below of=AR101, node distance=3cm] (AR102) {$A_R$};
-    \node [block, right of=AR102, node distance=1.5cm] (kc101) {$k_c$};
-    \node [block, below of=AR102, node distance=3cm] (AR103) {$A_R$};
-    \node [block, right of=AR103, node distance=1.5cm] (kc102) {$k_c$};
-    \node [block, below of=AR103, node distance=3cm] (AR104) {$A_R$};
-    \node [block, right of=AR104, node distance=1.5cm] (kc103) {$k_c$};
-    \node [block, below of=AR104, node distance=3cm] (AR105) {$A_R$};
-    \node [block, right of=AR105, node distance=1.5cm] (kc104) {$k_c$};
-    \node [block, below of=AR105, node distance=3cm] (AR106) {$A_R$};
-    \node [block, right of=AR106, node distance=1.5cm] (kc105) {$k_c$};
-    \node [block, below of=AR106, node distance=3cm] (AR107) {$A_R$};
-    \node [block, right of=AR107, node distance=1.5cm] (kc106) {$k_c$};
-    \node [block, below of=AR107, node distance=3cm] (AR108) {$A_R$};
-    \node [block, right of=AR108, node distance=1.5cm] (kc107) {$k_c$};
-    \node [block, below of=AR108, node distance=3cm] (AR109) {$A_R$};
-    \node [block, right of=AR109, node distance=1.5cm] (kc108) {$k_c$};
-    \node [block, below of=AR109, node distance=3cm] (AR110) {$A_R$};
-    \node [block, right of=AR110, node distance=1.5cm] (kc109) {$k_c$};
-    \node [block, below of=AR110, node distance=3cm] (AR111) {$A_R$};
-    \node [block, right of=AR111, node distance=1.5cm] (kc110) {$k_c$};
-    \node [block, below of=AR111, node distance=3cm] (AR112) {$A_R$};
-    \node [block, right of=AR112, node distance=1.5cm] (kc111) {$k_c$};
-    \node [block, below of=AR112, node distance=3cm] (AR113) {$A_R$};
-    \node [block, right of=AR113, node distance=1.5cm] (kc112) {$k_c$};
-    \node [block, below of=AR113, node distance=3cm] (AR114) {$A_R$};
-    \node [block, right of=AR114, node distance=1.5cm] (kc113) {$k_c$};
-    \node [block, below of=AR114, node distance=3cm] (AR115) {$A_R$};
-    \node [block, right of=AR115, node distance=1.5cm] (kc114) {$k_c$};
-    \node [block, below of=AR115, node distance=3cm] (AR116) {$A_R$};
-    \node [block, right of=AR116, node distance=1.5cm] (kc115) {$k_c$};
-    \node [block, below of=AR116, node distance=3cm] (AR117) {$A_R$};
-    \node [block, right of=AR117, node distance=1.5cm] (kc116) {$k_c$};
-    \node [block, below of=AR117, node distance=3cm] (AR118) {$A_R$};
-    \node [block, right of=AR118, node distance=1.5cm] (kc117) {$k_c$};
-    \node [block, below of=AR118, node distance=3cm] (AR119) {$A_R$};
-    \node [block, right of=AR119, node distance=1.5cm] (kc118) {$k_c$};
-    \node [block, below of=AR119, node distance=3cm] (AR120) {$A_R$};
-    \node [block, right of=AR120, node distance=1.5cm] (kc119) {$k_c$};
-    \node [block, below of=AR120, node distance=3cm] (AR121) {$A_R$};
-    \node [block, right of=AR121, node distance=1.5cm] (kc120) {$k_c$};
-    \node [block, below of=AR121, node distance=3cm] (AR122) {$A_R$};
-    \node [block, right of=AR122, node distance=1.5cm] (kc121) {$k_c$};
-    \node [block, below of=AR122, node distance=3cm] (AR123) {$A_R$};
-    \node [block, right of=AR123, node distance=
 
 图 14: Strassen 算法的改进运算流程图
 
@@ -917,7 +600,7 @@ U_4 &= U_2 + M_5 & & & C_{22} &= U_7
     \label{fig:19}
 \end{figure}
 
-\subsection{5.2.5 问题 1 求解}
+\subsubsection{5.2.5 问题 1 求解}
 
 首先使用模方法，计算出了每个数据集同一行 $\mathbf{H}_{j,k}$ 之间的相关系数，接着使用聚类父子节点法对具有高度相关性的矩阵进行聚类分析，然后使用随机 SVD 分解方法计算父节点对应的 $\mathbf{V}_{p,q}$，用来代替整个类的 $\mathbf{V}_{j,k}$，以达到简化计算复杂度的目的。图\ref{fig:20}可以看出，满足 $\rho_{min}(\mathbf{V}) \geq \rho_{th} = 0.99$ 的要求。
 
@@ -953,7 +636,7 @@ U_4 &= U_2 + M_5 & & & C_{22} &= U_7
 
 在计算机科学和信息论中，Huffman 码是一种特殊类型的最优前缀码，通常用于无损数据压缩。查找或使用此类代码的过程通过 Huffman 编码进行 [5]，而 Huffman 编码的首要步骤就是要生成一棵最优带权二叉树——Huffman 树。
 
-\section{Huffman 树:}
+Huffman 树:
 
 对于一棵二叉树来说，若叶节点的个数相同且对应权值也相同，而对应权值的叶节点所处的层次不同，则二叉树的带权路径长度可能不相同。但是在所有含 \(n\) 个叶结点，并且带有相同权值的二叉树中，必定存在一棵其带权路径长度值为最小的二叉树，也就是最优二叉树。下面我们给出构造其的算法步骤:
 
@@ -978,7 +661,7 @@ U_4 &= U_2 + M_5 & & & C_{22} &= U_7
 
 给出 Huffman 树后，我们用 Huffman 树进行编码。
 
-\section{Huffman 编码:}
+Huffman 编码:
 
 在信息通信领域里，信息传送的速度至关重要，而传送速度由于传送的信息量有关。在信息传送时需要将信息符号转换为二进制组成的符号串，这就需要进行二进制的编码。假设要传送的是由 A、B、C 和 D4 个字符组成的电报文 ABCA AABCAD，在计算机中每个字符在没有压缩的文本文件中由一个字节（例如常见的 ASCII 码）或两个字节（例如 Unicode 码）表示，如果是用这种方案，每个字符都需要 8 个或 16 个位数，但是为了提高存储和传输效率，在信息存储和传送时总是希望传输信息的总长度尽可能短，这就需要设计一套对字符集进行二进制编码的方法，使得采用这种编码方式对信息进行编码时，信息的传输量最小。如果能对每一个字符用不同长度的二进制编码，并且尽可能减少出现次数最多的字符的编码位数，则信息传送的总长度便可以达到最小。
 
@@ -1001,13 +684,13 @@ Huffman 编码的构造过程是：用电文中各个字符使用的频度作为
 
 编码之后，进行解码操作，就可以完成原始数据的读取。
 
-\subsection{Huffman 解码}
+Huffman 解码
 
 一般而言，解码过程只是将前缀代码流转换为单个字节值，通常是在从输入流中读取每一位时逐个节点遍历 Huffman 树（到达叶节点必然会终止对该特定字节值的搜索）。在这发生之前，必须以某种方式重建霍夫曼树。Lin 提出的基于递归霍夫曼树的霍夫曼解码快速算法可以加快解码过程 [6]。对于本题而言，可以在 data1-data6 中查找每个元素相同或者相似（实部虚部分别相似，应问题所需精度可定义相似度的衡量参数），然后利用 Huffman 方法进行压缩及解压的操作，这将降低矩阵的存储空间。但问题中所述要求压缩后的每个元素仍然以 32bit 单精度浮点数存储，不考虑位宽的压缩，故这种在解答问题 2 时暂不使用，但不失为一种很好的压缩思想。对于问题 2 的解答，我们采用 5.2.2 中提出的降维分块压缩算法。
 
 \subsubsection{分块压缩算法}
 
-\subsubsection{优化方法 1-降维 SVD 压缩算法}
+优化方法 1-降维 SVD 压缩算法
 
 现采用降维 SVD 压缩算法对于 $\mathbf{W}$ 进行压缩。已知，$\mathbf{W}$ 是一个 $64 \times 2 \times 4 \times 384$ 的 4 维矩阵，首先把 4 维的矩阵进行降维处理，变成 $256 \times 768$ 的 2 维矩阵，再对该矩阵进行 SVD 分解，在保证最终误差的情况下，取出累计贡献率大于 0.974 的前 $m$ 列。
 
@@ -1036,7 +719,7 @@ Huffman 编码的构造过程是：用电文中各个字符使用的频度作为
     \label{fig:optimization_method_1}
 \end{figure}
 
-\section{优化方法 2-降维分块 SVD 压缩算法 (大分块)}
+优化方法 2-降维分块 SVD 压缩算法 (大分块)
 
 还可采用大分块压缩对于 $\mathbf{W}$ 进行压缩。已知，$\mathbf{W}$ 是一个 $64 \times 2 \times 4 \times 384$ 的 4 维矩阵，首先把 4 维的矩阵进行降维处理，变成 $256 \times 768$ 的 2 维矩阵，再将该 2 维矩阵分为 3 个 $256 \times 256$ 的矩阵，分别对每个矩阵进行 SVD 分解，在保证最终误差的情况下，取出累计贡献率大于 0.966 的前 $m$ 列 $\mathbf{U}(:, 1:m)$, $\mathbf{V}(:, 1:m)$，前 $m$ 个奇异值进行存储，最后使用它们相乘、重组及升维即可解压 (图 \ref{fig:optimization_method_2}).
 
@@ -1070,7 +753,7 @@ Huffman 编码的构造过程是：用电文中各个字符使用的频度作为
     \label{fig:optimization_method_2}
 \end{figure}
 
-\section{优化方法 3-降维分块 SVD 压缩算法（小分块）}
+优化方法 3-降维分块 SVD 压缩算法（小分块）
 
 由于 $\mathbf{H}_{j,k}$ 是一个 $4 \times 64$ 矩阵，因此可以通过将每个 $\mathbf{H}_{j,k}$ 或 $\mathbf{W}_{j,k}$ 分块成为 16 个 $4 \times 4$
 
@@ -1120,7 +803,7 @@ Huffman 编码的构造过程是：用电文中各个字符使用的频度作为
     \label{fig:optimization_method_3}
 \end{figure}
 
-\subsection{5.3.3 问题2求解}
+\subsubsection{5.3.3 问题2求解}
 
 通过计算，可以得到 $\mathbf{W}$（图33）与 $\mathbf{V}$（图34）在上述三个优化方法下节约的空间。在优化方法3中没有检测到对称或者稀疏矩阵。
 
@@ -1275,3 +958,1149 @@ Huffman 编码的构造过程是：用电文中各个字符使用的频度作为
 [5] D.A. Huffman. A method for the construction of minimum redundancy codes. In: Proc. IRE 1952;40:1098–1101.
 
 [6] Y.K. Lin, S.C. Huang, and C.H. Yang. A fast algorithm for Huffman decoding based on a recursion Huffman tree. Journal of Systems \& Software 2012;85(4):974-980.
+
+/section{附录}
+containerAll=zeros(384,10,6,4);%最后两个参数表示哪个数据集，哪一行
+filepath=’C:\Users\wangy\Desktop\A\H’;
+for q=1:6
+temp=load([filepath,’\Data’,num2str(q),’_H’,’.mat’]);
+H=temp.H;
+N=[];
+for i=1:4%所有矩阵的二范数相当于压缩了,
+for j=1:384
+A=H(:,:,i,j);
+for k=1:64
+N(i,j,k)=norm(A(:,k));
+end
+end
+end
+Co=zeros(4,384,384);
+for i=1:4
+for j=1:384
+for p=j:384
+temp=corrcoef(N(i,j,:),N(i,p,:));
+Co(i,j,p)=temp(1,2);
+end
+end
+end
+M=[];
+l=1;
+for i=1:4
+for j=1:384
+for k=j:384
+if Co(i,j,k)>=0.9985%筛选出来相关系数大于的矩阵关系，存储在0.95中M
+M(l,1)=i;
+M(l,2)=j;
+M(l,3)=k;
+l=l+1;
+end
+end
+45
+
+
+
+end
+end
+% 所有的算出来
+## V2=zeros(64,2,384,4);%是求出的所有矩阵V2V
+for k=1:4
+container=julei(M,k);
+containerAll(1:size(container,1),1:size(container,2),q,k)=container;
+column=container(:,1);
+V1=zeros(64,2,size(column,1));
+for i=1:size(column)
+a=column(i);
+tmp=suiji(H(:,:,k,a));
+## V1(:,:,i)=tmp(:,1:2);%求随机SVD
+end
+V3=zeros(64,2,384);
+for i=1:size(column)
+for j=1:size(container,2)
+if container(i,j)~=0
+V3(:,:,container(i,j))=V1(:,:,i);
+end
+end
+end
+V2(:,:,:,k)=V3;
+end
+V2All(:,:,:,:,q)=V2;
+# % 进行的检验V
+temp1=load([filepath,’\Data’,num2str(q),’_V’,’.mat’]);
+V=temp1.V;
+P=zeros(2,4,384);
+for i=1:4
+for j=1:384
+for l=1:2
+a=V(:,l,i,j);
+b=V2(:,l,j,i);
+P(l,i,j)=norm(a’*b)/norm(a)*norm(b);
+end
+46
+
+
+
+end
+end
+errorAll(1,q)=min(min(min(P)));
+end
+%% 第一题求解写得到的，写出V.文件给程序运行matPython
+%写入文件excel
+V2final=zeros(256,768,6);
+for k=1:6
+for j=1:384
+for i=1:4
+tmp=V2All(:,:,j,i,k);
+V2final((i-1)*64+1:i*64,(j-1)*2+1:j*2,k)=tmp;%此处的用于下一步的
+# 对接V
+end
+end
+end
+data1=V2final(:,:,1);
+data2=V2final(:,:,2);
+data3=V2final(:,:,3);
+data4=V2final(:,:,4);
+data5=V2final(:,:,5);
+data6=V2final(:,:,6);
+for i=1:6
+save([pwd,’\V’,num2str(i)],[’data’,num2str(i)]);
+end
+%% 问题一的求解再计算W 存储使用计算的的过程pythonW
+dataAll=zeros(256,768,6);
+for i=1:6
+tmp=load([pwd,’\data’,num2str(i),’.mat’]);
+dataAll(:,:,i)=tmp.mat;
+end
+dataAll(:,:,1)=data1;
+dataAll(:,:,2)=data2;
+dataAll(:,:,3)=data3;
+dataAll(:,:,4)=data4;
+dataAll(:,:,5)=data5;
+dataAll(:,:,6)=data6;
+## W_new=zeros(64,2,4,384,6);%用来存储所有的数据W
+47
+
+
+
+for i=1:6
+## W_new(:,:,:,:,i)=cunchuW(dataAll(:,:,i));%升维处理
+end
+%% 第一题的解答对算出来的进行检测pythonW
+accuracy=zeros(6,1);%检测准确度
+filepath=’C:\Users\wangy\Desktop\A\W’;
+for q=1:6
+temp1=load([filepath,’\Data’,num2str(q),’_W’,’.mat’]);
+W=temp1.W;
+P=zeros(2,4,384);
+for i=1:4
+for j=1:384
+for l=1:2
+a=W(:,l,i,j);
+b=W_new(:,l,i,j,q);
+P(l,i,j)=norm(a’*b)/norm(a)*norm(b);
+end
+end
+end
+accuracy(q,1)=min(min(min(P)));
+end
+%% 问题二的求解小分块压缩只能对(进行处理H)
+errorAll=zeros(6,1);
+countAll=zeros(6,1);
+countSymmetry=0;%寻找对称
+filepath=’C:\Users\wangy\Desktop\A\H’;
+for q=1:6
+temp=load([filepath,’\Data’,num2str(q),’_H’,’.mat’]);
+H=temp.H;
+# %首先先把每个进行分裂H
+## H2=zeros(4,384,4,4,16);%是存储的所有小矩阵H24*4
+for i=1:4
+for j=1:384
+H1=H(:,:,i,j);
+for k=1:16
+H2(i,j,:,:,k)=H1(1:4,(k-1)*4+1:k*4);
+end
+end
+48
+
+
+
+end
+%接着算每个小矩阵首元奇异值的贡献率
+contribution=zeros(4,384,16);
+location=[];
+p=1;
+for i=1:4
+for j=1:384
+for k=1:16
+H3=H2(i,j,:,:,k);
+tmp=reshape(H3,[4,4]);
+if isequal(tmp,tmp’)|| isequal(tmp,tmp.’)
+countSymmetry=countSymmetry+1;%寻找每个小矩阵是否有对称矩阵
+end
+[U3,S3,V3]=svd(tmp);
+contribution(i,j,k)=S3(1,1)/(S3(1,1)+S3(2,2)+S3(3,3)+S3(4,4));
+if contribution(i,j,k)>=0.749
+location(p,1)=i;
+location(p,2)=j;
+location(p,3)=k;
+p=p+1;
+end
+end
+end
+end
+countAll(q,1)=size(location,1);
+H6=H;
+for i=1:size(location,1)
+H4=H2(location(i,1),location(i,2),:,:,location(i,3));
+tmp=reshape(H4,[4,4]);
+[U,S,V]=svd(tmp);
+V=V’;
+H5=U(1:4,1)*S(1,1)*V(1,1:4);
+H6(1:4,(location(i,3)-1)*4+1:location(i,3)*4,
+location(i,1),location(i,2))=H5;%是替换完
+# 的H6
+end
+sum1=0;
+sum2=0;
+49
+
+
+
+for i=1:4
+for j=1:384
+a=H6(:,:,i,j);
+b=H(:,:,i,j);
+sum1=sum1+(norm(a-b,’fro’))^2;
+sum2=sum2+(norm(b,’fro’))^2;
+end
+end
+error=10*log10(sum1/sum2);
+errorAll(q,1)=error;
+end
+spareSpace3H=7*countAll;
+errorMinH=errorAll;
+## %% 问题二的求解大分块压缩先对进行处理W
+errorAll=zeros(6,1);
+thresAll=zeros(6,3);
+filepath=’C:\Users\wangy\Desktop\A\W’;
+for k=1:6
+temp=load([filepath,’\Data’,num2str(k),’_W’,’.mat’]);
+W=temp.W;
+## W2D=zeros(256,768);%先把四维矩阵展成二维矩阵
+for i=1:4
+for j=1:384
+W2D((i-1)*64+1:i*64,(j-1)*2+1:j*2)=W(:,:,i,j);
+end
+end
+## %然后分三个256大块进行分解×256SVD
+## H2DD=zeros(256,768);%存储解压之后的值
+threshold=zeros(1,3);%存储用了前多少列
+for i=1:3
+[A,j]=accumCon(W2D(:,(i-1)*256+1:i*256));
+H2DD(:,(i-1)*256+1:i*256)=A;
+threshold(1,i)=j;
+end
+thresAll(k,:)=threshold;
+sum1=0;
+sum2=0;%计算误差
+50
+
+
+
+for i=1:4
+for j=1:384
+a=W2D((i-1)*64+1:i*64,(j-1)*2+1:j*2);
+b=H2DD((i-1)*64+1:i*64,(j-1)*2+1:j*2);
+sum1=sum1+(norm(a-b,’fro’))^2;
+sum2=sum2+(norm(b,’fro’))^2;
+end
+end
+error=10*log10(sum1/sum2);
+errorAll(k,1)=error;
+end
+errorMedium=errorAll;%大分块的误差
+thres=zeros(6,1);
+for i=1:6
+sum=0;
+for j=1:3
+sum=sum+thresAll(i,j);
+end
+thres(i,1)=sum;
+end
+thresAllMedium=thresAll;
+## spareSpace2=ones(6,1)*196608-513*thres;%节省的空间
+## %% 问题二的求解大分块压缩再对于处理H
+errorAll=zeros(6,1);
+thresAll=zeros(6,6);
+filepath=’C:\Users\wangy\Desktop\A\H’;
+for k=1:6
+temp=load([filepath,’\Data’,num2str(k),’_H’,’.mat’]);
+H=temp.H;
+## H2D=zeros(256,1536);%先把四维矩阵展成二维矩阵
+for i=1:4
+for j=1:384
+H2D((i-1)*64+1:i*64,(j-1)*4+1:j*4)=H(:,:,i,j).’;%要转置
+end
+end
+## %然后分六个256大块进行分解×256SVD
+## H2DD=zeros(256,1536);%存储解压之后的值
+threshold=zeros(1,6);%存储用了前多少列
+51
+
+
+
+for i=1:6
+[A,j]=accumCon(H2D(:,(i-1)*256+1:i*256));
+H2DD(:,(i-1)*256+1:i*256)=A;
+threshold(1,i)=j;
+end
+thresAll(k,:)=threshold;
+sum1=0;
+sum2=0;%计算误差
+for i=1:4
+for j=1:384
+a=H2D((i-1)*64+1:i*64,(j-1)*4+1:j*4);
+b=H2DD((i-1)*64+1:i*64,(j-1)*4+1:j*4);
+sum1=sum1+(norm(a-b,’fro’))^2;
+sum2=sum2+(norm(b,’fro’))^2;
+end
+end
+error=10*log10(sum1/sum2);
+errorAll(k,1)=error;
+end
+errorMediumH=errorAll;%大分块的误差H
+thres=zeros(6,1);
+for i=1:6
+sum=0;
+for j=1:6
+sum=sum+thresAll(i,j);
+end
+thres(i,1)=sum;
+end
+thresAllMediumH=thresAll;
+## spareSpace2H=ones(6,1)*393216-513*thres;%节省的空间
+%% 问题二的求解不分块处理！W一个大块()
+errorAll=zeros(6,1);
+thresAll=zeros(6,1);
+filepath=’C:\Users\wangy\Desktop\A\W’;
+for k=1:6
+temp=load([filepath,’\Data’,num2str(k),’_W’,’.mat’]);
+W=temp.W;
+## W2D=zeros(256,768);%先把四维矩阵展成二维矩阵
+52
+
+
+
+for i=1:4
+for j=1:384
+W2D((i-1)*64+1:i*64,(j-1)*2+1:j*2)=W(:,:,i,j);
+end
+end
+# %然后直接进行分解SVD
+## H2DD=zeros(256,768);%存储解压之后的值
+[A,j]=accumCon(W2D);
+threshold=j;%存储用了前多少列
+thresAll(k,1)=threshold;
+H2DD=A;
+sum1=0;
+sum2=0;%计算误差
+for i=1:4
+for j=1:384
+a=W2D((i-1)*64+1:i*64,(j-1)*2+1:j*2);
+b=H2DD((i-1)*64+1:i*64,(j-1)*2+1:j*2);
+sum1=sum1+(norm(a-b,’fro’))^2;
+sum2=sum2+(norm(b,’fro’))^2;
+end
+end
+error=10*log10(sum1/sum2);
+errorAll(k,1)=error;
+end
+spareSpace1=ones(6,1)*196608-1025*thresAll;
+thresAllMax=thresAll;
+errorMax=errorAll;
+%% 问题二的求解不分块处理！H一个大块()
+errorAll=zeros(6,1);
+thresAll=zeros(6,1);
+filepath=’C:\Users\wangy\Desktop\A\H’;
+for k=1:6
+temp=load([filepath,’\Data’,num2str(k),’_H’,’.mat’]);
+H=temp.H;
+## H2D=zeros(256,1536);%先把四维矩阵展成二维矩阵
+for i=1:4
+for j=1:384
+53
+
+
+
+H2D((i-1)*64+1:i*64,(j-1)*4+1:j*4)=H(:,:,i,j).’;%要转置
+end
+end
+# %直接进行分解SVD
+## H2DD=zeros(256,1536);%存储解压之后的值
+[A,j]=accumCon(H2D);
+H2DD=A;
+threshold=j;
+thresAll(k,1)=threshold;
+sum1=0;
+sum2=0;%计算误差
+for i=1:4
+for j=1:384
+a=H2D((i-1)*64+1:i*64,(j-1)*4+1:j*4);
+b=H2DD((i-1)*64+1:i*64,(j-1)*4+1:j*4);
+sum1=sum1+(norm(a-b,’fro’))^2;
+sum2=sum2+(norm(b,’fro’))^2;
+end
+end
+error=10*log10(sum1/sum2);
+errorAll(k,1)=error;
+end
+spareSpace1H=ones(6,1)*393216-1793*thresAll;
+thresAllMaxH=thresAll;
+errorMaxH=errorAll;
+# %% 问题三的求解先压缩解压矩阵H
+%大分块压缩256*256
+errorAll=zeros(6,1);
+thresAll=zeros(6,6);
+## HAll=zeros(4,64,4,384,6);%存储解压缩后的H
+filepath=’C:\Users\wangy\Desktop\A\H’;
+for k=1:6
+temp=load([filepath,’\Data’,num2str(k),’_H’,’.mat’]);
+H=temp.H;
+## H2D=zeros(256,1536);%先把四维矩阵展成二维矩阵
+for i=1:4
+for j=1:384
+54
+
+
+
+H2D((i-1)*64+1:i*64,(j-1)*4+1:j*4)=H(:,:,i,j).’;%要转置
+end
+end
+## %然后分六个256大块进行分解×256SVD
+## H2DD=zeros(256,1536);%存储解压之后的值
+for i=1:6
+[A,j]=accumCon(H2D(:,(i-1)*256+1:i*256));
+H2DD(:,(i-1)*256+1:i*256)=A;
+end
+# %接着对压缩后的升维度H
+for i=1:4
+for j=1:384
+HAll(:,:,i,j,k)=H2DD((i-1)*64+1:i*64,(j-1)*4+1:j*4).’;
+end
+end
+end
+## %% 第三题的求解再进行随机及模方法SVD
+errorAll=zeros(1,6);
+## V2All=zeros(64,2,384,4,6);%存储所有随机加模方法算出来的svdV
+containerAll=zeros(384,10,6,4);%最后两个参数表示哪个数据集，哪一行
+filepath=’C:\Users\wangy\Desktop\A\H’;
+for q=1:6
+## H=HAll(:,:,:,:,q);%使用解压后的矩阵H
+N=[];
+for i=1:4%所有矩阵的二范数相当于压缩了,
+for j=1:384
+A=H(:,:,i,j);
+for k=1:64
+N(i,j,k)=norm(A(:,k));
+end
+end
+end
+Co=zeros(4,384,384);
+for i=1:4
+for j=1:384
+for p=j:384
+temp=corrcoef(N(i,j,:),N(i,p,:));
+55
+
+
+
+Co(i,j,p)=temp(1,2);
+end
+end
+end
+M=[];
+l=1;
+for i=1:4
+for j=1:384
+for k=j:384
+if Co(i,j,k)>=0.998%筛选出来相关系数大于的矩阵关系，存储在0.95中M
+M(l,1)=i;
+M(l,2)=j;
+M(l,3)=k;
+l=l+1;
+end
+end
+end
+end
+% 所有的算出来
+## V2=zeros(64,2,384,4);%是求出的所有矩阵V2V
+for k=1:4
+container=julei(M,k);
+containerAll(1:size(container,1),1:size(container,2),q,k)=container;
+column=container(:,1);
+V1=zeros(64,2,size(column,1));
+for i=1:size(column)
+a=column(i);
+tmp=suiji(H(:,:,k,a));
+## V1(:,:,i)=tmp(:,1:2);%求随机SVD
+end
+V3=zeros(64,2,384);
+for i=1:size(column)
+for j=1:size(container,2)
+if container(i,j)~=0
+V3(:,:,container(i,j))=V1(:,:,i);
+end
+end
+56
+
+
+
+end
+V2(:,:,:,k)=V3;
+end
+V2All(:,:,:,:,q)=V2;
+# % 进行的检验V
+temp1=load([filepath,’\Data’,num2str(q),’_V’,’.mat’]);
+V=temp1.V;
+P=zeros(2,4,384);
+for i=1:4
+for j=1:384
+for l=1:2
+a=V(:,l,i,j);
+b=V2(:,l,j,i);
+P(l,i,j)=norm(a’*b)/norm(a)*norm(b);
+end
+end
+end
+errorAll(1,q)=min(min(min(P)));
+end
+%% 第三题求解写得到的，把Vdata1-给程序运行data6Python
+%写入文件excel
+V2final=zeros(256,768,6);
+for k=1:6
+for j=1:384
+for i=1:4
+tmp=V2All(:,:,j,i,k);
+V2final((i-1)*64+1:i*64,(j-1)*2+1:j*2,k)=tmp;
+end
+end
+end
+data1=V2final(:,:,1);
+data2=V2final(:,:,2);
+data3=V2final(:,:,3);
+data4=V2final(:,:,4);
+data5=V2final(:,:,5);
+data6=V2final(:,:,6);
+for i=1:6
+save([pwd,’\V’,num2str(i)],[’data’,num2str(i)]);
+57
+
+
+
+end
+%% 第三题的求解存储使用计算的的过程pythonW
+dataAll=zeros(256,768,6);
+for i=1:6
+tmp=load([pwd,’\data’,num2str(i),’.mat’]);
+dataAll(:,:,i)=tmp.mat;
+end
+## W_new=zeros(64,2,4,384,6);%用来存储所有的数据W
+for i=1:6
+## W_new(:,:,:,:,i)=cunchuW(dataAll(:,:,i));%升维处理
+end
+# %% 第三题的求解再对进行降维压缩W
+## WAll=zeros(64,2,4,384,6);%存储解压缩后的W
+for k=1:6
+W=W_new(:,:,:,:,k);
+## W2D=zeros(256,768);%先把四维矩阵展成二维矩阵
+for i=1:4
+for j=1:384
+W2D((i-1)*64+1:i*64,(j-1)*2+1:j*2)=W(:,:,i,j);
+end
+end
+## %然后分三个256大块进行分解×256SVD
+## H2DD=zeros(256,768);%存储解压之后的值
+for i=1:3
+[A,j]=accumCon(W2D(:,(i-1)*256+1:i*256));
+H2DD(:,(i-1)*256+1:i*256)=A;
+end
+for i=1:4
+for j=1:384
+WAll(:,:,i,j,k)=H2DD((i-1)*64+1:i*64,(j-1)*2+1:j*2);
+end
+end
+end
+# %% 第三题的求解对的检验W
+accuracy=zeros(6,1);%检测准确度
+filepath=’C:\Users\wangy\Desktop\A\W’;
+for q=1:6
+temp1=load([filepath,’\Data’,num2str(q),’_W’,’.mat’]);
+58
+
+
+
+W=temp1.W;
+P=zeros(2,4,384);
+for i=1:4
+for j=1:384
+for l=1:2
+a=W(:,l,i,j);
+b=WAll(:,l,i,j,q);
+P(l,i,j)=norm(a’*b)/norm(a)*norm(b);
+end
+end
+end
+accuracy(q,1)=min(min(min(P)));
+end
+function [A,j] = accumCon(A)
+[U,S,V]=svd(A);
+sum=0;
+for i=1:256%算一下累计贡献率
+sum=sum+S(i,i);
+end
+sum2=0;
+con=zeros(1,256);
+for i=1:256%算一下累计贡献率
+sum2=sum2+S(i,i);
+con(i)=sum2/sum;%累计贡献率
+end
+%记录到哪一个奇异值贡献率超过0.9
+j=0;
+for i=1:256
+if con(i)>=0.99
+j=i;
+break;
+end
+end
+A=U(:,1:j)*S(1:j,1:j)*V(:,1:j)’;
+end
+function [V1] = suiji(A)
+Q=[];
+59
+
+
+
+w=normrnd(0,1,size(A,2),1);
+y=A*w;
+q=y;
+q_new=q/norm(q);
+Q=horzcat(Q,q_new);
+count1=0;
+while norm(A-Q*Q’*A)>0.000001
+w=normrnd(0,1,size(A,2),1);
+y=A*w;
+q=(eye(size(A,1))-Q*Q’)*y;
+q_new=q/norm(q);
+Q=horzcat(Q,q_new);
+count1=count1+1;
+end
+B=Q’*A;
+[u,s,V1]=svd(B);
+end
+function [W_new11] = cunchuW(num1)
+W_new11=zeros(64,2,4,384);
+for i=1:4
+for j=1:384
+W_new11(:,:,i,j)=num1((i-1)*64+1:i*64,(j-1)*2+1:j*2);
+end
+end
+end
+def main():
+output()
+if __name__ == ’__main__’:
+main()
+from ReadData import *
+import numpy as np
+import pandas as pd
+import openpyxl as op
+import os
+60
+
+
+
+import xlwt
+import scipy.io
+# 读取.文件，并将矩阵储存起来mat
+# 表示第几个表data_num
+# 表示表中矩阵的行数row
+# 表示表中矩阵的列数col
+# 返回表中所有矩阵
+def read_mat_file(data_num):
+data = np.array(read_data_mat()[data_num])
+# 用于存储整个矩阵
+matrix_V = []
+for i in range(4):
+# 用于存储矩阵的每一行
+matrix_V_line = []
+for j in range(384):
+## V_ij = data[i*64:(i+1)*64, j*2:(j+1)*2]
+matrix_V_line.append(V_ij)
+matrix_V.append(matrix_V_line)
+return np.array(matrix_V)
+# 获取的方法v_k
+# 表示第几个表data_num
+# 表示第几列的，不大于，表示第一列KVk3830
+def get_v_k(data_num, K):
+data = read_mat_file(data_num)
+v_k = data[0][K]
+for i in range(1,4):
+v_k = np.hstack((v_k,data[i][K]))
+return v_k
+# 计算矩阵的共轭转置
+def conj_t(A):
+return np.conj(np.array(A)).T
+# 奇异值分解
+def svd(matrix):
+svd_matrix = []
+u,d,v = np.linalg.svd(np.array(matrix))
+61
+
+
+
+svd_matrix.append(u)
+svd_matrix.append(d)
+svd_matrix.append(v)
+return svd_matrix
+# 利用求解线性方程组svdAx=b
+def solve_equations_by_svd(A,b):
+b = np.array(b)
+svd_matrix = svd(A)
+u,d,v = svd_matrix[0],svd_matrix[1],svd_matrix[2]
+u = np.array(u)
+d = np.array(d)
+v = np.array(v)
+y = np.ones([np.shape(v)[0],1])
+b = np.matmul(conj_t(u),b)
+for i in range(np.shape(y)[0]):
+y[i] = b[i] / d[i]
+return np.matmul(conj_t(v),y)
+# # 简单的矩阵乘法实现A*B
+def matrix_multiply(A, B):
+res = [[0] * len(B[0]) for i in range(len(A))]
+for i in range(len(A)):
+for j in range(len(B[0])):
+for k in range(len(B)):
+res[i][j] += A[i][k] * B[k][j]
+return res
+# 矩阵乘常数
+def matrix_multiply_a(matrix_a,a):
+shape_A = np.shape(matrix_a)
+for i in range(shape_A[0]):
+for j in range(shape_A[1]):
+matrix_a[i][j] *= a
+return matrix_a
+# 简单的矩阵相加
+def matrix_add(matrix_a, matrix_b):
+rows = len(matrix_a)
+62
+
+
+
+columns = len(matrix_a[0])
+matrix_c = [list() for i in range(rows)]
+for i in range(rows):
+for j in range(columns):
+matrix_c_temp = matrix_a[i][j] + matrix_b[i][j]
+matrix_c[i].append(matrix_c_temp)
+return matrix_c
+# 简单的矩阵相减
+def matrix_minus(matrix_a, matrix_b):
+rows = len(matrix_a)
+columns = len(matrix_a[0])
+matrix_c = [list() for i in range(rows)]
+for i in range(rows):
+for j in range(columns):
+matrix_c_temp = matrix_a[i][j] - matrix_b[i][j]
+matrix_c[i].append(matrix_c_temp)
+return matrix_c
+# 矩阵的分块
+def matrix_divide(matrix_a, row, column):
+length = len(matrix_a)
+matrix_b = [list() for i in range(length // 2)]
+k = 0
+for i in range((row - 1) * length // 2, row * length // 2):
+for j in range((column - 1) * length // 2, column * length //
+2):
+matrix_c_temp = matrix_a[i][j]
+matrix_b[k].append(matrix_c_temp)
+k += 1
+return matrix_b
+# 矩阵的拼接
+def matrix_merge(matrix_11, matrix_12, matrix_21, matrix_22):
+length = len(matrix_11)
+matrix_all = [list() for i in range(length * 2)]
+for i in range(length):
+matrix_all[i] = list(matrix_11[i]) + list(matrix_12[i])
+for j in range(length):
+63
+
+
+
+matrix_all[length + j] = list(matrix_21[j]) + list(matrix_22[j])
+return matrix_all
+# 算法计算矩阵的乘法Strassen
+def strassen(matrix_a, matrix_b):
+rows = len(matrix_a)
+if rows == 1:
+matrix_all = [list() for i in range(rows)]
+matrix_all[0].append(matrix_a[0][0] * matrix_b[0][0])
+elif rows <= 16:
+matrix_all = matrix_multiply(matrix_a, matrix_b)
+else:
+s1 = matrix_minus((matrix_divide(matrix_b, 1, 2)),
+(matrix_divide(matrix_b, 2, 2)))
+s2 = matrix_add((matrix_divide(matrix_a, 1, 1)),
+(matrix_divide(matrix_a, 1, 2)))
+s3 = matrix_add((matrix_divide(matrix_a, 2, 1)),
+(matrix_divide(matrix_a, 2, 2)))
+s4 = matrix_minus((matrix_divide(matrix_b, 2, 1)),
+(matrix_divide(matrix_b, 1, 1)))
+s5 = matrix_add((matrix_divide(matrix_a, 1, 1)),
+(matrix_divide(matrix_a, 2, 2)))
+s6 = matrix_add((matrix_divide(matrix_b, 1, 1)),
+(matrix_divide(matrix_b, 2, 2)))
+s7 = matrix_minus((matrix_divide(matrix_a, 1, 2)),
+(matrix_divide(matrix_a, 2, 2)))
+s8 = matrix_add((matrix_divide(matrix_b, 2, 1)),
+(matrix_divide(matrix_b, 2, 2)))
+s9 = matrix_minus((matrix_divide(matrix_a, 1, 1)),
+(matrix_divide(matrix_a, 2, 1)))
+s10 = matrix_add((matrix_divide(matrix_b, 1, 1)),
+(matrix_divide(matrix_b, 1, 2)))
+p1 = strassen(matrix_divide(matrix_a, 1, 1), s1)
+p2 = strassen(s2, matrix_divide(matrix_b, 2, 2))
+p3 = strassen(s3, matrix_divide(matrix_b, 1, 1))
+p4 = strassen(matrix_divide(matrix_a, 2, 2), s4)
+p5 = strassen(s5, s6)
+p6 = strassen(s7, s8)
+p7 = strassen(s9, s10)
+64
+
+
+
+c11 = matrix_add(matrix_add(p5, p4), matrix_minus(p6, p2))
+c12 = matrix_add(p1, p2)
+c21 = matrix_add(p3, p4)
+c22 = matrix_minus(matrix_add(p5, p1), matrix_add(p3, p7))
+matrix_all = matrix_merge(c11, c12, c21, c22)
+return matrix_all
+# 基于算法的求逆算法Strassen
+def inv_strassen(matrix_a):
+rows = len(matrix_a)
+if rows >= 2:
+if rows <= 4 or rows % 2 == 1:
+matrix_all = np.linalg.inv(matrix_a)
+else:
+M1 = inv_strassen(matrix_divide(matrix_a, 1, 1))
+M2 = strassen(matrix_divide(matrix_a, 2, 1), M1)
+M3 = strassen(M1, matrix_divide(matrix_a, 1, 2))
+M4 = strassen(matrix_divide(matrix_a, 2, 1), M3)
+M5 = matrix_minus(M4, matrix_divide(matrix_a, 2, 2))
+M6 = inv_strassen(M5)
+C12 = strassen(M3, M6)
+C21 = strassen(M6, M2)
+M7 = strassen(M3, C21)
+C11 = matrix_minus(M1, M7)
+C22 = np.array(M6).dot(-1)
+matrix_all = matrix_merge(C11, C12, C21, C22)
+return matrix_all
+else:
+return np.linalg.inv(matrix_a)
+# 基于算法的求逆优化算法Strassen
+def inv_strassen_neo(matrix_a):
+matrix_a = np.array(matrix_a)
+rows = len(matrix_a)
+cols = len(matrix_a[0])
+if (rows <= 4) or (rows % 2 == 1 or cols % 2 == 1):
+matrix_a_np = np.array(matrix_a)
+matrix_all = np.linalg.inv(matrix_a_np)
+65
+
+
+
+else:
+M1 = inv_strassen_neo(matrix_divide(matrix_a, 1, 1))
+M2 = strassen(matrix_divide(matrix_a, 2, 1), M1)
+M3 = conj_t(M2)
+M4 = strassen(matrix_divide(matrix_a, 2, 1), M3)
+M5 = matrix_minus(M4, matrix_divide(matrix_a, 2, 2))
+M6 = inv_strassen_neo(M5)
+C12 = strassen(M3, M6)
+C21 = conj_t(C12)
+M7 = strassen(M3, C21)
+C11 = matrix_minus(M1, M7)
+C22 = np.array(M6).dot(-1)
+matrix_all = matrix_merge(C11, C12, C21, C22)
+return matrix_all
+# Coppersmith-算法Winograd
+def coppersmith_winograd(matrix_a, matrix_b):
+rows = len(matrix_a)
+if rows == 1:
+matrix_all = [list() for i in range(rows)]
+matrix_all[0].append(matrix_a[0][0] * matrix_b[0][0])
+elif rows <= 16:
+matrix_all = np.matmul(matrix_a, matrix_b)
+else:
+S1 = matrix_add(matrix_divide(matrix_a, 2,
+1),matrix_divide(matrix_a, 2, 2))
+S2 = matrix_minus(S1,matrix_divide(matrix_a, 1, 1))
+S3 = matrix_minus(matrix_divide(matrix_a, 1,
+1),matrix_divide(matrix_a, 2, 1))
+S4 = matrix_minus(matrix_divide(matrix_a, 1, 2),S2)
+T1 = matrix_minus(matrix_divide(matrix_b, 1,
+2),matrix_divide(matrix_b, 1, 1))
+T2 = matrix_minus(matrix_divide(matrix_b, 2, 2),T1)
+T3 = matrix_minus(matrix_divide(matrix_b, 2,
+2),matrix_divide(matrix_b, 1, 2))
+T4 = matrix_minus(T2,matrix_divide(matrix_b, 2, 1))
+M1 = coppersmith_winograd(matrix_divide(matrix_a, 1,
+1),matrix_divide(matrix_b, 1, 1))
+66
+
+
+
+M2 = coppersmith_winograd(matrix_divide(matrix_a, 1,
+2),matrix_divide(matrix_b, 2, 1))
+M3 = coppersmith_winograd(S4,matrix_divide(matrix_b, 2, 2))
+M4 = coppersmith_winograd(matrix_divide(matrix_a, 2, 2),T4)
+M5 = coppersmith_winograd(S1,T1)
+M6 = coppersmith_winograd(S2,T2)
+M7 = coppersmith_winograd(S3,T3)
+U1 = matrix_add(M1,M2)
+U2 = matrix_add(M1,M6)
+U3 = matrix_add(U2,M7)
+U4 = matrix_add(U2,M5)
+U5 = matrix_add(U4,M3)
+U6 = matrix_minus(U3,M4)
+U7 = matrix_add(U3,M5)
+matrix_all = matrix_merge(U1, U5, U6, U7)
+return matrix_all
+# 基于Coppersmith-算法的求逆算法Winograd
+def inv_coppersmith_winograd(matrix_a):
+matrix_a = np.array(matrix_a)
+rows = len(matrix_a)
+cols = len(matrix_a[0])
+if (rows <= 4) or (rows % 2 == 1 or cols % 2 == 1):
+matrix_a_np = np.array(matrix_a)
+matrix_all = np.linalg.inv(matrix_a_np)
+else:
+M1 = inv_coppersmith_winograd(matrix_divide(matrix_a, 1, 1))
+M2 = coppersmith_winograd(matrix_divide(matrix_a, 2, 1),M1)
+M3 = coppersmith_winograd(M1,matrix_divide(matrix_a, 1, 2))
+M4 = coppersmith_winograd(matrix_divide(matrix_a, 2, 1),M3)
+M5 = matrix_minus(M4,matrix_divide(matrix_a, 2, 2))
+M6 = inv_coppersmith_winograd(M5)
+C12 = coppersmith_winograd(M3,M6)
+C21 = coppersmith_winograd(M6,M2)
+M7 = coppersmith_winograd(M3,C21)
+C11 = matrix_minus(M1,M7)
+C22 = np.array(M6).dot(-1)
+matrix_all = matrix_merge(C11, C12, C21, C22)
+67
+
+
+
+return matrix_all
+# 计算的方法Wk
+# 将拆分后存储到一个列表中Wk
+def compute_w_k(matrix_v_k):
+list_w_k = []
+matrix_v_k_mul = np.matmul(conj_t(matrix_v_k), matrix_v_k)
+o2i = matrix_multiply_a(np.eye(len(matrix_v_k_mul)), 0.01)
+add = matrix_add(matrix_v_k_mul, o2i)
+u = inv_coppersmith_winograd(add)
+w_k = np.array(np.matmul(matrix_v_k, u))
+for i in range(4):
+list_w_k.append(w_k[:,i*2:(i+1)*2])
+return list_w_k
+# 批量计算的方法Wk
+# data_one_base = data_all_six_base[i]
+# W_ij = data_one_base[j][i]
+def compute_all_w_k():
+# 用来储存所有个数据库的矩阵6
+data_all_six_base = []
+# 读取个6.文件mat
+for data_num in range(6):
+# 用于储存一个数据库中的数据
+data_one_base = []
+# 数据库的第几列即第几个(V_K)
+for col in range(384):
+# 用于储存数据库的一列Wk
+data_col = []
+v_k = get_v_k(data_num,col)
+list_w_k = compute_w_k(v_k)
+for i in range(4):
+data_col.append(list_w_k[i])
+data_one_base.append(data_col)
+data_all_six_base.append(data_one_base)
+return data_all_six_base
+# 将中的数据组成一个大数组data_one_base
+def combine_all_matrix(data_one_base):
+68
+
+
+
+list_all = []
+for i in range(4):
+list_row = np.array(data_one_base[0][i])
+for j in range(1,384):
+list_row =
+np.hstack((list_row,np.array(data_one_base[j][i])))
+list_all.append(list_row)
+matrix_1 = np.vstack((np.array(list_all[0]),np.array(list_all[1])))
+matrix_2 = np.vstack((np.array(list_all[2]),np.array(list_all[3])))
+matrix = np.vstack((matrix_1,matrix_2))
+return np.array(matrix)
+# 将所有数据输出
+def output():
+data_all_six_base = compute_all_w_k()
+for k in range(6):
+data_one_base_matrix = combine_all_matrix(data_all_six_base[k])
+matrix = {’mat’: data_one_base_matrix}
+scipy.io.savemat(os.getcwd() + ’\\data’ + str(k+1) + ’.mat’,
+matrix)
+import csv
+import numpy as np
+from scipy.io import loadmat
+# 读取数据
+def read_data(filepath):
+matrix = []
+with open(filepath,’r’) as csv_file:
+reader = csv.reader(csv_file)
+for line in reader:
+line_matrix = []
+for line_data in line:
+line_data = line_data.replace(’i’,’j’)
+myoutput = complex(line_data)
+line_matrix.append(myoutput)
+matrix.append(line_matrix)
+return matrix
+# 读取.数据mat
+69
+
+
+
+def read_data_mat():
+data = []
+data1 = loadmat(’V1.mat’)
+data2 = loadmat(’V2.mat’)
+data3 = loadmat(’V3.mat’)
+data4 = loadmat(’V4.mat’)
+data5 = loadmat(’V5.mat’)
+data6 = loadmat(’V6.mat’)
+data.append(data1[’data1’])
+data.append(data2[’data2’])
+data.append(data3[’data3’])
+data.append(data4[’data4’])
+data.append(data5[’data5’])
+data.append(data6[’data6’])
+return data
+//此处为结点、树和编码的代码Huffmanjava
+//Huffman 结点定义
+package ch05;
+public class HuffmanNode {
+public int weight;
+public int flag;
+public HuffmanNode parent,lchild,rchild;
+public HuffmanNode()
+{
+this(0);
+}
+public HuffmanNode(int weight)
+{
+this.weight=weight;
+flag=0;
+parent=lchild=rchild=null;
+}
+}
+//树及编码HuffmanHuffman
+package ch05;
+70
+
+
+
+public class HuffmanTree {
+public int[][] huffmancoding(int[] W)
+{
+int n=W.length;
+int m=2*n-1;
+HuffmanNode[] HN=new HuffmanNode[m];
+int i;
+for(i=0;i<n;i++)
+{
+HN[i]=new HuffmanNode(W[i]);
+}
+for(i=n;i<m;i++)
+{
+HuffmanNode min1=selectMin(HN,i-1);
+min1.flag=1;
+HuffmanNode min2=selectMin(HN,i-1);
+min2.flag=1;
+HN[i]=new HuffmanNode();
+min1.parent=HN[i];
+min2.parent=HN[i];
+HN[i].lchild=min1;
+HN[i].rchild=min2;
+HN[i].weight=min1.weight+min2.weight;
+}
+int[][] HuffCode=new int[n][n];
+for(int j=0;j<n;j++)
+{
+int start=n-1;
+for(HuffmanNode c=HN[j],p=c.parent;p!=null;c=p,p=p.parent)
+{
+if(p.lchild.equals(c))
+{
+HuffCode[j][start--]=0;
+}
+else
+{
+HuffCode[j][start--]=1;
+}
+71
+
+
+
+HuffCode[j][start]=-1;
+}
+}
+return HuffCode;
+}
+private HuffmanNode selectMin(HuffmanNode[] HN,int end)
+{
+HuffmanNode min=HN[end];
+for(int i=0;i<=end;i++)
+{
+HuffmanNode h=HN[i];
+if(h.flag==0&&h.weight<min.weight)
+min=h;
+}
+return min;
+}
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+int [] W= {23,11,5,3,29,14,7,8};
+HuffmanTree T=new HuffmanTree();
+int[][] HN=T.huffmancoding(W);
+System.out.println(”哈夫曼编码为:”);
+for(int i=0;i<HN.length;i++)
+{
+System.out.print(W[i]+” ”);
+for(int j=0;j<HN[i].length;j++)
+{
+if(HN[i][j]==-1)
+{
+for(int k=j+1;k<HN[i].length;k++)
+System.out.print(HN[i][k]);
+System.out.print(” ”);
+break;
+}
+}
+System.out.println();
+}
+72
+
+
+
+}
+}
+73

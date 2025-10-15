@@ -8,13 +8,8 @@
 \textbf{数学建模竞赛}
 \end{center}
 
-\begin{tabular}{c c}
-        \includegraphics[width=0.45\textwidth]{image_a.png} & \includegraphics[width=0.45\textwidth]{image_b.png} \\
-        (a) 非对称映射 & (b) 对称映射
-    \end{tabular}
-
 \title{DFT 类矩阵的整数分解逼近：解析与优化方法}
-\maketitle
+
 
 \begin{abstract}
 本文研究了 DFT 类矩阵的整数分解逼近问题。基于问题对逼近矩阵的稀疏性约束和元素约束，我们分别提出了 DFT 矩阵的高精度解析逼近方法和基于稀疏矩阵逼近的整数规划模型优化方法。稀疏矩阵逼近问题属于 NP-hard 问题，难以在多项式时间内求解。我们针对 5 个问题分别给出了定制的求解方法，经过适当改进和约束放松后，阐述了他们对任意 DFT 类矩阵的精确逼近可行性，以建立对 5 个问题的两套统一解决方案，能够兼顾精确性和计算复杂度。
@@ -127,8 +122,6 @@ DFT 类矩阵的整数分解逼近是一种尝试将 DFT 矩阵近似为整数�
 \subsection{模型总览}
 我们针对以上五个问题进行了因果分析，如图 \ref{fig:1.1} 所示，问题 1 和问题 2 作为问题 3 的基础，而问题 4 和问题 5 是问题 3 的拓展。在下面的论文中将要指出的是我们分别从解析方向和优化算法两个方向求解矩阵分解逼近问题。第一问中，我们使用递归库利-图基快速傅里叶变换算法对将任意 $N = 2^t$ 维度的 DFT 矩阵做分解，在这种情况下 RMSE 为 0，并
 
-\section{模型总览}
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{model_overview.png}
@@ -136,16 +129,6 @@ DFT 类矩阵的整数分解逼近是一种尝试将 DFT 矩阵近似为整数�
     \label{fig:model_overview}
 \end{figure}
 
-展示了它的硬件复杂度。第二问题中我们借助柔性近似多层稀疏变换算法，提出了整数映射约束的层次分解，该方法基于梯度方向对矩阵分解因子迭代优化，将矩阵分解并满足约束 2。第三问中，我们从解析的角度提出遍历性定理，从优化算法的角度提出蝶形稀疏分层量化分解算法都能将 DFT 矩阵分解为满足约束 1、2 的矩阵因子。在理论上能达到无限逼近原始矩阵。在第四问中，我们使用丢番图逼近算法直接对题目中给定的 $\mathbf{F}_n$ 进行求解，给出了一个极为逼近的的结果。问题 5 中，从优化方法的角度，我们提出改进的固定支持矩阵量化分解，使用遗传算法寻找矩阵因子元素的取值。从解析的角度，我们结合遍历性定理和丢番图逼近能够实现任意精度对任意 DFT 矩阵进行逼近。
-
-\begin{align}
-\mathbf{F}_{4} \otimes \mathbf{F}_{8} &=\left(\mathbf{A}_{2,2} \mathbf{A}_{2,1} \mathbf{P}_{4}^{\top}\right) \otimes\left(\mathbf{A}_{3,3} \mathbf{A}_{3,2} \mathbf{A}_{3,1} \mathbf{P}_{8}^{\top}\right) \\
-&=\left(\mathbf{I}_{4} \mathbf{A}_{2,2} \mathbf{I}_{4} \mathbf{A}_{2,1} \mathbf{I}_{4} \mathbf{P}_{4}^{\top}\right) \otimes\left(\mathbf{A}_{3,3} \mathbf{I}_{8} \mathbf{A}_{3,2} \mathbf{I}_{8} \mathbf{A}_{3,1} \mathbf{P}_{8}^{\top}\right) \\
-&=\left(\mathbf{I}_{4} \otimes \mathbf{A}_{3,3}\right)\left(\mathbf{A}_{2,2} \otimes \mathbf{I}_{8}\right)\left(\mathbf{I}_{4} \otimes \mathbf{A}_{3,2}\right)\left(\mathbf{A}_{2,1} \otimes \mathbf{I}_{8}\right)\left(\mathbf{I}_{4} \otimes \mathbf{A}_{3,1}\right)\left(\mathbf{P}_{4}^{\top} \otimes \mathbf{P}_{8}^{\top}\right)
-\tag{7.60}
-\end{align}
-
-逼近程度 \hspace{5cm} 稀疏性约束
 
 \begin{itemize}
     \item 问题1
@@ -184,7 +167,7 @@ DFT 类矩阵的整数分解逼近是一种尝试将 DFT 矩阵近似为整数�
 
 \textbf{任意矩阵任意精度的复整数稀疏矩阵分解}
 
-\textit{*矩阵为偶数阶，还需考虑硬件复杂度}
+展示了它的硬件复杂度。第二问题中我们借助柔性近似多层稀疏变换算法，提出了整数映射约束的层次分解，该方法基于梯度方向对矩阵分解因子迭代优化，将矩阵分解并满足约束 2。第三问中，我们从解析的角度提出遍历性定理，从优化算法的角度提出蝶形稀疏分层量化分解算法都能将 DFT 矩阵分解为满足约束 1、2 的矩阵因子。在理论上能达到无限逼近原始矩阵。在第四问中，我们使用丢番图逼近算法直接对题目中给定的 $\mathbf{F}_n$ 进行求解，给出了一个极为逼近的的结果。问题 5 中，从优化方法的角度，我们提出改进的固定支持矩阵量化分解，使用遗传算法寻找矩阵因子元素的取值。从解析的角度，我们结合遍历性定理和丢番图逼近能够实现任意精度对任意 DFT 矩阵进行逼近。
 
 \section{模型的假设与定义}
 
@@ -514,7 +497,7 @@ PALM 方法的简略的伪代码为：
 \end{algorithmic}
 \end{algorithm}
 
-\section{投影算子}
+投影算子
 
 PALM 依赖于每次迭代时每个因子在约束集上的投影，因此投影算子应该简单且易于计算。这里介绍我们使用的整数映射方法，我们借鉴了神经网络模型量化的思想，提出了最近映射、非对称映射和对称映射三种方法。
 
@@ -541,7 +524,7 @@ m_{ij}' = c + \frac{(m_{ij} - a)(d - c)}{b - a}
 
 在后续的实验中我们发现使用最近映射将矩阵因子的元素限制在约束 2 中效果最好，我们只报告最近映射的结果。
 
-\section{算法原理}
+算法原理
 
 我们指定 PALM 用于多层稀疏逼近问题的迭代次数为 $i$，分解的矩阵因子个数 $K$，$S_k^i$ 是第 $i$ 次迭代中的第 $k$ 个矩阵因子。定义 $\mathbf{L} := \prod_{\ell=k+1}^K \mathbf{S}_\ell^i$ 意义为 $S_\ell^i$ 左边的矩阵乘积；定义 $\mathbf{R} := \prod_{\ell=1}^{k-1} \mathbf{S}_\ell^{i+1}$ 意义为 $S_\ell^i$ 右边的矩阵乘积，若没有则表示为单位矩阵：$\prod_{\ell \in \varnothing} \mathbf{S}_\ell = \mathbf{Id}$。我们使用不带稀疏惩罚项的目标函数
 \begin{equation}
@@ -724,7 +707,7 @@ H \left( \mathbf{A}_1^{k+1}, \dots, \mathbf{A}_{k-1}^{i+1}, \mathbf{A}_k^i, \dot
 
 度的 Lipschitz 模控制（第 5 行），在每一轮迭代后更新 $\beta$（第 8 行），最后得到收敛后的 $J$ 个矩阵因式 $\left\{\mathbf{A}_{k}^{N}\right\}_{k=1}^{K}$。
 
-\subsection{层次分解}
+\subsubsection{层次分解}
 
 通过实验注意到，对于整数映射约束的层次分解算法，每次设定更少的因子分解数量 $K$ 可以获得更好的近似结果。因此我们提出层次分解的方法，每次只使用柔性近似多层稀疏变换对矩阵进行二分解。
 
@@ -734,6 +717,11 @@ H \left( \mathbf{A}_1^{k+1}, \dots, \mathbf{A}_{k-1}^{i+1}, \mathbf{A}_k^i, \dot
 
 该算法的伪代码如下所述，具体来说，$\mathbf{F}_{N}$ 矩阵要被二分为 $K$ 个因子，需要进行 $K-1$ 次迭代。每一次先将不稀疏矩阵使用 palm4msa 算法二分为两个稀疏矩阵（第 3 行），default\_init 的意思是使用预设的蝶式模板矩阵和初始的 $\beta'$；再将得到的稀疏矩阵作为下一个 palm4msa 算法的初始值输入进去得到 $\ell+1$ 次分解（第 6 行），current\_init 的意思是使用前一次分解的矩阵作为初始模板矩阵，$\beta=\beta\beta'$。经过 $K-1$ 次迭代后我们就能得到精度更高的满足约束 2 的整数矩阵分解。
 
+
+
+\subsection{问题 2 求解}
+
+对于 $N=2$ 的情况，DFT 矩阵不用分解，并且满足约束 2。我们分别对 $N=2^{t}$，$t=2,3,4,5$ 的 DFT 矩阵 $\mathbf{F}_{N}$ 直接使用整数映射约束的层次分解算法，结果展示在下表中。
 \begin{algorithm}[H]
 \caption{整数映射约束的层次分解算法}
 \textbf{输入:} 需要分解的矩阵 $\mathbf{F}_{N}$; 被分解的个数 $K$; 初始因式矩阵模板 (初始值) $\{\mathbf{A}_{k}^{0}\}_{k=1}^{J}$; $\beta^{0}=1$; $\ell\in\{1\ldots K-1\}$。 \\
@@ -750,9 +738,6 @@ H \left( \mathbf{A}_1^{k+1}, \dots, \mathbf{A}_{k-1}^{i+1}, \mathbf{A}_k^i, \dot
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{问题 2 求解}
-
-对于 $N=2$ 的情况，DFT 矩阵不用分解，并且满足约束 2。我们分别对 $N=2^{t}$，$t=2,3,4,5$ 的 DFT 矩阵 $\mathbf{F}_{N}$ 直接使用整数映射约束的层次分解算法，结果展示在下表中。
 
 \begin{table}
 \centering
@@ -921,7 +906,7 @@ H \left( \mathbf{A}_1^{k+1}, \dots, \mathbf{A}_{k-1}^{i+1}, \mathbf{A}_k^i, \dot
 
 式 (6.38c) 的第二个对角矩阵的所有元素具有相同的方向，但是长度不同，式 (6.38d) 的第二个对角矩阵的所有元素具有相同的长度，但是方向不同。针对长度不同方向相同的对角矩阵，本文提出采用 \textcolor{blue}{丢番图逼近}（见问题 4 定理 3）的方法来近似，针对长度相同方向不同的对角矩阵，本文提出采用 \textcolor{blue}{遍历性定理} 的方法来逼近。
 
-\subsection{遍历性分析}
+\subsubsection{遍历性分析}
 
 式 (6.38d) 的第二个对角矩阵 $\text{diag}(1, 1, 1, 1, 1, 1, -j, -j) \text{diag}(1, 1, 1, 1, 1, \frac{\sqrt{2}}{2}(1-j), 1, \frac{\sqrt{2}}{2}(1-j))$ 共有两个不同元素 $1$ 和 $\frac{\sqrt{2}}{2}(1-j)$，其长度相等，角度分别为 $0$ 和 $-\frac{\pi}{4}$，相差 $\pi/4$。为此我们选定一个 $2 \times 2$ 的起始对角矩阵 $\mathbf{S}$，然后使用 $2 \times 2$ 对角矩阵 $\mathbf{R}_1, \mathbf{R}_2, \mathbf{R}_3, \dots$ 对 $\mathbf{S}$ 进行旋转以获得需要的角度差。由于起始对角矩阵 $\mathbf{S}$ 的两个元素必须具有相同长度，旋转矩阵 $\mathbf{R}_1, \mathbf{R}_2, \mathbf{R}_3, \dots$ 的两个元素也必须具有相同长度，由图 6.5 可见，起始对角矩阵 $\mathbf{S}$ 的两个元素的可选组合共有 10 个：
 \begin{align*}
@@ -1002,7 +987,7 @@ H \left( \mathbf{A}_1^{k+1}, \dots, \mathbf{A}_{k-1}^{i+1}, \mathbf{A}_k^i, \dot
     \item \(\{\mathbf{S}^*, \mathbf{R}^*\} \leftarrow \argmin E_{total}\)
 \end{enumerate}
 
-\subsection{遍历性定理逼近求解}
+\subsubsection{遍历性定理逼近求解}
 
 对于 $\mathbf{F}_8$，我们的目标是逼近 $\operatorname{diag}(1, \frac{\sqrt{2}}{2}(1-j))$，结果如表 6.5 所示。式 (6.41) 对应于表 6.5 的第一列 $n=2$，其起始矩阵 $\mathbf{S} = \operatorname{diag}(1+4j, 4+j)$，旋转矩阵
 
@@ -1152,7 +1137,7 @@ H \left( \mathbf{A}_1^{k+1}, \dots, \mathbf{A}_{k-1}^{i+1}, \mathbf{A}_k^i, \dot
 
 令 $N=16$，蝶形因子和蝶形结构矩阵分别如图\ref{fig:6.6}和图\ref{fig:6.7}所示。
 
-\subsection{算法与求解}
+\subsubsection{算法与求解}
 
 业已证明，对于 $2^t$ 阶的具备蝶形结构的矩阵，可以被唯一分解为 $t$ 个蝶形因子的乘积 [8]。基于该理论，我们提出了\textbf{蝶形稀疏矩阵分层量化分解}算法，用于求解以下优化问题：
 
@@ -1224,7 +1209,7 @@ H \left( \mathbf{A}_1^{k+1}, \dots, \mathbf{A}_{k-1}^{i+1}, \mathbf{A}_k^i, \dot
 
 还需要指出的是，由于蝶形因子也属于蝶形结构矩阵，可以实现对蝶形因子进行分层量化分解。以 $N = 2^3$ 为例，算法可以将以 C-T 基-2 分解 $\mathbf{F}_8$ 得到的 $\mathbf{A}_3, \mathbf{A}_2, \mathbf{A}_1$ 中不满足约束 2 的 $\mathbf{A}_3$ 矩阵再次拆分为三个新的蝶形结构矩阵 $\mathbf{A}_3^3, \mathbf{A}_3^2, \mathbf{A}_3^1$（因为 $\mathbf{A}_3$ 也是蝶形结构矩阵！）。然而，由于元素取值的离散性，元素将会在多次重复迭代后逐渐映射为 $\pm 1, \pm j, \pm 1 \pm j$，但是对于问题 5 中不限制 $q$ 的上限时就不会出现模糊性。我们将在结果中展示，若使用上述算法对经过 C-T 基-2 分解得到的包含无理数的 $\mathbf{A}_k$ 进行蝶形稀疏矩阵量化分解，其逼近误差将会好于直接对 $\mathbf{F}_N \mathbf{P}_N$ 进行蝶形稀疏矩阵量化分解。
 
-\subsection{算法结果分析}
+\subsubsection{算法结果分析}
 
 对于 $N = 2$ 的情况，DFT 矩阵不用分解，并且满足约束 1 和 2。我们分别对 $N = 2^t$, $t = 2, 3, 4, 5$ 的 DFT 矩阵 $\mathbf{F}_N$ 使用蝶形稀疏矩阵分层量化分解算法，结果展示在下表中。
 
@@ -1788,9 +1773,21 @@ m\beta \equiv 0 \pmod{\pi}
 
 上述算法的 MATLAB 代码见附录 3.4。
 
-\begin{table}[h]
-\centering
-\begin{tabular}{c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c
+\section{9 模型评价}
+本文针对N 阶离散傅里叶矩阵的整数稀疏矩阵逼近问题，分别从解析和优化的视角
+给出了高精度和低运算复杂度的分解方法。两种方法都是基于蝶形因子分解（C-T 基-2 分
+解）的一般性结果的后端优化。两种方法的优点和缺点总结如下：
+\subsection{9.1 模型优点}
+• 解析方法：我们建立的解析方法可以实现对任意DFT 矩阵的任意精度逼近，这对于部
+分元素受限同时追求高精度的场合至关重要。
+• 优化方法：我们建立的模型和设计的算法最终能够实现对DFT 类矩阵的整数逼近分解
+（见问题5），并且具有潜在的扩展能力以面对任意类型的矩阵。算法具有高度可探索性，
+能够重复性地展开一类蝶形结构矩阵，直到达到逼近模糊。在对F8 和F16 的整数逼近
+上能够达到RMSE=0.1337 和0.1737 的精度。
+\subsection{9.2 模型缺点}
+• 解析方法：解析方法的高精度是建立在大量硬件复杂度基础上的。事实上，可以根据
+硬件复杂度的需求来实现精度和硬件复杂度之间的权衡。
+• 优化方法：蝶形稀疏矩阵分解算法依赖于固定支持的蝶形因子结构矩阵，导致可能存
 
 \begin{table}
 \centering
@@ -1878,3 +1875,725 @@ m\beta \equiv 0 \pmod{\pi}
 在精度下界。算法虽然避免了进行大规模整数规划探索，但也可能陷入局部最优。
 
 \end{document}
+
+\section{附录}
+# 附录C 主要实验代码
+1. 1 问题2 代码
+# Faust.py
+#!/usr/bin/env python
+# coding: utf-8
+import numpy as np
+from numpy import linalg as la
+import copy
+from tools.butterfly import butterfly_S
+from tools.constraint import prox_splincol
+from tools.projection import projector
+from tools.complex import complex_multiplications
+from tools.tolatex import array_to_latex
+############################################################
+#
+# AUXILIARY FUNCTIONS
+#
+############################################################
+def dft_matrix(N):
+# """生成DFT矩阵"""
+n = np.arange(N)
+k = n.reshape((N, 1))
+W = np.exp(-2j * np.pi * k * n / N)
+return W
+def non_square_id(n, m):
+M = np.matrix(np.zeros((n, m)))
+for i in range(min(n,m)):
+# M[i,i] = 1
+return M
+def left_product_matrices(S, order_id = 1):
+if len(S) == 0:
+return np.matrix(np.identity(order_id,dtype=np.complex128))
+res = S[0]
+for i in range(1, len(S)):
+res = S[i].dot(res)
+54
+
+## 第 56 页
+
+return res
+############################################################
+#
+# MAIN FUNCTIONS
+#
+############################################################
+def palm4MSA(A, J, constrs, Ss_init, lamb_init, N, projector_method
+= None, mu = 0.001):
+alpha = 1e-3
+S = copy.copy(Ss_init)
+lamb = copy.copy(lamb_init)
+for i in range(N):
+mu_step = mu + i/(N-1)*(0.1*mu - mu) # Linear decreasing of
+the learning rate from mu to 10% of mu
+for j in range(J):
+L = left_product_matrices(S[j+1:], A.shape[0]) # Parte
+izquierda a S[j]
+R = left_product_matrices(S[:j], A.shape[1])
+# Parte
+derecha a S[j]
+L_norm = np.linalg.norm(L,ord=2)
+R_norm = np.linalg.norm(R,ord=2)
+## L_norm = 1 if L_norm == 0 else L_norm
+## R_norm = 1 if R_norm == 0 else R_norm
+min_c_value = (lamb * L_norm * R_norm) ** 2
+# lipsitchz
+constant
+B = S[j] - 1./c * lamb * L.T @ (lamb * L @ S[j] @ R - A)
+# @ R.T
+# B = S[j] - 1./c * lamb * L.T @ (lamb *
+left_product_matrices(S) - A) @ R.T
+# No normalization: S[j] = B
+S[j] = prox_splincol(B, constrs[j])
+# integer projector
+55
+
+## 第 57 页
+
+S[j] = projector(S[j],method=projector_method)
+# Rmk: If there are no requirements of sparsity, the
+code will be
+if projector_method is
+None:
+S[j] /= la.norm(S[j], 'fro')
+hat_A = left_product_matrices(S) # Resulting matrix
+numer = np.trace(A.T @ hat_A)
+denom = max(np.trace(hat_A.T @ hat_A), 10**(-10)) # Avoids
+division by zero
+lamb = lamb if numer/denom == 0 else numer/denom
+# lamb = Beta[np.argmin(error)]
+# lamb = update_scaling_factor(A, hat_A)
+# No normalization: lamb = 1
+# lamb = 1
+return S, lamb
+def update_scaling_factor(X, X_est):
+return np.sum(X * X_est) / np.sum(X_est ** 2)
+def create_default_Ss_raw(dims):
+n_rows, factors, n_cols = dims
+Ss = [np.matrix(np.random.rand(factors, n_cols)), np.matrix(np.
+random.rand(n_rows, factors))]
+return Ss
+def test_result(S, lamb, R_test):
+Rp = lamb*left_product_matrices(S)
+frobenius_norm = np.sqrt(np.linalg.norm(R_test - Rp, 'fro')**2)
+/8
+return frobenius_norm
+def create_default_Tree(dim,factors=3):
+root = np.linspace(factors,1,factors)
+tree = []
+56
+
+## 第 58 页
+
+for i in range(0,factors-1):
+tree.append([butterfly_S(root[i],root[i],dim),butterfly_S(
+root[-1],root[i+1],dim)])
+# root = root[1:factors]
+return tree
+def FAuST(A, factors, constrs, constrs_tilde, N_local, N_global,
+mus_local=None, projector_method = None, mus_global=None):
+# T = A
+# J = factors
+mus_local = [0.001 for _ in range(J-1)] if mus_local is None
+else mus_local
+mus_global = [0.001 for _ in range(J-1)] if mus_global is None
+else mus_global
+default_lamb = 1
+global_lamb = default_lamb
+# Ss = []
+tree = create_default_Tree(T.shape[0],J)
+# Respecto a la notacion del paper: s = l-1
+for s in range(J-1):
+print('********')
+print('Deep: '+ str(s))
+## ## LOCAL FACTORIZATION
+F, lamb = palm4MSA(T, 2, constrs[s], tree[s], default_lamb,
+N_local, projector_method, mus_local[s])
+# F1, F2 = F
+frobenius_norm = test_result(F, lamb, T)
+print('Frobenius_norm after local factorization: ' + str(
+frobenius_norm))
+## ## GLOBAL FACTORIZATION
+Ss.append(F1)
+# T =
+lamb * F2
+## Ss_init_global = Ss + [T]
+57
+
+## 第 59 页
+
+global_Ss, global_lamb = palm4MSA(A, s+2, constrs_tilde[s],
+Ss_init_global, lamb*global_lamb, N_global,
+projector_method, mus_global[s])
+# T = global_Ss[-1]
+# Ss = global_Ss[:-1]
+frobenius_norm = test_result(global_Ss, global_lamb, A)
+print('Frobenius_norm after global factorization: ' + str(
+frobenius_norm))
+Ss.append(T)
+return Ss, global_lamb
+def create_default_Ss(dim):
+lst_S_init = []
+for i in reversed(range(1,int(np.log2(dim))+1)):
+lst_S_init.append(butterfly_S(i,i,dim))
+return lst_S_init
+if __name__ == '__main__':
+F4 = dft_matrix(4)
+F8 = dft_matrix(8)
+F16 = dft_matrix(16)
+F32 = dft_matrix(32)
+from scipy.io import loadmat
+# # 读取MAT文件
+mat_contents_F8 = loadmat('data/P8.mat')
+## F8_A3 = mat_contents_F8['A3']
+## F8_A2 = mat_contents_F8['A2']
+## F8_A1 = mat_contents_F8['A1']
+## F8_Pn = mat_contents_F8['Pn']
+mat_contents_F16 = loadmat('data/P16.mat')
+## F16_A4 = mat_contents_F16['A4']
+## F16_A3 = mat_contents_F16['A3']
+## F16_A2 = mat_contents_F16['A2']
+58
+
+## 第 60 页
+
+## F16_A1 = mat_contents_F16['A1']
+## F16_Pn = mat_contents_F16['Pn']
+mat_contents_F32 = loadmat('data/P32.mat')
+## F32_A5 = mat_contents_F32['A5']
+## F32_A4 = mat_contents_F32['A4']
+## F32_A3 = mat_contents_F32['A3']
+## F32_A2 = mat_contents_F32['A2']
+## F32_A1 = mat_contents_F32['A1']
+## F32_Pn = mat_contents_F32['Pn']
+## # ##################F8##################
+## F8_true = F8_A3 @ F8_A2 @ F8_A1 @ F8_Pn
+frobenius_norm = np.sqrt(np.linalg.norm(F8-F8_true, 'fro')**2)/8
+print('F8_true fro_norm=',frobenius_norm)
+F8_A3_proj = projector(F8_A3,method='nearest')
+## F8_est = F8_A3_proj @ F8_A2 @ F8_A1 @ F8_Pn
+frobenius_norm = np.sqrt(np.linalg.norm(F8-F8_est, 'fro')**2)/8
+print('F8_est fro_norm=',frobenius_norm)
+## # ##################F16##################
+F16_true = F16_A4 @ F16_A3 @ F16_A2 @ F16_A1 @ F16_Pn
+frobenius_norm = np.sqrt(np.linalg.norm(F16-F16_true, 'fro')**2)
+/16
+print('F16_true fro_norm=',frobenius_norm)
+F16_A4_proj = projector(F16_A4,method='nearest')
+F16_A3_proj = projector(F16_A3,method='nearest')
+F16_est = F16_A4_proj @ F16_A3_proj @ F16_A2 @ F16_A1 @ F16_Pn
+frobenius_norm = np.sqrt(np.linalg.norm(F16-F16_est, 'fro')**2)
+/16
+print('F16_est fro_norm=',frobenius_norm)
+## # ##################F32##################
+F32_true = F32_A5 @ F32_A4 @ F32_A3 @ F32_A2 @ F32_A1 @ F32_Pn
+frobenius_norm = np.sqrt(np.linalg.norm(F32-F32_true, 'fro')**2)
+/32
+print('F32_true fro_norm=',frobenius_norm)
+59
+
+## 第 61 页
+
+F32_A5_proj = projector(F32_A5,method='nearest')
+F32_A4_proj = projector(F32_A4,method='nearest')
+F32_A3_proj = projector(F32_A3,method='nearest')
+F32_est = F32_A5_proj @ F32_A4_proj @ F32_A3_proj @ F32_A2 @
+# F32_A1 @ F32_Pn
+frobenius_norm = np.sqrt(np.linalg.norm(F32-F32_est, 'fro')**2)
+/32
+print('F32_est fro_norm=',frobenius_norm)
+## ######################### TEST PALM4MSA
+#########################
+d = 8
+factor = int(np.log2(d))
+# factor = 1
+lst_S_init = create_default_Ss(d)
+# lst_S_init = []
+# for i in range(factor):
+#
+lst_S_init.append(np.eye((d),dtype=np.complex128))
+S, lamb = palm4MSA(A = F8, J = factor, constrs=8*np.ones(factor)
+, Ss_init=lst_S_init, lamb_init=1, N=1000, projector_method =
+None, mu=0.001)
+# for i in range(len(S)):
+#
+S[i] = projector(S[i],method='nearest')
+Approximate = left_product_matrices(S)
+# complexity = complex_multiplications(S, lamb)
+# print('complexity = ',complexity)
+# frobenius_norm = np.sqrt(np.linalg.norm(F4
+- lamb *
+## Approximate, 'fro')**2)/d
+# print('frobenius_norm = ',frobenius_norm)
+# print('lambda = ',lamb)
+# F8_est = lamb * Approximate @ F8_A2 @ F8_A1 @ F8_Pn
+# frobenius_norm = np.sqrt(np.linalg.norm(F8 - F8_est, 'fro')
+**2)/d
+# print('frobenius_norm = ',frobenius_norm)
+60
+
+## 第 62 页
+
+# print('lambda = ',lamb)
+## ######################### TEST FAUST
+#########################
+# constrs = [[8,8],[8,8]]
+# constrs_tilde = [[8,8],[8,8,8]]
+# Ss, global_lamd = FAuST(F8, 3, constrs, constrs_tilde, 500,
+500, projector_method='nearest')
+# Approximate = left_product_matrices(Ss)
+# frobenius_norm = np.sqrt(np.linalg.norm(F8 - global_lamd *
+## Approximate, 'fro')**2)/8
+# print('frobenius_norm=',frobenius_norm)
+# print('lambda=',global_lamd)
+1. 2 问题3 代码
+# Faust.py
+import numpy as np
+from scipy.io import loadmat
+from tools.matlab_supp import dft_matrix,hierarchical,
+create_default_Tree,multiply_list,grad_opt_beta
+from tools.complex import complex_multiplications
+from tools.tolatex import array_to_latex
+################ load data ################
+F4 = dft_matrix(4)
+F8 = dft_matrix(8)
+F16 = dft_matrix(16)
+F32 = dft_matrix(32)
+from scipy.io import loadmat
+mat_contents_F4 = loadmat('data/F4.mat')
+## F4_A2 = mat_contents_F4['A2']
+## F4_A1 = mat_contents_F4['A1']
+## F4_Pn = mat_contents_F4['Pn']
+# # 读取MAT文件
+mat_contents_F8 = loadmat('data/P8.mat')
+## F8_A3 = mat_contents_F8['A3']
+## F8_A2 = mat_contents_F8['A2']
+61
+
+## 第 63 页
+
+## F8_A1 = mat_contents_F8['A1']
+## F8_Pn = mat_contents_F8['Pn']
+mat_contents_F16 = loadmat('data/P16.mat')
+## F16_A4 = mat_contents_F16['A4']
+## F16_A3 = mat_contents_F16['A3']
+## F16_A2 = mat_contents_F16['A2']
+## F16_A1 = mat_contents_F16['A1']
+## F16_Pn = mat_contents_F16['Pn']
+mat_contents_F32 = loadmat('data/P32.mat')
+## F32_A5 = mat_contents_F32['A5']
+## F32_A4 = mat_contents_F32['A4']
+## F32_A3 = mat_contents_F32['A3']
+## F32_A2 = mat_contents_F32['A2']
+## F32_A1 = mat_contents_F32['A1']
+## F32_Pn = mat_contents_F32['Pn']
+# # N = 4 # N是DFT矩阵维度
+# J = np.log2(N) # J是DFT矩阵改被分为多少个子矩阵
+# tree_F4
+= create_default_Tree(N,factors=J)
+# # X_0 = []
+# T = F4@np.linalg.inv(F4_Pn.T)
+# for i in range(len(tree_F4)):
+#
+ML, MR = hierarchical(T, tree_F4[i][0],tree_F4[i][1], flag=2,
+project_method='nearest')
+#
+X_0.append(ML)
+#
+# T = MR
+#
+if i == len(tree_F4)-1:
+#
+X_0.append(MR)
+#
+break
+# print("########### N=4 ###########")
+# # Beta_1 =
+grad_opt_beta(F8, X_1[0] @ X_1[1] @ X_1[2] @ F8_A2 @
+F8_A1 @ F8_Pn)
+# # F8_est = Beta_1 * X_1[0] @ X_1[1] @ X_1[2] @ F8_A2 @ F8_A1 @
+# F8_Pn
+62
+
+## 第 64 页
+
+# Beta_0 = grad_opt_beta(F4@np.linalg.inv(F4_Pn.T), X_0[0] @ X_0[1])
+# F8_est = Beta_0 * X_0[0] @ X_0[1]
+# error = np.linalg.norm(F4@np.linalg.inv(F4_Pn.T) - F8_est, 'fro')
+# / N
+# print("F8 fro_norm = ",error)
+# print("Beta = ",Beta_0)
+# complexity = complex_multiplications([X_0[1],X_0[0]], Beta_0)
+# print("complexity = ",complexity)
+############### N=8 parameters ################
+# N = 8 # N是DFT矩阵维度
+## J = np.log2(N) # J是DFT矩阵改被分为多少个子矩阵
+tree_F8
+= create_default_Tree(N,factors=J)
+# X_1 = []
+T = F8@np.linalg.inv(F8_Pn)
+for i in range(len(tree_F8)):
+ML, MR = hierarchical(T, tree_F8[i][0],tree_F8[i][1], flag=2,
+project_method='nearest')
+X_1.append(ML)
+# T = MR
+if i == len(tree_F8)-1:
+X_1.append(MR)
+break
+print("########### N=8 ###########")
+# Beta_1 =
+grad_opt_beta(F8@np.linalg.inv(F8_Pn), X_1[0] @ X_1[1] @
+X_1[2])
+F8_est = Beta_1 * X_1[0] @ X_1[1] @ X_1[2] @ F8_Pn
+# Beta_1 = grad_opt_beta(F8@np.linalg.inv(F8_Pn.T), X_1[0] @ X_1[1]
+@ X_1[2])
+# F8_est = Beta_1 * X_1[0] @ X_1[1] @ X_1[2]
+error = np.linalg.norm(F8 - F8_est, 'fro') / N
+print("F8 fro_norm = ",error)
+print("Beta = ",Beta_1)
+complexity = complex_multiplications([ F8_Pn,X_1[2],X_1[1],X_1[0]],
+Beta_1)
+print("complexity = ",complexity)
+63
+
+## 第 65 页
+
+############### N=16 parameters ################
+# N = 16 # N是DFT矩阵维度
+## J = np.log2(N) # J是DFT矩阵改被分为多少个子矩阵
+tree_F16
+= create_default_Tree(N,factors=J)
+# X_2 = []
+T = F16@np.linalg.inv(F16_Pn)
+for i in range(len(tree_F16)):
+ML, MR = hierarchical(T, tree_F16[i][0],tree_F16[i][1], flag=2,
+project_method='nearest')
+X_2.append(ML)
+# T = MR
+if i == len(tree_F16)-1:
+X_2.append(MR)
+break
+# X_3 = []
+# T = F16_A3
+for i in range(len(tree_F16)):
+ML, MR = hierarchical(T, tree_F16[i][0],tree_F16[i][1], flag=2,
+project_method='nearest')
+X_3.append(ML)
+# T = MR
+if i == len(tree_F16)-1:
+X_3.append(MR)
+break
+print("########### N=16 ###########")
+# Beta_3 =
+grad_opt_beta(F16_A3, X_3[0] @ X_3[1] @ X_3[2] @ X_3[3])
+# Beta_2 =
+grad_opt_beta(F16@np.linalg.inv(F16_Pn), X_2[0] @ X_2[1] @
+X_2[2] @ X_2[3])
+# F16_A3_est = Beta_3 * X_3[0] @ X_3[1] @ X_3[2] @ X_3[3]
+F16_A4_est = Beta_2 * X_2[0] @ X_2[1] @ X_2[2] @ X_2[3]
+## F16_est = F16_A4_est
+@ F16_Pn
+error = np.linalg.norm(F16 - F16_est, 'fro') / N
+64
+
+## 第 66 页
+
+beta = multiply_list([Beta_2])
+print("Beta = ",beta)
+print("F8 fro_norm = ",error)
+complexity = complex_multiplications([X_2[0] @ X_2[1] @ X_2[2] @ X_2
+[3] @ F16_Pn], Beta_2)
+print("complexity = ",complexity)
+############### N=32 parameters ################
+# N = 32 # N是DFT矩阵维度
+## J = np.log2(N) # J是DFT矩阵改被分为多少个子矩阵
+tree_F32
+= create_default_Tree(N,factors=J)
+# X_4 = []
+T = F32@np.linalg.inv(F32_Pn)
+for i in range(len(tree_F32)):
+ML, MR = hierarchical(T, tree_F32[i][0],tree_F32[i][1], flag=2,
+project_method='nearest')
+X_4.append(ML)
+# T = MR
+if i == len(tree_F32)-1:
+X_4.append(MR)
+break
+# X_5 = []
+# T = F32_A4
+for i in range(len(tree_F32)):
+ML, MR = hierarchical(T, tree_F32[i][0],tree_F32[i][1],
+flag=2,
+project_method='nearest')
+X_5.append(ML)
+# T = MR
+if i == len(tree_F32)-1:
+X_5.append(MR)
+break
+# X_6 = []
+# T = F32_A3
+for i in range(len(tree_F32)):
+ML, MR = hierarchical(T, tree_F32[i][0],tree_F32[i][1],
+flag=2,
+65
+
+## 第 67 页
+
+project_method='nearest')
+X_6.append(ML)
+# T = MR
+if i == len(tree_F32)-1:
+X_6.append(MR)
+break
+print("########### N=32 ###########")
+# Beta_4 =
+grad_opt_beta(F32@np.linalg.inv(F32_Pn), X_4[0] @ X_4[1] @
+X_4[2] @ X_4[3] @ X_4[4])
+# Beta_5 =
+grad_opt_beta(F32_A4, X_5[0] @ X_5[1] @ X_5[2] @ X_5[3]
+@ X_5[4])
+# Beta_6 =
+grad_opt_beta(F32_A3, X_6[0] @ X_6[1] @ X_6[2] @ X_6[3]
+@ X_6[4])
+# F32_A3_est = Beta_6 * X_6[0] @ X_6[1] @ X_6[2] @ X_6[3] @ X_6[4]
+# error1 = np.linalg.norm(F32_A3 - F32_A3_est, 'fro') / N
+# print("F32_A3 fro_norm = ",error1)
+# F32_A4_est = Beta_5 * X_5[0] @ X_5[1] @ X_5[2] @ X_5[3] @ X_5[4]
+# error2 = np.linalg.norm(F32_A4 - F32_A4_est, 'fro') / N
+# print("F32_A4 fro_norm = ",error2)
+F32_est = Beta_4 * X_4[0] @ X_4[1] @ X_4[2] @ X_4[3] @ X_4[4] @
+# F32_Pn
+# error3 = np.linalg.norm(F32_A5 - F32_A5_est, 'fro') / N
+# print("F32_A5 fro_norm = ",error3)
+# F32_est = F32_A5_est @ F32_A4_est @ F32_A3_est @ F32_A2 @ F32_A1 @
+# F32_Pn
+error = np.linalg.norm(F32 - F32_est, 'fro') / N
+beta = multiply_list([Beta_4])
+print("Beta = ",beta)
+print("F8 fro_norm = ",error)
+complexity = complex_multiplications([X_4[0] @ X_4[1] @ X_4[2] @ X_4
+[3] @ X_4[4] @ F32_Pn], beta)
+print("complexity = ",complexity)
+66
+
+## 第 68 页
+
+1. 3 问题4 代码
+遍历性定理逼近求解.m
+%遍历性定理逼近求解
+clear
+clc
+angle_init = [0 0;pi/2 0;pi 0;−pi/2 0;atan(1/2) atan(−1/2);atan(2) atan
+(1/2);atan(1/2)+pi/2 atan(−1/2);atan(1/4) atan(−1/4); atan(4) atan
+(1/4);atan(1/4)+pi/2 atan(−1/4)]; %initial angle
+angle_rotate = [atan(1/4) −atan(1/4);atan(4) atan(1/4);atan(1/2) −atan
+(1/2);atan(2) atan(1/2)];%rotation angle
+angle_diff = [pi/4,pi/4*3,pi/4+pi,2*pi−pi/4];%angle difference
+angle_target_mod90 = [0,atan(1/4),atan(1/2),pi/4,atan(2),pi/2];%target
+angle
+global_min_error = 0.076773;
+for n = 1:1000%number of rotation matrices
+for in_init = 1:10 %1:10
+angles = angle_init(in_init,:);
+for in_rotate = 4 %1:4
+delta_angles = angle_rotate(in_rotate,:);
+%disp(['New parameters: in_init =' num2str(in_init) '
+in_rotate=' int2str(in_rotate)])
+temp_ang1 = angles(1)+n*delta_angles(1);
+temp_ang2 = angles(2)+n*delta_angles(2);
+temp_diff = mod(temp_ang2−temp_ang1,2*pi);
+[diff_error,diff_index ]= min(abs(temp_diff−angle_diff));
+[target_error,target_index ]= min(abs(mod(temp_ang1,pi/2)−
+angle_target_mod90));
+total_error = diff_error+target_error;
+if total_error < global_min_error
+global_min_error = total_error;
+disp('NEW GLOBAL BEST
+........................................................
+')
+disp(['initial angle: ' num2str(in_init)])
+disp(['rotation angle: ' num2str(in_rotate)])
+disp(['n: ' num2str(n)])
+disp(['total error: ' num2str(total_error)])
+67
+
+## 第 69 页
+
+disp(['diff_error: ' num2str(diff_error)])
+disp(['diff_index: ' num2str(diff_index)])
+disp(['target_error: ' num2str(target_error)])
+disp(['target_index: ' num2str(target_index)])
+end
+end
+end
+end
+%1e4:0.07096
+1. 4 问题5 代码
+main.m
+clc,clear,close all
+# J = 3;
+# N = 2^J;
+# A = dftmtx(N);
+ctfft(J);
+p = 1;
+q = J;
+l = 1;
+% [ML,MR,beta] = Hierarchical_ga(A*Pn,p,q,l,N,0);
+[ML,MR,beta] = Hierarchical_ga(A3,p,q,l,N,1);
+# X{1} = ML;
+# Beta(1) = beta;
+p = l+1;
+q = J;
+l = p;
+[ML,MR,beta] = Hierarchical_ga(MR,p,q,l,N,0);
+# X{2} = ML;
+# X{3} = MR;
+# Beta(2) = beta;
+% X{1} = lh(X{1});
+% X{2} = lh(X{2});
+% X{3} = lh(X{3});
+beta = gradOptBeta(A,X{1}*X{2}*X{3}*A2*A1*Pn');
+% beta = gradOptBeta(A,X{1}*X{2}*X{3}*Pn)
+norm(A −beta*Beta(1)*Beta(2)*X{1}*X{2}*X{3}*A2*A1*Pn',"fro")/N
+% norm(A −beta*Beta(1)*Beta(2)*X{1}*X{2}*X{3}*Pn',"fro")/N
+68
+
+## 第 70 页
+
+function X = lh(X)
+[m,n] = size(X);
+for i = 1:n
+## X(:,i) = ProjRealImag(X(:,i));
+end
+end
+# Hierarchical_ga.m
+function [ML,MR,beta] = Hierarchical_ga(M,p,q,l,N,flag)
+# SbfL = Sbf(p,l,N);
+## SbfR = Sbf(l+1,q,N);
+[ML,MR,beta] = FSMF_ga(M,SbfL,SbfR',flag);
+# MR = MR';
+end
+# FSMF_ga.m
+function [X,Y,beta] = FSMF_ga(Z,SL,SR,flag)
+beta = 1;
+[m,r] = size(SL);
+# X = zeros(m,r);
+# Y = zeros(m,r);
+## S = phi(SL, SR); % S is a cell
+for i = 1:r
+% 对应左，右模板分别为SL{:,i},SR{:,i}' 直接就是列向量
+[indLrow,indLcol,valL] = find(SL(:,i)); %总数
+[indRrow,indRcol,valR] = find(SR(:,i)); %
+## NL = length(indLrow);
+## NR = length(indRrow);
+[u,sigma,v] = svd(Z.*S{i});
+srealu = sparse(sign(real(u(:,1))));
+simagu = sparse(sign(imag(u(:,1))));
+srealv = sparse(sign(real(sigma(1,1)*v(:,1))));
+simagv = sparse(sign(imag(sigma(1,1)*v(:,1))));
+## N = NL + NR; % 待优化个数
+% 目标函数使得frobenius最小
+f= @(x) norm(Z.*S{i} −(srealu.*sparse(indLrow,indLcol,2.^x(1:NL),m,1)+
+simagu.*sparse(indLrow,indLcol,2.^x(NL+1:2*NL)*1i,m,1))*...
+(srealv.*sparse(indRrow,indRcol,2.^x(2*NL+1:2*NL+NR),m,1)+simagv.*
+sparse(indRrow,indRcol,2.^x(2*NL+1+NR:2*N)*1i,m,1))','fro');
+69
+
+## 第 71 页
+
+% 建立整数遗传算法，2^t次方逼近
+intN = [1:1:2*N]';
+[x, fval, ef] = ga(f, 2 * N, [], [], [], [], −10*ones(2*N,1), 10*ones
+(2*N,1), [], intN)
+% [x, fval, ef] = ga(f, 2 * N, [], [], [], [], [], [], [], intN)
+% Z = Z −signu.*sparse(indLrow,indLcol,2.^x(1:NL)+2.^x(NL+1:2*NL)*1i,m
+,1)*...
+% signv.*sparse(indRrow,indRcol,2.^x(2*NL+1:2*NL+NR)+2.^x(2*NL+1+NR:2*N
+)*1i,m,1)';
+X(:,i) = full((srealu.*sparse(indLrow,indLcol,2.^x(1:NL),m,1)+simagu.*
+sparse(indLrow,indLcol,2.^x(NL+1:2*NL)*1i,m,1)));
+Y(:,i) = full((srealv.*sparse(indRrow,indRcol,2.^x(2*NL+1:2*NL+NR),m,1)
++simagv.*sparse(indRrow,indRcol,2.^x(2*NL+1+NR:2*N)*1i,m,1)));
+## Z = Z −X(:,i)*Y(:,i)';
+end
+end
+function K = phi(X,Y)
+[~,r] = size(X);
+# K = cell(r,1);
+for i = 1:r
+## K{i} = X(:,i)*Y(:,i)';
+end
+end
+function [x,y] = minFZ(A,x,y)
+lambda = 0.01;
+ind = 1;
+while (ind < 100)
+dx = (x*y'−A)*y;
+dy = (x*y'−A)'*x;
+x = x −lambda * dx;
+y = y −lambda * dy;
+error = norm(A−x*y','fro');
+if error < 0.1
+break
+end
+ind = ind + 1;
+end
+end
+70
+
+## 第 72 页
+
+gradOptBeta.m
+function beta = gradOptBeta(Z,Zhat)
+# Beta = 0:0.01:5;
+[N, ~] = size(Z);
+error = zeros(length(Beta),1);
+for i = 1:length(Beta)
+beta = Beta(i);
+error(i) = norm(Z −beta*Zhat,'fro')/N;
+end
+figure
+plot(error)
+[~,ind] = min(error);
+beta = Beta(ind);
+end
+遍历性定理逼近求解.m
+%第五问求解
+clear
+clc
+angle_init = 0; %initial angle
+angle_rotate = [atan(1/4) atan(1/2) atan(4) atan(2)];%rotation angle
+angle_target_mod90 = [pi/2−pi/8,pi/8];%target angle
+global_min_error = 1;
+for n = 1:1000%number of rotation matrices
+angles = angle_init;
+for in_rotate = 1:4
+delta_angles = angle_rotate(in_rotate);
+%disp(['New parameters: in_init =' num2str(in_init) '
+in_rotate=' int2str(in_rotate)])
+temp_ang1 = angles+n*delta_angles;
+[target_error,target_index ]= min(abs(mod(temp_ang1,pi/2)−
+angle_target_mod90));
+if target_error < global_min_error
+global_min_error = target_error;
+disp('NEW GLOBAL BEST
+........................................................
+')
+disp(['rotation angle: ' num2str(in_rotate)])
+71
+
+## 第 73 页
+
+disp(['n: ' num2str(n)])
+disp(['target_error: ' num2str(target_error)])
+disp(['target_index: ' num2str(target_index)])
+end
+end
+end
+%1e4:0.07096
+72
+

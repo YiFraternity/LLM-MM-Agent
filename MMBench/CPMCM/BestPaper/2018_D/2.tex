@@ -1,13 +1,3 @@
-\begin{tabular}{ll}
-学校 & 重庆大学 \\
-\hline
-参赛队号 & 18106110053 \\
-\hline
-队员姓名 & 1. 张路 \\
-& 2. 杨丰祥 \\
-& 3. 黄金辉 \\
-\end{tabular}
-
 \title{基于卫星高度计海面高度异常资料获取潮汐调和常数方法及应用}
 
 \maketitle
@@ -149,15 +139,25 @@ TOPEX/POSEIDON 卫星是由美国国家航空航天局和法国空间局联合�
 
 \section{四、名词解释及符号说明}
 
-\begin{tabular}{ll}
-学校 & 重庆大学 \\
-\hline
-参赛队号 & 18106110053 \\
-\hline
-队员姓名 & 1. 张路 \\
-& 2. 杨丰祥 \\
-& 3. 黄金辉 \\
-\end{tabular}
+\begin{table}[htbp]
+    \centering
+    \caption{符号说明表}
+    \begin{tabular}{|c|l|c|l|}
+    \hline
+    \textbf{符号} & \textbf{意义} & \textbf{符号} & \textbf{意义} \\ \hline
+    $R$ & 卫星和海表面的距离 & $N(z)$ & 垂直浮力剖面 \\ \hline
+    $\Pi(z)$ & 水平速度的垂直结构 & $\Phi(z)$ & 内波引起的垂直位移 \\ \hline
+    $HKE$ & 水平动能 & $g_j$ & 迟角 \\ \hline
+    $h_j$ & 振幅 & $f_j$ & 交点因子 \\ \hline
+    $\mu_a$ & Doodson 数 & $T_A$ & 混淆周期 \\ \hline
+    $\zeta(t_i)$ & 第 $i$ 时刻的实际潮位 & $G_{\text{春}}$ & 格林尼治时间 \\ \hline
+    $\sigma$ & 分潮的角速率 & $\Delta$ & 上升与下降轨在交点处的调和常数的矢量差异 \\ \hline
+    $r$ & 噪声 & $DC$ & 确定性系数 \\ \hline
+    $l_i(t)$ & 拉格朗日立潮位多项式 & $H_{2n-1}(x)$ & 三次 Hermite 插值立潮位多项式 \\ \hline
+    $S_3(x)$ & 三次样条插值立潮位多项式 & $T_{\text{satPeriod}}$ & 采样间隔 \\ \hline
+    $\tilde{H}_k$ & 内潮海表面振幅 & $\tilde{g}_k$ & 内潮海表面迟角 \\ \hline
+    \end{tabular}
+    \end{table}
 
 \section{五、模型的建立与求解}
 
@@ -231,7 +231,7 @@ $Q_{1}$ &  &  &  &  &  &  &  & 0 \\ \hline
 
 从上表可以看出，区分 $M_{2}$ 和 $S_{2}$ 分潮，需要 0.7 年 (271.7 天) 的数据；区分 $K_{1}$ 和 $P_{1}$ 分潮，需要约 2.3 年 (844.2 天) 的数据，该时间是 8 个主要分潮中分辨两个分潮所需要的最长时间。因此，要获取 $M_{2}$、$S_{2}$、$N_{2}$、$K_{1}$、$O_{1}$、$Q_{1}$、$K_{1}$ 和 $P_{1}$ 稳定的调和常数，至少要 100 个采样点 (约 1000 天)。因此，本文采用的 T/P 卫星高度计时间序列的长度足够对以上主要分潮进行调和分析。
 
-\subsection{5.1.2 利用达尔文-杜森模型 ($f/u$) 进行潮汐的调和分析}
+\subsubsection{5.1.2 利用达尔文-杜森模型 ($f/u$) 进行潮汐的调和分析}
 
 实际潮汐的分潮从其来源看可分为以下四种：天文分潮、气象分潮、天文-气象分潮和浅水分潮。
 
@@ -246,7 +246,7 @@ h = S_{0} + \sum_{j=1}^{J} f_{j} h_{j} \cos (\nu_{j} + u_{j} - g_{j}) = S_{0} + 
 \end{equation}
 其中，$S_{0}$ 为余水位，$f_{j}$ 为交点因子，$u_{j}$ 为交点订正角，$h_{j}, g_{j}$ 为分潮的调和常数（振幅和迟角）。
 
-\subsubsection{(1) 分潮角速度的计算}
+(1) 分潮角速度的计算
 \begin{equation}
 \sigma = \mu_{1} \tau + \mu_{2} s + \mu_{3} h' + \mu_{4} p + \mu_{5} N' + \mu_{6} p'
 \tag{5.2}
@@ -262,7 +262,7 @@ h = S_{0} + \sum_{j=1}^{J} f_{j} h_{j} \cos (\nu_{j} + u_{j} - g_{j}) = S_{0} + 
     \item $p' = 0.00000196$
 \end{itemize}
 
-\subsubsection{分潮初相位的计算}
+分潮初相位的计算
 
 $Y$ 年 $M$ 月 $D$ 日 $t$ 时刻（实际计算中是观测数据的起始时间）的天文初相角：
 
@@ -458,11 +458,11 @@ S_{0}+a_{n1} x_{1}+a_{n2} x_{2}+\cdots+a_{nm} x_{m} &= h_{n}
 
 这样就可得到关于分潮调和常数的线性方程组，进而可提取出分潮的调和常数，具体流程可以参考以下算法设计。
 
-\subsection{5.1.3 高度计资料的调和分析算法设计}
+\subsubsection{5.1.3 高度计资料的调和分析算法设计}
 
 分别利用上述研究方法，对卫星高度计资料进行分潮分析，得到 4 个主要分潮（$M_{2}, S_{2}, K_{1}, O_{1}$）和另外 4 个分潮（$N_{2}, K_{2}, P_{1}, Q_{1}$）的潮汐调和常数，根据文献[]表示，对于余水位 $S_{0}$ 大于 $1 \mathrm{~cm}$ 的点需要被剔除，从而可以得到各分潮潮汐调和常数（振幅 $H$ 和迟角 $g$）的结果如表所示。其中：$M_{2}, S_{2}, N_{2}, K_{2}$ 为半日分潮；$K_{1}, O_{1}, P_{1}, Q_{1}, M_{1}$ 为全日分潮。
 
-\subsubsection{问题：分潮调和常数获取与评价算法设计}
+问题：分潮调和常数获取与评价算法设计
 
 步骤 1：根据 T/P 卫星测量水深数据进行数据预处理，得到各测点经纬度坐标和测量水深数据。
 
@@ -472,11 +472,11 @@ S_{0}+a_{n1} x_{1}+a_{n2} x_{2}+\cdots+a_{nm} x_{m} &= h_{n}
 
 步骤 4：利用上诉求解得到的结果，根据坐标变换得到各个分潮的调和常数（振幅 $H$ 和迟角 $G$）。
 
-\subsection{5.1.4 结果对比分析}
+\subsubsection{5.1.4 结果对比分析}
 
 在对卫星高度计计算得到的各主要分潮（$M_{2}$、$S_{2}$、$K_{1}$、$O_{1}$）的潮汐调和参数进行评价和检验过程中，主要分为两种方式进行对比：（1）与验潮站的分潮调和常数结果对比：选出离卫星高度计测量近的验潮站作为对比评价的目标，需要筛选出能够用于评价的验潮站点坐标，并对比分析靠离卫星高度计测量附近的验潮站分潮调和数据；（2）对比轨道交点处各分潮调和常数偏差：对比分析上行轨道和下行轨道交叉点的 8 个主要分潮的潮汐调和常数的误差。
 
-\subsubsection{(1) 与验潮站的分潮调和常数结果对比}
+(1) 与验潮站的分潮调和常数结果对比
 
 \begin{enumerate}
     \item \textbf{验潮站点选择：} 利用卫星高度计测量数据和验潮站数据，以卫星高度计距离测量位置最近为准则选择验潮站，通过筛选得到用于结果对比的验潮站的位置如图 5.1 所示。
@@ -587,7 +587,7 @@ r_s = d_{rss} / h_{rss}
 
 式中 \(h_{rss} = \left[ \frac{1}{2K} \sum_{j=1}^{J} \sum_{k=1}^{K} H_{a,k,j}^2 \right]^{1/2}\)。
 
-\subsubsection{(2) 轨道交点处各分潮调和常数的比较}
+(2) 轨道交点处各分潮调和常数的比较
 
 另一方面，为了进一步验证调和分析的结果，分析轨道交叉点的上下行轨道的调和常数进行了对比分析。对其中 4 个分潮，其中半日潮 \((M_2, S_2)\) 和全日潮 \((K_1, O_1)\) 的分潮潮汐调和常数进行了对比，对比结果如表 5.6 所示。
 
@@ -649,7 +649,7 @@ $^{\circ}$E & $^{\circ}$N & $\Delta H/cm$ & $\Delta$ & $\Delta H/cm$ & $\Delta$ 
 
 由表5.6和图可知，$M_{2}$、$S_{2}$、$K_{1}$、$O_{1}$振幅差$\Delta H$均方根为0.65、1.09、0.83、0.81cm，其平均值为0.805cm，最大值和最小值分别为$K_{1}$分潮的1.09cm、$M_{2}$分潮的0.65cm；$M_{2}$、$S_{2}$、$K_{1}$、$O_{1}$矢量差$\Delta$均方根为0.85、1.02、0.79、0.78，其平均值为0.86，最大值和最小值分别为$S_{2}$分潮的1.02、$O_{1}$分潮的0.78。上述结果表明，上下行轨道在轨道交叉点出的调和分析结果偏差很小，说明各个分潮潮汐调和分析结果具有较高的可靠性。
 
-\subsubsection{分潮潮汐调和常数沿轨道分布结果图}
+(3)分潮潮汐调和常数沿轨道分布结果图
 
 从整体的主要分潮潮汐调和常数沿轨道上的结果分布图可以看出，从T/P获取得到的各个分潮（$M_{2}$、$S_{2}$、$K_{1}$、$O_{1}$）的潮汐调和常数（振幅$H$和迟角$G$），从图中可以看出$M_{2}$振幅的范围主要在0~40cm，大部分处于10cm以下，迟角跨度
 
@@ -707,14 +707,13 @@ $^{\circ}$E & $^{\circ}$N & $\Delta H/cm$ & $\Delta$ & $\Delta H/cm$ & $\Delta$ 
     \label{fig:5.11}
 \end{figure}
 
-\section{问题二：正压潮和内潮的分离}
+\subsection{问题二：正压潮和内潮的分离}
 
 由第一问得到各个主要分潮在轨道上的分布示意图，分析发现，各个分潮的振幅和迟角在轨道上具有一定震荡现象，是由于内潮对正压潮具有调制作用，而为了分离正压潮和内潮，许多学者对其进行了大量的研究，目前，发现通过多项式拟合获得的结果，不受内潮的影响，于是，可以获得正压潮，得到分潮潮汐调和常数稳定的部分，为同潮图的绘制提供有效的参数支持。首先，针对不同轨道的分潮潮汐调和参数进行了相应的图形绘制，发现：上下行轨道的有细结构差别较大，下行轨道具有明显地有细结构，而上行轨道的有细结构不明显，从而为多项式拟合的结果提供了一定的参考支持。
 
-\subsection{沿轨道分析}
+\subsubsection{沿轨道分析}
 
-\subsubsection{上行轨道分析}
-
+上行轨道分析
 利用轨道分割法，获得各个轨道上各个主要分潮潮汐调和常数沿上行轨道的分布，从图 \ref{fig:5.12}-图 \ref{fig:5.15} 可以看出，各个分潮 ($M_{2}$、$S_{2}$、$K_{1}$、$O_{1}$) 振幅在沿纬度方向上，具有明显地细条结构，虽然在部分纬度跨越时，振幅波动变化较大。
 
 \begin{figure}[h]
@@ -743,7 +742,7 @@ $^{\circ}$E & $^{\circ}$N & $\Delta H/cm$ & $\Delta$ & $\Delta H/cm$ & $\Delta$ 
     \label{fig:5.15}
 \end{figure}
 
-\subsubsection{下行轨道分析}
+下行轨道分析
 
 利用轨道分割法，获得各个轨道上各个主要分潮潮汐调和常数沿下行轨道的分布，从图 \ref{fig:5.16}-图 \ref{fig:5.19} 可以看出，各个分潮 ($M_{2}$、$S_{2}$、$K_{1}$、$O_{1}$) 振幅在沿纬度方向上，具有明显地细条结构，虽然在部分纬度跨越时，振幅波动变化较大。
 
@@ -774,7 +773,7 @@ $^{\circ}$E & $^{\circ}$N & $\Delta H/cm$ & $\Delta$ & $\Delta H/cm$ & $\Delta$ 
 
 此细结构是内潮对正压潮的调制，为了剥离各个分潮的潮汐调和常数中的内潮的影响，从而需要利用多项式拟合的方法，针对各个分潮分别进行沿轨道上进行分离分析，以下为多项式拟合方法的过程。
 
-\subsection{5.2.2 多项式拟合方法}
+\subsubsection{5.2.2 多项式拟合方法}
 
 利用调和分析获得各个主要分潮的潮汐调和常数，得到某一条轨道上的任一观测点 \( P(x, y) \)（\( x \) 和 \( y \) 分别为点 \( p \) 的经、纬度）的振幅值 \( H \) 和迟角值 \( g \)。首先将 \( H \)、\( g \) 转化为 \( H \cos g \) 和 \( H \sin g \)，然后分别对 \( H \cos g \) 和 \( H \sin g \) 沿轨进行 \( n \) 次多项式拟合（\( n=1, 2, \ldots \)），最后通过坐标转换得到 \( M_2 \) 内潮的海表面振幅和迟角。以拟合 \( H \cos g \) 为例说明。
 
@@ -847,13 +846,13 @@ b_{n+1}
 \end{equation}
 通过坐标转换可求得内潮海表面振幅 \( \tilde{H}_k \)、迟角 \( \tilde{g}_k \)。
 
-\subsection{5.2.3 拟合结果分析}
+\subsubsection{5.2.3 拟合结果分析}
 
 利用多项式拟合方法分别对南海海区内 20 条轨道 8 个主要分潮的潮汐调和常数沿轨进行 3-15 次多项式拟合（这里在第四问重点分析），从而获得了正压潮和内潮的分离。由此得到各个轨道的最佳多项式次数拟合如表 5.33 所示（问题四）。
 
 从而利用得到的正压潮和内潮的贡献，通过坐标变换分别可以得到正压潮和内潮的调和振幅 $H$ 和迟角 $G$，从而可以达到对正压潮和内潮的分离，针对 20 条轨道分别进行正压潮的分离，此处，列举了上下行轨道各一条进行分析和讨论。1 号上行轨道分离结果，如图 5.21-图 5.25；20 号下行轨道分离结果如图 5.26-图 5.31 所示。
 
-\subsubsection{(1) 上行轨道正压潮和内潮分离结果}
+(1) 上行轨道正压潮和内潮分离结果
 
 分别对 9 条上行轨道进行了正压潮和内潮的分离，本部分列举了 1 号上行轨道的各个分潮的正压潮和内潮的调和常数（振幅 $H$ 和迟角 $G$）。可以看出，$M_{2}$ 分潮的正压潮的振幅处于 0.5~3.5cm 之间，中间存在波峰和波谷，$6^{\circ} \mathrm{N}$ 处存在较为峰尖，对于后面的插值来说，具有较为剧烈的影响。对于 $6.2^{\circ} \mathrm{N}$ 的振幅和迟角值，后期在进行插值时，为了使得同潮图具有连续性并能够体现海洋潮汐的特征，则需要对这种“尖端”进行另外处理（例如剔除）。
 
@@ -900,10 +899,10 @@ $O_{1}$ 分潮的正压潮的振幅处于 0.5~3.5cm 之间，中间存在多个�
     \label{fig:5.23}
 \end{figure}
 
-\subsubsection{下行轨道正压潮和内潮分离情况}
+(2)下行轨道正压潮和内潮分离情况
 
 分别对 11 条下行轨道进行了正压潮和内潮的分离，本部分列举了 20 号下行轨道的各个分潮的正压潮和内潮的调和常数（振幅 $H$ 和迟角 $G$）。可以看出，$M_{2}$ 分潮的正压潮的振幅处于 0~7cm 之间，中间存在一个波峰和一个波谷，$6^{\circ}\mathrm{N}$ 处
-
+的迟角存在两个峰尖，即两个不可导点。对于插值等平滑处理，具有较为剧烈的影响。为了使得同潮图具有连续性并能够体现海洋潮汐的特征，则需要对这种“不可导点”进行另外处理（例如剔除、平滑等操作），下行的正压潮的调和常数，整体趋于光滑，能够提高最终插值的精度，从而获得较为可靠的各个 M2 分潮的同潮分布图。
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -973,11 +972,11 @@ $O_{1}$ 分潮的正压潮的振幅处于 0.5~3.5cm 之间，中间存在多个�
     \label{fig:5.27}
 \end{figure}
 
-\section{问题三：分潮特征同潮图分析}
+\subsection{问题三：分潮特征同潮图分析}
 
 由问题二得到各个分潮的正压潮的潮汐调和常数沿轨道上的分布，可以利用相对应的插值方法，对整个坐标系下进行插值，从而获得各个分潮的潮汐调和常数（振幅 $H$ 和迟角 $G$）的同潮图（北京时间）。查阅参考文献，目前主要用于插值法获得同潮分布图的常规方法有：牛顿（Newton）、格雷格里（Gregory）和拉格朗日（Lagrange）。在本次潮汐调和分析过程中，这三种插值方法对数据具有较为明显的依赖性，需要提供的数据具有一定规律的连续性，而由于内潮对正压潮具有调制作用，需要对内潮进行剥离，从而获得具有稳定信号的正压潮的调和常数，并有利于同潮图的绘制。
 
-\subsection{插值方法}
+\subsubsection{插值方法}
 
 常规的插值主要是利用特定的公式进行插值推导，假设函数 $y=f(x)$ 是定义在区间 $[a,b]$ 上的函数，在区间 $[a,b]$ 上取 $n+1$ 个互异的点 $x_{0}, x_{1}, \ldots, x_{n}$，这些点 $y=f(x)$ 在上对应的函数值分别为 $y_{0}, y_{1}, \ldots, y_{n}$。
 
@@ -1086,7 +1085,7 @@ F = \sigma_E^2 - 2\mu \left(\sum_{i=1}^n \lambda_i - 1\right)
 
 2) 振幅和迟角分别或者同时存在 “尖端”，即不可导点时，可以向前或者向后进行微小变化插值，从而可以防止出现骤变数据。
 
-\subsection{5.3.2 分潮同潮图分析}
+\subsubsection{5.3.2 分潮同潮图分析}
 
 (1) 半日分潮同潮图分析
 
@@ -1120,7 +1119,7 @@ F = \sigma_E^2 - 2\mu \left(\sum_{i=1}^n \lambda_i - 1\right)
     \caption{图 5.31 $N_{2}$ 分潮的振幅 $H$ 和迟角 $G$ 分布的同潮图（$g$: 振幅 $H$ 同潮图，$h$: 迟角 $G$ 同潮图）}
 \end{figure}
 
-\subsection{全日分潮同潮图分析}
+全日分潮同潮图分析
 
 同样根据 $f$、$u$ 模型，利用卫星高度计资料计算出南海研究区域各个分潮的调和常数，获取了 T/P 卫星观察下的 8 个主要分潮的调和数据。依据前面的加权插值方法，绘制了图 5.9-图 5.12，4 个全日分潮（$K_{1}$、$O_{1}$、$P_{1}$、$Q_{1}$）的振幅 $H$ 和迟角 $G$ 分布的同潮图（北京时间）。
 
@@ -1153,7 +1152,7 @@ F = \sigma_E^2 - 2\mu \left(\sum_{i=1}^n \lambda_i - 1\right)
     \caption{图 5.35 $Q_{1}$ 分潮的振幅 $H$ 和迟角 $G$ 分布的同潮图（g：振幅 $H$ 同潮图，h：迟角 $G$ 同潮图）}
 \end{figure}
 
-\subsection{5.3.3 与潮汐验潮站结果对比}
+\subsubsection{5.3.3 与潮汐验潮站结果对比}
 
 利用最近原则，对比分析附近的验潮站的分潮调和数据，得到同潮图与验潮站的分潮调和数据检验对比分析的结果，如表 5.8 所示，通过对比可以，得出：
 
@@ -1316,11 +1315,11 @@ $P_{1}$ & 106.667 & 20.867 & 4.4 & 3.00 & 1.40 & 98.78 & 101.99 & 3.21 \\
 \caption{各个分潮与验潮站的调和常数（振幅H和迟角G）绝均差结果}
 \end{figure}
 
-\section{问题四：潮汐调和分析优化过程讨论}
+\subsection{问题四：潮汐调和分析优化过程讨论}
 
 针对沿轨道的潮汐调和常数分离、插值和拟合过程中，分布图和同潮时图绘制的精度，主要引入了一定特定函数多项式进行拟合，为了提高精度，多项式次数越高，对正压潮分离使用了特定的多项式次数进行拟合，本部分主要从两个方面出发：1) 针对不同次数下的多项式拟合分潮调和常数进行正压潮和内潮的分离分析讨论；2) 针对不同插值方法和方式的同潮图绘制的分析讨论。最终实现海洋潮汐调和常数。
 
-\subsection{不同次数下的多项式拟合的分析讨论}
+\subsubsection{不同次数下的多项式拟合的分析讨论}
 
 本部分主要针对南海海区内20条轨道8个主要分潮的潮汐调和常数沿轨进行3-15次多项式拟合，针对上下行轨道分别进行了多次多项式拟合，拟合结果如下图5.37-图5.40所示。
 
@@ -1406,7 +1405,7 @@ $P_{1}$ & 106.667 & 20.867 & 4.4 & 3.00 & 1.40 & 98.78 & 101.99 & 3.21 \\
 \end{table}
 
 由表5.9可知，沿1-20号轨道分别进行5、7、9、11、13次多项式拟合得到的振幅平均均方差分别为1.01cm、0.97cm、0.94cm、1.31cm、1.31cm，9次多项式拟合均方差最小。由图5.41-图5.42可以看出，虽然5、7、11、13次多项式的拟合结果都反映海表面$M_{1}$分潮振幅的变化趋势，但不同次数多项式的拟合结果与海表面$M_{1}$分潮振幅的符合程度存在明显差异，其中，基本上下行轨道最佳次数稳定在9次方前后，部分下行轨道为了方便计算，可以采用较为低次的多项式。
-
+式进行拟合.
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -1423,7 +1422,7 @@ $P_{1}$ & 106.667 & 20.867 & 4.4 & 3.00 & 1.40 & 98.78 & 101.99 & 3.21 \\
 
 从上行和下行轨道的各个次数的多项式拟合方面综合分析，下行轨道的在较低的次数拟合效果较好，且趋势明显；而上行轨道的振幅 \( H \) 沿轨道的分布较为发散，不太具有一定的规律，在这种情况下，进行多项式拟合，效果不明显，从而对后续插值获得同潮图的工作带来一定的难度。启示：1) 可以分上下行轨道分方法插值，设置权重，增加下行轨道对插值结果的权重比例，降低上行轨道振幅数据对插值结果的影响，从而可以获得较为完备的各个分潮的同潮分布图；2) 依据不同分潮类型的实际情况，进行不同的插值方式研究，最后进行叠加，从而达到完整的同潮图绘制。
 
-\subsection{5.4.2 不同插值方法的同潮图绘制的分析讨论}
+\subsubsection{5.4.2 不同插值方法的同潮图绘制的分析讨论}
 
 由于时间的关系，只从理论角度出发，研究局部加权的插值方法。参考文献 [14] 可以利用局部加权二次多项式来对数据进行插值处理。假设在网格点 \((x_n, y_n)\) 的影响距离内存在 \( k \) 个数据点，为了将每个网格点映射变量 \( z \) 中，引入插值函数
 
@@ -1512,3 +1511,359 @@ M B=Z
 [13]. 孙新轩, 许军, 暴景阳. 利用 T/P 卫星测高数据提取潮汐参数的研究[J]. 测绘通报, 2006(7):16-18.
 
 [14]. 付延光, 周兴华, 许军, 等. 利用 TOPEX/Poseidon 和 Jason-1 高度计数据提取中国南海潮汐信息[J]. 武汉大学学报(信息科学版), 2018(6).
+
+\section{附录}
+附录一：部分程序
+
+文件名：Main.m
+编译环境：MATLAB R2016a 功能：问题一主程序
+clear;clc;close all;
+allData = importdata('../../高度计/TP.dat');
+[cellMat,location,count] = splitData(allData);
+%% cal for each obsearvation
+load orbits.mat% 可以取消下一行注释来人工选择轨道
+% orbits=splitOrbit(location);
+[H,g]=cellfun(@calHG,cellMat,'uniformoutput',false);
+[MSEH1,MSEG1,res1] = validate(H,g,location,orbits,'M2');
+[MSEH2,MSEG2,res2] = validate(H,g,location,orbits,'S2');
+[MSEH3,MSEG3,res3] = validate(H,g,location,orbits,'K1');
+[MSEH4,MSEG4,res4] = validate(H,g,location,orbits,'O1');
+%% plot Map
+plotMagDis(H,g,location(:,1),location(:,2))
+plotLonLatWaves(H,g,location,orbits)
+
+文件名：calHG.m
+编译环境：MATLAB R2016a 功能：问题一最小二乘求HG
+function [H,g]=calHG(Data)
+T = Data(:,1);h = Data(:,2);numSam = length(T);
+% judge number of subwaves
+numW=9;
+%% with order of M2,S2,K1,O1,N2,K2,P1,Q1,Sa
+styleGroup = {'M2','S2','K1','O1','N2','K2','P1','Q1','Sa',...
+'Ssa','Mm','MSf','Mf','M1','S1','J1','OO1','L2','M4','MS4','M6'};
+selectedWaves = styleGroup(1:numW);
+%% fit H and g
+t=T/3600;
+% [~,~,~,~,~,~,t]=cvtSec2YMDT(T); % relative seconds need not to cvt
+# % M2
+[v0,p,nPiao] = calInitV(selectedWaves,T); % return deg
+
+
+
+43
+
+sigma = calSigma(selectedWaves)';% return deg/H
+% unit have been cvted in func,  return rad
+[f,u] = cellfun(@(waves)calFU(waves,p,nPiao),selectedWaves,'uniformoutput',false);
+f=cell2mat(f);u=cell2mat(u);
+%% cal inputs
+consts=[f.*cos(deg2rad(t*sigma+v0)+u),...
+* *sin(deg2rad(t*sigma+v0)+u)];
+[xyVals,~,res] = regress(h,[ones(numSam,1),consts]);
+mse=mean(res.^2);S0=xyVals(1);
+%% get H,g
+H=[];g=[];
+for ii=1:numW
+H = [H,100*sqrt(xyVals(2*ii)^2+xyVals(ii*2+1)^2)];% cm
+g = [g,scale360(xyVals(2*ii),xyVals(ii*2+1))];% degree
+end
+
+文件名：cvtSec2YMDT.m
+编译环境：MATLAB R2016a 功能：秒转年月日
+function [Y,M,D,H,min,S,t]=cvtSec2YMDT(T)
+%% convert time 2 year and XXXX
+% cvt 2000/1/1 to G time
+refTime = seconds(3600*120/15);%
+relativeTime = datetime(2000,1,1,0,0,0)+refTime; % beijing ref time 2 G time
+curTime = relativeTime + seconds(T);
+Y = curTime.Year;M = curTime.Month;D = curTime.Day;
+H = curTime.Hour;min = curTime.Minute;S = curTime.Second;
+t = H+(S+min*60)/3600;
+
+文件名：calInitV.m
+编译环境：MATLAB R2016a 功能：计算v0
+function [v0,p,nPiao]=calInitV(style,T)
+%% cal v0 for style wave, all is degree
+uVals = cellfun(@getU,style,'uniformoutput',false);
+[Y,M,D,H,min,S,t]=cvtSec2YMDT(T); % G time
+I = fix((Y-1901)/4);
+durationTime = between(datetime(Y,1,1,0,0,0),datetime(Y,M,D,H,min,S));
+[newM,newD] = split(durationTime,{'months','days'});
+N = calDay(newM,newD)-1;
+% cal input vec
+s=277.02+129.3848*(Y-1900)+13.1764*(N+I+t/24);
+hPiao=280.19-0.2387*(Y-1900)+0.9857*(N+I+t/24);
+p=334.39+40.6625*(Y-1900)+0.1114*(N+I+t/24);
+nPiao=100.84+19.3282*(Y-1900)+0.053*(N+I+t/24);
+pPiao=281.22+0.0172*(Y-1900)+0.00005*(N+I+t/24);
+tao=15*t-s+hPiao;
+vec=[tao,s,hPiao,p,nPiao,pPiao,90*ones(length(pPiao),1)];
+
+
+
+44
+
+v0=vec*reshape(cell2mat(uVals),[7,length(uVals)]);% numSam*numWaves
+
+文件名：calSigma.m
+编译环境：MATLAB R2016a 功能：计算sigma
+function sigma = calSigma(style)
+%% cal sigma
+tao=14.49205211;s=0.54901653;hPiao=0.04106864;
+p=0.00464183;nPiao=0.00220641;pPiao=0.00000196;
+uVals = cellfun(@getU,style,'uniformoutput',false);
+consts=[tao,s,hPiao,p,nPiao,pPiao];
+uV = reshape(cell2mat(uVals),[7,length(uVals)])';
+sigma = uV(:,1:end-1)*consts';%numWaves*1
+
+文件名：calFU.m
+编译环境：MATLAB R2016a 功能：计算f 和u
+function [f,u]=calFU(style,p,nPiao)
+%% cal F and U for style wave
+% cvt degree 2 rad
+p = deg2rad(p);nPiao = deg2rad(nPiao);
+if strcmp('M1',style)
+fCosu = -0.008*cos(-p-2*nPiao)+0.094*cos(-p-nPiao)+0.51*cos(p)-...
+1. 041*cos(p-nPiao)+1.418*cos(p)+0.284*cos(p+nPiao)-0.008*cos(p+2*nPiao);
+fSinu = -0.008*sin(-p-2*nPiao)+0.094*sin(-p-nPiao)-0.51*sin(p)-...
+1. 041*sin(p-nPiao)+1.418*sin(p)+0.284*sin(p+nPiao)-0.008*sin(p+2*nPiao);
+u=deg2rad(arrayfun(@(x,y)scale360(x,y),fCosu,fSinu));
+f=sqrt(fSinu.^2+fCosu.^2); % no need to think about atan(inf)
+elseif strcmp(style,'S2') || strcmp('S1',style) || strcmp(style,'Sa') || strcmp('Ssa',style)
+f=ones(length(p),1);u=zeros(length(p),1);
+else
+%other styles
+[rights,coef,power]=calfuRight(style,p,nPiao);%cos,sin
+u=deg2rad(arrayfun(@(x,y)scale360(x,y),rights(:,1),rights(:,2)));
+f=sqrt(rights(:,2).^2+rights(:,1).^2);
+if ~isempty(coef)
+u=coef(1)*u.^power(1);f=coef(2)*u.^power(2);
+end
+end
+
+文件名：plotMagDis.m
+编译环境：MATLAB R2016a 功能：问题一绘制沿轨道分布
+function plotMagDis(H,g,lon,lat)
+%% plot magnitude distribution
+data=get4SubWaves(H,g);names={'振幅H(cm)','迟角g(度)'};
+styles={'M_2','S_2','K_1','O_1'};
+for ii=1:8
+figure;hold on
+
+
+
+45
+
+geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+grid;xlabel('经度(E)');ylabel('纬度(N)');
+axis([99,122,2,25]);
+% use value as color
+scatter(lon,lat,[],data(:,ii),'o','filled');
+colormap(jet);
+title([styles{1+mod((ii-1),4)},names{1+fix((ii-1)/4)}]);colorbar;
+end
+
+文件名：fitWaves.m
+编译环境：MATLAB R2016a 功能：内潮分离及相关绘图
+clear;clc;close all
+load result.mat
+%% splitup and down orbits
+[upOrb,downOrb,upID,upData,dData]=splitUpDown(orbits,H,g,location);
+upLoc=arrayfun(@(ii)upData{1,ii}(:,1:2),1:length(upData),'uniformoutput',false);
+dLoc=arrayfun(@(ii)dData{1,ii}(:,1:2),1:length(dData),'uniformoutput',false);
+dID=setdiff(1:20,upID);bestModels=[];bestCoefs={};
+% showOrbit(orbits,upID);
+%% get obsearves (HcosG and HsinG)
+%plot 20,下行
+[HcosG,HsinG]=arrayfun(@(ii)calSC(dData{1,ii}),1:length(dData),'uniformoutput',false);
+allData={};
+for ii=1:length(HcosG)
+allData=[allData;[dData{1,ii}(:,1:2),HcosG{1,ii},HsinG{1,ii}]];
+end
+%% fit
+style='Q1';
+uAHat={};uGHat={};dAHat={};dGHat={};bestNd=[];bestNu=[];Dif={};DifG={};
+%% down
+for ii=1:length(dID)
+inFo=allData{ii,1};
+inFo=sortrows(inFo,2);
+id=dID(ii);
+names={'M2','S2','K1','O1','N2','K2','P1','Q1'};
+loc=find(arrayfun(@(ii)strcmp(style,names{ii}),1:length(names)));
+[AW,GW,AHat,GHat,bestNd,secCoefd,diff,diffG]=calContrib(loc,inFo,id);
+dAHat=[dAHat,AW];dGHat=[dGHat,GW];Dif=[Dif,diff];
+DifG=[DifG,diffG];
+%% log coef
+bestModels=[bestModels,bestNd];bestCoefs=[bestCoefs,secCoefd];
+end
+%% up
+[HcosG,HsinG]=arrayfun(@(ii)calSC(upData{1,ii}),1:length(upData),'uniformoutput',false);
+allData={};
+
+
+
+46
+
+for ii=1:length(HcosG)
+allData=[allData;[upData{1,ii}(:,1:2),HcosG{1,ii},HsinG{1,ii}]];
+end
+for ii=1:length(upID)
+inFo=allData{ii,1};
+inFo=sortrows(inFo,2);
+id=upID(ii);
+loc=find(arrayfun(@(ii)strcmp(style,names{ii}),1:length(names)));
+[AW,GW,AHat,GHat,bestNu,secCoefu,diff,diffG]=calContrib(loc,inFo,id);
+uAHat=[uAHat,AW];uGHat=[uGHat,GW];Dif=[Dif,diff];DifG=[DifG,diffG];
+bestModels=[bestModels,bestNd];bestCoefs=[bestCoefs,secCoefd];
+end
+Dif=reshape(cell2mat(Dif),[5,20])';
+Dif=[[dID';upID'],Dif];
+DifG=reshape(cell2mat(DifG),[5,20])';
+DifG=[[dID';upID'],DifG];
+plotDis(upLoc,dAHat,dGHat,dLoc,uAHat,uGHat,style)
+%% plot
+plotORIHg(upData,dData,upID)
+
+文件名：calContrib.m
+编译环境：MATLAB R2016a 功能：内潮正压潮分离
+function [AW,GW,AHat,GHat,bestN,secCoef,diff,diffG]=calContrib(loc,allData,id)
+%% cal 内潮贡献
+N=[5,7,9,11,13];color={'g','b','c','y','r'};diff=[];Coef={};diffG=[];
+figure;y=allData(:,2);
+realA=sqrt(allData(:,2+loc).^2+allData(:,11+loc).^2);
+realG=arrayfun(@(ii)scale360(allData(ii,2+loc),allData(ii,11+loc)),1:length(allData));
+% realG=atan(allData(:,11+loc)/allData(:,2+loc));
+scatter(y,realA,'k*');hold on;
+for ii=1:length(N)
+[coef,coefG]=fitWave(loc,allData,N(ii));
+Coef=[Coef,[coef;coefG]];
+yVal=repmat(y,[1,N(ii)+1]);powVal=repmat(0:N(ii),[length(y),1]);
+fHat=(yVal.^powVal)*coef;fW=allData(:,loc+2)-fHat;
+% for G
+gHat=(yVal.^powVal)*coefG;gW=allData(:,loc+11)-gHat;%sin Data
+%% cal res
+AW=sqrt(gW.^2+fW.^2);
+GW=arrayfun(@(ii)scale360(fW(ii),gW(ii)),1:length(fW))';
+AHat=sqrt(gHat.^2+fHat.^2);
+GHat=arrayfun(@(ii)scale360(fHat(ii),gHat(ii)),1:length(fHat))';
+%% plot
+plot(y,AHat,color{ii},'linewidth',2);
+diff=[diff,sqrt(mean((AHat-realA).^2))];
+
+
+
+47
+
+ss=mean((GHat-realG').^2);
+diffG=[diffG,sqrt(ss)];
+end
+xlabel('纬度(N)');ylabel('H(cm)');
+legend({'真实值','5 次','7 次','9 次','11 次','13 次'})
+title(['轨道',num2str(id)]);grid
+%% find
+[~,loc]=min(diff);
+secCoef=Coef(loc);bestN=N(loc);
+
+文件名：showOrbit.m
+编译环境：MATLAB R2016a 功能：绘制上下行轨道
+function showOrbit(orbits,upID)
+%% plot all orbits
+name=1:20;
+for ii=1:length(orbits)
+lonlat=orbits{1,ii};
+if find(upID==ii)
+scatter(lonlat(:,1),lonlat(:,2),'g.');
+else
+% down
+scatter(lonlat(:,1),lonlat(:,2),'r.');
+end
+gtext(num2str(name(ii)));hold on
+end
+geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+grid;xlabel('经度(E)');ylabel('纬度(N)');axis([99,122,2,25]);
+
+文件名：sameWave.m
+编译环境：MATLAB R2016a 功能：绘制同潮图
+clear;clc;close all
+load result.mat
+load Loc.mat
+clear H g orbits
+%% interp
+[X,Y]=meshgrid(99:0.1:122,2:0.1:25);
+# %% M2
+names={'M2','S2','K1','O1','N2','K2','P1','Q1'};
+allRes={};
+for ii=1:8
+load([names{ii},'AG.mat'])
+Val=preHandle(dAHat,dGHat,uAHat,uGHat,upLoc,dLoc);
+lon=Val(:,1);lat=Val(:,2);v=Val(:,3);g=Val(:,4);
+[XV,YV,Hv] = griddata(lon(2:21:end),lat(2:21:end),v(2:21:end),X,Y,'natural');
+[~,~,Gv] = griddata(lon(2:21:end),lat(2:21:end),g(2:21:end),X,Y,'natural');
+
+
+
+48
+
+figure;
+contour(XV,YV,Hv,'ShowText','on');
+hold on;geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+grid;xlabel('经度(E)');ylabel('纬度(N)');
+axis([99,122,2,25]);colorbar;colormap(jet);title([names{ii},'振幅H(cm)']);
+title(names{ii})
+figure
+contour(XV,YV,Gv,'ShowText','on');
+geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+grid;xlabel('经度(E)');ylabel('纬度(N)');
+axis([99,122,2,25]);colorbar;colormap(copper);title([names{ii},'迟角g(度)'])
+title(names{ii})
+%%
+[HVal,location]=cvtCellres2Mat(XV,YV,Hv);
+[gVal,~]=cvtCellres2Mat(XV,YV,Gv);
+[MSEH,MSEG,res]=validateInterp('M2',HVal,gVal,location);
+allRes=[allRes,res];
+end
+
+文件名：findStation.m
+编译环境：MATLAB R2016a 功能：寻找同轨验潮站
+function [isSelected,orbitStat]=findStation(statLon,statLat,data,orbits)
+%% check whether to select it
+isSelected=zeros(1,length(statLon));
+allStat=[statLon,statLat];thres=1;orbitStat=cell(1,length(orbits));
+for ii=1:length(orbits)
+curOrb=orbits{1,ii};
+% cal line
+[~,minLoc]=min(curOrb(:,1));[~,maxLoc]=max(curOrb(:,1));
+K=(curOrb(minLoc,2)-curOrb(maxLoc,2))./(curOrb(minLoc,1)-curOrb(maxLoc,1));
+b=curOrb(minLoc,2)-K*curOrb(minLoc,1);
+dis=abs(K*allStat(:,1)+b-allStat(:,2));
+isSelected(dis<thres)=1;
+orbitStat{1,ii}=[allStat(dis<thres,:),data(dis<thres,:)];
+end
+
+文件名：plotValid.m
+编译环境：MATLAB R2016a 功能：第三问验潮
+function plotValid(style)
+validData = importdata(['../../验潮站/East China Seas/',style,'.dat']);
+lat=validData(:,1);lon=validData(:,2);H=validData(:,3);G=validData(:,3);
+[X,Y]=meshgrid(99:0.1:122,2:0.1:25);
+% interp
+[XV,YV,hData]=griddata(lon,lat,H,X,Y,'natural');
+[~,~,gData]=griddata(lon,lat,G,X,Y,'natural');
+
+
+
+49
+
+figure;
+contour(XV,YV,hData,'ShowText','on');
+hold on;geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+grid;xlabel('经度(E)');ylabel('纬度(N)');
+axis([99,122,2,25]);colorbar;colormap(jet);
+title([style,'振幅H(cm)']);
+figure;
+contour(XV,YV,gData,'ShowText','on');
+hold on;geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+grid;xlabel('经度(E)');ylabel('纬度(N)');
+axis([99,122,2,25]);colorbar;colormap(copper);
+title([style,'迟角g(度)']);
+

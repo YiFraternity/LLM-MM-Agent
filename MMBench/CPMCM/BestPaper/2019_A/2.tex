@@ -8,23 +8,6 @@
 \includegraphics[width=0.9\textwidth]{image.png}
 \end{center}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{ll}
-学 & 校 \\
- & 中国科学技术大学 \\
-\end{tabular}
-\end{table}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{ll}
-参赛队号 & 19103580027 \\
-队员姓名 & 1. 吴生生 \\
- & 2. 张翰韬 \\
- & 3. 石少猛 \\
-\end{tabular}
-\end{table}
 
 \title{无线智能传播模型}
 \author{}
@@ -39,57 +22,10 @@
 针对问题二，有效的数据和特征能给模型提供更高上限，所以对数据进行特征筛选就尤为重要。首先使用 LightGBM 模型量化各个特征对于平均信号接收功率 RSRP 的重要性；随后，在统计意义上选择使用 Pearson 相关系数计算特征与 RSRP 的相关性；同时，还考虑到特征内的方差。通过实验可以观察到，在这三种维度下，各特征相关性程度排序基本一致，最终得出结论，用户与基站距离、用户与基站的高度差是最为突出的重要特征，而小区发射机中心频率几乎可以忽略不计，其他特征重要性排序详见正文。
 
 针对问题三，在设计和筛选了有效特征之后，需要利用更深层的 AI 模型对无限传播模型建模。我们分别选择了三种建模方法——全连接神经网络（DNN）、卷积神经网络（CNN）和 LightGBM。DNN 网络基于感知机理论，经过多层全连接后可以回归出 RSRP 值；CNN 网络经过卷积操作对数据进行回归，实验探索了针对无线传播场景，基于 Network In Network，ResNet，GoogleNet 三种经典结构设计的多种模型；最后使用 LightGBM 模型进行数据回归。经过三个版本的模型结果对比可以发现，LightGBM 取得的结果不仅在 RMSE、PCRR 等指标上最优，预测出的 RSRP 分布还十分接近真实值的分布；而基于 ResNet 的 CNN 效果优良，易于部署上线，取得了不错的效果。
+{关键字：} 特征提取 特征选择 平均信号接收功率 RSRP LightGBM CNN PCRR RMSE
 \end{abstract}
 
-\noindent\textbf{关键字：} 特征提取 特征选择 平均信号接收功率 RSRP LightGBM CNN PCRR RMSE
-
-\section*{目录}
-\begin{itemize}
-    \item 一、问题重述 \dotfill 3
-    \begin{itemize}
-        \item 1.1 问题背景 \dotfill 3
-        \item 1.2 问题重述 \dotfill 3
-    \end{itemize}
-    \item 二、模型假设 \dotfill 3
-    \item 三、参数与符号说明 \dotfill 4
-    \begin{itemize}
-        \item 3.1 参数说明 \dotfill 4
-        \item 3.2 符号说明 \dotfill 4
-    \end{itemize}
-    \item 四、问题一的分析与求解 \dotfill 5
-    \begin{itemize}
-        \item 4.1 问题一的分析 \dotfill 5
-        \item 4.2 问题一的求解 \dotfill 5
-        \begin{itemize}
-            \item 4.2.1 特征的来源 \dotfill 5
-            \item 4.2.2 异常值检测 \dotfill 9
-            \item 4.2.3 特征的选取 \dotfill 10
-        \end{itemize}
-    \end{itemize}
-    \item 五、问题二的分析与求解 \dotfill 10
-    \begin{itemize}
-        \item 5.1 问题二的分析 \dotfill 11
-        \item 5.2 问题二的求解 \dotfill 11
-        \begin{itemize}
-            \item 5.2.1 LightGBM 特征选择 \dotfill 11
-            \item 5.2.2 相关性分析 \dotfill 13
-            \item 5.2.3 方差分析 \dotfill 14
-        \end{itemize}
-    \end{itemize}
-    \item 六、问题三的分析与建模 \dotfill 15
-    \begin{itemize}
-        \item 6.1 问题三的分析 \dotfill 15
-        \item 6.2 问题三的建模 \dotfill 15
-        \begin{itemize}
-            \item 6.2.1 模型介绍 \dotfill 15
-            \item 6.2.2 模型结构设计 \dotfill 19
-            \item 6.2.3 训练结果 \dotfill 23
-        \end{itemize}
-    \end{itemize}
-    \item 七、模型评价 \dotfill 25
-    \item 八、参考文献 \dotfill 26
-    \item 附录: \dotfill 27
-\end{itemize}
+\tableofcontents
 
 \section{一、问题重述}
 
@@ -251,7 +187,7 @@ FN & 假阴性率 \\
 
 （4）在一些离基站比较近的区域，因为地形以及建筑高度的变化比较频繁，RSRP 值也产生了较大的波动。
 
-\subsection{基站与用户所处位置的真实高度}
+\paragraph{基站与用户所处位置的真实高度}
 
 我们考虑基站的所处位置的真实高度时（这里基站本身的高度为 Height 表示基站发射机到地面的高度），将海拔数据考虑进去，以两者之和，即 Cell Altitude + Height（记为 CA + H）作为一个备选特征。
 
@@ -273,7 +209,7 @@ FN & 假阴性率 \\
 \]
 我们以此差值数据作为模型的一个备选特征。
 
-\subsection{地貌特征}
+\paragraph{地貌特征}
 
 \begin{table}
 \centering
@@ -320,7 +256,7 @@ Index & & & \\
 
 此外，基站所处位置栅格的地貌类型(Cell Clutter Index)，其处理方法同上。
 
-\subsection{4. 天气因素}
+\paragraph{4. 天气因素}
 
 天气因素会影响到信号的传输效率，例如空气PM2.5、湿度、温度等的不同，会影响到信号传播。PM2.5浓度越大，即空气中可吸入颗粒物体越多，光线从其他地方传播到这里时，该空间由于PM2.5导致空气密度变大，光线传播在从低密度介质传播到高密度介质时，会偏移原来的直线传播方向，加大其光线的折射率，影响测试点的信号强度，进而影响传输效率（海市蜃楼的形成原因亦是光线在从低密度介质进入高密度介质时，会改变原来的直线传播方向）；空气湿度也是同理，湿度越高，空气中含水量越高，会加大该空间介质的密度，影响光线的传播。此外，一天之中，天气多数情况下会随着时间的推移产生变化，在从早晨到中午时，温度逐渐升高，空气湿度会降低，进而导致空气介质密度相对8
 
@@ -540,8 +476,8 @@ r = \frac{1}{n-1} \sum_{i=1}^{n} \left( \frac{X_i - \bar{X}}{S_x} \right) \left(
 
 \subsubsection{5.2.3 方差分析}
 
-对于已经处理好特征的4000个小区样本，我们对12列特征数据分别计算各自的方差，14
-
+对于已经处理好特征的4000个小区样本，我们对12列特征数据分别计算各自的方差，
+入已按照相关性绝对值降序对特征排列的表 9 中。
 \begin{table}
 \centering
 \caption{特征数据的方差}
@@ -671,7 +607,10 @@ DNN 和 CNN 神经网络的数据输入层是类似的。我们在运用神经�
 \paragraph{卷积神经网络（CNN）}
 
 考虑到卷积神经网络可以有效地提取局部相关性，同时它可以通过不断地加深网络深度，扩大感受野，使得输出的特征包含足够大范围的全局信息。此外，CNN 的参数利用率非常高，因为数据或特征的各个位置共享卷积参数。我们设计了三种 CNN 结构，如下表所示。需要说明的是，conv 表示卷积层（若不作特别说明，每个卷积层后面都跟随一个批标准化层 batchnorm，和一个激活层 relu），卷积参数为 $(k, m, c_1, c_2)$，分别表示卷积核
-
+尺寸(k, m)，输入通道数 1c ，输出通道数 2c ，每一层的特征为一个具有尺寸(n, h, w, c)
+的四位数组，其中 n 为样本个数，原始数据的尺寸被变换到(h, w, c) = (特征数量, 1, 1)。
+fc 表示全连接层，括号内的数表示该层参数矩阵的维度，feat_dim 表示模型输入的特征
+维度。
 \begin{table}
 \centering
 \caption{模型结构表}
@@ -720,11 +659,11 @@ Layer 5: fc (feat\_dim x 64, 1) & Layer 5: conv (1, 1, 128, 256) & Layer 5: ince
     \label{fig:googlenet_layer}
 \end{figure}
 
-\section*{图 14: GoogleNet 中的 inception 结构}
+图 14: GoogleNet 中的 inception 结构
 
 我们仿照 GoogleNet 的 inception 结构，自定义了一种 4 个支路的 inception block，带有一个参数 \( b_3 \) 的 inception block（\( b_3 \)）结构如下表所示
 
-\section*{表 10: 自定义 inception 结构}
+表 10: 自定义 inception 结构
 
 \begin{table}[h]
 \centering
@@ -748,7 +687,7 @@ Branch 4 \\ \hline
 \caption{Dilated Convolution with a 3x3 kernel and dilation rate 2}
 \end{figure}
 
-\section*{图 15: 孔洞卷积示意图}
+图 15: 孔洞卷积示意图
 
 这种结构通过构造 4 个感受野不同的支路，模拟了多视角观测的行为。我们的数据有 10 列，有的列之间相关性很强，有的相邻列之间也许没有那么强的局部特征，那么这种模型就可以帮助我们更好地融合局部特征。
 

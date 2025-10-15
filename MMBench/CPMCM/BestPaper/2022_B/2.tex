@@ -25,72 +25,9 @@
 \hline
 \end{tabular}
 
-\begin{center}
-\textbf{中国研究生创新实践系列大赛} \\
-0
-\end{center}
-
-\section{中国光谷·“华为杯”第十九届中国研究生数学建模竞赛}
-
 \section{题目 基于整数规划的组批和下料优化问题研究}
 
-\section*{摘\quad 要}
-
-随着制造业生产技术的不断进步，企业通常采用“订单组批+批量生产+订单分拣”的模式进行生产，在该生产模式中，订单组批与下料优化至关重要，两者能降低企业的生产成本，减少资源的浪费。与此同时，订单组批与下料优化问题具有规则复杂、目标精细的特点。基于以上背景，本文将复杂的订单组批与下料优化问题拆解为多个步骤，由浅入深，通过进行整数规划并设计启发式价值修正算法逐步进行求解，最终取得全局较优解。
-
-针对问题一，依据题意对目标函数和约束条件进行分析，据此进行整数规划，首先对问题一的数据集进行分析，定位所求模型属于三阶段匀质排样方式(3E)，紧接着对排样算法进行优化设计，在排样具体过程中，本模型采用自底向上的构建方式，并使用基于贪心策略的迭代顺序修正算法进行优化。首先对数据集进行预处理，初始化 item 的价值为 item 的高度，并按价值对 item 进行排序，若价值相同则按照 item 的宽度从大到小排序，对得到的所有 item 序列输入基于贪心的顺序启发式算法。算法的核心思想在于尽可能多的利用每一块板材的余料空间进行排样；长度或宽度相同的 item 尽可能的叠加在一个 stack 上；形状相同或相似的 item 尽可能在一块板材上；先构建多个 stack 组合成 strip，多个 strip 构建成每一个排样。算法运行至所有 item 序列全部切割完成，保存当前排样结果，之后算法将基于每个 item 原价值和所在板材的利用率更新价值，并按照价值对 item 重新进行排序，然后基于此 item 序列生成新的排样方案，并迭代 N 轮，保存最佳的排样结果，最终求得数据集 dataA1 板材利用率为 93.87\%(板材用量 89)，运行时间 0.24s，dataA2 板材利用率为 92.08\%(板材用量 90)，运行时间 0.22s，dataA3 板材利用率为 94.08\%(板材用量 89)，运行时间 0.24s，dataA4 的板材利用率为 94.08\%(板材用量 87)，运行时间 0.28s。
-
-针对问题二，本文首先结合组批的概念，在问题一的整数规划的基础上加入与批次相关的约束，而目标函数不变；紧接着对组批算法规则进行优化设计，整体上首先需要将 item 根据订单号进行分组，之后进行订单组批，在组批算法中，模型首先依靠每个订单中 item 的材质和数量对订单进行特征编码，输入基于杰卡德距离的订单凝聚层次聚类算法。聚类过程需在满足约束条件的同时，让尽可能多的订单聚成一类。该聚类算法会将相似型号材质的订单尽量放在同一批次，以减少板材的用量。得到聚类后的订单组批后，基于每个批次中所有订单的 item，对其按照材质进行分组；然后将每一个分组输入问题一模型进行独立排样，最终求得数据集 dataB1 的板材利用率为 77.10\%(板材用量 3863)，运行时间 18.73s，dataB2 的板材利用率为 75.56\%(板材用量 2550)，运行时间 7.76s，dataB3 的板材利用率为 74.69\%(板材用量 2589)，运行时间 7.70s，dataB4 的板材利用率为 76.15\%(板材用量 2666)，运行时间 6.62s，dataB5 板材利用率为 74.94\%(板材用量 4123)，运行时间 23.78s。
-
-最后，本文对算法的有效性、稳定性和复杂度进行了评估分析，得到问题一算法的时间复杂度约为 $O(n^3)$，问题二算法的时间复杂度约为 $O(n^3)$。
-
-关键词：整数规划 启发式价值修正算法 凝聚层次聚类算法 组批下料优化
-
 \tableofcontents
-
-\section{一、前言}
-\subsection{1.1 研究背景} \dotfill 3
-\subsection{1.2 问题重述} \dotfill 3
-
-\section{二、模型假设与符号说明}
-\subsection{2.1 模型假设} \dotfill 4
-\subsection{2.2 符号说明} \dotfill 4
-
-\section{三、问题一的模型建立与求解}
-\subsection{3.1 问题分析} \dotfill 5
-\subsection{3.2 模型预处理} \dotfill 6
-\subsection{3.3 模型建立} \dotfill 7
-\subsubsection{3.3.1 决策变量} \dotfill 7
-\subsubsection{3.3.2 目标函数} \dotfill 8
-\subsubsection{3.3.3 约束条件} \dotfill 8
-\subsection{3.4 模型求解} \dotfill 10
-\subsubsection{3.4.1 算法主框架} \dotfill 11
-\subsubsection{3.4.2 贪心算法} \dotfill 12
-\subsubsection{3.4.3 产品项旋转策略} \dotfill 13
-\subsubsection{3.4.4 产品价值修正策略} \dotfill 14
-\subsection{3.5 求解结果与分析} \dotfill 15
-
-\section{四、问题二的模型建立与求解}
-\subsection{4.1 问题分析} \dotfill 19
-\subsection{4.2 数据预处理} \dotfill 20
-\subsection{4.3 模型建立} \dotfill 20
-\subsubsection{4.3.1 决策变量} \dotfill 20
-\subsubsection{4.3.2 目标函数} \dotfill 21
-\subsubsection{4.3.3 约束条件} \dotfill 21
-\subsection{4.4 模型求解} \dotfill 23
-\subsubsection{4.4.1 算法主框架} \dotfill 23
-\subsubsection{4.4.2 订单组批求解策略} \dotfill 24
-\subsection{4.5 求解结果} \dotfill 27
-
-\section{五、模型及算法评价}
-\subsection{5.1 算法的有效性和复杂度分析} \dotfill 32
-\subsection{5.2 优点分析} \dotfill 32
-\subsection{5.3 缺点分析} \dotfill 32
-\subsection{5.4 模型推广} \dotfill 32
-
-\section{参考文献} \dotfill 33
-
-\section{附录} \dotfill 34
 
 \section{前言}
 
@@ -124,11 +61,11 @@
 
 基于数据集 A、数据集 B 中方形件产品的材质、需求数量及尺寸规格，本文研究矩形原材料上方形件产品的排样优化及订单组批问题：
 
-\section{问题一：排样优化问题}
+问题一：排样优化问题
 
 本题以数据集 A 为输入，建立整数规划模型，对方形件在板材上的排样方式进行优化，在满足订单需求的条件下，使板材用量尽可能少。本题要求相同栈 (stack) 里的产品项 (item) 的宽度（或长度）相同，且最终切割生成的产品项是完整的，非拼接而成。
 
-\section{问题二：订单组批问题}
+问题二：订单组批问题
 
 本题以数据集 B 为输入，建立整数规划模型，首先对全部订单中的产品根据材质重新组批，进一步地对每个批次分别进行排样优化，在满足订单需求的条件下，实现板材用量尽可能少。在问题一的基础上，本题进一步要求：
 
@@ -267,7 +204,7 @@ $u_{T}$ & 第 $T$ 次排样的板材利用率 \\
 \delta_{m,i,j} = 1 \Leftrightarrow \alpha_{j,i} = 1 \cap \gamma_{m,j} = 1
 \]
 
-### 3.3.2 目标函数
+\subsubsection{3.3.2 目标函数}
 
 为降低生产成本和资源消耗，排样问题的优化目标是使板材用料 $Z$ 尽可能少，即
 
@@ -277,7 +214,7 @@ Z = \min \sum_{i=1}^n \gamma_{m,m}
 
 我们假定排样时每条 Stripe 中最长的 Stack 均由单个 Item 组成，即 Strip 的长度由其包含的 Stack 中最长 Item 的长度确定，该假定有助于确定条带长度。
 
-### 3.3.3 约束条件
+\subsubsection{3.3.3 约束条件}
 
 为满足订单需求，保证所有产品均被生产，考虑到板材的长度及宽度限制，做出如下约束：
 
@@ -404,7 +341,7 @@ Z = \min \sum_{i=1}^{n} \gamma_{m,m}
 
 （4）产品价值修正策略 本题在首次排样时，以长度作为产品项的排序标准，此时长度和宽度相近的产品项的顺序相连，这会导致在下一次搜索时，第一个搜索到的产品项与刚排入的产品项尺寸相近，较难组合，此时我们希望尽快搜索到尺寸较少的产品项，与先前产品项进行组合。基于材料利用率，我们计算产品价值，并不断进行修正，使尺寸较大的产品项与尺寸较小的产品项交替排列，降低搜索次数，使算法耗时更短，排样方案更优。
 
-\subsection{3.4.1 算法主框架}
+\subsubsection{3.4.1 算法主框架}
 
 本节首先介绍算法的主体框架，其中涉及到的策略和子算法在后续详细介绍。
 
@@ -438,7 +375,7 @@ Step5：令 $T=T+1$，若 $T>T_{\max }$，算法终止，输出最优排样方�
     \label{fig:algorithm_flowchart}
 \end{figure}
 
-\subsection{3.4.2 贪心算法}
+\subsubsection{3.4.2 贪心算法}
 
 “贪心”指在排样时总是按照当前产品序列进行搜索，选择最先满足条件的产品项进行排样。初次排样时，在满足约束的条件下，总是选择长度较大的产品项优先排样；当产品价值更新后，在满足约束的条件下，总是选择价值较大的产品项优先排样。贪心算法实现步骤如下所示：
 
@@ -461,7 +398,7 @@ Step3：构建 Stack。 \\
 \end{tabular}
 \end{table}
 
-\subsection{3.4.3 产品项旋转策略}
+\subsubsection{3.4.3 产品项旋转策略}
 
 在贪心算法中，我们仅考虑了产品项在长度方向上的排样，在这种排样方式下，当产品项 $i$ 的长度大于当前 Stack 或当前 Stripe 中的剩余长度时，算法将跳过产品项 $i$，继续搜索满足长度条件的产品项进行排样。如果此时将产品项 $i$ 进行 $90^\circ$ 旋转，若旋转后产品项 $i$ 的短边不超过当前 Stack 的剩余长度，同时长边与当前 Stack 的宽度相等，则可将产品项 $i$ 排入当前 Stack。
 
@@ -477,7 +414,7 @@ Step3：构建 Stack。 \\
 \tag{3-19}
 \end{equation}
 
-\subsubsection{(2) 算法实现}
+(2) 算法实现
 
 考虑产品项 $i$ 可旋转时，对前述算法中生成 Stripe、生成 Stack、组建 Stack 的步骤进行修正：
 
@@ -499,7 +436,7 @@ Step3：构建 Stack。 \\
 
 图 3-4 展示了单块板材上的排样分布，其中产品项 214、产品项 625 在旋转后排样，组成新的 Stack，填补了板材最上方的剩余，如不考虑旋转，产品项 214、产品项 625 将在新的板材中进行排样，该板材将出现较多剩余。
 
-\subsection{3.4.3 产品价值修正策略}
+\subsubsection{3.4.3 产品价值修正策略}
 
 在初次排样时，我们按照产品项 \( i \) 的长度对其排序，得到 Item 序列 A，以此为基础进行排样。这会导致算法在实现时，总是从当前剩余 Item 中长度最大或宽度最大的 Item 开始搜索，优先选择长度或宽度较大的 Item 进行排样。当板材中剩余容量较小时，该算法耗时较长，需要进行多次搜索才能找到长度和宽度满足要求的 Item，此时长度较大的产品项无法及时排样，可能会造成组合困难，最终占用新的板材。为了降低排样过程中的搜索次数，更快找到符合要求的 Item，我们引入 “产品项价值 \( v \)”，基于价值修正对产品项的顺序进行调整，在每次排样结束后更新产品项价值及排序，重新进行排样，如此迭代直到板材用量不再减少。主要分为 3 步：
 
@@ -546,7 +483,7 @@ g_1 = 1 - g_2
 
 完成产品项价值修正后，根据修正后的价值对产品项重新排序，然后排样。每一次排样后选择板材用量最少的方案更新当前最优排样方案，多次迭代，直到满足设定的迭代次数。
 
-### 3.5 求解结果与分析
+\subsection{3.5 求解结果与分析}
 
 经过多次迭代，本题最终输出的板材用量及板材利用率如表 3-2 所示：
 
@@ -681,7 +618,7 @@ DataA1 所有板材排样方案如图 3-9 所示，对其中部分板材的排�
 \tag{3-25}
 \end{equation}
 
-\subsection{4.3.2 目标函数}
+\subsubsection{4.3.2 目标函数}
 
 本题的优化目标依然是板材用料尽可能少：
 \begin{equation}
@@ -689,7 +626,7 @@ Z = \min \sum_{i=1}^{n} \gamma_{m,m}
 \tag{3-26}
 \end{equation}
 
-\subsection{4.3.3 约束条件}
+\subsubsection{4.3.3 约束条件}
 
 除问题一排样过程中长度、宽度的约束，本题进一步考虑每批生产中产品项总数、总面积的限制，在模型中添加如下约束：
 
@@ -833,7 +770,7 @@ Step9: 算法结束 \\
     \label{fig:algorithm_flowchart}
 \end{figure}
 
-\subsection{订单组批求解策略}
+\subsubsection{订单组批求解策略}
 
 方形件下料的组批通常按照不同生产订单的相似性划分成多个批次，从而满足订单的个性化需求同时保持生产的高效性。根据题目要求，不考虑不同订单的交货期的影响，订
 
@@ -994,6 +931,19 @@ dataB5 & 4123 & 74.94\% & 23.78s \\
     \label{fig:4-8}
 \end{figure}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{数据集B5组批排样后板材利用率}
+    \label{fig:4-8}
+\end{figure}
+
+由图 4-5 至 4-9 可知，基于不同数据集获得的最终排样方案中，每个批次板材利用率
+在75%附近波动，可见该模型对构建不同批次板材的利用率影响较小，具有良好的泛化能
+力。 
+除板材用量、板材利用率外，本题还通过建立坐标系对排样方案进行详细刻画，在结
+果中输出每块板材中每个Item 的详细坐标，并绘制排样方案效果图。
+
 \begin{table}
 \centering
 \caption{部分板材排样坐标}
@@ -1015,7 +965,9 @@ dataB5 & 4123 & 74.94\% & 23.78s \\
 \end{table}
 
 完整求解结果见对应数据集附件sum_order.csv。
-
+图4-10 展示了部分批次中部分材质的排样方式。板材上方编号依次表示批次号、材质
+标号、板材序号，如第二行第二例的示意图表示第 1 批次中材质 YSH-0218SD 第 10 块版
+的排样方式。
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -1069,3 +1021,894 @@ dataB5 & 4123 & 74.94\% & 23.78s \\
 [4] 阎春平. 面向物料资源优化利用的产品设计系统与优化下料技术研究[D]. 重庆大学, 2002.
 
 [5] 贾志欣. 排样问题的研究现状与趋势[J]. 计算机辅助设计与图形学学报, 2004(07): 890-897.
+
+\section{附录}
+附录
+问题1 代码
+代码功能：
+
+求解所有item 的排样
+import copy
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+datapath = "dataA4"
+df = pd.read_csv(f'子问题1-数据集A/{datapath}.csv')
+
+class Res_item:
+def __init__(self, item_id, item_material, item_num, item_length, item_width, item_order):
+self.item_id = item_id
+self.item_material = item_material
+self.item_num = item_num
+self.item_length = item_length
+self.item_width = item_width
+self.item_order = item_order
+self.item_area = item_length * item_width
+self.item_value = item_length * item_width
+
+def set_item_value(self, value):
+self.item_value = value
+
+def set_item_pos(self, mate_id, x, y):
+self.mate_id = mate_id
+self.x = x
+self.y = y
+
+class Strip:
+def __init__(self, height, uheight, width, uwidth, y):
+self.height = height
+self.uheight = uheight
+self.width = width
+self.uwidth = uwidth
+self.y = y
+
+def set_strip_stack(self, stack):
+self.stack = stack
+
+
+
+35
+
+class Stack:
+def __init__(self, height, width):
+self.height = height
+self.width = width
+
+def set_stack_items(self, items):
+self.items = items
+
+class Bin:
+def __init__(self, height, uheight, width, bin_id):
+self.height = height
+self.uheight = uheight
+self.width = width
+self.bin_id = bin_id
+
+def set_bin_strips(self, strips):
+self.strips = strips
+
+def set_bin_area(self, area):
+self.cover_area = area
+
+all_area = 0
+res_items = []
+for index, row in df.iterrows():
+# 同一宽要小，长要大
+if row.item_length > row.item_width:
+res_item = Res_item(row.item_id, row.item_material, row.item_num, row.item_length,
+row.item_width,
+row.item_order)
+else:
+res_item = Res_item(row.item_id, row.item_material, row.item_num, row.item_width,
+row.item_length,
+row.item_order)
+all_area += row.item_width * row.item_length
+res_items.append(res_item)
+
+# 计算程序运行时间
+import time
+time_start = time.time()  # 记录开始时间
+
+plate_length = 2440
+plate_width = 1220
+
+
+
+36
+
+# 长由大到小排序
+# res_items = sorted(res_items, key = lambda item: item.item_length*item.item_width,
+reverse=True)
+res_items = sorted(res_items, key=lambda item: [item.item_length, item.item_width], reverse=True)
+
+def first_fit(res_items):
+
+is_visit = [False for _ in range(len(res_items))]
+cur_mate = 0
+# 切割好所有的item
+solution = []
+while False in is_visit:
+# 新建原片 bin
+res_bin = []
+is_end = False
+uheight = plate_length
+uwidth = plate_width
+strip_y = 0
+while not is_end:
+strip = []
+min_height = 0
+is_end = True
+cur_y = strip_y
+cur_x = 0
+
+strip_height = 98921
+cur_strip_height = 98921
+for index, res_item in enumerate(res_items):
+# 新建strip
+# 当前的item 满足放入的要求
+if res_item.item_length < uheight and res_item.item_width < uwidth and not
+is_visit[index] and res_item.item_length < strip_height:
+is_end = False
+# 放入该item 更新信息
+if len(strip) == 0:
+res_item.set_item_pos(cur_mate, cur_x, cur_y)
+
+res_stack = []
+res_stack.append(res_item)
+stack_res = Stack(  res_item.item_length , res_item.item_width)
+stack_res.set_stack_items(res_stack)
+
+
+
+37
+strip.append(stack_res)
+is_visit[index] = True
+
+min_height = uheight - res_item.item_length
+cur_x += res_item.item_width
+uwidth -= res_item.item_width
+strip_height = res_item.item_length
+cur_strip_height = strip_height
+continue
+
+res_stack = []
+res_stack.append(res_item)
+is_visit[index] = True
+res_item.set_item_pos(cur_mate, cur_x, cur_y)
+# 限制条件更新
+uheight -= res_item.item_length
+uwidth -= res_item.item_width
+cur_y = cur_y + res_item.item_length
+cur_strip_height -= res_item.item_length
+# 遍历其他item，宽度相等则放入stack
+for i in range(0, len(res_items)):
+if
+res_items[i].item_width
+==
+res_item.item_width
+and
+res_items[i].item_length < uheight and not is_visit[i] and res_items[i].item_length < cur_strip_height:
+# 当前item 放入stack
+res_stack.append(res_items[i])
+res_items[i].set_item_pos(cur_mate, cur_x, cur_y)
+is_visit[i] = True
+cur_y += res_items[i].item_length
+uheight -= res_items[i].item_length
+cur_strip_height -= res_items[i].item_length
+
+# res_items_width = sorted(res_items, key=lambda item: item.item_width,
+reverse=True)
+# 遍历其他item，长度相等则放入stack
+
+width_id
+=
+sorted(range(len(res_items)),
+key=lambda
+k:
+res_items[k].item_width, reverse=True)
+for i in width_id:
+if not is_visit[i] and \
+res_items[i].item_length == res_item.item_width and \
+res_items[i].item_width < uheight and \
+res_items[i].item_width < cur_strip_height:
+res_items[i].item_length,
+res_items[i].item_width
+=
+res_items[i].item_width, \
+
+
+
+38
+
+res_items[
+
+i].item_length
+res_stack.append(res_items[i])
+res_items[i].set_item_pos(cur_mate, cur_x, cur_y)
+is_visit[i] = True
+cur_y += res_items[i].item_length
+uheight -= res_items[i].item_length
+cur_strip_height -= res_items[i].item_length
+
+if uheight < min_height or min_height == 0:
+min_height = uheight
+
+# 当前stack 遍历完成，加入stripe
+stack_res = Stack(cur_y - strip_y, res_item.item_width)
+stack_res.set_stack_items(res_stack)
+strip.append(stack_res)
+# 更新条件
+cur_strip_height = strip_height
+uheight = plate_length - strip_y
+cur_x += res_item.item_width
+cur_y = strip_y
+
+width_id = sorted(range(len(res_items)), key=lambda k: res_items[k].item_width,
+reverse=True)
+for index in width_id:
+if res_items[index].item_width < uheight and \
+res_items[index].item_length < uwidth and \
+not is_visit[index] and \
+res_items[index].item_width < strip_height:
+is_end = False
+if len(strip) == 0:
+res_items[index].set_item_pos(cur_mate, cur_x, cur_y)
+
+res_stack = []
+res_stack.append(res_items[index])  # 转换宽高
+res_items[index].item_length,
+res_items[index].item_width
+=
+res_items[index].item_width, \
+
+res_items[index].item_length
+stack_res
+=
+Stack(res_items[index].item_length,
+res_items[index].item_width)
+
+
+
+39
+stack_res.set_stack_items(res_stack)
+
+strip.append(stack_res)
+is_visit[index] = True
+
+min_height = uheight - res_items[index].item_length
+cur_x += res_items[index].item_width
+uwidth -= res_items[index].item_width
+strip_height = res_items[index].item_length
+cur_strip_height = strip_height
+continue
+res_stack = []
+res_items[index].item_length,
+res_items[index].item_width
+=
+res_items[index].item_width, res_items[
+index].item_length
+res_stack.append(res_items[index])
+is_visit[index] = True
+res_items[index].set_item_pos(cur_mate, cur_x, cur_y)
+
+uheight -= res_items[index].item_length
+uwidth -= res_items[index].item_width
+cur_y = cur_y + res_items[index].item_length
+cur_strip_height -= res_items[index].item_length
+for i in width_id:
+if not is_visit[i] and \
+res_items[i].item_length
+==
+res_items[index].item_width
+and \
+res_items[i].item_width < uheight and \
+res_items[i].item_width < cur_strip_height:
+res_items[i].item_length,
+res_items[i].item_width
+=
+res_items[i].item_width, \
+
+res_items[
+
+i].item_length
+res_stack.append(res_items[i])
+res_items[i].set_item_pos(cur_mate, cur_x, cur_y)
+is_visit[i] = True
+cur_y += res_items[i].item_length
+uheight -= res_items[i].item_length
+cur_strip_height -= res_items[i].item_length
+if uheight < min_height or min_height == 0:
+min_height = uheight
+stack_res = Stack(cur_y - strip_y, res_items[index].item_width)
+
+
+
+40
+stack_res.set_stack_items(res_stack)
+strip.append(stack_res)
+
+cur_strip_height = strip_height
+uheight = plate_length - strip_y
+cur_x += res_items[index].item_width
+cur_y = strip_y
+
+if len(strip) != 0:
+res_strip = Strip( plate_length-strip_y-min_height , min_height, cur_x,
+plate_width-cur_x, strip_y)
+res_strip.set_strip_stack(strip)
+res_bin.append(res_strip)
+strip_y = plate_length - min_height
+uheight = min_height
+uwidth = plate_width
+bin_solution = Bin(plate_length, uheight ,plate_width, cur_mate)
+bin_solution.set_bin_strips(res_bin)
+solution.append(bin_solution)
+cur_mate += 1
+print(cur_mate)
+return solution
+
+max_G = 1
+best_solution = None
+while max_G != 0:
+max_G -= 1
+solution = first_fit(res_items)
+
+if best_solution == None or len(best_solution) > len(solution):
+best_solution = copy.deepcopy(solution)
+res_items = sorted(res_items, key=lambda item: item.item_value + item.item_length,
+reverse=True)
+
+time_end = time.time()  # 记录结束时间
+time_sum = time_end - time_start  # 计算的时间差为程序的执行时间，单位为秒/s
+print(time_sum)
+
+best_solution
+res_df = pd.DataFrame(columns=["原片材质", "原片序号", "产品id", "产品x 坐标", "产品y 坐标
+", "产品x 方向长度", "产品y 方向长度"])
+for res_item in res_items:
+res_df = res_df.append({"原片材质": res_item.item_material,
+
+
+
+41
+"原片序号": res_item.mate_id,
+"产品id": res_item.item_id,
+"产品x 坐标": res_item.x,
+"产品y 坐标": res_item.y,
+"产品x 方向长度": res_item.item_length,
+"产品y 方向长度": res_item.item_width },
+ignore_index=True)
+
+res_df.to_csv(datapath+'_cut_program.csv', index=False, encoding='gbk')
+
+# fig, ax = plt.subplots(1, 1)
+#
+# rect = plt.Rectangle((0, 0), plate_width/plate_width, plate_length/plate_length, linewidth=2,
+edgecolor='r', facecolor='none')
+# ax.add_patch(rect)
+# ax.set_xticks([])
+# ax.set_yticks([])
+# rect = plt.Rectangle((0, 0), 0.5, 0.5, linewidth=2, edgecolor='r',)
+# ax.add_patch(rect)
+# plt.show()
+# currentAxis = fig.gca()
+
+# for bin_num in range(10):
+# fig, ax = plt.subplots(1, 1)
+# ax.set_aspect(1.0*plate_length/plate_width)
+# rect = plt.Rectangle((0, 0), plate_width / plate_width, plate_length / plate_length, linewidth=2,
+edgecolor='r',
+#                      facecolor='none')
+# ax.add_patch(rect)
+# ax.set_xticks([])
+# ax.set_yticks([])
+# ax.set_title(bin_num)
+
+def drawout(best_solution, datapath):
+for index in range(len(best_solution)):
+# for index in range(85,88):
+
+fig, ax = plt.subplots(1, 1)
+
+ax.set_aspect(1.0 * plate_length / plate_width)
+rect = plt.Rectangle((0, 0), plate_width / plate_width, plate_length / plate_length,
+linewidth=2, edgecolor='silver',
+facecolor='none')
+ax.add_patch(rect)
+
+
+
+42
+ax.axis('off')
+ax.set_xticks([])
+ax.set_yticks([])
+ax.set_title(index)
+for stripe in best_solution[index].strips:
+
+for stack in stripe.stack:
+ax.plot(
+[1.0 * (stack.width + stack.items[0].x) / plate_width,
+1.0 * (stack.width + stack.items[0].x) / plate_width]
+,
+[1.0 * (stack.items[0].y) / plate_length, 1.0 * (stack.items[0].y +
+stripe.height) / plate_length],
+color='b'
+)
+for item in stack.items:
+rect = plt.Rectangle((1.0 * item.x / plate_width, 1.0 * item.y / plate_length),
+1.0 * item.item_width / plate_width,
+1.0 * item.item_length / plate_length,
+edgecolor='black', facecolor='none')
+ax.add_patch(rect)
+
+ax.plot(
+[1.0 * (item.x) / plate_width,
+1.0 * (item.item_width + item.x) / plate_width]
+,
+[1.0 * (item.y + item.item_length) / plate_length,
+1.0 * (item.y + item.item_length) / plate_length],
+color='g'
+)
+
+xoffset = 1.0*item.item_width/plate_width/2
+yoffset = 1.0*item.item_length/plate_length/2
+ax.text(1.0 * item.x / plate_width + xoffset, 1.0 * item.y / plate_length +
+yoffset,
+"%d" % item.item_id , size=5)
+
+ax.plot([0, 1.0],
+[1.0 * (stripe.height + stripe.y) / plate_length, 1.0 * (stripe.height + stripe.y)
+/ plate_length],
+color='r'
+)
+plt.savefig(f"outputimg/{datapath}/{datapath}_{index}.png",
+bbox_inches='tight',
+dpi=200)
+
+
+
+43
+# plt.show()
+plt.clf()
+
+drawout(best_solution, datapath)
+print(all_area / (len(best_solution)*plate_length*plate_width)) # 求解板材利用率
+
+问题2 代码
+代码功能：
+
+求解问题二的组批排样
+import json
+
+import pandas as pd
+from FFFA import first_fit
+# from Math.taskB.FFFA import first_fit
+data_info = 'dataB4'
+df = pd.read_csv("子问题2-数据集B/"+data_info +'.csv')
+
+max_item_num = 1000
+# m"2
+max_item_area = 250e6
+print(max_item_area)
+class Res_item:
+def __init__(self, item_id, item_material, item_num, item_length, item_width, item_order):
+self.item_id = item_id
+self.item_material = item_material
+self.item_num = item_num
+self.item_length = item_length
+self.item_width = item_width
+self.item_order = item_order
+self.item_area = item_length*item_width
+
+def set_item_pos(self, mate_id, x, y):
+self.mate_id = mate_id
+self.x = x
+self.y = y
+
+class Order:
+# 订单号
+def __init__(self, item_order):
+self.item_order = item_order
+
+def __len__(self):
+return len(self.items)
+# 订单里的item
+
+
+
+44
+def set_items(self, items):
+self.items = items
+
+def set_area(self, area):
+self.area = area
+
+class OrderGroup:
+def __init__(self,id):
+self.id = id
+self.orders = []
+def __add__(self, other):
+self.orders.append(other)
+
+class Cluster_Feature:
+def __init__(self, order_id):
+self.order_id = order_id
+self.orders_num = []
+self.order_area = []
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+plate_length = 2440
+plate_width = 1220
+
+def drawout(best_solution,data_info, batchpath,  materialpath):
+for index in range(len(best_solution)):
+# for index in range(85,88):
+
+fig, ax = plt.subplots(1, 1)
+
+ax.set_aspect(1.0 * plate_length / plate_width)
+rect = plt.Rectangle((0, 0), plate_width / plate_width, plate_length / plate_length,
+linewidth=2, edgecolor='silver',
+facecolor='none')
+ax.add_patch(rect)
+ax.axis('off')
+ax.set_xticks([])
+ax.set_yticks([])
+ax.set_title(index)
+for stripe in best_solution[index].strips:
+
+for stack in stripe.stack:
+ax.plot(
+[1.0 * (stack.width + stack.items[0].x) / plate_width,
+1.0 * (stack.width + stack.items[0].x) / plate_width]
+
+
+
+45
+,
+[1.0 * (stack.items[0].y) / plate_length, 1.0 * (stack.items[0].y + stripe.height)
+/ plate_length],
+color='b'
+)
+for item in stack.items:
+rect = plt.Rectangle((1.0 * item.x / plate_width, 1.0 * item.y / plate_length),
+1.0 * item.item_width / plate_width,
+1.0 * item.item_length / plate_length,
+edgecolor='black', facecolor='none')
+ax.add_patch(rect)
+
+ax.plot(
+[1.0 * (item.x) / plate_width,
+1.0 * (item.item_width + item.x) / plate_width]
+,
+[1.0 * (item.y + item.item_length) / plate_length,
+1.0 * (item.y + item.item_length) / plate_length],
+color='g'
+)
+
+xoffset = 1.0*item.item_width/plate_width/2
+yoffset = 1.0*item.item_length/plate_length/2
+ax.text(1.0 * item.x / plate_width + xoffset, 1.0 * item.y / plate_length +
+yoffset,
+"%d" % item.item_id , size=5)
+
+ax.plot([0, 1.0],
+[1.0 * (stripe.height + stripe.y) / plate_length, 1.0 * (stripe.height + stripe.y) /
+plate_length],
+color='r'
+)
+plt.savefig(f"outputimg/{data_info}/{batchpath}__{materialpath}_{index}.png",
+bbox_inches='tight', dpi=200)
+# plt.show()
+plt.clf()
+# for res_item in res_items:
+#     if(res_item.mate_id==bin_num):
+#         rect = plt.Rectangle((1.0*res_item.x/plate_width,1.0*res_item.y/plate_length),
+1.0*res_item.item_width/plate_width, 1.0*res_item.item_length/plate_length,
+#                              edgecolor='black', facecolor='none')
+#         ax.add_patch(rect)
+#         offset = 0.01
+#         ax.text(1.0*res_item.x/plate_width + offset,1.0*res_item.y/plate_length + offset,
+
+
+
+46
+"%d"%res_item.item_id)
+#         # plt.show()
+#
+#
+# plt.show()
+# drawout(best_solution, datapath)
+
+df_group = df.groupby('item_order')
+
+all_orders = []
+all_area = 0
+for order in df_group:
+cur_order = Order(order[0])
+
+# cur_order.set_orders(order[1])
+res_items = []
+cur_area = 0
+for index, row in order[1].iterrows():
+# 同一宽要小，长要大
+if row.item_length > row.item_width:
+res_item = Res_item(row.item_id, row.item_material, row.item_num, row.item_length,
+row.item_width,
+row.item_order)
+else:
+res_item = Res_item(row.item_id, row.item_material, row.item_num, row.item_width,
+row.item_length,
+row.item_order)
+res_items.append(res_item)
+cur_area += res_item.item_area
+all_area += cur_area
+cur_order.set_items(res_items)
+cur_order.set_area(cur_area)
+all_orders.append(cur_order)
+
+labels = []
+materials = set()
+all_order_dict = []
+for order in all_orders:
+order_dict = {"order_id": order.item_order,
+"order_num": len(order),
+"order_area": order.area}
+cur_area = 0
+
+
+
+47
+for item in order.items:
+if item.item_material not in order_dict.keys():
+order_dict[item.item_material] = 1
+else:
+order_dict[item.item_material] += 1
+# if item.item_material not in order_dict.keys():
+#    order_dict[item.item_material] = 1
+materials.add(item.item_material)
+all_order_dict.append(order_dict)
+
+labels.extend( materials )
+labels.extend( ['order_id','order_num', 'order_area'] )
+data = []
+for order_dict in all_order_dict:
+order_data = []
+for label in labels:
+if label in order_dict.keys():
+order_data.append(order_dict[label])
+else:
+order_data.append(0)
+data.append(order_data)
+import math
+import numpy as np
+
+def euler_distance(point1, point2) -> float:
+distance = np.sum(np.logical_xor(point1, point2))
+return distance
+
+class ClusterNode(object):
+def __init__(self, vec, left=None, right=None, distance=-1, id=None, count=1, area=0,
+item_num=0):
+self.vec = vec
+self.left = left
+self.right = right
+self.distance = distance
+self.id = id
+self.count = count
+self.area = area
+self.item_num = item_num
+self.min_val = np.min(vec[np.nonzero(vec)])
+
+
+
+48
+
+def new_distance(node1:ClusterNode, node2:ClusterNode):
+distance = 1e6
+for a, b in zip(node1.vec, node2.vec):
+if a == node1.min_val and b!=0:
+distance = -b
+
+return distance
+
+class Hierarchical(object):
+def __init__(self, ):
+self.labels = None
+def fit(self, x):
+# orderlist = [int(item[130][5:]) for item in x]
+# numlist = [int(item[131]) for item in x]
+# arealist = [float(item[132]) for item in x]
+x_size = len(x[0])
+orderlist = [int(item[x_size - 3][5:]) for item in x]
+numlist = [int(item[x_size - 2]) for item in x]
+arealist = [float(item[x_size - 1]) for item in x]
+
+data = [item[:-3] for item in x]
+data = np.stack(data)
+nodes = [ClusterNode(vec=v, id=orderlist[i], item_num=numlist[i], area=arealist[i]) for i,v in
+enumerate(data)]
+
+distances = {}
+point_num, future_num = np.shape(x)
+self.labels = [ -1 ] * point_num
+currentclustid = -1
+while True:
+min_dist = math.inf
+
+nodes_len = len(nodes)
+closest_part = None
+mval_id = sorted(range(len(nodes)), key=lambda k: nodes[k].min_val, reverse=False)
+
+if min_dist==math.inf:
+for i in range(nodes_len - 1):
+for j in range(i + 1, nodes_len):
+
+if(nodes[i].item_num+nodes[j].item_num>max_item_num or
+
+
+
+49
+nodes[i].area+nodes[j].area>max_item_area):
+continue
+
+d_key = (nodes[i].id, nodes[j].id)
+if d_key not in distances:
+distances[d_key] = euler_distance(nodes[i].vec, nodes[j].vec)
+d = distances[d_key]
+if d < min_dist:
+min_dist = d
+closest_part = (i, j)
+
+# min_node = None
+# min_val = -1
+# for i in range(nodes_len):
+#     tmp_vec = nodes[i].vec
+#     tmp_min = np.min(tmp_vec[np.nonzero(tmp_vec)])
+#     if min_val==-1 or tmp_min<min_val:
+#         min_val = tmp_min
+#         min_node = nodes[i]
+# for i in range(nodes_len):
+#     nodes[i]
+
+if min_dist == math.inf:
+break
+part1, part2 = closest_part
+node1, node2 = nodes[part1], nodes[part2]
+
+new_vec = node1.vec + node2.vec
+new_node = ClusterNode(vec=new_vec,
+id=currentclustid,
+count=node1.count + node2.count,
+item_num=node1.item_num+node2.item_num,
+area=node1.area + node2.area,
+left=node1,
+right=node2,
+distance=min_dist,
+)
+
+currentclustid -= 1
+del nodes[part2], nodes[part1]
+nodes.append(new_node)
+self.nodes = nodes
+self.calc_label()
+
+
+
+50
+
+def calc_label(self):
+for i, node in enumerate(self.nodes):
+self.leafTraversal(node, i)
+
+def leafTraversal(self, node: ClusterNode, label):
+if node.left == None and node.right == None:
+self.labels[node.id-1] = label
+if node.left:
+self.leaf_traversal(node.left, label)
+if node.right:
+self.leaf_traversal(node.right, label)
+
+# iris = datasets.load_iris()
+# 计算程序运行时间
+import time
+time_start = time.time()  # 记录开始时间
+
+my = Hierarchical()
+my.fit(data)
+res_orders = []
+print(np.array(my.labels))
+for og_id in range(max(my.labels)+1):
+cur_og = OrderGroup(og_id)
+res_orders.append(cur_og)
+
+for order_id, label in enumerate(my.labels):
+str_order_id = 'order'+str(order_id+1)
+for order in all_orders:
+if order.item_order == str_order_id:
+res_orders[label].__add__(order)
+
+# all_orders = sorted(all_orders, key = lambda order: len(order), reverse=True)
+#
+# # 按照订单种类计算距离
+# cur_item_num = 0
+# # m"2
+# cur_item_area = 0
+# cur_id = 0
+# # 先从前往后分配
+# is_vis = [False for _ in all_orders]
+# res_orders = []
+# while False in is_vis:
+
+
+
+51
+#     order_list = OrderGroup(cur_id)
+#     cur_item_num = 0
+#     # m"2
+#     cur_item_area = 0
+#     for index, order in enumerate(all_orders):
+#         if len(order)+cur_item_num <= max_item_num and order.area + cur_item_area <
+max_item_area and not is_vis[index] :
+#             is_vis[index] = True
+#             order_list.__add__(order)
+#             cur_item_num = len(order) + cur_item_num
+#             cur_item_area = order.area + cur_item_area
+#     res_orders.append(order_list)
+#     cur_id += 1
+
+res_df = pd.DataFrame(columns=["批次序号", "原片材质", "原片序号", "产品id", "产品x 坐标", "
+产品y 坐标", "产品x 方向长度", "产品y 方向长度"])
+cur_len = 0
+batch_order = {}
+for order_group in res_orders:
+batch_id = order_group.id
+batch_order[batch_id] = []
+res_items_group = []
+for order_item in order_group.orders:
+batch_order[batch_id].append(order_item.item_order)
+res_items_group.extend(order_item.items)
+res_items_dict = {}
+# 对group 中的 订单item 根据材料分组
+for res_item in res_items_group:
+res_items_dict.setdefault(res_item.item_material,[]).append(res_item)
+# 对每个材料进行切割
+solution = []
+for material in res_items_dict.keys():
+cur_items = res_items_dict[material]
+cur_items = sorted(cur_items, key=lambda item: [item.item_length, item.item_width],
+reverse=True)
+
+cur_solution = first_fit(cur_items)
+for cur_item in cur_items:
+solution = {" 批次序号": batch_id, " 原片材质": material," 原片序号":
+cur_item.mate_id,"产品id": cur_item.item_id,"产品x 坐标":cur_item.x,
+"产品y 坐标":cur_item.y, "产品x 方向长度": cur_item.item_width, "产
+品y 方向长度":cur_item.item_length}
+res_df = res_df.append(solution,
+
+
+
+52
+ignore_index=True)
+cur_len += len(cur_solution)
+drawout(cur_solution,data_info, batch_id, material)
+time_end = time.time()  # 记录结束时间
+time_sum = time_end - time_start  # 计算的时间差为程序的执行时间，单位为秒/s
+
+# import csv
+# with open('test.csv', 'w') as f:
+#     for key in batch_order.keys():
+#         f.write("%s,"%(key))
+#         for order in batch_order[key]:
+#             f.write("%s" % order.replace("\'",""))
+#             f.write("、")
+#         f.write("\n")
+
+print(time_sum)
+print(cur_len)
+print(all_area / (cur_len*2440*1220))
+res_df.to_csv(data_info+"_sum_order.csv", encoding='gbk' ,index=False)
+

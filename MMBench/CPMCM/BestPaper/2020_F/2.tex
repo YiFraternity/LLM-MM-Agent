@@ -7,34 +7,6 @@
 \textbf{“华为杯”第十七届中国研究生数学建模竞赛}
 \end{center}
 
-\begin{tabular}{l l}
-\hline
-符号 & 意义 \\
-\hline
-$T$ & 油箱的集合 \\
-$t_{i}$ & 油箱编号 \\
-$O$ & 惯性坐标系下的原点 \\
-$x, y, z$ & 惯性坐标系下的坐标轴 \\
-$O(t)$ & 飞行器坐标系下的原点 \\
-$x(t), y(t), z(t)$ & 飞行器坐标系下的坐标轴 \\
-$a_{i}$ & 油箱$i$的长（飞行器坐标系$x$轴方向的长度） \\
-$b_{i}$ & 油箱$i$的宽（飞行器坐标系$y$轴方向的长度） \\
-$c_{i}$ & 油箱$i$的高（飞行器坐标系$z$轴方向的长度） \\
-$\vec{c}_{0}$ & 飞行器不载油时的质心位置 \\
-$\vec{c}_{1}(t)$ & 飞机时刻$t$的实际质心位置 \\
-$\vec{c}_{2}(t)$ & 飞机时刻$t$的理想质心位置 \\
-$M$ & 飞行器净重量 \\
-$\vec{P}_{i}$ & 第$i$个空油箱的中心位置 \\
-$U_{i}$ & 第$i$个油箱的供油速度上限 \\
-$v_{i}(t)$ & 第$i$个油箱时刻$t$的供油速度 \\
-$V(t)$ & 飞行器时刻$t$的耗油速度 \\
-$\vec{p}_{i}(t)$ & 第$i$个油箱内的燃油在时刻$t$的质心位置 \\
-$S_{i}(t)$ & 第$i$个油箱内的燃油在时刻$t$在$xOz$ \\
-$m_{i\text{max}}$ & 第$i$个油箱能够容纳的燃油质量上限 \\
-$m_{i}(t)$ & 第$i$个油箱时刻$t$的剩余油量 \\
-\hline
-\end{tabular}
-
 \title{质心平衡供油策略设计：贪心和搜索的结合}
 \maketitle
 
@@ -50,51 +22,7 @@ $m_{i}(t)$ & 第$i$个油箱时刻$t$的剩余油量 \\
 针对问题 4，对固定理想质心为飞行器坐标系原点，且飞行器存在俯仰角的情况下对供油策略进行建模求解。由于俯仰角的存在，质心计算公式从线性关系的计算中变成了分段式非线性计算，利用问题 2 的求解思路难以实现。对于不同的俯仰角，对于 $y$ 轴和 $z$ 轴的计算均使用平飞状态近似，引入最大的误差为 $1.8\%$，在误差允许的情况下能极大的简化计算，提高计算速度。另一方面，将完整的飞行过程按 60 秒为一个时间段划分，强制每一个时间段使用同样的油箱供油，其油箱使用方案有 34 种。求解采用不同方案 60 秒供油策略，选择质心偏差和最小的方案作为该 60 秒的最终供油策略，使之在可行解的基础上寻找最优解。最终得到的实际质心与理想质心的欧氏距离最大值为 0.038594 米，这一最大距离产生在第 3839 秒。其中飞行过程总消耗油量 7565.579365 千克，相比于计划耗油 7035.545163 千克，浪费 $7.53\%$。
 \end{abstract}
 
-\section{目录}
-\begin{itemize}
-    \item[1.] 问题重述 \dotfill 4
-    \begin{itemize}
-        \item[1.1] 背景介绍与问题描述 \dotfill 4
-        \item[1.2] 问题提出 \dotfill 4
-    \end{itemize}
-    \item[2.] 模型假设 \dotfill 6
-    \item[3.] 符号说明 \dotfill 7
-    \item[4.] 问题1模型的建立与求解 \dotfill 8
-    \begin{itemize}
-        \item[4.1] 问题1描述与分析 \dotfill 8
-        \item[4.2] 多边形三角化求解质心 \dotfill 10
-        \item[4.3] 二维油箱子模型质心求解建模 \dotfill 11
-        \item[4.4] 三维油箱质心坐标求解 \dotfill 17
-        \item[4.5] 三维飞行器质心模型 \dotfill 17
-        \item[4.6] 问题1结果与分析 \dotfill 18
-    \end{itemize}
-    \item[5.] 问题2模型的建立与求解 \dotfill 20
-    \begin{itemize}
-        \item[5.1] 问题描述与分析 \dotfill 20
-        \item[5.2] 模型建立 \dotfill 20
-        \item[5.3] 模型实现与求解 \dotfill 22
-    \end{itemize}
-    \item[6.] 问题3模型的建立与求解 \dotfill 28
-    \begin{itemize}
-        \item[6.1] 问题描述与分析 \dotfill 28
-        \item[6.2] 模型建立 \dotfill 28
-        \item[6.3] 模型实现与求解 \dotfill 29
-    \end{itemize}
-    \item[7.] 问题4模型的建立与求解 \dotfill 33
-    \begin{itemize}
-        \item[7.1] 问题4描述与分析 \dotfill 33
-        \item[7.2] 问题4模型建立 \dotfill 33
-        \item[7.3] 问题4的模型实现与算法设计 \dotfill 35
-    \end{itemize}
-    \item[8.] 模型的总结与评价 \dotfill 38
-    \begin{itemize}
-        \item[8.1] 模型的优点 \dotfill 38
-        \item[8.2] 模型的改进 \dotfill 38
-        \item[8.3] 展望 \dotfill 38
-    \end{itemize}
-    \item[] 参考文献 \dotfill 39
-    \item[] 附录 \dotfill 40
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -342,13 +270,12 @@ S_2 = a_i * c_i - \frac{1}{2} * a_i^2 * \tan \theta
 \end{figure}
 
 其中 \(d = \sqrt{\frac{2 * S_i}{\tan \theta}}\)，\(S_i\) 为第 \(i\) 个油箱中所剩余油量截面面积 \(S_i = \frac{V_i}{b_i}\)，其中 \(V_i = \frac{m_{i(t)}}{\rho}\)，\(\rho\) 为油的密度 \(850 \, \text{kg/m}^3\)。根据所求 \(d\) 求解得出点 \(x_1\)、\(x_2\)、\(x_3\) 坐标。
-\begin{align*}
-x_{1} &= \left(-\frac{a_{i}}{2}, -\frac{c_{i}}{2}\right) \\
-x_{2} &= \left(\frac{a_{i}}{2}, -\frac{c_{i}}{2}\right) \\
-x_{3} &= \left(\frac{a_{i}}{2}, \frac{c_{i}}{2} - (a_{i} - d) * \tan \theta\right) \\
-x_{4} &= \left(-\frac{a_{i}}{2} + d, \frac{c_{i}}{2}\right) \\
-x_{5} &= \left(-\frac{a_{i}}{2}, \frac{c_{i}}{2}\right)
-\end{align*}
+\begin{align}
+x_1 &= \left( -\frac{a_i}{2}, -\frac{c_i}{2} \right) \\
+x_2 &= \left( -\frac{a_i}{2}, d * \tan \theta - \frac{c_i}{2} \right) \\
+x_3 &= \left( d - \frac{a_i}{2}, -\frac{c_i}{2} \right)
+\tag{4-6}
+\end{align}
 
 因此得出此时截面中三角形的质心坐标为 \(\frac{x_1 + x_2 + x_3}{3}\)。即三个点的平均坐标值。
 
@@ -512,7 +439,7 @@ x_4 &= \left(-\frac{a_i}{2}, d - \frac{c_i}{2}\right)
 
 \subsection{模型建立}
 
-\subsubsection{目标函数}
+目标函数
 
 在问题 2 中，变量是每个油箱每一时刻的供油速度，目标是使得当前时刻的燃油被消耗后，质心位置与当前时刻质心理想位置的欧氏距离最小，依此建模，目标函数如下：
 
@@ -555,7 +482,7 @@ $m_{i}(0)$ 题目中已给定。
 
 至此，我们建立起了每一时刻飞行器实际质心位置、理想质心位置的欧氏距离与油箱供油速度的函数关系，并指出了模型的目标函数。
 
-\subsubsection{约束条件}
+约束条件
 
 约束 1：供油速度约束：每一时刻每个油箱的供油速度应为非负数，且不能超过油箱的供油速度上限和油箱当前的剩余油量，可以用不等式描述为：
 \begin{equation}
@@ -751,13 +678,13 @@ for j=1 to 7200 \% 遍历所有时间，步长为 60 \\
 
 \subsection{模型建立}
 
-\subsubsection{第一阶段模型建立}
+第一阶段模型建立
 
 相比于第二题的求解，第三题需要求解所有油箱的初始油量。在允许浪费的情况下，不仅要求解初始油总量，也要求解各个油箱油量分配，该问题的解空间巨大，难以在短时间内求解。因此我们从最终状态反推。
 
 第一阶段的目标是找出任务开始时，所剩燃油在 6 个油箱中的分布情况，即已知剩余燃油总量 $m(7200)$，将其分布在 6 个油箱中，使得质心偏离最终的理想质心最小。据此，我们可以确定目标函数与约束条件。
 
-\subsubsection{目标函数}
+目标函数
 
 \begin{equation}
 \begin{aligned}
@@ -784,7 +711,7 @@ z_{real}(7200) &= \frac{\sum\limits_{i=1}^6 m_i(7200) z_i(7200)}{M + \sum\limits
 
 综上，我们建立了实际质心与理想质心的欧氏距离关于 6 个油箱初始载油质量的目标函数。
 
-\subsubsection{约束条件}
+约束条件
 
 约束 1：与问题 2 中的约束 3 类似，问题 3 也需要满足油箱容量约束：由于 6 个油箱的容量限制，每个油箱中燃油体积不能超过其能容纳的燃油质量上限 $m_{i_{\max}}$：
 
@@ -1003,7 +930,7 @@ for j=1 to 7200 \% 遍历所有时间，步长为 60 \\
 \hline
 \end{tabular}
 
-\subsection{问题 4 的求解结果与分析}
+\subsubsection{问题 4 的求解结果与分析}
 
 根据 7.3.1 节所述的算法流程，我们得到了 6 个油箱的供油速度（每秒一组），各自的供油曲线如图 7-4 所示。
 
@@ -1071,3 +998,1693 @@ for j=1 to 7200 \% 遍历所有时间，步长为 60 \\
 [3] 张宇庆. Cessna 172R 飞机油箱燃油消耗不平衡浅析[J]. 内燃机与配件, 2019(23): 155-157.
 
 [4] 邹新龙, 石丹, 刘茂, 毕军建, 谭志良, ZOU Xin-long, SHI Dan, LIU Mao, BI Jun-jian, TAN Zhi-liang. 《环境技术》2014 年 z2 期
+
+\section{附录}
+40
+附录
+问题一：
+[Centroid solution:]
+1. clc;
+1. clear;
+1. q=zeros(6,7);
+1. watch=zeros(1,6);
+1. [Consume]=xlsread('C:\Users\DELL\Desktop\新建文件夹\附件2-问题1 数
+据.xlsx',1,'B2:G7201');
+1. Centroid_0=zeros(7200,3);
+1.
+1. [angles]=xlsread('C:\Users\DELL\Desktop\新建文件夹\附件2-问题1 数
+据.xlsx',2,'B2:B7201');
+1. centerOffset=[8.91304348 1.20652174 0.61669004;
+1. 6.91304348  -1.39347826  0.21669004;
+1. -1.68695652 1.20652174   -0.28330996;
+1. 3.11304348  0.60652174   -0.18330996;
+1. -5.28695652  -0.29347826  0.41669004;
+1. -2.08695652  -1.49347826  0.21669004];
+1. sizeOffset=[1.5  0.9  0.3;
+1. 2.2  0.8  1.1;
+1. 2.4  1.1  0.9;
+1. 1.7  1.3  1.2;
+1. 2.4  1.2  1;
+1. 2.4  1  0.5];
+1. remainingOil=[0.3 1.5 2.1 1.9 2.6 0.8];
+1. %remainingOil=[0.173535 1.428274 2.376 2.652 1.835641 1.2];
+1. for  i=1:7200
+1. for j=1:6
+1. remainingOil(j)=remainingOil(j)-Consume(i,j)/850;
+1. end
+1. remainingOil(2)=remainingOil(2)+(Consume(i,1)/850);
+1. remainingOil(5)=remainingOil(5)+(Consume(i,6)/850);
+1.
+1. tmpCentroid.x=0;
+1. tmpCentroid.y=0;
+1. tmpCentroid.z=0;
+1. tmpWeight=0;
+1. for j=1:6
+1. tmp.y=centerOffset(j,2);
+1. a=sizeOffset(j,1);
+1. c=sizeOffset(j,3);
+1. radian = angles(i) * pi /180;
+
+
+
+41
+1. s = remainingOil(j) / sizeOffset(j,2);
+1. angle_t = abs(radian);
+1. if angle_t==0
+1. x=s/a;
+1. tmp.x=0;
+1. tmp.z=-c/2+x/2;
+1. q(j,1)=q(j,1)+1;
+1. elseif  angle_t<abs(atan(c / a))
+1. boundary1 = a * a * tan(angle_t) / 2;
+1. boundary2 = a * c - a * a * tan(angle_t) / 2;
+1. if s<=boundary1
+1. x = sqrt(2 * s / tan(angle_t));
+1. x1 = -a/2;
+1. y1 = -c/2;
+1. x2 = -a / 2;
+1. y2 = x * tan(angle_t)-c/2;
+1. x3 = x-a/2;
+1. y3 = -c/2;
+1. q(j,2)=q(j,2)+1;
+1. tmp.x=(x1+x2+x3)/3;
+1. tmp.z = (y1 + y2 + y3) / 3;
+1. elseif s <= boundary2
+1. x = s / a + a * tan(angle_t) / 2;
+1. x1 = -a / 2;
+1. y1 = -c / 2;
+1. x2 = a / 2;
+1. y2 = -c / 2;
+1. x3 = a / 2;
+1. y3 = -c/2 + x-a*tan(angle_t);
+1. x4 = -a / 2;
+1. y4 = x - c / 2;
+1. q(j,3)=q(j,3)+1;
+1. input=[x1 y1;x2 y2;x3 y3;x4 y4];
+1.
+1. [tmp.x,tmp.z]=PolygonCentroid(input);
+1. else
+1. x = a-sqrt(2*(a*c-s)/tan(angle_t));
+1. x1 = -a / 2;
+1. y1 = -c / 2;
+1. x2 = a / 2;
+1. y2 = -c / 2;
+1. x3 = a / 2;
+1. y3 = c / 2 - (a-x)* tan(angle_t);
+1. x4 = -a/2 +x;
+
+
+
+42
+1. y4 =c/2;
+1. x5 = -a / 2;
+1. y5 = c / 2;
+1. input=[x1 y1;x2 y2;x3 y3;x4 y4;x5 y5];
+1. q(j,4)=q(j,4)+1;
+1. [tmp.x,tmp.z]=PolygonCentroid(input);
+1. end
+1. else
+1. boundary1 = c * c /( tan(angle_t) * 2);
+1. boundary2 = a * c - c * c /( tan(angle_t) * 2);
+1. if s<=boundary1
+1. x = sqrt(2 * s / tan(angle_t));
+1. x1 = -a/2;
+1. y1 = -c/2;
+1. x2 = -a / 2;
+1. y2 = x * tan(angle_t)-c/2;
+1. x3 = x-a/2;
+1. y3 = -c/2;
+1. q(j,5)=q(j,5)+1;
+1. tmp.x=(x1+x2+x3)/3;
+1. tmp.z = (y1 + y2 + y3) / 3;
+1. elseif s <= boundary2
+1. x = s / c + c/(tan(angle_t) * 2);
+1. x1 = -a / 2;
+1. y1 = -c / 2;
+1. x2 = x-a / 2;
+1. y2 = -c / 2;
+1. x3 = -a/2 + x -c/tan(angle_t);
+1. y3 = c/2 ;
+1. x4 = -a / 2;
+1. y4 = c / 2;
+1. q(j,6)=q(j,6)+1;
+1. input=[x1 y1;x2 y2;x3 y3;x4 y4];
+1. [tmp.x,tmp.z]=PolygonCentroid(input);
+1. else
+1. x = a-sqrt(2*(a*c-s)/tan(angle_t));
+1. x1 = -a / 2;
+1. y1 = -c / 2;
+1. x2 = a / 2;
+1. y2 = -c / 2;
+1. x3 = a / 2;
+1. y3 = c / 2 - (a-x)* tan(angle_t);
+1. x4 = -a/2 +x;
+1. y4 =c/2;
+
+
+
+43
+1. x5 = -a / 2;
+1. y5 = c / 2;
+1. q(j,7)=q(j,7)+1;
+1. input=[x1 y1;x2 y2;x3 y3;x4 y4;x5 y5];
+1. [tmp.x,tmp.z]=PolygonCentroid(input);
+1. end
+1. end
+1. if angles(i)<0
+1. tmp.x=-tmp.x;
+1. tmp.z=tmp.z;
+1. end
+1. tmp.x=centerOffset(j,1)+tmp.x;
+1. tmp.z=centerOffset(j,3)+tmp.z;
+1. if i==66
+1. watch(j)=tmp.z;
+1. end
+1. tmpCentroid.x=tmpCentroid.x+tmp.x*remainingOil(j)*850;
+1. tmpCentroid.y=tmpCentroid.y+tmp.y*remainingOil(j)*850;
+1. tmpCentroid.z=tmpCentroid.z+tmp.z*remainingOil(j)*850;
+1. tmpWeight=tmpWeight+remainingOil(j)*850;
+1. end
+1. Centroid_0(i,1)=tmpCentroid.x/(tmpWeight+3000);
+1. Centroid_0(i,2)=tmpCentroid.y/(tmpWeight+3000);
+1. Centroid_0(i,3)=tmpCentroid.z/(tmpWeight+3000);
+1. end
+1. %plot(1:7200,Centroid_0(:,1),'r','LineWidth',2);
+1. %hold on
+1. %plot(1:7200,Centroid_0(:,2),'b','LineWidth',2);
+1. %hold on
+1. %plot(1:7200,Centroid_0(:,3),'g','LineWidth',2);
+1. %legend('x 方向偏移','y 方向偏移','z 方向偏移');
+1. %plot(1:7200,Absolute_no,'-k','LineWidth',2);
+1. %set(gca,'FontSize',20);
+1. %axis([0,8000,0,8e-5])
+1. %xlabel('时间t(s)','fontsize',20);
+1. %ylabel('实际质心与理想质心的偏移距离(m)','fontsize',20)
+1. %[m,index]=max(Centroid_0);
+1. res=zeros(7200,1);
+1. for i=1:7200
+1. res(i)=norm(Centroid_0(i,:));
+1. end
+1. [m,index]=max(res);
+1. an=0;
+1. for i=1:7200
+
+
+
+44
+1. an=Consume(i,2)+Consume(i,3)+Consume(i,4)+Consume(i,5)+an;
+1. end
+1. %plot(1:7200,Consume,'-b','LineWidth',2);
+1. %xlabel('时间t(s)','fontsize',16);
+1. %ylabel('各个供油曲线','fontsize',16)
+1. figure(6)          % define figure
+1. subplot(2,3,1);     % subplot(x,y,n)x 表示显示的行数，y 表示列数，n 表示第几幅
+图片
+1. plot(1:7200,Consume(:,1),'b');
+1. hold on
+1. xlabel('时间t(s)','fontsize',16);
+1. ylabel('油箱1 供油速度(kg/s)','fontsize',16);
+1. subplot(2,3,2);     % subplot(x,y,n)x 表示显示的行数，y 表示列数，n 表示第几幅
+图片
+1. plot(1:7200,Consume(:,2),'b');
+1. hold on
+1. xlabel('时间t(s)','fontsize',16);
+1. ylabel('油箱2 供油速度(kg/s)','fontsize',16);
+1.
+1. subplot(2,3,3);     % subplot(x,y,n)x 表示显示的行数，y 表示列数，n 表示第几幅
+图片
+1. plot(1:7200,Consume(:,3),'b');
+1. hold on
+1. xlabel('时间t(s)','fontsize',16);
+1. ylabel('油箱3 供油速度(kg/s)','fontsize',16);
+1.
+1. subplot(2,3,4);     % subplot(x,y,n)x 表示显示的行数，y 表示列数，n 表示第几幅
+图片
+1. plot(1:7200,Consume(:,4),'b');
+1. hold on
+1. xlabel('时间t(s)','fontsize',16);
+1. ylabel('油箱4 供油速度(kg/s)','fontsize',16);
+1. %
+1. subplot(2,3,5);     % subplot(x,y,n)x 表示显示的行数，y 表示列数，n 表示第几幅
+图片
+1. plot(1:7200,Consume(:,5),'b');
+1. hold on
+1. xlabel('时间t(s)','fontsize',16);
+1. ylabel('油箱5 供油速度(kg/s)','fontsize',16);
+1. % subplot(2,3,6);     % subplot(x,y,n)x 表示显示的行数，y 表示列数，n 表示第几
+幅图片
+1. % plot(1:7200,Consume(:,6),'b');
+1. % hold on
+1. % xlabel('时间t(s)','fontsize',16);
+
+
+
+45
+1. % ylabel('油箱6 供油速度(kg/s)','fontsize',16);
+1. function [x,z]=PolygonCentroid(input)
+1. [count,~]=size(input);
+1. totalArea =0;
+1. totalTriangleCentroid.x=0;
+1. totalTriangleCentroid.z=0;
+1. for i=2:count-1
+1. [temp,tempCentroid.x,tempCentroid.z]=TriangleCentroid(input(1,:),
+input(i,:),input(i+1,:));
+1. totalTriangleCentroid.x=tempCentroid.x*temp+totalTriangleCentroid
+.x;
+1. totalTriangleCentroid.z=tempCentroid.z*temp+totalTriangleCentroid
+.z;
+1. totalArea=totalArea+temp;
+1. end
+1. x=totalTriangleCentroid.x/totalArea;
+1. z=totalTriangleCentroid.z/totalArea;
+1. end
+1. function [temp,x,z]=TriangleCentroid(input1,input2,input3)
+1. x1=input2(1,1)-input1(1,1);
+1. y1=input2(1,2)-input1(1,2);
+1. x2=input3(1,1)-input1(1,1);
+1. y2=input3(1,2)-input1(1,2);
+1. temp = (x1 * y2 - x2 * y1) / 2;
+1. x=(input1(1,1)+input2(1,1)+input3(1,1))/3;
+1. z=(input1(1,2)+input2(1,2)+input3(1,2))/3;
+1. end
+# [C++代码]
+1. #include<iostream>
+1. #include<vector>
+1. #include<math.h>
+1. #include<unordered_map>
+1. #include <fstream>
+1. #include <cassert>
+1. #include<string>
+1.
+1. using namespace std;
+1.
+1. #define PI 3.141592653589793
+1. #define Density (double)850
+1. #define netWeight (double)3000
+1.
+
+
+
+46
+1. struct Vec2d
+1. {
+1. double x;
+1. double y;
+1. Vec2d(double a, double b) { x = a; y = b; };
+1. Vec2d() { x = 0; y = 0; };
+1. Vec2d operator-(const Vec2d& b)
+1. {
+1. Vec2d vec2d(0, 0);
+1. vec2d.x = this->x - b.x;
+1. vec2d.y = this->y - b.y;
+1. return vec2d;
+1. }
+1. };
+1.
+1. //叉乘算三角形面积(有正负)，以及算三角形质心坐标
+1. void  TriangleCentroid(Vec2d P1, Vec2d P2, Vec2d P3, double& area, Vec2d&
+centroid)
+1. {
+1. Vec2d P12 = P2 - P1;
+1. Vec2d P13 = P3 - P1;
+1.
+1. double x1 = P12.x;
+1. double y1 = P12.y;
+1.
+1. double x2 = P13.x;
+1. double y2 = P13.y;
+1.
+1.
+1. //向量叉乘计算三角形面积
+1. area = (x1 * y2 - x2 * y1) / 2;
+1.
+1. //计算三角形质心
+1. centroid.x = (P1.x + P2.x + P3.x) / 3;
+1. centroid.y = (P1.y + P2.y + P3.y) / 3;
+1.
+1. return;
+1. }
+1.
+1. //计算质心坐标，多边形的顶点按顺序排列在数组中
+1. bool PolygonCentroid(vector<Vec2d> Points, Vec2d& centroid)
+1. {
+1. int count = Points.size();
+1.
+
+
+
+47
+1. //如果不是多边形，不计算
+1. if (count < 3)
+1. return false;
+1.
+1. //多边形总面积
+1. double totalArea = 0;
+1.
+1. //n 边形划分成n-2 个三角形，每个三角形质心坐标与该三角形面积乘积之和
+1. Vec2d totalTriangleCentroid(0, 0);
+1.
+1. //按顶点顺序，1,2,3；1,3,4；1,4,5；如此构建三角形
+1. for (int i = 1; i < count - 1; i++)
+1. {
+1. double temp;
+1. Vec2d tempCentroid(0, 0);
+1.
+1. //计算每个三角形的面积与质心坐标
+1. TriangleCentroid(Points[0], Points[i], Points[i + 1], temp, tempCe
+ntroid);
+1.
+1. totalTriangleCentroid.x += tempCentroid.x * temp;
+1. totalTriangleCentroid.y += tempCentroid.y * temp;
+1.
+1. totalArea += temp;
+1. }
+1.
+1.
+1. //计算质心坐标
+1. centroid.x = totalTriangleCentroid.x / totalArea;
+1. centroid.y = totalTriangleCentroid.y / totalArea;
+1.
+1. return true;
+1. }
+1.
+1. struct point
+1. {
+1. double x;
+1. double y;
+1. double z;
+1. point(double a, double b, double c) { x = a; y = b; z = c; };
+1. point() { x = 0; y = 0; z = 0; };
+1. };
+1.
+
+
+
+48
+1. unordered_map<int, point> centerOffset = { {1,{8.91304348,1.20652174,0.61
+669004}},
+1. {2,{6.91304348,-1.39347826,0.2
+1669004}},
+1. {3,{-1.68695652,1.20652174,-0.
+28330996}},
+1. {4,{3.11304348,0.60652174,-0.1
+8330996}},
+1. {5,{-5.28695652,-0.29347826,0.
+41669004}},
+1. {6,{-2.08695652,-1.49347826,0.
+21669004}} };
+1. unordered_map<int, point> sizeOffset = { {1,{1.5,0.9,0.3}},
+1. {2,{2.2,0.8,1.1}},
+1. {3,{2.4,1.1,0.9}},
+1. {4,{1.7,1.3,1.2}},
+1. {5,{2.4,1.2,1}},
+1. {6,{2.4,1,0.5}} };
+1. unordered_map<int,double> remainingOil={{1,0.3},{2,1.5},{3,2.1},{4,1.9},{
+5,2.6},{6,0.8}};
+1. void addOffset(int num, point& tmp, double angle) {
+1. tmp.x = centerOffset[num].x +tmp.x;
+1. tmp.z = centerOffset[num].z +tmp.z;
+1. }
+1. Vec2d coordinate(double angle, int num, double speed){
+1. double a = sizeOffset[num].x;
+1. double c = sizeOffset[num].z;
+1. double radian = angle * PI / (double)180;
+1. double s = remainingOil[num] / sizeOffset[num].y;
+1. double angle_t = fabs(radian);
+1.
+1. Vec2d Centroid;
+1.
+1. if(angle==0){
+1. double x=s/a;
+1. Centroid.x = 0;
+1. Centroid.y = -c / 2 + x / 2;
+1. return Centroid;
+1. }else if (angle_t < fabs(atan(c / a))) {
+1. double boundary1 = a * a * tan(angle_t) / 2;
+1. double boundary2 = a * c - a * a * tan(angle_t) / 2;
+1. if (s <= boundary1) {
+1. double x = pow(2 * s / tan(angle_t), 0.5);
+1. double x1 = -a/2;
+
+
+
+49
+1. double y1 = -c/2;
+1. double x2 = -a / 2;
+1. double y2 = x * tan(angle_t)-c/2;
+1. double x3 = x-a/2;
+1. double y3 = -c/2;
+1.
+1. Centroid.x = (x1 + x2 + x3) / 3;
+1. Centroid.y = (y1 + y2 + y3) / 3;
+1.
+1. }
+1. else if (s <= boundary2) {
+1. double x = s / a + a * tan(angle_t) / 2;
+1. double x1 = -a / 2;
+1. double y1 = -c / 2;
+1. double x2 = a / 2;
+1. double y2 = -c / 2;
+1. double x3 = a / 2;
+1. double y3 = -c/2 + x-a*tan(angle_t);
+1. double x4 = -a / 2;
+1. double y4 = x - c / 2;
+1.
+1. vector<Vec2d> Points = { {x1,y1},{x2,y2},{x3,y3},{x4,y4} };
+1. PolygonCentroid(Points, Centroid);
+1.
+1. }
+1. else {
+1. double x = a-pow(2*(a*c-s)/tan(angle_t),0.5);
+1. double x1 = -a / 2;
+1. double y1 = -c / 2;
+1. double x2 = a / 2;
+1. double y2 = -c / 2;
+1. double x3 = a / 2;
+1. double y3 = c / 2 - (a-x)* tan(angle_t);
+1. double x4 = -a/2 +x;
+1. double y4 =c/2;
+1. double x5 = -a / 2;
+1. double y5 = c / 2;
+1.
+1. vector<Vec2d> Points = { {x1,y1},{x2,y2},{x3,y3},{x4,y4},{x5,
+y5} };
+1. PolygonCentroid(Points, Centroid);
+1.
+1. }
+1.
+
+
+
+50
+1. }else
+1. {
+1. double boundary1 = c * c /( tan(angle_t) * 2);
+1. double boundary2 = a * c - c * c /( tan(angle_t) * 2);
+1. if (s <= boundary1) {
+1. double x = pow(2 * s / tan(angle_t), 0.5);
+1. double x1 = -a/2;
+1. double y1 = -c/2;
+1. double x2 = -a / 2;
+1. double y2 = x * tan(angle_t)-c/2;
+1. double x3 = x-a/2;
+1. double y3 = -c/2;
+1.
+1. Centroid.x = (x1 + x2 + x3) / 3;
+1. Centroid.y = (y1 + y2 + y3) / 3;
+1. }
+1. else if (s <= boundary2) {
+1. double x = s / c + c/(tan(angle_t) * 2);
+1. double x1 = -a / 2;
+1. double y1 = -c / 2;
+1. double x2 = x-a / 2;
+1. double y2 = -c / 2;
+1. double x3 = -a/2 + x -c/tan(angle_t);
+1. double y3 = c/2 ;
+1. double x4 = -a / 2;
+1. double y4 = c / 2;
+1.
+1. vector<Vec2d> Points = { {x1,y1},{x2,y2},{x3,y3},{x4,y4} };
+1. PolygonCentroid(Points, Centroid);
+1.
+1. }
+1. else {
+1. double x = a-pow(2*(a*c-s)/tan(angle_t),0.5);
+1. double x1 = -a / 2;
+1. double y1 = -c / 2;
+1. double x2 = a / 2;
+1. double y2 = -c / 2;
+1. double x3 = a / 2;
+1. double y3 = c / 2 - (a-x)* tan(angle_t);
+1. double x4 = -a/2 +x;
+1. double y4 =c/2;
+1. double x5 = -a / 2;
+1. double y5 = c / 2;
+1.
+
+
+
+51
+1. vector<Vec2d> Points = { {x1,y1},{x2,y2},{x3,y3},{x4,y4},{x5,
+y5} };
+1. PolygonCentroid(Points, Centroid);
+1. }
+1. }
+1. if(angle>0){
+1. return Centroid;
+1. }else
+1. {
+1. Centroid.x=-Centroid.x;
+1. Centroid.y=Centroid.y;
+1. return Centroid;
+1. }
+1.
+1. }
+1.
+1. int main(void) {
+1. vector<double> angles;
+1. ifstream infile;
+1. infile.open("D:\\math_data\\angle.txt");   //将文件流对象与文件连接起
+来
+1. assert(infile.is_open());   //若失败,则输出错误消息,并终止程序运行
+1.
+1. string s;
+1. while(getline(infile,s))
+1. {
+1. angles.push_back(atof(s.c_str()));
+1. }
+1. infile.close();             //关闭文件输入流
+1. unordered_map<int, vector<double>> Consume;
+1. for (size_t i = 1; i < 7; i++)
+1. {
+1. ifstream infile;
+1. infile.open("D:\\math_data\\data"+to_string(i)+".txt");   //将文件
+流对象与文件连接起来
+1. assert(infile.is_open());   //若失败,则输出错误消息,并终止程序运
+行
+1.
+1. string s;
+1. while(getline(infile,s))
+1. {
+1. Consume[i].push_back(atof(s.c_str()));
+1. }
+1. infile.close();             //关闭文件输入流
+
+
+
+52
+1. }
+1.
+1. vector<point> Centroid_s;
+1. for (int i = 0; i < angles.size(); i++)
+1. {
+1. //计算剩余油量
+1. for(int j=1;j<7;++j){
+1. remainingOil[j]-=(Consume[j][i]/Density);
+1. }
+1. remainingOil[2]=remainingOil[2]+(Consume[1][i]/Density);
+1. remainingOil[5]=remainingOil[5]+(Consume[6][i]/Density);
+1. //计算质心
+1. point tmpCentroid;
+1. double tmpWeight=0;
+1. for (size_t j = 1; j < 7; j++)
+1. {
+1. Vec2d centroid=coordinate(angles[i],j,Consume[j][i]);
+1. point tmp(centroid.x,centerOffset[j].y,centroid.y);
+1.
+1. addOffset(j,tmp,angles[i]);
+1. /*if (j == 1) {
+1. ofstream ofs;
+1. ofs.open("D:\\math_data\\Centroid2.txt", ios::app);
+1. ofs << tmp.x <<endl;
+1. //ofs << tmp.y << "    ";
+1. //ofs << tmp.z << endl;
+1.
+1. ofs.close();
+1. }*/
+1. vector<double> watch;
+1. watch.resize(6);
+1. if (i == 66) {
+1. watch[j - 1] = tmp.z;
+1. cout << tmp.z << endl;
+1. }
+1. tmpCentroid.x+=tmp.x*remainingOil[j]* Density;
+1. tmpCentroid.y+=tmp.y*remainingOil[j]* Density;
+1. tmpCentroid.z+=tmp.z*remainingOil[j]* Density;
+1. tmpWeight+=remainingOil[j]* Density;
+1. }
+1. tmpCentroid.x=tmpCentroid.x/(tmpWeight+netWeight);
+1. tmpCentroid.y=tmpCentroid.y/(tmpWeight+netWeight);
+1. tmpCentroid.z=tmpCentroid.z/(tmpWeight+netWeight);
+1. Centroid_s.push_back(tmpCentroid);
+
+
+
+53
+1. }
+1. {
+1. ofstream ofs;
+1. ofs.open("D:\\math_data\\out0.txt", ios::out);
+1. for (size_t i = 0; i < Centroid_s.size(); i++)
+1. {
+1. ofs << Centroid_s[i].x<< endl;
+1. }
+1. ofs.close();
+1.
+1. ofs.open("D:\\math_data\\out1.txt", ios::out);
+1. for (size_t i = 0; i < Centroid_s.size(); i++)
+1. {
+1. ofs << Centroid_s[i].y << endl;
+1. }
+1. ofs.close();
+1.
+1. ofs.open("D:\\math_data\\out2.txt", ios::out);
+1. for (size_t i = 0; i < Centroid_s.size(); i++)
+1. {
+1. ofs << Centroid_s[i].z << endl;
+1. }
+1. ofs.close();
+1. }
+1. return 0;
+1. }
+问题二：
+## [求解逐时间节点供油最优解的python 控制代码]
+1. ## for dt = 1 without constrain of 60s
+1.
+1. import os
+1. from glob import glob
+1. import subprocess as sp
+1. import sys
+1. import openpyxl
+1. import time
+1. from tqdm import tqdm
+1. class PowerShell:
+1. # from scapy
+1. def __init__(self, coding, ):
+1. cmd = [self._where('PowerShell.exe'),
+1. "-NoLogo", "-NonInteractive",  # Do not print headers
+1. "-Command", "-"]  # Listen commands from stdin
+
+
+
+54
+1. startupinfo = sp.STARTUPINFO()
+1. startupinfo.dwFlags |= sp.STARTF_USESHOWWINDOW
+1. self.popen = sp.Popen(cmd, stdout=sp.PIPE, stdin=sp.PIPE, stderr=sp.STDOUT, sta
+rtupinfo=startupinfo)
+1. self.coding = coding
+1.
+1. def __enter__(self):
+1. return self
+1.
+1. def __exit__(self, a, b, c):
+1. self.popen.kill()
+1.
+1. def run(self, cmd, timeout=15):
+1. b_cmd = cmd.encode(encoding=self.coding)
+1. try:
+1. b_outs, errs = self.popen.communicate(b_cmd, timeout=timeout)
+1. except sp.TimeoutExpired:
+1. self.popen.kill()
+1. b_outs, errs = self.popen.communicate()
+1. outs = b_outs.decode(encoding=self.coding)
+1. return outs, errs
+1.
+1. @staticmethod
+1. def _where(filename, dirs=None, env="PATH"):
+1. """Find file in current dir, in deep_lookup cache or in system path"""
+1. if dirs is None:
+1. dirs = []
+1. if not isinstance(dirs, list):
+1. dirs = [dirs]
+1. if glob(filename):
+1. return filename
+1. paths = [os.curdir] + os.environ[env].split(os.path.pathsep) + dirs
+1. try:
+1. return next(os.path.normpath(match)
+1. for path in paths
+1. for match in glob(os.path.join(path, filename))
+1. if match)
+1. except (StopIteration, RuntimeError):
+1. raise IOError("File not found: %s" % filename)
+1. class Fly:
+1. def __init__(self):
+1. self.tanks_location = [[8.91304348,1.20652174,0.61669004],
+1. [6.91304348,-1.39347826,0.21669004],
+1. [-1.68695652,1.20652174,-0.28330996],
+
+
+
+55
+1. [3.11304348,0.60652174,-0.18330996],
+1. [-5.28695652,-0.29347826,0.41669004],
+1. [-2.08695652,-1.49347826,0.21669004]]
+1. self.tanks_size     = [[1.5, 0.9, 0.3],
+1. [2.2, 0.8, 1.1],
+1. [2.4,1.1,0.9],
+1. [1.7,1.3,1.2],
+1. [2.4,1.2,1],
+1. [2.4,1,0.5]]
+1. self.tanks_rest     = [0.3,1.5,2.1,1.9,2.6,0.8]
+1. self.speed = [1.1, 1.8, 1.7, 1.5, 1.6, 1.1]
+1. self.mess = 3000
+1. self.density = 850
+1.
+1. def calEcomsume(self, comsume):
+1. ecomsume = [0] * 6
+1. for i in range(6):
+1. ecomsume[i] = comsume[i]
+1. ecomsume[1] -= comsume[0]
+1. ecomsume[4] -= comsume[5]
+1. return ecomsume
+1.
+1. def UpdateComsume(self,ecomsume,time):
+1. for i in range(len(ecomsume)):
+1. self.tanks_rest[i] -= ecomsume[i]*time / self.density
+1. if self.tanks_rest[i] < 0 :
+1. if abs(self.tanks_rest[i]) > 1e-5:
+1. print("something wrong")
+1. else:
+1. self.tanks_rest[i] = 0
+1.
+1. def calC(self):
+1. local = [0,0,0]
+1. for i in range(6):
+1. for j in range(2):
+1. local[j] += self.tanks_rest[i] * self.density * self.tanks_location[i][
+j]
+1. for i in range(6):
+1. j = 2
+1. local[j] += self.tanks_rest[i] * self.density * (self.tanks_location[i][j]
+- self.tanks_size[i][j]/2 +
+1. self.tanks_rest[i] / (self.tanks_s
+ize[i][0]*self.tanks_size[i][1]*2))
+1. all_mess = self.mess
+
+
+
+56
+1. for i in range(6):
+1. all_mess += self.tanks_rest[i] * self.density
+1. return [x / all_mess for x in local]
+1.
+1. def writefile(location_t, last, demand, pnums=None):
+1. reference = open('reference.lg4','r')
+1. file_t = open('2.lg4', 'w')
+1. ref_lines = reference.readlines()
+1. for ref_line in ref_lines:
+1. if len(ref_line.split()) == 0:
+1. pass
+1. elif ref_line.split()[0] ==  'LOCATION':
+1. # print(location_t[0])
+1. print('LOCATION = %s, %s, %s;' %(format(location_t[0],'.10e'),format(locat
+ion_t[1],'.10e'),format(location_t[2],'.10e')), file=file_t)
+1. elif ref_line.split()[0] == 'LAST':
+1. print('LAST = %s, %s, %s, %s, %s, %s;' %(format(last[0],'.10e'),format(las
+t[1],'.10e'),format(last[2],'.10e'),format(last[3],'.10e'),format(last[4],'.10e'),forma
+t(last[5],'.10e')), file=file_t)
+1. elif ref_line.split()[0] == 'DEMAND':
+1. print('DEMAND = %s;' %(format(demand,'.10e')), file=file_t)
+1. elif ref_line.split()[0] == 'enddata':
+1. # for i in range(len(pnums)):
+1. #     if pnums[i] != 0 and pnums[i] < 60:
+1. #         print('PICKUP(%d) = 1;' %(i+1), file=file_t)
+1. if pnums:
+1. print('PICKUP ='+' '.join([str(pnum) for pnum in pnums])+';',file=file
+_t)
+1. print(ref_line,file=file_t)
+1. else:
+1. print(ref_line,file=file_t)
+1. file_t.close()
+1. reference.close()
+1.
+1. def readfile():
+1. file = open('result_2.txt','r')
+1. filelines = file.readlines()
+1. comsume = []
+1. for fileline in filelines:
+1. if fileline.find('COMSUME') != -1:
+1. if fileline.find('ECOMSUME') == -1:
+1. comsume.append(float(fileline.split()[2]))
+1. pickup = []
+1. for fileline in filelines:
+
+
+
+57
+1. if fileline.find('PICKUP') != -1:
+1. pickup.append(int(float(fileline.split()[2])))
+1. return comsume, pickup
+1.
+1. def readexcel():
+1. path = 'C:/Users/PaUlGuO/Desktop/model/team'
+1. wb = openpyxl.load_workbook(path + '/附件3-问题2 数据.xlsx')
+1. ws1 = wb[wb.sheetnames[0]]
+1. ws2 = wb[wb.sheetnames[1]]
+1. all_comsume = []
+1. all_location = []
+1. for v in ws1['B2':'B7201']:
+1. all_comsume.append(v[0].value)
+1. for i in range(2,7202):
+1. tmp = []
+1. for j in range(2,5):
+1. tmp.append(ws2.cell(row=i, column=j).value)
+1. all_location.append(tmp)
+1. return all_comsume, all_location
+1.
+1. def process_bar(percent, start_str='', end_str='', total_length=0):
+1. bar = ''.join(["\033[31m%s\033[0m"%'   '] * int(percent * total_length)) + ''
+1. bar = '\r' + start_str + bar.ljust(total_length) + ' {:0>4.1f}%|'.format(percent*1
+00) + end_str
+1. print(bar, end='', flush=True)
+1.
+1. def opt():
+1.
+1. fly = Fly()
+1.
+1. all_comsume, all_location = readexcel()
+1.
+1. results = openpyxl.Workbook()
+1. result = results.active
+1.
+1. for i in tqdm(range(len(all_location))):
+1. # v1.0
+1. # if i<=90:
+1. #     pnums = None
+1. # elif i <= 750:
+1. #     pnums = [1,1,1,0,0,0]
+1. # elif i <= 1000:
+1. #     pnums = [1,1,0,0,1,0]
+1. # elif i <= 1500:
+
+
+
+58
+1. #     pnums = [1,1,1,0,0,0]
+1. # elif i <= 1904:
+1. #     pnums = None
+1. # elif i <= 3400:
+1. #     pnums = [0,0,1,1,0,0]
+1. # # elif i <= 4000:
+1. # #     pnums = [0,0,1,0,1,0]
+1. # else:
+1. #     pnums = None
+1.
+1. # v2.0
+1. if i <= 90:
+1. pnums = None
+1. elif i <= 380:
+1. pnums = [0,1,0,0,0,0]
+1. elif i <= 870:
+1. pnums = [1,1,0,0,0,0]
+1. elif i <= 1420:
+1. pnums = [0,1,0,0,0,0]
+1. elif i <= 2100:
+1. pnums = [0,1,0,1,0,0]
+1. elif i <= 2800:
+1. pnums = [0,0,0,1,0,0]
+1. elif i <= 3340:
+1. pnums = [0,0,1,1,0,0]
+1. elif i <= 3950:
+1. pnums = [0,0,1,0,0,0]
+1. elif i <= 5250:
+1. pnums = [0,0,1,0,1,1]
+1. else :
+1. pnums = [0,0,0,0,1,1]
+1.
+1. if i > 6000:
+1. continue
+1.
+1. writefile(all_location[i], [rest * fly.density for rest in fly.tanks_rest], al
+l_comsume[i], pnums)
+1.
+1. with PowerShell('GBK') as ps:
+1. outs, errs = ps.run('runlingo 2.ltf')
+1.
+1. comsume, pickup = readfile()
+1.
+1. for j in range(len(comsume)):
+
+
+
+59
+1. comsume[j] *= pickup[j]
+1.
+1. fly.UpdateComsume(fly.calEcomsume(comsume),1)
+1.
+1. result.append(comsume + all_location[i] + fly.calC())
+1.
+1. if i % 1000 == 0:
+1. results.save('result2_%d.xlsx' %(i))
+1.
+1. results.save('result2.xlsx')
+1.
+1. if __name__ == '__main__':
+1. # Example：
+1.
+1. opt()
+1.
+1. # print()
+## [求解逐时间节点的供油最优解的LINGO 代码(样例)]
+1. MODEL:
+1. sets:
+1. locations/1..3/:LOCATION;
+1. comsumer/1..6/:COMSUME,PICKUP,SPEED,ECOMSUME,LAST,SUM,SUM_C;
+1. shape/1..3/:SIZE;
+1. links_1(comsumer,locations):BOXS_L,BOXS_C;
+1. links_2(comsumer,shape):BOXS_S;
+1. delta/1..3/:DL;
+1. endsets
+1.
+1. MIN = @SUM(delta(I):DL(I)^2);
+1. DL(1) = LOCATION(1) - @SUM(comsumer(I):(LAST(I)-ECOMSUME(I))*BOXS_L(I,1)/(@SUM(coms
+umer(J):LAST(J)-ECOMSUME(J)) + MESS));
+1. DL(2) = LOCATION(2) - @SUM(comsumer(I):(LAST(I)-ECOMSUME(I))*BOXS_L(I,2)/(@SUM(coms
+umer(J):LAST(J)-ECOMSUME(J)) + MESS));
+1. DL(3) = LOCATION(3) - @SUM(comsumer(I):(LAST(I)-ECOMSUME(I))*(BOXS_L(I,3) - BOXS_S(
+I,3)/2 + (LAST(I)-ECOMSUME(I))/(DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*2)))/(@SUM(comsumer(I):
+LAST(I)-ECOMSUME(I))+MESS);
+1.
+1. @FOR(comsumer(I):LAST(I) >= ECOMSUME(I));
+1. !DL(1) = LOCATION(1) - @SUM(comsumer(I):(LAST(I)-ECOMSUME(I))*BOXS_L(I,1)/(@SUM(com
+sumer(J):LAST(J)) + MESS));
+1. !DL(2) = LOCATION(2) - @SUM(comsumer(I):(LAST(I)-ECOMSUME(I))*BOXS_L(I,2)/(@SUM(com
+sumer(J):LAST(J)) + MESS));
+
+
+
+60
+1. !DL(3) = LOCATION(3) - @SUM(comsumer(I):(LAST(I)-ECOMSUME(I))*(BOXS_L(I,3) - BOXS_S
+(I,3)/2 + (LAST(I)-ECOMSUME(I))/(DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*2)))/(@SUM(comsumer(I)
+:LAST(I))+MESS);
+1.
+1. @FOR(comsumer(I)|I#NE#2 #AND# I#NE#5:
+1. ECOMSUME(I) = COMSUME(I)*PICKUP(I));
+1. ECOMSUME(2) = COMSUME(2)*PICKUP(2) - COMSUME(1)*PICKUP(1);
+1. ECOMSUME(5) = COMSUME(5)*PICKUP(5) - COMSUME(6)*PICKUP(6);
+1. @SUM(comsumer(I):PICKUP(I)) <= 3;
+1. @SUM(comsumer(I)|I#GT#1 #AND# I#LT#6:PICKUP(I)) <= 2;
+1. @FOR(comsumer(I):COMSUME(I)<=SPEED(I));
+1. !@FOR(comsumer(I):COMSUME(I) = COMSUME(I)*PICKUP(I));
+1. @SUM(comsumer(I)|I#GT#1 #AND# I#LT#6:COMSUME(I) * PICKUP(I)) >= DEMAND;
+1. @SUM(comsumer(I)|I#GT#1 #AND# I#LT#6:COMSUME(I) * PICKUP(I)) <= 1.2 * DEMAND;
+1. @FOR(comsumer(I):@BIN(PICKUP(I)));
+1. @FOR(comsumer(I):@free(ECOMSUME(I)));
+1. @FOR(delta(I):@free(DL(I)));
+1.
+1. data:
+1. LOCATION = -0.000006423592, 0.0000012957, -0.000000478744;
+1. SPEED = 1.1, 1.8, 1.7, 1.5, 1.6, 1.1;
+1. DENSITY = 850;
+1. BOXS_L =    8.91304348  1.20652174  0.61669004
+1. 6.91304348 -1.39347826  0.21669004
+1. -1.68695652  1.20652174 -0.28330996
+1. 3.11304348  0.60652174 -0.18330996
+1. -5.28695652 -0.29347826  0.41669004
+1. -2.08695652 -1.49347826  0.21669004;
+## 45.         BOXS_S =    1.5 0.9 0.3
+1. 2.2 0.8 1.1
+1. 2.4 1.1 0.9
+1. 1.7 1.3 1.2
+1. 2.4 1.2 1
+1. 2.4 1   0.5;
+1. LAST = 255, 1275, 1785, 1615, 2210, 680;
+1. MESS = 3000;
+1. DEMAND = 0.0100558899754559;
+1. enddata
+1. end
+问题3：
+## [剩余油量求解的LINGO 代码(样例)]
+1. MODEL:
+1.
+
+
+
+61
+1. sets:
+1.
+1. locations/1..3/:LOCATION2,LOCATION0,LOCATION1;
+1.
+1. comsumer/1..6/:CAPACITY,VOLUME,VOLUME_C1,VOLUME_C2,CHARGE1,CHARGE2;
+1.
+1. shape/1..3/:SIZE;
+1.
+1. links_1(comsumer,locations):BOXS_L,BOXS_C;
+1.
+1. links_2(comsumer,shape):BOXS_S;
+1.
+1. delta/1..3/:DL2,DL0,DL1;
+1.
+1. endsets
+1.
+1. !MIN = @SUM(delta(I):DL2(I)^2 + DL0(I)^2 + DL1(I)^2);
+1. MIN = @SMAX(@SUM(delta(I):DL1(I)^2),@SUM(delta(I):DL0(I)^2),@SUM(delta(I):DL2(I)^2)
+);
+1.
+1. DL2(1) = LOCATION2(1) - @SUM(comsumer(I):VOLUME_C2(I)*BOXS_L(I,1))/(MESS + @SUM(com
+sumer(I)|I#GT#1 #AND# I#LT#6:CHARGE2(I)));
+1. DL2(2) = LOCATION2(2) - @SUM(comsumer(I):VOLUME_C2(I)*BOXS_L(I,2))/(MESS + @SUM(com
+sumer(I)|I#GT#1 #AND# I#LT#6:CHARGE2(I)));
+1. DL2(3) = LOCATION2(3) - @SUM(comsumer(I):VOLUME_C2(I)*(BOXS_L(I,3) - BOXS_S(I,3)/2
++ VOLUME_C2(I)/(DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*2)))/(MESS + @SUM(comsumer(I)|I#GT#1 #A
+ND# I#LT#6:CHARGE2(I)));
+1.
+1. DL0(1) = LOCATION0(1) - @SUM(comsumer(I):VOLUME(I)*BOXS_L(I,1))/MESS;
+1. DL0(2) = LOCATION0(2) - @SUM(comsumer(I):VOLUME(I)*BOXS_L(I,2))/MESS;
+1. DL0(3) = LOCATION0(3) - @SUM(comsumer(I):VOLUME(I)*(BOXS_L(I,3) - BOXS_S(I,3)/2 + V
+OLUME(I)/(DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*2)))/MESS;
+1.
+1. DL1(1) = LOCATION1(1) - @SUM(comsumer(I):VOLUME_C1(I)*BOXS_L(I,1))/(MESS + @SUM(com
+sumer(I)|I#GT#1 #AND# I#LT#6:CHARGE1(I)));
+1. DL1(2) = LOCATION1(2) - @SUM(comsumer(I):VOLUME_C1(I)*BOXS_L(I,2))/(MESS + @SUM(com
+sumer(I)|I#GT#1 #AND# I#LT#6:CHARGE1(I)));
+1. DL1(3) = LOCATION1(3) - @SUM(comsumer(I):VOLUME_C1(I)*(BOXS_L(I,3) - BOXS_S(I,3)/2
++ VOLUME_C1(I)/(DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*2)))/(MESS + @SUM(comsumer(I)|I#GT#1 #A
+ND# I#LT#6:CHARGE1(I)));
+1.
+1. @FOR(comsumer(I):VOLUME_C1(I) <= CAPACITY(I));
+1. @FOR(comsumer(I):VOLUME_C2(I) <= CAPACITY(I));
+1. @FOR(comsumer(I):CAPACITY(I) = DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*BOXS_S(I,3));
+
+
+
+62
+1. @SUM(comsumer(I):VOLUME(I)) = 850 ;
+1. @FOR(comsumer(I):VOLUME_C1(I) = VOLUME(I) + CHARGE1(I));
+1. @FOR(comsumer(I):VOLUME_C2(I) = VOLUME(I) + CHARGE2(I));
+1.
+1. @FOR(delta(I):@free(DL1(I)));
+1. @FOR(delta(I):@free(DL0(I)));
+1. @FOR(delta(I):@free(DL2(I)));
+1.
+1. data:
+1.
+1. LOCATION0  = -0.269845557421, -0.134439076516, -0.08153096928;
+1. LOCATION1 = -0.269842576744, -0.134441897023, -0.081529893624;
+1. LOCATION2 = -0.284694621466, -0.120387944621, -0.120387944621;
+1.
+1. DENSITY = 850;
+1.
+1. BOXS_L =    8.91304348  1.20652174  0.61669004
+1.
+1. 6.91304348 -1.39347826  0.21669004
+1.
+1. -1.68695652  1.20652174 -0.28330996
+1.
+1. 3.11304348  0.60652174 -0.18330996
+1.
+1. -5.28695652 -0.29347826  0.41669004
+1.
+1. -2.08695652 -1.49347826  0.21669004;
+1.
+## 65.         BOXS_S =    1.5 0.9 0.3
+1.
+1. 2.2 0.8 1.1
+1.
+1. 2.4 1.1 0.9
+1.
+1. 1.7 1.3 1.2
+1.
+1. 2.4 1.2 1
+1.
+1. 2.4 1   0.5;
+1.
+1. MESS = 3850;
+1. CHARGE1 = 0,0,0,0,0.01,0;
+1. CHARGE2 = 0,0,59.1289426,0,1.29753213,15.7803228;
+1. enddata
+
+
+
+63
+1.
+1. end
+
+## [反向求解逐时间节点供油最优解的LINGO 代码]
+1. MODEL:
+1. sets:
+1. locations/1..3/:LOCATION;
+1. comsumer/1..6/:COMSUME,PICKUP,SPEED,ECOMSUME,LAST,SUM,SUM_C;
+1. shape/1..3/:SIZE;
+1. links_1(comsumer,locations):BOXS_L,BOXS_C;
+1. links_2(comsumer,shape):BOXS_S;
+1. delta/1..3/:DL;
+1. endsets
+1.
+1. MIN = @SUM(delta(I):DL(I)^2);
+1. DL(1) = LOCATION(1) - @SUM(comsumer(I):(LAST(I)+ECOMSUME(I))*BOXS_L(I,1)/(@SUM(coms
+umer(J):LAST(J)+ECOMSUME(J)) + MESS));
+1. DL(2) = LOCATION(2) - @SUM(comsumer(I):(LAST(I)+ECOMSUME(I))*BOXS_L(I,2)/(@SUM(coms
+umer(J):LAST(J)+ECOMSUME(J)) + MESS));
+1. DL(3) = LOCATION(3) - @SUM(comsumer(I):(LAST(I)+ECOMSUME(I))*(BOXS_L(I,3) - BOXS_S(
+I,3)/2 + (LAST(I)+ECOMSUME(I))/(DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*2)))/(@SUM(comsumer(I):
+LAST(I)+ECOMSUME(I))+MESS);
+1.
+1. @FOR(comsumer(I)|I#NE#2 #AND# I#NE#5:
+1. ECOMSUME(I) = COMSUME(I)*PICKUP(I));
+1. ECOMSUME(2) = COMSUME(2)*PICKUP(2) - COMSUME(1)*PICKUP(1);
+1. ECOMSUME(5) = COMSUME(5)*PICKUP(5) - COMSUME(6)*PICKUP(6);
+1. @SUM(comsumer(I):PICKUP(I)) <= 3;
+1. @SUM(comsumer(I)|I#GT#1 #AND# I#LT#6:PICKUP(I)) <= 2;
+1. @FOR(comsumer(I):COMSUME(I)<=SPEED(I));
+1. @FOR(comsumer(I):COMSUME(I) = COMSUME(I)*PICKUP(I));
+1. @SUM(comsumer(I)|I#GT#1 #AND# I#LT#6:COMSUME(I) * PICKUP(I)) >= DEMAND;
+1. @SUM(comsumer(I)|I#GT#1 #AND# I#LT#6:COMSUME(I) * PICKUP(I)) <= DEMAND;
+1. @FOR(comsumer(I):@BIN(PICKUP(I)));
+1. @FOR(comsumer(I):@free(ECOMSUME(I)));
+1. @FOR(delta(I):@free(DL(I)));
+1. @FOR(comsumer(I):LAST(I) + ECOMSUME(I) >=0);
+1. @FOR(comsumer(I):LAST(I) + ECOMSUME(I) <= DENSITY*BOXS_S(I,1)*BOXS_S(I,2)*BOXS_S(I,
+3));
+1. data:
+1. LOCATION = -0.000006423592, 0.0000012957, -0.000000478744;
+1. SPEED = 1.1, 1.8, 1.7, 1.5, 1.6, 1.1;
+1. DENSITY = 850;
+
+
+
+64
+1. BOXS_L =    8.91304348  1.20652174  0.61669004
+1. 6.91304348 -1.39347826  0.21669004
+1. -1.68695652  1.20652174 -0.28330996
+1. 3.11304348  0.60652174 -0.18330996
+1. -5.28695652 -0.29347826  0.41669004
+1. -2.08695652 -1.49347826  0.21669004;
+## 41.         BOXS_S =    1.5 0.9 0.3
+1. 2.2 0.8 1.1
+1. 2.4 1.1 0.9
+1. 1.7 1.3 1.2
+1. 2.4 1.2 1
+1. 2.4 1   0.5;
+1. LAST = 255, 1275, 1785, 1615, 2210, 680;
+1. MESS = 3000;
+1. DEMAND = 0.0100558899754559;
+1. enddata
+1. end
+## [反向求解逐时间节点供油最优解的python 控制代码]
+1. ## for dt = 1 without constrain of 60s
+1.
+1. import os
+1. from glob import glob
+1. import subprocess as sp
+1. import sys
+1. import openpyxl
+1. import time
+1. from tqdm import tqdm
+1. class PowerShell:
+1. # from scapy
+1. def __init__(self, coding, ):
+1. cmd = [self._where('PowerShell.exe'),
+1. "-NoLogo", "-NonInteractive",  # Do not print headers
+1. "-Command", "-"]  # Listen commands from stdin
+1. startupinfo = sp.STARTUPINFO()
+1. startupinfo.dwFlags |= sp.STARTF_USESHOWWINDOW
+1. self.popen = sp.Popen(cmd, stdout=sp.PIPE, stdin=sp.PIPE, stderr=sp.STDOUT, sta
+rtupinfo=startupinfo)
+1. self.coding = coding
+1.
+1. def __enter__(self):
+1. return self
+1.
+1. def __exit__(self, a, b, c):
+
+
+
+65
+1. self.popen.kill()
+1.
+1. def run(self, cmd, timeout=15):
+1. b_cmd = cmd.encode(encoding=self.coding)
+1. try:
+1. b_outs, errs = self.popen.communicate(b_cmd, timeout=timeout)
+1. except sp.TimeoutExpired:
+1. self.popen.kill()
+1. b_outs, errs = self.popen.communicate()
+1. outs = b_outs.decode(encoding=self.coding)
+1. return outs, errs
+1.
+1. @staticmethod
+1. def _where(filename, dirs=None, env="PATH"):
+1. """Find file in current dir, in deep_lookup cache or in system path"""
+1. if dirs is None:
+1. dirs = []
+1. if not isinstance(dirs, list):
+1. dirs = [dirs]
+1. if glob(filename):
+1. return filename
+1. paths = [os.curdir] + os.environ[env].split(os.path.pathsep) + dirs
+1. try:
+1. return next(os.path.normpath(match)
+1. for path in paths
+1. for match in glob(os.path.join(path, filename))
+1. if match)
+1. except (StopIteration, RuntimeError):
+1. raise IOError("File not found: %s" % filename)
+1. class Fly:
+1. def __init__(self):
+1. self.tanks_location = [[8.91304348,1.20652174,0.61669004],
+1. [6.91304348,-1.39347826,0.21669004],
+1. [-1.68695652,1.20652174,-0.28330996],
+1. [3.11304348,0.60652174,-0.18330996],
+1. [-5.28695652,-0.29347826,0.41669004],
+1. [-2.08695652,-1.49347826,0.21669004]]
+1. self.tanks_size     = [[1.5, 0.9, 0.3],
+1. [2.2, 0.8, 1.1],
+1. [2.4,1.1,0.9],
+1. [1.7,1.3,1.2],
+1. [2.4,1.2,1],
+1. [2.4,1,0.5]]
+1. self.tanks_rest     = [0.3,1.5,2.1,1.9,2.6,0.8]
+
+
+
+66
+1. self.speed = [1.1, 1.8, 1.7, 1.5, 1.6, 1.1]
+1. self.mess = 3000
+1. self.density = 850
+1. self.volume = []
+1. for i in range(6):
+1. v = 1
+1. for j in range(3):
+1. v *= self.tanks_size[i][j]
+1. self.volume.append(v)
+1.
+1. def calEcomsume(self, comsume):
+1. ecomsume = [0] * 6
+1. for i in range(6):
+1. ecomsume[i] = comsume[i]
+1. ecomsume[1] -= comsume[0]
+1. ecomsume[4] -= comsume[5]
+1. return ecomsume
+1.
+1. def UpdateComsume(self,ecomsume,time):
+1. rets = [False] * 6
+1. for i in range(len(ecomsume)):
+1. self.tanks_rest[i] -= ecomsume[i]*time / self.density
+1. if self.tanks_rest[i] < 0 :
+1. if abs(self.tanks_rest[i]) > 1e-5:
+1. # print("something wrong")
+1. self.tanks_rest[i] = 0
+1. rets[i] = True
+1. else:
+1. self.tanks_rest[i] = 0
+1. return rets
+1.
+1. def UpdataCharge(self,ecomsume,time):
+1. rets = [False] * 6
+1. for i in range(len(ecomsume)):
+1. self.tanks_rest[i] += ecomsume[i] * time / self.density
+1. if self.tanks_rest[i] > self.volume[i]:
+1. rets[i] = True
+1. return rets
+1.
+1. def UpdateRest(self,init_r):
+1. for i in range(len(init_r)):
+1. self.tanks_rest[i] = init_r[i] / self.density
+1. # self.tanks_rest[i] = init_r[i]
+1.
+
+
+
+67
+1. def calC(self):
+1. local = [0,0,0]
+1. for i in range(6):
+1. for j in range(2):
+1. local[j] += self.tanks_rest[i] * self.density * self.tanks_location[i]
+[j]
+1. for i in range(6):
+1. j = 2
+1. local[j] += self.tanks_rest[i] * self.density * (self.tanks_location[i][j]
+- self.tanks_size[i][j]/2 +
+1. self.tanks_rest[i] / (self.tanks_
+size[i][0]*self.tanks_size[i][1]*2))
+1. all_mess = self.mess
+1. for i in range(6):
+1. all_mess += self.tanks_rest[i] * self.density
+1. return [x / all_mess for x in local]
+1.
+1. def writefile(location_t, last, demand, pnums=None):
+1. reference = open('reference3.lg4','r')
+1. file_t = open('3.lg4', 'w')
+1. ref_lines = reference.readlines()
+1. for ref_line in ref_lines:
+1. if len(ref_line.split()) == 0:
+1. pass
+1. elif ref_line.split()[0] ==  'LOCATION':
+1. # print(location_t[0])
+1. print('LOCATION = %s, %s, %s;' %(format(location_t[0],'.10e'),format(locat
+ion_t[1],'.10e'),format(location_t[2],'.10e')), file=file_t)
+1. elif ref_line.split()[0] == 'LAST':
+1. print('LAST = %s, %s, %s, %s, %s, %s;' %(format(last[0],'.10e'),format(las
+t[1],'.10e'),format(last[2],'.10e'),format(last[3],'.10e'),format(last[4],'.10e'),forma
+t(last[5],'.10e')), file=file_t)
+1. elif ref_line.split()[0] == 'DEMAND':
+1. print('DEMAND = %s;' %(format(demand,'.10e')), file=file_t)
+1. elif ref_line.split()[0] == 'enddata':
+1. # for i in range(len(pnums)):
+1. #     if pnums[i] != 0 and pnums[i] < 60:
+1. #         print('PICKUP(%d) = 1;' %(i+1), file=file_t)
+1. if pnums:
+1. print('PICKUP ='+' '.join([str(pnum) for pnum in pnums])+';',file=file
+_t)
+1. print(ref_line,file=file_t)
+1. # elif ref_line.split()[0] == '@FOR(delta(I):@free(DL(I)));':
+1. #     print(ref_line,file=file_t)
+
+
+
+68
+1. #     for i in range(len(present)):
+1. #         if present[i] == init_l[i]:
+1. #             print('LAST(%d) >= ECOMSUME(%d);'%(i+1,i+1),file = file_t)
+1. else:
+1. print(ref_line,file=file_t)
+1. file_t.close()
+1. reference.close()
+1.
+1. def writeref(present):
+1. reference = open('initial_3_ref.lg4','r')
+1. file_t = open('initial_3.lg4', 'w')
+1. ref_lines = reference.readlines()
+1. for ref_line in ref_lines:
+1. if len(ref_line.split()) == 0:
+1. pass
+1. elif ref_line.split()[0] == '@FOR(comsumer(I):VOLUME(I)':
+1. print(ref_line,file=file_t)
+1. for i in range(1,7):
+1. print('VOLUME(%d) >= %f * CAPACITY(%d);'%(i,present[i-1],i),file=file_
+*
+1. else:
+1. print(ref_line,file=file_t)
+1. reference.close()
+1. file_t.close()
+1.
+1. def readfile():
+1. file = open('result_3.txt','r')
+1. filelines = file.readlines()
+1. comsume = []
+1. for fileline in filelines:
+1. if fileline.find('COMSUME') != -1:
+1. if fileline.find('ECOMSUME') == -1:
+1. comsume.append(float(fileline.split()[2]))
+1. pickup = []
+1. for fileline in filelines:
+1. if fileline.find('PICKUP') != -1:
+1. pickup.append(int(float(fileline.split()[2])))
+1. return comsume, pickup
+1.
+1. def readref():
+1. file = open('initial_3.txt','r')
+1. filelines = file.readlines()
+1. volume = []
+1. for fileline in filelines:
+
+
+
+69
+1. if fileline.find('VOLUME') != -1:
+1. volume.append(float(fileline.split()[2]))
+1. return volume
+1.
+1. def readexcel():
+1. path = 'C:/Users/PaUlGuO/Desktop/model/team'
+1. wb = openpyxl.load_workbook(path + '/附件4-问题3 数据.xlsx')
+1. ws1 = wb[wb.sheetnames[0]]
+1. ws2 = wb[wb.sheetnames[1]]
+1. all_comsume = []
+1. all_location = []
+1. for v in ws1['B2':'B7201']:
+1. all_comsume.append(v[0].value)
+1. for i in range(2,7202):
+1. tmp = []
+1. for j in range(2,5):
+1. tmp.append(ws2.cell(row=i, column=j).value)
+1. all_location.append(tmp)
+1. return all_comsume, all_location
+1.
+1. def process_bar(percent, start_str='', end_str='', total_length=0):
+1. bar = ''.join(["\033[31m%s\033[0m"%'   '] * int(percent * total_length)) + ''
+1. bar = '\r' + start_str + bar.ljust(total_length) + ' {:0>4.1f}%|'.format(percent*1
+00) + end_str
+1. print(bar, end='', flush=True)
+1.
+1. def opt():
+1.
+1. fly = Fly()
+1.
+1. all_comsume, all_location = readexcel()
+1.
+1. all_comsume.reverse()
+1. all_location.reverse()
+1.
+1. # holdon = [False] * 6
+1. init_l = [0.0] * 6
+1. # init_r = [1.0] * 6
+1.
+1. for iter in range(1):
+1.
+1. # present = [(init_r[i] + init_l[i]) / 2 if holdon[i] else 0.0 for i in range(
+len(init_l))]
+1.
+
+
+
+70
+1. # for i in range(1,len(present)-1):
+1. #     if present[i] >= 0.97:
+1. #         present[i] = 1.0
+1. #         init_l[i] = 1.0
+1. #         init_r[i] = 1.0
+1.
+1. print('********iter %d*********' %(iter+1))
+1.
+1. # print(init_l)
+1. # print(init_r)
+1. # print(present)
+1.
+1. # present_r = solve_init(holdon, init_r)
+1. # f = open('init_3.txt','a')
+1. # print('********iter %d*********' %(i+1),file = f)
+1. # print(' '.join([str(r) for r in present_r]), file = f)
+1. # f.close()
+1.
+1. results = openpyxl.Workbook()
+1. result = results.active
+1.
+1. # init_r = [0,54,137,111,120,428]
+1. # init_r = [0,0.063975118,0.188441394,0.133738096,0.1428346,0.503529412]
+1. # init_r = [287.0330, 1159.560, 1077.014, 2253.213, 2194.129, 684.0513]
+1. # init_r = [344.2500, 1640.684, 1911.173, 1156.975, 2066.856, 535.0624]
+1. # writeref(init_l) ##
+1. # with PowerShell('GBK') as ps:
+1. #     outs, errs = ps.run('runlingo 3_ref.ltf')
+1. # init_rest = readref()
+1. # init_rest = [0.0,48.09765,147.5565,118.8232,115.1304,420.3923]
+1. # init_rest = [0.0,48.62045,149.6112,119.3313,109.5266,422.9104]
+1. init_rest = [0.0,47.18759,131.5116,144.8741,130.9014,395.5253]
+1. fly.UpdateRest(init_rest)
+1.
+1. maxx = 0
+1. # print(present)
+1. for i in tqdm(range(len(all_location)-1)):
+1.
+1. if all_comsume[i] == 0:
+1. result.append([i+1])
+1. continue
+1.
+1. else:
+1. pnums = None
+
+
+
+71
+1. # print('halo')
+1. # pnums = None
+1. # writefile(all_location[94], [rest * fly.density for rest in fly.tanks_re
+st], all_comsume[94], [0]*6 )
+1. writefile(all_location[i+1], [rest * fly.density for rest in fly.tanks_res
+t], all_comsume[i], pnums)
+1.
+1. # print(i + 1)
+1.
+1. with PowerShell('GBK') as ps:
+1. outs, errs = ps.run('runlingo 3.ltf')
+1.
+1. comsume, pickup = readfile()
+1.
+1. if len(comsume) == 0:
+1. break
+1.
+1. for j in range(len(comsume)):
+1. comsume[j] *= pickup[j]
+1.
+1. rets = fly.UpdataCharge(fly.calEcomsume(comsume),1)
+1.
+1. result.append([i+1] + comsume + all_location[i+1] + fly.calC() + fly.tanks
+_rest)
+1.
+1. C1 = fly.calC()
+1. C0 = all_location[i+1]
+1. tmp = 0
+1.
+1. for k in range(len(C1)):
+1. tmp += (C1[k] - C0[k]) ** 2
+1.
+1. maxx = max(tmp,maxx)
+1. # if tmp > 0.05 : ## 质心偏移上限
+1. #     break
+1.
+1. # if True in rets:
+1.
+1. #     break
+1.
+1. results.save('result3_%d_last.xlsx' %(iter+1))
+1. # log = open('log.txt','a')
+1. # print('********* iter %d *********' %(iter+1), file = log)
+1. # print(rets, file= log)
+
+
+
+72
+1. # print('present constraint', file = log)
+1. # print(present, file = log)
+1. # log.close()
+1. # if True not in rets: ## 二分思路
+1. #     for i in range(len(present)):
+1. #         init_r[i] = (init_r[i] + present[i]) / 2.0
+1. # else:
+1. #     for i in range(len(rets)):
+1. #         if rets[i]:
+1. #             if init_l[i] == 1.0 :
+1. #                 print('there is something wrong')
+1. #                 break
+1. #             init_l[i] = present[i]
+1. #             used[i] = True
+1. #         else:
+1. #             if used[i]:
+1. #                 init_l[i] = (present[i] + init_l[i]) - init_r[i]
+1. #                 used[i] = False
+1. # for i in range(len(init_r)):
+1. #     if abs(init_r[i] - init_l[i]) < 0.001:
+1. #         init_r[i] = init_l[i]
+1. print(i)
+1.
+1. print(maxx)
+1.
+1. if __name__ == '__main__':
+1. # Example：
+1.
+1. opt()
+1.
+1. # print()
+问题4：
+[基于60s 时间段的供油最优策略matlab 代码]
+1. clc
+1. clear
+1. warning off
+1. [consume]=xlsread('C:\Users\PaUlGuO\Desktop\model\team\附件5-问题4 数
+据.xlsx',1,'B2:B7201');
+1. [angle]=xlsread('C:\Users\PaUlGuO\Desktop\model\team\附件5-问题4 数
+据.xlsx',2,'B2:B7201');
+1. %final = ones(7200,1);
+1. fv = zeros(7200,6);
+1. At = [1e20,1e20,0,1e20,1e20,1e20;
+
+
+
+73
+1. 1e20,1e20,1e20,0,1e20,1e20;
+1. 1e20,1e20,1e20,1e20,0,1e20;
+1. 1e20,0,1e20,1e20,1e20,1e20;
+1. 0,0,1e20,1e20,1e20,1e20;
+1. 1e20,0,1e20,1e20,1e20,0;
+1. 0,0,1e20,1e20,1e20,0;
+1. 0,1e20,0,1e20,1e20,1e20;
+1. 0,1e20,0,1e20,1e20,0;
+1. 1e20,1e20,0,1e20,1e20,0;
+1. 1e20,1e20,1e20,0,1e20,0;
+1. 0,1e20,1e20,0,1e20,0;
+1. 0,1e20,1e20,0,1e20,1e20;
+1. 1e20,1e20,1e20,1e20,0,0;
+1. 0,1e20,1e20,1e20,0,1e20;
+1. 0,1e20,1e20,1e20,0,0;
+1. 1e20,0,0,1e20,1e20,1e20;
+1. 1e20,0,1e20,0,1e20,1e20;
+1. 1e20,0,1e20,1e20,0,1e20;
+1. 1e20,1e20,0,0,1e20,1e20;
+1. 1e20,1e20,0,1e20,0,1e20;
+1. 1e20,1e20,1e20,0,0,1e20;
+1. 0,0,0,1e20,1e20,1e20;
+1. 0,0,1e20,0,1e20,1e20;
+1. 0,0,1e20,1e20,0,1e20;
+1. 0,1e20,0,0,1e20,1e20;
+1. 0,1e20,0,1e20,0,1e20;
+1. 0,1e20,1e20,0,0,1e20;
+1. 1e20,0,0,1e20,1e20,0;
+1. 1e20,0,1e20,0,1e20,0;
+1. 1e20,0,1e20,1e20,0,0;
+1. 1e20,1e20,0,0,1e20,0;
+1. 1e20,1e20,0,1e20,0,0;
+1. 1e20,1e20,1e20,0,0,0;
+1. ];
+1. %last = [255, 1275, 1785, 1615, 2210, 680];
+1. %last = [255,1275,1.522511111320173e+03,1.428100874944118e+03,2.281296163866746e+03,3.7
+53451648073769e+02];
+1. %last = [2.206478555793609e+02,1.036794773504075e+03,1.214321966570699e+03,19.219643564
+536412,1.353997304699008e+03,1.914292078186719e-07];
+1. %last = [2.206478555793609e+02,5.278026909538892e+02,6.217837833712356e+02,19.219643564
+536412,9.947898160819083e+02,1.914292078186719e-07];
+1. %last = [2.206478555793609e+02,2.356128425237355e+02,2.018039531832358e+02,19.219643564
+536412,6.789007305804507e+02,1.914292078186719e-07];
+
+
+
+74
+1. last = [1.768987624794272e+02,1.350202177198442e+02,40.453142352864720,19.2196435645364
+12,4.976543986285903e+02,1.914292078186719e-07];
+1. Beq = 0;
+1. v0 = [0,0,0,0,0,0];
+1. LB = [0,0,0,0,0,0];
+1. UB0 = [1.1,1.8,1.7,1.5,1.6,1.1];
+1. UB = [1.1,1.8,1.7,1.5,1.6,1.1];
+1. for n=1:6
+1. UB(n) = min(last(n),UB0(n));
+1. end
+1. A = [0,-1,-1,-1,-1,0;0,1,1,1,1,0];
+1. options = optimset('TolX',1e-8,'TolFun',1e-8, 'MaxIter', 100, 'MaxFunEvals',1000,'diffm
+inchange', 1e-10);
+1. for j=0:60:6000
+1. dissum = zeros(34:1);%用来记录每种方案的距离和
+1. vtmp = zeros(34,60,6);%用来记录每种方案每秒6 个油箱的供油速度
+1. for i=1:1:34
+1. lasttmp = last;
+1. Aeq = At(i,:);
+1. distmp = zeros(60,1);%用来记录每种情况60 秒的距离
+1. for k=1:60
+1. B = [-1*consume(k+j-1);consume(k+j-1)*1];
+1. [vt, dis] = fmincon(@(v)ques4sol(v,lasttmp,angle(k+j-1)),v0,A,B,Aeq,Beq,LB,
+UB,'ques2cons',options);
+1. %             if sum(vt)<consume(k+j-1)
+1. %                 dissum(i) = 100;
+1. %                 break;
+1. %             end
+1. for m=1:6
+1. if vt(m)<1e-7
+1. vt(m) = 0;
+1. end
+1. end
+1. vtmp(i,k,:)=vt;
+1. distmp(k,1)=dis;
+1. lasttmp = lasttmp - vt;
+1. lasttmp(2) = lasttmp(2) + vt(1);
+1. lasttmp(5) = lasttmp(5) + vt(6);
+1. for n=1:6
+1. UB(n) = min(lasttmp(n),UB0(n));
+1. end
+1. end
+1. dissum(i,1) = sum(sum(distmp));
+1. end
+
+
+
+75
+1. [p,q] = min(dissum);
+1. %final(j:j+59) = ;
+1. fv(j:j+59,:) = vtmp(q,:,:);
+1. last = last - sum(fv(j:j+59,:));
+1. last(2) = last(2) + sum(fv(j:j+59,1));
+1. last(5) = last(5) + sum(fv(j:j+59,6));
+1. for n=1:6
+1. UB(n) = min(last(n),UB0(n));
+1. end
+1. end
+[目标函数]
+1. function f4 = ques4sol(v,last,theta)
+1. last(2) = last(2)+v(1);
+1. last(5) = last(5)+v(6);
+1. last = last - v;
+1. x = qiuzhixin(last/850, theta);
+1. f4 = x(1,1)^2 + x(1,2)^2 + x(1,3)^2;
+1. end
+

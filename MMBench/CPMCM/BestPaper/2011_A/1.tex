@@ -152,21 +152,26 @@
 
 由此可以得到在 $d<r$ 的情况下，$\varepsilon^{+}$ 的位置为 $x$ 时 $\varepsilon^{-}$ 与狭缝未发生碰撞的概率：
 
-\begin{align*}
-N_{\text{衍}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} (1-p(x))\rho\,dx + \int_{-\frac{d}{2}-r}^{-\frac{d}{2}} p(x)\rho\,dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} p(x)\rho\,dx \\
-&= \int_{-\frac{d}{2}}^{\frac{d}{2}} \rho \left[1-\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})\right]dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} \frac{\rho}{\pi}(\arccos\frac{2x-d}{2r})dx \\
-&= d\,\rho - \frac{2\rho}{\pi} \left(d\,\arcsin\frac{d}{r} - r + r\sqrt{1-\frac{d^2}{r^2}}\right)
-\end{align*}
+\begin{equation}
+p(x) =
+\begin{cases}
+\frac{1}{\pi} \left( \arcsin \frac{d-2x}{2r} + \arcsin \frac{d+2x}{2r} \right), & -\frac{d}{2} < x < \frac{d}{2} \\
+\frac{1}{\pi} \left( \arccos \frac{2x-d}{2r} \right), & \frac{d}{2} \leq x < \frac{d}{2} + r \\
+1 - \frac{1}{\pi} \left( \arccos \frac{2x+d}{2r} \right), & -\frac{d}{2} - r \leq x \leq -\frac{d}{2} \\
+0, & \text{other}
+\end{cases}
+\tag{4.1}
+\end{equation}
 
 对于一部分光子，其正电荷 $\varepsilon^{+}$ 和负电荷 $\varepsilon^{-}$ 都没有与细缝发生碰撞，这部分光子可以看成是“直射”透过细缝，它们的运动方向不会改变，因而不会发生衍射，这部分光子数量记为 $N_{\text{直}}$；有些光子的正电荷通过细缝但是负电荷被细缝挡住，有些光子的正电荷被细缝挡住但负电荷通过细缝，这些透过细缝的正负电荷组成新的光子，这部分光子的运动方向是发生了改变的，会产生后面的衍射，这部分光子数目记为 $N_{\text{衍}}$。
 
 令细缝的宽度方向上光子的线密度为 $\rho$。因此“直射”过细缝的光子数为：
 
-\begin{align*}
-N_{\text{衍}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} (1-p(x))\rho\,dx + \int_{-\frac{d}{2}-r}^{-\frac{d}{2}} p(x)\rho\,dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} p(x)\rho\,dx \\
-&= \int_{-\frac{d}{2}}^{\frac{d}{2}} \rho \left[1-\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})\right]dx + \int_{\frac{d}{2}}^{\frac{d}{2}+r} \frac{\rho}{\pi}(\arccos\frac{2x-d}{2r})dx \\
-&= d\,\rho - \frac{2\rho}{\pi} \left(d\,\arcsin\frac{d}{r} - r + r\sqrt{1-\frac{d^2}{r^2}}\right)
-\end{align*}
+\begin{align}
+N_{\text{直}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} p(x) \rho \, dx = \int_{-\frac{d}{2}}^{\frac{d}{2}} \frac{d}{\pi} \rho \left( \arcsin \frac{d-2x}{2r} + \arcsin \frac{d+2x}{2r} \right) dx \\
+&= \frac{2\rho}{\pi} \left( d \arcsin \frac{d}{r} - r \sqrt{1 - \frac{d^2}{r^2}} \right)
+\tag{4.2}
+\end{align}
 
 发生碰撞而产生的衍射的光子数为:
 \begin{align*}
@@ -178,12 +183,16 @@ N_{\text{衍}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} (1-p(x))\rho\,dx + \int_{-\f
 2) $r \leq d \leq 2r$
 
 仿照上述分析，可以得到在 $r \leq d \leq 2r$ 的情况下，$\varepsilon^+$ 的位置为 $x$ 时 $\varepsilon^-$ 与狭缝未发生碰撞的概率:
-\begin{align*}
-N_{\text{直}} &= \int_{-\frac{d}{2}}^{\frac{d}{2}} p(x)\rho\,dx \\
-&= \int_{-\frac{d}{2}}^{\frac{d}{2}-r} \frac{\rho}{\pi}(\pi-\arccos\frac{2x+d}{2r})dx + \int_{\frac{d}{2}-r}^{r-\frac{d}{2}} \frac{\rho}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r})dx + \int_{r-\frac{d}{2}}^{\frac{d}{2}} \frac{\rho}{\pi}\arccos\frac{2x-d}{2r}dx \\
-&= 2\,\rho\,d - \rho\,r - \frac{2\,\rho\,r}{\pi} - \frac{2\,\rho}{\pi}(d-r)\arccos(\frac{d-r}{r}) - \frac{2\,\rho}{\pi}(d-r)\arcsin(\frac{d-r}{r}) \\
-&= \rho\,d - \frac{2\,\rho\,r}{\pi}
-\end{align*}
+\begin{equation}
+p(x) =
+\begin{cases}
+\frac{1}{\pi}(\arcsin\frac{d-2x}{2r}+\arcsin\frac{d+2x}{2r}), & \frac{d}{2}-r \leq x \leq r-\frac{d}{2} \\
+\frac{1}{\pi}(\arccos\frac{2x-d}{2r}), & r-\frac{d}{2} < x < r+\frac{d}{2} \\
+1-\frac{1}{\pi}(\arccos\frac{2x+d}{2r}), & -\frac{d}{2}-r < x < \frac{d}{2}-r \\
+0, & \text{other}
+\end{cases}
+\tag{4.4}
+\end{equation}
 
 令细缝的宽度方向上光子的线密度为 $\rho$，由此“直射”过细缝的光子数为:
 \begin{align*}

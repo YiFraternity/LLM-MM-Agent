@@ -22,8 +22,6 @@
 \end{table}
 
 \title{天文导航中的星图识别}
-\author{}
-\date{}
 \maketitle
 
 \begin{abstract}
@@ -36,72 +34,9 @@
 针对问题一中第（3）问，根据天文导航误差传播理论进行推导，得出了“恒星四面体体积越大，定位精度越高”的理论结果，考虑到实际视场宽度问题，探索了星像点在感光胶片的分布与定位精度的关系，确定在三星观测定位时，应当使得 3 颗导航恒星尽量位于视场边界，且呈正三角形排布的选星方式受误差影响最小，并采用蒙特卡洛仿真试验验证了结果。
 
 针对问题二，首先采用角距匹配思想，构建恒星夹角正弦数据库，并依据视场界限进行筛选，缩小了搜索空间。并通过编程实现了基于角距特征的星图识别；构建了邻接星数据库，建立了基于角距和特征的星图识别模型；在第一题（2）问提出的感光面投影到天球坐标系的思想方法的基础上，利用邻接星数据库，提出了一种非角距衍生的星图识别特征——恒星线交角特征。然后对上述判据带入星图进行判断，给出了匹配结果和匹配计算量，对各种算法的适用条件和优缺点进行了全面的分析，并给出了最终结果。
+\textbf{关键词：} 三星观测定位，星图识别，解非线性方程组，蒙特卡洛仿真，角距匹配，恒星线交角匹配。
 \end{abstract}
 
-\textbf{关键词：} 三星观测定位，星图识别，解非线性方程组，蒙特卡洛仿真，角距匹配，恒星线交角匹配。
-
-\section*{目录}
-\begin{itemize}
-    \item[1] 问题重述 \dotfill 3
-    \begin{itemize}
-        \item[1.1] 问题背景 \dotfill 3
-        \item[1.2] 问题描述 \dotfill 3
-    \end{itemize}
-    \item[2] 基本假设和符号系统 \dotfill 4
-    \begin{itemize}
-        \item[2.1] 基本假设 \dotfill 4
-        \item[2.2] 符号系统 \dotfill 4
-    \end{itemize}
-    \item[3] 问题一的建模与求解 \dotfill 5
-    \begin{itemize}
-        \item[3.1] 问题分析 \dotfill 5
-        \begin{itemize}
-            \item[3.1.1] 子问题1和子问题2的分析 \dotfill 5
-            \item[3.1.3] 子问题3的分析 \dotfill 6
-        \end{itemize}
-        \item[3.2] 模型建立 \dotfill 6
-        \begin{itemize}
-            \item[3.2.1] 三星观测定位模型 \dotfill 6
-            \item[3.2.2] 基于恒星四面体的选星模型 \dotfill 7
-        \end{itemize}
-        \item[3.3] 问题求解 \dotfill 12
-        \begin{itemize}
-            \item[3.3.1] 子问题1的求解 \dotfill 13
-            \item[3.3.2] 子问题2的求解 \dotfill 15
-            \item[3.3.3] 子问题3的求解 \dotfill 17
-        \end{itemize}
-        \item[3.4] 模型评价 \dotfill 20
-    \end{itemize}
-    \item[4] 问题二的建模与求解 \dotfill 21
-    \begin{itemize}
-        \item[4.1] 问题分析 \dotfill 21
-        \item[4.2] 模型建立 \dotfill 21
-        \begin{itemize}
-            \item[4.2.1] 基于角距特征搜索的星图识别模型 \dotfill 22
-            \item[4.2.2] 基于恒星线交角搜索的星图识别模型 \dotfill 23
-            \item[4.2.3] 基于角距和特征搜索的星图识别模型 \dotfill 24
-        \end{itemize}
-        \item[4.3] 问题求解 \dotfill 25
-        \begin{itemize}
-            \item[4.3.1] 使用角距特征搜索 \dotfill 25
-            \item[4.3.2] 使用恒星线交角搜索 \dotfill 27
-            \item[4.3.3] 使用角距和特征搜索 \dotfill 27
-        \end{itemize}
-        \item[4.4] 模型评价 \dotfill 31
-    \end{itemize}
-    \item[5] 总结 \dotfill 33
-    \item 参考文献 \dotfill 34
-    \item 附录 \dotfill 35
-    \begin{itemize}
-        \item 附录A \dotfill 35
-        \item 附录B \dotfill 35
-        \item 附录C \dotfill 36
-        \item 附录D \dotfill 36
-        \item 附录E \dotfill 37
-        \item 附录F \dotfill 38
-        \item 附录G \dotfill 39
-    \end{itemize}
-\end{itemize}
 
 \section{问题重述}
 
@@ -216,10 +151,14 @@ $f$ & 星敏感器焦距 \\
 
 参照空间直角坐标系与球坐标系的坐标转化关系，可以将用天球坐标表示的点统一到空间直角坐标系中。对于天球坐标系中的任意一点 $P(\alpha, \delta)$（球径 $r$ 充分大），将其变换为直角坐标表示的点 $P'(x, y, z)$，坐标变换关系为：
 
-\begin{align}
-\overrightarrow{O P_{i}} &=\left(r_{i} \cos \delta_{i} \cos \alpha_{i}, r_{i} \cos \delta_{i} \sin \alpha_{i}, r_{i} \sin \delta_{i}\right) \tag{3.3} \\
-\overrightarrow{O D} &=\left(r_{0} \cos \delta_{0} \cos \alpha_{0}, r_{0} \cos \delta_{0} \sin \alpha_{0}, r_{0} \sin \delta_{0}\right) \tag{3.4}
-\end{align}
+\begin{equation}
+\begin{cases}
+x = r \cos \delta \cos \alpha \\
+y = r \cos \delta \sin \alpha \\
+z = r \sin \delta
+\end{cases}
+\tag{3.1}
+\end{equation}
 
 对子问题 1 而言，在图 3.3 中，可以将其抽象成以下表述：
 
@@ -687,7 +626,10 @@ t = \frac{-2(Ax_q + By_q + Cz_q) + \sqrt{4(Ax_q + By_q + Cz_q)^2 - 4(A^2 + B^2 +
 \subsubsection{子问题 2 的求解}
 
 对于子问题 2，非线性方程组 (3.8) 有唯一解。由于难以给出显式的解析解，因此可以采用数值方法求解该非线性方程组。
-
+在进行解法验证时，由于题给附件没有给出完备的数据集，因此，本组在完成了问题
+二的建模与求解，并得到了足够精确的恒星图像坐标和天球坐标数据（表 3.1）后，使用
+该数据集完成了对问题一子问题2 的3 种求解方法的验证。 
+表3.1    导航恒星图像坐标和天球坐标
 \begin{table}
 \centering
 \caption{导航恒星图像坐标和天球坐标}
@@ -745,8 +687,6 @@ $\alpha_0$ & $\delta_0$ & $f$ \\
 \paragraph{使用牛顿迭代法求解}
 
 牛顿迭代法 \cite{cite5} 是在数值求解非线性方程（组）中比较常用的一种方法，其基本原理是给定一个初值点，使用该点的切线近似函数，然后寻找切线与解坐标轴的交点坐标作为一
-
-16
 
 次迭代，也就是利用切线进行线性逼近。牛顿迭代法收敛速度快，但对初始值的依赖性较强。其收敛的一个充分条件是：若 \( f \) 二阶可导，则在零点 \( x \) 周围存在一个区域，只要初值点 \( x_0 \) 位于这个邻近区域内，那么牛顿迭代法必收敛。
 
@@ -1041,7 +981,14 @@ f=\frac{1}{2}\overline{BC}\cot\left(\frac{1}{2}\angle FOH\right)
 \end{figure}
 
 由于使用角距反映的是星体之间位置关系需要3个维度，为降低特征向量的维度，优
-
+化算法的时空性能，可以将主星及与之最近的3 颗邻接恒星的角距求和，使得特征维度就
+从3 维降到1 维。 
+构建角距和特征数据库的基本步骤为： 
+Step 1.  选取简易星表中的一颗星为主星，并根据邻接星表找到离主星最近的3 颗星； 
+Step 2.  根据星表所给数据分别计算主星及其3 颗邻接星之间的两两角距； 
+Step 3.  将3 个角距加起来，依据主星编号存入角距和特征数据库； 
+Step 4.  重复Step 1 ~ Step 3 直到整个星表被完全遍历。 
+表4.4    角距和特征数据库（部分）
 \begin{table}[h]
 \centering
 \caption{角距和特征数据库（部分）}
@@ -1341,9 +1288,7 @@ A06 & 555 & B07 & 930 & C03 & 2525 & D06 & 2096 \\
 夹角 & 较优 & 快 & 无法识别 & 无法识别 \\
 \hline
 \end{tabular}
-\end{table}
-
-在实际星图识别过程中，应当充分利用各种匹配方法，如先采用角距和匹配模型初步筛选，再使用夹角匹配模型快速寻找角特征量；或者直接使用夹角匹配模型快速筛选，再利用角距判据精细筛选匹配出每个星。注意到初次筛选时，阈值可以稍大，以保证真星不被遗漏；若利用角距和与夹角判据都没有合适的值给出，很可能存在干扰星；应直接用角距匹配模型进行计算。
+\end{table}，如先采用角距和匹配模型初步筛选，再使用夹角匹配模型快速寻找角特征量；或者直接使用夹角匹配模型快速筛选，再利用角距判据精细筛选匹配出每个星。注意到初次筛选时，阈值可以稍大，以保证真星不被遗漏；若利用角距和与夹角判据都没有合适的值给出，很可能存在干扰星；应直接用角距匹配模型进行计算。
 
 \section{总结}
 
@@ -1375,3 +1320,125 @@ A06 & 555 & B07 & 930 & C03 & 2525 & D06 & 2096 \\
 [8] 程会艳, 钟红军, 王龙, 等. 一种快速全天星图识别算法[J]. 空间控制技术与应用, 2017, 43(4): 73-78.
 
 \end{document}
+
+\section{附录}
+# 附录F
+%sin_table 表制作程序
+% clear,clc;
+a2d = pi/180;
+f_12 = 256/tan(6*(pi/180));
+f_20 = 512/tan(10*(pi/180));
+cos_angle_12
+=
+((256/sin(6*a2d))*(256/sin(6*a2d))*2-512*512*2)/(2*(256/sin(6*a2d))*(256/s
+in(6*a2d)));
+cos_angle_20
+=
+((512/sin(6*a2d))*(512/sin(6*a2d))*2-512*512*2)/2*(512/sin(6*a2d))*(512/si
+n(6*a2d));
+% 读入简易星表
+load('附件2  简易星表.mat', 'star_data');
+% 求解简易星表中任意两星角距余弦数据库
+length = size(star_data,1);
+cos_table = eye(length);
+sin_table = ones(length);
+for i = 1:length
+for j = i+1:length
+cos_table(i,j)
+=
+cos(a2d*star_data(i,3))*cos(a2d*star_data(i,2))*cos(a2d*star_data(j,3))*co
+s(a2d*star_data(j,2))+...
+
+cos(a2d*star_data(i,3))*sin(a2d*star_data(i,2))*cos(a2d*star_data(j,3))*si
+n(a2d*star_data(j,2))+...
+sin(a2d*star_data(i,3))*sin(a2d*star_data(j,3));
+end
+end
+
+
+
+39
+for i = 1:length
+for j = i+1:length
+if cos_table(i,j) < cos_angle_12
+cos_table(i,j) = 0;
+end
+end
+end
+for i = 1:length
+for j = i+1:length
+if cos_table(i,j) ~= 0
+# A
+=
+[cos(a2d*star_data(i,3))*cos(a2d*star_data(i,2)),cos(a2d*star_data(i,3))*s
+in(a2d*star_data(i,2)),sin(a2d*star_data(i,3))];
+# B
+=
+[cos(a2d*star_data(j,3))*cos(a2d*star_data(j,2)),cos(a2d*star_data(j,3))*s
+in(a2d*star_data(j,2)),sin(a2d*star_data(j,3))];
+sin_table(i,j) = norm(cross(A,B))/(norm(A)*norm(B));
+end
+end
+end
+# 附录G
+clear,clc;
+%蒙特卡洛随机实验，尝试了几种三星分布，对第一（3）问最优分布问题有借鉴价值
+a2d=pi/180;
+x1=-1;y1=-2;x2=3;y2=-1;x3=-2;y3=5;
+a1=sqrt(x1*x1+y1*y1);a2=sqrt(x2*x2+y2*y2);a3=sqrt(x3*x3+y3*y3);
+%通过x1,y1,x2,y2,x3,y3 计算赤经赤纬
+
+[af1,dt1,af2,dt2,af3,dt3,f] = Plane2Sky(x1,y1,x2,y2,x3,y3,512,12);
+
+A1=cos(dt1*a2d)*cos(af1*a2d);A2=cos(dt2*a2d)*cos(af2*a2d);A3=cos(dt3*a2d)*
+cos(af3*a2d);
+B1=cos(dt1*a2d)*sin(af1*a2d);B2=cos(dt2*a2d)*sin(af2*a2d);B3=cos(dt3*a2d)*
+sin(af3*a2d);
+C1=sin(dt1*a2d);C2=sin(dt2*a2d);C3=sin(dt3*a2d);
+D1=f/sqrt(a1*a1+f*f);D2=f/sqrt(a2*a2+f*f);D3=f/sqrt(a3*a3+f*f);
+A=[A1,B1,C1;A2,B2,C2;A3,B3,C3];B=[D1;D2;D3];
+X=A\B;
+af0=atan(X(2)/X(1));dt0=asin(X(3));
+plot(af0,dt0,'x','linewidth',3,'markersize',20);
+hold on
+%下面计算蒙特卡洛随机实验结果
+averror=0;
+for i=1:1000
+af1_=af1+normrnd(0,0.1)/cos(dt1);dt1_=dt1+normrnd(0,0.1);
+af2_=af2+normrnd(0,0.1)/cos(dt2);dt2_=dt2+normrnd(0,0.1);
+af3_=af3+normrnd(0,0.1)/cos(dt3);dt3_=dt3+normrnd(0,0.1);
+a1_=a1+normrnd(0,0.05);a2_=a2+normrnd(0,0.05);a3_=a3+normrnd(0,0.05);
+A1_=cos(dt1_*a2d)*cos(af1_*a2d);A2_=cos(dt2_*a2d)*cos(af2_*a2d);A3_=cos(dt
+3_*a2d)*cos(af3_*a2d);
+B1_=cos(dt1_*a2d)*sin(af1_*a2d);B2_=cos(dt2_*a2d)*sin(af2_*a2d);B3_=cos(dt
+3_*a2d)*sin(af3_*a2d);
+C1_=sin(dt1_*a2d);C2_=sin(dt2_*a2d);C3_=sin(dt3_*a2d);
+D1_=f/sqrt(a1_*a1_+f*f);D2_=f/sqrt(a2_*a2_+f*f);D3_=f/sqrt(a3_*a3_+f*f);
+A_=[A1_,B1_,C1_;A2_,B2_,C2_;A3_,B3_,C3_];B_=[D1_;D2_;D3_];
+
+
+
+40
+X_=A_\B_;
+af0_=atan(X_(2)/X_(1));dt0_=asin(X_(3));
+err=[af0_-af0,dt0_-dt0];
+averror=averror+norm(err)^2;
+scatter(af0_,dt0_,'.');
+hold on
+i
+end
+averror=averror/i;
+
+%蒙特卡洛所需函数
+function[alpha1,delta1,alpha2,delta2,alpha3,delta3,f]
+=
+Plane2Sky(x1,y1,x2,y2,x3,y3,pixel,width)
+f = (pixel/2)/tan((width/2)*(pi/180));
+alpha1 = atan(x1/f)*(pi/180);
+alpha2 = atan(x2/f)*(pi/180);
+alpha3 = atan(x3/f)*(pi/180);
+delta1 = atan(y1/f)*(pi/180);
+delta2 = atan(y2/f)*(pi/180);
+delta3 = atan(y3/f)*(pi/180);
+end
+

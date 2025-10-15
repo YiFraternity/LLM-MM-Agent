@@ -20,80 +20,7 @@
 针对问题三，在问题二的基础上，引入任务环以及排班的概念，机组排班优化的目标是机组人员的总体任务环成本最低，机组人员之间的任务环时长尽可能的平衡，通过层次分析法对7个目标进行权重计算，并通过改进的遗传算法进行求解，结果表明，在A组算例中，有108个航班不满足最低机组配置，在B组算例中，有59个航班不满足最低机组配置。
 \end{abstract}
 
-\section*{中国研究生创新实践系列大赛}
-
-\section*{“华为杯”第十八届中国研究生数学建模竞赛}
-
-\section*{题目}
-
-航空公司机组优化排班问题探析
-
-\section*{目录}
-
-\section{第一章 问题重述}
-\subsection{问题背景 \dotfill 4}
-\subsection{本文提出的问题 \dotfill 4}
-
-\section{第二章 模型假设、相关定义与符号}
-\subsection{模型的假设 \dotfill 5}
-\subsection{相关符号及其定义 \dotfill 5}
-
-\section{第三章 问题分析}
-\subsection{针对于子问题一 \dotfill 7}
-\subsection{针对于子问题二 \dotfill 7}
-\subsection{针对于子问题三 \dotfill 7}
-
-\section{第四章 子问题一的模型建立与求解}
-\subsection{模型的建立 \dotfill 8}
-\subsubsection{确定目标函数 \dotfill 8}
-\subsubsection{确定约束条件 \dotfill 8}
-\subsection{算法描述 \dotfill 10}
-\subsubsection{改进遗传算法设计 \dotfill 10}
-\subsubsection{层次分析法计算权重 \dotfill 11}
-\subsection{算例分析 \dotfill 13}
-\subsubsection{A组算例求解 \dotfill 13}
-\subsubsection{B组算例求解 \dotfill 13}
-\subsection{算法有效性和复杂性分析 \dotfill 13}
-
-\section{第五章 子问题二模型建立与求解}
-\subsection{模型建立 \dotfill 15}
-\subsubsection{新增目标函数 \dotfill 15}
-\subsubsection{新增约束条件 \dotfill 15}
-\subsection{层级分析法计算权重 \dotfill 16}
-\subsection{算例分析 \dotfill 16}
-\subsubsection{A组算例求解 \dotfill 16}
-\subsubsection{B组算例求解 \dotfill 17}
-
-\section{第六章 子问题三模型建立与求解}
-\subsection{模型建立 \dotfill 19}
-\subsubsection{新增目标函数 \dotfill 19}
-\subsubsection{新增约束条件 \dotfill 19}
-\subsection{层次分析法计算权重 \dotfill 19}
-\subsection{算例分析 \dotfill 20}
-\subsubsection{A组算例求解 \dotfill 20}
-\subsubsection{B组算例求解 \dotfill 21}
-
-\section{第七章 模型的评价}
-\subsection{模型评价 \dotfill 23}
-\subsubsection{模型的优点 \dotfill 23}
-\subsubsection{模型的缺点 \dotfill 23}
-
-\includegraphics[width=0.9\textwidth]{image.png}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{l l}
-学校 & 上海海事大学 \\
-参赛队号 & 21102540382 \\
-队员姓名 & 1.姜家乐 \\
- & 2.赵燕 \\
- & 3.董亮 \\
-\end{tabular}
-\end{table}
-
-\section{参考文献} \dotfill 24
-
-\section{附录: \dotfill 25}
+\tableofcontents
 
 \section{第一章 问题重述}
 
@@ -386,7 +313,7 @@ l_{ijj't}(F_{j}-MinCT-S_{j'}) \leq 0 \quad \forall i \in \Phi, \forall j, j' \in
 
 \subsubsection{4.2.1 改进遗传算法设计}
 
-\subsubsection{1) 遗传算法染色体编码}
+1) 遗传算法染色体编码
 
 针对航班机组人员分配问题的复杂性，本文基因编码由 $206 \times 21$ 行的矩阵构成，每一行代表一个航班，每一列表示机组人员，矩阵中的 1 表示该人员乘坐了该行对应的航班，如下图所示，表示机组人员 2 和人员 18 乘坐了航班 1，机组人员 1 和机组人员 18 乘坐了航班 206。
 
@@ -403,8 +330,7 @@ l_{ijj't}(F_{j}-MinCT-S_{j'}) \leq 0 \quad \forall i \in \Phi, \forall j, j' \in
 \end{equation}
 
 \textbf{图 4-1 染色体编码}
-
-\subsubsection{2) 交叉}
+2) 交叉
 
 本文采用传统交叉方式，在父代 1 中随机选择多个位置，保存到子代染色体当中，再从父代 2 中选出子代中缺失的部分按顺序补充到子代中。
 
@@ -415,7 +341,7 @@ l_{ijj't}(F_{j}-MinCT-S_{j'}) \leq 0 \quad \forall i \in \Phi, \forall j, j' \in
     \label{fig:chromosome_crossover}
 \end{figure}
 
-\subsection{变异}
+3)变异
 变异随机选择染色体位置进行变异
 
 \begin{figure}[h]
@@ -425,10 +351,10 @@ l_{ijj't}(F_{j}-MinCT-S_{j'}) \leq 0 \quad \forall i \in \Phi, \forall j, j' \in
     \label{fig:chromosome_mutation}
 \end{figure}
 
-\subsection{染色体调整策略}
+4)染色体调整策略
 随机产生的染色体与每代交叉变异后产生的新的种群中可能存在不可行解，即安排给机组人员的航班之间发生冲突，则需要对染色体进行调整。
 
-\subsection{选择及适应度计算}
+5)选择及适应度计算
 适应度计算公式：
 \begin{equation}
 f = \frac{1}{\alpha_1 \cdot f_1 \cdot \beta_1 + \alpha_2 \cdot f_2 \cdot \beta_2 + \alpha_3 \cdot f_3 \cdot \beta_3}
@@ -439,7 +365,7 @@ f = \frac{1}{\alpha_1 \cdot f_1 \cdot \beta_1 + \alpha_2 \cdot f_2 \cdot \beta_2
 \subsubsection{层次分析法计算权重}
 权重系数 $\alpha_1$、$\alpha_2$、$\alpha_3$ 通过层次分析法进行求解，层次分析法步骤如下：
 
-\subsubsection{构建判断矩阵}
+构建判断矩阵
 
 判断矩阵即以矩阵的形式来表示每一层次中各要素相对其上层要素的相对重要程度。为了使各要素之间进行两两比较得到量化的判断矩阵，引入1~9的标度，见下表所示。
 
@@ -780,7 +706,7 @@ A组算例求解结果如下表所示，表中CPLEX表示用求解器求得的�
 
 对于A算例的子问题2求解，子问题二CPLEX求得的精确解较优于改进的遗传算法求得的解。全部的航班都可以满足最低配置，机组人员总体乘机次数都为8。其中执勤时间与飞行时间都相同，最低配置总体飞行时长为25221分钟，总体执勤时长33471分钟，因此，机组总体利用率为最低配置总体飞行时长/总体执勤时长，即75.35%。最小一次执勤飞行时长为3小时，平均一次执勤飞行时长约为4.1小时，最大一次执勤飞行时长为4小时40分钟；最小一次执勤的执勤时间为3小时40分钟，平均一次执勤的执勤时间为4小时50分钟，最大一次执勤的执勤时间为4小时20分钟；最小机组人员执勤天数为3，平均机组人员执勤天数为5，最大机组人员执勤天数为10。而CPLEX求得的精确解中没有人使用替补资格，总体执勤成本为58.15，改进的遗传算法求得的替补资格使用次数为20次，总执勤成本为58.28。因此CPLEX求得的解替补资格使用次数更少，总体执勤成本更低，结果更好。
 
-\subsection{5.3.2 B组算例求解}
+\subsubsection{5.3.2 B组算例求解}
 
 B组算例求解结果如下表所示，由于CPLEX无法对大规模数据进行求解，因此通过改进的遗传算法算例结果如下：
 
@@ -1005,7 +931,7 @@ A组算例求解结果如下表所示，表中CPLEX表示用求解器求得的�
 
 对于A算例的子问题3求解，CPLEX求得的精确解较同样优于改进的遗传算法求得的解。CPLEX求解结果中，108个航班不可以满足最低配置，而98个航班可以满足最低配置；改进的遗传算法求解结果中，只有94个航班可以满足最低配置；两种求解方式中，乘机次数与替补资格使用次数都为0。CPLEX求解结果中最低配置总体飞行时长为905分钟，总体执勤时长1115分钟，因此，机组总体利用率为81.15%，而改进的遗传算法求解结果中最低配置总体飞行时长为795分钟，总体执勤时长985分钟，因此，机组总体利用率为80.40%。两种求解方式的结果中，飞行时间、执勤时间、执勤天数及任务环数量都相近。由于CPLEX求得的精确解中满足最低配置的航班多于改进的遗传算法结果，因此精确解的执勤成本于任务环成本都略高于算法结果，尽管如此，但精确解中满足最低配置的航班更多，因此结果好于改进的遗传算法求得的解。
 
-\subsection{6.3.2 B组算例求解}
+\subsubsection{6.3.2 B组算例求解}
 
 B组算例求解结果如下表所示，由于CPLEX无法对大规模数据进行求解，因此通过改进的遗传算法算例结果如下：
 
@@ -1086,3 +1012,358 @@ B组算例求解结果如下表所示，由于CPLEX无法对大规模数据进�
 [5] 吕建飞. 航空公司飞行机组人员分配问题研究[D]. 中国民用航空飞行学院, 2015.
 
 \end{document}
+
+\section{附录}
+附录：
+在MATLAB2018a环境下，使用yalmip调用cplex进行求解模型代码如下：
+tic
+clc;
+clear;
+yalmip('clear');
+%% 参数
+% ai=csvread('data_a_person.csv',1,5,'F2..F22');
+% bi=load('Captain.mat');
+load('ai.mat');
+load('bi.mat');
+load('pj.mat')
+M=100000000;
+ct=40;
+alpha=0.5;
+beta=0.3;
+gamma=0.2;
+blk=600;
+dp=660;
+rest=720;
+tafb=14400;
+H=1;
+I=21;
+J=206;
+T=1;
+pj=pj(1:J,:);
+dh=5;
+%% 变量
+xijt = binvar(I,J,T,'full');
+yj = binvar(1,J,'full');
+zij=binvar(I,J,'full');
+kij=binvar(I,J,'full');
+mij=binvar(I,J,'full');
+nij=binvar(I,J,'full');
+lijjt=binvar(I,J,J,T,'full');
+ui=intvar(1,I,'full');
+
+%%子问题1目标函数及约束
+%% 目标函数
+sum_yj=0;
+sum_kij=0;
+sum_zij=0;
+
+
+
+26
+for j=1:J
+sum_yj = sum_yj+yj(j);
+end
+for i=1:I
+for j=1:J
+sum_kij=sum_kij+kij(i,j);
+end
+end
+for i=1:I
+for j=1:J
+sum_zij=sum_zij+zij(i,j);
+end
+end
+f=alpha*sum_yj-beta*sum_kij-gamma*sum_zij;
+%% 约束条件
+F=[];
+%约束1
+for i = 1 : I
+for j = 1:J
+F= [F,kij(i,j)+mij(i,j)+nij(i,j)==sum(xijt(i,j,:))];
+end
+end
+%约束2
+for i = 1 : I
+for j = 1:J
+F= [F,ai(i)*bi(i)*nij(i,j)==zij(i,j)];
+end
+end
+%约束3
+for j =1:J
+sumxijt = 0;
+for i=1:I
+sumxijt= sumxijt+sum(xijt(i,j,:));
+end
+F= [F,sumxijt<=yj(j)*M];
+F= [F,(ai(:,1))'*mij(:,j)==yj(j)];
+F= [F,(bi(:,1))'*nij(:,j)==yj(j)];
+end
+%约束4
+for j =1:J
+F= [F,sum(kij(:,j))<=dh];
+end
+%约束5
+for j=1:J
+
+
+
+27
+for jj=1:J
+if j~=jj
+for i = 1:I
+for t=1:T
+F=[F,lijjt(i,j,jj,t)*(pj(j,1)-pj(jj,2))==0];
+end
+end
+end
+end
+end
+%约束6
+for j=1:J
+for jj=1:J
+if j~=jj
+for i = 1:I
+for t=1:T
+F=[F,lijjt(i,j,jj,t)*(pj(j,4)+ct)<=pj(jj,3)];
+end
+end
+end
+end
+end
+%约束7
+for j=1:J
+for jj=1:J
+if j~=jj
+for i = 1:I
+for t=1:T
+F=[F,2*lijjt(i,j,jj,t)<=xijt(i,j,t)+xijt(i,jj,t)];
+end
+end
+end
+end
+end
+%约束8
+for j=1:J
+for i = 1:I
+for t=1:T
+F=[F,sum(lijjt(i,j,:,t))<=1];
+end
+end
+end
+%约束9
+for j=1:J
+
+
+
+28
+for i = 1:I
+for t=1:T
+F=[F,sum(lijjt(i,:,j,t))<=1];
+end
+end
+end
+%约束10
+for i = 1:I
+for t=1:T
+sum2j=0;
+time2j=0;
+sumj2=0;
+timej2=0;
+for j=1:J
+if pj(j,1)==2
+sum2j=sum2j+sum(lijjt(i,j,:,t));
+time2j=time2j+reshape(lijjt(i,j,:,t),1,[])*pj(:,3);
+end
+if pj(j,2)==2
+sumj2=sumj2+sum(lijjt(i,:,j,t));
+timej2=timej2+reshape(lijjt(i,:,j,t),1,[])*pj(:,3);
+end
+end
+F=[F,sum2j==sumj2];
+## F=[F,time2j<=timej2];%从基地出发的航班出发时间和小于回到基地的航班的出发
+时间和
+end
+end
+%约束5
+for i =1:I
+F=[F,sum(xijt(i,:,:),3)*pj(:,1)==sum(xijt(i,:,:),3)*pj(:,2)];
+end
+%约束
+for j =1:J
+for i=1:I
+F=[F,ai(i)>=mij(i,j)];
+F=[F,bi(i)>=nij(i,j)];
+end
+end
+
+ops = sdpsettings('solver','cplex','verbose',1);
+ops.cplex.display='on';
+ops.cplex.timelimit=18000;
+
+
+
+29
+ops.cplex.mip.tolerances.mipgap=0.001;
+% 诊断求解可行性
+disp('开始求解')
+diagnostics=optimize(F,-f,ops);
+if diagnostics.problem==0
+disp('Solver thinks it is feasible')
+elseif diagnostics.problem == 1
+disp('Solver thinks it is infeasible')
+pause();
+else
+disp('Timeout, Display the current optimal solution')
+end
+
+%%子问题2目标函数及新增约束
+%% 目标函数
+sum_lijjt=0;
+sum_ui=0;
+for i=1:I
+for j=1:J
+for jj=1:J
+for t=1:T
+sum_lijjt = sum_lijjt+lijjt(i,j,jj,t)*(pj(j,4)-pj(j,3)+pj(jj,3)-pj(j,4))*ci(i);
+end
+end
+end
+end
+for i=1:I
+for j=1:J
+sum_kij=sum_kij+kij(i,j);
+end
+end
+for i=1:I
+sum_ui=sum_ui+uu(i);
+end
+f=alpha*sum_yj-beta*sum_kij-gamma*sum_zij-sum_lijjt-sum_ui;
+
+%%子问题2新增约束
+for i=1:I
+for t=1:T
+F=[F,mij(i,:)*(pj(:,4)-pj(:,3))+nij(i,:)*(pj(:,4)-pj(:,3))<=blk];
+end
+end
+for i=1:I
+for jj=1:J
+
+
+
+30
+for t=1:T
+F=[F,(pj(:,4)-pj(:,3)+pj(jj,3)-pj(jj,4))'*lijjt(i,:,jj,t)<=dp];
+end
+end
+end
+for i=1:I
+for j=1:J
+for jj=1:J
+for t=1:T
+F=[F,xijt(i,jj,t)*pj(jj,3)-xijt(i,j,t)*pj(j,4)>=rest];
+end
+end
+end
+end
+%%
+%%子问题3目标函数及新增约束
+%% 目标函数
+sum_c=0;
+sum_balance=0;
+for i=1:I
+for j=1:J
+for t=1:T
+sum_c = sum_c+xijt(i,j,t)*(gih(i)kjh(j)-xijt(i,j,t)*gih(i)*kjh(j))*cci(i);
+end
+end
+end
+for i=1:I
+for j=1:J
+sum_balance=sum_balance+kij(i,j);
+end
+end
+for i=1:I
+sum_ui=sum_ui+uu(i);
+end
+f=alpha*sum_yj-beta*sum_kij-gamma*sum_zij-sum_lijjt-sum_ui-sum_c-sum_balance;
+
+%%子问题3新增约束
+for i=1:I
+for h=1:H
+F=[F,xijt(i,j,t)*gih(i)kjh(j)-xijt(i,j,t)*gih(i)*kjh(j)<=tafb];
+end
+end
+double(f)
+toc
+
+
+
+31
+MATLAB遗传算法部分代码如下：
+主程序：
+clear
+clc
+close all
+%遗传参数
+popsize1=100;
+MAXGEN1=500;
+crewNum=21;                   % 机组人员数量
+chromlength1=206;                                                % 航班数量
+Pc1=0.5;
+Pm1=0.1;
+hcxx=20;
+hczx=20;
+ACrew=xlsread('机组排班Data A-Crew.xlsx');
+AFlight=xlsread('机组排班Data A-Flight.xlsx');
+CC= xlsread('参数集合.xlsx');
+%% 生成初始种群
+pop1=initGroup1(popsize1,chromlength1, crewNum);
+%% 初始化数据;
+gen1=0;
+zuijia=[];
+zymbz=[];
+zyjuzhen=[];
+while gen1<MAXGEN1
+%% 交叉
+pop1=crossover1(pop1,Pc1);
+%% 变异
+pop1=Mutate1(pop1,Pm1);
+%% 计算适应度
+[objvalue1,pop1]=calobj1(pop1,chromlength1,fztask,hczx);
+zpop1=pop1;%用于最后迭代
+%% 选择
+fitvalue1=zeros(size(objvalue1,1),2);%一行目标函数，另一方编号
+for i=1 : size(objvalue1,1)
+fitvalue1(i,1)=i;
+fitvalue1(i,2)=1/objvalue1(i,3);
+end                       %计算适应度函数
+fitvalue1=sortrows(fitvalue1,2,'descend');
+zyjuzhen(1,:)=pop1(fitvalue1(1,1)*2-1,:);
+zyjuzhen(2,:)=pop1(fitvalue1(1,1)*2,:);
+newpop=[];
+for i=1:popsize1
+newpop(i*2-1,:)=pop1(fitvalue1(i,1)*2-1,:);
+
+
+
+32
+newpop(i*2,:)=pop1(fitvalue1(i,1)*2,:);
+end
+pop1=newpop;
+%% 重插入子代
+gen1=gen1+1;
+objv=sortrows(objvalue1,3,'ascend');
+mdzy=min(objvalue1(:,3));
+if gen1==1
+his_zuiyou(gen1,1)=gen1;
+his_zuiyou(gen1,2)=objv(1,1);
+his_zuiyou(gen1,3)=objv(1,2);
+his_zuiyou(gen1,4)=objv(1,3);
+zuijia(gen1*2-1,:)=zyjuzhen(1,:);
+zuijia(gen1*2,:)=zyjuzhen(2,:);
+else
+if mdzy>his_zuiyou(gen1-1,2)
+his_zuiyou(gen1,1)=gen1;
+his_zuiyou(gen1,2)=his_zuiyou(gen1-1,2);
+his_zuiyou(gen1,
+

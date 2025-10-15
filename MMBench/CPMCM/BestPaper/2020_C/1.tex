@@ -40,148 +40,8 @@
 \textbf{关键字：}滤波处理 卷积神经网络 主成分分析 支持向量机 半监督学习 随机森林
 \end{abstract}
 
-\section*{目录}
+\tableofcontents
 
-\begin{itemize}
-    \item[1.1] 问题背景 \dotfill 4
-    \item[1.2] 问题分析 \dotfill 4
-\end{itemize}
-
-\begin{itemize}
-    \item[2.1] 模型基本假设 \dotfill 5
-    \item[2.2] 模型符号说明 \dotfill 5
-\end{itemize}
-
-\begin{itemize}
-    \item[3.1] 去趋势 \dotfill 6
-    \item[3.2] 滤波 \dotfill 7
-    \item[3.3] 不平衡样本的重采样 \dotfill 9
-\end{itemize}
-
-\begin{itemize}
-    \item[4.1] L2正则化 \dotfill 9
-    \item[4.2] 卷积神经网络方法 \dotfill 10
-    \item[4.3] 随机森林方法 \dotfill 11
-    \item[4.4] 目标的分类识别方法设计 \dotfill 12
-    \item[4.5] 不同方法的合理性分析 \dotfill 13
-\end{itemize}
-
-\begin{itemize}
-    \item[5.1] L1正则化 \dotfill 14
-    \item[5.2] 单个被试者通道选择算法设计 \dotfill 14
-    \item[5.3] 所有被试者最优通道组合设计 \dotfill 17
-\end{itemize}
-
-\begin{itemize}
-    \item[6.1] 标签传播算法 \dotfill 19
-    \item[6.2] 自适应半监督学习 \dotfill 20
-    \begin{itemize}
-        \item[6.2.1] 算法实现步骤 \dotfill 20
-        \item[6.2.2] 算法参数设定 \dotfill 20
-        \item[6.2.3] 算法识别结果分析 \dotfill 21
-    \end{itemize}
-\end{itemize}
-
-\begin{itemize}
-    \item[7.1] 支持向量机方法 \dotfill 24
-    \item[7.2] 睡眠分期预测模型选择 \dotfill 25
-    \item[7.3] 训练和测试数据的选择 \dotfill 26
-    \begin{itemize}
-        \item[7.3.1] 选取方式 \dotfill 26
-        \item[7.3.2] 分配比例 \dotfill 26
-    \end{itemize}
-    \item[7.4] 结合分类性能分析模型预测效果 \dotfill 27
-\end{itemize}
-
-\section{一、问题重述}
-\subsection{问题背景}
-% 内容待补充
-
-\subsection{问题分析}
-% 内容待补充
-
-\section{二、模型假设与符号说明}
-\subsection{模型基本假设}
-% 内容待补充
-
-\subsection{模型符号说明}
-% 内容待补充
-
-\section{三、数据预处理}
-\subsection{去趋势}
-% 内容待补充
-
-\subsection{滤波}
-% 内容待补充
-
-\subsection{不平衡样本的重采样}
-% 内容待补充
-
-\section{四、问题一：模型建立与求解}
-\subsection{L2正则化}
-% 内容待补充
-
-\subsection{卷积神经网络方法}
-% 内容待补充
-
-\subsection{随机森林方法}
-% 内容待补充
-
-\subsection{目标的分类识别方法设计}
-% 内容待补充
-
-\subsection{不同方法的合理性分析}
-% 内容待补充
-
-\section{五、问题二：模型建立与求解}
-\subsection{L1正则化}
-% 内容待补充
-
-\subsection{单个被试者通道选择算法设计}
-% 内容待补充
-
-\subsection{所有被试者最优通道组合设计}
-% 内容待补充
-
-\section{六、问题三：模型建立与求解}
-\subsection{标签传播算法}
-% 内容待补充
-
-\subsection{自适应半监督学习}
-\subsubsection{算法实现步骤}
-% 内容待补充
-
-\subsubsection{算法参数设定}
-% 内容待补充
-
-\subsubsection{算法识别结果分析}
-% 内容待补充
-
-\section{七、问题四：模型建立与求解}
-\subsection{支持向量机方法}
-% 内容待补充
-
-\subsection{睡眠分期预测模型选择}
-% 内容待补充
-
-\subsection{训练和测试数据的选择}
-\subsubsection{选取方式}
-% 内容待补充
-
-\subsubsection{分配比例}
-% 内容待补充
-
-\subsection{结合分类性能分析模型预测效果}
-% 内容待补充
-
-\section{八、参考文献}
-\dotfill 27
-
-\section{附录：Python代码}
-\dotfill 28
-
-\section{代码附录：}
-\dotfill 28
 
 \section{一、问题重述}
 
@@ -319,7 +179,9 @@ char13-char22 & 待识别目标字符 \\
 \end{figure}
 
 进行完上述的操作后，S1\_train\_data 中 char06（Q）的 20 个通道的采集信号滤波前
-
+后对比图如下所示，滤波前由于不同通道间取值范围相差较大，一张图表中无法显示所有
+通道信号数据，因此无法判断信号的平稳性等特征，滤波后所有通道信号数据展现的更加
+清晰和明显，有利于进行进一步特征判断。 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -439,7 +301,7 @@ b_{n}^{i}
 
 $O^{i}$ 代表第 $i$ 层的输出向量，$n$ 代表第 $i$ 层的神经元数目，第 $i-1$ 层的 $m$ 维输出向量变为第 $i$ 层的输入向量，括号内第一个 $n \times m$ 矩阵代表权重系数矩阵，即 $n$ 个神经元，每个神经元有 $m$ 个权重系数。权重系数矩阵乘以输入向量得到一个 $n$ 维向量，括号里最后一项为 $n$ 维偏置向量，两向量相加后进行激活函数 $f$ 的运算，最终得到第 $i$ 层的输出向量，依次类推，从输入层开始逐层计算，最终得到输出向量。
 
-\section{随机森林方法}
+\subsection{随机森林方法}
 
 关于随机森林（RF），是用随机的方式建立一个森林，森林里面有很多决策树（决策树多少取决于人为初始设定），不同决策树之间是相互独立的，计算过程中互不干扰，这体现了随机森林算法的集成思想。随机森林的“随机”有两层含义，即样本抽样的随机性和特征抽样的随机性。在得到森林之后，当有一个新的输入样本需要进行分析时，森林中每个决策树分别进行一次运算判断，各自判断输入样本应归为哪一类，最后整合所有决策树的结论，找出被选择较多的类，从而将样本归为那一类，除了用于分类预测外，随机森林还可以用来回归。进行分类预测时算法基本思想可以简化为如下图 4.3.1 所示：
 
@@ -482,7 +344,7 @@ $O^{i}$ 代表第 $i$ 层的输出向量，$n$ 代表第 $i$ 层的神经元数�
     \label{tab:random_forest_flow}
 \end{table}
 
-\section{4.4 目标的分类识别方法设计}
+\subsection{4.4 目标的分类识别方法设计}
 
 待识别字母可以通过查询字母所在 $6 \times 6$ 字母矩阵中行和列的序号获得，因此，识别字母的问题转化为从六行和六列中识别出现 P300 信号的位置的问题。我们在每一轮测试的 12 次闪烁周期中分别判断本周期是否出现 P300 信号，这样，我们就将字母识别问题转化为对信号是否出现的判别问题。
 
@@ -780,20 +642,6 @@ S5 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
 
 在问题三的求解过程中，采用了半监督学习中的标签传播算法。它的基本思想是给定一个数据集，我们可将其映射为一个图，数据集中的每个样本对应于图中的一个结点，如果两个样本之间的相似度（相关性）很高，则认为对应的结点之间存在一条边，边的强度正比于样本之间的相似度（相关性）\cite{ref6}。将同一分布范围的已标记结点和未标记结点视为拥有相同的标签，从而将已标记结点的标签信息传播给附近的未标记结点。在每一次迭代过程中，已标记结点的标签保持不变，未标记结点根据相邻结点的标签更新自己的标签。邻近程度由结点的相似程度决定，邻近程度越高，对未标记结点的标签更新的影响权重越大。在不断迭代的过程当中，未标记结点的标签趋向于稳定，从而实现对未标记结点的标签传递。算法的基本描述如下表\ref{tab:algorithm_description}所示：
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|}
-    \hline
-    \textbf{步骤} & \textbf{描述} \\ \hline
-    1 & 构建样本之间的相似度矩阵 \\ \hline
-    2 & 初始化已标记和未标记结点的标签 \\ \hline
-    3 & 迭代更新未标记结点的标签 \\ \hline
-    4 & 判断是否收敛，若未收敛则继续迭代 \\ \hline
-    5 & 输出最终的标签分配结果 \\ \hline
-    \end{tabular}
-    \caption{标签传播算法基本描述}
-    \label{tab:algorithm_description}
-\end{table}
 
 \begin{table}
 \centering
@@ -837,7 +685,17 @@ S5 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
 \subsubsection{算法参数设定}
 
 首先需将原始数据集划分为有标签数据和无标签数据，如果有标签数据集（训练集）
+的规模太小，则无法学到足够的有用特征，分类过程陷入局部最优。经过测试，当有标签
+数据集的比例低于 0.4 时，分类器的预测准确率很低，而题目要求有标签数据集不宜过大，
+故在此我们将有标签数据集和无标签数据集的比例设置为 0.4 和 0.6。 
+ 关于接受阈值的设置，如果接受标签为 1 或 0 的阈值过低，那么就会接受大量对后续
+判断无益甚至有害的样本，如果如果接受标签为 1 或 0 的阈值过高，那么就会只接受距离
+有标签样本非常近的样本，而拒绝一些原本可以对后续判断有益的样本。因此，该阈值的
+设置同样比较重要，经过测试，决定采用 0.8 作为接受阈值。
 
+\subsubsection{6.2.3 算法识别结果分析}
+我们就多轮测试中的一次结果进行展示，针对不同受试者就采用自适应半监 
+督学习算法前后进行对比，对比情况如表 6.2.2 所示：
 \begin{table}
 \centering
 \caption{采用自适应半监督学习算法前后预测结果对比}
@@ -867,6 +725,18 @@ S5 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
 \hline
 \end{tabular}
 \end{table}
+
+实验结果显示，采用自适应半监督学习算法后预测准确率有一定提升。如对于 S3，只
+采用比例为 0.4 的有标签样本训练神经网络分类器的预测准确率为 80.9%；采用上述自适
+应半监督学习算法，同时利用有标签样本和可信的无标签样本训练神经网络分类器的预测
+准确率为 83.4%，相比于前者的预测准确率有一定提升。对于前文中预测准确率不高的 S1，
+其预测准确率也有所提高。 
+ 另一方面，采用监督和半监督算法来预测不同受试者识别效果，不同受试者效果对比
+图如下所示，我们发现后者的预测稳定性有大幅提升，只采用比例为 0.4 的有标签样本训
+练神经网络分类器的预测准确率变化幅度很大，这可能和训练集仍然较小有关。而时利用
+有标签样本和可信的无标签样本训练神经网络分类器的预测准确率则相对更加稳定，这对
+于实际应用有较大益处，体现了本方法的效果。
+
 
 \begin{figure}[h]
     \centering
@@ -1054,10 +924,10 @@ w^T x_i + b \leq -1 & , y_i = -1
 
 线性 SVM 和非线性 SVM 唯一的不同在于初始样本点 $(x_i, y_i)$ 和映射点 $(\phi(x_i), y_i)$ 的差异，但求解过程中非线性 SVM 更为复杂，往往通过引入核函数降低计算工作量。
 
-\section{7.2 睡眠分期预测模型选择}
+\subsection{7.2 睡眠分期预测模型选择}
 
 在进行预测的过程中我们选择了支持向量机和神经网络两种方法进行尝试，由于神经网络在训练的过程中需要的样本数量较大，针对少样本训练集得到的预测能力较差，如下图 7.1.1 所示，测试集的预测准确率随着迭代次数的增加不断上下波动，且维持在 $[0.5, 0.675]$ 的范围内变化，准确率较低，不太适合进行少样本预测。而支持向量机方法在少样本训练测试中的效果较为明显，因此我们选择使用支持向量机方法来设计睡眠分期
-
+预测模型。
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{train_acc_and_test_acc.png}
@@ -1065,11 +935,11 @@ w^T x_i + b \leq -1 & , y_i = -1
     \label{fig:train_test_acc}
 \end{figure}
 
-\section{训练和测试数据的选择}
+\subsection{训练和测试数据的选择}
 
 较为理想的训练和测试数据比例应该是以尽可能少的样本对睡眠状态分期预测的较为精准，但在实际操作过程中我们发现很难实现这一平衡，只能保证在较高的预测准确率条件下选择尽可能少的样本。
 
-\subsection{选取方式}
+\subsubsection{选取方式}
 
 在选取样本前，我们对不同时期的样本数进行了统计，结果如下表所示：
 
@@ -1086,7 +956,7 @@ w^T x_i + b \leq -1 & , y_i = -1
 
 为保证样本数的一致性，每个睡眠状态期选取 112（560*0.2）个样本进行分析。另外样本在抽取之前顺序打乱弄混以实现随机抽样，然后在不同状态时期随机选取 112 个样本进行训练预测。
 
-\subsection{分配比例}
+\subsubsection{分配比例}
 
 基于支持向量机（SVM）方法的训练和学习，为了能够较为直观准确的找出训练集比例小但测试准确率高这一均衡点，将测试集准确率随训练集比例变化情况用折线图表示出来，如下图 7.3.2 所示，随着训练集的使用比例增加，在测试集上的分类准确率整体呈上升趋势，具体来讲，训练集使用比例在 0.1 到 0.2 和 0.8 到 0.9 两区间内上升趋势明显，而比例在 0.2-0.8 区间范围内趋势平缓（测试集正确率随训练样本增加不明显），由此我们认为使用训练集比例为 0.2 时，可保证在使用较少训练集数据的前提下获得良好的分类效果。另外我们就算法参数进行了不断的调试，最终确定了惩罚系数 \(C=1\)，核函数为高斯核函数，核函数参数 \(\gamma=2\)，然后选取 0.2 的训练集比例能够获得较高的预测准确率。
 
@@ -1097,7 +967,7 @@ w^T x_i + b \leq -1 & , y_i = -1
     \label{fig:svm_accuracy}
 \end{figure}
 
-\section{7.4 结合分类性能分析模型预测效果}
+\subsection{7.4 结合分类性能分析模型预测效果}
 
 在判断分类性能好坏时我们一般关心样本归为正确分类的概率、样本归为错误分类的概率是多大，需要参考一系列的分类性能指标，比如召回率、查准率、混淆矩阵等，在多分类问题中比较常用的是混淆矩阵，具体包含内容如下表7.4.1所示\cite{ref1}。通过判断四类情况发生的概率值大小来更好的评价模型分类性能好坏。
 
@@ -1135,3 +1005,804 @@ w^T x_i + b \leq -1 & , y_i = -1
 [5] 周志华，机器学习，北京：清华大学出版社，300-301，2016.
 
 \end{document}
+
+\section{附录：代码实现}
+# ---------------------
+# 问题一：svm 和RF
+# ---------------------
+import pandas as pd
+import numpy as np
+import os
+import pickle
+import sklearn
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.externals import joblib
+
+# 为了减少反复io，将数据序列号保存至sri.txt
+seril_path = 'sri.txt'
+row_col = {'A':(1,7),'B':(1,8),'C':(1,9),'D':(1,10),'E':(1,11),'F':(1,12),
+
+'G':(2,7),'H':(2,8),'I':(2,9),'J':(2,10),'K':(2,11),'L':(2,12),
+
+'M':(3,7),'N':(3,8),'O':(3,9),'P':(3,10),'Q':(3,11),'R':(3,12),
+
+'S':(4,7),'T':(4,8),'U':(4,9),'V':(4,10),'W':(4,11),'X':(4,12),
+
+'Y':(5,7),'Z':(5,8),'1':(5,9),'2':(5,10),'3':(5,11),'4':(5,12),
+
+'5':(6,7),'6':(6,8),'7':(6,9),'8':(6,10),'9':(6,11),'0':(6,12)}
+rc_dic = [['A','B','C','D','E','F'],
+
+['G','H','I','J','K','L'],
+
+['M','N','O','P','Q','R'],
+
+['S','T','U','V','W','X'],
+
+['Y','Z','1','2','3','4'],
+
+['5','6','7','8','9','0']]
+
+# 读取序列号之后的数据，x_p 是正例集合（检测到P300），x_n 是反例集合
+with open(seril_path,'rb') as f:
+
+
+
+29
+
+x_p,y_p,x_n,y_n = pickle.load(f)
+
+# 将数据乱序
+np.random.shuffle(x_p)
+np.random.shuffle(x_n)
+# 将数据拉直
+x_p = [np.array(x).reshape(-1) for x in x_p]
+x_n = [np.array(x).reshape(-1) for x in x_n]
+
+# 按8：2 将训练集拆分，8 用来训练，2 用来判断准确率
+a = 96
+b = 480
+
+# 由于样本不平衡（正例：反例=1：5），所以将训练集拆分后，再分别把两部分的x_p 倍
+增
+x_p_train = np.repeat(x_p[0:a],5,axis=0)
+y_p_train = np.repeat(y_p[0:a],5,axis=0)
+x_p_test = np.repeat(x_p[a:],5,axis=0)
+y_p_test = np.repeat(y_p[a:],5,axis=0)
+x_train = np.vstack([x_p_train,x_n[0:b]])
+y_train = np.hstack([y_p_train,y_n[0:b]])
+x_test = np.vstack([x_p_test,x_n[b:]])
+y_test = np.hstack([y_p_test,y_n[b:]])
+
+# 训练集乱序
+np.random.seed(116)
+np.random.shuffle(x_train)
+np.random.seed(116)
+np.random.shuffle(y_train)
+
+# 以下为随机森林和svm 的模型，这里将两个模型写在了一起，实际只运行其中一个
+# 定义随机森林，树的数量为400，深度为60
+model
+=
+RandomForestClassifier(n_estimators=400,criterion='entropy',max_depth=60)
+# 定义支持向量机，惩罚因子c=1，核函数为高斯核，参数为2
+model = SVC(C = 1, kernel='rbf', gamma=2)
+
+# 模型训练及准确度计算
+model = model.fit(x_train,y_train)
+y_test_hat = model.predict(x_test)
+y_test = y_test.reshape(-1)
+print(y_test_hat)
+print(y_test)
+
+
+
+30
+result = (y_test == y_test_hat)
+acc = np.mean(result)
+print("精准度：%.2f%%" % (100 * acc))
+
+# ---------------------
+# 问题一：cnn
+# ---------------------
+#
+import pandas as pd
+import numpy as np
+import os
+import pickle
+import sklearn
+import tensorflow as tf
+from
+tensorflow.keras.layers
+import
+Dropout,Dense,Conv2D,Flatten,BatchNormalization,Activation
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+
+seril_path = 'sri.txt'
+row_col = {'A':(1,7),'B':(1,8),'C':(1,9),'D':(1,10),'E':(1,11),'F':(1,12),
+
+'G':(2,7),'H':(2,8),'I':(2,9),'J':(2,10),'K':(2,11),'L':(2,12),
+
+'M':(3,7),'N':(3,8),'O':(3,9),'P':(3,10),'Q':(3,11),'R':(3,12),
+
+'S':(4,7),'T':(4,8),'U':(4,9),'V':(4,10),'W':(4,11),'X':(4,12),
+
+'Y':(5,7),'Z':(5,8),'1':(5,9),'2':(5,10),'3':(5,11),'4':(5,12),
+
+'5':(6,7),'6':(6,8),'7':(6,9),'8':(6,10),'9':(6,11),'0':(6,12)}
+rc_dic = [['A','B','C','D','E','F'],
+
+['G','H','I','J','K','L'],
+
+['M','N','O','P','Q','R'],
+
+['S','T','U','V','W','X'],
+
+['Y','Z','1','2','3','4'],
+
+['5','6','7','8','9','0']]
+
+# 数据的读入与切分及乱序，与上文相同
+with open(seril_path,'rb') as f:
+
+x_p,y_p,x_n,y_n = pickle.load(f)
+x_p = np.array([np.array(x) for x in x_p])
+x_n = np.array([np.array(x) for x in x_n])
+x_p = x_p.reshape(x_p.shape[0],x_p.shape[1],x_p.shape[2],1)
+x_n = x_n.reshape(x_n.shape[0],x_n.shape[1],x_n.shape[2],1)
+np.random.shuffle(x_p)
+np.random.shuffle(x_n)
+
+
+
+31
+a = 96
+b = 480
+x_p_train = np.repeat(x_p[0:a],5,axis=0)
+y_p_train = np.repeat(y_p[0:a],5,axis=0)
+x_p_test = np.repeat(x_p[a:],5,axis=0)
+y_p_test = np.repeat(y_p[a:],5,axis=0)
+x_train = np.vstack([x_p_train,x_n[0:b]])
+y_train = np.hstack([y_p_train,y_n[0:b]])
+x_test = np.vstack([x_p_test,x_n[b:]])
+y_test = np.hstack([y_p_test,y_n[b:]])
+np.random.seed(114)
+np.random.shuffle(x_train)
+np.random.seed(114)
+np.random.shuffle(y_train)
+
+# 定义卷积神经网络的结构，
+# 第一层是1X20 的卷积核，起到了空间特征提取的作用（整合20 个通道）
+## # 第二层是20X1 的卷积核，起到了时间特征提取的作用（在长度为150 的信号序列上滑
+动）
+# 之后是全连接层和输出层
+# 对卷积层进行0.2 比例的参数舍弃，每次训练只训练80%参数，同时在全连接层进行l2
+正则，防止过拟合
+# 对第一个卷积核进行l1 正则，获得稀疏矩阵，方便通道选择
+model = tf.keras.Sequential([
+
+Conv2D(filters=10, kernel_size=(1,20),
+
+# kernel_regularizer=tf.keras.regularizers.l1(0.004)
+
+),
+
+Dropout(0.2),
+
+Conv2D(filters=50, kernel_size=(20,1),strides=10),
+
+BatchNormalization(),
+
+Activation('relu'),
+
+Dropout(0.2),
+
+Flatten(),
+
+Dense(100,activation = 'relu',
+
+# kernel_regularizer=tf.keras.regularizers.l2(0.003)
+
+),
+
+Dense(2,activation='softmax',
+
+kernel_regularizer=tf.keras.regularizers.l2(13)
+
+)])
+
+# 模型的求解器选择
+model.compile(optimizer = tf.keras.optimizers.Adam(0.01),
+
+loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+
+
+
+32
+
+metrics='sparse_categorical_accuracy')
+# 设置模型保存路径，以供预测
+cp_callback = tf.keras.callbacks.ModelCheckpoint(
+
+filepath='cnn.ckpt',
+
+save_weights_only=True,
+
+save_best_only=True)
+history = model.fit(x_train,y_train,batch_size=20,epochs = 30,
+
+validation_data=(x_test,y_test),validation_freq=1,callbacks=[cp_callback])
+
+acc = history.history['sparse_categorical_accuracy']
+val_acc = history.history['val_sparse_categorical_accuracy']
+
+# 画出模型的准确率随迭代次数的变化图
+# acc 为训练集上的准确率，val_acc 为测试集上的准确率
+plt.subplot(2,1,1)
+plt.title('train_acc_and_test_acc')
+plt.plot(acc,label='train')
+# plt.xlabel('epoches')
+plt.ylabel('acc')
+plt.legend()
+plt.subplot(2,1,2)
+plt.plot(val_acc,label='test')
+plt.xlabel('epoches')
+plt.ylabel('acc')
+plt.legend()
+plt.show()
+
+# ---------------------
+# 问题一：预测
+# ---------------------
+#
+import pandas as pd
+import numpy as np
+import os
+import pickle
+import sklearn
+import tensorflow as tf
+from
+tensorflow.keras.layers
+import
+Dropout,Dense,Conv2D,Flatten,BatchNormalization,Activation
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+
+row_col = {'A':(1,7),'B':(1,8),'C':(1,9),'D':(1,10),'E':(1,11),'F':(1,12),
+
+'G':(2,7),'H':(2,8),'I':(2,9),'J':(2,10),'K':(2,11),'L':(2,12),
+
+
+
+33
+
+'M':(3,7),'N':(3,8),'O':(3,9),'P':(3,10),'Q':(3,11),'R':(3,12),
+
+'S':(4,7),'T':(4,8),'U':(4,9),'V':(4,10),'W':(4,11),'X':(4,12),
+
+'Y':(5,7),'Z':(5,8),'1':(5,9),'2':(5,10),'3':(5,11),'4':(5,12),
+
+'5':(6,7),'6':(6,8),'7':(6,9),'8':(6,10),'9':(6,11),'0':(6,12)}
+rc_dic = [['A','B','C','D','E','F'],
+
+['G','H','I','J','K','L'],
+
+['M','N','O','P','Q','R'],
+
+['S','T','U','V','W','X'],
+
+['Y','Z','1','2','3','4'],
+
+['5','6','7','8','9','0']]
+
+# 读取已经序列化的待预测数据集（test）中的数据
+with open('predict.txt','rb') as f:
+
+data_set_total = pickle.load(f)
+
+# 声明一个与已训练模型结构相同的卷积神经网络
+model = tf.keras.Sequential([
+
+Conv2D(filters=10, kernel_size=(1,20),
+
+# kernel_regularizer=tf.keras.regularizers.l1(0.01)
+
+),
+
+Dropout(0.3),
+
+Conv2D(filters=50, kernel_size=(20,1),strides=10),
+
+BatchNormalization(),
+
+Activation('relu'),
+
+Dropout(0.3),
+
+Flatten(),
+
+Dense(100,activation = 'relu',
+
+kernel_regularizer=tf.keras.regularizers.l2(0.0001)
+
+),
+
+Dense(2,activation='softmax',
+
+kernel_regularizer=tf.keras.regularizers.l2(15)
+
+)])
+
+model.compile(optimizer = tf.keras.optimizers.Adam(0.01),
+
+loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+
+metrics='sparse_categorical_accuracy')
+
+print('---------------load model-----------------')
+
+# 加载训练好的模型的参数
+model.load_weights('cnn.ckpt')
+
+
+
+34
+
+for data_set in data_set_total:
+
+result = [0,0,0,0,0,0,0,0,0,0,0,0]
+
+# 将test 中5 轮实验获得的为正的概率加和
+
+for x,y in data_set:
+
+x = np.array(x).reshape(1,x.shape[0],x.shape[1],1)
+
+y_ = model.predict(x)
+
+result[y-1] += y_[0][1]
+
+# 求出最大可能的行和列
+
+row = np.argmax(result[:6])
+
+col = np.argmax(result[6:])
+
+print(rc_dic[row][col])
+
+# ----------------
+# 第3 问：自训练cnn
+# ----------------
+import pandas as pd
+import numpy as np
+import os
+import pickle
+import sklearn
+import tensorflow as tf
+from
+tensorflow.keras.layers
+import
+Dropout,Dense,Conv2D,Flatten,BatchNormalization,Activation
+import matplotlib.pyplot as plt
+
+seril_path = 'sri5.txt'
+
+row_col = {'A':(1,7),'B':(1,8),'C':(1,9),'D':(1,10),'E':(1,11),'F':(1,12),
+
+'G':(2,7),'H':(2,8),'I':(2,9),'J':(2,10),'K':(2,11),'L':(2,12),
+
+'M':(3,7),'N':(3,8),'O':(3,9),'P':(3,10),'Q':(3,11),'R':(3,12),
+
+'S':(4,7),'T':(4,8),'U':(4,9),'V':(4,10),'W':(4,11),'X':(4,12),
+
+'Y':(5,7),'Z':(5,8),'1':(5,9),'2':(5,10),'3':(5,11),'4':(5,12),
+
+'5':(6,7),'6':(6,8),'7':(6,9),'8':(6,10),'9':(6,11),'0':(6,12)}
+rc_dic = [['A','B','C','D','E','F'],
+
+['G','H','I','J','K','L'],
+
+['M','N','O','P','Q','R'],
+
+['S','T','U','V','W','X'],
+
+['Y','Z','1','2','3','4'],
+
+['5','6','7','8','9','0']]
+
+x_p = []
+y_p = []
+x_n = []
+
+
+
+35
+y_n = []
+
+# 读入序列化后的数据
+with open(seril_path,'rb') as f:
+
+x_p,y_p,x_n,y_n = pickle.load(f)
+
+x_p = np.array([np.array(x)[:,[1,2,3,4,5,6,7,8,9,10,11,13,14,16,19]] for x in
+x_p])
+x_n = np.array([np.array(x)[:,[1,2,3,4,5,6,7,8,9,10,11,13,14,16,19]] for x in
+x_n])
+x_p = x_p.reshape(x_p.shape[0],x_p.shape[1],x_p.shape[2],1)
+x_n = x_n.reshape(x_n.shape[0],x_n.shape[1],x_n.shape[2],1)
+np.random.shuffle(x_p)
+np.random.shuffle(x_n)
+
+# 将训练数据分为4：4：2，第一部分有标签，第二部分无标签，第三部分用来验证
+a1 = 54
+a2 = 108
+b1 = 270
+b2 = 540
+x_p_train = np.repeat(x_p[0:a1],5,axis=0)
+y_p_train = np.repeat(y_p[0:a1],5,axis=0)
+
+x_p_mask = np.repeat(x_p[a1:a2],5,axis=0)
+y_p_mask = np.repeat(y_p[a1:a2],5,axis=0)
+
+x_p_test = np.repeat(x_p[a2:],5,axis=0)
+y_p_test = np.repeat(y_p[a2:],5,axis=0)
+
+x_train = np.vstack([x_p_train,x_n[0:b1]])
+y_train = np.hstack([y_p_train,y_n[0:b1]])
+x_mask = np.vstack([x_p_mask,x_n[b1:b2]])
+y_mask = np.hstack([y_p_mask,y_n[b1:b2]])
+x_test = np.vstack([x_p_test,x_n[b2:]])
+y_test = np.hstack([y_p_test,y_n[b2:]])
+
+np.random.seed(114)
+np.random.shuffle(x_train)
+np.random.seed(114)
+np.random.shuffle(y_train)
+
+# 在选择出来的15 个通道上建立cnn 模型，与上文基本一致
+
+
+
+36
+model = tf.keras.Sequential([
+
+Conv2D(filters=10, kernel_size=(1,15)
+
+),
+
+Dropout(0.2),
+
+Conv2D(filters=50, kernel_size=(20,1),strides=10),
+
+BatchNormalization(),
+
+Activation('relu'),
+
+Dropout(0.2),
+
+Flatten(),
+
+Dense(100,activation = 'relu',
+
+kernel_regularizer=tf.keras.regularizers.l2(0.003)
+
+),
+
+Dense(2,activation='softmax',
+
+kernel_regularizer=tf.keras.regularizers.l2(20)
+
+)])
+model.compile(optimizer = tf.keras.optimizers.Adam(0.01),
+
+loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+
+metrics='sparse_categorical_accuracy')
+cp_callback = tf.keras.callbacks.ModelCheckpoint(
+
+filepath='cnn.ckpt',
+
+save_weights_only=True,
+
+save_best_only=True)
+
+# 用有标签的样本训练初始模型
+history = model.fit(x_train,y_train,batch_size=20,epochs = 50,
+
+validation_data=(x_test,y_test),validation_freq=1,callbacks=[cp_callback])
+
+acc = history.history['sparse_categorical_accuracy']
+val_acc = history.history['val_sparse_categorical_accuracy']
+mask_x_colle = []
+mask_y_colle = []
+temp = []
+
+# 在无标签数据集上选取预测概率高的数据，放入训练集，重新训练模型，
+# 而后再从无标签样本中选择预测概率高的数据加入训练集，如此反复，
+# 直到无标签数据集被取完或者无标签数据集中不存在预测概率高的数据
+while(len(x_mask)>0):
+
+for x in x_mask:
+
+y_ = model.predict(x.reshape(1,x.shape[0],x.shape[1],1))
+
+prob = np.max(y_)
+
+if prob>0.8:
+
+mask_x_colle.append(x)
+
+mask_y_colle.append(tf.argmax(y_,axis=1).numpy().sum())
+
+
+
+37
+
+else:
+
+temp.append(x)
+
+if len(mask_x_colle) == 0:
+
+break
+
+x_train = np.vstack([x_train,mask_x_colle])
+
+y_train = np.hstack([y_train,mask_y_colle])
+
+print('x_train.shape',x_train.shape,'y_train.shape',y_train.shape)
+
+history = model.fit(x_train,y_train,batch_size=20,epochs = 10,
+
+validation_data=(x_test,y_test),validation_freq=1,callbacks=[cp_callback])
+
+acc.extend(history.history['sparse_categorical_accuracy'])
+
+val_acc.extend(history.history['val_sparse_categorical_accuracy'])
+
+mask_x_colle = []
+
+mask_y_colle = []
+
+x_mask = temp
+
+temp = []
+
+# 画出模型在训练集合和验证集合上的准确率变化图
+plt.subplot(2,1,1)
+plt.title('train_acc_and_test_acc')
+plt.plot(acc,label='train')
+# plt.xlabel('epoches')
+plt.ylabel('acc')
+plt.legend()
+plt.subplot(2,1,2)
+plt.plot(val_acc,label='test')
+plt.xlabel('epoches')
+plt.ylabel('acc')
+plt.legend()
+plt.show()
+
+# -------------
+# 第四问：svm
+# -------------
+import pandas as pd
+import numpy as np
+import os
+import pickle
+import sklearn
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+
+
+
+38
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.externals import joblib
+
+x_collection = [[],[],[],[],[]]
+
+# 读取数据集
+io = pd.io.excel.ExcelFile(r'附件2-睡眠脑电数据.xlsx')
+dfs = pd.read_excel(io,sheet_name=None)
+for key in dfs.keys():
+
+df = dfs[key]
+
+for i in range(df.shape[0]):
+
+index = df.iloc[i,0] -2
+
+sum = df.iloc[i,1]+df.iloc[i,2]+df.iloc[i,3]+df.iloc[i,4]
+
+data = [df.iloc[i,1],df.iloc[i,2],df.iloc[i,3],
+
+df.iloc[i,4],(100-sum)]
+
+x_collection[index].append(data)
+
+for x in x_collection:
+
+np.random.shuffle(x)
+total_num = len(x_collection[2])
+# rate 为训练集占所有数据的比例，在保证一定准确率的基础上，本文希望寻找尽可能小
+的训练集
+rate = 0.2
+# num 为训练集的数量
+num = int(rate*total_num)
+print(num)
+x_train = []
+y_train = []
+x_test = []
+y_test = []
+i = 0
+for data in x_collection:
+
+x_train.extend(data[:num])
+
+y_train.extend([i for j in data[:num]])
+
+x_test.extend(data[num:])
+
+y_test.extend([i for j in data[num:]])
+
+i += 1
+x_train = np.array(x_train)
+y_train = np.array(y_train)
+x_test = np.array(x_test)
+y_test = np.array(y_test)
+print(x_train.shape,y_train.shape,x_test.shape,y_test.shape)
+
+
+
+39
+np.random.seed(116)
+np.random.shuffle(x_train)
+np.random.seed(116)
+np.random.shuffle(y_train)
+
+# 以下为随机森林和svm 的模型，这里将两个模型写在了一起，实际只运行其中一个
+# 随机森林参数，树的数量400，树的深度60，在测试集分类准确率71.84%
+model
+=
+RandomForestClassifier(n_estimators=400,criterion='entropy',max_depth=60)
+# svm 参数，惩罚系数c=1，核函数为高斯核函数，核函数参数gamma=2，在测试集分类准
+确率71.35%
+model = SVC(C = 1, kernel='rbf', gamma=2)
+model = model.fit(x_train,y_train)
+c = joblib.dump(model,"temp.m")
+y_test_hat = model.predict(x_test)
+y_test = y_test.reshape(-1)
+print(y_test_hat)
+print(y_test)
+result = (y_test == y_test_hat)
+acc = np.mean(result)
+print("精准度：%.2f%%" % (100 * acc))
+
+# ------------
+# 第四位：nn
+# ------------
+import pandas as pd
+import numpy as np
+import os
+import pickle
+import sklearn
+import tensorflow as tf
+from
+tensorflow.keras.layers
+import
+Dropout,Dense,Conv2D,Flatten,BatchNormalization,Activation
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+
+x_collection = [[],[],[],[],[]]
+
+# 读取数据集
+io = pd.io.excel.ExcelFile(r'附件2-睡眠脑电数据.xlsx')
+dfs = pd.read_excel(io,sheet_name=None)
+for key in dfs.keys():
+
+df = dfs[key]
+
+
+
+40
+
+for i in range(df.shape[0]):
+
+index = df.iloc[i,0] -2
+
+sum = df.iloc[i,1]+df.iloc[i,2]+df.iloc[i,3]+df.iloc[i,4]
+
+data = [df.iloc[i,1],df.iloc[i,2],df.iloc[i,3],
+
+df.iloc[i,4],(100-sum)]
+
+x_collection[index].append(data)
+
+for x in x_collection:
+
+np.random.shuffle(x)
+
+total_num = len(x_collection[2])
+rate = 0.2
+num = int(rate*total_num)
+print(num)
+x_train = []
+y_train = []
+x_test = []
+y_test = []
+i = 0
+for data in x_collection:
+
+x_train.extend(data[:num])
+
+y_train.extend([i for j in data[:num]])
+
+x_test.extend(data[num:])
+
+y_test.extend([i for j in data[num:]])
+
+i += 1
+x_train = np.array(x_train)
+y_train = np.array(y_train)
+x_test = np.array(x_test)
+y_test = np.array(y_test)
+print(x_train.shape,y_train.shape,x_test.shape,y_test.shape)
+
+np.random.seed(116)
+np.random.shuffle(x_train)
+np.random.seed(116)
+np.random.shuffle(y_train)
+
+# 定义网络结构，两层全连接
+model = tf.keras.Sequential([
+
+Dense(30,activation = 'relu'),
+
+Dense(5,activation='softmax',
+
+kernel_regularizer=tf.keras.regularizers.l2()
+
+)])
+
+model.compile(optimizer = tf.keras.optimizers.Adam(0.01),
+
+
+
+41
+
+loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+
+metrics='sparse_categorical_accuracy')
+
+cp_callback = tf.keras.callbacks.ModelCheckpoint(
+
+filepath='nn.ckpt',
+
+save_weights_only=True,
+
+save_best_only=True)
+history = model.fit(x_train,y_train,batch_size=7,epochs = 20,
+
+validation_data=(x_test,y_test),validation_freq=1,callbacks=[cp_callback])
+model.summary()
+acc = history.history['sparse_categorical_accuracy']
+val_acc = history.history['val_sparse_categorical_accuracy']
+
+plt.subplot(2,1,1)
+plt.title('train_acc_and_test_acc')
+plt.plot(acc,label='train')
+plt.ylabel('acc')
+plt.legend()
+plt.subplot(2,1,2)
+plt.plot(val_acc,label='test')
+plt.xlabel('epoches')
+plt.ylabel('acc')
+plt.legend()
+plt.show()

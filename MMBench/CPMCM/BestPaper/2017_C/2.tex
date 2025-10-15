@@ -21,7 +21,6 @@
 \hline
 \end{tabular}
 
-\section*{题目}
 \textbf{机场临时关闭时的航班恢复问题研究}
 
 \begin{abstract}
@@ -36,132 +35,10 @@
 针对问题四，从旅客乘坐单程和联程航班两种情况分析，单程航班的调度策略与之前建模相同；联程航班执行的条件是前后两个航班均同时执行，且前一航班要在后一航班起飞前 45 分钟之前到达，否则联程航班取消，其延误时间为联程航班执行时的后一航班的延误时间。同时考虑这两种情况，以所有旅客到达最终目的地延误时间最短为目标函数，并用贪心模拟退火算法进行求解，得到新的航班规划方案，最后解得旅客总体延误时间为 490367 小时。
 
 综上所述，0-1 整数线性规划模型能恰当地描述不同条件下不正常航班恢复问题，而采用改进的资源指派模型、随机模拟退火算法可快速求解该模型，二者的组合是一种行之有效的航班恢复方案。
+\textbf{关键词：航班恢复 资源指派模型 匈牙利算法 模拟退火算法 信号与系统 语谱图 贪心算法}
 \end{abstract}
 
-\textbf{关键词：航班恢复 资源指派模型 匈牙利算法 模拟退火算法 信号与系统 语谱图 贪心算法}
-
-\section*{目录}
-
-\noindent 一、问题重述 \dotfill 7
-
-\noindent 二、问题分析 \dotfill 8
-
-\subsection*{2.1 问题一的分析}
-\dotfill 8
-
-\subsection*{2.2 问题二的分析}
-\dotfill 9
-
-\subsection*{2.3 问题三的分析}
-\dotfill 9
-
-\subsection*{2.4 问题四的分析}
-\dotfill 10
-
-\noindent 三、符号说明 \dotfill 10
-
-\noindent 四、模型假设 \dotfill 12
-
-\noindent 五、模型建立与求解 \dotfill 13
-
-\subsection*{5.1 问题一 针对机型9的航班时间规划问题}
-\dotfill 13
-
-\subsubsection*{5.1.1 机型9原航班计划分析}
-\dotfill 13
-
-\subsubsection*{5.1.2 航班恢复的0-1整数规划模型}
-\dotfill 14
-
-\subsubsection*{5.1.3 资源指派算法最优化求解}
-\dotfill 15
-
-\subsection*{5.2 问题二 考虑不同机型间调整成本的航班规划问题}
-\dotfill 18
-
-\subsubsection*{5.2.1 航班恢复的时空网络模型}
-\dotfill 18
-
-\subsubsection*{5.2.2 基于改进时空网络模型的0-1整数规划}
-\dotfill 20
-
-\subsubsection*{5.2.3 模拟退火算法最优化求解}
-\dotfill 21
-
-\subsection*{5.3 问题三 考虑不能登机旅客成本的航班规划问题}
-\dotfill 24
-
-\subsubsection*{5.3.1 结合信号时频分析方法的航空规划建模}
-\dotfill 24
-
-\subsubsection*{5.3.2 采用通信学信号与系统理论的航空恢复模型}
-\dotfill 26
-
-\subsubsection*{5.3.3 模拟退火算法求解}
-\dotfill 27
-
-\subsection*{5.4 问题四 考虑旅客行程信息的航班规划问题}
-\dotfill 28
-
-\subsubsection*{5.4.1 针对旅客联程和同行情况的模型建立}
-\dotfill 28
-
-\subsubsection*{5.4.2 贪心模拟退火最优化求解}
-\dotfill 29
-
-\noindent 六、模型的特点、推广与改进 \dotfill 30
-
-\section{七、参考文献}
-\dotfill 33
-
-\section{附录:}
-\dotfill 34
-\subsubsection{附录一：航班时间计划图绘图程序}
-\dotfill 34
-\subsubsection{附录二：资源指派算法主程序}
-\dotfill 35
-\subsubsection{附录三：模拟退火算法主程序}
-\dotfill 37
-\subsubsection{附录四：产生随机解的子函数}
-\dotfill 39
-\subsubsection{附录五：解的稀疏矩阵形式转0-1矩阵形式子函数}
-\dotfill 40
-\subsubsection{附录六：解的0-1矩阵形式转稀疏矩阵形式子函数}
-\dotfill 41
-\subsubsection{附录七：yatp约束函数}
-\dotfill 41
-\subsubsection{附录八：获取允许航班f最早起飞时间集合子函数}
-\dotfill 42
-\subsubsection{附录九：计算所有航班最早允许起飞时间子函数}
-\dotfill 42
-
-\section{目录}
-
-\begin{itemize}
-    \item[] 图 1 机型 9 在所给时间段内所有航班的飞行计划图 \dotfill 13
-    \item[] 图 2 机型 9 所有航班进行航班恢复后的飞行计划图 \dotfill 18
-    \item[] 图 3 改进的时空网络图 \dotfill 19
-    \item[] 图 4 模拟退火算法流程图 \dotfill 22
-    \item[] 图 5 原所有航班计划图 \dotfill 23
-    \item[] 图 6 问题二规划后的所有航班计划图 \dotfill 24
-    \item[] 图 7 未规划时前 200 趟航班 $f$ 的航班计划图 \dotfill 25
-    \item[] 图 8 未规划时前 200 趟航班 $f$ 的语谱图 \dotfill 25
-    \item[] 图 9 问题三规划后的航班计划图 \dotfill 27
-    \item[] 图 10 问题四规划后的航班计划图 \dotfill 30
-    \item[] 图 11 基于信号与系统思想的航班恢复问题模型示意图 \dotfill 31
-\end{itemize}
-
-\section{表录}
-
-\begin{itemize}
-    \item 表 1 顺延航班的飞行计划表 \dotfill 16
-    \item 表 2 OVS 机场出发及到达的航班串表 \dotfill 16
-    \item 表 3 OVS 恢复时可用飞机信息表 \dotfill 17
-    \item 表 4 新航班飞行时刻计划表 \dotfill 17
-    \item 表 5 新航班飞行时刻计划表 \dotfill 23
-    \item 表 6 新航班飞行时刻计划表 \dotfill 27
-    \item 表 7 新航班飞行时刻计划表 \dotfill 29
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -329,7 +206,7 @@ $Cost_{cancel f_l}$ & 一名旅客乘坐的航班 $f_l$ 不能到达目的地带
 
 时刻即为图中前一标记“$\bullet$”的白色方块与后一灰色方块连接处时刻，由于机场不可用时段限制，如果机型 9 的航班到达 OVS 机场的时间点和从 OVS 机场起飞的时间点落入该不可用时段内，则该航班需要将到达或起飞时间点延迟至 21:00 及以后，且后续航班可能受到影响并需要进行航班置换。
 
-\subsection{5.1.2 航班恢复的 0-1 整数规划模型}
+\subsubsection{5.1.2 航班恢复的 0-1 整数规划模型}
 
 整数规划是一类问题中的全部或部分变量限制为整数的数学规划，其中，0-1 规划为一类特殊的整数规划，任何有界变量的整数规划都可以与 0-1 规划等价。由于 0-1 变量可以数量化地描述“有”与“无”等现象所反映的离散变量间的逻辑关系、顺序关系以及互斥的约束条件，因此十分适用于描述和解决指派问题、选址问题、送货问题等，本题中的航程规划和飞机指派问题即可建模为 0-1 整数规划模型[9]。
 
@@ -389,7 +266,7 @@ x_{pt} \cdot \sum_{t \leq s < t+45} x_{ps} &= 0, \forall p \in P, \forall t \in 
     \item 式(8)是最小飞行间隔约束，表示飞机 $p$ 在时间 $t$ 起飞其后 45 分钟内航班数为 0。
 \end{itemize}
 
-\subsection{资源指派算法最优化求解}
+\subsubsection{资源指派算法最优化求解}
 
 资源指派问题的基本思想是 $N$ 项任务分配给 $N$ 个人去执行，每个人完成任务的效率不同，目标是如何指派任务使得完成任务的总效率最高。将这一思想用于航班延误的恢复问题就是延误指派算法，将延误的航班动态的指派给可用飞机去执行，这个操作可能导致飞机飞行路线的改变 [1]。其基本思路是将受机场关闭影响的所有航班顺延至机场恢复时刻（在机场恢复时刻起飞或降落），制定航班起飞时刻表。统计机场恢复时刻所有可用的飞机一个集合，未被执行的航班串为一个集合，建立二者的指派矩阵。将首航班与不同飞机匹配，校验是否满足约束条件，如果符合条件则将该航班指派给该飞机来执行，并且计算该航班的延误时间写入指派矩阵；如果不符合条件将匹配下一个飞机，直至所有飞机匹配完毕，若此时没有可执行该航班的飞机，则等待最早恢复的飞机来执行，若是该等待时间大于 5 小时，则该航班将取消。本文采用匈牙利算法 [4] 建立指派矩阵，保存各航班串上受航班的指派结果并更新后续航班串。对所有没被指派的航班串已经指派过的航班串迭代，直至所有航班都完成指派。
 
@@ -448,6 +325,8 @@ x_{pt} \cdot \sum_{t \leq s < t+45} x_{ps} &= 0, \forall p \in P, \forall t \in 
 
 \textbf{延误航班：13班，取消航班：0班，航班总体延误时间：1279分钟。}
 
+(2)  在表1 中找出最早的航班，检索出发生延误开始到恢复期间执行的航班串信息，接着在从剩余的航班总找出最早的航班，检索出以其为初始航班的航班串，直至所有航班均被安排咋航班串内，航班串信息如表2 所示。
+
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -484,6 +363,8 @@ x_{pt} \cdot \sum_{t \leq s < t+45} x_{ps} &= 0, \forall p \in P, \forall t \in 
 \hline
 \end{tabular}
 \end{table}
+ 
+(3)  统计出OVS 机场恢复后可用的飞机信息，这里的可用是指该时间段飞机停留在机场，且在一定时间内不存在待执行的航班。其具体信息如表3 所示，飞机就绪时间是指最早可用时间或者上一航班执行完毕45 分钟后的时间。
 
 \begin{table}[h]
 \centering
@@ -505,6 +386,9 @@ x_{pt} \cdot \sum_{t \leq s < t+45} x_{ps} &= 0, \forall p \in P, \forall t \in 
 \caption{3OVS恢复时可用飞机信息表}
 \end{table}
 
+(4)  利用表 2 和表 3 的数据建立指派矩阵i ，矩阵i 中的行是表 2 中由于前一航班受机场关闭延误导致原执行飞机无法准时起飞的航班，其航班号在矩阵的左边标注，列为表三中五个可用飞机，其先后顺序与表 3 一致。该矩阵表示单位决策时间的航班-
+飞机指派方阵，其维度为5，满足飞机单位时间的流量控制策略。
+
 \begin{equation}
 \mathbf{I}_i =
 \begin{bmatrix}
@@ -516,6 +400,8 @@ x_{pt} \cdot \sum_{t \leq s < t+45} x_{ps} &= 0, \forall p \in P, \forall t \in 
 \end{bmatrix}
 \tag{9}
 \end{equation}
+
+(5)  更新表 1，将新的航班-飞机指派方案写入延误航班的飞行计划，再执行后续步骤，直所有航班都被指派可用的飞机。最终可得调整后的航班飞行计划如表4 所示。
 
 \begin{table}[h]
 \centering
@@ -610,7 +496,7 @@ x_{pt} \cdot \sum_{t \leq s < t+45} x_{ps} &= 0, \forall p \in P, \forall t \in 
 
 调机弧：连接不同机型计划执行航班的弧，表示不同机型的飞机进行了置换。例如，图中由机型 9 执行的航班 a 由于到达机场关闭，只能推迟起飞时间使得在机场恢复的时间点到达，延迟弧表示了该过程产生了延迟。由于前一航班的延误等原因，在机型 9 中没有空闲的飞机可以执行航班 b，此时可以调用机型 321 的飞机来执行航班 b，使得航班不延误，但这一措施会产生额外的成本。由于机场刚恢复时机型 321 的飞机短缺，且其他机型无空闲飞机，航班 c 由于缺少可执行的飞机而发生延误。本小节所提的改进时空网络可以很好的刻画不同机型之间航班的调整问题，图 3 仅画出了 4 种机型的部分航用于示意，后续本节将基于该网络对问题二进行建模，从而合理安排航班的时刻表及执行机型。
 
-\subsection{5.2.2 基于改进时空网络模型的 0-1 整数规划}
+\subsubsection{5.2.2 基于改进时空网络模型的 0-1 整数规划}
 
 相对于问题一，此问题中需要考虑所有机型的所有航班，且增加了不同机型间的航班调整成本。因此，我们在目标函数中引入增加的飞机置换成本，且定义若干新的 0-1 变量用以描述飞机置换与否[7][8]。
 
@@ -650,7 +536,7 @@ d_{f, type} &= \sum_{p \in P_{type}} d_{fp}, \forall f \in F, \forall type \in T
 - 式(13)是航班执行约束，表示航班 \(f\) 是否由机型 \(type\) 执行；
 - 式(14)是原航班执行约束，表示原航班 \(f\) 是否由原机型 \(type\) 执行。
 
-\subsection{5.2.3 模拟退火算法最优化求解}
+\subsubsection{5.2.3 模拟退火算法最优化求解}
 
 不同于问题一，此问题中考虑到所有不同机型的不同航班，而且飞机在不同机型间的置换会带来新的成本，因此有大量的约束需要针对决策变量 \(f\)、\(t\)、\(p\)、\(type\) 进行判断，可想而知，如采用问题一中的资源指派模型问题，重复分次进行航班顺延和航班指派，计算量将远远超过一般计算机的求解能力。基于上述情况，我们尝试采用模拟退火算法对此优化问题进行求解，这类启发式优化算法对优化问题的实例能给出可接受的计算成本，有利于快速有效地获得最优解[6]。
 
@@ -677,6 +563,8 @@ p = e^{-\frac{(E_{j}-E_{i})}{T_{0}}}
 \end{equation}
 
 若概率 $p$ 大于 $[0,1)$ 区间的随机数，则仍接受状态 $j$ 为当前状态；若不成立，则保留状态 $i$ 为当前状态。
+
+模拟退火法得到最小航班总体延误时间为189.3 小时，其部分结果如表5 所示，完整的航班调整飞机计划见附件。从表5 中可以看出，对于不同的机型飞机所执行的航班均已进行调整，从而避开机场关闭的时段。在航班冲突时，若可以找到同一机型的可用飞机进行置换，则能很好的解决冲突，且不带来额外的成本；若在同一机型能找不到可用飞机，则考虑将该航班延误至出现可用航班或者在其他机型的飞机中搜索可用飞机，前一策略将会带来延误，而后一策略会产生额外半小时的成本。
 
 \begin{table}
 \centering
@@ -801,6 +689,9 @@ Bool_{type_1, type_2} = \varepsilon \left( z_{type_2} - z_{type_1} \right), \for
     \item \( Cost_{seat_f} \) 为航班 \( f \) 一名旅客无法登机带来的成本，由于一名旅客无法登机与该旅客延误 2 小时的成本相当，因此这里令 \( Cost_{seat_f} = 120 \cdot Cost_{Delay_f} \)。
 \end{itemize}
 
+\subsubsection{5.3.3  模拟退火算法求解}
+相比问题二，问题三目标函数发生了小幅变化，并增加了部分约束，模型仍可采用模拟退火算法求解，根据算法找到的最优解，绘制规划后的航班计划图如图9 所示。
+
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
@@ -849,11 +740,11 @@ Bool_{type_1, type_2} = \varepsilon \left( z_{type_2} - z_{type_1} \right), \for
 
 附件，图 9 给出了航班调整飞行计划图，图中无航班冲突，机场关闭时期无在 OVS 机场起飞或降落的航班。
 
-\section{问题四 考虑旅客行程信息的航班规划问题}
+\subsection{问题四 考虑旅客行程信息的航班规划问题}
 
 不同于问题二和问题三，这里不再考虑不同机型间调整航班的成本，基于问题二中对所有飞机建立的时空网络数学模型，问题四加入旅客行程信息，在航班尽量不取消的情况下，考虑旅客到达目的地延迟时间成本，对所有飞机的所有航班进行规划，使得规划后的总延迟成本达到最小。
 
-\subsection{针对旅客联程和同行情况的模型建立}
+\subsubsection{针对旅客联程和同行情况的模型建立}
 
 观察问题所提供旅客信息，不难发现旅客行程可以分为单程和联程（即旅客从出发地到最终目的地之间存在一次中转）两类。
 
@@ -1023,3 +914,509 @@ Bool_{type_1, type_2} = \varepsilon \left( z_{type_2} - z_{type_1} \right), \for
 [10] 吴大正, 信号与线性系统分析（第 4 版）, 北京: 高等教育出版社, P95, 2005.
 
 \end{document}
+
+\section{附录：}
+附录：
+附录一：航班时间计划图绘图程序
+程序名：timeflightplot.m
+代码：
+clear stack;
+[a,airport,c]=xlsread('1.xlsx');
+open=1461302220; %飞机9 最早起飞航班时间 4/22/16 5:17
+close=1461451200; %飞机9 最晚起飞航班时间 4/23/16 22:40
+startunusetime=1461348000; %机场故障起点时间18:00
+endunusetime=1461358800; %机场故障终点时间21:00
+for i=1:length(flight)
+x=find(Flysta(:,2)==flight(i));
+flightnum(i)=length(x);
+end
+isOVS=ones(length(flight),2*max(flightnum)+1);
+for i=1:length(flight)
+x=find(Flysta(:,2)==flight(i));
+thisflysta=Flysta(x,1);
+thisflyend=Flyend(x,1);
+startairport=char(airport(:,1));
+endairport=char(airport(:,2));
+thisstartairport=startairport(x,1:3);
+thisendairport=endairport(x,1:3);
+
+for j=1:length(x)
+## %为0 表示在OVS 机场，起点在OVS 则停留在OVS
+isOVS(i,2*flightnum(i)+1+1-(2*j-1))=sum(thisstartairport(j,1:3)-'OVS');
+end % 1 表示在飞行过程，0 表示在OVS，其他表示不在OVS
+isOVS(i,1)=sum(thisendairport(flightnum(i),1:3)-'OVS');
+endduration=close-thisflyend(length(x));
+startduration=thisflysta(1)-open;
+thisflyduration=thisflyend-thisflysta;
+restduration=thisflysta(2:end)-thisflyend(1:end-1);
+stack(i,1)=endduration;
+for j=1:length(x)-1
+stack(i,2*j)=thisflyduration(length(x)-j+1);
+stack(i,2*j+1)=restduration(length(x)-j);
+end
+stack(i,2*(j+1))=thisflyduration(length(x)-j);
+stack(i,2*(j+1)+1)=startduration;
+clear thisflyduration;
+clear restduration;
+end
+h=bar(stack,0.5,'stacked');
+for i=1:(size(stack,2)-1)/2
+set(h(2*i-1),'facecolor','w');
+
+
+
+35
+
+set(h(2*i),'facecolor',[0.4 0.4 0.4]);
+end
+set(h(2*i+1),'facecolor','w');
+
+for i=1:length(flight)
+locat(i,1)=stack(i,1)/2;
+for j=2:2*max(flightnum)+1
+locat(i,j)=sum(stack(i,1:j-1))+stack(i,j)/2;
+end
+end
+
+hold on;
+xgrid=meshgrid(1:2*max(flightnum)+1);
+for i=1:length(flight)
+for j=1:2*max(flightnum)+1
+if isOVS(i,j)==0
+plot(xgrid(j,i),locat(i,j),'k.');
+end
+end
+end
+line([0,17],[close-endunusetime close-endunusetime],'LineWidth',1.2,'color','k');
+line([0,17],[close-startunusetime close-startunusetime],'LineWidth',1.2,'color','k');
+set(gca,'xtick',1:16);
+set(gca,'xticklabel',1:16);
+xlim([0,17]);
+
+附录二：资源指派算法主程序
+程序名：main.m
+代码：
+%2017.9.16
+clear all;
+[Aircrafts_NUM,Aircrafts_TXT] = xlsread('Aircrafts.xlsx');
+AirportClosures = xlsread('AirportClosures.xlsx');
+Paxinfo = xlsread('Paxinfo.xlsx');
+[Schedules_NUM,Schedules_TXT] = xlsread('Schedules.xlsx','A2:G750');
+
+global T F A Flysta Flyend Dptf Schedules_TXT;
+T = 1461294000:300:1461438300;                     %时间点的集合
+F = Schedules_NUM(1:97,1);
+%机型为9 的航班集合--航班唯一编号
+A = unique([unique(Schedules_TXT(1:97,1));unique(Schedules_TXT(1:97,2))]);
+%9 型号所有机场的集合
+P = Aircrafts_TXT(2:17,1);
+%9 型号飞机的集合--飞机尾号
+P_loc = Aircrafts_TXT(2:17,5);
+%飞机初始机场
+Flysta = Schedules_NUM(1:97,2);
+
+
+
+36
+
+%9 型号飞机计划起飞时间
+Flyend = Schedules_NUM(1:97,3);
+%9 型号飞机计划到达时间
+Fly = Flyend - Flysta;
+FtoOVS = Schedules_NUM( find(strcmp(Schedules_TXT(1:97,2),'OVS')),1);
+FdeOVS = Schedules_NUM( find(strcmp(Schedules_TXT(1:97,1),'OVS')),1);
+% date = datestr(Aircrafts_NUM(:,1)/86400 + datenum(1970,1,1));
+% Dptf = Schedules_NUM(1:97,2);    %9 型号飞机最早允许起飞时间
+Dptf = func_Dpt(FtoOVS,FdeOVS);    %9 型号飞机最早允许起飞时间
+
+loc = zeros(length(P),length(A));
+for i = 1:length(P)
+loc(i,strcmp(A , P_loc(i)) ) = 1;
+end
+
+f = [];
+Aeq2 = sparse(length(F),length(f));
+beq2 = ones(length(F),1);
+Aeq = [];
+beq = length(F);
+temp = 1;
+Tf = [];
+for i = 1:length(F)
+lp = length(P);
+f = [ f , repmat(func_Tf(F(i)) - Dptf(i) , [1,lp]) ];
+Aeq2(i,temp:temp+lp*length(func_Tf(F(i))
+)-1
+)
+=
+ones(1,length(func_Tf(F(i) ))*lp );
+temp = temp+ lp*length(func_Tf(F(i)));
+Aeq = [ Aeq , ones(1,lp*length(func_Tf(F(i)) )) ];
+Tf = [Tf , repmat(func_Tf(F(i)),[1,lp] )] ;
+end
+AA = sparse(length(f)/lp,length(f));
+bb = ones(length(f)/lp,1);
+for i = 1:length(f)/lp
+AA(i,(i-1)*lp+1:i*lp) = ones(1,lp);
+end
+AAA = sparse(length(F),length(f));
+temp1 = ones(1,length(F));
+for i = 2:length(F)
+temp1(i) = temp1(i-1) + lp*length(func_Tf(F(i-1)));
+end
+for i = 1:length(F)
+AAA(i,i + temp1 ) = 1;
+end
+bbb = ones(97,1);
+
+% [x , fval] = bintprog(f,AA,b,Aeq,beq);
+intcon = 1:length(f);
+lb = zeros(length(f),1);
+ub = ones(length(f),1);
+
+
+
+37
+
+[x , fval] = intlinprog(f,intcon,[AA;AAA],[bb;bbb],[Aeq;Aeq2],[beq;beq2],lb,ub);
+ind = find(x==1);
+
+order = Tf(ind)';
+order1 = datestr(order/86400 + datenum(1970,1,1));
+
+附录三：模拟退火算法主程序
+程序名：main.m
+代码：
+load('data.mat');
+load('ccc');
+global A T F P Ps Flysta Flyend Fly FtoOVS FdeOVS Dptf lt lf lp;
+T=1461294000:300:1461438300;
+%时间点的集合
+lt = length(T);
+F = Schedules_NUM(1:97,1);
+%机型为9 的航班集合--航班唯一编号
+A = unique([unique(Schedules_TXT(1:97,1));unique(Schedules_TXT(1:97,2))]);
+%9 型号所有机场的集合
+P = str2num(cell2mat(Aircrafts_TXT(2:17,1)));
+%9 型号飞机的集合--飞机尾号
+Ps = str2num(cell2mat(Schedules_TXT(1:97,4)));
+P_num = 12;
+Flysta = Schedules_NUM(1:97,2);
+%9 型号飞机计划起飞时间
+Flyend = Schedules_NUM(1:97,3);
+%9 型号飞机计划到达时间
+Fly = Flyend - Flysta;
+lt = length(T);
+lf = length(F);
+lp = length(P);
+# FtoOVS
+=
+[Schedules_NUM(
+find(strcmp(Schedules_TXT(1:97,2),'OVS')),1)
+,
+str2num(cell2mat(Schedules_TXT( find(strcmp(Schedules_TXT(1:97,2),'OVS')),4))) ];
+# %所有到达机场为OVS 的航班集合
+# FdeOVS
+=
+[Schedules_NUM(
+find(strcmp(Schedules_TXT(1:97,1),'OVS')),1),
+str2num(cell2mat(Schedules_TXT( find(strcmp(Schedules_TXT(1:97,1),'OVS')),4))) ];
+# %所有起飞机场为OVS 的航班集合
+% date = datestr(Aircrafts_NUM(:,1)/86400 + datenum(1970,1,1));
+% Dptf = Schedules_NUM(1:97,2);    %9 型号飞机最早允许起飞时间
+Dptf = func_Dpt(FtoOVS,FdeOVS);    %9 型号飞机最早允许起飞时间
+t0 = 10000;                                 % 初温t0
+iLk = 10000 ;                                 %内循环最大迭代次数iLk
+oLk = 1000 ;                                 %外循环最大迭代次数oLk
+lam = 0.99 ;                                  % λlambda
+istd = 0.001 ;                      % 若内循环函数值方差小于istd 则停止
+ostd = 0.001 ;                      %若外循环函数值方差小于ostd 则停止
+
+
+
+38
+
+ilen = 50 ;                        % 内循环保存的目标函数值个数
+olen = 50 ;                        %外循环保存的目标函数值个数
+%主程序
+ft = [];
+ft_len = zeros(1,lf+1);
+for i = 1:lf
+ft = [ft , T ];
+ft_len(i+1) = ft_len(i) + length(func_Tf(F(i)) );
+end
+% path = sparse(lf*lt*lp,1);                        %初始路径
+path = ftp2path(ccc,F,T,P);
+val = func_J(ft,path);                             %初始路径的评价
+ores = zeros( 1,olen) ;                             %外循环保存的目标函数值
+e0 = val ;                                       % 能量初值e0
+t = t0 ; % 温度t
+for out = 1 : oLk
+ires = zeros( 1 , ilen ) ;
+tic
+for in = 1 : iLk                                %内循环模拟热平衡过程
+flag = 0;
+[ newpath , ~ ] = swap( path ) ;                % 产生新状态
+fullnewpath = full(newpath);
+[a,b] = find(newpath==1);
+%===============约束条件========================
+%约束0  最早起飞时间约束
+for k = 1:lf
+ftp = path2ftp(newpath);
+if (ftp(k,2) < floor(Dptf(k)/300)*300)
+flag = 1;
+break;
+end
+end
+if flag
+continue;
+end
+%约束1
+for k = 1:lf
+if (sum(fullnewpath( (k-1)*lt*lp+1: k*lt*lp ) ) ~= 1)
+flag = 1;
+break;
+end
+end
+if flag
+continue;
+end
+%约束2
+for k = 1:lp
+if (sum( fullnewpath( (k-1)*lp+1:lp: k*lp ) ) > 1)
+
+
+
+39
+
+flag = 1;
+break;
+end
+end
+if flag
+continue;
+end
+%约束3
+if (func_check4(newpath))
+continue;
+end
+%========================================================
+e1 = func_J( ft , newpath ) ;       %新状态能量（新状态下目标函数的取值）
+% Metropolis 抽样稳定准则（以一定的概率选择新的状态）
+if e1 < e0
+path = newpath ; % 更新最佳状态
+e0 = e1 ;
+elseif  exp( - ( e1 - e0 ) / t )>rand
+path = newpath ; % 更新最佳状态
+e0 = e1;
+else
+continue;
+end
+ires = [ ires( 2 : end ) e0 ] ; %保存新状态能量
+% 内循环终止准则：连续ilen 个状态能量波动小于istd
+if std( ires , 1 ) < istd
+break ;
+end
+ftp = path2ftp(path);
+ftp = [ftp ftp(:,2) + Fly, ftp(:,2) - Flysta];
+delay = sum(ftp(:,5))/60
+end
+toc
+ores = [ ores( 2 : end ) e0 ] ; % 保存状态能量
+% 外循环终止准则：连续olen 个状态能量波动小于ostd
+if std( ores , 1 ) < ostd
+break ;
+end
+t = lam * t ;%降温
+end
+% [a,b] = find(path==1);
+% ff = F;
+% tt = ft(a)';
+% pp = P(b);
+附录四：产生随机解的子函数
+程序名：swap.m
+代码：
+
+
+
+40
+
+function [ newpath , position ] = swap( oldpath  )
+%对oldpath 的一个起飞时间进行随机选择
+% number 为产生的新路径的个数
+% position 为对应newpath 互换的位置
+
+a = length(oldpath);
+len = length(find(oldpath==1));
+newpath = sparse(a,1);
+fight = randi(  len, 1 , 1 );                              %随机选择一个航班
+position = randi( a , 1 , 100 ) ;                           % 随机产生的位置
+ind = find(oldpath==1);
+ind(fight) = position(1);
+newpath(ind) = 1;
+for i = 2:100
+if(length(find(newpath)) == len )
+break;
+else
+ind(fight) = position(i);
+newpath(ind) = 1;
+end
+end
+end
+
+附录五：解的稀疏矩阵形式转0-1 矩阵形式子函数
+程序名：path2ftp.m
+代码：
+function [ ftp ] = path2ftp( path)
+# %UNTITLED 此处显示有关此函数的摘要
+%   此处显示详细说明
+global F T P;
+lt = length(T);
+lf = length(F);
+lp = length(P);
+a = find(path==1);
+pp = zeros(lf,1);
+tt = zeros(lf,1);
+ff = zeros(lf,1);
+% for i = 1:lf
+%     pp(i) = mod(a(i),lp);
+%     a(i) = (a(i) - mod(a(i),lp))/lp;
+%     tt(i) = mod(a(i),lt);
+%     a(i) = (a(i) - mod(a(i),lt))/lt;
+%     ff(i) = mod(a(i),lf);
+% end
+indpp = mod(a,lp);
+indpp(indpp==0) = lp;
+pp = P(indpp);
+
+
+
+41
+
+a = (a - indpp)/lp + 1;
+indtt = mod(a,lt);
+indtt(indtt==0) = lt;
+tt = T(indtt);
+a = (a - indtt)/lt + 1;
+indff = mod(a,lf);
+indff(indff==0) = lf;
+ff = F(indff);
+ftp = [ff tt' pp];
+end
+
+附录六：解的0-1 矩阵形式转稀疏矩阵形式子函数
+程序名：ftp2path.m
+代码：
+function [ path ] = ftp2path( ftp,F,T,P  )
+# %UNTITLED 此处显示有关此函数的摘要
+%   此处显示详细说明
+[a,b] = size(ftp);
+lf = length(F);
+lt = length(T);
+lp = length(P);
+path = sparse(lf*lt*lp,1);
+for i = 1:a
+ff = find(F == ftp(i,1));
+tt = find(T > ftp(i,2),1) - 1;
+pp = find(P == ftp(i,3));
+path((ff-1)*lt*lp+(tt-1)*lp+pp) = 1;
+end
+附录七：𝑦𝑎𝑡𝑝约束函数
+程序名：check3.m
+代码：
+function [ flag ] = check3( path )
+# %UNTITLED 此处显示有关此函数的摘要
+%   此处显示详细说明
+%  flag = 1   表示解不满足此约束
+global F T P Ps  Dptf Fly FtoOVS FdeOVS lp lt lf;
+dddd = floor(Dptf/300)*300;
+ftp = path2ftp(path);
+for k = 1:lp
+for i = 1:lf
+xfsp1 = 0;
+xfsp2 = 0;
+f = ftp(i,1);
+t = ftp(i,2);
+p = ftp(i,3);
+
+
+
+42
+
+comf = F(Ps==p);
+for j = 1:length(comf)
+if(dddd(ftp(:,1)==comf(j)  )<= ftp( (ftp(:,1)==comf(j) ) ,2) &&
+ftp((ftp(:,1)==comf(j) ) ,2) < t - Fly(i) &&~isempty(find(FtoOVS(:,1)==comf(j))) &&
+~isempty(find( FtoOVS(:,2)==p ) )  )
+xfsp1 = xfsp1 +1;
+end
+if(dddd(ftp(:,1)==comf(j)  )<=  ftp((ftp(:,1)==comf(j) ) ,2) &&
+ftp((ftp(:,1)==comf(j)
+)
+,2)<
+t
+
+&&
+~isempty(find(FdeOVS(:,1)==comf(j)))&&~isempty(find( FdeOVS(:,2)==p ) )   )
+xfsp2 = xfsp2 +1;
+end
+end
+if(xfsp1-xfsp2<=1)
+flag =0;
+break;
+else
+flag = 1;
+break;
+end
+end
+end
+end
+
+附录八：获取允许航班f 最早起飞时间集合子函数
+程序名：func_Tf.m
+代码：
+function [ Tf ] = func_Tf( f )
+# %UNTITLED 此处显示有关此函数的摘要
+%
+%   输入为航班编号f
+%   输出为航班f 的所有允许起飞时间集合,
+global T F Dptf;
+t = Dptf( (F==f) );
+Tf = T( (T>=t));
+end
+附录九：计算所有航班最早允许起飞时间子函数
+程序名：func_Dpt.m
+代码：
+function [ dptime ] = func_Dpt( arrive_fight,departure_fight )
+# %UNTITLED 此处显示有关此函数的摘要
+%   此函数用来计算航班的最早允许起飞时间
+%   输入到达的航班号、离开的航班号
+%   输出最早允许的起飞时间
+global F Flysta Flyend;
+
+
+
+43
+
+arrive_num = length(arrive_fight);                 % 到达的飞机数目
+departture_num = length(departure_fight);       % 离开的飞机数目
+dptime = zeros(arrive_num+departture_num,1);
+for i = 1:arrive_num
+if( 1461348000<Flyend( F==arrive_fight(i) ) && Flyend(F==arrive_fight(i)) <
+1461358800)
+dptime( F==arrive_fight(i))  = Flysta(F==arrive_fight(i) ) + 1461358800 -
+Flyend(F==arrive_fight(i));
+else
+dptime(F==arrive_fight(i)) = Flysta(F==arrive_fight(i)) ;
+end
+end
+
+for i = 1:departture_num
+if( 1461348000<Flysta(F==departure_fight(i) ) && Flysta(F==departure_fight(i) )<
+1461358800)
+dptime(F==departure_fight(i) ) = Flysta(F==departure_fight(i) ) + 1461358800 -
+Flysta(F==departure_fight(i));
+else
+dptime(F==departure_fight(i) ) = Flysta(F==departure_fight(i) );
+end
+end
+end

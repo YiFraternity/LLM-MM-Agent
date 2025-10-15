@@ -5,33 +5,6 @@
 \textbf{数学建模竞赛}
 \end{center}
 
-\begin{tabular}{r l}
-\hline
-\hline
-07 & \texttt{Elif } $m<i_{a}<r:j_{a}=m,\forall a\in\{1,2\}$ \quad //超过最大退避阶数 \\
-08 & \texttt{Elif } $i_{a}=r:$ \quad //达到最大重传次数 \\
-09 & \quad $j_{a}=0,\forall a\in\{1,2\}$ \\
-10 & \quad $i_{a}=0,\forall a\in\{1,2\}$ \\
-11 & \texttt{Else: Pass} \\
-\\
-12 & \texttt{If } $CW_{a}<CW_{b}:\forall(a,b)\in\{(1,2),(2,1)\}$ \quad //AP$_{a}$先回退至0，成功传输 \\
-13 & \quad $t=t+(CW_{a}+1)\times T_{e}+T_{s}$ \\
-14 & \quad $CW_{a}=random[0,2^{j_{a}}\times CW_{\min}-1]$ \quad //更新$CW_{a}$ \\
-15 & \quad $CW_{b}=CW_{b}-CW_{a}-1$ //AP$_{b}$剩余回退次数 \\
-16 & \quad $i_{a}=0$ //重置AP$_{a}$数据发送次数 \\
-17 & \texttt{Else: } //两AP同时回退至0，冲突致传输失败 \\
-18 & \quad $t=t+(CW_{a}+1)\times T_{e}+T_{c}$ \\
-19 & \quad $CW_{a}=random[0,2^{j_{a}}\times CW_{\min}-1],\forall a\in\{1,2\}$ \quad //更新$CW_{a}$ \\
-20 & \quad $i_{a}=i_{a}+1,\forall a\in\{1,2\}$ \\
-21 & \quad $c=c+1$ \\
-22 & \texttt{End For} \\
-\\
-23 & \texttt{Return } $S=(P-c)\times EP\times rate/t$ \quad //输出该场景吞吐量 \\
-24 & \texttt{End Begin} \\
-\hline
-\hline
-\end{tabular}
-
 \title{WLAN 网络信道接入机制建模}
 \maketitle
 
@@ -51,67 +24,7 @@
 \textbf{关键词：DCF；CSMA/CA；Bianchi 模型；离散事件仿真}
 \end{abstract}
 
-\section*{目录}
-\begin{itemize}
-    \item[1] 问题重述 \dotfill 3
-    \begin{itemize}
-        \item[1.1] 问题背景 \dotfill 3
-        \item[1.2] 问题重述 \dotfill 3
-        \item[1.3] 解题思路 \dotfill 4
-    \end{itemize}
-    \item[2] 模型假设与符号说明 \dotfill 5
-    \begin{itemize}
-        \item[2.1] 模型假设 \dotfill 5
-        \item[2.2] 符号说明 \dotfill 5
-    \end{itemize}
-    \item[3] 基本模型 \dotfill 5
-    \begin{itemize}
-        \item[3.1] Bianchi 模型 \dotfill 5
-        \item[3.2] 离散事件仿真 \dotfill 6
-    \end{itemize}
-    \item[4] 问题一、二的分析与求解 \dotfill 6
-    \begin{itemize}
-        \item[4.1] 问题分析 \dotfill 6
-        \item[4.2] 问题一求解 \dotfill 7
-        \begin{itemize}
-            \item[4.2.1] 数值求解 \dotfill 7
-            \item[4.2.2] 仿真检验 \dotfill 9
-        \end{itemize}
-        \item[4.3] 问题二求解 \dotfill 13
-        \begin{itemize}
-            \item[4.3.1] 数值求解 \dotfill 13
-            \item[4.3.2] 仿真检验 \dotfill 14
-        \end{itemize}
-    \end{itemize}
-    \item[5] 问题三的分析与求解 \dotfill 16
-    \begin{itemize}
-        \item[5.1] 问题分析 \dotfill 16
-        \item[5.2] 问题求解 \dotfill 17
-        \begin{itemize}
-            \item[5.2.1] 数值求解 \dotfill 17
-            \item[5.2.2] 仿真检验 \dotfill 23
-        \end{itemize}
-    \end{itemize}
-    \item[6] 问题四的分析与求解 \dotfill 27
-    \begin{itemize}
-        \item[6.1] 问题分析 \dotfill 27
-        \item[6.2] 问题求解 \dotfill 27
-        \begin{itemize}
-            \item[6.2.1] 数值求解 \dotfill 27
-            \item[6.2.2] 仿真检验 \dotfill 30
-        \end{itemize}
-    \end{itemize}
-    \item[7] 模型评价 \dotfill 35
-    \begin{itemize}
-        \item[7.1] 优点 \dotfill 35
-        \item[7.2] 不足 \dotfill 35
-        \item[7.3] 展望 \dotfill 35
-    \end{itemize}
-    \item[] 参考文献 \dotfill 36
-    \item[] 附录 A 问题三其他参数下仿真结果正态性检验概率图 \dotfill 37
-    \item[] 附录 B 问题四其他参数下仿真结果正态性检验概率图 \dotfill 39
-    \item[] 附录 C 代码 \dotfill 41
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -199,30 +112,21 @@ Bianchi 在 1998 年对于单 BSS，将 DCF 机制使用 Markov chain 进行模�
 
 \subsection{符号说明}
 
-\begin{tabular}{l l}
-A平方 & 0.18 \\
-P值 & 0.908 \\
+\begin{table}[htbp]
+\centering
+\caption{符号说明}
+\begin{tabular}{|c|l|}
 \hline
-均值 & 63471582 \\
-标准差 & 29943 \\
-方差 & 896602018 \\
-偏度 & -0.066695 \\
-峰度 & -0.449100 \\
-N & 40 \\
+\textbf{符号} & \textbf{定义} \\ \hline
+$P_{act}$ & 实际传输失败条件概率 \\
+$\tau$ & 节点在某时隙传输数据的概率 \\
+$T_s$ & 成功传输时长 \\
+$T_e$ & 单个回退时隙时长 \\
+$P_{overlap}$ & 发包交叠条件概率 \\
+$T_c$ & 传输失败时长 \\
 \hline
-最小值 & 63410382 \\
-第一四分位数 & 63450934 \\
-中位数 & 63473685 \\
-第三四分位数 & 63491670 \\
-最大值 & 63536453 \\
-\hline
-95\%均值置信区间 & \\
-63462006 & 63481158 \\
-95\%中位数置信区间 & \\
-63460993 & 63482045 \\
-95\%标准差置信区间 & \\
-24528 & 38448 \\
 \end{tabular}
+\end{table}
 
 \section{基本模型}
 
@@ -237,7 +141,7 @@ Bianchi 在 1998 年根据二维 Markov chain 对于理想同一信道 [2-5]，�
     \label{fig:bianchi_model}
 \end{figure}
 
-\section{离散事件仿真}
+\subsection{离散事件仿真}
 
 离散事件仿真是一种抽象模型，将某一系统的变化看成一个事件，系统会保持原状态直到相关事件的出现，在两个事件之间，系统是一个稳定状态。
 
@@ -454,27 +358,26 @@ Markov chain 中状态稳态概率之和为 1，即：
 
 令零假设 $H_{0}$：服从正态分布。备择假设 $H_{1}$：不服从正态分布。如果 $P$ 值小于 0.05，就拒绝 $H_{0}$，如果 $P$ 值大于 0.05，则无法拒绝原假设 $H_{0}$。概率图如图 4.5 所示，使用 Minitab 计算出 $P$ 值为 0.908 大于 0.05，实验结果服从正态分布，仿真结果具有稳定性。
 
-\begin{tabular}{l l}
-均值 & 63471582 \\
-标准差 & 29943 \\
-N & 40 \\
-AD & 0.181 \\
-P值 & 0.908 \\
-\end{tabular}
-
-单位：bps
-
-\begin{tabular}{l l}
+\begin{table}[htbp]
+\centering
+\caption{实验结果}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-\textbf{输入：} & 单个空闲时隙长度 $T_{e}$；成功传输时长 $T_{s}$；DCF 帧间距 $DIFS$；仿真循环轮数 $P$； \\
- & 有效载荷传输时长 $EP$；物理层速率 $rate$； \\
+\textbf{序号} & \textbf{实验结果} & \textbf{序号} & \textbf{实验结果} & \textbf{序号} & \textbf{实验结果} & \textbf{序号} & \textbf{实验结果} \\ \hline
+1 & 63444845 & 11 & 6345818 & 21 & 6341038 & 31 & 63426032 \\
+2 & 6310458 & 12 & 63461696 & 22 & 63457 & 32 \\
+3 & 6348186 & 13 & 6341720 & 23 & 6348 & 33 \\
 \hline
-\textbf{中间变量：} & 离散事件仿真总时长 $t$；离散事件仿真阶段数 $p \in P$；AP${}_{a}$ 回退次数 $CW_{a}$ \\
- & ($a \in \{1, 2\}$)；AP${}_{a}$ 成功传输次数 $c_{a}$ ($a \in \{1, 2\}$) \\
-\hline
-\textbf{输出：} & 吞吐量 $S$ \\
+4 & 6346513 & 14 & 63486721 & 24 & 63536 & 34 \\
+5 & 63503238 & 15 & 6345919 & 25 & 63440 & 35 \\
+6 & 635222 & 16 & 6347151 & 26 & 6351 & 36 \\
+7 & 6348 & 17 & 63511 & 27 & 6342 & 37 \\
+8 & 6348 & 18 & 6347 & 28 & 6345 & 38 \\
+9 & 6349 & 19 & 63480052 & 29 & 6341 & 39 \\
+10 & 6344 & 20 & 6350 & 30 & 635 & 40 \\
 \hline
 \end{tabular}
+\end{table}
 
 \begin{figure}[h]
 \centering
@@ -1075,6 +978,11 @@ For p = 1 To P:
 \label{fig:5.9}
 \end{figure}
 
+当系统取其他参数时，Bianchi 模型和仿真实验计算结果如表5.2 所示。当物理层速率
+和最大重传次数较大时，两种方法误差在 3%以内，当物理层速率增加且最大重传次数降
+低时，两方法的误差略有增加，但均在30%以内。系统取其他参数时的仿真结果正态性检
+验概率图见附录A。
+
 \begin{table}
 \centering
 \caption{其他参数下两方法结果对比}
@@ -1383,6 +1291,10 @@ P值 & 0.767 \\
 \end{tabular}
 \end{table}
 
+当系统取其他参数时，Bianchi 模型和仿真实验计算结果如表6.2 所示，数值计算和仿
+真实验的误差控制在5%-15%之间，证明了改进Bianchi 模型的准确性。系统取其他参数时
+的仿真结果正态性检验概率图见附录B。
+
 \begin{table}
 \centering
 \caption{其他参数下两方法结果对比}
@@ -1400,22 +1312,24 @@ P值 & 0.767 \\
 \end{tabular}
 \end{table}
 
-\textbf{吞吐量单位：bps}
-
-\textbf{Gap}
-
-11.95\%
-
-4.90\%
-
-11.96\%
-
-13.11\%
-
-5.79\%
-
-13.11\%
-
+\section{模型评价}
+\subsection{优点}
+(1)  根据离散事件仿真思想对 DSMA/CA 机制在不同场景进行建模仿真模拟，依靠计
+算机能够获得较为贴近实际的仿真过程，并得到较为可靠的信道吞吐量评估结果。 
+(2)  对传统的Bianchi 模型进行了创新，增加了信号包成功传输状态Trans 和信号包传
+输失败状态 Failed，该改进使得传统模型更加贴近于真实场景的机制，并与离散事件仿真
+结果进行对比，在某些场景下能够比传统Bianchi 模型有更高的精确度。 
+\subsection{7.2 不足 }
+本文的数值分析方法局限于对 Bianchi 模型的研究和改进，该传统模型在理想的假设
+下有简洁易用的优势，但当模型越发复杂时，建模思路变得复杂和困难，不同的参数设置
+也会使其估算结果与仿真结果不存在稳定跟随的关系。采用除 Bianchi 模型以外的其他模
+型框架进行数值分析，可能会得到更精确的解。 
+\subsection{7.3 展望} 
+本文对设定了一些理想情况下的CSMA/CA 机制的信道接入场景进行了建模和分析，
+当理想假设减少后，建立的模型将会更加贴近于真实的网络通讯情景。对更加贴近现实的
+模型进行建立，有助于加深对现实通讯技术的认识并提出对现有通讯质量技术进一步发展
+的可行性方案，未来可研究包括多BSS 物理速率不同等网络通讯情景，并挖掘其内部机理。
+WLAN 技术的进步会推动万物互联，虚拟现实等益于提高人类生活质量技术的进步。
 \section{参考文献}
 
 \begin{enumerate}
@@ -1429,3 +1343,846 @@ P值 & 0.767 \\
     \item 崔晓峰. 面向对象的离散事件仿真建模与实现[J]. 计算机工程与应用, 1998(09): 40-41+47.
     \item 刘勇, 王德才, 冯正超. 离散事件系统仿真建模与仿真策略[J]. 西南师范大学学报(自然科学版), 2005(06): 1019-1025.
 \end{enumerate}
+
+\section{附录}
+# 附录A 问题三其他参数下仿真结果正态性检验概率图
+实验组号
+min
+# CW
+
+max
+# CW
+
+r
+物理层速率
+1
+16
+1024
+32
+1. 8Mbps
+2
+16
+1024
+6
+1. 8Mbps
+3
+32
+1024
+5
+1. 8Mbps
+4
+16
+1024
+32
+1. 8Mbps
+5
+16
+1024
+6
+1. 4Mbps
+6
+32
+1024
+5
+1. 4Mbps
+
+
+
+38
+>
+
+39
+
+## 附录B 问题四其他参数下仿真结果正态性检验概率图
+>
+
+40
+>
+
+41
+
+# 附录C 代码
+问题一数值求解Matlab 代码：
+标准Bianchi：
+function F = main1(x)
+w0 = 16;
+wmax = 1024;
+r = 0;
+rate = 455.8;
+m = log(wmax/w0)/log(2);
+w = zeros(1,r+1);
+EP = 1500/rate/125000*1000000;
+for i = 0:r
+if (i<=m)
+w(i+1) = 2^i*w0;
+elseif (i<=r)
+w(i+1) = 2^m*w0;
+end
+end
+F(1) = x(1) * (1-x(2)^(r+1))/(1-x(2)) - x(2);
+F(2) = - x(1) + 2 * (1-x(2)) * (1-2*x(2)) / ( w0*(1-(2*x(2))^(m+1))*(1-x(2)) +
+(1-2*x(2))*(1-x(2)^(r+1)) + w0*2^m*x(2)^(m+1)*(1-x(2)^(r-m))*(1-2*x(2)));
+F(3) = x(3) - x(2);
+
+改进Bianchi main10.mat
+function F = main10(x)
+w0 = 16;
+wmax = 1024;
+r = 32;
+rate = 455.8;
+m = log(wmax/w0)/log(2);
+w = zeros(1,r+1);
+EP = 1500/rate/125000*1000000;
+d = 30/rate/125000*1000000 + 13.6 + EP;
+for i = 0:r
+if (i<=m)
+w(i+1) = 2^i*w0;
+elseif (i<=r)
+w(i+1) = 2^m*w0;
+end
+end
+
+
+
+42
+
+sum = 0;
+for i = 0:r
+sum = sum + x(2)^i * (w(i+1) + 3) / 2;
+end
+dd = 0;
+for i = 0:r
+dd = dd + x(2)^i * x(1);
+end
+F(1) = dd - x(3);
+F(2) = x(1) * sum - 1;
+F(3) = x(2)-x(3);
+
+求解吞吐量 solve1.m
+fun = @main10;
+% fun = @main1
+x0 = [0,0,0];
+x = fsolve(fun,x0)
+t = x(3);
+p = x(2);
+w0 = 16;
+wmax = 1024;
+r = 32;
+rate = 455.8;
+m = log(wmax/w0)/log(2);
+w = zeros(1,r+1);
+EP = 1500/rate/125000*1000000;
+d = 30/rate/125000*1000000 + 13.6 + EP;
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43;
+Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65;
+e = 9;
+S = 2*t*(1-p)*EP*rate*1000000/(2*t*(1-p)*Ts+t*p*Tc+(1-2*t+t*p)*e)
+
+问题一仿真求解python 代码：
+import random
+import xlwt
+from math import log
+# CWmin = 16
+# CWmax = 1024
+r = 32 #最大重传次数
+rate = 455.8
+# Te = 9
+## EP = 1500/rate/125000*1000000
+
+
+
+43
+
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43
+## Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65
+PMP = 30/rate/125000*1000000 + 13.6 + EP  #PHY hdr + MAC hdr + Payload
+# SIFS = 16
+# DIFS = 43
+# ACK = 32
+# ACktimeout = 65
+m = log(CWmax/CWmin,2)
+#计算数据分布
+data_list = []
+for i in range(40):
+time = DIFS #记录时间
+cw1icounter, cw2icounter = 0, 0 #AP 数据的发送次数
+cw1jcounter, cw2jcounter = 0, 0 #AP 回退翻倍次数
+collisioncounter = 0 #崩溃次数
+cw1rollbackflag, cw2rollbackflag = 1, 1 #判断是否需要产生新的回退
+#离散事件仿真
+for j in range(10**6):
+if cw1icounter <= m:
+cw1jcounter = cw1icounter
+elif m < cw1icounter < r: #超过最大退避阶数
+cw1jcounter = m
+elif cw1icounter >= r: #超过最大重传次数
+cw1icounter, cw1jcounter = 0, 0
+else:
+pass
+if cw2icounter <= m:
+cw2jcounter = cw2icounter
+elif m < cw2icounter < r:
+cw2jcounter = m
+elif cw2icounter >= r:
+cw2icounter, cw2jcounter = 0, 0
+else:
+pass
+if cw1rollbackflag == 1:
+CW1 = random.randint(0,(CWmin*(2**cw1jcounter)-1))
+else:
+pass
+if cw2rollbackflag == 1:
+CW2 = random.randint(0,(CWmin*(2**cw2jcounter)-1))
+else:
+pass
+if CW1 < CW2:
+
+
+
+44
+
+cw1rollbackflag, cw2rollbackflag = 1, 0
+time = time + (CW1+1)*Te + Ts
+# CW2 = CW2 - CW1 - 1
+cw1icounter = 0 #成功上传重置CW
+elif CW2 < CW1:
+cw1rollbackflag, cw2rollbackflag = 0, 1
+time = time + (CW2+1)*Te + Ts
+# CW1 = CW1 - CW2 - 1
+cw2icounter = 0
+else: #同时崩溃
+cw1rollbackflag, cw2rollbackflag = 1, 1 #冲突产生新的CW
+cw1icounter = cw1icounter + 1 #冲突更新数据发送次数
+cw2icounter = cw2icounter + 1
+collisioncounter = collisioncounter + 1
+time = time + (CW1+1)*Te + Tc
+data = (10**6 - collisioncounter)*EP*rate*(10**6)/time
+data_list.append(data)
+#excel
+work_book = xlwt.Workbook(encoding = 'utf-8')
+work_sheet = work_book.add_sheet('sheet')
+for i in range(len(data_list)):
+work_sheet.write(i, 0, data_list[i])
+work_book.save('experiment_q1.xls')
+
+问题二仿真求解python 代码：
+import random
+import xlwt
+from math import log
+# CWmin = 16
+# CWmax = 1024
+r = 32 #最大重传次数
+rate = 275.3
+# Te = 9
+## EP = 1500/rate/125000*1000000
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43
+## Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65
+PMP = 30/rate/125000*1000000 + 13.6 + EP  #PHY hdr + MAC hdr + Payload
+# SIFS = 16
+# DIFS = 43
+# ACK = 32
+# ACktimeout = 65
+m = log(CWmax/CWmin,2)
+
+
+
+45
+
+#计算数据分布
+data_list = []
+for i in range(40):
+time = DIFS #记录时间
+cw1counter, cw2counter = 0, 0 #记录成功传输次数
+cw1rollbackflag, cw2rollbackflag = 1, 1 #判断是否需要产生新的回退
+#离散事件仿真
+for j in range(10**6):
+if cw1rollbackflag == 1:
+CW1 = random.randint(0,CWmin-1)
+else:
+pass
+if cw2rollbackflag == 1:
+CW2 = random.randint(0,CWmin-1)
+else:
+pass
+if CW1 < CW2:
+cw1rollbackflag, cw2rollbackflag = 1, 0
+time = time + (CW1+1)*Te + Ts
+# CW2 = CW2 - CW1 - 1
+cw1counter = cw1counter + 1
+elif CW2 < CW1:
+cw1rollbackflag, cw2rollbackflag = 0, 1
+time = time + (CW2+1)*Te + Ts
+# CW1 = CW1 - CW2 - 1
+cw2counter = cw2counter + 1
+else: #同时上传
+cw1rollbackflag, cw2rollbackflag = 1, 1
+time = time + (CW1+1)*Te + Ts
+cw1counter = cw1counter + 1
+cw2counter = cw2counter + 1
+data = 2*cw1counter*EP*rate*(10**6)/time
+data_list.append(data)
+#excel
+work_book = xlwt.Workbook(encoding = 'utf-8')
+work_sheet = work_book.add_sheet('sheet')
+for i in range(len(data_list)):
+work_sheet.write(i, 0, data_list[i])
+work_book.save('experiment_q2.xls')
+
+问题三数值求解Matlab 代码：
+# Bianchi 模型 main3.m
+
+
+
+46
+
+function F = main3(x)
+w0 = 16;
+wmax = 1024;
+r = 32;
+rate = 455.8;
+m = log(wmax/w0)/log(2);
+w = zeros(1,r+1);
+EP = 1500/rate/125000*1000000;
+d = 30/rate/125000*1000000 + 13.6 + EP;
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43;
+Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65;
+e = 9;
+kk = d/e;
+for i = 0:r
+if (i<=m)
+w(i+1) = 2^i*w0;
+elseif (i<=r)
+w(i+1) = 2^m*w0;
+end
+end
+sum = 0;
+for i = 0:r
+sum = sum + x(2)^i * (w(i+1) + 3) / 2;
+end
+s = 0;
+for i = 0:r
+s = s + (1-x(2)) * x(2)^i * x(1) * (Ts-2*d)/Ts;
+s = s + x(2) * x(2)^i * x(1) * (Tc-2*d)/Tc;
+s = s + (w0-kk+w0)/w0/2 * (1-x(2)) * x(2)^i * x(1) * (d)/Ts;
+s = s + (w(i+1)-kk+w(i+1))/w(i+1)/2 * x(2) * x(2)^i * x(1) * (d)/Tc;
+k = ceil(kk);
+s = s + (w(i+1)-k+1)*(w(i+1)-k)/2/w(i+1) * x(2)^i * x(1);
+l = floor(kk);
+a = 1 - (kk * 100- l*100)/100;
+s = s + a * (w(i+1)-l)/w(i+1) * x(2)^i * x(1);
+end
+dd = 0;
+for i = 0:r
+dd = dd + x(2)^i * x(1);
+end
+F(1) = dd - x(3);
+% F(1) = x(1) * (1-x(2)^(r+1))/(1-x(2)) - x(3);
+F(2) = x(1) * sum - 1;
+
+
+
+47
+
+## F(3) =  1 - s - x(4);%%%%%%%2
+% F(3) = x(2)-x(3); %%%%%%%%1
+% F(4) = x(4) + (1-x(4)) * 0.1 - x(2);%%%%%%%2
+F(4) = x(3) - x(2);
+
+求解 solve3.m
+w0 = 16;
+wmax = 1024;
+r = 32;
+rate = 455.8;
+m = log(wmax/w0)/log(2);
+w = zeros(1,r+1);
+EP = 1500/rate/125000*1000000;
+d = 30/rate/125000*1000000 + 13.6 + EP;
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43;
+Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65;
+e = 9;
+kk = d/e;
+fun = @main3;
+x0 = [0.5 ,0.5 ,0.5,0];
+x = fsolve(fun,x0)
+t = x(3);
+% p = x(2);   %p13
+p = x(4);     %p3
+pe = 0.1;
+% S = 2*t*(1-p)*EP*rate*1000000/(2*t*(1-p)*Ts+t*p*Tc+(1-2*t+t*p)*e)
+% S = 2*t*EP*rate*1000000/(2*t*(1-p)*Ts+t*p*Ts+(1-2*t+t*p)*e)
+% S = (2*t*(1-p-pe)*EP)/((1-t)*e+t*(1-p-pe)*Ts+t*(pe+p)*Tc)*rate*1000000
+
+问题三仿真求解python 代码：
+import random
+import xlwt
+from math import log
+# CWmin = 16
+# CWmax = 1024
+r = 32 #最大重传次数
+rate = 158.4
+# Te = 9
+## EP = 1500/rate/125000*1000000
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43
+## Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65
+PMP = 30/rate/125000*1000000 + 13.6 + EP  #PHY hdr + MAC hdr + Payload
+
+
+
+48
+
+# SIFS = 16
+# DIFS = 43
+# ACK = 32
+# ACktimeout = 65
+m = log(CWmax/CWmin,2)
+#计算数据分布
+data_list = []
+for i in range(40):
+time1_old, time2_old = DIFS, DIFS #记录时间
+cw1icounter, cw2icounter = 0, 0 #AP 数据的发送次数
+cw1jcounter, cw2jcounter = 0, 0 #AP 回退翻倍次数
+cw1rollbackflag, cw2rollbackflag = 1, 1 #判断是否需要产生新的回退
+## AP1successcounter = 0 #AP1 成功传输次数计数器
+## AP1flag = 0 #判别AP1 是否成功
+#离散事件仿真
+for j in range(10**6):
+if cw1icounter <= m:
+cw1jcounter = cw1icounter
+elif m < cw1icounter < r: #超过最大退避阶数
+cw1jcounter = m
+elif cw1icounter >= r: #超过最大重传次数
+cw1icounter, cw1jcounter = 0, 0
+else:
+pass
+if cw2icounter <= m:
+cw2jcounter = cw2icounter
+elif m < cw2icounter < r:
+cw2jcounter = m
+elif cw2icounter >= r:
+cw2icounter, cw2jcounter = 0, 0
+else:
+pass
+if cw1rollbackflag == 1:
+CW1 = random.randint(0,(CWmin*(2**cw1jcounter)-1))
+else:
+pass
+if cw2rollbackflag == 1:
+CW2 = random.randint(0,(CWmin*(2**cw2jcounter)-1))
+else:
+pass
+time1_temp = time1_old + CW1*Te
+time2_temp = time2_old + CW2*Te
+if time1_temp > time2_temp: #站点2 优先回退至0
+
+
+
+49
+
+if time2_temp + PMP <= time1_temp: #站点2 信号在站点1 回退至0 前不发生重叠
+if random.random() <= 0.9: #不丢包
+time1_new = time1_temp + PMP + SIFS + ACK + DIFS
+## AP1successcounter = AP1successcounter + 1
+# AP1flag = 1
+cw1icounter = 0 #成功上传重置CW
+else: #丢包概率10%
+time1_new = time1_temp + PMP + ACktimeout + DIFS
+# AP1flag = 0
+cw1icounter = cw1icounter + 1
+if random.random() <= 0.9: #不丢包
+time2_new = time2_temp + PMP + SIFS + ACK + DIFS
+cw2icounter = 0 #成功上传重置CW
+else: #丢包概率10%
+time2_new = time2_temp + PMP + ACktimeout + DIFS
+cw2icounter = cw2icounter + 1
+else: #站点2 信号在站点1 回退至0 前发生重叠
+time1_new = time1_temp + PMP + ACktimeout + DIFS
+# AP1flag = 0
+time2_new = time2_temp + PMP + ACktimeout + DIFS
+cw1icounter = cw1icounter + 1
+cw2icounter = cw2icounter + 1
+elif time1_temp < time2_temp: #站点1 优先回退至0
+if time1_temp + PMP <= time2_temp: #站点1 信号在站点2 回退至0 前不发生重叠
+if random.random() <= 0.9: #不丢包
+time1_new = time1_temp + PMP + SIFS + ACK + DIFS
+## AP1successcounter = AP1successcounter + 1
+# AP1flag = 1
+cw1icounter = 0 #成功上传重置CW
+else: #丢包概率10%
+time1_new = time1_temp + PMP + ACktimeout + DIFS
+# AP1flag = 0
+cw1icounter = cw1icounter + 1
+if random.random() <= 0.9: #不丢包
+time2_new = time2_temp + PMP + SIFS + ACK + DIFS
+cw2icounter = 0 #成功上传重置CW
+else: #丢包概率10%
+time2_new = time2_temp + PMP + ACktimeout + DIFS
+cw2icounter = cw2icounter + 1
+else: #站点1 信号在站点2 回退至0 前发生重叠
+time1_new = time1_temp + PMP + ACktimeout + DIFS
+# AP1flag = 0
+time2_new = time2_temp + PMP + ACktimeout + DIFS
+
+
+
+50
+
+cw1icounter = cw1icounter + 1
+cw2icounter = cw2icounter + 1
+else: #同时回退至0 肯定发生重叠
+time1_new = time1_temp + PMP + ACktimeout + DIFS
+# AP1flag = 0
+time2_new = time2_temp + PMP + ACktimeout + DIFS
+cw1icounter = cw1icounter + 1
+cw2icounter = cw2icounter + 1
+if time1_new <= time2_temp:
+cw1rollbackflag, cw2rollbackflag = 1, 0
+time2_new = time2_old
+else:
+cw1rollbackflag, cw2rollbackflag = 1, 1
+if time2_new <= time1_temp:
+cw1rollbackflag, cw2rollbackflag = 0, 1
+time1_new = time1_old
+if AP1flag == 1:
+## AP1successcounter = AP1successcounter - 1
+else:
+pass
+else:
+cw1rollbackflag, cw2rollbackflag = 1, 1
+#进入下一事件阶段
+time1_old = time1_new
+time2_old = time2_new
+data = 2*AP1successcounter*EP*rate*(10**6)/time1_new
+data_list.append(data)
+#excel
+work_book = xlwt.Workbook(encoding = 'utf-8')
+work_sheet = work_book.add_sheet('sheet')
+for i in range(len(data_list)):
+work_sheet.write(i, 0, data_list[i])
+work_book.save('experiment_q3.xls')
+
+问题四数值求解Matlab 代码：
+改进Bianchi 模型： main4.m
+function F = main4(x)
+w0 = 16;
+wmax = 1024;
+r = 6;
+rate = 158.4;
+m = log(wmax/w0)/log(2);
+
+
+
+51
+
+w = zeros(1,r+1);
+EP = 1500/rate/125000*1000000;
+d = 30/rate/125000*1000000 + 13.6 + EP;
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43;
+Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65;
+e = 9;
+kk = d/e;
+for i = 0:r
+if (i<=m)
+w(i+1) = 2^i*w0;
+elseif (i<=r)
+w(i+1) = 2^m*w0;
+end
+end
+sum1 = 0;
+for i = 0:r
+sum1 = sum1 + x(5)^i * (w(i+1) + 3) / 2;
+end
+sum2 = 0;
+for i = 0:r
+sum2 = sum2 + x(6)^i * (w(i+1) + 3) / 2;
+end
+s = 0;
+for i = 0:r
+s = s + (1-x(5)) * x(5)^i * x(1) * (Ts-2*d)/Ts;
+%     s = s + x(5) * x(5)^i * x(1) * (Tc-2*d)/Tc;
+s = s + (w0-kk+w0)/w0/2 * (1-x(5)) * x(5)^i * x(1) * (d)/Ts;
+%     s = s + (w(i+1)-kk+w(i+1))/w(i+1)/2 * x(5) * x(5)^i * x(1) * (d)/Tc;
+k = ceil(kk);
+s = s + (w(i+1)-k+1)*(w(i+1)-k)/2/w(i+1) * x(5)^i * x(1);
+l = floor(kk);
+a = 1 - (kk * 100- l*100)/100;
+s = s + a * (w(i+1)-l)/w(i+1) * x(5)^i * x(1);
+end
+F(1) = x(1) * sum1 - 1;
+F(2) = x(2) * sum2 - 1;
+F(3) = 1 - s - x(7);
+F(4) = x(1) * (1-x(5)^(r+1))/(1-x(5)) - x(3);
+F(5) = x(2) * (1-x(6)^(r+1))/(1-x(6)) - x(4);
+F(6) = x(4) - x(5);
+F(7) = (2*x(3) - x(3)*x(7))-x(6);
+
+模型求解：solve4.m
+
+
+
+52
+
+w0 = 16;
+wmax = 1024;
+r = 6;
+rate = 158.4;
+m = log(wmax/w0)/log(2);
+w = zeros(1,r+1);
+EP = 1500/rate/125000*1000000;
+d = 30/rate/125000*1000000 + 13.6 + EP;
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43;
+Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65;
+e = 9;
+kk = d/e;
+fun = @main4;
+x0 = [0,0,0,0,0,0,0];
+x = fsolve(fun,x0)
+b001 = x(1);
+b002 = x(2);
+t1 = x(3);
+t2 = x(4);
+pact1 = x(5);
+pact2 = x(6);
+pov = x(7);
+S = (t2*(1-pact2) + (2*t1*(1-pact1)))*EP;
+t11 = (t2*(1-pact2)+t1*(1-pact1)) * Ts;
+t22 = t2 * pact2 * Tc;
+t33 = (1 - t2 - t1*(1-pact1)) * e;
+## S = S/(t11+t22+t33)*rate*1000000
+
+问题四仿真求解python 代码：
+import random
+import xlwt
+from math import log
+# CWmin = 16
+# CWmax = 1024
+r = 32 #最大重传次数
+rate = 158.4
+# Te = 9
+## EP = 1500/rate/125000*1000000
+Ts = 30/rate/125000*1000000 + 13.6 + EP + 16 + 32 + 43
+## Tc = 30/rate/125000*1000000 + 13.6 + EP + 43 + 65
+PMP = 30/rate/125000*1000000 + 13.6 + EP  #PHY hdr + MAC hdr + Payload
+# SIFS = 16
+# DIFS = 43
+
+
+
+53
+
+# ACK = 32
+# ACktimeout = 65
+m = log(CWmax/CWmin,2)
+#计算数据分布
+data_list = []
+for i in range(40):
+time1_old, time2_old, time3_old = DIFS, DIFS, DIFS #记录时间
+cw1icounter, cw2icounter, cw3icounter = 0, 0, 0 #AP 数据的发送次数
+cw1jcounter, cw2jcounter, cw3jcounter = 0, 0, 0 #AP 回退翻倍次数
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 1, 1, 1 #判断是否需要产生新
+的回退
+AP1successcounter, AP2successcounter, AP3successcounter = 0, 0, 0 #AP 传输成功
+次数计数器
+#离散事件仿真
+for j in range(10**6):
+if cw1icounter <= m:
+cw1jcounter = cw1icounter
+elif m < cw1icounter < r: #超过最大退避阶数
+cw1jcounter = m
+elif cw1icounter >= r: #超过最大重传次数
+cw1icounter, cw1jcounter = 0, 0
+else:
+pass
+if cw2icounter <= m:
+cw2jcounter = cw2icounter
+elif m < cw2icounter < r:
+cw2jcounter = m
+elif cw2icounter >= r:
+cw2icounter, cw2jcounter = 0, 0
+else:
+pass
+if cw3icounter <= m:
+cw3jcounter = cw3icounter
+elif m < cw3icounter < r:
+cw3jcounter = m
+elif cw3icounter >= r:
+cw3icounter, cw3jcounter = 0, 0
+else:
+pass
+if cw1rollbackflag == 1:
+CW1 = random.randint(0,(CWmin*(2**cw1jcounter)-1))
+else:
+pass
+
+
+
+54
+
+if cw2rollbackflag == 1:
+CW2 = random.randint(0,(CWmin*(2**cw2jcounter)-1))
+else:
+pass
+if cw3rollbackflag == 1:
+CW3 = random.randint(0,(CWmin*(2**cw3jcounter)-1))
+else:
+pass
+time1_temp = time1_old + CW1*Te
+time2_temp = time2_old + CW2*Te
+time3_temp = time3_old + CW3*Te
+if time1_temp < min(time2_temp,time3_temp): #AP1 最先回退至0
+## AP1successcounter = AP1successcounter + 1
+time1_new = time1_temp + Ts
+time3_new = time3_temp + Ts
+if time1_new < time3_temp:
+time3_new = time3_old #new 回退至old
+time2_new = time1_new #hold 至AP1 发送结束
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 1, 0, 0 #AP1 产
+# 生新的回退 AP3 不改变
+cw1icounter = 0 #AP1 重置 AP3 不改变
+else:
+## AP3successcounter = AP3successcounter + 1
+time2_new = time3_new #hold 至AP3 发送结束
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 1, 0, 1 #AP1 和
+# AP3 产生新的回退
+cw1icounter, cw3icounter = 0, 0 #AP1 和AP3 成功上传重置CW
+time2_test = time2_old
+while 1: #计算AP2 剩余回退间隙
+# CW2 = CW2 - 1
+time2_test = time2_test + Te
+if time2_test > time1_temp:
+break
+else:
+pass
+elif time3_temp < min(time1_temp,time2_temp): #AP3 最先回退至0
+## AP3successcounter = AP3successcounter + 1
+time1_new = time1_temp + Ts
+time3_new = time3_temp + Ts
+if time3_new < time1_temp:
+time1_new = time1_old
+time2_new = time3_new
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 0, 0, 1
+
+
+
+55
+
+cw3icounter = 0
+else:
+## AP1successcounter = AP1successcounter + 1
+time2_new = time1_new
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 1, 0, 1
+cw1icounter, cw3icounter = 0, 0
+time2_test = time2_old
+while 1:
+# CW2 = CW2 - 1
+time2_test = time2_test + Te
+if time2_test > time3_temp:
+break
+else:
+pass
+elif time2_temp < min(time1_temp,time3_temp): #AP2 最先回退至0
+## AP2successcounter = AP2successcounter + 1
+time2_new = time2_temp + Ts
+time1_new = time2_new
+time3_new = time2_new
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 0, 1, 0
+cw2icounter = 0
+time1_test = time1_old
+while 1:
+# CW1 = CW1 - 1
+time1_test = time1_test + Te
+if time1_test > time2_temp:
+break
+else:
+pass
+time3_test = time3_old
+while 1:
+# CW3 = CW3 - 1
+time3_test = time3_test + Te
+if time3_test > time2_temp:
+break
+else:
+pass
+elif time1_temp == time2_temp < time3_temp: #AP1 和AP2 同时回退至0 冲突
+time1_new = time1_temp + Tc
+time2_new = time2_temp + Tc
+time3_new = time1_new
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 1, 1, 0 #冲突AP 重
+新回退
+
+
+
+56
+
+cw1icounter = cw1icounter + 1 #冲突计数器加一
+cw2icounter = cw2icounter + 1
+time3_test = time3_old
+while 1:
+# CW3 = CW3 - 1
+time3_test = time3_test + Te
+if time3_test > time1_temp:
+break
+else:
+pass
+elif time3_temp == time2_temp < time1_temp: #AP3 和AP2 同时回退至0 冲突
+time3_new = time3_temp + Tc
+time2_new = time2_temp + Tc
+time1_new = time3_new
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 0, 1, 1
+cw3icounter = cw3icounter + 1
+cw2icounter = cw2icounter + 1
+time1_test = time1_old
+while 1:
+# CW1 = CW1 - 1
+time1_test = time1_test + Te
+if time1_test > time3_temp:
+break
+else:
+pass
+elif time1_temp == time3_temp < time2_temp: #AP1 和AP3 同时回退至0 均能成功
+上传
+## AP1successcounter = AP1successcounter + 1
+## AP3successcounter = AP3successcounter + 1
+time1_new = time1_temp + Ts
+time3_new = time3_temp + Ts
+time2_new = time1_new
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 1, 0, 1
+cw1icounter, cw3icounter = 0, 0 #AP1 和AP3 均成功上传
+time2_test = time2_old
+while 1:
+# CW2 = CW2 - 1
+time2_test = time2_test + Te
+if time2_test > time1_temp:
+break
+else:
+pass
+elif time1_temp == time2_temp == time3_temp: #AP1 和AP2 和AP3 同时回退至0 冲
+
+
+
+57
+
+突
+time1_new = time1_temp + Tc
+time2_new = time2_temp + Tc
+time3_new = time3_temp + Tc
+cw1rollbackflag, cw2rollbackflag, cw3rollbackflag = 1, 1, 1
+cw1icounter = cw1icounter + 1
+cw2icounter = cw2icounter + 1
+cw3icounter = cw3icounter + 1
+else:
+pass
+#进入下一事件阶段
+time1_old = time1_new
+time2_old = time2_new
+time3_old = time3_new
+data
+=
+(AP1successcounter+AP2successcounter+AP3successcounter)*EP*rate*(10**6)/time1_new
+data_list.append(data)
+#excel
+work_book = xlwt.Workbook(encoding = 'utf-8')
+work_sheet = work_book.add_sheet('sheet')
+for i in range(len(data_list)):
+work_sheet.write(i, 0, data_list[i])
+work_book.save('experiment_q4.xls')
+

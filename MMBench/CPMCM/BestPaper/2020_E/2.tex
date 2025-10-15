@@ -29,102 +29,7 @@
 关键词：BP 神经网络、多元非线性回归模型、相关性分析、亮度差异、暗原色先验、时间序列预测、灰色预测、ARIMA 时间序列模型
 \end{abstract}
 
-\section{目录}
-
-\begin{itemize}
-    \item[] 1. 问题重述 \dotfill 5
-    \begin{itemize}
-        \item[] 1.1 问题背景 \dotfill 5
-        \item[] 1.2 问题提出 \dotfill 5
-    \end{itemize}
-    \item[] 2. 模型假设 \dotfill 7
-    \item[] 3. 技术路线 \dotfill 8
-    \item[] 4. 问题一建模与求解 \dotfill 11
-    \begin{itemize}
-        \item[] 4.1 问题分析与思路 \dotfill 11
-        \item[] 4.2 数据预处理 \dotfill 12
-        \begin{itemize}
-            \item[] 4.2.1 信息剔除与数据化 \dotfill 12
-            \item[] 4.2.2 数据标准化 \dotfill 12
-        \end{itemize}
-        \item[] 4.3 能见度时序变化特征分析 \dotfill 13
-        \item[] 4.4 气象因子和能见度的相关性分析 \dotfill 14
-        \item[] 4.5 能见度与各气象因子的非线性特征分析 \dotfill 15
-        \begin{itemize}
-            \item[] 4.5.1 能见度与风速的关系 \dotfill 15
-            \item[] 4.5.2 能见度与本站气压的关系 \dotfill 16
-            \item[] 4.5.3 能见度与温度的关系 \dotfill 17
-            \item[] 4.5.4 能见度与相对湿度的关系 \dotfill 18
-        \end{itemize}
-        \item[] 4.6 能见度与气象因子的多变量非线性回归模型 \dotfill 19
-        \begin{itemize}
-            \item[] 4.6.1 能见度与气象因子的多元回归方程的确定 \dotfill 19
-            \item[] 4.6.2 遗传算法求解多元非线性方程的最优回归系数 \dotfill 19
-            \item[] 4.6.3 结果分析 \dotfill 20
-        \end{itemize}
-    \end{itemize}
-    \item[] 5. 问题二建模与求解 \dotfill 22
-    \begin{itemize}
-        \item[] 5.1 问题分析 \dotfill 22
-        \item[] 5.2 视频数据预处理 \dotfill 23
-        \begin{itemize}
-            \item[] 5.2.1 视频转关键帧图像 \dotfill 23
-            \item[] 5.2.2 异常图像处理 \dotfill 24
-            \item[] 5.2.3 ROI 选取 \dotfill 24
-            \item[] 5.2.4 降噪处理和增强处理 \dotfill 25
-        \end{itemize}
-        \item[] 5.3 能见度时序变化特征分析 \dotfill 26
-        \item[] 5.4 图像特征因子分析 \dotfill 26
-        \begin{itemize}
-            \item[] 5.4.1 图像特征因子 \dotfill 26
-            \item[] 5.4.2 图像子窗格划分 \dotfill 27
-            \item[] 5.4.3 特征因子与能见度的相关性分析 \dotfill 28
-            \item[] 5.4.4 不同窗格下图像特征因子与能见度的相关性分析 \dotfill 28
-        \end{itemize}
-        \item[] 5.5 兴趣窗格的选择 \dotfill 29
-        \item[] 5.6 能见度反演模型的构建 \dotfill 31
-        \begin{itemize}
-            \item[] 5.6.1 三元线性回归建模 \dotfill 31
-            \item[] 5.6.2 BP 神经网络 \dotfill 32
-            \item[] 5.6.3 BP 神经网络修正线性残差模型的构建 \dotfill 33
-            \item[] 5.6.4 精度分析 \dotfill 33
-        \end{itemize}
-    \end{itemize}
-    \item[] 6. 问题三建模与求解 \dotfill 35
-    \begin{itemize}
-        \item[] 6.1 问题分析 \dotfill 35
-        \item[] 6.2 数据预处理 \dotfill 35
-        \begin{itemize}
-            \item[] 6.2.1 剔除无关信息 \dotfill 35
-            \item[] 6.2.2 图像增强 \dotfill 36
-        \end{itemize}
-        \item[] 6.3 边缘检测 \dotfill 36
-        \item[] 6.4 道路提取 \dotfill 37
-        \begin{itemize}
-            \item[] 6.4.1 霍夫变换 \dotfill 37
-        \end{itemize}
-        \item[] 6.5 道路兴趣区的提取 \dotfill 38
-        \item[] 6.6 相机标定 \dotfill 39
-        \item[] 6.7 亮度对比度提取道路最远可视点 \dotfill 39
-        \item[] 6.8 暗原色法计算消光系数 \dotfill 40
-        \item[] 6.9 能见度估计 \dotfill 41
-    \end{itemize}
-    \item[] 7. 问题建模与求解 \dotfill 43
-    \begin{itemize}
-        \item[] 7.1 问题分析 \dotfill 43
-        \item[] 7.2 能见度变化时序特征分析 \dotfill 43
-        \begin{itemize}
-            \item[] 7.2.1 能见度倾向率 \dotfill 43
-            \item[] 7.2.2 时间序列的平稳性及周期性检验 \dotfill 44
-            \item[] 7.2.3 自相关性与偏相关性 \dotfill 45
-        \end{itemize}
-        \item[] 7.3 ARIMA 时间序列模型 \dotfill 45
-        \item[] 7.4 GM(1,1) 灰色预测模型 \dotfill 47
-        \item[] 7.5 线性回归模型 \dotfill 48
-    \end{itemize}
-    \item[] 参考文献 \dotfill 49
-    \item[] 附录 \dotfill 50
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -283,7 +188,7 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
 \end{tabular}
 \end{table}
 
-\section{能见度时序变化特征分析}
+\subsection{能见度时序变化特征分析}
 
 将两个数据集 AMOS 20200313 和 AMOS 20191216 的能见度数据以 15 分钟为间隔进行可视化，同时计算其不同时段的倾向变化率，如图 4-2 所示。
 
@@ -347,7 +252,7 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
 
 从图 4-2 中可以看出，能见度的曲线变化一天的变化趋势主要体现在凌晨附近开始下降，早上 8 点开始逐渐上升。平均跑道视程曲线的突变时段主要体现在凌晨（00:00）到早上 7 点附近，气象光学视程整天都在波动变化的突变时段主要为凌晨和早上 8 点附近。
 
-\section{气象因子和能见度的相关性分析}
+\subsection{气象因子和能见度的相关性分析}
 
 题目所给数据中包含了多种气象数据，为了更加科学地理解和阐述这些变量之间的关系，对能见度和所有气象因子进行 Pearson、Kendall 和 Spearman 检验，检验结果如下图 4-3 所示。
 
@@ -395,9 +300,9 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
 
 诸如风速、风向、垂直风速、气压和温度均与能见度有较强的相关性，其中以风速、本站气压和温度对能见度的影响最强，但是气压和风向表现出季节差异性，即在冬季与能见度呈现正相关，而春季表现出负相关；湿度对能见度具有较强的负相关，露点温度对能见度的影响也为负相关但程度较小。在同一类型的气象因子中，如风速、风向与垂直风速，温度与露点温度，本站气压、修正海平面气压与飞机着陆地区最高气压之间具有非常强的相关性（>0.7），因而在后续的分析考虑中，仅选取同类别中与能见度相关性的因子作为最终变量，即风速、温度、本站气压与相对湿度。
 
-\section{能见度与各气象因子的非线性特征分析}
+\subsection{能见度与各气象因子的非线性特征分析}
 
-\subsection{能见度与风速的关系}
+\subsubsection{能见度与风速的关系}
 
 风速是影响能见度的重要因子之一，本文数据中与风速相关的数据有 1 分钟平均风速（WS2A）、1 分钟平均风向（WD2A）和一分钟平均垂直风速（CW2A）。经图 4-3 中的相关性分析和先验知识，我们认为该三个变量间具有较强的共线关系，因而只选择对能见度相关性较大的平均风速作为风速因子。对本章数据中的风速进行统计如表 4-3 和图 4-4 所示。
 
@@ -433,7 +338,7 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
     \label{fig:visibility_wind}
 \end{figure}
 
-\subsection{能见度与本站气压的关系}
+\subsubsection{能见度与本站气压的关系}
 
 气压作为重要的气象因子之一，对能见度也有较大的影响，本文数据中与气压相关的数据有本站气压、修正海平面气压和飞机着陆地区最高气压。经 4.4 小节中的相关性分析和先验知识，我们认为该三个变量间具有较强的共线关系，因而只选择对能见度相关性较大的本地压强作为气压因子。对本章数据中的气压进行统计，结果如表 \ref{tab:visibility_pressure} 和图 \ref{fig:pressure_statistics} 所示。
 
@@ -464,7 +369,7 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
 从上表和图中介可以看出，不同的本站气压对能见度有较强的关联，同时春季的气压等级普遍低于冬季气压，但呈现出季节差异性，主要体现在冬季气压与能见度之间呈正相关，春季呈现负相关，这与 4.4 节中的分析一致；造成这种差异的主要原因在于气压对能见度的影响是间接的，它通过影响风速和温度，在冬季容易形成上升气流，导致地表气压局部低，地表气温低，相应能见度越大，而春季多为暖流，且压强本身较为稳定且强度低。
 
 利用散点图构建能见度与气压之间的统计学关系，从图 4-7 中我们可以发现，气压与能见度之间并非简单的线性关系，从结果上看二者呈现三次函数关系，拟合结果如下图所示。
-
+R2 系数分别为0.9085 和0.7083.
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -472,7 +377,7 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
     \label{fig:pressure_visibility}
 \end{figure}
 
-\subsection{能见度与温度的关系}
+\subsubsection{能见度与温度的关系}
 
 温度是影响能见度的一种重要气象因子，本文数据中与温度相关的数据有温度（TEMP）和露点温度（DWPOINT）。经 4.4 小节中的相关性分析和先验知识，我们认为二者间具有较强的共线关系，因而只选择与能见度相关性较大的温度（TEMP）作为温度因子，对本章数据中的温度进行统计，结果如表 \ref{tab:temperature_visibility} 和图 \ref{fig:temperature_stats} 所示。
 
@@ -508,7 +413,7 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
     \label{fig:4-9}
 \end{figure}
 
-\subsection{能见度与相对湿度的关系}
+\subsubsection{能见度与相对湿度的关系}
 
 相对湿度也是影响能见度的重要因子之一，本章数据中的气压进行统计，结果如表 \ref{tab:4-6} 和图 \ref{fig:4-10} 所示。
 
@@ -551,9 +456,9 @@ LOCALDATE & RVR & MOR & WS2 & WD2A & CW2A & PAINS & QFE & TEMP & RH & DEWP \\
     \label{fig:nonlinear_fit}
 \end{figure}
 
-\section{能见度与气象因子的多变量非线性回归模型}
+\subsection{能见度与气象因子的多变量非线性回归模型}
 
-\subsection{能见度与气象因子的多元回归方程的确定}
+\subsubsection{能见度与气象因子的多元回归方程的确定}
 
 结合上述的因子分析，大气能见度与温度、气压、湿度和风速密切相关，为研究这些因子共同作用对大气能见度之间的影响，姑且假设这些因子对能见度之间的共同作用是加性的，因而其回归拟合公式为：
 
@@ -565,7 +470,7 @@ a_{7} * t^{3} + a_{8} * t^{2} + a_{9} * t + a_{10} * u^{2} + a_{11} * u
 
 式中，$VIS$ 表示大气能见度 (m)，$vs$ 表示风速 (m/min)，$pa$ 表示压强 (pa)，$t$ 为温度 ($^\circ$C)，$u$ 为相对湿度 (\%)，$a_{0} - a_{11}$ 为各项系数。以此为目标方程，利用本章提供的样本数据，通过遗传算法进行最优系数求解。
 
-\subsection{遗传算法求解多元非线性方程的最优回归系数}
+\subsubsection{遗传算法求解多元非线性方程的最优回归系数}
 
 遗传算法是一种借鉴生物界进化规律演化而来的随机搜索算法，主要用于解决 N-P 问题（枚举问题），通常用于求解非线性方程的全局最优解。本章是解决能见度和气候因子多元非线性方程的最优化问题，因而可以使用遗传算法进行估计。
 
@@ -668,9 +573,9 @@ a_{7} * t^{3} + a_{8} * t^{2} + a_{9} * t + a_{10} * u^{2} + a_{11} * u
     \label{fig:flowchart}
 \end{figure}
 
-\section{视频数据预处理}
+\subsection{视频数据预处理}
 
-\subsection{视频转关键帧图像}
+\subsubsection{视频转关键帧图像}
 
 本章数据中所给的视频数据是从 2020 年 3 月 13 日 00 时 00 分 26 秒开始到上午 11 时 47 分 48 秒，时间间隔为 1 秒，而机场 AMOS 观测数据中，实测能见度是从 2020 年 3 月 12 日 8 时开始到 2020 年 3 月 13 日 7 时 59 分 45 秒，时间间隔为 15 秒。为保证建立视频信息与实测能见度值的对应关系，我们以 1 分钟为时间间隔提取视频的关键帧照片，并将实测能见度也以 1 分钟为间隔建立与关键帧图像的对应关系。
 
@@ -681,7 +586,7 @@ a_{7} * t^{3} + a_{8} * t^{2} + a_{9} * t + a_{10} * u^{2} + a_{11} * u
     \label{fig:5-2}
 \end{figure}
 
-\subsection{异常图像处理}
+\subsubsection{异常图像处理}
 
 在实际的转化过程中，有一些图像出现虚晃、模糊和颜色变化等差异。对于单个图像出现异常问题的，我们选用其相邻 1 分钟间隔内图像进行替代，如下图 5-3 所示。对于连续图像序列出现问题的应该允与剔除，如下图 5-4 所示
 
@@ -699,7 +604,7 @@ a_{7} * t^{3} + a_{8} * t^{2} + a_{9} * t + a_{10} * u^{2} + a_{11} * u
     \label{fig:5-4}
 \end{figure}
 
-\subsection{ROI 选取}
+\subsubsection{ROI 选取}
 
 提取的图像中包含了部分与能见度无关的因素，例如顶部变化的文本信息，些因素在特征提取时不能正确反映能见度值，在后期模型训练中会形成误差。根据能见度的定义以及人眼在观察周围目标物时，亮度对比 $ k = \left| \frac{B_{1} - B_{g}}{B_{g}} \right| $ 若小于 0.02，人眼将无法判别目标物\cite{ref8}。
 
@@ -725,7 +630,7 @@ a_{7} * t^{3} + a_{8} * t^{2} + a_{9} * t + a_{10} * u^{2} + a_{11} * u
     \label{fig:5-5}
 \end{figure}
 
-\subsection{降噪处理和增强处理}
+\subsubsection{降噪处理和增强处理}
 
 监测摄像头在正常工作情况下可能会受到多种因素的影响，在生成图像的过程中产生干扰噪声。同时，还需要对原始图像进行增强操作，消除由于环境光照不均而产生的图像质量不一问题，增强整体对比度，使模型能获取更加准确的图像特征。本文使用的图像增强方法为 Retinex，降噪方法选择中值滤波。
 
@@ -750,7 +655,7 @@ a_{7} * t^{3} + a_{8} * t^{2} + a_{9} * t + a_{10} * u^{2} + a_{11} * u
     \label{fig:5-8}
 \end{figure}
 
-\section{能见度时序变化特征分析}
+\subsection{能见度时序变化特征分析}
 
 将处理后的能见度序列数据进行可视化，并计算相邻时间的变化率，结果如下图 5-9 所示。
 
@@ -764,13 +669,13 @@ a_{7} * t^{3} + a_{8} * t^{2} + a_{9} * t + a_{10} * u^{2} + a_{11} * u
 
 从图 5-7 中可以看出 2020 年 3 月 13 日 0 时 1 分到早上 8 点的能见度变化整体呈下降趋势，并且其变化趋势呈现一定的周期性特征。
 
-\section{图像特征因子分析}
+\subsection{图像特征因子分析}
 
-\subsection{图像特征因子}
+\subsubsection{图像特征因子}
 
 基于视频数据的能见度估计，最重要的问题就是从图像中寻找与能见度相关的图像特征，图像特征包括颜色特征、纹理特征等，通过从图像中挖掘这些有效的特征信息，可以构建这些特征组成的特征向量与能见度之间的内在关系，从而计算能见度值。通过多方面的搜集资料和查阅文献 \cite{ref8,ref9,ref10,ref11}，我们选择图像均方差、图像均值、图像对比度和图像平均梯度作为特征因子。
 
-\subsubsection{图像均方差特征}
+图像均方差特征
 
 光学条件下判别能见度的关键性因素是背景与目标物的对比，图像的均方差是用来衡量窗格内的像素特征值变化幅度，可以反映该窗格内的离散程度，我们通过视觉感知对比度来描述场景中目标物的相关信息，一般来说，均方差越大，图像越清晰，相应的能见度也越大，反之图像越模糊，能见度越小，因此，我们需要将彩色图像 RGB 颜色空间转化为 HSI 颜色空间进行处理，提取亮度分量，计算公式如下式 (5-1) 所示：
 
@@ -786,7 +691,7 @@ I = \frac{1}{3} \left( R + G + B \right)
 
 式中，$R$、$G$、$B$ 分别为彩色空间中的红绿蓝三个波段，$I$ 为亮度特征值。$\sigma$ 为均方差，$I$ 为像素函数，$m$，$n$ 为窗格的长和宽，$i$，$j$ 为窗格内的像素坐标。
 
-\subsubsection{图像平均梯度特征}
+图像平均梯度特征
 
 边缘信息是图像特征中重要的一种，人们通常比较关注物体的边缘信息，边缘信息可以获取物体的形状大小等信息。由于目标物距离比较远或者能见度较低，人通常无法分辨物体的边缘信息，因而边缘信息与能见度具有高度相关性。我们通过计算平均梯度的大小反正图像边缘细节的变化率，即表示图像清晰度，平均梯度越大，图像越清晰，对应的能见度也越大，反之图像越模糊，能见度越低，其计算公式如式 (5-3) 所示：
 
@@ -802,7 +707,7 @@ g = \frac{1}{(m-1) \times (n-1)} \times \sum_{i=1}^{m-1} \sum_{j=1}^{n-1} \sqrt{
 
 式中，$g$ 为平均梯度，$f$ 为像素函数，$m$，$n$ 为窗格的长和宽，$i$，$j$ 为窗格内的像素坐标。
 
-\subsubsection{图像对比度特征}
+图像对比度特征
 
 人眼对高对比度的图像目标轮廓区域非常敏感，图像对比度在一定程度上也能反映目标物的轮廓以及物体内部纹理信息，其基本思想是去除灰度图像的边缘像素点，其他任意像素 $(i,j)$ 相邻的像素为 $(i',j')$，则像素 $(i,j)$ 可通过式 (5-4) 计算的到 8 个对比度特征是 $C$，选择 8 个对比度特征值中最大值最为像素 $(i,j)$ 最终的对比度特征值，并计算该窗格内对比度的均值作为该窗格的特征。
 
@@ -811,7 +716,7 @@ C = \frac{\left|f(i,j) - f(i',j')\right|}{\max\left(f(i,j), f(i',j')\right)}
 \tag{5-4}
 \end{equation}
 
-\subsubsection{图像均值特征}
+图像均值特征
 
 人的视觉除了对图像对比度和边缘信息较为敏感外，还对图像的颜色深浅和明暗程度较为敏感。通过计算兴趣窗口内像素均值来表征图像额明暗程度、颜色深浅，其计算公式如下式：
 
@@ -822,7 +727,7 @@ C = \frac{\left|f(i,j) - f(i',j')\right|}{\max\left(f(i,j), f(i',j')\right)}
 
 式中，$\mu$ 为均值，$f$ 为像素函数，$m$，$n$ 为窗格的长和宽，$i$，$j$ 为窗格内的像素坐标。
 
-\subsection{图像子窗格划分}
+\subsubsection{图像子窗格划分}
 
 为了更好地捕获兴趣区域的像素特征，减少噪音影响。我们需要对图像进行分窗格处理，即按照 $n \times n$ 的大小，对图像进行区域划分，结果如下图所示，红色方格即为一个区域。下面特征因子的提取均是以一个窗格为基本单元统计计算得到。
 
@@ -832,7 +737,7 @@ C = \frac{\left|f(i,j) - f(i',j')\right|}{\max\left(f(i,j), f(i',j')\right)}
 \caption{图像子窗格分布}
 \end{figure}
 
-\subsection{特征因子与能见度的相关性分析}
+\subsubsection{特征因子与能见度的相关性分析}
 
 基于视频的能见度反演模型利用的是大气光学分析与数字图像图像处理及人工智能技术结合提取与能见度高度相关的图像特征，进而估计能见度信息。因此首要解决的问题就是寻找和求证与能见度高度相关的图像特征。
 
@@ -855,7 +760,7 @@ C = \frac{\left|f(i,j) - f(i',j')\right|}{\max\left(f(i,j), f(i',j')\right)}
 
 从图 5-11 中可以看出三种方法计算相关系数具有较高的一致性，其中图像亮度均方差 (Mean\_square)、平均梯度 (Average\_gradient) 和对比度 (Contrast\_ratio) 与能见度 (MOR) 均具有加强的相关性，但是图像均值与能见度的相关系数不稳定且较其他因子明显偏低，导致这种现象的原因可能是均值描述的窗格的敏感程度，易收到光线强弱的影响，从视频中可以看出检测时间基本为夜间，所以均值对能兼得影响难以评估。因而我们最终选择图像亮度均方差、平均梯度和对比度作为最终的图像特征因子，构建基于视频数据的大雾天气下能见度反演模型。
 
-\subsection{不同窗格下图像特征因子与能见度的相关性分析}
+\subsubsection{不同窗格下图像特征因子与能见度的相关性分析}
 
 基于图像对能见度进行估计，首先就需要对图像进行分窗处理，在提取兴趣区域内的特征因子，因而不同的窗格大小可能会对图像特征提取的精度有影响。因而本节分别进行不同大小的窗格下的特征因子与能见度的相关性分析，这里的特征因子只选择上节中最后选出的三种因子，窗口大小分别设为 \(3 \times 3\)、\(5 \times 5\)、\(8 \times 8\)、\(10 \times 10\)、\(12 \times 12\)、\(20 \times 20\)、\(25 \times 25\) 和 \(30 \times 30\)，结果如图(5-12)所示。
 
@@ -916,11 +821,11 @@ C = \frac{\left|f(i,j) - f(i',j')\right|}{\max\left(f(i,j), f(i',j')\right)}
 
 从图 5-14 总可以看出，这些特征因子对应的最优兴趣窗格主要分布在由明显建筑物轮廓的地方，如图中建筑物白色边缘与圆柱形表面；最优兴趣网格的分布整体上较为集中，同时不同因子对应的最优兴趣窗格的分布具有高度的一致性，这主要是夜间拍摄的图像整体光线较暗，同时能见度较低，远处的景物基本模糊，图像中仅有一处近景的建筑物比较清晰，大部分的图像特征因子也分布在这里，因此最优兴趣窗口的分布一般集中在具有摄像头附近区域具有明显轮廓的目标物区域。
 
-\section{能见度反演模型的构建}
+\subsection{能见度反演模型的构建}
 
 线性回归模型是众多领域中常见的反演模型，但由于复杂的环境因素具有干扰性，对模型的反演效果造成很大影响，同时线性回归也较为单一，模型的精度有待提高。因而，我们构建了基于 BP 神经网络修正线性回归残差的组合模型，基本思想是首先利用线性回归对模型能见度进行初步粗糙的估计，然后利用 BP 神经网络修正线性残差，不仅仅发挥了线性回归模型的运算简单特点，同时又充分利用了 BP 神经网络兼顾线性和非线性的特点。
 
-\subsection{三元线性回归建模}
+\subsubsection{三元线性回归建模}
 
 实际中，能见度往往同时受到复杂环境下的多个因素影响，单一考虑一个因素显然时不够的，从大气光学和图像底层特征分析可知图像的对比度特征和边缘梯度特征等能描述能见度信息。因而我们尝试使用三元一次线性回归模型对能见度进行初步估计，模型的形式如下式所示。
 
@@ -957,7 +862,7 @@ $\alpha_{1}$ & $\alpha_{2}$ & $\alpha_{3}$ & $R^{2}$ \\
 \caption{BP 神经网络结构}
 \end{figure}
 
-\subsection{BP 神经网络修正线性残差模型的构建}
+\subsubsection{BP 神经网络修正线性残差模型的构建}
 
 残差修正模型目前已经应用于各个领域，利用 BP 神经网络来建立修正残差模型的主要步骤如下：
 
@@ -974,7 +879,7 @@ $\alpha_{1}$ & $\alpha_{2}$ & $\alpha_{3}$ & $R^{2}$ \\
     \label{fig:bp_model}
 \end{figure}
 
-\subsection{精度分析}
+\subsubsection{精度分析}
 
 我们选用 BP 神经网络的以 $e_{i}$ 序列作为 $3 \times 15 \times 1$ 的 BP 神经网络输出，输入层和隐藏层均采用 tansig 函数作为传输函数，purelin 函数作为输出层的传输函数，学习速率为 0.01，收敛误差为 0.01，最大迭代次数为 10000，结果如下图 5-16 所示。
 
@@ -1026,7 +931,7 @@ $\alpha_{1}$ & $\alpha_{2}$ & $\alpha_{3}$ & $R^{2}$ \\
     \label{fig:crop_result}
 \end{figure}
 
-\subsection{图像增强}
+\subsubsection{图像增强}
 
 实际环境中存在着多种因素会影响相机拍摄的图像，为了增强图像的对比度，便于后续提取有效的图像特征信息，需要采用直方图均衡化增强图像的对比度。结果如下图 \ref{fig:histogram_comparison} 所示。从灰度直方图中可以看出，原图的灰度比较集中，经过直方图均衡化后，灰度分布广泛，从而达到增强对比度的效果，更容易区分不同灰度间的细节。
 
@@ -1049,7 +954,7 @@ $\alpha_{1}$ & $\alpha_{2}$ & $\alpha_{3}$ & $R^{2}$ \\
     \label{fig:histogram_comparison}
 \end{figure}
 
-\section{边缘检测}
+\subsection{边缘检测}
 
 为了能提取出车道线，需对增强后得图像进行边缘检测，为了获得更好的效果，采用 5 中算子进行对比，分别是梯度法边缘检测、sobel 算子边缘检测、Roberts 边缘算子检测、
 
@@ -1085,10 +990,9 @@ prewitt 算子边缘检测。结果如图 6-5 所示。其中，Prewitt 算子�
     \label{fig:edge_detection}
 \end{figure}
 
-\section{道路提取}
+\subsection{道路提取}
 
-\subsection{霍夫变换}
-
+\subsubsection{霍夫变换}
 霍夫变换是一种特征检测(feature extraction)，被广泛应用在图像分析(image analysis)、计算机视觉(computer vision)以及数位影像处理(digital image processing)，主要是用来辨别找出物件中的特征，例如：线条。其实质是一种统计投票的决策算法，通过一点(x,y)的直线有 n 条，将这些直线对应至极坐标中，可以形成一条曲线，将所有存在直线的所有像素点映射值二维参数空间中去，并对参数频数进行统计叠加，频数越高说明该像素对应参数所生成的直线在原图相中用过的感兴趣点越多，即被检测出直线的概率越大。
 
 将经过增强处理和边缘算子的图像带入霍夫变换算法，结果如图 6-6 所示。图中红色线条表示我们提取的主要车道线段，右图白线表示直线变换到极坐标的曲线，曲线上的像素点越明亮，说明该像素对应参数所生成的直线在原图像中通过的感兴趣像素点越多，红
@@ -1135,7 +1039,7 @@ prewitt 算子边缘检测。结果如图 6-5 所示。其中，Prewitt 算子�
     \label{fig:6-7}
 \end{figure}
 
-\section{相机标定}
+\subsection{相机标定}
 
 根据路况摄像机成像模型，建立路面坐标系、摄像机坐标系与成像坐标系的转换关系，推算出路面上一点到摄像机坐标的垂直距离与该点在像平面上对应像素点的关系$^{[17]}$:
 
@@ -1159,7 +1063,7 @@ d =
 
 选取图 6-7 中的 A $(203, 234)$、B $(229, 268)$ 两点坐标，带入 6-1 和 6-2，解得 $d$ 大约为 6.5。
 
-\section{亮度对比度提取道路最远可视点}
+\subsection{亮度对比度提取道路最远可视点}
 
 图像道路兴趣域中，像素点 $x_i$ 和相邻像素点 $x_1$ 的对比度归一化定义为：
 
@@ -1201,7 +1105,7 @@ C =
     \label{fig:6-8}
 \end{figure}
 
-\section{暗原色法计算消光系数}
+\subsection{暗原色法计算消光系数}
 
 Koschmieder 定律已被广泛应用于计算机视觉和图形学领域，表示为如下关系：
 \begin{equation}
@@ -1254,7 +1158,7 @@ t(x) = 1 - \frac{\min\limits_{c \in \{r, g, b\}} \left[ \min\limits_{y \in \Omeg
     \label{fig:6-9}
 \end{figure}
 
-\section{能见度估计}
+\subsection{能见度估计}
 
 根据之前理论分析可知，影响能见度的主要因素是物理光学传播状态。光在介质中传播时，受颗粒物吸收和散射的影响会一定的削弱和增强，这种关系表示为 Koschmieder 定律：
 
@@ -1337,16 +1241,15 @@ k = -\frac{\ln \left( t(x) \right)}{d(x)}
 
 从图中可以看出，能见度的变化较为平缓，上下波段在 20 之间，并且能见度基本上保持恒定，大约在 47m 左右。
 
-\subsection{时间序列的平稳性及周期性检验}
+\subsubsection{时间序列的平稳性及周期性检验}
 
 时间序列是按照时间排序的一组随机变量，通常是在一定的时间间隔内以一定的采样率对某潜在过程进行观测或采样的结果。时间序列数据在本质上反应了随机变量随时间的变化趋势。因此通过对能见度曲线的时间序列研究可以获取能见度随时间变化的规律。
 
-\subsubsection{时间序列平稳性}
+{时间序列平稳性
 
 某随即变量的时间序列具有平稳性表示该事件序列的本质特征能延续到未来，即该随机变量的历史和现状特征具有代表性和可延续性，因此可以基于历史和现状预测随机变量的未来趋势。
 
-\subsubsection{时间序列周期性}
-
+时间序列周期性
 某随机变量由于外部影响随自然季节的交替变化出现波峰和波谷的规律。
 
 \begin{figure}[h]
@@ -1358,7 +1261,7 @@ k = -\frac{\ln \left( t(x) \right)}{d(x)}
 
 从图中可以看出，能见度随着时间的变化具有一定的周期，且符合平稳性检验。
 
-\subsection{自相关性与偏相关性}
+\subsubsection{自相关性与偏相关性}
 
 相关函数表现出时间序列中任意两个值之间的相关性是如何随着时间间隔而改变的，自相关函数刻画了时间序列相邻变量之间的相关性，偏相关函数则是排除了其他中间变量的影响，真实地反映了两个变量之间的相关性，并且二者紧密相连，同时两个相关图所反映的信息在时间序列分析各方面发挥着关键作用。
 
@@ -1427,7 +1330,7 @@ q 代表预测模型中采用的预测误差的滞后数（lags），也叫做 M
 
 从图 7-6 中的结果来看，ARIMA 时间序列预测模型估计的大雾变化趋势为加重，即该时间段内，能见度的变化趋势为逐渐下降，但趋势变化较缓。
 
-\section{GM(1,1)灰色预测模型}
+\subsection{GM(1,1)灰色预测模型}
 
 灰色系统是指既含有已知信息又含有未知信息的系统，灰色模型即对灰色系统预测的模型，表达式 $GM(n, x)$，是指用 $n$ 阶微分方程对 $x$ 个变量建立模型。通过把分散在时间轴上的离散数据看成一组连续变化的序列，采用累加和累减的方式，将灰色系统中的未知因素弱化，强化已知因素的影响程度，最后构建一个以时间为变量的连续微分方程，通过数学方法确定方程中的参数，从而实现预测目的。他无需大量数据样本，短期预测效果好，运算过程简单。但对非线性数据样本预测效果差。
 
@@ -1470,7 +1373,7 @@ q 代表预测模型中采用的预测误差的滞后数（lags），也叫做 M
 
 从图 \ref{fig:gray_prediction} 中可以看出，灰色预测的预测值呈下降趋势，表明在 0-100 个时间间隔（42 秒）中，大雾的变化趋势时逐渐加重的，但变化速度较缓。此时大雾短时间内不会消散。
 
-\section{线性回归模型}
+\subsection{线性回归模型}
 
 对能见度曲线进行一元线性回归，从图中可以看出随着时间的增加，大雾逐渐减弱，当 MOR=150 时，时间为=为 8 点 50 分 56 秒，即为大雾消散时间。
 
@@ -1513,15 +1416,851 @@ q 代表预测模型中采用的预测误差的滞后数（lags），也叫做 M
 
 \end{document}
 
-% Missing placeholders restored
-\includegraphics[width=0.9\textwidth]{image.png}
-\begin{table}[h]
-\centering
-\begin{tabular}{l l}
-学校 & 郑州大学 \\
-参赛队号 & 20104590100 \\
-队员姓名 & 1. 戴浩然 \\
- & 2. 彭斐琳 \\
- & 3. 智志洋 \\
-\end{tabular}
-\end{table}
+\section{附录}
+附录
+问题一
+%%  数据与处理
+clear;clc;
+[datanum,txt] = xlsread("dataAMOS20191216");
+datatxt = txt(3:end,2);
+newtxt = {};
+newNum = [];
+
+for i = 1:size(datatxt,1)
+time = datatxt(i);
+timechar = cell2mat(time);
+timeMilisecond = timechar(length(timechar)-1:length(timechar));%     %1 秒间隔
+standard = '00';
+if timeMilisecond == standard  %1 秒间隔
+newtxt(size(newtxt,1)+1,1) = datatxt(i);
+newNum(size(newNum,1)+1,:) = datanum(i,:);
+end
+end
+%% 处理15 秒一个间隔
+clear;clc;
+[datanum,txt] = xlsread("dataAMOS20191216",'处理后1 分钟间隔');
+datatxt = txt(3:end,2);
+newtxt = {};
+newNum = [];
+
+for i = 1:size(datatxt,1)
+time = datatxt(i);
+timechar = cell2mat(time);
+timeMilisecond = timechar(length(timechar)-4:length(timechar)-3);
+if mod(str2num(timeMilisecond),10) ==0 %15 秒或30 一个间隔
+newtxt(size(newtxt,1)+1,1) = datatxt(i);
+newNum(size(newNum,1)+1,:) = datanum(i,:);
+end
+end
+
+%遗传算法
+clear;clc;
+% 目标函数y = a0 + a1*x1^2 + a2*x1 + a3*x2^3 + a4*x2^2 + a5*x2 + a6*x3^4 + a7*x3^3 +
+a8*x3^2 + a9*x3 + a10*x4^2 + a11*x4
+%两边求对数得到化为线性：lny = lna0 + ... + lna11 + 3lnx1 + 6lnx2 + 10lnx3 + 3lnx4
+%在令 new = lny; new1 = lnx1; new2 = lnx2; new3 =lnx3; new4 = lnx4;
+
+
+
+51
+%得到方程 new = b0 + 3*new1 + 6*new2 + 10*new3 + 3*new4;
+global  y;
+global  x;
+adress = {'dataAMOS20200313.xlsx','dataAMOS20191216.xlsx'};
+for j = 1:2
+data = xlsread(cell2mat(adress(j)),"处理后15 分钟间隔");
+y = data(:,4)'; %能见度
+x1 = data(:,6); %风速
+x2 = data(:,9); %本站气压
+x3 = data(:,12); %温度
+x4 = data(:,13); %相对湿度
+x = [x1 x2 x3 x4]';
+
+%定义待调用的两个子程序seaircal()和seair_constraint()
+ObjectiveFunction = @seaircal;
+nvars = 12;
+%循环ga()遗传算法
+for i =1:200
+[d,fval] = ga(ObjectiveFunction,nvars,[],[],[],[],[],[],[]); %x 是待估变量，fval 是返回
+的自适应值
+result(i,:) = [d,-fval];
+end
+%将计算结果导出为*.xls 格式的电子表格文档
+result1 = sortrows(result,13,'descend');
+xlswrite(cell2mat(adress(j)),result1,'遗传算法估计参数');
+end
+%% 程序功能：为遗传算法提供自适应函数（SEAIIDR 模型），返回simerr 作为评价指标，
+即每次进化会选出最小的simerr 值
+function simerr = seaircal(a)
+global x;
+global y;
+for j = 1:size(x,2)
+yichuan(j) = a(1) + a(2)*x(1,j)^2 + a(3)*x(1,j) + a(4)*x(2,j)^3 + a(5)*x(2,j)^2 + a(6)*x(2,j)
++ a(7)*x(3,j)^4 + a(8)*x(3,j)^3 + a(9)*x(3,j)^2 + a(10)*x(3,j) + a(11)*x(4,j)^2 + a(12)*x(4,j);
+end
+# %% 计算R2 值
+## %计算误差评定指数：模型参数条件下SARS 传播过程与真实过程的拟合度值
+simerr = -FITNESS(y',yichuan'); %因为ga()函数默认输出
+
+问题二
+% 调试
+% Input_path = 'F:\永无极限小组\E20104590100\问题二\图片\裁剪后\';
+% namelist = dir(strcat(Input_path,'*.jpg'));
+% name=namelist(4).name;  %namelist(i).name; %这里获得的只是该路径下的文件名
+
+
+
+52
+% I=imread(strcat(Input_path, name)); %图片完整的路径名
+% [meansquare,meanG,tidu,contrast, regionI, regionG, const] = featureExtrude(I,8,8);
+% function [meansquare,meanG,tidu,contrast, regionI, regionG, const] = featureExtrude(image,
+ch, cw)
+function feature = featureExtrude(image, ch, cw) %%ch 和cw 是子窗体的尺寸
+%获取图像的rgb 通道矩阵，并将其转化为double 可计算类型
+R=image(:,:,1);
+G=image(:,:,2);
+B=image(:,:,3);
+R0=double(R);
+G0=double(G);
+B0=double(B);
+[rs,cs] = size(R0);% 行数列数
+
+%将rgb 颜色空间转换到HSI 颜色空间.I 为亮度特征值，为了计算均方差
+I = 1/3*(R0 + G0 + B0);
+%将rgb 颜色空间转换到灰度图像，为了计算梯度
+G = double(rgb2gray(image)); %按照0.3 0.69 0.11（rgb）
+
+%*************分块，即按照一定窗口大小计算各个特征***************************
+% ch 为行间隔 cw 为列间隔 ，控制分块图像的大小，如现在的8*8
+% numr 为间隔块个数 numc 为间隔块个数
+numr = round(rs/ch); %计算总共多少行
+numc = round(cs/cw); %计算总共多少列
+allregion = numr*numc; %总共多少区域
+% 区域块分割
+t1 = (0:numr-1)*ch + 1; t2 = (1:numr)*ch;
+t3 = (0:numc-1)*cw + 1; t4 = (1:numc)*cw;
+count = 1; %用来记录一幅影像生成了多少个窗口，最终结果应该等于allregion+1
+%获得一幅影像中的各窗口矩阵，即分块矩阵
+for i=1:numr
+for k=1:numc
+%从t1 行至t2 的子块
+x=t1(i):t2(i);
+y=t3(k):t4(k);
+regionI(:,:,count) = I(x(1):x(length(x)),y(1):y(length(y)));
+regionG(:,:,count) = G(x(1):x(length(x)),y(1):y(length(y)));
+count = count + 1;
+%             rectangle ('Position', [t3(j) t1(i) length(x) length(y)], ...,
+%                 'EdgeColor', 'r', 'LineWidth', 1); %绘制矩形分割格子，红色
+end
+end
+%****************分块，即按照一定窗口大小计算各个特征************************
+%计算亮度均方差(是一个窗格的数值)
+
+
+
+53
+for j = 1: allregion
+f = regionI(:,:,j);
+u = mean(mean(f));
+s = 0; %每一个格子的方差
+for i=1:cw
+for k=1:ch
+s = s+(f(i,k)-u)^2;
+end
+end
+meansquare(j) = sqrt(s/(cw*ch)); %一幅影像一个子窗口的一个均方差特征
+end
+
+%计算灰度均值
+for j = 1: allregion
+f = regionG(:,:,j);
+meanG(j) = mean(mean(f));%一幅影像一个子窗口的一个均值特征
+end
+
+%计算平均梯度（每个像素的值是梯度，对于窗口还需要求窗口内的所有像素均值,即我们
+所做的这个tidu_j/((cw-1)*(ch-1))）
+for j = 1: allregion
+f = regionG(:,:,j);
+tidu_j = 0; %每一个格子的平均梯度
+for i=1:cw-1
+for k=1:ch-1
+tidu_j=(tidu_j)+sqrt( ((f(i,k)-f(i+1,k))^2+(f(i,k)-f(i,k+1))^2)/2 );
+end
+end
+tidu(j) = tidu_j/((cw-1)*(ch-1)); %一幅影像一个子窗口的一个均方差特征
+end
+
+%计算灰度对比度（每个像素的值是对比度，对于窗口还需要求窗口内的所有像素均值）
+for j = 1: allregion
+f = regionG(:,:,j);
+gray_j = []; %每一个格子的对比度
+d = 1;
+for i=2:cw-1
+for k=2:ch-1
+gray_j(1) = abs(f(i,k)-f(i-1,k-1))/max(f(i,k), f(i-1,k-1));
+gray_j(2) = abs(f(i,k)-f(i-1,k))/max(f(i,k), f(i-1,k));
+gray_j(3) = abs(f(i,k)-f(i-1,k+1))/max(f(i,k), f(i-1,k+1));
+gray_j(4) = abs(f(i,k)-f(i,k-1))/max(f(i,k), f(i,k-1));
+gray_j(5) = abs(f(i,k)-f(i,k+1))/max(f(i,k), f(i,k+1));
+gray_j(6) = abs(f(i,k)-f(i+1,k-1))/max(f(i,k), f(i+1,k-1));
+
+
+
+54
+gray_j(7) = abs(f(i,k)-f(i+1,k))/max(f(i,k), f(i+1,k));
+gray_j(8) = abs(f(i,k)-f(i+1,k+1))/max(f(i,k), f(i+1,k+1));
+const(d) =  max(gray_j);
+d= d+1;
+end
+end
+contrast(j) = mean(const); %一幅影像一个子窗口的一个均方差特征
+end
+feature = [meansquare;meanG;tidu;contrast];
+
+end
+
+# % I:原始图像
+clear;clc;close all
+Input_path = 'F:\永无极限小组\E20104590100\问题二\图片\裁剪后\';
+namelist = dir(strcat(Input_path,'*.jpg')); %寻找该文件夹中所有后缀为.jpg 的文件并且存入
+其相关信息
+files_name =sort_nat({namelist.name}); %cell2mat(files_name(1))可以变成字符串
+data = xlsread('VIS_R06_12.xlsx','处理后数据');
+len = length(namelist);
+
+%%
+********************************
+将
+能
+见
+度
+人
+为
+分
+级
+************************************ %%
+% data50 = [];
+% data200 = [];
+% data500 = [];
+% data1000 = [];
+% data1600 = [];
+% for i = 1: size(data,1)
+%     if data(i,1)<=50
+%         data50(1, size(data50,2)+1) = data(i,1); %能见度值
+%         data50(2, size(data50,2)) = data(i,2); %对应序号也对应图片序号
+%     elseif data(i,1)<=200
+%         data200(1, size(data200,2)+1) = data(i,1);
+%         data200(2, size(data200,2)) = data(i,2);
+%     elseif data(i,1)<=500
+%         data500(1, size(data500,2)+1) = data(i,1);
+%         data500(2, size(data500,2)) = data(i,2);
+%     elseif data(i,1)<=1000
+%         data1000(1, size(data1000,2)+1) = data(i,1);
+%         data1000(2, size(data1000,2)) = data(i,2);
+%     else
+%         data1600(1, size(data1600,2)+1) = data(i,1);
+%         data1600(2, size(data1600,2)) = data(i,2);
+
+
+
+55
+%     end
+% end
+%%********************************
+将
+能
+见
+度
+人
+为
+分
+级
+************************************ %%
+
+%% ******************** 统计影像特征因子和对应能见度的相关性
+************************************ %%
+% feacount = 4;
+% feature = [];
+% for k=1:len
+%     name=namelist(k).name;  %namelist(i).name; %这里获得的只是该路径下的文件名
+%     I=imread(strcat(Input_path, name)); %图片完整的路径名
+%     d = featureExtrude(I, 10, 10);%均方差，均值，梯度，对比度
+%     feature(size(feature,1)+1,1:feacount) = mean(d,2)'; %求所有列的均值,即特征值的均
+值
+%     for j = 1:size(data,1)  %遍历所有样本寻找与该图像特征对应的能见度
+%         if  str2double(name(1:length(name)-4)) ==data(j,2)
+%              feature(size(feature,1),feacount+1) = data(j,1);
+%         end
+%     end
+% end
+% % 求维度之间的相关系数
+% rho = corr(feature, 'type','Spearman'); %Kendall Pearson Spearman
+
+% % 绘制热图
+% string_name={'Mean_square','Mean','Average_gradient','Contrast_ratio','MOR'};
+% xvalues = string_name;
+% yvalues = string_name;
+% h = heatmap(xvalues,yvalues,rho, 'FontSize',10, 'FontName','Times New Roman');
+% colormap(parula)
+% saveas(gcf,sprintf('各特征因子与能见度的热力图(肯德尔).jpg'),'bmp'); %保存图片
+%%******************** 统计影像特征因子和对应能见度的相关性
+************************************ %%
+
+% %% ******************** 统计窗口大小和对应能见度的相关性
+************************************ %%
+% feacount = 4;
+% feature = [];
+% relation = [];
+% grid_size = [3 5 8 10 12 20 25 30]; %尺寸的选择注意，不能使7 15 等，会导致分块的时候
+y=[1000 1001],主要问题是因为取整问题
+% for i = 3 : size(grid_size,2)
+%     for k=1:len
+%         name=namelist(k).name;  %namelist(i).name; %这里获得的只是该路径下的文
+
+
+
+56
+件名
+%         I=imread(strcat(Input_path, name)); %图片完整的路径名
+%         d = featureExtrude(I, grid_size(i), grid_size(i));%均方差，均值，梯度，对比度
+%         feature(size(feature,1)+1,1:feacount) = mean(d,2)'; %求所有列的均值,即特征值
+的均值
+%         for j = 1:size(data,1)  %遍历所有样本寻找与该图像特征对应的能见度
+%             if  str2double(name(1:length(name)-4)) ==data(j,2)
+%                 feature(size(feature,1),feacount+1) = data(j,1);
+%             end
+%         end
+%     end
+%     % 求维度之间的相关系数
+%     rho = corr(feature, 'type','Kendall'); %Kendall Pearson Spearman
+%     relation(i,:) = rho(feacount+1,:);
+% end
+%%******************** 统计窗口大小和对应能见度的相关性
+************************************ %%
+
+%%
+*************************
+统
+计
+各
+因
+子
+的
+最
+优
+兴
+趣
+窗
+口
+****************************** %%
+% feacount = 4;
+% feature_meansquare = [];
+% feature_tidu = [];
+% feature_const = [];
+% for k=1:len
+%     name=cell2mat(files_name(k));  %namelist(i).name; %这里获得的只是该路径下的文
+件名
+%     %遍历所有样本寻找与该图像特征对应的能见度
+%     for j = 1:size(data,1)
+%         if  str2double(name(1:length(name)-4)) ==data(j,2)
+%              feature_meansquare(k,1) = data(j,1);
+%              feature_tidu(k,1) = data(j,1);
+%              feature_const(k,1) = data(j,1);
+%         end
+%     end
+%     I=imread(strcat(Input_path, name)); %图片完整的路径名
+%     d = featureExtrude(I, 8, 8);%均方差，均值，梯度，对比度，注意选择的最有窗口大
+小为8*8
+%     feature_meansquare(k,2:length(d)+1) = d(1,:); %均方差特征，行是第几张图片，列是
+各个窗口
+%     feature_tidu(k,2:length(d)+1) = d(3,:); %平均梯度特征，行是第几张图片，列是各个
+窗口
+%     feature_const(k,2:length(d)+1) = d(4,:); %平均梯度特征，行是第几张图片，列是各个
+窗口
+
+
+
+57
+% end
+%
+% % 求维度之间的相关系数
+% rho_const = corr(feature_const, 'type','Spearman'); %Kendall Pearson Spearman
+% relation_const = rho_const(1,2:end); %第一行即为能见度与每个网格之间的相关性（共
+6250 个网格）,同时去掉第一行第一列的1
+% [grid_relation_const,index] = sort(relation_const,'descend');
+% zuiyou_grid_const = [index(1:10); grid_relation_const(1:10)]; %选取前10 个作为最优窗口
+%
+% rho_tidu = corr(feature_tidu, 'type','Spearman'); %Kendall Pearson Spearman
+% relation_tidu = rho_tidu(1,2:end); %第一行即为能见度与每个网格之间的相关性（共6250
+个网格）,同时去掉第一行第一列的1
+% [grid_relation_tidu,index] = sort(relation_tidu,'descend');
+% zuiyou_grid_tidu = [index(1:10); grid_relation_tidu(1:10)]; %选取前10 个作为最优窗口
+%
+% rho_meansquare = corr(feature_meansquare, 'type','Spearman'); %Kendall Pearson Spearman
+% relation_meansquare = rho_meansquare(1,2:end); %第一行即为能见度与每个网格之间的
+相关性（共6250 个网格）,同时去掉第一行第一列的1
+% [grid_relation_meansquare,index] = sort(relation_meansquare,'descend');
+% zuiyou_grid_meansquare = [index(1:10); grid_relation_meansquare(1:10)]; %选取前10 个作
+为最优窗口
+% save('feature_grid','feature_const','feature_meansquare','feature_tidu')
+% 最终的结果就是zuiyou_grid_meansquare zuiyou_grid_tidu zuiyou_grid_const 三个变量
+%文件中的feature_grid 就是每幅影像对应的一幅影像里每个窗口的一个因子值
+%%********************************
+统
+计
+最
+优
+兴
+趣
+窗
+口
+**************************************** %%
+
+%%
+*************************
+三
+元
+线
+性
+回
+归
+建
+模
+****************************** %%
+% load('feature_grid.mat'); %加载各窗口的各特征值与能见度的矩阵
+% zuiyou_grid = [304,3177,3427,3302,3552,429,5302,4802,5052,5802;
+%         304,5301,429,179,5803,54,5426,6053,4801,5303;
+%         304,3177,3302,3427,3552,429,5802,4801,5803,5052];%顺序是梯度、均方差、对
+比度对应最优窗口
+% %将各个特征值对应最优窗口的属性值提取出来，并求取均值
+%   %提取最优窗口对应的梯度
+%   zuiyou_const = [];
+%   zuiyou_tidu = [];
+%   zuiyou_meansquare = [];
+%   for i = 1 : length(feature_const) %表示格网的编号，但是多了一个第一列是能见度，对
+应的窗格编号应该是i-1
+%       for j = 1 : 10
+%           if zuiyou_grid(1,j) == i-1
+%               zuiyou_tidu(:,size(zuiyou_tidu,2)+1) = feature_tidu(:,i);
+
+
+
+58
+%           end
+%           if zuiyou_grid(2,j) == i-1
+%               zuiyou_meansquare(:,size(zuiyou_meansquare,2)+1) =
+feature_meansquare(:,i);
+%           end
+%           if zuiyou_grid(3,j) == i-1
+%               zuiyou_const(:,size(zuiyou_const,2)+1) = feature_const(:,i);
+%           end
+%       end
+%   end
+%
+%   %确定最终需要进行线性回归的 y = a*x1 + b*x2 + c*x3,x1 即为上面选取10 个最右窗
+口的值的均值,梯度，均方差，对比度
+%   x1 = mean(zuiyou_tidu, 2); %对每一行所有列进行求和
+%   x2 = mean(zuiyou_meansquare, 2);
+%   x3 = mean(zuiyou_const, 2);
+%   x = [x1 x2 x3];
+%   y = feature_tidu(:,1);%三个特征第一列都是能见度后面才是各窗口对应的值，所以取
+一个即可
+%   [b,bint,r,rint,stats] = regress(y,x); %b 是各项系数,bint 是系数的95%的置信区间，r 返回
+的是残差,rint 是异常值矩阵，stats 是r2、F 检验、p 值以及误差方法的估计值
+%
+%   %计算残差et = y - yg
+%   yg = b(1)*x1 + b(2)*x2 + b(3)*x3;
+%   e = y - yg;
+%   save('liner_regress','y','x','yg','e')
+%%******************************
+三
+元
+线
+性
+回
+归
+建
+模
+********************************* %%
+
+%% *************************神经网络预测****************************** %%
+% load('liner_regress.mat');
+% p = x'; %输入矩阵
+% t = e'; %目标矩阵
+%
+% %利用函数premnmx 对数据进行归一化
+% [pn, minp, maxp, tn, mint, maxt] = premnmx(p, t); %对于输入矩阵p 和输出矩阵t 进行归一
+化处理
+% dx = [-1, 1; -1, 1; -1, 1]; %归一化处理后最小值为-1，最大值为1
+%
+# % %BP 神经网络训练
+% %建立模型，并用梯度下降算法训练,'tansig'函数为隐层的传输函数，purelin 函数为输出
+层的传输函数
+% net = newff(dx, [3, 15, 1], {'tansig','tansig','purelin'}, 'traingdx');
+% net.trainParam.show = 1000;   %1000 轮回显示一次结果
+
+
+
+59
+% net.trainParam.Lr = 0.01; %学习速率为0.05
+% net.trainParam.epochs = 10000; %最大训练轮回为5000 次
+% net.trainParam.goal = 0.01; %均方根误差
+%
+% net = train(net,pn, tn); %开始训练，其中pn，tn 为归一化后的输入和输出样本
+%
+# % %利用原始数据对BP 网络仿真
+% an = sim(net, pn); %用训练好的模型进行仿真
+% a = postmnmx(an, mint, maxt); %把仿真的得到的数据还原为原始数据量级
+%
+% %本利因样本容量有限使用训练数据进行测试，通常必须用新鲜数据进行测试
+% xx = 1:434;
+% newt = a;
+%
+% figure(1);
+% plot(xx, newt, 'r-o', xx, t, 'b--*');  %绘制公路客运量对比图
+% legend('估计残差修正值','实际残差修正值');
+% xlabel('图片序号');ylabel('残差/m');
+
+%%******************************
+神
+经
+网
+络
+预
+测
+*********************************** %%
+
+%%
+******************************
+神
+经
+网
+络
+预
+测
+*********************************** %%
+% 最终绘图
+% data = xlsread('VIS_R06_12.xlsx','线性拟合');
+% y1 = data(:,1)'; %真实能见度
+% y2 = data(:,5)'; %线性回归估计能见度值
+% y3 = data(:,8)'; %修正估计能见度值
+% y4 = data(:,6)'; %残差
+% x = 1:434;
+% newt = y3; %估计值
+% t = y1; %真实值
+%
+% figure(1);
+% plot(x, newt, 'r-o', x, t, 'b--*');  %绘制公路客运量对比图
+% legend('修正模型估计能见度值','实际能见度值');
+% xlabel('图片序号');ylabel('能见度/m');
+%
+% % saveas(gcf,sprintf('1.jpg'),'bmp'); %保存图片
+
+% %计算r2 值
+% a = y1';
+% b = y3';
+
+
+
+60
+% sizeA=size(a);
+% sizeB=size(b);
+% top = 0;
+% for i=1:1:sizeA(1)
+%     top = top + (a(i,1)-b(i,1))^2;
+% end
+% bot=0;
+% ma=mean(a);
+% for i=1:1:sizeA(1)
+%     bot = bot + (a(i,1)-ma)^2;
+% end
+% sr = 1 - top/bot
+
+问题三
+%单幅图象的暗原色先验去雾改进算法，能够很好地改进天空或明亮部分色彩失真问题，
+matlab 代码注解详细，能很好地帮助理解算法过程。
+clc;clear;
+
+Input_path='cutting2\';
+outpath ='toushelv\';
+picture_name_list= dir(strcat(Input_path,'*.bmp'));
+len = length(picture_name_list);
+toushe=[];
+xy=[];
+for mi = 1:len
+img_name =picture_name_list(mi).name;
+picture=imread(strcat(Input_path,img_name));
+% 原始图像
+G=liangdu(picture);
+originImage=double(picture)/255;  %读进来是3 维矩阵rgb，800*1200 像素
+% 获取图像大小
+[h,w,c]=size(originImage); %h 是高度，w 是宽度，c 是几个通道
+win_size = 7;  %这是设置邻域窗口，15*15，因第一个选定像素不能是第一个，应该是从
+左到右的第8 个，最后一个像素为从右向左第8 个
+img_size=w*h;
+% figure, imshow(originImage);%显示原始图片
+%  title("原始图像");
+
+win_dark=ones(h,w);
+%计算分块darkchannel
+for j=1+win_size:w-win_size  %保证不会选到边缘点，即第一个像素从左到右的第8 个等
+for i=win_size+1:h-win_size
+m_pos_min = min(originImage(i,j,:)); %先选出该像素中这个三个通道中的最小值
+for n=j-win_size:j+win_size  %选取该邻域内最小的像素值
+
+
+
+61
+for m=i-win_size:i+win_size
+if(win_dark(m,n)>m_pos_min)
+win_dark(m,n)=m_pos_min;
+end
+end
+end
+end
+end
+%选定精确dark value 坐标
+%win_b = zeros(img_size,1);
+%win_dark 是暗通道
+%  figure, imshow(win_dark); %显示暗通道
+%  title("暗通道");
+if mi==1
+imwrite(win_dark,'图\暗通道.bmp');
+end
+# %需调节参数
+w = 0.9;
+win_t=1-w*win_dark;      %这个地方的w 就是权重参量，计算的结果就是透射率
+%  figure, imshow(win_t);%显示原始透射率图片
+%  title("原始透射率");
+
+% **************************************************
+%     导向滤波细化透射率
+%   - 引导图像：I（应为灰度/单通道图像）
+%   - 滤波输入图像：p（应为灰度/单通道图像）
+%   - 局部窗口半径：r
+%   - 正则化参数：eps
+% **************************************************
+I=win_t;
+p=win_t;
+# %需调节参数
+r=4;
+eps=0.001;
+
+[hei, wid] = size(I);
+N = boxfilter(ones(hei, wid), r);
+
+mean_I = boxfilter(I, r) ./ N;
+mean_p = boxfilter(p, r) ./ N;
+mean_Ip = boxfilter(I.*p, r) ./ N;
+% this is the covariance of (I, p) in each local patch.
+cov_Ip = mean_Ip - mean_I .* mean_p;
+
+
+
+62
+mean_II = boxfilter(I.*I, r) ./ N;
+var_I = mean_II - mean_I .* mean_I;
+
+a = cov_Ip ./ (var_I + eps);
+b = mean_p - a .* mean_I;
+
+mean_a = boxfilter(a, r) ./ N;
+mean_b = boxfilter(b, r) ./ N;
+
+q = mean_a .* I + mean_b;
+if mi==1
+imwrite(q,'图\透射率.bmp');
+end
+% figure, imshow(q);%导向滤波细化后的透射率
+% title("导向滤波细化后的透射率");
+liangx=G(1,1);
+liangy=G(2,1);
+xy(size(xy,1)+1,:)=[liangx,liangy];
+d=canshu(liangx);
+toushe(size(toushe,1)+1,:)=[q(liangx,liangy),d];%,234,203,268,229,q(252,527),q(294,597)
+end
+% **************************************************
+## %     自动获取大气光步骤，A 为最终大气光的值
+% **************************************************
+% range=ceil(img_size*0.001);%取暗原色中最亮的%1 的点数，ceil 朝无穷大方向取整
+% radi_pro=zeros(range,1); %用于记录最亮点内对应图片点象素的三个通道的颜色强度
+%       for s=1:range
+%           [a,b]=max(win_dark);
+%           [c,d]=max(a);
+%           b=b(d);
+%           m=sparse(b,d,1,h,w);        %b,d 为最亮值的坐标
+%           win_dark=win_dark-c.*m;     %消去选出的最大值
+%           radi_pro(s)=sum(originImage(b,d,:));  %最大值对应象素三通道求和
+%       end
+% A=max(radi_pro)/3;%大气光的值，是用来求去雾图像的
+
+% **************************************************
+%  算法改进步骤，可修正天空透射率以减小明亮部分的失真率
+% **************************************************
+% inten=zeros(h,w);
+%     for m=1:h
+%         for n=1:w
+%             inten(m,n)=mean(originImage(m,n,:));
+%         end
+
+
+
+63
+%     end
+% k=70;
+% k=zeros(h,w)+k/255; %容差
+% % A=220/255;
+% cha=abs(inten-A);   %差限
+% alpha=min(max(k./cha,1).*max(alpha,0.1),1); %算法改进关键部分
+% figure,imshow(alpha);
+% % ***************************************************
+% alpha=repmat(alpha,[1,1,3]);
+% dehaze=(originImage-A)./alpha+A;
+% figure, imshow(dehaze);
+% title("dehaze");
+see=[];
+for i=1:size(toushe,1)
+bf=toushe(i,1);
+bc=toushe(i,2);
+see(size(see,1)+1,:)=3/(-log(toushe(i,1))/toushe(i,2));
+end
+
+clear;
+f=imread('非线性图像增强\1.bmp');%rgb2gray%cutting\1.bmp 均衡化 非线性图像增强
+path1=('边缘检测\非线性的增强\梯度法.bmp');%均衡化后的增强，没有经过增强，非线性
+的增强
+path2=('边缘检测\非线性的增强\roberts.bmp');
+path3=('边缘检测\非线性的增强\prewitt.bmp');
+path4=('边缘检测\非线性的增强\sobel.bmp');
+path5=('边缘检测\非线性的增强\krisch.bmp');
+path6=('边缘检测\非线性的增强\LoG.bmp');
+f=rgb2gray(f);
+# T=20;%阈值
+[m,n]=size(f);
+%------梯度法-------
+f_g=zeros(m,n);
+for i=2:m-1
+for j=2:n-1
+f_g(i,j)=abs(f(i+1,j)-f(i,j))+abs(f(i,j+1)-f(i,j));
+if f_g(i,j)<T
+f_g(i,j)=0;
+else
+f_g(i,j)=255;
+end
+end
+end
+figure(1);
+
+
+
+64
+subplot(2,3,1);imshow(uint8(f_g));title('梯度法');
+imwrite(f_g,path1);
+
+%------roberts 算子-------
+f_r=zeros(m,n);
+for i=2:m-1
+for j=2:n-1
+f_r(i,j)=abs(f(i+1,j+1)-f(i,j))+abs(f(i,j+1)-f(i+1,j));
+if f_r(i,j)<T
+f_r(i,j)=0;
+else
+f_r(i,j)=255;
+end
+end
+end
+%f_r=imbinarize(imfilter(f_r),T);
+imwrite(f_r,path2);
+subplot(2,3,2);imshow(uint8(f_r));title('Roberts 算子');
+
+%------prewitt 算子-------
+f_p=zeros(m,n);
+for i=2:m-1
+for j=2:n-1
+
+f_p(i,j)=abs(f(i-1,j-1)+f(i,j-1)+f(i+1,j-1)-f(i-1,j+1)-f(i,j+1)-f(i+1,j+1))+abs(f(i+1,j-1)+f(i+1,j)+f(i
++1,j+1)-f(i-1,j-1)-f(i-1,j)-f(i-1,j+1));
+if f_p(i,j)<15
+f_p(i,j)=0;
+else
+f_p(i,j)=255;
+end
+end
+end
+imwrite(f_p,path3);
+subplot(2,3,3);imshow(uint8(f_p));title('Prewitt 算子');
+
+%------sobel 算子-------
+f_s=zeros(m,n);
+for i=2:m-1
+for j=2:n-1
+
+f_s(i,j)=abs(f(i-1,j-1)+2*f(i,j-1)+f(i+1,j-1)-f(i-1,j+1)-2*f(i,j+1)-f(i+1,j+1))+abs(f(i+1,j-1)+2*f(i+
+1,j)+f(i+1,j+1)-f(i-1,j-1)-2*f(i-1,j)-f(i-1,j+1));
+if f_s(i,j)<T
+
+
+
+65
+f_s(i,j)=0;
+else
+f_s(i,j)=255;
+end
+end
+end
+imwrite(f_s,path4);
+subplot(2,3,4);imshow(uint8(f_s));title('Sobel 算子');
+
+%------krisch 算子-------
+k(:,:,1)=[-3,-3,-3;
+-3,0,5;
+-3,5,5];
+k(:,:,2)=[-3,-3,5;
+-3,0,5;
+-3,-3,5];
+k(:,:,3)=[-3,5,5;
+-3,0,5;
+-3,-3,-3];
+k(:,:,4)=[-3,-3,-3;
+-3,0,-3;
+5,5,5];
+k(:,:,5)=[5,5,5;
+-3,0,-3;
+-3,-3,-3];
+k(:,:,6)=[-3,-3,-3;
+5,0,-3;
+5,5,-3];
+k(:,:,7)=[5,-3,-3;
+5,0,-3;
+5,-3,-3];
+k(:,:,8)=[5,5,-3;
+5,0,-3;
+-3,-3,-3];
+kk=zeros(size(f));
+I=double(f);
+for i=1:8
+f_k(:,:,i)=conv2(I,k(:,:,i),'same');
+kk=max(kk,f_k(:,:,i));
+end
+f_kk=imbinarize(kk,600);
+imwrite(f_kk,path5);
+subplot(2,3,5);imshow(f_kk);title('Krisch 算子');
+
+
+
+66
+%------LoG 算子-------
+log1=[0 0 -1 0 0;
+0 -1 -2 -1 0;
+-1 -2 16 -2 -1;
+0 -1 -2 -1 0;
+0 0 -1 0 0];
+
+f_l=conv2(f,log1,'same');
+f_ll=imbinarize(abs(f_l),300);
+imwrite(f_ll,path5);
+subplot(2,3,6);imshow(f_ll);title('LoG 算子');
+>
+
+67
+

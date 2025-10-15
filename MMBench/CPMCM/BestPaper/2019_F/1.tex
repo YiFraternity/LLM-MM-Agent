@@ -24,13 +24,6 @@
 \end{tabular}
 \end{table}
 
-\begin{center}
-\textbf{中国研究生创新实践系列大赛} \\
-\textbf{“华为杯”第十六届中国研究生} \\
-\textbf{数学建模竞赛}
-\end{center}
-
-\maketitle
 
 \begin{abstract}
 本文研究了多约束条件下智能飞行器航迹快速规划问题，这是一个多目标约束问题。本文首先针对附件中的校正节点数据进行数据处理，构建从起点 A 到终点 B 的邻接距离网络，将航迹快速规划问题转化为 0-1 多目标整数规划问题。接着通过系统建模建立 0-1 多目标整数规划模型，并通过自适应改进型 Dijkstra 算法和自适应型蚁群算法，综合求解多目标规划模型，给出多约束条件下智能飞行器航迹快速规划的方案。
@@ -46,49 +39,10 @@
 起点 $A \rightarrow 503 \rightarrow 294 \rightarrow 91 \rightarrow 607 \rightarrow 61 \rightarrow 250 \rightarrow 369 \rightarrow 566 \rightarrow 400 \rightarrow$ 终点 $B$，飞行器最短的航迹长度为 $105.77 \times 10^3 \, m$，经过校正区域进行校正的次数为 9 次，成功概率为 $100\%$；
 
 接着综合考虑实际情况，当把针对附件二中的数据，求得成功到达概率目标约束为 $100\%$、最优航行路径有：起点 $A \rightarrow 140 \rightarrow 226 \rightarrow 288 \rightarrow 306 \rightarrow 237 \rightarrow 280 \rightarrow 65 \rightarrow 142 \rightarrow 310 \rightarrow 7 \rightarrow 145 \rightarrow 293 \rightarrow 156 \rightarrow 213 \rightarrow 164 \rightarrow 50 \rightarrow 247 \rightarrow 38 \rightarrow 110 \rightarrow 99 \rightarrow 292 \rightarrow$ 终点 $B$。飞行器最短的航迹长度为 $155.07 \times 10^3 \, m$，经过校正区域进行经过的校正节点个数为 21 个，成功概率为 $100\%$。
+关键词：邻接距离网络，自适应改进型 Dijkstra 算法，蚁群算法，0-1 多目标整数规划，多目标规划模型，贪婪算法，复杂网络，分阶段优化
 \end{abstract}
 
-关键词：邻接距离网络，自适应改进型 Dijkstra 算法，蚁群算法，0-1 多目标整数规划，多目标规划模型，贪婪算法，复杂网络，分阶段优化
-
-\section*{目录}
-
-\section{一、问题重述}
-\subsection{1.1 问题背景} \dotfill 4
-\subsection{1.2 需要解决的问题} \dotfill 4
-
-\section{二、模型假设} \dotfill 5
-
-\section{三、符号说明} \dotfill 6
-
-\section{四、问题一} \dotfill 7
-\subsection{4.1 问题描述与分析} \dotfill 7
-\subsection{4.2 模型建立} \dotfill 8
-\subsubsection{4.2.1 数据处理} \dotfill 8
-\subsubsection{4.2.2 航迹规划模型建立} \dotfill 10
-\subsection{4.3 求解算法建立} \dotfill 13
-\subsubsection{4.3.1 最短路径数学表达} \dotfill 13
-\subsubsection{4.3.2 自适应改进型 Dijkstra 算法求解步骤} \dotfill 13
-\subsubsection{4.3.3 自适应基于蚁群算法的飞行器航迹规划求解} \dotfill 15
-\subsection{4.4 模型求解及结果分析} \dotfill 17
-
-\section{五、问题二} \dotfill 20
-\subsection{5.1 问题描述与分析} \dotfill 20
-\subsection{5.2 模型建立} \dotfill 20
-\subsubsection{5.2.1 飞行器转弯过程分析} \dotfill 20
-\subsubsection{5.2.2 最小转弯半径约束} \dotfill 22
-\subsection{5.3 算法流程} \dotfill 23
-\subsection{5.4 模型求解} \dotfill 24
-
-\section{六、问题三} \dotfill 26
-\subsection{6.1 问题描述与} \dotfill 26
-\subsection{6.2 模型建立} \dotfill 28
-\subsubsection{6.2.1 误差校正情况分析} \dotfill 28
-\subsubsection{6.2.2 校正失败条件约束} \dotfill 28
-\subsection{6.3 模型求解} \dotfill 30
-
-\section{九、参考文献} \dotfill 33
-
-\section{十、附录} \dotfill 35
+\tableofcontents
 
 \section{一、问题重述}
 
@@ -270,7 +224,7 @@ s_{ij}, & s_{ij} \leq \text{最大误差阈值} \\
 
 经过数据处理得到的飞行器飞行网络图如图 4-3 所示:
 
-\subsection{4.2.2 航迹规划模型建立}
+\subsubsection{4.2.2 航迹规划模型建立}
 
 根据校正节点的数据处理得到的飞行器飞行网络图，飞行器在从起点 A 到终点 B 飞行过程中需要满足飞行路程最短的同时，尽可能经过少的飞行误差校正节点。我们通过建模选择最优路线和最佳误差点数量和，这是一个多目标动态规划问题。飞行器在飞行过程中经过校正节点 $c_i$ 到校正节点 $c_j$，则选中飞行器飞行网络图中的边 $s_{ij}$，加入最优飞行路径中。否则，$s_{ij}$ 取零。因此航迹规划问题可以转化为 0-1 整数规划问题。
 
@@ -530,7 +484,7 @@ Step7: 结束
     \label{fig:algorithm_flowchart}
 \end{figure}
 
-\subsection{自适应基于蚁群算法的飞行器航迹规划求解}
+\subsubsection{自适应基于蚁群算法的飞行器航迹规划求解}
 
 蚁群算法作为一种近现代优化算法，和绝大部分的现代近似优化算法一样，蚁群算法也是基于自然规律或者人体基因遗传进化原理而来的算法。蚁群算法是一种用于解决复杂组合优化问题的适当的方法，它具有鲁棒性强、适应性好、全局搜索和较好的全局最优等优点。应用在大部分环境中有较好的结果。
 
@@ -618,7 +572,15 @@ Step10: 若满足条件，即如果循环次数 $N_c \geq G$，则循环结束�
 根据以上建立的多目标优化模型和自适应改进型算法，得到结果如下（程序见附件）。
 
 附件一：
-
+附件一中共有 610个校正节点，其中水平校正节点 306 个，垂直校正节点 305 个。
+在通过自适应改进 Dijkstra算法和蚁群算法得到的最优航行轨迹的基础上，通过贪婪便利
+算法得到一条从起始点 A 到终点 B 的最优路径长度、最佳校正节点数的航迹规划路径
+为：起点 A→503→69→237→155→338→457→555→436→终点 B。则多目标
+规划的值分别为： 
+min∑ ∑ 𝑥𝑖𝑗 ∙𝑠𝑖𝑗𝑛𝑗=1𝑛𝑖=1 =104.9×103m，min∑ ∑ 𝑥𝑖𝑗𝑛𝑗=1𝑛𝑖=1 =8。 
+即在问题一的七个约束条件（1）~（7）下，飞行器最短的航迹长度为104.9×103𝑚；
+经过校正区域进行校正的次数为8次。飞行器在飞行过程中经过的校正节点编号、校正前垂
+直误差、校正前水平误差和校正点类型如下表所示：
 \begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|c|}
@@ -647,6 +609,17 @@ Step10: 若满足条件，即如果循环次数 $N_c \geq G$，则循环结束�
 \includegraphics[width=\textwidth]{image.png}
 \caption{航迹规划路径(附件一)}
 \end{figure}
+
+附件二： 
+附件二中共有 325个校正节点，其中水平校正节点 167个，垂直校正节点 158个。
+在通过自适应改进 Dijkstra算法和蚁群算法得到的最优航行轨迹的基础上，通过贪婪便利
+算法综合实际情况得到一条从起始点 A 到终点 B 的最优路径长度、最佳校正节点数的航
+迹规划路径为：起点 A→163→114→8→309→305→123→45→160⟶92→
+93⟶61⟶292⟶终点 B。则多目标规划的值分别为： 
+min∑ ∑ 𝑥𝑖𝑗 ∙𝑠𝑖𝑗𝑛𝑗=1𝑛𝑖=1 =109.34×103m，min∑ ∑ 𝑥𝑖𝑗𝑛𝑗=1𝑛𝑖=1 =12。 
+即在问题一的七个约束条件（1）~（7）下，飞行器最短的航迹长度为109.34×103m；
+经过校正区域进行校正的次数为12次。飞行器在飞行过程中经过的校正节点编号、校正前
+垂直误差、校正前水平误差和校正点类型如下表(4-2)所示：
 
 \begin{table}[h]
 \centering
@@ -778,7 +751,7 @@ s_{i+1,\ i+2} < 2 \times 200 \times \sin\frac{\varphi}{2}
 
 时，飞行器将不再能够按照 200m 的最小转弯半径调整飞行方向。在这种情况下，飞行器将按照更大的转弯半径，绕更大的弧形轨迹并中转更多的校正节点才能到达校正节点 $c_{i+2}$，不满足最优的路径和最佳的误差补偿点数。本文假设此种情况为不能够到达。
 
-\subsection{最小转弯半径约束}
+\subsubsection{最小转弯半径约束}
 
 飞行器在实际飞行过程中，转弯时受到结构和控制系统的限制，无法完成即时转弯（飞行器前进方向无法突然改变），飞行器在从一个误差校正点到下一个误差校正点的过程中需要调整飞行方向，具体情况如以上分析。则飞行器的最小转弯半径约束为：
 
@@ -835,7 +808,7 @@ S_{ij}, & x_{ij} = 0
 \end{aligned}
 \end{equation}
 
-5.3 算法流程
+\subsection{5.3 算法流程}
 
 \begin{figure}[h]
     \centering
@@ -937,9 +910,9 @@ S_{ij}, & x_{ij} = 0
 \caption{航迹规划路径(附件二)}
 \end{figure}
 
-六、问题三
+\section{六、问题三}
 
-6.1 问题描述与分析
+\subsection{6.1 问题描述与分析}
 
 问题三是在问题一的飞行误差补偿约束条件的基础上，考虑飞行器在实际飞行过程中飞行环境可能随时间动态变化的影响。虽然最优路径和最佳误差校正点在飞行前已经确定，但飞行器在部分校正点进行误差校正时存在无法达到理想校正的情况。考虑部分故障校正
 
@@ -1146,7 +1119,7 @@ P_{iv} + x_{iB} S_{iB} \delta & \leq \theta, \text{B 为终点}
 \caption{航迹规划路径(附件一)}
 \end{figure}
 
-\section{附件二：}
+附件二：
 
 针对附件二中的校正节点坐标的类型数据，通过应用问题一中的自适应改进Dijkstra算法和蚁群算法得到的最优航行轨迹的基础上，通过贪婪便利算法综合考虑实际情况得到一条从起始点A到终点B的航迹规划路径为：
 
@@ -1155,7 +1128,10 @@ P_{iv} + x_{iB} S_{iB} \delta & \leq \theta, \text{B 为终点}
 \[
 \min \sum_{i=1}^{n} \sum_{j=1}^{n} x_{ij} \cdot S_{ij} = 155.07 \times 10^3 \, \text{m}, \, \min \sum_{i=1}^{n} \sum_{j=1}^{n} x_{ij} = 12, \, \min w = w_{ij}^q = 1.
 \]
-
+即在问题三的七个约束条件（1）~（7）下，飞行器最短的航迹长度为155.07×103m；
+经过校正区域进行校正的次数为 21次，成功概率为 100%。飞行器在飞行过程中经过的校
+正节点编号、校正前垂直误差、校正前水平误差和校正点类型如下表(5-2)所示： 
+针对附件二中的校正节点坐标的类型数据，算法结果为：
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|}
@@ -1253,3 +1229,235 @@ P_{iv} + x_{iB} S_{iB} \delta & \leq \theta, \text{B 为终点}
 [10] 刘平[1], 彭建亮[1]. 基于 Voronoi 图和离散粒子群优化的无人机航迹规划[J]. 现代导航, 2011, 02(6):412-416.
 
 \end{document}
+
+\section{附录}
+PATH=cell(10000,1);
+SENDNEW=SSSNEW;
+
+for i=1:10^4
+b=sparse(SENDNEW);
+[dist,path,pred] = graphshortestpath(b,1,613);
+
+%起点1,2,3,约束
+if ismember(path(2),verticaldata)==1
+if S(path(1),path(2))<=25/0.001 & S(path(1),path(2))<=15/0.001
+if S(path(2),path(3))<=20/0.001 & ( S(path(1),path(2))+S(path(2),path(3)) ) <=25/0.001
+path=path;
+
+else
+
+SENDNEW(path(2),path(3))=0;SENDNEW(path(3),path(2))=0;
+
+%path=[];
+
+continue;
+end
+else
+SENDNEW(path(1),path(2))=0;SENDNEW(path(2),path(1))=0;
+
+%path=[];
+
+continue;
+end
+elseif ismember(path(2),standarddata)==1
+if S(path(1),path(2))<=20/0.001 & S(path(1),path(2))<=25/0.001
+if S(path(2),path(3))<=15/0.001 &  (S(path(1),path(2))+S(path(2),path(3)) ) <=25/0.001
+path=path;
+
+else
+
+SENDNEW(path(2),path(3))=0;SENDNEW(path(3),path(2))=0;
+
+%path=[];
+
+continue;
+end
+else
+SENDNEW(path(1),path(2))=0;SENDNEW(path(2),path(1))=0;
+
+%path=[];
+
+continue;
+end
+end
+
+
+
+36
+%中间点约束
+flag=0;
+for m=3:length(path)-1
+if ismember(path(m),verticaldata)==1
+if
+(
+S(path(m-2),path(m-1))
++
+S(path(m-1),path(m))
+)<=25/0.001
+&
+# S(path(m-
+1),path(m))<15/0.001
+
+path=path;
+
+else
+
+SENDNEW(path(m-1),path(m))=0;SENDNEW(path(m),path(m-1))=0;
+
+%path=[];
+
+flag=1;
+
+break;
+
+end
+
+elseif ismember(path(m),standarddata)==1
+if
+(S(path(m-2),path(m-1))
++
+## S(path(m-1),path(m)))<=25/0.001
+&
+# S(path(m-
+1),path(m))<20/0.001
+
+path=path;
+
+else
+
+SENDNEW(path(m-1),path(m))=0;SENDNEW(path(m),path(m-1))=0;
+
+%path=[];
+
+flag=1;
+
+break;
+
+end
+end
+end
+
+if flag==1
+continue;
+end
+
+%终点约束
+if (  S( path(size(path,2)-2),path(size(path,2)-1) )+S( path(size(path,2)-1),613 )  )<30/0.001
+path=path;
+else
+SENDNEW(613,path(size(path,2)-1))=0;
+
+SENDNEW(path(size(path,2)-1),613)=0;
+%path=[];
+
+continue;
+end
+
+
+
+37
+%交叉约束
+flagbb=0;
+for j=2:length(path)-1
+if
+(
+ismember(path(j),verticaldata)
+&
+ismember(path(j+1),verticaldata)
+)
+|
+( ismember(path(j),standarddata) & ismember(path(j+1),standarddata) )
+SENDNEW(path(j),path(j+1))=0;
+
+SENDNEW(path(j+1),path(j))=0;
+
+%path=[];
+
+flagbb=1;
+
+break;
+end
+end
+if flagbb==1
+continue;
+end
+> %拐弯问题2 约束
+%在误差较小时误差成功概率大
+%一般角度是钝角
+flagcc=0;
+for nv=2:length(path)-1
+cosalpha=(
+(S(path(nv-1),path(nv)))^2+(S(path(nv),path(nv+1)))^2-(S(path(nv-
+1),path(nv+1)))^2 )/( 2*S(path(nv-1),path(nv))*S(path(nv),path(nv+1)) );
+sinbeita=abs(cosalpha);
+if 200*sinbeita*2<=S(path(nv),path(nv+1))
+path=path;
+else
+SENDNEW(path(nv),path(nv+1))=0;SENDNEW(path(nv+1),path(nv))=0;
+
+flagcc=1;
+
+break;
+end
+end
+if flagcc==1
+continue;
+end
+
+%%%%%%%%%%%%%%%%%故障点从3 到n-2 个点的约束
+flagdd=0;
+for ok=3:length(path)-3
+
+
+
+38
+if ismember(path(ok),wrong_point)
+if S(path(ok),path(ok+1))+S(path(ok+1),path(ok+2))<=20/0.001
+path=path;
+else
+SENDNEW(path(ok),path(ok+1))=0;SENDNEW(path(ok+1),path(ok))=0;
+
+flagdd=1;
+
+break;
+end
+end
+end
+if flagdd==1
+continue;
+end
+%%%%%%%%%%%%%故障点在n-2 点的约束
+%if
+S(path(length(path)-2),path(length(path)-1))+S(path(length(path)-
+1),path(length(path)))<25/0.001
+% path=path;
+%else
+%
+SENDNEW(path(length(path)-2),path(length(path)-1))=0;SENDNEW(path(length(path)-
+1),path(length(path)-2))=0;
+%continue;
+%end
+
+%最优路径的故障点保存
+wrong_save=[];
+for okj=1:length(path)
+if ismember(path(okj),wrong_point)
+wrong_save=[wrong_save,okj];%
+end
+end
+
+%能到达这里的path 这里已经经过了重重考验
+PATH{i}=path;
+countt=0;
+for k=1:size(PATH,1)
+countt=countt+~isempty(PATH{k});
+end
+if countt~=0
+break;
+end
+
+
+
+39
+end
+

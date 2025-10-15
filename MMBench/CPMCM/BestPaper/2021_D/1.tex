@@ -36,11 +36,6 @@
 \end{tabular}
 \end{table}
 
-\begin{center}
-\textbf{题目}\\
-\textbf{抗乳腺癌候选药物的优化建模}
-\end{center}
-
 \tableofcontents
 
 \section{问题背景与问题重述}
@@ -241,9 +236,28 @@
     \label{fig:final_heatmap}
 \end{figure}
 
-\begin{table}
+在 1974 个化合物的 729 个分子描述符信息中，前 20 个对生物活性最具有显著影响的
+分子描述符（即变量）及其贡献率如下表 3-1 所示：
+
+\begin{table}[htbp]
 \centering
-\begin{tabular}{l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c
+\caption{对生物活性最具有显著影响的 20 个分子描述符}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{特征名称} & \textbf{贡献率} & \textbf{特征名称} & \textbf{贡献率} \\ \hline
+SHsOH & 0.01045 & XLogP & 0.00711 \\
+LipoaffinityIndex & 0.01016 & maxssO & 0.00708 \\
+MDEC-23 & 0.00953 & minHBa & 0.00705 \\
+BCUtC-1h & 0.00833 & TopoPSA & 0.00702 \\
+hmin & 0.00777 & nHBAcc & 0.00692 \\
+ATSc1 & 0.00771 & gmin & 0.00639 \\
+ATSc3 & 0.00739 & WTPT-4 & 0.00632 \\
+minsOH & 0.00738 & ATSp5 & 0.00608 \\
+ATSe5 & 0.00733 & BCUtP-1h & 0.00604 \\
+WTPT-5 & 0.00726 & maxaaCH & 0.00597 \\
+\hline
+\end{tabular}
+\end{table}
 
 在这 20 个对生物活性最具有显著影响的分子描述符（即变量）中，数量比例与累计贡献率的比例如下图 3-9 所示，由图可知，数量占比 2.7% 的变量，其贡献率达到了 18%，同时说明该 20 个特征有代表性。
 
@@ -298,7 +312,7 @@ K折交叉验证使用了无重复抽样技术的好处：为了得到可靠稳�
 
 在一些情况下，随机搜索得到的超参数组合的性能稍微差一点。随机搜索的好处在于搜索速度快，相对于很复杂的问题比较容易应用，但是这个方法的缺点在于必须通过反复多次实验来对每个问题进行特殊处理，不然容易错过一些重要的信息。
 
-\subsection{4.2.3 评价标准}
+\subsubsection{4.2.3 评价标准}
 
 (1) 平均绝对误差（MAE）
 
@@ -371,13 +385,13 @@ R^2 = 1 - \frac{\sum (Y_{\text{actual}} - Y_{\text{predict}})^2}{\sum (Y_{\text{
 3. 初始化损失函数和优化器，训练用损失函数使用 MSE 损失函数，优化器可选择 SGD 和 Adam 优化器等；
 4. 定义训练次数并开始模型的训练。
 
-\subsection{4.3.3 梯度提升}
+\subsubsection{4.3.3 梯度提升}
 
 梯度提升（GBRT），是一种迭代的回归树算法，由多棵回归树组成，所有树的结论累加起来得到最终结果。其核心就在于，每一棵树是从之前所有树的残差中来学习的，这个残差就是一个加预测值后能得真实值的累加量。GBRT 主要有两个部分组成：回归树（RT）和梯度提升（GB）。（1）RT：GBRT 是迭代的决策树算法，决策树分为两类，回归树和分类树，分类树用于分类标签值，回归树用来预测实际值。GBRT 也是一种迭代的回归树算法，由多棵回归树组成，所有树的结论累加起来得到最终结果。（2）GB：Boosting 通过迭代多棵树来共同决策，核心是每一棵树都是学习之前所有树的结论和残差。
 
 梯度提升回归树模型总体来说时非常不错的，它的优势是比较精确，因为在提升过程中是在不断修正前面的决策树。
 
-\subsection{4.3.4 随机森林}
+\subsubsection{4.3.4 随机森林}
 
 随机森林（Random Forest，简称 RF），是一种新兴起的、高度灵活的、基于树的机器学习算法，该算法利用多棵树的力量来进行决策。森林中的每棵树并不一样，每棵树都是被随机创造的，每棵树中的每一个节点都是待选特征的一个随机子集，所有树的输出结果整合起来就是森林最后的输出结果。
 
@@ -454,7 +468,7 @@ Step4：按照 step1-3 建立大量的决策树，这样就构成了随机森林
 
 如上图所示，可以直观的看到，支持向量回归模型预测的结果和实际值整体走势相似，但是数值之间的差距较大。加上拟合度较低，因此模型改进空间较大。
 
-\subsection{深度神经网络模型求解}
+\subsubsection{深度神经网络模型求解}
 
 深度神经网络的训练时间成本较大，没有进行超参数的随机搜索，而是根据经验来调节超参数。使用 pytorch 对深度神经网络进行训练，训练过程中迭代 1000 次，训练结果如下图所示。
 
@@ -478,7 +492,7 @@ Step4：按照 step1-3 建立大量的决策树，这样就构成了随机森林
 
 根据测试集 30 组数据显示，DNN 模型对很多突变数据拟合效果较差，考虑到模型的整体拟合度较低，参数调整困难，训练时间成本高，尽管 DNN 近年来在很多领域的表现很出色，但是本文训练得到的该 DNN 模型依然有较大改进空间。
 
-\subsection{梯度提升回归模型求解}
+\subsubsection{梯度提升回归模型求解}
 
 对 GBRT 模型最佳超参数进行随机搜索，先在较大范围（max\_depth:1-100, n\_estimators: 1-500）内进行粗略搜索，根据搜索图缩小搜索范围（max\_depth:2-20, n\_estimators: 20-200）内进行精确搜索，搜索图如下图 4-9 所示：
 
@@ -519,7 +533,7 @@ max\_depth & n\_estimators=123 \\
 
 如上图所示，可以直观的看到，梯度提升模型预测的结果和实际值拟合效果很好，加上整体拟合度达到了 0.72，提升较大，可以考虑作为候选模型，但是该模型训练时间久：100 次随机搜索用时 323s，提升空间较大，故进一步寻找较优模型。
 
-\subsection{随机森林模型求解}
+\subsubsection{随机森林模型求解}
 
 对 RF 模型最佳超参数进行随机搜索，先在较大范围（max\_features:1-50, n\_estimators: 1-1000）内进行粗略搜索，根据搜索图缩小搜索范围（max\_features:1-8, n\_estimators: 1-200）内进行精确搜索，搜索图如下图 4-11 所示：
 
@@ -913,6 +927,18 @@ RF & 0.9803 & 0.9519 & 0.9218 \\
 \caption{化合物 MN 在四种模型下的评价指标对比图}
 \end{figure}
 
+在图 5-12 中我们可以看出 RF 的 AUC 值最高，训练集准确率与测试集准确率最高，
+用随机森林算法构建化合物 MN 的分类预测模型最优。
+\subsection{5.6 模型确定及预测}
+通过 SVM、SGD、DNN、RF 四种模型算法分别构建对化合物 Caco-2、CYP3A4、hERG、
+HOB、MN 的分类预测模型，在模型求解一节中我们可以清晰地观察到每种化合物在四种
+模型下的评价指标对比，均是 RF 算法模型的 ROC 曲线靠近左侧，且均是 RF 算法模型的
+AUC 值、训练集准确率以及测试集准确率最高；由于 ROC 曲线越靠近左侧，说明 AUC
+值越大，表示分类效果越好，并且 RF 算法模型的训练集准确率和测试集准确率都高于其
+他三种模型，因此确定用随机森林算法模型作为构建化合物的 Caco-2、CYP3A4、hERG、
+HOB、MN 的分类预测模型。最后，用上述构建的 5 个分类预测模型，对文件“ADMET.xlsx”
+的 test 表中的 50 个化合物进行相应的预测，预测结果如下表 5-6 所示：
+
 \begin{table}
 \centering
 \caption{5-6RF算法模型对50个化合物进行的预测结果}
@@ -1051,7 +1077,7 @@ x_{imin} < x_{imax}, i = 1, 2, 3, \ldots, 20 \\
 
 在上图 6-5 中，可以形象的观察到优化情况，图形的形状上下限表示最大值与最小值范围，中间的虚线表示均值，上下的虚线表示上四分位和下四分位，形状的宽度表示该数值出现的频数，优化后的值明显变大，优化效果明显。
 
-\subsection{优化分子描述符及其范围}
+\subsubsection{优化分子描述符及其范围}
 
 通过对优化前后 pIC50 的统计特性和对应不同 ADMET 的分析易看出，本模型中选择的 20 个操作变量对 pIC50 有显著的影响。另外考虑第一问分析的这 20 个决策变量是影响 pIC50 的主要特征，故选取这 20 个决策变量作为本问要寻找的分子描述符，并将各个分子描述符[最小值，最大值]的区间作为该分子描述符的使 pIC50 和 ADMET 均达到优化的取值区间。
 
@@ -1084,7 +1110,7 @@ ATSc3 & -0.317-0.265 & & & & \\
 \caption{部分主要操作变量范围分布图}
 \end{figure}
 
-\section{灵敏度分析}
+\subsection{灵敏度分析}
 
 为探究建模主要变量分子描述符对生物活性的影响效果，本节考虑使用控制变量法对各个分子描述符进行灵敏性分析，在此基础之上对分子描述符的取值范围进行修正。
 
@@ -1211,3 +1237,717 @@ ATSc3 & -0.317-0.265 & & & & \\
 [9] Astuti Suryani Dyah,Tamimi Mohammad H.,Pradhana Anak A.S.,Alamsyah Kartika A.,Purnobasuki Hery,Khasanah Miratul,Susilo Yunus,Triyana Kuwat,Kashif Muhammad,Syahrom Ardiyansyah. Gas sensor array to classify the chicken meat with E. coli contaminant by using random forest and support vector machine[J]. Biosensors and Bioelectronics: X,2021,9.
 
 [10] Zare Alaa,Postovit Lynne Marie,Githaka John Maringa. Robust inflammatory breast cancer gene signature using nonparametric random forest analysis[J]. Breast Cancer Research,2021,23(1).
+
+\section{附录}
+50
+附录
+# Python 和部分MATLAB 代码
+问题一代码：####################################################
+#######Python#######
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import StratifiedShuffleSplit
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import gaussian_kde
+from matplotlib.colors import LogNorm
+import matplotlib.image as mpimg
+from sklearn import preprocessing
+from sklearn.ensemble import RandomForestClassifier
+os.chdir(r'C:\Users\jupyter-notebook\数学建模\2021\第一问')
+#加载自变量数据集
+Molecular_Descriptor=pd.read_excel('MD_train_dropzero0.5_mval.xlsx',header=0,encoding='gb
+2312')
+Molecular_Descriptor=Molecular_Descriptor.iloc[:,1:]
+print(Molecular_Descriptor.shape)
+Molecular_Descriptor.head()
+#加载因变量数据集
+ERa_activity= pd.read_excel('ERα_activity.xlsx',header = 0,encoding='gb2312')
+## ERa_activity=ERa_activity.iloc[:,2]
+print(ERa_activity.shape)
+ERa_activity.head()
+#随机森林降维
+rnd_clf = RandomForestClassifier(n_estimators=500, n_jobs=-1, random_state=42)
+rnd_clf.fit(Molecular_Descriptor, ERa_activity.astype('int'))
+rnd_clf.feature_importances_.shape
+import matplotlib as mpl
+# 为了显示中文
+mpl.rcParams['font.sans-serif'] = [u'SimHei']
+mpl.rcParams['axes.unicode_minus'] = False
+#画图
+plt.figure(figsize=(10,5.5))
+x_data = rnd_clf.feature_importances_
+plt.bar(x = range(0,len(x_data)),height = x_data,align='center',color='b')
+plt.xlabel('特征',labelpad = 19)
+# 控制标签和坐标轴的距离
+
+
+
+51
+plt.ylabel('贡献率',labelpad =10)
+plt.title('随机森林测得各个特征的贡献率', fontsize=22)
+plt.savefig('随机森林测得各个特征的贡献率.png', dpi=500, bbox_inches='tight') # 解决图片
+不清晰，不完整的问题
+# plt.title('不同地区的的订单金额',pad=15)
+plt.show()
+#排序后贡献率图
+x = np.arange(0,len(feature_importances_descend))
+plt.figure(figsize=(12,9), dpi= 80)
+plt.title('排序后每个特征贡献率百分比', fontsize=22)
+plt.xlabel('特征',labelpad = 19)
+# 控制标签和坐标轴的距离
+plt.ylabel('贡献率',labelpad =10)
+plt.plot(x,feature_importances_descend)
+plt.savefig('随机森林排序后每个特征贡献率百分比.png', dpi=500, bbox_inches='tight') # 解
+决图片不清晰，不完整的问题
+plt.show()
+#30 个特征相关性图
+Molecular_Descriptor_30=Molecular_Descriptor.iloc[:,index_id]
+print(Molecular_Descriptor_30.shape)
+import seaborn as sns
+# 显示中文
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
+# Plot
+plt.figure(figsize=(17,14), dpi= 80)
+sns.heatmap(Molecular_Descriptor_30.corr(),
+xticklabels=Molecular_Descriptor_30.corr().columns,
+yticklabels=Molecular_Descriptor_30.corr().columns, cmap='RdYlGn', center=0, annot=True)
+# Decorations
+plt.title('随机森林前30 个特征之间的相关性', fontsize=22)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.savefig('随机森林前30 个特征之间的相关性.png', dpi=500, bbox_inches='tight')
+plt.show()
+#20 个特征相关性图
+Molecular_Descriptor_20=Molecular_Descriptor.iloc[:,[99,144,211,29, 142, 12, 14 ,123, 16,240,
+243, 138, 112, 232, 193, 143, 239, 26, 31, 134]]
+print(Molecular_Descriptor_20.shape)
+import seaborn as sns
+# 显示中文
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
+
+
+
+52
+# Plot
+plt.figure(figsize=(17,14), dpi= 80)
+sns.heatmap(Molecular_Descriptor_20.corr(),
+xticklabels=Molecular_Descriptor_20.corr().columns,
+yticklabels=Molecular_Descriptor_20.corr().columns, cmap='RdYlGn', center=0, annot=True)
+plt.savefig('筛选的20 个特征.png', dpi=500, bbox_inches='tight') # 解决图片不清晰，不完整
+的问题
+# Decorations
+plt.title('筛选的20 个特征', fontsize=22)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.savefig('筛选的20 个特征.png', dpi=500, bbox_inches='tight') # 解决图片不清晰，不完整
+的问题
+plt.show()
+## #######MATLAB#######
+clc
+clear
+close
+x=xlsread('MD_train_dropzero0.5_mval.xlsx','C2:IM1975');
+[n,m]=size(x);
+%% 数据的归一化处理
+[X,ps]=mapminmax(x');
+ps.ymin=0.002; % 归一化后的最小值
+ps.ymax=0.996; % 归一化后的最大值
+ps.yrange=ps.ymax-ps.ymin; % 归一化后的极差,若不调整该值, 则逆运算会出错
+X=mapminmax(x',ps);
+X=X';
+%% 计算第j 个指标下，第i 个记录占该指标的比重p(i,j)
+for i=1:n
+for j=1:m
+p(i,j)=X(i,j)/(sum(X(:,j)));
+end
+end
+%% 计算第j 个指标的熵值e(j)
+k=1/log(n);
+for j=1:m
+e(j)=-k*sum(p(:,j).*log(p(:,j)));
+end
+d=ones(1,m)-e;
+% 计算信息熵冗余度
+w=d./sum(d);
+% 求权值w
+s=w*p';
+% 求综合得分
+%% 排序
+
+
+
+53
+[gsort,ind]=sort(w,'descend')
+plot(gsort)
+title('权值-特征图')
+xlabel('特征')
+ylabel('权值')
+问题二代码：####################################################
+#######Python#######
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import StratifiedShuffleSplit
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import gaussian_kde
+from matplotlib.colors import LogNorm
+from sklearn.model_selection import train_test_split
+import matplotlib.image as mpimg
+from sklearn import preprocessing
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
+from sklearn import metrics
+os.chdir(r'C:\Users\jupyter-notebook\数学建模\2021\第二问')
+%matplotlib inline
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+mpl.rc('axes', labelsize=14)
+mpl.rc('xtick', labelsize=12)
+mpl.rc('ytick', labelsize=12)
+# 为了显示中文
+mpl.rcParams['font.sans-serif'] = [u'SimHei']
+mpl.rcParams['axes.unicode_minus'] = False
+import numpy as np
+from math import sqrt
+def accuracy_score(y_true, y_predict):
+"""计算y_true 和y_predict 之间的准确率"""
+assert y_true.shape[0] == y_predict.shape[0], \
+"the size of y_true must be equal to the size of y_predict"
+return sum(y_true == y_predict) / len(y_true)
+# # MSE：均方误差
+def mean_squared_error(y_true, y_predict):
+
+
+
+54
+"""计算y_true 与y_predict 之阿的MSE"""
+assert len(y_true) == len(y_predict), \
+"the size of y_true must be equal to the size of y_predict"
+return np.sum((y_true - y_predict) ** 2) / len(y_true)
+# # RMSE：均方根误差
+def root_mean_squared_error(y_true, y_predict):
+"""计算y_true 与y_predict 之阿的RMSE"""
+return sqrt(mean_squared_error(y_true, y_predict))
+# # MAE：平均绝对误差
+def mean_absolute_error(y_true, y_predict):
+"""计算y_true 与y_predict 之阿的MAE"""
+assert len(y_true) == len(y_predict), \
+"the size of y_true must be equal to the size of y_predict"
+return np.sum(np.absolute(y_true - y_predict)) / len(y_true)
+# R Square
+def r2_score(y_true, y_predict):
+"""计算y_true 和y_predict 之间的R Square"""
+return 1 - mean_squared_error(y_true, y_predict) / np.var(y_true)
+#加载数据
+y= pd.read_excel('ERα_activity.xlsx',header = 0,encoding='gb2312')
+y=y.iloc[:,2]
+# ##SVR
+import time
+start =time.clock()
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=.2,random_state=49)
+from sklearn.svm import SVR
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import reciprocal, uniform
+svm_clf = SVR(kernel='rbf')
+param_distributions = {"gamma": reciprocal(0.001, 0.01), "C": uniform(1, 10)}
+rnd_search_cv = RandomizedSearchCV(svm_clf, param_distributions, n_iter=100,verbose=2,
+cv=5,scoring='r2', random_state=42,n_jobs=1)
+rnd_search_cv.fit(X_train, y_train)
+end = time.clock()
+print('Running time: %s Seconds'%(end-start))
+# 搜寻到的最佳模型
+rnd_search_cv.best_estimator_
+# 进行模型性能估计
+y_pred1 = rnd_search_cv.best_estimator_.predict(X_train)
+y_pred2 = rnd_search_cv.best_estimator_.predict(X_val)
+print("训练RMSE:",root_mean_squared_error(y_train, y_pred1))
+print("训练MAE:",mean_absolute_error(y_train, y_pred1))
+
+
+
+55
+print("得分:",np.sqrt(rnd_search_cv.score(X_val,y_val)))
+print("测试RMSE:",root_mean_squared_error(y_val, y_pred2))
+print("测试MAE:",mean_absolute_error(y_val, y_pred2))
+print('拟合度：',r2_score(y_val,y_pred2))
+#拟合效果图
+aa_true=pd.DataFrame(y_val[:30]).values
+aa_val=y_pred2[:30]
+plt.figure(figsize=(10,5.5))
+plt.plot(aa_true, "b.-",label="ture")
+plt.plot(aa_val, "r.-",label="val")
+plt.xlabel("30 个数据编号")
+plt.ylabel("pIC50")
+plt.legend(['test_true','test_pre'])
+plt.title("SVR 30 个测试数据真实值和预测值", fontsize=14)
+plt.savefig('SVR 30 个测试数据真实值和预测值.png', dpi=500, bbox_inches='tight') # 解决图
+片不清晰，不完整的问题
+# ##RF
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=.2,random_state=49)
+param_distribs = {
+'n_estimators': randint(low=1, high=200),
+'max_features': randint(low=1, high=8),
+}
+forest_reg = RandomForestRegressor(random_state=42)
+rnd_search = RandomizedSearchCV(forest_reg, param_distributions=param_distribs,
+n_iter=100, cv=5,scoring='r2', random_state=42)
+rnd_search.fit(X_train, y_train)
+# 搜寻到的最佳模型
+print(rnd_search.best_estimator_)
+# 进行模型性能估计
+y_pred1 = rnd_search.best_estimator_.predict(X_train)
+y_pred2 = rnd_search.best_estimator_.predict(X_val)
+print("训练RMSE:",root_mean_squared_error(y_train, y_pred1))
+print("训练MAE:",mean_absolute_error(y_train, y_pred1))
+print("得分:",np.sqrt(-rnd_search.score(X_val,y_val)))
+print("测试RMSE:",root_mean_squared_error(y_val, y_pred2))
+print("测试MAE:",mean_absolute_error(y_val, y_pred2))
+print('拟合度：',r2_score(y_val,y_pred2))
+#拟合图
+aa_true=pd.DataFrame(y_val[:30]).values
+aa_val=y_pred2[:30]
+
+
+
+56
+plt.figure(figsize=(10,5.5))
+plt.plot(aa_true, "b.-",label="ture")
+plt.plot(aa_val, "r.-",label="val")
+plt.xlabel("30 个数据编号")
+plt.ylabel("pIC50")
+plt.legend(['test_true','test_pre'])
+plt.title("RF 30 个测试数据真实值和预测值", fontsize=14)
+plt.savefig('RF 30个测试数据真实值和预测值.png', dpi=500, bbox_inches='tight') # 解决图片
+不清晰，不完整的问题
+# ##GBRT
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import GradientBoostingRegressor
+from scipy.stats import randint
+training_scores=[]
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=.2,random_state=49)
+param_distribs = {
+'max_depth': randint(low=2, high=20),
+'n_estimators': randint(low=20, high=200),
+}
+gbrt = GradientBoostingRegressor(random_state=42,learning_rate=0.1)
+rnd_search = RandomizedSearchCV(gbrt, param_distributions=param_distribs,
+n_iter=100, cv=5, scoring='r2', random_state=42)
+rnd_search.fit(X_train, y_train)
+# 搜寻到的最佳模型
+print(rnd_search.best_estimator_)
+# 进行模型性能估计
+y_pred1 = rnd_search.best_estimator_.predict(X_train)
+y_pred2 = rnd_search.best_estimator_.predict(X_val)
+print("训练RMSE:",root_mean_squared_error(y_train, y_pred1))
+print("训练MAE:",mean_absolute_error(y_train, y_pred1))
+print("得分:",np.sqrt(-rnd_search.score(X_val,y_val)))
+print("测试RMSE:",root_mean_squared_error(y_val, y_pred2))
+print("测试MAE:",mean_absolute_error(y_val, y_pred2))
+print('拟合度：',r2_score(y_val,y_pred2))
+#拟合图
+aa_true=pd.DataFrame(y_val[:30]).values
+aa_val=y_pred2[:30]
+plt.figure(figsize=(10,5.5))
+plt.plot(aa_true, "b.-",label='test_true')
+plt.plot(aa_val, "r.-",label='test_pre')
+
+
+
+57
+plt.xlabel("30 个数据编号")
+plt.ylabel("pIC50")
+plt.legend(['test_true','test_pre'])
+plt.title("GBRT 30 个测试数据真实值和预测值", fontsize=14)
+plt.savefig('GBRT 30 个测试数据真实值和预测值.png', dpi=500, bbox_inches='tight') # 解决
+图片不清晰，不完整的问题
+# #用RF 预测
+X_test= pd.read_excel('MD_test2.xlsx' , header = 0 , encoding='gb2312')
+print(X_test.shape)
+X_test.head()
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=.2,random_state=49)
+Rtree_clf = RandomForestRegressor(max_features=6, n_estimators=185,random_state=42)
+Rtree_clf.fit(X_train, y_train)
+# 进行模型性能估计
+y_pred1 = Rtree_clf.predict(X_train)
+y_pred2 = Rtree_clf.predict(X_val)
+print("训练RMSE:",root_mean_squared_error(y_train, y_pred1))
+print("训练MAE:",mean_absolute_error(y_train, y_pred1))
+print("得分:",np.sqrt(-Rtree_clf.score(X_val,y_val)))
+print("测试RMSE:",root_mean_squared_error(y_val, y_pred2))
+print("测试MAE:",mean_absolute_error(y_val, y_pred2))
+print('拟合度：',r2_score(y_val,y_pred2))
+#预测50 组数据并保存
+y_test_pre_pIC50= Rtree_clf.predict(X_test)
+y_test_pre_pIC50=pd.DataFrame(y_test_pre_pIC50)
+y_test_pre_pIC50.to_excel('y_test_pre_pIC50.xlsx', index=False)
+问题三代码：####################################################
+####Python#####
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import StratifiedShuffleSplit
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import gaussian_kde
+from matplotlib.colors import LogNorm
+import matplotlib.image as mpimg
+from sklearn import preprocessing
+
+
+
+58
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+from sklearn.linear_model import SGDClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_predict
+from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_auc_score
+%matplotlib inline
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score
+mpl.rc('axes', labelsize=14)
+mpl.rc('xtick', labelsize=12)
+mpl.rc('ytick', labelsize=12)
+# 为了显示中文
+mpl.rcParams['font.sans-serif'] = [u'SimHei']
+mpl.rcParams['axes.unicode_minus'] = False
+os.chdir(r'C:\Users\jupyter-notebook\数学建模\2021\第三问')
+#加载数据集
+X= pd.read_excel('MD_train_dropzero0.9_mval.xlsx',header = 0,encoding='gb2312')
+# X=X.iloc[:,1:]
+y= pd.read_excel('ADMET.xlsx',header = 0,encoding='gb2312')
+y1,y2,y3,y4,y5=y.iloc[:,1],y.iloc[:,2],y.iloc[:,3],y.iloc[:,4],y.iloc[:,5]
+## 数据处理
+X1_train, X1_val, y1_train, y1_val = train_test_split(X, y5, test_size=.2,random_state=49)
+def plot_roc_curve(fpr, tpr, label=None):
+plt.plot(fpr, tpr, linewidth=2, label=label)
+plt.plot([0, 1], [0, 1], 'k--') # dashed diagonal
+plt.axis([0, 1, 0, 1])
+# Not shown in the book
+plt.xlabel('False Positive Rate (Fall-Out)', fontsize=16) # Not shown
+plt.ylabel('True Positive Rate (Recall)', fontsize=16)
+# Not shown
+plt.grid(True)
+# #SGD
+#训练模型
+sgd_clf = SGDClassifier(max_iter=1000, tol=1e-3, random_state=42,n_jobs=200)
+sgd_clf.fit(X1_train, y1_train)
+y1_scores_sgd=cross_val_predict(sgd_clf,X1_train,y1_train, cv=3,method="decision_function")
+fpr_sgd,tpr_sgd,thresholds_sgd=roc_curve(y1_train,y1_scores_sgd)
+from sklearn.model_selection import cross_val_score
+accuracy_SGD_train=sum(cross_val_score(sgd_clf,X1_train,y1_train,cv=10,scoring="accuracy")
+)/10
+accuracy_SGD_val=sum(cross_val_score(sgd_clf,X1_val,y1_val,cv=10,scoring="accuracy"))/1
+
+
+
+59
+0
+# #SVM
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.svm import SVC, LinearSVC
+from scipy.stats import reciprocal, uniform
+svm_clf = SVC(decision_function_shape="ovr", gamma="auto")
+param_distributions = {"gamma": reciprocal(0.001, 0.1), "C": uniform(1, 10)}
+rnd_search_cv = RandomizedSearchCV(svm_clf, param_distributions, n_iter=10, verbose=2,
+cv=3,n_jobs=1)
+rnd_search_cv.fit(X1_train, y1_train)
+# 搜寻到的最佳模型
+print('搜寻到的最佳模型:',rnd_search_cv.best_estimator_)
+# 最佳参数
+print('最佳参数:',rnd_search_cv.best_score_)
+#交叉验证
+from sklearn.model_selection import cross_val_score
+accuracy_SVM_train=sum(cross_val_score(rnd_search_cv.best_estimator_, X1_train, y1_train,
+cv=10, scoring="accuracy"))/10
+accuracy_SVM_val=sum(cross_val_score(rnd_search_cv.best_estimator_,
+X1_val,
+y1_val,
+cv=10, scoring="accuracy"))/10
+y1_scores_svm
+=
+cross_val_predict(rnd_search_cv.best_estimator_,
+X1_train,
+y1_train,
+cv=3,method="decision_function")
+fpr_svm, tpr_svm, thresholds_svm = roc_curve(y1_train, y1_scores_svm)
+# #RF
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.svm import SVC, LinearSVC
+from scipy.stats import reciprocal, uniform
+from scipy.stats import randint
+param_distributions = {
+'n_estimators': randint(low=1, high=200),
+'max_features': randint(low=1, high=8),
+}
+forest_clf = RandomForestClassifier(random_state=42)
+rnd_search_cv_forest
+=
+RandomizedSearchCV(forest_clf,
+param_distributions,
+n_iter=100,
+verbose=2, cv=3,n_jobs=16)
+rnd_search_cv_forest.fit(X1_train, y1_train)
+## 保存模型
+import joblib
+#保存模型
+forest_clf_y5=rnd_search_cv_forest.best_estimator_
+joblib.dump(forest_clf_y5,'forest_clf_y5.pkl') #将clf 存入.pkl 的文件中
+# 搜寻到的最佳模型
+
+
+
+60
+print('搜寻到的最佳模型:',rnd_search_cv_forest.best_estimator_)
+# 最佳参数
+print('最佳参数:',rnd_search_cv_forest.best_score_)
+#交叉验证计算准确率
+from sklearn.model_selection import cross_val_score
+accuracy_RF_train=sum(cross_val_score(rnd_search_cv_forest.best_estimator_,X1_train,
+y1_train, cv=10, scoring="accuracy"))/10
+accuracy_RF_val=sum(cross_val_score(rnd_search_cv_forest.best_estimator_, X1_val, y1_val,
+cv=10, scoring="accuracy"))/10
+cross_val_score(rnd_search_cv_forest.best_estimator_,X1_train,y1_train,cv=10,scoring="accura
+cy")
+from sklearn.ensemble import RandomForestClassifier
+# forest_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+y_probas_forest = cross_val_predict(rnd_search_cv_forest.best_estimator_, X1_train, y1_train,
+cv=3, method="predict_proba")
+y_scores_forest = y_probas_forest[:, 1] # score = proba of positive class
+fpr_forest, tpr_forest, thresholds_forest = roc_curve(y1_train,y_scores_forest)
+# #ROC 曲线、AUC 值和准确率
+plt.figure(figsize=(8, 6))
+# Not shown
+plot_roc_curve(fpr_svm, tpr_svm,'SVM')
+plot_roc_curve(fpr_sgd, tpr_sgd,'SGD')
+plot_roc_curve(fpr_forest, tpr_forest,'RF')
+plt.legend(loc='lower right')
+plt.title("ROC 曲线", fontsize=14)
+# plt.legend(['SVM','SGD','RF'])
+plt.show()
+print('SGD 的AUC 值：',roc_auc_score(y1_train, y1_scores_sgd))
+print('SVM 的AUC 值：',roc_auc_score(y1_train, y1_scores_svm))
+print('RF 的AUC 值：',roc_auc_score(y1_train, y_scores_forest))
+print('SGD 交叉验证训练集准确率：
+',accuracy_SGD_train)
+print('SGD 交叉验证测试集准确率：->',accuracy_SGD_val)
+print('SVM 交叉验证训练集准确率：
+',accuracy_SVM_train)
+print('SVM 交叉验证测试集准确率：->',accuracy_SVM_val)
+print('RF 交叉验证训练集准确率：
+',accuracy_RF_train)
+print('RF 交叉验证测试集准确率：-> ',accuracy_RF_val)
+# #用RF 预测
+X_test= pd.read_excel('MD_test_dropzero0.9_mval.xlsx' , header = 0 , encoding='gb2312')
+## X_test=X_test.iloc[:,1:]
+print(X_test.shape)
+X_test.head()
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+
+
+61
+#
+X1_train,
+X1_val,
+y1_train,
+y1_val
+=
+train_test_split(X,
+y1,
+test_size=.2,random_state=49)#############需要改
+# forest_clf = RandomForestClassifier(n_estimators=169 ,max_features=5 ,random_state=42)
+forest_clf = rnd_search_cv_forest.best_estimator_
+forest_clf.fit(X1_train, y1_train)
+## 模型准确率检验
+y1_val_pred=forest_clf.predict(X1_val)
+print('准确率：',accuracy_score(y1_val, y1_val_pred))
+## 预测test 数据
+y_test_pred=forest_clf.predict(X_test)
+y_test_pred=pd.DataFrame(y_test_pred)
+y_test_pred.to_excel('y1_test_pred.xlsx', index=False)#############需要改
+问题四代码：####################################################
+####Python########
+import joblib
+import pandas as pd
+import numpy as np
+import time
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+class GeneticGroup:
+def __init__(self,vector_reg,vector_clf,vector_v_index,dna_size,pd_variables_range,
+n_pop=500,crossover_rate=0.5,mutation_rate=0.1,
+n_generations=50,model_r=np.max,model_c1=np.min,
+model_c2=np.min,model_c3=np.min,model_c4=np.min,model_c5=np.min):
+self.v = vector_reg
+self.v_c = vector_clf
+self.vvi = vector_v_index
+self.m_reg = model_r
+self.m_c1 = model_c1
+self.m_c2 = model_c2
+self.m_c3 = model_c3
+self.m_c4 = model_c4
+self.m_c5 = model_c5
+self.ds = dna_size
+self.np = n_pop
+self.cr = crossover_rate
+self.mr = mutation_rate
+self.ng = n_generations
+self.pvr = pd_variables_range
+self.nv = len(self.pvr)
+
+
+
+62
+self.pop = np.random.randint(2, size=(self.np, self.ds * self.nv))
+self.x = np.tile(vector_reg,self.np).reshape(self.np,-1)
+self.x_clf = np.tile(vector_clf,self.np).reshape(self.np,-1)
+#进行解码操作
+def translateDNA(self):
+pop = self.pop
+data_x = np.zeros((self.np, self.nv))
+for i in range(self.nv):
+pop_x = pop[:,i::self.nv]
+print('pop_x.shape:',pop_x.shape)
+print('nv:', self.nv)
+data_x[:,i] = pop_x.dot(2 ** np.arange(self.ds)[::-1]) / float(2 ** self.ds - 1)\
+*float(self.pvr['max'][i]-self.pvr['min'][i])+float(self.pvr['min'][i])
+self.x = data_x
+self.x_clf[:,self.vvi] = self.x
+return self.x,self.x_clf
+##将二进制编码的值转换为实际的数值，这里要返回两个
+值，一个是回归用的数据，一个是分类用数据
+def get_fitness(self):
+data_x,data_xclf = self.translateDNA()
+pred_reg = self.m_reg.predict(data_x)
+total_ADMET
+=
+self.m_c1.predict(data_xclf)
++
+self.m_c2.predict(data_xclf)
++
+(self.m_c3.predict(data_xclf)^1)
++
+self.m_c4.predict(data_xclf)
++
+(self.m_c5.predict(data_xclf)^1)
+fitness_Reg = pred_reg - np.min(pred_reg) + 1e-4
+fitness_ADMET = (total_ADMET >= 4) * 1 + 1e-4
+return fitness_Reg * fitness_ADMET
+def select(self):
+idx = np.random.choice(np.arange(self.np),size=self.np,
+replace=True,p=self.get_fitness()/np.sum(self.get_fitness()))
+self.pop = self.pop[idx]
+def mutation(self, vector):
+if np.random.rand() < self.mr:
+mutate_point = np.random.randint(0,self.ds * self.nv)
+vector[mutate_point] = vector[mutate_point] ^ 1
+def crossover_and_mutation(self):
+pop = self.pop
+for i in range(self.np):
+child = self.pop[i,:]
+if np.random.rand() < self.cr:
+mother = pop[np.random.randint(self.np)]
+cross_points = np.random.randint(0, self.ds * self.nv)
+
+
+
+63
+child[cross_points:] = mother[cross_points:]
+self.mutation(child)
+pop[i,:] = child
+self.pop = pop
+def optimization(self):
+zy = np.zeros((self.ng,self.nv))
+for i in range(self.ng):
+self.select()
+self.crossover_and_mutation()
+fitness = self.get_fitness()
+if np.std(fitness) <= 1e-5:
+break
+zy[i,:] = self.x[int(np.argmax(fitness)),:]
+return self.x[int(np.argmax(fitness)),:],self.x_clf[int(np.argmax(fitness)),:],zy
+#加载基于随机森林的分类模型
+RF_clf_Caco_2 = joblib.load('./Classify/forest_clf_Caco-2.pkl')
+RF_clf_CYP3A4 = joblib.load('./Classify/forest_clf_CYP3A4.pkl')
+RF_clf_hERG = joblib.load('./Classify/forest_clf_hERG.pkl')
+RF_clf_HOB = joblib.load('./Classify/forest_clf_HOB.pkl')
+RF_clf_MN = joblib.load('./Classify/forest_clf_MN.pkl')
+#加载基于随机森林的回归预测模型
+RF_reg = joblib.load('./REG/forest_reg_y.pkl')
+#加载要优化的回归数据
+data_reg=pd.read_excel('./Molecular_Descriptor_20.xlsx',header=0,encoding='gb2312')#(1974,2
+0)
+label_reg = pd.read_excel('./ERα_activity.xlsx',header = 0,encoding='gb2312').iloc[:,2]
+#加载要优化的分类数据
+data_clf=pd.read_excel('./MD_train_dropzero0.9_mval.xlsx',header=0,encoding='gb2312').iloc[:,
+1:]
+#为0.9 时剔除344 个特征，第一次剔除了26 个特征(1974,359)
+label_clf= pd.read_excel('./ADMET.xlsx',header = 0,encoding='gb2312')
+Caco_2,CYP3A4,hERG,HOB,MN=label_clf.iloc[:,1],label_clf.iloc[:,2],label_clf.iloc[:,3],label_c
+lf.iloc[:,4],label_clf.iloc[:,5]
+print('shape of datareg:{}\tshape of data_clf:{}'.format(data_reg.shape,data_clf.shape))
+data_s_v = pd.read_excel('./var_range.xlsx')
+#编码长度
+dna_size = int(np.ceil(np.log2(np.max((data_s_v['max']-data_s_v['min'])/data_s_v['Δ值'])))) ##
+值为8
+print('dna_size:',dna_size)
+print('length of data_reg:',len(data_reg))
+## 回归用的20 个变量数据在分类用数据中的索引
+vector_v_index = [141, 244, 314, 33, 242, 15, 17, 199, 19, 354, 357, 236, 168, 346, 294, 243,
+
+
+
+64
+353, 29, 35, 226]
+# 利用遗传算法获得优化的分子描述符的取值范围
+res = np.zeros((len(data_reg),len(data_reg.columns)+2)) #创建用来存储已优化的的特征数据,
+一个是ADMET，另一个是pIC50，用来反应算法的优化效果
+res_clf = np.zeros((len(data_clf),len(data_clf.columns))) #创建用来存储已优化的的特征数据,
+一个是ADMET，另一个是pIC50，用来反应算法的优化效果
+t1 = time.time()
+for i in range(len(data_reg)):
+print('训练进度:',i)
+# GG
+=
+GeneticGroup(np.array(data_reg.iloc[i,:]),np.array(data_clf.iloc[i,:]),vector_v_index,dna_size,dat
+a_s_v,
+n_generations=500,model_r=RF_reg,model_c1=RF_clf_Caco_2,model_c2=RF_clf_CYP3A4,m
+odel_c3=RF_clf_hERG,
+model_c4=RF_clf_HOB,model_c5=RF_clf_MN)##创建一个实例化
+的对象
+res[i,:-2],res_clf[i,:],zy=GG.optimization()
+res[i,-2]=RF_reg.predict(res[i,:-2].reshape(1,-1)) ##保存模型预测的回归的具体值，方便
+与原始数据进行对比
+res[i,-1]=RF_clf_Caco_2.predict(res_clf[i,:].reshape(1,-1))
++
+RF_clf_CYP3A4.predict(res_clf[i,:].reshape(1,-1))
++
+(RF_clf_hERG.predict(res_clf[i,:].reshape(1,-1))^1)+RF_clf_HOB.predict(res_clf[i,:].reshape(1,
+-1))+(RF_clf_MN.predict(res_clf[i,:].reshape(1,-1))^1)
+t2 = time.time()
+print('优化过程消耗的时间：',t2-t1)
+pd_res = pd.DataFrame(res)
+pd_res.columns = list(data_reg.columns)+['pIC50','ADMET']
+# pd_res.to_excel('./优化结果_100t3.xlsx',index=False) ##t1 耗费时间3090s,t2 耗时2208s，
+###保存第一个样本的迭代过程
+pd_zy = pd.DataFrame(zy)
+pd_zy.columns = list(data_reg.columns)
+# pd_zy.to_excel('./' + str(i) + '号样本的优化过程.xlsx',index=False)

@@ -540,11 +540,10 @@ S_{\Box_{MP_1N}} = S_{\Box_{MP_1Q}} + S_{\Box_{QP_1N}} \tag{4-1-6}
 \end{figure}
 
 设 $\overrightarrow{OP_1} = \mathbf{a}$、$\overrightarrow{OP_2} = \mathbf{b}$、$\overrightarrow{OM} = \mathbf{m}$、$\overrightarrow{ON} = \mathbf{n}$、$\overrightarrow{OQ} = \mathbf{q}$，由几何关系可得：
-\begin{align*}
-F(x) &= 2j\sqrt{x}\exp(jx)\left(\int_{0}^{+\infty}e^{-j\tau^2}d\tau - \int_{0}^{\sqrt{x}}e^{-j\tau^2}d\tau\right) \\
-&= 2j\sqrt{x}\exp(jx)\left(\frac{\sqrt{\pi}}{2}e^{-j\pi/4} - \int_{0}^{\sqrt{x}}e^{-j\tau^2}d\tau\right) \tag{7-1-13} \\
-\alpha^{\pm}(\beta) &= 2\cos^2\left(\frac{2n\pi N^{\pm} - \beta}{2}\right) \tag{7-1-14}
-\end{align*}
+\begin{align}
+    \overrightarrow{NQ} &= \lambda \overrightarrow{NM} \tag{4-1-13} \\
+    \overrightarrow{P_1Q} &= \mu \overrightarrow{P_1P_2} \tag{4-1-14}
+\end{align}
 其中 $\lambda$、$\mu \in \mathbb{R}$，解得：
 \begin{equation}
     \begin{cases}
@@ -636,12 +635,23 @@ P_{17} & 1 & 0 & 1 & 1 & 1 & 0 & 0 \\
 
 表 4-3-1 显示的为未经过反射传播模型判定得到的发射机到接收机间的射线传播路径。可观察到共有 8870 条传播路径，其中大部分为未经反射条件排除的无效路径。
 
-\begin{tabular}{c c c c c c}
-\hline
-\multirow{2}{*}{\begin{tabular}{c}
-接收机 \\
-发射机
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \caption{未经反射传播判定得到的发射机到接收机间的射线传播路径表}
+    \label{tab:ray_paths}
+    \begin{tabular}{c l}
+        \hline
+        路径序号 & 路径 \\
+        \hline
+        1 & $T_x \to P_1 \to W_{13} \to P_{31} \to R_x$ \\
+        2 & $T_x \to P_1 \to W_{13} \to W_{31} \to W_{25} \to W_{36} \to R_x$ \\
+        3 & $T_x \to P_1 \to W_{13} \to W_{31} \to W_{25} \to W_{40} \to R_x$ \\
+        4 & $T_x \to P_2 \to P_{40} \to W_{26} \to R_x$ \\
+        5 & $T_x \to P_2 \to P_{40} \to W_{30} \to R_x$ \\
+        6 & $T_x \to P_2 \to P_{40} \to W_{50} \to R_x$ \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \begin{table}[h]
 \centering

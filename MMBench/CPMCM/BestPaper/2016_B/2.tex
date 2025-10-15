@@ -8,7 +8,7 @@
 \begin{document}
 
 \maketitle
-
+具有遗传性疾病和性状的遗传位点分析
 \begin{table}[h]
 \centering
 \begin{tabular}{l l}
@@ -23,79 +23,37 @@
 \end{tabular}
 \end{table}
 
+
+\begin{abstract}
+大量研究表明，人体的许多表型性状差异以及对药物和疾病的易感性等都
+可能与某些位点相关联，或和包含有多个位点的基因相关联。因此，定位与性
+状或疾病相关联的位点在染色体或基因中的位置，能帮助研究人员了解性状和
+一些疾病的遗传机理，也能使人们对致病位点加以干预，防止一些遗传病的发
+生。
+对于问题一，根据位点中碱基对的特征，基于生物基因的加性效应，位点
+中的三种组合分别可编码为 0、1,、2，其中 1 代表杂合子基因，0 和 2 分别代
+表纯合子基因中的主要等位基因(major allele)与次要等位基因(minor
+allele)。
+对于问题二，需通过一定方法计算出每个位点与疾病之间的关联程度，本
+文首先通过卡方检验进行建模，并且分别用 Benjamini & Hochberg（下简称 BH
+校正）和 Bonferroni 校正（下简称 BONF 校正）P 值。阈值为经过校正后 P 值
+小于 0.05。 满 足 阈 值 的 致 病 相 关 位 点 为 rs2273298 （ BH 校 正 后 p 值 为
+0.0006024;BONF 校正后 P 值为 0.0006024）。除此之外，还采用置换检验模型和
+贝叶斯模型进行检验，检测出来最显著的致病位点与卡方检验相一致，因此最
+终得出与疾病相关的位点有一个，位点名称为：rs2273298（置换检验模型校正
+后 p 值为 0.009445，贝叶斯因子的对数取值为 4.51238）。
+对于问题三，根据基因可以表示为位点的集合这一特征，本文采用
+Set-based test 和 VEGAS 模型对一个基因内连锁不平衡的 SNP 位点进行建模，
+并且都采用置换算法进行模型求解，阈值为经过 BH 校正后 P 值小于 0.05，最
+
 终两个模型得到了一致且较好的效果。与疾病相关联的基因有三个，基因所属序列为：gene_55、gene_102、gene_217（Set-based test 模型 BH 校正 P 值后分别为 0.149985, 0.04, 0.149985；VEGAS 模型 BH 校正后 P 值分别为 0.00165, 0.0184, 0.0009）。
 
 对于问题四，多个性状往往表现为一个整体来进行衡量，本文分别采用 mv-plink 模型和 MultiPhen 模型对多个表型之间的关联进行建模，并且找出这些关联表型的致病位点。阈值选取为经过 BH 校正后 P 值小于 0.05。最终两个模型都得出与样本中十个性状有关联的位点有一个，位点名称为：rs12746773（mv-plink 模型 BH 校正后 P 值为 $2.868447 \times 10^{-20}$；MultiPhen 模型 BH 校正后 P 值为 $8.306198 \times 10^{-21}$）。
 
 关键词：遗传统计学，全基因组关联性分析 (GWAS)，位点 (SNPs)，卡方检验
+\end{abstract}
 
-\section*{目录}
-
-\section{一、问题描述}
-\dotfill 5
-
-\section{二、合理假设与符号说明}
-\dotfill 7
-\subsection{合理假设}
-\dotfill 7
-\subsection{符号说明}
-\dotfill 7
-
-\section{三、问题分析}
-\dotfill 8
-\subsection{问题一}
-\dotfill 8
-\subsection{问题二}
-\dotfill 8
-\subsection{问题三}
-\dotfill 8
-\subsection{问题四}
-\dotfill 8
-
-\section{四、模型特点介绍}
-\dotfill 9
-\subsection{问题二的建模}
-\dotfill 9
-\subsubsection{卡方检验模型}
-\dotfill 9
-\subsubsection{列联表的独立性检验模型}
-\dotfill 9
-\subsubsection{基于贝叶斯的 GWAS 模型}
-\dotfill 12
-\subsubsection{置换检验模型}
-\dotfill 14
-\subsection{问题三的建模}
-\dotfill 15
-\subsubsection{基于集合的基因检验模型 (Set-based test)}
-\dotfill 15
-\subsubsection{全面基于基因关联分析模型 (VEGAS)}
-\dotfill 16
-\subsection{问题四的建模}
-\dotfill 17
-\subsubsection{基于典型关联分析的多表型模型 (MV-Plink)}
-\dotfill 17
-\subsubsection{MultiPhen 模型}
-\dotfill 18
-
-\section{五、问题求解}
-\dotfill 19
-\subsection{问题一求解}
-\dotfill 19
-\subsection{问题二求解}
-\dotfill 19
-\subsection{问题三求解}
-\dotfill 22
-\subsection{问题四求解}
-\dotfill 23
-
-\section{六、模型评价}
-\dotfill 25
-
-\section{参考文献}
-\dotfill 26
-
-\section{附件}
-\dotfill 27
+\tableofcontents
 
 \section{一、问题描述}
 
@@ -174,7 +132,7 @@ $T$ & 置换检验次数 \\
 
 \subsubsection{4.1.1 卡方检验模型}
 
-\subsubsection{4.1.2 列联表的独立性检验模型}
+\paragraph{4.1.2.2 列联表的独立性检验模型}
 
 我们把按两个或多个特征分类的频数数据称为交叉分类数据，这些数据一般以表格的形式给出，称为列联表。一般，若总体中的个体可按两个属性 $A$ 与 $B$ 分类，$A$ 有 $r$ 个类，$A_1, \ldots, A_r$，$B$ 有 $c$ 个类 $B_1, \ldots, B_c$，从总体中抽取大小为 $n$ 的样本，设其中有 $n_{ij}$ 个个体既属于类 $A_i$ 又属于 $B_j$，$n_{ij}$ 称为频数，将 $r \times c$ 个 $n_{ij}$ 排列为一个 $r$ 行 $c$ 列的二维列联表，简称为 $r \times c$ 列联表。若所考虑的属性多于两个，也可以按类似的方式作出列联表，称为多维列联表。
 
@@ -244,7 +202,7 @@ W = \left\{ \chi^2 \geq \chi^2_{1-\alpha} \left( (r-1)(c-1) \right) \right\}
 \end{tabular}
 \end{table}
 
-\subsubsection{4.1.1.2 Benjamini \& Hochberg 校正}
+\paragraph{4.1.1.2 Benjamini \& Hochberg 校正}
 
 多重假设检验的统计显著性问题已经引起了许多统计学者的注意。1995 年，Benjamini 和 Hochberg 在研究多重假设检验时首次从期望的角度提出了错误发现率的概念，并在多重检验中对它的控制方法做了研究，给出了计算方法。然而，由于当时没有学者研究大规模数据，因此并没有受到重视，甚至还受到广大学者的质疑。若干年后，随着微阵列数据研究的不断发展，大规模数据的频繁出现使得 FDR 有了实际的应用，错误发现率的理论和应用研究也在逐渐走向成熟。
 
@@ -298,7 +256,7 @@ p(x)=P_r\{|X|>|x|\mid H_0\}=2P_r\{X<x\mid H_0\}
 \tag{4.10}
 \end{equation}
 
-### 4.1.1.3 Bonferroni 校正
+\paragraph{4.1.1.3 Bonferroni 校正}
 
 两两比较中最常见的错误，是在每次比较中一直使用总的检验标准（如 $\alpha=0.05$），这样做的结果导致总的 $I$ 类错误增大。如果 $\alpha=0.05$ 为水准分别对 $m$ 个实际上成立的零假设（即实际情况是 $H_0$ 为真的时候）进行检验，不犯 $I$ 类错误的概率为 $(1-\alpha)_m$，至少出现一次错误的概率（$I$ 类错误的累积概率）为 $1-(1-\alpha)_m$，显然大于 0.05，例如 $m=3$ 时，$1-(1-\alpha)_m=0.14$，这么大的 $I$ 类错误让人难以接受，且随着 $m$ 增大，$1-(1-\alpha)_m$ 将更大。于是，Bonferroni 提出通过控制 $\alpha$，降低 $I$ 类错误的累积概率：若每次检验水准为 $\alpha$，共进行 $m$ 次比较，当 $H_0$ 为真时，犯 $I$ 类错误的累积概率 $\alpha'$ 不超过 $m\alpha$，即有 Bonferroni 不等式（Bonferroni inequality）$\alpha'\leq m\alpha$ 成立。所以令各次比较的检验水准为 $\alpha'=0.05/m$，并规定 $P\leq\alpha'$ 时拒绝 $H_0$，基于这样的做法，就可以把 $I$ 类错误的
 
@@ -309,7 +267,7 @@ p(x)=P_r\{|X|>|x|\mid H_0\}=2P_r\{X<x\mid H_0\}
 \tag{4.11}
 \end{equation}
 
-\subsection{4.1.2 基于贝叶斯的 GWAS 模型}
+\subsubsection{4.1.2 基于贝叶斯的 GWAS 模型}
 
 贝叶斯因子在基因位点关联性分析方面在此之前已经有大量的研究 \([2, 3, 4, 5]\)，而且无论在可解释性方面还是在结果的准确性方面对比 P 值的方法均具有较好的优势。贝叶斯模型的主要过程是计算贝叶斯因子（BF）的值，即数据中位点与疾病相关 \((M_1)\) 的边缘似然概率和位点与疾病不相关 \((M_0)\) 的边缘似然概率之比，公式（4.12）表示如下：
 
@@ -395,7 +353,7 @@ f(\gamma; m, s, d) = \frac{\Gamma\left( \frac{d+1}{2} \right)}{\Gamma\left( \fra
 \tag{4.23}
 \end{equation}
 
-\subsection{置换检验模型}
+\subsubsection{置换检验模型}
 
 模拟运算法的基本原理是：根据所研究的问题构造一个检验统计量，并利用样本，按排列组合的原理，导出检验统计量的理论抽样分布；若难以导出确切的理论分布，则采用抽样模拟的方法做估计其近似分布。然后求出从该分布中获得样本及更极端样本的概率（P 值），并界定此概率值作出推论。若检验统计量的抽样分布是基于样本的所有可能的排列（或组合）条件下的分布，则称之为“Exact Permutation Test (EPT)”，可译为“确切排列（组合）检验”，其思路类似于秩和检验。对实际问题来说，往往得不到检验统计量的确切抽样分布，可通过基于样本的大量重复的随机排列（或组合）估计其近似的抽样分布，则称之为“Randomized Permutation test (RPT)”，可译为“随机排列（或组合）检验”。
 
@@ -444,7 +402,7 @@ CI = \left( 100 * \left( \frac{1 - \beta}{2T} \right) \right) \%
 
 \section{4.2 问题三的建模}
 
-\subsection{4.2.1 基于集合的基因检验模型 (Set-based test)}
+\subsubsection{4.2.1 基于集合的基因检验模型 (Set-based test)}
 
 两个 SNP 之间的连锁不平衡是用来度量两个 SNP 位点之间的相关程度。其中 D 和 \(r\) 平方量化两个 SNP 位点之间连锁不平衡程度的指标。在这里，基因座 L1 位点为 A 的概率为 \(p_A\)，基因座 L1 位点为 a 的概率为 \(q_a\)；基因座 L2 位点为 B 的概率为 \(p_B\)，基因座 L2 位点为 b 的概率为 \(q_b\)。因此我们有下表 4-4:
 
@@ -490,7 +448,7 @@ r^2 = \frac{D^2}{p_A q_a p_B q_b}
 
 步骤七: 基因的经验 $P$ 值计算, 由置换后基因的统计量超过未经置换的基因的统计量的次数除以所有的置换次数。
 
-\subsection{4.2.2 全面基于基因关联分析模型 (VEGAS)}
+\subsubsection{4.2.2 全面基于基因关联分析模型 (VEGAS)}
 
 基于基因的关联分析模型在进行关联分析的时候, 通常考虑的是一个基因内的所有 SNP, 而不是像传统的关联分析那样只考虑一个 SNP。根据基因组得而组织结构来看, 基于基因的全基因组关联分析会比传统基于单个 SNP 的关联分析效果更加好。例如, 当一个基因包含多个致病的 SNP, 而这几个在相同基因里的 SNP, 在进行单个 SNP 的关联分析的时候, 可能只是处在接近显著的程度, 而 SNP 和可能会被当成随机的噪音被舍弃掉。当把这些同一个基因中的致病 SNP 结合到一起进行相关的统计检验和连锁不平衡方面的校正, 基于基因的方法可能就会检测出这些接近显著的 SNP 相关的基因。
 
@@ -510,9 +468,9 @@ r^2 = \frac{D^2}{p_A q_a p_B q_b}
 
 步骤七：基因的经验 $P$ 值计算，由置换后基因的统计量超过未经置换的基因的统计量的次数除以所有的置换次数。
 
-\section{4.3 问题四的建模}
+\subsection{4.3 问题四的建模}
 
-\subsection{4.3.1 基于典型关联分析的多表型模型（MV-Plink）}
+\subsubsection{4.3.1 基于典型关联分析的多表型模型（MV-Plink）}
 
 典型关联分析是利用综合变量对之间的相关关系来反应两组指标之间的整体相关性的多元统计分析方法。它的基本原理是：为了把握两组指标之间的相关关系，分别在两组变量中提取有代表性的两个综合变量，利用两个综合变量之间的相关关系来反映两组指标之间的整体相关性。
 
@@ -544,7 +502,7 @@ F = \frac{\hat{p}^2}{K(1-\hat{p}^2)(n-K-1)}
 \tag{4.28}
 \end{equation}
 
-\subsection{4.3.2 MultiPhen 模型}
+\subsubsection{4.3.2 MultiPhen 模型}
 
 针对第四问，我们试图从单个表型信号接近显著的 SNP 中结合多个表型，然后找出信号显著的 SNP。在这里我们使用 MultiPhen 模型，从多个相关的表型中提炼出具有强相关联的 SNP。
 
@@ -654,7 +612,9 @@ rs590368 & 0.001576 & 0.987 & 1 \\
 \hline
 \end{tabular}
 \end{table}
-
+相关参数含义参考模型介绍。最终置换检验模型得到的图 5-2。
+置换检验模型得到的前 10 个与某种疾病相关的位点关联程度如表 5-4 所
+示：
 \begin{table}
 \centering
 \caption{置换检验的位点关联表}
@@ -677,7 +637,7 @@ rs707472 & 0.001186 & 1 \\
 \hline
 \end{tabular}
 \end{table}
-
+贝叶斯模型得到的前 10 个与某种疾病相关的位点关联程度如表 5-5 所示
 \begin{table}
 \centering
 \caption{贝叶斯模型的位点关联表}
@@ -699,7 +659,7 @@ rs707472 & 1.4864 \\
 \end{tabular}
 \end{table}
 
-5.3 问题三求解
+\subsection{5.3 问题三求解}
 
 根据问题三种数据的特征，基因与疾病的关联性可由基因相关的位点的关联性表示，因此本题采用基于集合的基因检验模型与 VEGAS 模型来对样本进行建模求解，最终得到与疾病关联最有可能的基因为：gene\_102、gene\_55、gene\_217。
 
@@ -744,7 +704,8 @@ rs707472 & 1.4864 \\
     \caption{BH校正曼哈顿图}
     \label{fig:manhattan_plot}
 \end{figure}
-
+其中两种模型前 10 个（两个模型前 10 排序相同）与疾病相关的基因 BH 校
+正 P 值如表 5-7 所示：
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|}

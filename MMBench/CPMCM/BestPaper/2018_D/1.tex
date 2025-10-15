@@ -14,104 +14,7 @@
 问题四中，解决了插值函数最优阶次确定的问题。通过引入均方差参数作为衡量插值函数效果优劣的性能指标，最终得到 15 次为最佳阶次。
 \end{abstract}
 
-\begin{center}
-\includegraphics[width=0.3\textwidth]{image1.png} \quad
-\includegraphics[width=0.2\textwidth]{image2.png} \quad
-\includegraphics[width=0.2\textwidth]{image3.png} \\
-\includegraphics[width=0.2\textwidth]{image4.png} \quad
-\includegraphics[width=0.3\textwidth]{image5.png}
-\end{center}
-
-\begin{tabular}{ll}
-学校 & 上海交通大学 \\
-\hline
-参赛队号 & 18102480211 \\
-\hline
-队员姓名 & 1. 闫晓燊 \\
-& 2. 王成罡 \\
-& 3. 吴迪 \\
-\end{tabular}
-
-\section*{目录}
-
-\begin{itemize}
-    \item[1.] 问题重述 \dotfill 5
-    \begin{itemize}
-        \item[1.1] 问题背景 \dotfill 5
-        \item[1.2] 要解决的问题 \dotfill 5
-    \end{itemize}
-    \item[2.] 模型基本假设 \dotfill 6
-    \item[3.] 符号说明 \dotfill 7
-    \item[4.] 问题一 星下观测点各主要分潮潮汐调和常数求解及评价检验 \dotfill 8
-    \begin{itemize}
-        \item[4.1] 问题分析 \dotfill 8
-        \item[4.2] 星下观测点主要分潮潮汐调和常数的求解 \dotfill 8
-        \begin{itemize}
-            \item[4.2.1] 数据处理 \dotfill 8
-            \item[4.2.2] 模型准备 \dotfill 10
-            \item[4.2.3] 模型建立与求解 \dotfill 13
-            \item[4.2.4] 求解结果 \dotfill 14
-        \end{itemize}
-        \item[4.3] 利用验潮点调和常数对计算结果进行检验评价 \dotfill 15
-        \begin{itemize}
-            \item[4.3.1] 数据处理 \dotfill 15
-            \item[4.3.2] 模型准备 \dotfill 17
-            \item[4.3.3] 模型建立与求解 \dotfill 19
-            \item[4.3.4] 求解结果 \dotfill 19
-        \end{itemize}
-    \end{itemize}
-    \item[5.] 问题二 观测点调和常数沿轨道作图及正压潮、内潮分离 \dotfill 24
-    \begin{itemize}
-        \item[5.1] 问题分析 \dotfill 24
-        \item[5.2] 星下观测点各主要分潮潮汐调和常数沿轨道方向分布 \dotfill 24
-        \begin{itemize}
-            \item[5.2.1] 数据处理 \dotfill 24
-            \item[5.2.2] 模型准备 \dotfill 27
-            \item[5.2.3] 模型建立与求解 \dotfill 27
-            \item[5.2.4] 求解结果 \dotfill 27
-        \end{itemize}
-        \item[5.3] 沿轨道各分潮的潮汐调和常数的正压潮和内潮的分离 \dotfill 32
-        \begin{itemize}
-            \item[5.3.1] 数据处理 \dotfill 32
-            \item[5.3.2] 模型准备 \dotfill 33
-            \item[5.3.3] 模型建立与求解 \dotfill 34
-            \item[5.3.4] 求解结果 \dotfill 37
-        \end{itemize}
-    \end{itemize}
-    \item[6.] 问题三 插值求出各分潮的同潮图，并利用验潮站检验 \dotfill 41
-    \begin{itemize}
-        \item[6.1] 问题分析 \dotfill 41
-        \item[6.2] 采用高阶多项式轨迹插值法绘制南海主要分潮的同潮图 \dotfill 41
-        \begin{itemize}
-            \item[6.2.1] 数据处理 \dotfill 41
-            \item[6.2.2] 模型准备 \dotfill 44
-            \item[6.2.3] 模型建立与求解 \dotfill 45
-            \item[6.2.4] 求解结果 \dotfill 47
-        \end{itemize}
-        \item[6.3] 利用验潮站数据对插值法得到的同潮图进行评价 \dotfill 50
-        \begin{itemize}
-            \item[6.3.1] 数据处理 \dotfill 50
-            \item[6.3.2] 模型准备 \dotfill 51
-            \item[6.3.3] 模型建立与求解 \dotfill 51
-            \item[6.3.4] 求解结果 \dotfill 51
-        \end{itemize}
-    \end{itemize}
-    \item[7.] 问题四 插值求出各分潮的同潮图，并利用验潮站检验 \dotfill 55
-    \begin{itemize}
-        \item[7.1] 问题分析 \dotfill 55
-        \item[7.2] 数据处理 \dotfill 55
-        \item[7.3] 模型准备 \dotfill 55
-        \item[7.4] 模型建立与求解 \dotfill 56
-        \item[7.5] 求解结果 \dotfill 56
-    \end{itemize}
-    \item[8.] 模型评价 \dotfill 60
-    \begin{itemize}
-        \item[8.1] 模型的优点 \dotfill 60
-        \item[8.2] 模型的缺点 \dotfill 60
-    \end{itemize}
-    \item[9.] 参考文献 \dotfill 61
-    \item[10.] 附录 \dotfill 62
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -151,15 +54,33 @@
     \item 在计算星下观测点与选定轨迹间距离时，忽略空间弧度，假设为平面内点到直线距离；
 \end{enumerate}
 
-\begin{tabular}{ll}
-学校 & 上海交通大学 \\
-\hline
-参赛队号 & 18102480211 \\
-\hline
-队员姓名 & 1. 闫晓燊 \\
-& 2. 王成罡 \\
-& 3. 吴迪 \\
-\end{tabular}
+\section{3. 符号说明}
+\begin{table}[htbp]
+    \centering
+    \caption{符号及其含义}
+    \begin{tabular}{|c|l|}
+    \hline
+    \textbf{符号} & \textbf{意义} \\ \hline
+    $h$ & 实际水位 \\ \hline
+    $S_0$ & 余水位 \\ \hline
+    $f_i$ & 交点因子 \\ \hline
+    $h_j$ & 调和常数—振幅 \\ \hline
+    $v_j$ & 分潮相位 \\ \hline
+    $u_j$ & 交点订正角 \\ \hline
+    $g_j$ & 调和常数—迟角 \\ \hline
+    $J$ & 主要分潮数 \\ \hline
+    $\sigma_j$ & 分潮角速度 \\ \hline
+    $t$ & 时刻 \\ \hline
+    $v_{0j}$ & 第$j$个分潮的初相位 \\ \hline
+    $\mu$ & Doodson 数 \\ \hline
+    $R$ & 地球半径 6731km \\ \hline
+    $L$ & 地球上已知精度、纬度两点间的距离(km) \\ \hline
+    $\Delta H$ & 潮汐调和常数的振幅差 \\ \hline
+    $\Delta$ & 潮汐矢量差 \\ \hline
+    $RMS_{\Delta H}$ & 潮汐调和常数的振幅差的均方差 \\ \hline
+    $RMS_{\Delta}$ & 潮汐矢量差的均方差 \\ \hline
+    \end{tabular}
+    \end{table}
 
 \section{问题一 星下观测点各主要分潮潮汐调和常数求解及评价检验}
 
@@ -190,7 +111,7 @@
 
 经统计，4520 个观测点中共有 871 个观测点的测量次数小于 300 次，去除该871个观测点后，利用剩余的3649个进行计算。
 
-\subsection{(三) 测量数据中的时间转换}
+\paragraph{(三) 测量数据中的时间转换}
 
 注意到题目高度计资料中所记录的观测时刻是以2000年1月1日0点0分0秒（格林尼治时间）开始计算，题目中验潮站资料中所给出的振幅迟角的求取采用的是北京时间，而调和分析方法中分潮初相位的计算中，则是利用$Y$年$M$月$D$日$t$时刻进行的计算。
 
@@ -198,7 +119,7 @@
 
 一天中总共的秒数为86400秒，将观测数据中记录的总秒数除以86400，得到总天数。考虑到月份中的大小月份以及闰年、平年等因素，计算得到确切的年月日及时刻。具体计算流程如下图2所示，详细程序见附录2。
 
-\subsection{(四) 水深数据的处理}
+\paragraph{(四) 水深数据的处理}
 
 题目中所给出的水深数据存储顺序左上角位置为（99E，2N），右下角位置为（122E，25N），与实际图片方位相反，因此需要将水深数据集中的地理位置存储顺序进行调换，从而保证绘制地形图与实际情况相符。
 
@@ -215,7 +136,7 @@
     \label{fig:time_conversion}
 \end{figure}
 
-\subsection{模型准备}
+\subsubsection{模型准备}
 
 由题目中所给的参考资料可知，实际水位可以近似看作有限个主要分潮的叠加。假设有 $J$ 个分潮，则根据题目所给资料可知：
 
@@ -267,7 +188,7 @@ y_{map} &= (25 - y_{obs}) * 12 + 1 \tag{5-2}
 + 1.418 \sin p + 0.284 \sin(p + N') - 0.008 \sin(p + 2N')
 \end{equation}
 
-\subsection{(二) 分潮角速度的计算}
+(二) 分潮角速度的计算
 
 分潮角速度 $\sigma_j$ 的计算主要通过如下公式:
 \begin{equation}
@@ -284,7 +205,7 @@ y_{map} &= (25 - y_{obs}) * 12 + 1 \tag{5-2}
 \hline
 \end{tabular}
 
-\subsection{(三) 分潮初相位的计算}
+(三) 分潮初相位的计算
 
 $Y$ 年 $M$ 月 $D$ 日 $t$ 时刻（实际计算中是观测数据的起始时间）的天文初相角:
 \begin{equation}
@@ -319,13 +240,13 @@ p' = 281.22 + 0.0172(Y - 1900) + 0.00005(n + i + \frac{t}{24}) \\
 
 式中 \( i \) 为 1900 年至 \( Y \) 年的闰年数, \( i = \text{int}(\frac{Y - 1901}{4}) \); \( n \) 为从 \( Y \) 年 1 月 1 日开始计算的累积日期序数, 1 月 1 日的日期序数为 0, \( t \) 为时间（单位：小时）。以上各式中的单位是度。
 
-\subsection{4.2.3 模型建立与求解}
+\subsubsection{4.2.3 模型建立与求解}
 
 根据公式 (4-1), 结合题目所要求解的四个主要分潮 (\( M_{2}, S_{2}, K_{1}, O_{1} \)) 的潮汐调和常数：振幅和迟角。可以知道，每一方程中含有 9 个未知数；而不同时刻对应不同的测量值，因此每一个星下测量点可以列出相应的含有 \( n \) 个方程的方程组。
 
 观察题目中所给出的 4520 个星下观测点的测量数据，98.87\% 的观测点有 9 个以上的测量值；意味着有 98.87\% 的观测点所列的方程组为超静定方程组，即方程组中方程数目大于未知数个数。
 
-\subsubsection{(一) 最小二乘法}
+(一) 最小二乘法
 
 基于上述问题，因此在进行上述方程组的计算求解时，采用最小二乘法 \({}^{[3]}\) 进行求解。首先对公式 (4-1) 利用三角函数中和差化积公式进行变换：
 
@@ -369,7 +290,7 @@ S_0 + \sum_{j=1}^{J} x_j f_j \cos(\sigma_j t_n + V_0 + u_j) + \sum_{j=1}^{J} y_j
 
 进而可以利用最小二乘法求得上述方程组的解，最终得到星下观测点的四个主要分潮的潮汐调和常数。
 
-\subsection{求解结果}
+\subsubsection{求解结果}
 
 利用 Matlab 编程计算得到星下观测点处对应的各主要分潮 ($M_2$、$S_2$、$K_1$、$O_1$) 的潮汐调和常数。所求得的星下观测点的四个主要分潮的潮汐调和常数存储于 Excel 表格中，数据格式为 $[m*10]$ 的矩阵（$m$ 代表全体参与计算的星下观测点的个数），每一行的 13 个数据分别代表：星下观测点的经度、纬度、M2 分潮振幅、S2 分潮振幅、K1 分潮振幅、O1 分潮振幅、M2 分潮迟角、S2 分潮迟角、K1 分潮迟角和 O1 分潮迟角。
 
@@ -383,6 +304,17 @@ $RMS$ & 5.982136586 & 1.522593902 & 2.832918769 & 2.45432506 \\
 $average$ & 5.283253318 & 1.932630333 & 3.576777708 & 3.097343358 \\
 \hline
 \end{tabular}
+
+\subsection{4.3 利用验潮点调和常数对计算结果进行检验评价}
+\subsubsection{4.3.1 数据处理}
+（一） 处理验潮站数据存储格式
+题目中所给出的验潮点的数据格式是按照 4 个分潮分别存储，每个分潮中采
+取[tide_station_num*4]矩阵的形式对数据进行存储（tide_station_num 代表验潮点
+个数），每一行四个数据分别表示该位置点的振幅（厘米）、该位置点的迟角（度）、
+该位置点的纬度（度）、该位置点的经度（度）。 
+此种数据存储格式不利于后续计算，为方便验潮点数据与星下观测点数据之
+间进行比对，将 4 个分潮的验潮点数据按照 4.2.4 中所述的星下观测点的数据存
+储格式整合到一个[234*10]的矩阵中，部分数据如表 5 所示，完整数据见附件 2。
 
 \begin{table}
 \centering
@@ -420,9 +352,9 @@ $average$ & 5.283253318 & 1.932630333 & 3.576777708 & 3.097343358 \\
 \end{tabular}
 \end{table}
 
-\subsection{模型准备}
+\subsubsection{模型准备}
 
-\subsubsection{地球上已知经度纬度的两点间的球面距离}
+地球上已知经度纬度的两点间的球面距离
 
 本文中假设地球是一个半径为 6371km 的标准球体，如图 \ref{fig:earth_distance} 所示。
 
@@ -438,7 +370,7 @@ $average$ & 5.283253318 & 1.932630333 & 3.576777708 & 3.097343358 \\
 L = R * \arccos(\sin(a_2)\sin(b_2) + \cos(a_2)\cos(b_2)\cos(a_1 - b_1)) \tag{4-12}
 \end{equation}
 
-\subsubsection{验潮站与星下观测站最近点匹配}
+验潮站与星下观测站最近点匹配
 
 采用循环遍历算法，依次计算每一个验潮站与全体星下观测点之间的距离，提取距离最小值，找到每一个验潮站对应的最接近的星下观测点，为后续利用验潮站分潮的潮汐调和常数评价求得的星下观测点的潮汐调和常数做准备。
 
@@ -531,7 +463,7 @@ A & B & C & D & E \\
 \hline
 \end{tabular}
 \end{table}
-
+相应验潮点和与之距离最近的星下观测点的匹配结果如图 4 所示：
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.8\textwidth]{image.png} % 替换为实际图像文件名
@@ -540,9 +472,9 @@ A & B & C & D & E \\
 
 \textbf{红色星号：验潮站；蓝色圆圈：星下观测站}
 
-\subsection{模型建立与求解}
+\subsubsection{模型建立与求解}
 
-\subsubsection{检验评估参数及求解}
+检验评估参数及求解
 
 为验证通过上述 4.2 章节中所建模型的准确性，本文中利用验潮站的各主要分潮的潮汐调和常数对星下观测点求得数据进行对比评估。
 
@@ -573,11 +505,11 @@ RMS_{\Delta} &= \left( \frac{\sum_{i=1}^{n} (\Delta_{i} - \Delta^{a})^{2}}{n} \r
 
 其中，$\Delta H^{a}$ 为振幅差平均值，$\Delta^{a}$ 为平均值，$n$ 为验潮站总个数。
 
-\subsection{求解结果}
+\subsubsection{求解结果}
 
 利用 4.3.1 和 4.3.2 中整理的数据格式，通过 MATLAB 进行编程，分别计算各个验潮点不同分潮的潮汐调和常数所对应的上述四个参数：振幅差 $\Delta H$，潮汐矢量差 $\Delta$，振幅差均方差 $RMS_{\Delta H}$ 以及矢量差均方差 $RMS_{\Delta}$。
 
-\subsubsection{M2、S2、K1、O1 分潮的振幅差 $\Delta H_{M2}$、$\Delta H_{S2}$、$\Delta H_{K1}$、$\Delta H_{O1}$}
+M2、S2、K1、O1 分潮的振幅差 $\Delta H_{M2}$、$\Delta H_{S2}$、$\Delta H_{K1}$、$\Delta H_{O1}$
 
 将运算结果存储进一个 $[243 \times 9]$ 的矩阵中，具体的数据格式为：每一行的 9 个数据分别代表验潮站经度、纬度，与之对应的距离最近的观测点的经度、纬度，两点之间的球面距离 [5]，以及 M2、S2、K1、O1 分潮的振幅差 $\Delta H_{M2}$、$\Delta H_{S2}$、$\Delta H_{K1}$、$\Delta H_{O1}$。部分数据结果见表 7 所示，处理数据结果折线图见图 5，完整处理数据见附件 4。
 
@@ -827,7 +759,7 @@ y_{map} &= (25 - y_{obs}) * 12 + 1 \tag{5-2}
     \label{fig:1001}
 \end{figure}
 
-\subsection{5.2.2 模型准备}
+\subsubsection{5.2.2 模型准备}
 
 本文中以卫星运行轨道的一条下行轨迹为例进行分析, 具体如图 8 中红色轨迹所示。通过提取位于该条轨迹上两点的经纬度坐标 $(107.6973, 20.6777)$ 和 $B[113.7104, 5.0691]$, 确定轨迹所在方程为:
 \begin{equation}
@@ -841,7 +773,7 @@ y = -2.62x + 302.52
 \caption{轨迹方程图像}
 \end{figure}
 
-\subsection{5.2.3 模型建立与求解}
+\subsubsection{5.2.3 模型建立与求解}
 
 在判断星下观测点是否位于卫星运行轨迹上时, 忽略空间三维因素, 将轨迹视为平面内的一条直线。同时, 考虑到卫星观测的定位误差因素, 将与轨迹相距在 0.001 范围内的观测点, 视为处于卫星运行轨迹上。
 
@@ -854,7 +786,7 @@ d = \left| \frac{Ax_0 + By_0 + C}{\sqrt{A^2 + B^2}} \right|
 
 利用 MATLAB 通过循环遍历算法, 求解确定位于选定轨迹上的全部星下观测点。并将其经纬度坐标以及对应的四个主要分潮的潮汐调和常数存储入 $(k*10)$ 的矩阵之中。
 
-\subsection{5.2.4 求解结果}
+\subsubsection{5.2.4 求解结果}
 
 利用 MATLAB 将上述计算结果, 即选定轨迹上星下观测点的四个主要分潮 $(M_2, S_2, K_1, O_1)$ 的潮汐调和常数分别绘制在以纬度为横坐标的二维坐标系
 
@@ -983,6 +915,19 @@ d = \left| \frac{Ax_0 + By_0 + C}{\sqrt{A^2 + B^2}} \right|
 \caption{部分轨迹上星下观测点的各分潮的正压潮及内潮数据}
 \end{table}
 
+
+（二） 提取轨迹上等间距 150 个观测点 
+ 
+同样利用 MATLAB 软件，提取上述选定卫星运行轨迹上的 150 个等间距的
+观测点，作为控制点用于后续正压潮、内潮沿轨迹方向变化函数的插补，数据的
+存储格式为[150∗9]的矩阵中，每一行存储一个星下观测点的 9 个数据[纬度，
+M2_HcosG,M2_HsinG,S2_HcosG,S2_HcosGK1HcosG ，
+K1HsinG,O1_HcosG,O1_HsinG]，分别代表：星下观测点的纬度，四个分潮的正
+压潮、内潮.
+
+\subsubsection{5.3.2 模型准备}
+以 5.3.1数据处理阶段准备的 150个等间距的选定轨迹上的星下观测点的 O1
+分潮的正压潮和内潮为例，将其绘制在以纬度为横坐标的图表上，如图 17、18
 所示:
 
 \begin{figure}[h]
@@ -997,7 +942,8 @@ d = \left| \frac{Ax_0 + By_0 + C}{\sqrt{A^2 + B^2}} \right|
     \caption{选定轨迹上O1分潮的内潮随轨迹分布图}
 \end{figure}
 
-\subsection{5.3.3 模型建立与求解}
+
+\subsubsection{5.3.3 模型建立与求解}
 
 经查阅相关文献，了解到采用高阶多项式轨线插值法对正压潮 \( H \cos G \) 和内潮 \( H \sin G \) 进行处理得出的插值结果要优于直接运用振幅 \( H \) 和迟角 \( G \) 插值得到的结果。本文中采用 12 阶次的多项式，对卫星运行轨迹上的 \( H \cos G \)，\( H \sin G \) 进行插值。最后通过坐标变换，反推出振幅 \( H \) 与迟角 \( G \)。
 
@@ -1107,7 +1053,7 @@ b_{n+1}
     \label{fig:flowchart}
 \end{figure}
 
-\subsection{求解结果}
+\subsubsection{求解结果}
 
 选定轨迹上，星下观测点四个主要分潮的正压潮和内潮通过 12 次多项式插值计算后，其沿着轨迹方向的变化分布图如下图所示。
 
@@ -1204,7 +1150,7 @@ b_{n+1}
     \end{tabular}
 \end{table}
 
-\subsubsection{（二）数据清洗：去除无效点}
+（二）数据清洗：去除无效点
 
 在第六章节内，本文将沿着网格线的四个方向上不存在完整相邻点的网格交叉点称之为无效点。去除无效点为后续进行高阶次多项式轨迹插值排除噪点，确保所得结果的准确性。
 
@@ -1269,13 +1215,13 @@ d_1 = 2\sqrt{l(l - pp_1)(l - pp_4)(l - p_1p_4)} / p_1p_4 \tag{6-3}
     \label{fig:31}
 \end{figure}
 
-\subsection{模型准备}
+\subsubsection{模型准备}
 
 由第五章节可知得，通过高次多项式轨线插值法可以求出地图上全部的卫星轨迹上行线和下行线上所分布点的四个主要分潮 \((M_2, S_2, K_1, O_1)\) 调和常数的插值函数。
 
 通过最近点跟踪法判断该点是否位于轨迹上，当该点位于轨迹线上时，采用第五章节中的高阶多项式轨线插值法进行处理求解，相关公式见 5.3.3；当该点
 
-\subsection{模型建立与求解}
+\subsubsection{模型建立与求解}
 
 有效网格点邻近搜索高维插值法，实质上，同潮图是将海洋平面上所有点的振幅或迟角绘制在地图上，经过问题一的求解，我们获得了星下观测点的潮汐调和常数，经过问题二的求解，我们获得了卫星上行线与下行线的振幅与迟角\cite{ref13}，而为了获得整个海洋平面内所有点的潮汐调和常数，需要对海洋平面内所有点进行插值，为此，我们设计了一种名为“有效网格点邻近搜索高维插值”算法，将地图中其余点的潮汐调和常数进行插值，从而绘制出海洋平面的同潮图。该算法的流程图如图 \ref{fig:flowchart} 所示：
 
@@ -1299,7 +1245,7 @@ d_1 = 2\sqrt{l(l - pp_1)(l - pp_4)(l - p_1p_4)} / p_1p_4 \tag{6-3}
     \label{fig:33}
 \end{figure}
 
-\subsection{求解结果}
+\subsubsection{求解结果}
 
 利用 MATLAB 软件，结合上述建立的模型，可以求得南海区域的四个主要分潮的同潮图，如下图所示:
 
@@ -1359,25 +1305,25 @@ d_1 = 2\sqrt{l(l - pp_1)(l - pp_4)(l - p_1p_4)} / p_1p_4 \tag{6-3}
     \label{fig:41}
 \end{figure}
 
-\section{利用验潮站数据对插值法得到的同潮图进行评价}
+\subsection{利用验潮站数据对插值法得到的同潮图进行评价}
 
-\subsection{数据处理}
+\subsubsection{数据处理}
 
 利用 MATLAB 处理题目中给出的验潮站数据，将其存储放置在一个 $[n*10]$ 的矩阵中，其中 $n$ 代表验潮站的总个数，每一行的十个数据分别代表验潮站的经度、纬度以及四个主要分潮 ($M_{2}$、$S_{2}$、$K_{1}$、$O_{1}$) 的潮汐调和常数振幅 $H$ 和迟角 $G$。
 
 $G$。以方便后续的调用计算。
 
-\subsection{模型准备}
+\subsubsection{模型准备}
 
 在通过验潮站数据对所绘制的同潮图准确性的验证过程中，需要借助 6.2 中的通过高阶多项式轨线插值法以及有效网格点邻近搜索高维插值法求得的模型进行验证。
 
-\subsection{模型建立与求解}
+\subsubsection{模型建立与求解}
 
 将 6.3.1 中处理的验潮站数据中的经纬度代入上述模型中，计算得到对应的验潮站的各个主要分潮的潮汐调和函数的理论值。通过 MATLAB 将计算到的各个验潮站的主要分潮的潮汐调和常数振幅和迟角存入 $[n*18]$ 的矩阵中，其中 $n$ 代表验潮站的个数，每一行的 18 个数分别代表验潮站的经度、纬度、四个主要分潮 $(M_{2}、S_{2}、K_{1}、O_{1})$ 的潮汐调和常数振幅 $H$ 和迟角 $G$ 的实际记录值、四个主要分潮 $(M_{2}、S_{2}、K_{1}、O_{1})$ 的潮汐调和常数振幅 $H$ 和迟角 $G$ 的理论计算值。
 
 以同一个验潮站的四个主要分潮的相应潮汐调和常数的理论计算值与实际测量值之间的振幅偏差 $\Delta H$，潮汐矢量差 $\Delta$，振幅差均方差 $RMS_{\Delta H}$ 以及矢量差均方差 $RMS_{\Delta}$ 为评价标准对所绘制的同潮图进行评价，相应参数的计算公式见公式 4-13、4-14、4-15、4-16。
 
-\subsection{求解结果}
+\subsubsection{求解结果}
 
 \paragraph{（一）M2、S2、K1、O1 分潮的振幅差 $\Delta H_{M2}、\Delta H_{S2}、\Delta H_{K1}、\Delta H_{O1}$}
 
@@ -1548,6 +1494,13 @@ $RMS$ & 2.991068 & 1.171226 & 0.944306 & 1.227163 \\
 $average$ & 2.641627 & 1.486639 & 1.192259 & 1.548672 \\
 \end{tabular}
 \end{table}
+由表 19 可以看出，全部验潮站各个分潮的潮汐调和常数振幅差∆𝐻的最小值
+为0.000388，振幅均方差𝑅𝑀𝑆∆𝐻的最小值为1.891049466，最大值为4.135592118。 
+由表 20 可以看出，全部验潮站各个分潮的潮汐调和常数矢量差∆的最小值
+为 0.055293，最大值为 0.171622，振幅均方差𝑅𝑀𝑆∆𝐻的最小值为 0.944306，最大
+值为 2.991068。 
+由此可得，所求得的验潮站的四个主要分潮的潮汐调和常数的理论计算值与
+验潮站的测量实际数据吻合度较高，误差较小，同时证明验证了本模型的准确性。
 
 \section{问题四 插值求出各分潮的同潮图，并利用验潮站检验}
 
@@ -1827,3 +1780,581 @@ RMS(cm) & 0.7134 & 0.7998 & 0.6285 & 1.5328 & 0.4709 & 0.5652 & 0.4784 & 0.5103 
 [13]. 曹德明, 方国洪. 南海北部潮汐潮流的数值模型[J]. 热带海洋学报, 1990, (2): 63-70.
 
 [14]. 王彪, 朱建荣. 基于 FVCOM 模型的珠江河口及其邻近海域的潮汐模拟[J]. 热带海洋学报, 2012, 31 (4): 17-27.
+
+\section{附录}
+附录
+
+#附录1：观测点数据整理源代码
+#附录2：时间转换源代码
+#附录3：整体计算结果源代码
+
+#附录1：观测点数据整理源代码
+%% 高度计数据提取
+% 格式为 matrix(存储一个点多个时间、水位值)，cell(存储不同点的矩
+阵)，另一个matrix（存储每个点的经纬度与时间个数）
+% 保留测量点的个数position_count，测量点的经纬度position，时间水
+位waterlevel，时间totalseconds，水位h_total
+
+%% 读取dat 文件
+## TP = dlmread('资料\高度计\TP.dat');%将空的部分处理为0，共后续判断
+
+%% 将文件内容逐个点分离，并存为cell，经纬度存储为matrix
+position = [];waterlevel = {};totalseconds = {};h_total = {};
+line = 1;position_count = 0;
+while line <= size(TP,1)
+if TP(line,3) ~= 0
+position = [position;TP(line,:)];% 储存经纬度matrix
+if line == 1
+startline = line+1;%定义第一个测量点数据的起始行
+else
+endline = line-1;%定义该测量点数据的终止行
+totalseconds{position_count} = TP(startline:endline,1)
++ 8*3600*ones(endline-startline+1,1);%格林尼治时间转换为北京时间
+h_total{position_count}
+=
+100*TP(startline:endline,2);%单位由米转换为厘米
+waterlevel{position_count}
+=
+## TP(startline:endline,1:2);%将时间和水位赋值，遇到下一个测量点时给上一
+个测量点的矩阵赋值
+startline = line+1;%重新定义下一个测量点数据的起始行
+end
+position_count = position_count+1;%记录有多少个测量点
+end
+if line == size(TP,1)
+totalseconds{position_count} = TP(startline:endline,1) +
+8*3600*ones(endline-startline+1,1);%格林尼治时间转换为北京时间
+h_total{position_count} = 100*TP(startline:endline,2);
+waterlevel{position_count} = TP(startline:end,1:2);
+
+
+
+63
+end
+line = line + 1;%TP 中的数据逐行扫描
+end
+clear line startline endline TP
+
+%% 数据清洗
+% 注意有些测量点处测量的时刻小于9 个，要把这些点排除掉，数据清洗
+index = find(position(:,3)<300);
+position(index,:) = [];
+position_count = position_count-length(index);
+totalseconds(index) = [];
+h_total(index) = [];
+waterlevel(index) = [];
+clear index
+
+#附录2：时间转换源代码
+# %% 时间转换中的Y 计算
+% Y = totalseconds/3600/24/365or366 年数
+% n = totalseconds/3600/24  剩余天数
+% i = Y/4（需要判断，整除4 或者400 之类的） 闰年数
+% t = (totalseconds - (Y-2000)*365*24*3600 - i*24*3600 -
+n*24*3600)/3600; 剩余小时数
+function [Y,n,i,t] = timeconvert(totalseconds)
+
+%% 求解总天数和剩余小时数
+totaldays = fix(totalseconds/3600/24);
+t = totalseconds - totaldays*3600*24;%一天多余的小时数
+if t < 0
+t = 3600*24+t;%负数小时数的处理方法
+end
+t = t/3600;
+
+%% 考虑闰年求年数和到1900 年的闰年数
+% 2000 年之后至今的闰年每4 年一次，不用考虑整除100 的特例
+year = fix(totaldays/365);
+if totaldays >= 0
+runnian = fix((year-1)/4) + 1;
+year = fix((totaldays - runnian)/365);%把包括2000 年的闰年数
+减掉
+else
+runnian = fix(year/4);
+year = fix((totaldays - runnian)/365) - 1;%负时间的年数计算
+end
+## Y = 2000+year;%按照北京时间2000 年1.1 之后计算
+
+
+
+64
+
+i = fix((Y-1901)/4);%闰年个数
+
+%% 一年求累积天数
+if totaldays > 0
+n = totaldays - fix((year+3)/4) - year*365;
+else
+n = totaldays - fix((year+1)/4) - (year+1)*365;
+if mod(Y,4) == 0
+n = 365 + n;%需要考虑余下的小时数占用了时间，每年总天数减
+一
+else
+n = 364 + n;
+end
+end
+
+end
+
+#附录3：整体计算结果源代码
+%% 主函数，执行的入口点
+clear
+tic
+%% 读文件
+gaoduji_dataprocess;
+
+%% 初始化
+const_initial;
+
+%% 每个测量点循环求解
+for j = 1:position_count
+[f{j},u{j}] = fusolve(p{j},N_pie{j});
+x{j} = equationsolve(h_total{j},f{j},sigma,v0{j},u{j},t{j});
+[h{j},g{j}] = hgsolve(x{j});
+end
+clear x f u p N_pie sigma v0 t
+
+fileID = fopen('celldata_h.dat','w');
+for i = 1:length(h)
+formatSpec = '%f %f %f %f\n';
+fprintf(fileID,formatSpec,h{i});
+end
+fclose(fileID);
+
+
+
+65
+fileID = fopen('celldata_g.dat','w');
+for i = 1:length(g)
+formatSpec = '%f %f %f %f\n';
+fprintf(fileID,formatSpec,g{i});
+end
+fclose(fileID);
+clear fileID formatSpec
+
+final_result = zeros(position_count,10);
+for i = 1:length(h)
+final_result(i,1:2) = position(i,1:2);
+final_result(i,3:6) = h{i};
+final_result(i,7:10) = g{i};
+end
+clear position_count i j
+xlswrite('final_result.xls',final_result)
+toc
+%% 输出
+
+%% 高度计数据提取
+% 格式为 matrix(存储一个点多个时间、水位值)，cell(存储不同点的矩
+阵)，另一个matrix（存储每个点的经纬度与时间个数）
+% 保留测量点的个数position_count，测量点的经纬度position，时间水
+位waterlevel，时间totalseconds，水位h_total
+
+%% 读取dat 文件
+## TP = dlmread('资料\高度计\TP.dat');%将空的部分处理为0，共后续判断
+
+%% 将文件内容逐个点分离，并存为cell，经纬度存储为matrix
+position = [];waterlevel = {};totalseconds = {};h_total = {};
+line = 1;position_count = 0;
+while line <= size(TP,1)
+if TP(line,3) ~= 0
+position = [position;TP(line,:)];% 储存经纬度matrix
+if line == 1
+startline = line+1;%定义第一个测量点数据的起始行
+else
+endline = line-1;%定义该测量点数据的终止行
+totalseconds{position_count} = TP(startline:endline,1)
++ 8*3600*ones(endline-startline+1,1);%格林尼治时间转换为北京时间
+h_total{position_count}
+=
+100*TP(startline:endline,2);%单位由米转换为厘米
+waterlevel{position_count}
+=
+## TP(startline:endline,1:2);%将时间和水位赋值，遇到下一个测量点时给上一
+
+
+
+66
+个测量点的矩阵赋值
+startline = line+1;%重新定义下一个测量点数据的起始行
+end
+position_count = position_count+1;%记录有多少个测量点
+end
+if line == size(TP,1)
+totalseconds{position_count} = TP(startline:endline,1) +
+8*3600*ones(endline-startline+1,1);%格林尼治时间转换为北京时间
+h_total{position_count} = 100*TP(startline:endline,2);
+waterlevel{position_count} = TP(startline:end,1:2);
+end
+line = line + 1;%TP 中的数据逐行扫描
+end
+clear line startline endline TP
+% raw=cell(line_count,1);
+% % frewind(fid);
+% line=1;
+% while feof(fid)==0
+%     raw{line,1}=fgetl(fid);
+%     line=line+1;
+% end
+
+%% 数据清洗
+% 注意有些测量点处测量的时刻小于9 个，要把这些点排除掉，数据清洗
+index = find(position(:,3)<300);
+position(index,:) = [];
+position_count = position_count-length(index);
+totalseconds(index) = [];
+h_total(index) = [];
+waterlevel(index) = [];
+clear index
+
+%% 计算用到的常数初始化
+%
+包
+含
+7
+个
+dooson
+数
+，
+分
+潮
+角
+速
+度
+sigma
+，
+tao1,s1,h_pie1,p1,N_pie1,p_pie1
+% 分潮初相位v0，tao,s,h_pie,p,N_pie,p_pie（与时间有关，写为函数）
+% 正交因子f 与修正角u（与时间有关，写为函数）
+
+%% 计算sigma
+tao1 = 14.49205211;
+s1 = 0.54901653;
+h_pie1 = 0.04106864;
+p1 = 0.00464183;
+N_pie1 = 0.00220641;
+
+
+
+67
+p_pie1 = 0.00000196;
+
+miuM2 = [2,0,0,0,0,0,0];
+miuS2 = [2,2,-2,0,0,0,0];
+miuK1 = [1,1,0,0,0,0,1];
+miuO1 = [1,-1,0,0,0,0,-1];
+
+sigma
+=
+[miuM2(1)*tao1+miuM2(2)*s1+miuM2(3)*h_pie1+miuM2(4)*p1+miuM2(5)*N_pie
+1+miuM2(6)*p_pie1;
+
+miuS2(1)*tao1+miuS2(2)*s1+miuS2(3)*h_pie1+miuS2(4)*p1+miuS2(5)*N_pie1
++miuS2(6)*p_pie1;
+
+miuK1(1)*tao1+miuK1(2)*s1+miuK1(3)*h_pie1+miuK1(4)*p1+miuK1(5)*N_pie1
++miuK1(6)*p_pie1;
+
+miuO1(1)*tao1+miuO1(2)*s1+miuO1(3)*h_pie1+miuO1(4)*p1+miuO1(5)*N_pie1
++miuO1(6)*p_pie1;
+];
+clear tao1 s1 h_pie1 p1 N_pie1 p_pie1
+
+%% 计算vo
+v0 = cell(size(totalseconds));
+for j=1:length(totalseconds)
+[Y{j},n{j},i{j},t{j}] = timeconvert(totalseconds{j});
+s{j}
+=
+1. 02*ones(length(Y{j}),1)
++
+1. 3848*(Y{j}-
+1900*ones(length(Y{j}),1)) + 13.1764*(n{j}+i{j}+t{j}/24);
+h_pie{j}
+=
+1. 19*ones(length(Y{j}),1)
+-
+1. 2387*(Y{j}-
+1900*ones(length(Y{j}),1)) + 0.9857*(n{j}+i{j}+t{j}/24);
+p{j}
+=
+1. 39*ones(length(Y{j}),1)
++
+1. 6625*(Y{j}-
+1900*ones(length(Y{j}),1)) + 0.1114*(n{j}+i{j}+t{j}/24);
+N_pie{j} = 100.84*ones(length(Y{j}),1) + 19.3282*(Y{j}-
+1900*ones(length(Y{j}),1)) + 0.0530*(n{j}+i{j}+t{j}/24);
+p_pie{j}
+=
+1. 22*ones(length(Y{j}),1)
++
+1. 0172*(Y{j}-
+1900*ones(length(Y{j}),1)) + 0.00005*(n{j}+i{j}+t{j}/24);
+tao{j} = 15*t{j} - s{j} + h_pie{j};
+v01 = miuM2(1)*tao{j} + miuM2(2)*s{j} + miuM2(3)*h_pie{j} +
+miuM2(4)*p{j}
++
+miuM2(5)*N_pie{j}
++
+miuM2(6)*p_pie{j}
++
+miuM2(7)*90*ones(size(tao{j}));
+v02 = miuS2(1)*tao{j} + miuS2(2)*s{j} + miuS2(3)*h_pie{j} +
+miuS2(4)*p{j}
++
+miuS2(5)*N_pie{j}
++
+miuS2(6)*p_pie{j}
++
+miuS2(7)*90*ones(size(tao{j}));
+v03 = miuK1(1)*tao{j} + miuK1(2)*s{j} + miuK1(3)*h_pie{j} +
+
+
+
+68
+miuK1(4)*p{j}
++
+miuK1(5)*N_pie{j}
++
+miuK1(6)*p_pie{j}
++
+miuK1(7)*90*ones(size(tao{j}));
+v04 = miuO1(1)*tao{j} + miuO1(2)*s{j} + miuO1(3)*h_pie{j} +
+miuO1(4)*p{j}
++
+miuO1(5)*N_pie{j}
++
+miuO1(6)*p_pie{j}
++
+miuO1(7)*90*ones(size(tao{j}));
+v0{j} = [v01,v02,v03,v04];
+%     v0{j} = [miuM2(1)*tao{j} + miuM2(2)*s{j} + miuM2(3)*h_pie{j}
++
+miuM2(4)*p{j}
++
+miuM2(5)*N_pie{j}
++
+miuM2(6)*p_pie{j}
++
+miuM2(7)*90*ones(size(tao{j})),
+%         miuS2(1)*tao{j} + miuS2(2)*s{j} + miuS2(3)*h_pie{j} +
+miuS2(4)*p{j}
++
+miuS2(5)*N_pie{j}
++
+miuS2(6)*p_pie{j}
++
+miuS2(7)*90*ones(size(tao{j})),
+%         miuK1(1)*tao{j} + miuK1(2)*s{j} + miuK1(3)*h_pie{j} +
+miuK1(4)*p{j}
++
+miuK1(5)*N_pie{j}
++
+miuK1(6)*p_pie{j}
++
+miuK1(7)*90*ones(size(tao{j})),
+%         miuO1(1)*tao{j} + miuO1(2)*s{j} + miuO1(3)*h_pie{j} +
+miuO1(4)*p{j}
++
+miuO1(5)*N_pie{j}
++
+miuO1(6)*p_pie{j}
++
+miuO1(7)*90*ones(size(tao{j}))
+%         ];
+end
+% s = s(Y,n,i,t);
+% h_pie = h_pie(Y,n,i,t);
+% p = p(Y,n,i,t);
+% N_pie = N_pie(Y,n,i,t);
+% p_pie = p_pie(Y,n,i,t);
+% tao = tao(t,s,h_pie);
+clear v01 v02 v03 v04 j
+clear miuM2 miuS2 miuK1 miuO1
+clear tao s h_pie p_pie
+clear Y n i
+
+# %% 时间转换中的Y 计算
+% Y = totalseconds/3600/24/365or366 年数
+% n = totalseconds/3600/24  剩余天数
+% i = Y/4（需要判断，整除4 或者400 之类的） 闰年数
+% t = (totalseconds - (Y-2000)*365*24*3600 - i*24*3600 -
+n*24*3600)/3600; 剩余小时数
+function [Y,n,i,t] = timeconvert(totalseconds)
+
+%% 求解总天数和剩余小时数
+totaldays = fix(totalseconds/3600/24);
+t = totalseconds - totaldays*3600*24;%一天多余的小时数
+if t < 0
+t = 3600*24+t;%负数小时数的处理方法
+
+
+
+69
+end
+t = t/3600;
+
+%% 考虑闰年求年数和到1900 年的闰年数
+% 2000 年之后至今的闰年每4 年一次，不用考虑整除100 的特例
+year = fix(totaldays/365);
+if totaldays >= 0
+runnian = fix((year-1)/4) + 1;
+year = fix((totaldays - runnian)/365);%把包括2000 年的闰年数
+减掉
+else
+runnian = fix(year/4);
+year = fix((totaldays - runnian)/365) - 1;%负时间的年数计算
+end
+## Y = 2000+year;%按照北京时间2000 年1.1 之后计算
+
+i = fix((Y-1901)/4);%闰年个数
+
+%% 一年求累积天数
+if totaldays > 0
+n = totaldays - fix((year+3)/4) - year*365;
+else
+n = totaldays - fix((year+1)/4) - (year+1)*365;
+if mod(Y,4) == 0
+n = 365 + n;%需要考虑余下的小时数占用了时间，每年总天数减
+一
+else
+n = 364 + n;
+end
+end
+
+end
+
+%% 求解f,u
+%不同潮汐分量计算出不同的f,u，潮汐分量编号1-10（第一问只用到了4）
+## %分潮编号如下：M2,S2,K1,O1 分别为1-4
+%Sa,Ssa,Mm,Msf,Mf,Q1,M1,P1,S1,J1,OO1,N2,L2,k2,M4,MS4,M6
+function [f,u] = fusolve(p,N_pie)
+
+% totalseconds = 8e7;%随便写的
+% [Y,n,i,t] = timeconvert(totalseconds);
+% p = 334.39 + 40.6625*(Y-1900) + 0.1114*(n+i+t/24);
+% N_pie = 100.84 + 19.3282*(Y-1900) + 0.0530*(n+i+t/24);
+f = zeros(length(p),4);u = zeros(length(p),4);
+
+
+
+70
+fcosuM2 = 0.0005*cosd(-2*N_pie) + 1 + 0.0006*cosd(2*p) +
+1. 0002*cosd(2*p+N_pie);
+fsinuM2 = 0.0005*sind(-2*N_pie) + 0 + 0.0006*sind(2*p) +
+1. 0002*sind(2*p+N_pie);
+f(:,1) = sqrt(fcosuM2.^2+fsinuM2.^2);
+% u(:,1) = atand(fsinuM2./fcosuM2);%M2 分潮的交点因子与订正角
+角度需要修正
+u(:,1) = arctancorrection(fsinuM2,fcosuM2);
+
+f(:,2) = 1;
+u(:,2) = 0;%S2 分潮的交点因子与订正角
+
+fcosuK1 = 0.0002*cosd(-2*p-N_pie) + 0.0001*cosd(-2*N_pie) + 1 +
+1. 1356*cosd(N_pie);
+fsinuK1 = 0.0002*sind(-2*p-N_pie) + 0.0001*sind(-2*N_pie) + 0 +
+1. 1356*sind(N_pie);
+f(:,3) = sqrt(fcosuK1.^2+fsinuK1.^2);
+% u(:,3) = atand(fsinuK1./fcosuK1);%K1 分潮的交点因子与订正角
+u(:,3) = arctancorrection(fsinuK1,fcosuK1);
+
+fcosuO1 = 0.1885*cosd(-N_pie) + 1 + 0.0002*cosd(2*p-N_pie);
+fsinuO1 = 0.1885*sind(-N_pie) + 0 + 0.0002*sind(2*p-N_pie);
+f(:,4) = sqrt(fcosuO1.^2+fsinuO1.^2);
+% u(:,4) = atand(fsinuO1./fcosuO1);%O1 分潮的交点因子与订正角
+u(:,4) = arctancorrection(fsinuO1,fcosuO1);
+end
+
+%% 修正角度值，根据sin 和cos 值判断象限
+function angle = arctancorrection(sina,cosa)
+
+[m,n] = size(sina);
+angle = zeros(m,n);
+for i = 1:m
+for j = 1:n
+if cosa(i,j) > 0
+if sina(i,j) > 0
+angle(i,j) = atand(sina(i,j)/cosa(i,j));
+else
+angle(i,j) = atand(sina(i,j)/cosa(i,j))+360;
+end
+else
+angle(i,j) = atand(sina(i,j)/cosa(i,j))+180;
+end
+end
+
+
+
+71
+end
+
+end
+
+%% 方程组求解，输出x1~x8，只需要写出解一个测量点的方程组求解即可
+%根据h_total,fj,sigmaj,v0j,uj，列出n 个方程组（n 代表一个点观测的
+时间数）
+%求出a11~anm
+%将偏导函数表示出来delta = sum(),（需要推公式，求偏导）
+
+function x = equationsolve(h_total,f,sigma,v0,u,t)
+
+a = zeros(length(h_total),9);
+a(:,1) = f(:,1).*cosd(sigma(1).*t(:)+v0(:,1)+u(:,1));%分潮1cos
+a(:,2) = f(:,2).*cosd(sigma(2).*t(:)+v0(:,2)+u(:,2));%分潮2cos
+a(:,3) = f(:,3).*cosd(sigma(3).*t(:)+v0(:,3)+u(:,3));%分潮3cos
+a(:,4) = f(:,4).*cosd(sigma(4).*t(:)+v0(:,4)+u(:,4));%分潮4cos
+
+a(:,5) = f(:,1).*sind(sigma(1).*t(:)+v0(:,1)+u(:,1));%分潮1sin
+a(:,6) = f(:,2).*sind(sigma(2).*t(:)+v0(:,2)+u(:,2));%分潮2sin
+a(:,7) = f(:,3).*sind(sigma(3).*t(:)+v0(:,3)+u(:,3));%分潮3sin
+a(:,8) = f(:,4).*sind(sigma(4).*t(:)+v0(:,4)+u(:,4));%分潮4sin
+a(:,9) = ones(length(h_total),1);
+
+## B = zeros(9);%B 为法方程的系数矩阵
+for i = 1:9
+for j = 1:9
+B(i,j) = 0;
+for k = 1:length(h_total)
+B(i,j) = B(i,j) + a(k,i)*a(k,j);
+end
+end
+end
+
+H = zeros(9,1);
+for i = 1:length(h_total)
+
+H = H + a(i,:)'.*h_total(i);
+end
+
+x = B\H;
+end
+
+%% 将equationsolve 中输出的x1~x8 转换为h,g
+%x1 = h1*cos(g1),x2 = h1*sin(g1)
+
+
+
+72
+%x3 = h2*cos(g2),x4 = h2*sin(g2)
+%x5 = h3*cos(g3),x6 = h3*sin(g3)
+%x7 = h4*cos(g4),x8 = h4*sin(g4)
+
+function [h,g] = hgsolve(x)
+
+h(1) = sqrt(x(1)^2+x(5)^2);%M2 振幅
+% g(1) = atand(x(5)/x(1));%M2 迟角   cos 小于0 时要修正角度
+g(1) = arctancorrection(x(5),x(1));
+
+h(2) = sqrt(x(2)^2+x(6)^2);%S2 振幅
+% g(2) = atand(x(6)/x(2));%S2 迟角
+g(2) = arctancorrection(x(6),x(2));
+
+h(3) = sqrt(x(3)^2+x(7)^2);%K1 振幅
+% g(3) = atand(x(7)/x(3));%K1 迟角
+g(3) = arctancorrection(x(7),x(3));
+
+h(4) = sqrt(x(4)^2+x(8)^2);%O1 振幅
+% g(4) = atand(x(8)/x(4));%O1 迟角
+g(4) = arctancorrection(x(8),x(4));
+end
+

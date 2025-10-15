@@ -32,121 +32,11 @@
 对于问题二，本文提出一种基于 SVD 分解的相关矩阵组压缩算法，通过对矩阵重新排列、合并、SVD 分解并提取最大奇异值对应的列向量，可以实现对矩阵组数据的有效压缩。本文基于 SVD 分解对矩阵间相关性进行分析，验证了该压缩/解压缩算法的可行性。本文进一步推导对这种方法的存储复杂度、压缩复杂度以及解压复杂度，并建立多目标优化模型，求解最优的压缩参数。最优解的压缩率可达 0.3867，且具有较低的压缩、解压复杂度。
 
 对于问题三，本文提出了一种联合优化策略，将问题一的中间变量存储复杂度和插值存储复杂度纳入到优化方案当中进行讨论。同时我们将迭代算法的结构调整为逐元素运算的形式，避免了部分矩阵存储的复杂度。
+\textbf{关键字：} 相关矩阵组 \quad SVD 分解 \quad AOR 迭代 \quad QR 分解
 \end{abstract}
 
-\textbf{关键字：} 相关矩阵组 \quad SVD 分解 \quad AOR 迭代 \quad QR 分解
+\tableofcontents
 
-\section*{目录}
-
-\begin{itemize}
-    \item[1.] 问题重述 \dotfill 4
-    \begin{itemize}
-        \item[1.1] 引言 \dotfill 4
-        \item[1.2] 问题的提出 \dotfill 4
-        \begin{itemize}
-            \item[1.2.1] 问题一：相关矩阵组的低复杂度计算 \dotfill 4
-            \item[1.2.2] 问题二：相关矩阵组的低复杂度存储 \dotfill 5
-            \item[1.2.3] 问题三：相关矩阵组的低复杂度计算和存储 \dotfill 5
-        \end{itemize}
-        \item[1.3] 思维导图 \dotfill 6
-    \end{itemize}
-    \item[2.] 模型假设 \dotfill 7
-    \item[3.] 符号说明 \dotfill 7
-    \item[4.] 问题一求解 \dotfill 8
-    \begin{itemize}
-        \item[4.1] 子问题 1——矩阵 V 的近似低复杂度计算 \dotfill 8
-        \begin{itemize}
-            \item[4.1.1] 基于随机 SVD 算法的目标矩阵降维 \dotfill 8
-            \item[4.1.2] 基于双对角化和 QR 分解的 SVD 分解算法 \dotfill 9
-            \item[4.1.3] QR 分解 \dotfill 10
-            \item[4.1.4] 基于分治思想的矩阵低复杂度计算 \dotfill 10
-            \item[4.1.5] 右奇异向量相关性分析 \dotfill 13
-            \item[4.1.6] 计算复杂度分析 \dotfill 17
-        \end{itemize}
-        \item[4.2] 子问题 2——矩阵 W 的近似低复杂度计算 \dotfill 18
-        \begin{itemize}
-            \item[4.2.1] 基于 AOR 迭代的矩阵近似求逆算法 \dotfill 18
-            \item[4.2.2] 矩阵 W 的相关性分析 \dotfill 20
-            \item[4.2.3] AOR 迭代算法复杂度分析 \dotfill 22
-        \end{itemize}
-    \end{itemize}
-    \item[5.] 问题二求解 \dotfill 24
-    \begin{itemize}
-        \item[5.1] 子问题 1——H 矩阵的压缩 \dotfill 24
-        \begin{itemize}
-            \item[5.1.1] 基于 SVD 分解的矩阵压缩算法 \dotfill 24
-            \item[5.1.2] 基于 SVD 的矩阵相关度分析 \dotfill 26
-            \item[5.1.3] 复杂度分析 \dotfill 28
-            \item[5.1.4] 存储与压缩/解压复杂度联合优化 \dotfill 29
-        \end{itemize}
-        \item[5.2] 子问题 2——W 矩阵的压缩 \dotfill 30
-    \end{itemize}
-    \item[6.] 问题三的求解 \dotfill 32
-\end{itemize}
-
-\section{1 问题重述}
-\subsection{1.1 引言}
-
-\subsection{1.2 问题的提出}
-\subsubsection{1.2.1 问题一：相关矩阵组的低复杂度计算}
-
-\subsubsection{1.2.2 问题二：相关矩阵组的低复杂度存储}
-
-\subsubsection{1.2.3 问题三：相关矩阵组的低复杂度计算和存储}
-
-\subsection{1.3 思维导图}
-
-\section{2 模型假设}
-
-\section{3 符号说明}
-
-\section{4 问题一求解}
-\subsection{4.1 子问题 1——矩阵 V 的近似低复杂度计算}
-\subsubsection{4.1.1 基于随机 SVD 算法的目标矩阵降维}
-
-\subsubsection{4.1.2 基于双对角化和 QR 分解的 SVD 分解算法}
-
-\subsubsection{4.1.3 QR 分解}
-
-\subsubsection{4.1.4 基于分治思想的矩阵低复杂度计算}
-
-\subsubsection{4.1.5 右奇异向量相关性分析}
-
-\subsubsection{4.1.6 计算复杂度分析}
-
-\subsection{4.2 子问题 2——矩阵 W 的近似低复杂度计算}
-\subsubsection{4.2.1 基于 AOR 迭代的矩阵近似求逆算法}
-
-\subsubsection{4.2.2 矩阵 W 的相关性分析}
-
-\subsubsection{4.2.3 AOR 迭代算法复杂度分析}
-
-\section{5 问题二求解}
-\subsection{5.1 子问题 1——H 矩阵的压缩}
-\subsubsection{5.1.1 基于 SVD 分解的矩阵压缩算法}
-
-\subsubsection{5.1.2 基于 SVD 的矩阵相关度分析}
-
-\subsubsection{5.1.3 复杂度分析}
-
-\subsubsection{5.1.4 存储与压缩/解压复杂度联合优化}
-
-\subsection{5.2 子问题 2——W 矩阵的压缩}
-
-\section{6 问题三的求解}
-
-\section{参考文献}
-\dotfill 33
-
-\section{附录 A MATLAB 源程序}
-\dotfill 34
-
-\begin{itemize}
-    \item 1.1 基于随机 SVD 分解的矩阵降维 \dotfill 34
-    \item 1.2 基于 QR 分解和双对角化的 SVD 分解 \dotfill 34
-    \item 1.3 AOR 迭代算法 \dotfill 36
-    \item 1.4 基于 SVD 分解的压缩和解压缩 \dotfill 36
-\end{itemize}
 
 \section{问题重述}
 
@@ -168,7 +58,7 @@
 
 $\mathbf{R}_{j,k}$ 之间的关系，从而减少 $\mathbf{V}_{j,k}$ 和 $\mathbf{W}_{j,k}$ 的计算数量。
 
-\subsection{1.2.2 问题二：相关矩阵组的低复杂度存储}
+\subsubsection{1.2.2 问题二：相关矩阵组的低复杂度存储}
 
 本题要求基于给定的所有矩阵数据 $\mathbf{H}$ 和 $\mathbf{W}$，分析各自数据间的关联性，分别设计相应的压缩模型 $P_1(\cdot)$、$P_2(\cdot)$ 和解压缩模型 $G_1(\cdot)$、$G_2(\cdot)$，在满足误差条件 $Err_H \leq -30\text{dB}$、$Err_W \leq -30\text{dB}$ 的情况下，使得存储复杂度、压缩与解压缩的计算复杂度最低。
 
@@ -176,7 +66,7 @@ $\mathbf{R}_{j,k}$ 之间的关系，从而减少 $\mathbf{V}_{j,k}$ 和 $\mathb
 
 在完成压缩方法的框架搭建后，本题转化为一个多目标优化问题。由于题目要求两个建模优化目标（存储复杂度，压缩与解压缩的计算复杂度）的优先级相同，这就是希望我们使用对多目标加权的方法，将多目标优化转化为单目标优化。
 
-\subsection{1.2.3 问题三：相关矩阵组的低复杂度计算和存储}
+\subsubsection{1.2.3 问题三：相关矩阵组的低复杂度计算和存储}
 
 利用问题一中的方案计算 $\mathbf{V}$ 矩阵时，很多内部变量需要进行存储，比如 SVD 分解中的 QR 迭代过程需要为迭代中的中间变量开辟存储空间，SVD 分解中求 $\mathbf{Q}$ 矩阵也需要存储复杂度，但是由于每次迭代的结果会覆盖上次迭代的结果，所以消耗的存储复杂度不会随着迭代次数的增加而增加，因此很多中间变量存储简单的传统算法将重新进行考虑，这意味着我们需要考虑算法的存储复杂度，结合计算复杂度进行联合优化。
 
@@ -353,7 +243,7 @@ $\mathbf{B}$ 矩阵的构建主要通过基于随机 SVD 的 SVD 分解算法实
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{4.1.3 QR 分解}
+\subsubsection{4.1.3 QR 分解}
 
 QR 分解可将矩阵 $\mathbf{A}$ 分解为一个正交矩阵 $\mathbf{Q}$ 和一个上三角矩阵 $\mathbf{R}$ 的乘积。经典的 QR 矩阵分解方法主要有 Gram-Schmidt 方法、Householder 反射方法和 Givens 旋转方法三种。考虑到需要计算的矩阵维数并不大，且后两种方法都需要计算反三角函数，会导致计算量较大。故这里采用第一种方法。基于 Gram-Schmidt 正交化方法的 QR 分解算法如下。
 
@@ -378,7 +268,7 @@ QR 分解可将矩阵 $\mathbf{A}$ 分解为一个正交矩阵 $\mathbf{Q}$ 和�
 
 由于经典的 Gram-Schmidt 正交化方法对舍入误差很敏感，容易导致生成的基 $q_j$ 的正交性随着迭代越来越弱，因此这里使用改进的 Gram-Schmidt 正交化方法，其核心思想是，在每个 $q_j$ 生成后，直接把 $\mathbf{A}$ 剩下的列都去掉 $q_j$ 的成分。它与传统方法的区别仅仅是把计算的顺序变了，但是改进之后稳定性会好很多。
 
-\subsection{4.1.4 基于分治思想的矩阵低复杂度计算}
+\subsubsection{4.1.4 基于分治思想的矩阵低复杂度计算}
 
 相关矩阵组的计算单元 $\widehat{\mathbf{W}} = f(\mathbf{H})$ 中需要使用如下的矩阵乘法公式获取 $\mathbf{W}_k$:
 
@@ -541,7 +431,7 @@ I(2^k) &= 2^kI(1) + 6\frac{7^k - 2^k}{7 - 2} \times 14 + k2^{k+1} \times 2 \\
     \label{tab:matrix_operations_comparison}
 \end{table}
 
-\subsection{4.1.5 右奇异向量相关性分析}
+\subsubsection{4.1.5 右奇异向量相关性分析}
 
 通过对数据集中的子矩阵进行简单分析，我们可以发现，这些子矩阵的奇异值随着行块数周期性波动，因此我们推测，行子矩阵之间的相关性可以用奇异值或者特征值之间的函数关系加以刻画，矩阵的 SVD 分解将矩阵的相关信息集中到对角线上的奇异值上，右奇异向量中继承了矩阵 $\mathbf{H}$ 的部分相关性和随机性。
 
@@ -664,7 +554,7 @@ Data6\_H & 781 & 49.19\% \\
 
 由于右奇异向量引入的误差也会影响到之后矩阵求逆部分的误差，因此是否将误差阈值设置为 0.995 还有待研究，但是可以肯定的是插值的方式可以在一定程度上减少 SVD 的计算次数。
 
-\subsection{4.1.6 计算复杂度分析}
+\subsubsection{4.1.6 计算复杂度分析}
 
 本节基于以上算法和分析，逐层反推矩阵 $\mathbf{V}$ 计算的复杂度。具体的分析如下。
 
@@ -788,7 +678,7 @@ AOR \((\omega_{opt})\) & \(\frac{1 - \sqrt{1 - \rho(\mathbf{M})^2}}{1 + \sqrt{1 
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{矩阵 $\mathbf{W}$ 的相关性分析}
+\subsubsection{矩阵 $\mathbf{W}$ 的相关性分析}
 
 与矩阵 $\mathbf{V}_{j,k}$ 的处理方法一致，矩阵 $\mathbf{W}_k$ 也可以通过插值的方式得到，每一个子矩阵 $\mathbf{W}_{j,k}$ 也是具有较强的相关性的，以数据集 Data4\_V 与 Data4\_W 为例，分别计算 $\mathbf{V}_{j,k}$ 的互相关性 $\mathbf{Rv}_{j,(k,k+1)} = \|\mathbf{V}_{j,k}^H \mathbf{V}_{j,k+1}\|_2$，$\mathbf{W}_{j,k}$ 的互相关性 $\mathbf{Rw}_{j,(k,k+1)} = \|\mathbf{W}_{j,k}^H \mathbf{W}_{j,k+1}\|_2$，绘制散点图：
 
@@ -846,7 +736,7 @@ Data6 & 946 & 38.44\% \\
 
 综合考虑 $\mathbf{W}_{j,k}$ 和 $\mathbf{V}_{j,k}$ 的插值结果，我们发现对于计算精度不足的点采用直接计算的方式，对于计算精度满足要求的点采用插值的方式能够减少大约 30\% 左右的计算量。
 
-\subsection{AOR 迭代算法复杂度分析}
+\subsubsection{AOR 迭代算法复杂度分析}
 
 本小节给出了基于 AOR 迭代算法求解 $\mathbf{W}_k$ 详细计算复杂度分析。首先需要计算 $\mathbf{G} = \mathbf{V}_k^H \mathbf{V}_k + \sigma^2 \mathbf{I}$。这相当于一个 $8 \times 64$ 的矩阵和一个 $64 \times 8$ 的矩阵相乘，得到一个 $8 \times 8$ 矩阵，再在对角线元素上加 1。前者可以拆分成 8 个 $8 \times 8$ 矩阵的乘法再求和，后者相当于 8 次实数加法。因此，计算 $\mathbf{G}$ 的复杂度为
 \begin{equation}
@@ -983,7 +873,7 @@ Gauss-Seidel 算法 & $i=2$ & $2(LJ)^2$ & $2(LJ)^2$ \\
     \item 本题中使用的 $c$ 是通过实际计算估计出的最优结果。在实际使用中，如果不同矩阵的条件数相差较大，可以根据奇异值的实际分布，对每个矩阵独立地选取 $c$ 的取值。本题中由于假设了各个子矩阵具有相同的统计特性，故不需要这么做。
 \end{itemize}
 
-\subsection{基于 SVD 的矩阵相关度分析}
+\subsubsection{基于 SVD 的矩阵相关度分析}
 
 本节基于上述数据压缩方法，分析各矩阵之间的相关性。并为存储复杂度与压缩/解压缩复杂度的联合优化分析提供参考。
 
@@ -1065,7 +955,7 @@ C_{dec}^{svd} = \left(14MNsc + 2MNs(c-1)\right)J\left[\frac{K}{s}\right] = MNJK(
 \tag{37}
 \end{equation}
 
-\subsection{5.1.4 存储与压缩/解压复杂度联合优化}
+\subsubsection{5.1.4 存储与压缩/解压复杂度联合优化}
 
 基于矩阵的压缩、解压与存储复杂度，可以写出对复杂度的多目标优化如下：
 
@@ -1090,7 +980,10 @@ C_{dec}^{svd} = MNsJ\left[\frac{K}{s}\right](16c-2).
 \end{equation}
 
 题目要求矩阵的存储复杂度与压缩/解压复杂度具有相同的优先级，故取存储复杂度权重为 1，压缩/解压复杂度各为 \(1/2\)。为了让 \(s\) 能整除 \(K\)，取 \(s = 8, 16, 32, \ldots\)。由于不清楚 \(\epsilon\) 与 \(\text{err}_H\) 之间的显式关系，我们在不同的 \(s\) 和 \(\epsilon\) 下，选取合适的 \(c\) 作为候选，计算得到的各复杂度如表 8 所示。由表可知，SVD 分解允
-
+许误差ε 只会影响压缩复杂度，对且对平均迭代次数iter 影响较小。s 的取值越
+大，则在约束内可达到的最小存储复杂度就越小，但压缩复杂度同时也会相应地
+快速增长，解压复杂度也有小幅增长。此外，压缩复杂度通常比解压复杂度要大
+1-2 个数量级，这与前文的理论分析相一致。
 \begin{table}
 \centering
 \caption{H矩阵不同SVD分解允许误差 $\epsilon$，矩阵合并数目 $s$，奇异值截取数目 $c$ 备选方案的性能比较（粗体表示与SVD分解允许误差 $\epsilon$ 无关的性能）}

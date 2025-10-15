@@ -18,36 +18,6 @@
 \textbf{数学建模竞赛}
 \end{center}
 
-\begin{tabular}{ccc}
-\hline 使用符号 & 说明 & 单位 \\
-\hline
-\(C\) & 神经元的膜电容 & \(\mu \mathrm{F}\) \\
-\(V(t)\) & 神经元的膜电位 & \(\mathrm{mV}\) \\
-\(m(t), h(t), n(t)\) & 细胞膜内外离子通道的电导特性 & —— \\
-\(I_{\text {external }}\) & 外界对神经元的刺激影响 & \(\mu \mathrm{A}\) \\
-\(I_{\text {synapse }}\) & 神经元之间的化学突触电流 & \(\mu \mathrm{A}\) \\
-\(I_{\text {synapse }}^{A M P A}\) & 兴奋突触电流 & \(\mu \mathrm{A}\) \\
-\(I_{\text {synapse }}^{G A B A}\) & 抑制突触电流 & \(\mu \mathrm{A}\) \\
-\(V_{p r e}\) & 突触前电压 & \(\mathrm{mV}\) \\
-\(V_{p o s t}\) & 突触后电压 & \(\mathrm{mV}\) \\
-\hline
-\end{tabular}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{ll}
-参赛队号 & 21106980211 \\
-\end{tabular}
-\end{table}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{ll}
-队员姓名 & 1. 赵圆圆 \\
- & 2. 王斐童 \\
- & 3. 刘康鸿 \\
-\end{tabular}
-\end{table}
 
 \title{帕金森病的脑深部电刺激治疗建模研究}
 \author{}
@@ -71,6 +41,8 @@
 
 关键词：神经元；Hodgkin-Huxley 模型；基底神经节回路；靶点；DBS EI
 \end{abstract}
+
+\tableofcontents
 
 \section{问题重述}
 
@@ -209,10 +181,14 @@ Hodgkin-Huxley 模型电路如图 4 所示：
 \end{figure}
 
 在外界刺激的条件下，Hodgkin-Huxley 模型可用下面的方程来刻画：
-\begin{align}
-a_{m} &= \frac{0.1 (V + 40)}{1 - e^{-0.1 (V + 40)}}, \quad a_{h} = 0.07 e^{-0.05 (V + 65)}, \quad a_{n} = \frac{0.01 (V + 55)}{1 - e^{-0.1 (V + 55)}} \\
-b_{m} &= 4 e^{-(V + 65) / 18}, \quad b_{h} = \frac{1}{1 + e^{-0.1 (V + 35)}}, \quad b_{n} = 0.125 e^{-(V + 65) / 80}
-\end{align}
+\begin{equation}
+\begin{cases}
+C \dfrac{dV}{dt} = -g_{N_{a}} m^{3} h (V - V_{N_{a}}) - g_{K} n^{4} (V - V_{K}) - g_{L} (V - V_{L}) + I_{\text{external}} + I_{\text{synapse}} \\
+\dfrac{dm}{dt} = -(a_{m} + b_{m}) m + a_{m} \\
+\dfrac{dh}{dt} = -(a_{h} + b_{h}) h + a_{h} \\
+\dfrac{dn}{dt} = -(a_{n} + b_{n}) n + a_{n}
+\end{cases}
+\end{equation}
 
 在 Hodgkin-Huxley 模型中 C 表示神经元的膜电容，C=1μF。V(t)表示神经元的膜电位。m(t), h(t), n(t) 描述细胞膜内外离子通道的电导特性。
 
@@ -301,7 +277,7 @@ n_{\infty}(V)=\frac{\alpha_{n}}{\alpha_{n}+\beta_{n}}
 \caption{直流刺激下电位发放的异常}
 \end{figure}
 
-\subsubsection{交流刺激后神经元的电位变化}
+(2)交流刺激后神经元的电位变化
 
 使用交流电流刺激对神经元反应进行测量时，由于振幅和频率两个因素的影响，其电位振荡更为复杂，波形也出现多处异常。为了更好地分析独立变量对因变量的影响，我们采取蒙特卡罗方法，分离相关变量。首先选取交流刺激 \(I_{\mathrm{ac}}=17.9 \sin (0.039 t) \mu \mathrm{A}\) 作为基准 \({ }^{[5]}\)，得到如图 9 神经元反应。其特征指标如表 1 所示。
 
@@ -391,7 +367,7 @@ n_{\infty}(V)=\frac{\alpha_{n}}{\alpha_{n}+\beta_{n}}
 
 同时研究中为了进一步反映刺激频率变换和神经元电位发放之间的关系，我们绘制交流刺激角频率和发放峰频率之间的关系，其结果规律十分复杂。但转换成间隔时间后，明显发现在较稳定的阶段出现激增的毛刺，认为该结果可能与谐振有关，及在刺激达到某些值时模型出现谐振峰，使某些发放峰周期性增大或减小，电位发放形成类似于簇发放的发放形式，从而改变发放类型使之形成特殊的特征指标，间隔时间用周期性变换的周期作为新指标。
 
-\subsection{仿真结果展示与分析（Neuron 仿真结果分析）}
+\subsubsection{仿真结果展示与分析（Neuron 仿真结果分析）}
 
 (1) Neuron 软件介绍
 
@@ -600,7 +576,7 @@ S\big(V_1\big) &= \frac{1}{1 + \exp\Big(-\frac{V_1 - V_p}{k_p}\Big)}
 
 \subsection{问题三的求解}
 
-\subsubsection{目标细胞的选择}
+(1)目标细胞的选择
 
 此问中我们将对比正常人员与患帕金森病人员其基底神经元回路中特征指标的区别。回路中存在多种神经元细胞，其功能各异，对帕金森病理的影响关联程度也不尽相同。为了更好反映帕金森病理逻辑，我们查阅相关文献做出以下分析。
 
@@ -612,7 +588,7 @@ S\big(V_1\big) &= \frac{1}{1 + \exp\Big(-\frac{V_1 - V_p}{k_p}\Big)}
 
 综上可知，苍白球能显著表征 PD 患者相关功能的完备性，同时其发放指标能很好反应底层神经节系统的生物特性与外部刺激之间的联系，故选取 GPe 和 GPi 作为观测目标细胞。
 
-\subsubsection{仿真结果展示与分析}
+(2)仿真结果展示与分析
 
 \paragraph{整体求解}
 
@@ -656,22 +632,27 @@ GPe & 周期/ms & 22.1 & 20.1 & 84.2 & — \\
 
 据表得，在相同的电流刺激下，帕金森病态下的GPi神经元和GPe神经元的峰峰间距均低于正常状态下的峰峰间距；帕金森病态下的GPi神经元的簇发放周期大于正常状态下且GPe神经元的放电周期也长于正常状态。此外，观察正常状态下，给与不同电流的刺激幅值时数据，得出电流的幅值越大，GPi的激活时间越小。
 
-\subsection{问题四的求解}
+\subsubsection{问题四的求解}
 
-\subsubsection{靶点的选择}
+\paragraph{靶点的选择}
 
 对于帕金森病的研究，现今最常见的手段是以高频电刺激STN，其适应证是患者对L-DOPA反应良好。研究表明通过STN-DBS高频脉冲刺激可以降低STN的过度激活，抑制从STN到其他靶点投射的谷氨酸能神经纤维的活性，从而降低兴奋性神经元的过度激活，具有神经保护、减缓PD病程进展的作用。STN-DBS能很好的控制PD症状关期的运动不能、肌肉僵直、步态不稳、姿势平衡性和肌张力障碍等均有改善。目前，多数学者赞成STN作为DBS的首选靶点。国内用DBS治疗PD主流的靶点为STN。但必须意识到，STN-DBS对认知功能并没有明显疗效，且存在一定的潜在手术风险和并发症。
 
 而刺激GPi与刺激STN相似，电刺激GPi对L-DOPA导致的运动障碍同样有效，并且患者能良好耐受，且对言语和神经、心理功能方面无明显损害。但是，GPi-DBS对于运动迟缓的改善不如刺激STN明显，且不会降低L-DOPA剂量；对认知功能和行为并发症，只有同时刺激STN和GPi才有效\cite{ref10}。总体而言，刺激STN的疗效要优于GPi，尤其在对症状控制的全面性和显著降低L-DOPA用量等方面。但是，尚缺乏长期大规模的RCT证据\cite{ref11}。
 
-\subsubsection{特征参数的选择}
+\paragraph{特征参数的选择}
 
 PD患者的病情表征可以用信号劣化的放电峰表示\cite{ref8}，有文献采取电位发放的不完全峰面积和正常峰面积的比值作为指标\cite{ref12}，称为EI，这种表征方式涵盖了包括电位发放形式、幅值、频率等生物编码信息，能在一个统一的维度上表征生物电信号的信息表达了，也可以以此观测电刺激对的治疗作用。但除却表征方式单一，计算标准模糊等缺点外，对峰
 
-\subsubsection{仿真结果展示与分析}
+\paragraph{仿真结果展示与分析}
 
 基于问题三的求解中，分别向正常状态和帕金森病态输入为 \(17.5\cos(0.15t)\mu A\) 交流电信号刺激的情况进行后续研究。对帕金森病态的基底神经节靶点添加高频电刺激，可以模拟脑深部电刺激治疗帕金森病的基底神经节中神经元的放电状态。为了便于观察，结合 PD 病理，我们主要集中观测 GPi、GPe、STN、Cor 四种神经核团的放电情况，其中 Cor 为其输出核心，是研究的重点。为满足神经元正常工作状态，限制电压坐标轴的范围于 \([-80, 40]\) 中，方便正常状态、帕金森病态以及添加高频电刺激后的放电情况进行对比。
-
+1）确定最佳刺激靶点 
+对 SNc 和 Cor 神经核团均给予相同的 17.5*cos(0.15*t)μA 的电流刺激，以此来模拟黑
+质产生多巴胺，即正常状态下的基底节网络发放图；去掉对黑质的信号刺激，同时改变基
+底节网络的连接方式的数学模型，用于仿真帕金森病态下的电位发放。通过对 STN 和 GPi
+神经核团分别输入高频方波刺激，以模拟 STN-DBS 治疗和 STN-GPi 治疗，经过数学模型
+的计算，得出正常状态下和帕金森状态下，STN-DBS 和 GPi-DBS 四种发放图如下图所示： 
 \paragraph{确定最佳刺激靶点}
 
 对 SNc 和 Cor 神经核团均给予相同的 \(17.5 \times \cos(0.15 \times t) \mu A\) 的电流刺激，以此来模拟黑质产生多巴胺，即正常状态下的基底节网络发放图；去掉对黑质的信号刺激，同时改变基底节网络的连接方式的数学模型，用于仿真帕金森病态下的电位发放。通过对 STN 和 GPi 神经核团分别输入高频方波刺激，以模拟 STN-DBS 治疗和 STN-GPi 治疗，经过数学模型的计算，得出正常状态下和帕金森状态下，STN-DBS 和 GPi-DBS 四种发放图如下图所示：
@@ -795,8 +776,9 @@ A=42.5 & 307891.95 & 2108708.35 & 6.85 \\
 \end{figure}
 
 据图可以得出，正弦与直流激励都无法使 GPi 起振，利用直流信号进行 STN-DBS 时，其 STN 的电位发放呈现出异常放电模式，Cor 有比较明显的改善，说明对 DBS 治疗有一定的效果；利用正弦信号进行 STN-DBS 时，STN 表现出正常放电状态，但 Cor 改善不明。
-
-\subsection{问题五的求解}
+显，并且 GPe 的 EIO 降低，出现异常放电。改变刺激模式，没有达到预期效果，同时发现，
+直流电有治疗效果，但可能损伤 STN；交流电治疗效果差，且有并发症风险。
+\subsubsection{问题五的求解}
 
 (1) 仿真结果展示和分析
 
@@ -875,3 +857,376 @@ A=42.5 & 307891.95 & 2108708.35 & 6.85 \\
 [15] 张云鹏. 基于多传感闭环控制的神经调控系统研究[D]. 长春理工大学, 2019.
 
 \end{document}
+
+\section{附录：Matlab 代码}
+附录
+1.问题一
+1）One_neuron.m
+%静态电压-65mV，动态峰40mV
+%参数值
+C=1;
+g_na=120;g_k=36;g_l=0.3;%单位mS/cm2
+## V_na=50;V_k=-77;V_l=-54.5;%单位mV
+dt=0.01;T=100;t=0:dt:T%单位ms
+Vt=zeros(1,length(t));nt=zeros(1,length(t));
+V=-65.0352; m=0.05277533;h=0.5970275;n=0.3172745;I_ext=12.2;%uA/cm2  %自己查
+for it=1:length(t)
+am=0.1*(V+40)/(1-exp(-(V+40)/10));
+bm=4*exp(-(V+65)/18);
+ah=0.07*exp(-(V+65)/20);
+bh=1/(1+exp(-(V+35)/10));
+an=0.01*(V+55)/(1-exp(-(V+55)/10));
+bn=0.125*exp(-(V+65)/80);
+mt=m+dt*(-(am+bm)*m+am);
+ht=h+dt*(-(ah+bh)*h+ah);
+nt=n+dt*(-(an+bn)*n+an);
+Vt(it)=V+dt*(-g_na*m^3*h*(V-V_na)-g_k*n^4*(V-V_k)-g_l*(V-V_l)+I_ext)/C;
+
+V=Vt(it);
+m=mt;h=ht;
+n=nt;
+end
+plot(t,Vt)
+xlable('Time','fontsize',16);
+ylable('Voltage','fontsize',16);
+title('bc=0.5')
+box on;
+1. 问题二、三
+1）cal_dr.m
+function [dr,I_syn] = cal_dr(n,V,r)
+ampa=[0 0 0 0 0 0 1 0;1 0 0 1 0 0 0 0;1 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;0 0 0 0 0
+0 0 1;0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;1 0 0 0 0 0 0 0];
+gaba=[0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;0 0 0 1 0 0 0 0;0 0 0 0 0 0 0 0;0 1 0 0 0
+
+
+
+34
+0 0 0;0 0 1 0 0 0 0 0;0 0 0 0 1 0 0 0;0 0 0 0 0 1 0 0];
+ampa1=[0 0 0 0 0 0 1 0;1 0 0 0 0 0 0 0;1 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;0 0 0 0
+0 0 0 1;0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;1 0 0 0 0 0 0 0];
+gaba1=[0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0;0 1 0 0
+0 0 0 0;0 0 1 0 0 0 0 0;0 0 0 0 1 0 0 0;0 0 0 0 0 1 0 0];
+
+dr=0;
+gampa=0.7;ggaba=0.7;
+I_syn=0;
+%PD ampa gaba 正常 ampa1 gaba1  修改if ampa1(n,i)==1
+for i=1:8
+if ampa1(n,i)==1
+dr=1.1*10e6*1/(1+exp(-(V(i)-2)/5))*(1-r)-190*r+dr;
+I_syn=gampa*r*(V(n))+I_syn;
+end
+%PD ampa gaba 正常 ampa1 gaba1  修改if gaba1(n,i)==1
+if gaba1(n,i)==1
+dr=5*10e6*1/(1+exp(-(V(i)-2)/5))*(1-r)-180*r+dr;
+I_syn=ggaba*r*(V(n)+80)+I_syn;
+end
+%直流刺激<24uA >6.27
+%                 if I_syn>24
+%                 I_syn=24;
+%             else if I_syn<6.27
+%                      I_syn=6;
+%                 end
+%             end
+end
+end
+
+2）Nor_PD.m
+clear all
+%静态电压-65mV，动态峰40mV
+%参数值
+
+%常数
+C=1;
+g_na=120;g_k=36;g_l=0.3;%单位mS/cm2
+## V_na=50;V_k=-77;V_l=-54.5;%单位mV
+
+%时间步长
+dt=0.01;T=500;t=0:dt:T%单位ms
+It_ext=zeros(8,length(t));
+It_syn=zeros(1,8);
+
+
+
+35
+
+Vt=-65.0352*ones(8,length(t));
+V=-65.0352*ones(1,8);
+m=0.05277533*ones(1,8);h=0.5970275*ones(1,8);n=0.3172745*ones(1,8);
+
+mt=0.05277533*ones(1,8);ht=0.5970275*ones(1,8);nt=0.3172745*ones(1,8);rt=zero
+s(8,length(t))%待解
+for it=2:length(t)
+for neru=1:8
+am(neru)=0.1*(V(neru)+40)/(1-exp(-(V(neru)+40)/10));
+bm(neru)=4*exp(-(V(neru)+65)/18);
+ah(neru)=0.07*exp(-(V(neru)+65)/20);
+bh(neru)=1/(1+exp(-(V(neru)+35)/10));
+an(neru)=0.01*(V(neru)+55)/(1-exp(-(V(neru)+55)/10));
+bn(neru)=0.125*exp(-(V(neru)+65)/80);
+mt(neru)=m(neru)+dt*(-(am(neru)+bm(neru))*m(neru)+am(neru));
+ht(neru)=h(neru)+dt*(-(ah(neru)+bh(neru))*h(neru)+ah(neru));
+nt(neru)=n(neru)+dt*(-(an(neru)+bn(neru))*n(neru)+an(neru));
+[dr,It_syn(neru)]=cal_dr(neru,V,rt(neru,it-1));
+rt(neru,it)=rt(neru,it-1)+dt*dr;
+if rt(neru,it)<0
+rt(neru,it)=0;
+else if rt(neru,it)>1
+rt(neru,it)=1;
+end
+end
+%交流电流刺激时
+It_ext(1,it)=17.5*cos(0.15*it/100);
+It_ext(4,it)=17.5*cos(0.15*it/100);
+
+Vt(neru,it)=V(neru)+dt*(-g_na*(m(neru))^3*h(neru)*(V(neru)-V_na)-g_k*(n(neru)
+)^4*(V(neru)-V_k)-g_l*(V(neru)-V_l)+It_ext(neru,it)+It_syn(neru))/C;
+
+%             %直流电流刺激时
+%             I_ext=zeros(1,8);%uA/cm2  %自己查
+%             I_ext(1)=8.2;I_ext(6)=8.2;
+%
+Vt(neru,it)=V(neru)+dt*(-g_na*(m(neru))^3*h(neru)*(V(neru)-V_na)-g_k*(n(neru)
+)^4*(V(neru)-V_k)-g_l*(V(neru)-V_l)+I_ext(neru)+It_syn(neru))/C;
+
+%             %DBS 电流刺激时 5 为GPi 7 为STN
+%             It_ext(4,it)=17.5*square(0.15*it/100,50);
+
+
+
+36
+if Vt(neru,it)<-80;
+Vt(neru,it)=-66;
+else if Vt(neru,it)>40
+Vt(neru,it)=40;
+end
+end
+
+V(neru)=Vt(neru,it);
+m(neru)=mt(neru);h(neru)=ht(neru);n(neru)=nt(neru);
+
+end
+end
+figure(1)
+ax1 = subplot(2,4,1);    plot(ax1,t,Vt(1,:))
+title(ax1,'Cor')
+
+ylim([-80 40])
+ax2 = subplot(2,4,2);    plot(ax2,t,Vt(2,:))
+title(ax2,'dMSN')
+ylim([-80 40])
+ax3 = subplot(2,4,3);    plot(ax3,t,Vt(3,:))
+title(ax3,'iMSN')
+ylim([-80 40])
+ax4 = subplot(2,4,4);   plot(ax4,t,Vt(4,:))
+title(ax4,'SNc')
+ylim([-80 40])
+ax5 = subplot(2,4,5);    plot(ax5,t,Vt(5,:))
+title(ax5,'Gpi')
+
+ax6 = subplot(2,4,6);        plot(ax6,t,Vt(6,:))
+title(ax6,'Gpe')
+ylim([-80 40])
+ax7 = subplot(2,4,7);plot(ax7,t,Vt(7,:))
+title(ax7,'STN')
+
+ax8 = subplot(2,4,8)    ;    plot(ax8,t,Vt(8,:))
+title(ax8,'TH')
+ylim([-80 -65])
+1. 问题四、五
+1）DBS.m
+function [t,Vt] = DBS(badian,A,f,mode)
+%静态电压-65mV，动态峰40mV
+
+
+
+37
+%参数值
+
+%常数
+C=1;
+g_na=120;g_k=36;g_l=0.3;%单位mS/cm2
+## V_na=50;V_k=-77;V_l=-54.5;%单位mV
+
+%时间步长
+dt=0.01;T=500;t=0:dt:T%单位ms
+It_ext=zeros(8,length(t));
+It_syn=zeros(1,8);
+
+Vt=-65.0352*ones(8,length(t));
+V=-65.0352*ones(1,8);
+m=0.05277533*ones(1,8);h=0.5970275*ones(1,8);n=0.3172745*ones(1,8);
+
+mt=0.05277533*ones(1,8);ht=0.5970275*ones(1,8);nt=0.3172745*ones(1,8);rt=zero
+s(8,length(t))%待解
+for it=2:length(t)
+for neru=1:8
+am(neru)=0.1*(V(neru)+40)/(1-exp(-(V(neru)+40)/10));
+bm(neru)=4*exp(-(V(neru)+65)/18);
+ah(neru)=0.07*exp(-(V(neru)+65)/20);
+bh(neru)=1/(1+exp(-(V(neru)+35)/10));
+an(neru)=0.01*(V(neru)+55)/(1-exp(-(V(neru)+55)/10));
+bn(neru)=0.125*exp(-(V(neru)+65)/80);
+mt(neru)=m(neru)+dt*(-(am(neru)+bm(neru))*m(neru)+am(neru));
+ht(neru)=h(neru)+dt*(-(ah(neru)+bh(neru))*h(neru)+ah(neru));
+nt(neru)=n(neru)+dt*(-(an(neru)+bn(neru))*n(neru)+an(neru));
+[dr,It_syn(neru)]=cal_dr(neru,V,rt(neru,it-1));
+rt(neru,it)=rt(neru,it-1)+dt*dr;
+if rt(neru,it)<0
+rt(neru,it)=0;
+else if rt(neru,it)>1
+rt(neru,it)=1;
+end
+end
+%交流电流刺激时
+It_ext(1,it)=17.5*cos(0.15*it/100);
+It_ext(4,it)=17.5*cos(0.15*it/100);
+
+%加入DBS，位置为badian，A，f，mode
+%f = square(a*t, duty)： T = 2pi/a，duty 表示占空比 0 - 100
+switch mode
+
+
+
+38
+case 1
+It_ext(badian,it)=A*square(f*it/100,15);
+case 2
+It_ext(badian,it)=A*cos(f*it/100);
+otherwise
+end
+
+Vt(neru,it)=V(neru)+dt*(-g_na*(m(neru))^3*h(neru)*(V(neru)-V_na)-g_k*(n(neru)
+)^4*(V(neru)-V_k)-g_l*(V(neru)-V_l)+It_ext(neru,it)+It_syn(neru))/C;
+if Vt(neru,it)<-80;
+Vt(neru,it)=-66;
+else if Vt(neru,it)>40
+Vt(neru,it)=40;
+end
+end
+
+V(neru)=Vt(neru,it);
+m(neru)=mt(neru);h(neru)=ht(neru);n(neru)=nt(neru);
+
+end
+end
+end
+
+2）DBS_con.m
+clear all
+## %PD 状态下 不加DBS 的基底节电压波形
+Vt0=[];
+tt0=[];
+%加入DBS，位置为badian，A，f，mode
+[tt0,Vt0] = DBS(1,0,100,0)
+
+%加入DBS，位置为badian，A，f，mode
+%脉宽60~90uS，150~180Hz
+Vt1=[];
+tt1=[];
+%靶点选择Gpi 为5，STN 为7
+[tt1,Vt1] = DBS(7,10.5,0.15,1)
+
+# 4.算法流程图及基底神经节模型图
+
+
+
+39
+开始
+定义变量V(k,D),m(k),h(k),n(k),r(k,D),    ,     ,
+dt=2
+更新m,h,n
+i=1
+dt++
+dt≤D?
+i≤k?
+更新r(i,dt)
+i++
+进行k-1次判断，利用(dt-1)时刻的（k-1)个电位值计算得到dr(i)
+
+
+
+40
+1. 题目中存在的问题
+1. 05(
+65)
+1. 1(
+40)
+1. 1(
+55)
+(
+65)/18
+(
+65)/80
+1. 1(
+35)
+1. 1(
+40)
+1. 01(
+55)
+,
+1. 07
+,
+1
+1
+1
+4
+,
+,
+1. 125
+1
+# V
+m
+h
+n
+# V
+# V
+# V
+# V
+m
+h
+n
+# V
+# V
+# V
+a
+a
+e
+a
+e
+e
+b
+e
+b
+b
+e
+e
+−
++
+−
++
+−
++
+−
++
+−
++
+−
++
++
++
+=
+=
+=
+−
+−
+=
+=
+=
++
+
+说明：经查找相关文献，题目给出的bn的计算公式有问题，在此处更正。
+相关文献：
+[1]田中棋. Hodgkin-Huxley（HH）神经网络的结构重构和快速算法[D].上海交通大学,2020.
+[2] GERSTNER W, KISTLER WM. Spiking neuron models: Single neurons, pop-ulations,
+plasticity[MJ.[S.L.J: Cambridge university press, 2002.

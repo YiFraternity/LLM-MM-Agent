@@ -183,9 +183,16 @@ C_{wj} &\geq 0, j = 1, 2, 3
 \begin{align*}
 \min(C_p \times P_1 + C_{w1} \times P_{21} + C_{w2} \times P_{22} + C_{w3} \times P_{23})
 \end{align*}
-\begin{align*}
-0 \leq P_{2j} \leq 0, j = 1, 2, 3
-\end{align*}
+\begin{equation}
+s.t.
+\begin{cases}
+0 \leq P_1 \leq 1 \\
+0 \leq P_{2j} \leq 1 \\
+P_1 + P_{21} + P_{22} + P_{23} = 1 \\
+C_p \geq 0 \\
+C_{wj} \geq 0, j = 1, 2, 3
+\end{cases}
+\end{equation}
 
 其中 $C_p$, $P_1$, $C_{w1}$, $P_{2j}$, $C_{w2}$, $P_{22}$, $C_{w3}$, $P_{23}$ 都可以用 $t_d$ 来表示，请参考附录 1。
 

@@ -252,10 +252,9 @@ r = \min_i \{\text{Dis}(p, q_i)\}
 \end{figure}
 
 此时道路 $r_i$ 在 $CS(P, L)$ 的区域即为 $(A, B)$，其中
-\begin{align*}
-f'(x) &= \left(e^{-x^2/6}\right)' = -\frac{1}{3}xe^{-x^2/6} \\
-f''(x) &= \left(-\frac{1}{3}xe^{-x^2/6}\right)' = -\frac{1}{3}\left(e^{-x^2/6} - \frac{1}{3}xe^{-x^2/6}\right)
-\end{align*}
+\begin{equation}
+    \text{Dis}(B, O) = \text{Dis}(A, O) = L - \text{Dis}(P, O)
+\end{equation}
 
 \begin{itemize}
     \item 步骤三：在第三步的操作中我们有可能加入了一些有重复部分的线段，我们将重复部分的线段去掉，以避免重复运算。

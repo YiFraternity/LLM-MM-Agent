@@ -24,54 +24,7 @@
 关键词：能见度，雾，多项式回归，SIFT 特征提取，全连接神经网络，图像建模，暗通道先验，指数平滑法，趋势预测
 \end{abstract}
 
-\section*{目录}
-\begin{itemize}
-    \item 一、问题背景与问题重述 \dotfill 4
-    \begin{itemize}
-        \item 1.1 问题背景 \dotfill 4
-        \item 1.2 问题重述 \dotfill 4
-    \end{itemize}
-    \item 二、模型假设与符号说明 \dotfill 5
-    \begin{itemize}
-        \item 2.1 模型假设 \dotfill 5
-        \item 2.2 符号说明 \dotfill 5
-    \end{itemize}
-    \item 三、问题一的建模与求解 \dotfill 7
-    \begin{itemize}
-        \item 3.1 任务一问题分析 \dotfill 7
-        \item 3.2 任务一数据分析及预处理 \dotfill 7
-        \item 3.3 模型建立 \dotfill 14
-        \item 3.4 模型结果 \dotfill 14
-    \end{itemize}
-    \item 四、问题二的建模与求解 \dotfill 18
-    \begin{itemize}
-        \item 4.1 任务二问题分析 \dotfill 18
-        \item 4.2 任务二数据分析与预处理 \dotfill 18
-        \item 4.3 图像预处理（去噪、增强、掩膜） \dotfill 19
-        \item 4.4 尺度不变特征变换（SIFT）特征提取 \dotfill 22
-        \item 4.5 训练样本的分布及选取 \dotfill 24
-        \item 4.6 模型实现与评估 \dotfill 24
-        \item 4.7 问题二结果总结 \dotfill 26
-    \end{itemize}
-    \item 五、问题三的建模与求解 \dotfill 27
-    \begin{itemize}
-        \item 5.1 问题分析 \dotfill 27
-        \item 5.2 数据预处理 \dotfill 27
-        \item 5.3 单目深度估计 \dotfill 28
-        \item 5.5 模型建立 \dotfill 32
-        \item 5.6 模型优缺点评价 \dotfill 35
-    \end{itemize}
-    \item 六、问题四的建模与求解 \dotfill 36
-    \begin{itemize}
-        \item 6.1 问题分析 \dotfill 36
-        \item 6.2 平稳性检验 \dotfill 36
-        \item 6.3 自相关（ACF）与偏自相关（PACF） \dotfill 37
-        \item 6.4 趋势检验 \dotfill 37
-        \item 6.5 指数平滑法预测 \dotfill 38
-    \end{itemize}
-    \item 七、参考文献 \dotfill 40
-    \item 八、附录 \dotfill 41
-\end{itemize}
+\tableofcontents
 
 \section{问题背景与问题重述}
 
@@ -358,11 +311,19 @@ MOR_1A & 能见度 & m \\
 通过观察，发现尽管能见度与 3 个影响因子之间具有较高的相关性，分别达到了 0.89、0.87 和 0.63，但直接进行线性拟合的效果较差，模型的泛化能力较差。选用非线性模型可以使得模型适用于更为广泛的数据，多元多项式拟合的方法属于此类，具有较好的拟合效果。
 
 经过测试，三次多项式的拟合效果最好，三元三次多项式拟合的公式如下：
-\begin{align}
-\text{预测方程：} & \hat{y}_{t+h|t} = \ell_t + h b_t \\
-\text{水平方程：} & \ell_t = \alpha y_t + (1-\alpha)(\ell_{t-1} + b_{t-1}) \\
-\text{趋势方程：} & b_t = \beta^*(\ell_t - \ell_{t-1}) + (1-\beta^*)b_{t-1}
-\end{align}
+\begin{equation}
+\begin{split}
+y = b_0 &+ b_1 x_1 + b_2 x_2 + b_3 x_3 + b_{11} x_1^2 \\
+&+ b_{22} x_2^2 + b_{33} x_3^2 + b_{12} x_1 x_2 \\
+&+ b_{13} x_1 x_3 + b_{23} x_2 x_3 + b_{111} x_1^3 \\
+&+ b_{222} x_2^3 + b_{333} x_3^3 \\
+&+ b_{123} x_1 x_2 x_3 + b_{112} x_1^2 x_2 \\
+&+ b_{113} x_1^2 x_3 + b_{221} x_2^2 x_1 \\
+&+ b_{223} x_2^2 x_3 + b_{331} x_3^2 x_1 \\
+&+ b_{332} x_3^2 x_2
+\end{split}
+\tag{3-1}
+\end{equation}
 式中，$x_1$、$x_2$、$x_3$ 分别表示 RH 相对湿度、TEMP 温度、WS2A 2 分钟平均风速；$b_i$ 为多项式系数。
 
 使用拟合优度 ($R^2$) 对多项式拟合的结果进行评估，公式如下：
@@ -1060,6 +1021,11 @@ Holt 扩展了简单的指数平滑，方法包括预测方程和两个平滑方
     \caption{二次指数平滑预测结果}
     \label{fig:6-3}
 \end{figure}
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{二次指数平滑预测结果}
+    \label{fig:6-3}
+\end{figure}
 
 \section{七、参考文献}
 
@@ -1077,3 +1043,737 @@ Holt 扩展了简单的指数平滑，方法包括预测方程和两个平滑方
 
 % Missing placeholders restored
 \includegraphics[width=0.9\textwidth]{image.png}
+\subsection{附录}
+1. 八、附录
+1. 1 基于SIFT 特征的深度学习.py
+1. # -*- coding: utf-8 -*-
+1. import cv2
+1. import pandas as pd
+1. import numpy as np
+1. import os
+1. from sklearn import svm
+1.
+1. df = pd.read_excel('data.xlsx')
+1. y = df['MOR_1A']
+1.
+# 11. X = []
+1. filenames = sorted((fn for fn in os.listdir('./airport5') if fn.endswith('.jpg')))
+1. filenames.sort(key=lambda x: int(x[0:-4]))
+1.
+1. sift = cv2.xfeatures2d.SIFT_create()
+1.
+1. for file in filenames[0:1]:
+1. img = cv2.imread('airport5/' + file)
+1. gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+1. kp = sift.detect(gray, None)
+1. # 显示关键点
+1. ret = cv2.drawKeypoints(gray, kp, img)
+1. cv2.imshow('ret', ret)
+1. cv2.waitKey(0)
+1. cv2.destroyAllWindows()
+1.
+1. for file in filenames:
+1. img = cv2.imread('airport5/' + file)
+1. gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+1.
+1. # 找出关键点并绘图
+1. kp, des = sift.compute(gray, kp)
+1. des = des.reshape((-1,))
+1.
+## 35.     # 使用关键点找出SIFT 特征向量
+1. X.append(list(des))
+1.
+1. X = pd.DataFrame(X)
+1.
+1. # 划分训练集和测试集
+
+
+
+42
+1. from keras.preprocessing import sequence
+1. from keras.models import Sequential
+1. from keras.datasets import boston_housing
+1. from keras.layers import Dense, Dropout
+1. from keras.utils import multi_gpu_model
+1. from keras import regularizers  # 正则化
+1. from sklearn.preprocessing import MinMaxScaler
+1. from sklearn.model_selection import train_test_split
+1. import matplotlib.pyplot as plt
+1.
+1. plt.rcParams['font.sans-serif'] = ['SimHei']
+1. plt.rcParams['axes.unicode_minus'] = False
+1.
+1. x_train, x_test, y_train, y_test = train_test_split(X, y,
+1. test_size=0.3, stratify=y,
+1. random_state=2020)
+1.
+1.
+1. model = Sequential()  # 初始化，很重要！
+1. model.add(Dense(units=10,  # 输出大小
+1. activation='relu',  # 激励函数
+1. input_shape=(x_train.shape[1],)  # 输入大小, 也就是列的大小
+1. )
+1. )
+1.
+1. model.add(Dropout(0.2))  # 丢弃神经元链接概率
+1. model.add(Dense(units=15,
+1. kernel_regularizer=regularizers.l2(0.01),  # 施加在权重上的正则项
+1. activity_regularizer=regularizers.l1(0.01),  # 施加在输出上的正则项
+1. activation='relu',  # 激励函数
+1. bias_regularizer=keras.regularizers.l1_l2(0.01)  # 施加在偏置向量上的正则
+项
+1. )
+1. )
+1. model.add(Dense(units=1,
+1. activation='linear'  # 线性激励函数 回归一般在输出层用这个激励函数
+1. )
+1. )
+1. print(model.summary())  # 打印网络层次结构
+1.
+1. model.compile(loss='mse',  # 损失均方误差
+1. optimizer='adam',  # 优化器
+1. )
+1.
+
+
+
+43
+1. history = model.fit(x_train, y_train,
+1. epochs=200,  # 迭代次数
+1. batch_size=200,  # 每次用来梯度下降的批处理数据大小
+1. verbose=2,  # verbose：日志冗长度，int：冗长度，0：不输出训练过程，1：
+输出训练进度，2：输出每一个epoch
+1. validation_data=(x_test, y_test)  # 验证集
+1. )
+1. fig = plt.figure(figsize=(8, 4))
+1. ax = fig.add_subplot(111)
+1. plt.plot(history.history['loss'])
+1. plt.plot(history.history['val_loss'])
+1. plt.ylabel('损失函数', fontsize=12)
+1. plt.xlabel('迭代次数', fontsize=12)
+1. plt.legend(['训练集', '测试集'], loc='upper right', fontsize=12)
+1. plt.savefig('损失曲线.jpg', dpi=600, bbox_inches='tight')
+1. plt.show()
+1.
+1. from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+1.
+1. # 散点图
+1. fig = plt.figure(figsize=(8, 8))
+1. ax = fig.add_subplot(211)
+1. predict_y = model.predict(x_train)
+1. RMSE = np.sqrt(mean_squared_error(y_train, predict_y))
+1. MAE = mean_absolute_error(y_train, predict_y)
+1. R2 = r2_score(y_train, predict_y)
+1. plt.scatter(y_train, predict_y, c='red', s=5)
+1. plt.xlabel('[训练集]气象光学视程(m)观测值', fontsize=14)
+1. plt.ylabel('[训练集]气象光学视程(m)模拟值', fontsize=14)
+1. plt.text(0, 900, 'RMSE={},\nMAE={},\n$R^2$={}'.format(int(RMSE), int(MAE), round(R2, 2
+)), fontsize=14)
+1.
+1. ax = fig.add_subplot(212)
+1. predict_y = model.predict(x_test)
+1. RMSE = np.sqrt(mean_squared_error(y_test, predict_y))
+1. MAE = mean_absolute_error(y_test, predict_y)
+1. R2 = r2_score(y_test, predict_y)
+1. plt.scatter(y_test, predict_y, c='blue', s=5)
+1. plt.xlabel('[测试集]气象光学视程(m)观测值', fontsize=14)
+1. plt.ylabel('[测试集]气象光学视程(m)模拟值', fontsize=14)
+1. plt.text(0, 900, 'RMSE={},\nMAE={},\n$R^2$={}'.format(int(RMSE), int(MAE), round(R2, 2
+)), fontsize=14)
+1.
+1. plt.savefig('模拟结果.jpg', dpi=600, bbox_inches='tight')
+
+
+
+44
+1. plt.savefig('模拟结果.pdf', bbox_inches='tight')
+1. plt.show()
+1.
+1. 2 机场数据的预处理.py
+1. import cv2
+1. import os
+1. import numpy as np
+1.
+1. filenames=sorted((fn for fn in os.listdir('./airport1') if fn.endswith('.jpg')))
+1. outPutDirName='airport2/'
+1. if not os.path.exists(outPutDirName):
+1. os.makedirs(outPutDirName)
+1.
+1. # 非局部平均法去噪声(airport2)
+1. for file in filenames:
+1. img = cv2.imread('airport1/'+file)
+1. dst = cv2.fastNlMeansDenoisingColored(img,None,10,10,7,21)
+1. b1, g1, r1 = cv2.split(dst)
+1. img_denoise = cv2.merge([r1, g1, b1])
+1. cv2.imwrite('airport2/'+file,img_denoise)
+1. print(file)
+1.
+1.
+1. filenames=sorted((fn for fn in os.listdir('./airport2') if fn.endswith('.jpg')))
+1. outPutDirName='airport3/'
+1. if not os.path.exists(outPutDirName):
+1. os.makedirs(outPutDirName)
+1.
+1.
+1. # CLAHE 有限对比适应性直方图均衡化(airport3)
+1. for file in filenames:
+1. img = cv2.imread('airport2/'+file)
+1. b, g, r = cv2.split(img)
+1. clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+1. cl1_b = clahe.apply(b)
+1. cl1_g = clahe.apply(g)
+1. cl1_r = clahe.apply(r)
+1. cl1 = cv2.merge([cl1_r, cl1_g, cl1_b])
+1.
+1. cv2.imwrite('airport3/'+file,cl1)
+1. print(file)
+1.
+1.
+
+
+
+45
+1.
+1. # 提高对比度
+1. filenames=sorted((fn for fn in os.listdir('./airport3') if fn.endswith('.jpg')))
+1. outPutDirName='airport4/'
+1. if not os.path.exists(outPutDirName):
+1. os.makedirs(outPutDirName)
+1.
+1. def Contrast_and_Brightness(alpha,beta,img):
+1. """使用公式f(x)=α.g(x)+β"""
+## 49.     #α 调节对比度，β 调节亮度
+1. blank = np.zeros(img.shape,img.dtype)  #创建图片类型的零矩阵
+1. dst = cv2.addWeighted(img,alpha,blank,1-alpha,beta)  #图像混合加权
+1. return dst
+1.
+1. for file in filenames:
+1. img = cv2.imread('airport3/'+file)
+1. img_new = Contrast_and_Brightness(1.5,15,img)
+1. cv2.imwrite('airport4/'+file,img_new)
+1. print(file)
+1.
+1.
+1. # mask
+1. filenames = sorted((fn for fn in os.listdir('./airport4') if fn.endswith('.jpg')))
+1. outPutDirName = 'airport5/'
+1. if not os.path.exists(outPutDirName):
+1. os.makedirs(outPutDirName)
+1.
+1. for file in filenames:
+1. img = cv2.imread('airport4/' + file)
+1. img[50:105, 35:670, :] = np.nan
+1. img[590:655, 890:1135, :] = np.nan
+1. cv2.imwrite('airport5/' + file, img)
+1. print(file)
+1. 3 引导滤波.py
+1. import numpy as np
+1. import cv2
+1. import os
+1.
+1.
+1. def zmMinFilterGray(src, r=5):
+1. '''''最小值滤波，r 是滤波器半径'''
+1. '''''if r <= 0:
+1. return src
+
+
+
+46
+1. h, w = src.shape[:2]
+1. I = src
+1. res = np.minimum(I  , I[[0]+range(h-1)  , :])
+1. res = np.minimum(res, I[range(1,h)+[h-1], :])
+1. I = res
+1. res = np.minimum(I  , I[:, [0]+range(w-1)])
+1. res = np.minimum(res, I[:, range(1,w)+[w-1]])
+1. return zmMinFilterGray(res, r-1)'''
+1. return cv2.erode(src, np.ones((2 * r + 1, 2 * r + 1)))  # 使用opencv 的erode 函数更
+高效
+1.
+1.
+1. def guidedfilter(I, p, r, eps):
+1. height, width = I.shape
+1. m_I = cv2.boxFilter(I, -1, (r, r))
+1. m_p = cv2.boxFilter(p, -1, (r, r))
+1. m_Ip = cv2.boxFilter(I * p, -1, (r, r))
+1. cov_Ip = m_Ip - m_I * m_p
+1.
+1. m_II = cv2.boxFilter(I * I, -1, (r, r))
+1. var_I = m_II - m_I * m_I
+1.
+1. a = cov_Ip / (var_I + eps)
+1. b = m_p - a * m_I
+1.
+1. m_a = cv2.boxFilter(a, -1, (r, r))
+1. m_b = cv2.boxFilter(b, -1, (r, r))
+1. return m_a * I + m_b
+1.
+1.
+1. def getV1(m, r, eps, w, maxV1):  # 输入rgb 图像，值范围[0,1]
+1. '''''计算大气遮罩图像V1 和光照值A, V1 = 1-t/A'''
+1. V1 = np.min(m, 2)  # 得到暗通道图像
+1. V1 = guidedfilter(V1, zmMinFilterGray(V1, 7), r, eps)  # 使用引导滤波优化
+1. bins = 2000
+1. ht = np.histogram(V1, bins)  # 计算大气光照A
+1. d = np.cumsum(ht[0]) / float(V1.size)
+1. for lmax in range(bins - 1, 0, -1):
+1. if d[lmax] <= 0.999:
+1. break
+1. A = np.mean(m, 2)[V1 >= ht[1][lmax]].max()
+1.
+1. V1 = np.minimum(V1 * w, maxV1)  # 对值范围进行限制
+1.
+
+
+
+47
+1. return V1, A
+1.
+1.
+1. def deHaze(m, r=81, eps=0.001, w=1, maxV1=0.80, bGamma=False):
+1. Y = np.zeros(m.shape)
+1. V1, A = getV1(m, r, eps, w, maxV1)  # 得到遮罩图像和大气光照
+1. print(A)
+1. for k in range(3):
+1. Y[:, :, k] = (m[:, :, k] - V1) / (1 - V1 / A)  # 颜色校正
+1. Y = np.clip(Y, 0, 1)
+1. if bGamma:
+1. Y = Y ** (np.log(0.5) / np.log(Y.mean()))  # gamma 校正,默认不进行该操作
+1. return Y
+1.
+1.
+1. filenames = sorted((fn for fn in os.listdir('./gaosu3') if fn.endswith('.bmp')))
+1. filenames.sort(key=lambda x: int(x[14:-4]))
+1. outPutDirName = 'gaosu5/'
+1. if not os.path.exists(outPutDirName):
+1. os.makedirs(outPutDirName)
+1.
+1. for file in filenames:
+1. m = deHaze(cv2.imread('gaosu3/' + file) / 255.0) * 255
+1. cv2.imwrite('gaosu5/' + file, m)
+1. print(file)
+1. 4 透视变化.py
+1. # -*- coding: utf-8 -*-
+1. import cv2
+1. import numpy as np
+1. from matplotlib import pyplot as plt
+1.
+1. plt.rcParams['font.sans-serif'] = ['SimHei']
+1. plt.rcParams['axes.unicode_minus'] = False
+1.
+1. img = cv2.imread('gaosu5/original_frame1.bmp')
+1. rows, cols, ch = img.shape
+1.
+1. pts1 = np.float32([[73, 177], [223, 177], [173, 420], [498, 420]])
+1. pts2 = np.float32([[0, 0], [200, 0], [0, 300], [200, 300]])
+1.
+1. M = cv2.getPerspectiveTransform(pts1, pts2)
+1. dst = cv2.warpPerspective(img, M, (200, 300))
+1.
+
+
+
+48
+1. # for i in range(len(pts1)-1):
+1. #    cv2.line(img, (pts1[i][0], pts1[i][1]), (pts1[i+1][0], pts1[i+1][1]), color=[0, 25
+5, 0])
+1.
+1.
+1. plt.figure(figsize=(8, 8))
+1. p1 = plt.subplot(121)
+1. p1.imshow(img)
+1. p1.set_title('原始图像', fontsize=14)
+1.
+1. p2 = plt.subplot(122)
+1. p2.imshow(dst)
+1. p2.set_title('透射变换', fontsize=14)
+1. plt.savefig('透射变换.jpg', dpi=600, bbox_inches='tight')
+1. plt.savefig('透射变换.pdf', bbox_inches='tight')
+1. plt.show()
+1. 5 时间序列分析与建模.py
+1. import matplotlib.pyplot as plt
+1. import numpy as np
+1. import pandas as pd
+1. from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+1. from matplotlib.dates import datestr2num
+1. import time
+1. import scipy.stats as stats
+1. from statsmodels.tsa.stattools import adfuller
+1. from statsmodels.stats.diagnostic import acorr_ljungbox
+1. import prettytable
+1. from statsmodels.tsa.arima_model import ARMA
+1.
+1. plt.rcParams['font.sans-serif'] = ['SimHei']
+1. plt.rcParams['axes.unicode_minus'] = False
+1.
+1.
+1. def cox_staut(list_c):
+1. lst = list_c.copy()
+1. n0 = len(lst)
+1. if n0 % 2 == 1:
+1. del lst[int((n0 - 1) / 2)]
+1. c = int(len(lst) / 2)
+1. pos = neg = 0
+1. for i in range(c):
+1. diff = lst[i + c] - lst[i]
+1. if diff > 0:
+
+
+
+49
+1. pos += 1
+1. elif diff < 0:
+1. neg += 1
+1. else:
+1. continue
+1. n1 = pos + neg
+1. k = min(pos, neg)
+1. p = 2 * stats.binom.cdf(k, n1, 0.5)
+1. print('fall:%i  rise:%i  p-value:%f' % (neg, pos, p))
+1.
+1.
+1. df = pd.read_excel('vis.xlsx')
+1. timelist = [str(i)[0:11] + str(j) for i, j in zip(df['date'], df['time'])]
+1. # df = df.set_index('time')
+1. df['index'] = timelist
+1. df['index'] = pd.to_datetime(df['index'])
+1. df = df.set_index('index')
+1.
+1. mor1 = df['MOR_1']
+1. mor2 = df['MOR_2']
+1.
+1. # 绘制MOR 变化曲线(最小二乘法)
+1. fig = plt.figure(figsize=(8, 4), facecolor='white')
+1. ax = fig.add_subplot(111)
+1. ax.plot_date(datestr2num(timelist), mor1, 'o-', color='red',
+1. linewidth=1, markersize=1, label='气象光学视程(m)')
+1.
+1. z1 = np.polyfit(datestr2num(timelist), mor1, 1)
+1. p1 = np.poly1d(z1)
+1. plt.plot(datestr2num(timelist), p1(datestr2num(timelist)),
+1. "--", color='k', linewidth=1, label='变化趋势')
+1. plt.legend(fontsize=12)
+1. plt.xlabel('2016-04-14', fontsize=12)
+1. plt.ylabel('气象光学视程(m)', fontsize=12)
+1. plt.savefig('变化曲线趋势.jpg', dpi=600, bbox_inches='tight')
+1. plt.show()
+1.
+1. dftest = adfuller(mor1, autolag='AIC')
+1.
+1. # Multiplicative Decomposition
+1. result_mul = sm.tsa.seasonal_decompose(df['MOR_1'], model='multiplicative', extrapolate
+_trend='freq', freq=30)
+1.
+1. # Plot
+
+
+
+50
+1. plt.rcParams.update({'figure.figsize': (10, 10)})
+1. result_mul.plot().suptitle('Multiplicative Decompose', fontsize=10)
+1. plt.show()
+1.
+1. # Extract the Components ----# Actual Values = Product of (Seasonal * Trend * Resid)
+1. df_reconstructed = pd.concat([result_mul.seasonal, result_mul.trend, result_mul.resid,
+result_mul.observed], axis=1)
+1. df_reconstructed.columns = ['seas', 'trend', 'resid', 'actual_values']
+1. df_reconstructed.head()
+1.
+1. sm.tsa.seasonal_decompose(mor1).plot()
+1. result = sm.tsa.stattools.adfuller(mor1)
+1. plt.show()
+1.
+1.
+1. # 趋势检验
+1. cox_staut(list(mor1))
+1.
+1. # 移动平均图
+1. def draw_trend(timeseries, size):
+1. f = plt.figure(figsize=(6, 4),facecolor='white')
+1. ax = f.add_subplot(111)
+1. ax.plot_date(datestr2num(timelist), timeseries, 'o-', color = 'blue',
+1. linewidth = 1, markersize=1, label = '原始数据')
+1. # 对size 个数据进行移动平均
+1. rol_mean = timeseries.rolling(window=size).mean()
+1. # 对size 个数据移动平均的方差
+1. rol_std = timeseries.rolling(window=size).std()
+1. #timeseries.plot(color='blue', label='原始数据')
+1. #rol_mean.plot(color='red', label='滑动平均')
+1. #rol_std.plot(color='black', label='滑动标准差')
+1. ax.plot_date(datestr2num(timelist), rol_mean, 'o-', color = 'red',
+1. linewidth = 1, markersize=1, label = '滑动平均')
+1. ax.plot_date(datestr2num(timelist), rol_std, 'o-', color = 'black',
+1. linewidth = 1, markersize=1, label = '滑动标准差')
+1. plt.legend(loc='best',fontsize=12)
+1. plt.xlabel('2016-04-14',fontsize=12)
+1. plt.ylabel('气象光学视程(m)',fontsize=12)
+1. #plt.title('滑动平均与标准差',fontsize=12)
+1. plt.savefig('滑动平均与标准差.jpg', dpi=600, bbox_inches ='tight')
+1. plt.show()
+1.
+1. draw_trend(mor1, 3)
+1.
+
+
+
+51
+1. #Dickey-Fuller test:
+1. def teststationarity(ts):
+1. dftest = adfuller(ts)
+1. # 对上述函数求得的值进行语义描述
+1. dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','p-
+value','#Lags Used','Number of Observations Used'])
+1. for key,value in dftest[4].items():
+1. dfoutput['Critical Value (%s)'%key] = value
+1. return dfoutput
+1.
+1. teststationarity(mor1)
+1.
+1. # 自相关和偏相关图，默认阶数为31 阶
+1. def draw_acf_pacf(ts, lags=30):
+1. f = plt.figure(figsize=(9, 7),facecolor='white')
+1. ax1 = f.add_subplot(211)
+1. plot_acf(mor1, lags=30, ax=ax1, title='自相关性')
+1. ax2 = f.add_subplot(212)
+1. plot_pacf(mor1, lags=30, ax=ax2, title='偏相关性')
+1. plt.savefig('自相关性和偏相关.jpg', dpi=600, bbox_inches ='tight')
+1. plt.show()
+1. draw_acf_pacf(mor1, lags=30)
+1. 6 指数平滑法.py
+1. import matplotlib.pyplot as plt
+1. import pandas as pd
+1. from matplotlib.dates import datestr2num, DateFormatter
+1. from statsmodels.tsa.holtwinters import ExponentialSmoothing, Holt
+1. import matplotlib.dates as mdates
+1.
+1. plt.rcParams['font.sans-serif'] = ['SimHei']
+1. plt.rcParams['axes.unicode_minus'] = False
+1.
+1. df = pd.read_excel('vis.xlsx')
+1. timelist = [str(i)[0:11] + str(j) for i, j in zip(df['date'], df['time'])]
+1.
+1. date_new = pd.date_range(start='2016-04-
+14 7:39:11', periods=161, freq='40S', closed='right')
+1. timelist2 = timelist
+1. for i in date_new:
+1. timelist2.append(str(i))
+1.
+1. mor1 = df['MOR_1']
+1.
+
+
+
+52
+1. fig = plt.figure(figsize=(6, 4))
+1. ax = fig.add_subplot(111)
+1.
+1. timelist = [str(i)[0:11] + str(j) for i, j in zip(df['date'], df['time'])]
+1.
+1. # rol_mean = mor1.rolling(window=2).mean()
+1. fit1 = ExponentialSmoothing(mor1, seasonal_periods=20, trend='add', seasonal='mul').fit
+(use_boxcox=True)
+1. l0, = plt.plot_date(datestr2num(timelist), mor1,
+1. marker='^', c='b', linestyle='solid', markersize=1)
+1. # l1, = plt.plot_date(datestr2num(timelist2),list(fit1.fittedvalues) + list(fit1.foreca
+st(180)),
+1. #                    marker='o', c='orange', linestyle='solid', markersize=1)
+1.
+1. fit2 = Holt(mor1, exponential=True).fit(smoothing_level=0.4, smoothing_slope=0.3, optim
+ized=False)
+1. l2, = plt.plot_date(datestr2num(timelist2), list(fit2.fittedvalues) + list(fit2.forecas
+t(160)),
+1. marker='o', c='orange', linestyle='solid', markersize=1)
+1.
+1. ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=10))
+1. ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
+1. plt.xticks(rotation=45)
+1. # plt.ylim(100,160)
+1.
+1. plt.xlabel('2016-04-14', fontsize=12)
+1. plt.ylabel('气象光学视程(m)', fontsize=12)
+1. plt.axhline(y=150, c='r', ls='--', lw=2)
+1. plt.savefig('能见度变化预测结果.jpg', dpi=600, bbox_inches='tight')
+1. plt.savefig('能见度变化预测结果.pdf', bbox_inches='tight')
+1. plt.show()
+1. 7 大气光照强度计算.py
+1. # -*- coding: utf-8 -*-
+1. """
+1. Created on Sun Sep 20 00:18:58 2020
+1.
+1. @author: JoyceSong
+1. """
+1.
+1. import numpy as np
+1. import cv2
+1. import os
+1. import pandas as pd
+
+
+
+53
+1.
+1.
+1. def zmMinFilterGray(src, r=5):
+1. '''''最小值滤波，r 是滤波器半径'''
+1. '''''if r <= 0:
+1. return src
+1. h, w = src.shape[:2]
+1. I = src
+1. res = np.minimum(I  , I[[0]+range(h-1)  , :])
+1. res = np.minimum(res, I[range(1,h)+[h-1], :])
+1. I = res
+1. res = np.minimum(I  , I[:, [0]+range(w-1)])
+1. res = np.minimum(res, I[:, range(1,w)+[w-1]])
+1. return zmMinFilterGray(res, r-1)'''
+1. return cv2.erode(src, np.ones((2*r+1, 2*r+1)))
+1.
+1. def guidedfilter(I, p, r, eps):
+1. height, width = I.shape
+1. m_I = cv2.boxFilter(I, -1, (r,r))
+1. m_p = cv2.boxFilter(p, -1, (r,r))
+1. m_Ip = cv2.boxFilter(I*p, -1, (r,r))
+1. cov_Ip = m_Ip-m_I*m_p
+1.
+1. m_II = cv2.boxFilter(I*I, -1, (r,r))
+1. var_I = m_II-m_I*m_I
+1.
+1. a = cov_Ip/(var_I+eps)
+1. b = m_p-a*m_I
+1.
+1. m_a = cv2.boxFilter(a, -1, (r,r))
+1. m_b = cv2.boxFilter(b, -1, (r,r))
+1. return m_a*I+m_b
+1.
+1. def getV1(m, r, eps, w, maxV1):  #输入rgb 图像，值范围[0,1]
+1. '''''计算大气遮罩图像V1 和光照值A, V1 = 1-t/A'''
+1. V1 = np.min(m,2)                                         #得到暗通道图像
+1. V1 = guidedfilter(V1, zmMinFilterGray(V1,7), r, eps)     #使用引导滤波优化
+1. bins = 2000
+1. ht = np.histogram(V1, bins)                              #计算大气光照A
+1. d = np.cumsum(ht[0])/float(V1.size)
+1. for lmax in range(bins-1, 0, -1):
+1. if d[lmax]<=0.999:
+1. break
+1. A  = np.mean(m,2)[V1>=ht[1][lmax]].max()
+
+
+
+54
+1.
+1. V1 = np.minimum(V1*w, maxV1)                   #对值范围进行限制
+1.
+1. return V1,A
+1.
+1. filenames=sorted((fn for fn in os.listdir('../Extract') if fn.endswith('.bmp')))
+1. filenames.sort(key = lambda x: int(x[14:-4]))
+1.
+1. # 计算得到每一幅图像的大气光照强度
+1. A_list = []
+1. for file in filenames:
+1. _, A = getV1(cv2.imread('../Extract/'+file)/255.0, r=81, eps=0.001, w=1, maxV1=0.80
+)
+1. A_list.append(A)
+1.
+1. A_list = pd.DataFrame(A_list)
+1. A_list.to_csv('A2.csv', index=False, header=None)
+1. 8 能见度估算代码.py
+1. # -*- coding: utf-8 -*-
+1. """
+1. Created on Sat Sep 19 23:48:45 2020
+1.
+1. @author: JoyceSong
+1. """
+1.
+1. import cv2
+1. import numpy as np
+1. from PIL import Image
+1. import matplotlib.pyplot as plt
+1. import os
+1. import pandas as pd
+1.
+1. # 加载之前算好的大气光照强度
+1. a = pd.read_csv('A.csv',header=None)
+1.
+1. filenames=sorted((fn for fn in os.listdir('../DCP_Mask') if fn.endswith('.bmp')))
+1. filenames.sort(key = lambda x: int(x[19:-4]))
+1.
+1.
+1. Vis = []
+1.
+1. for i, file in enumerate(filenames):
+1.
+
+
+
+55
+1. img_path = os.path.join('../DCP_Mask', file)
+1. img = cv2.imread(img_path)
+1. # plt.imshow(img)
+1.
+1. # 300:720, 300:880
+1.
+# 32.     # 提取ROI 的范围
+1.
+1. # 1280, 720
+1. # 526, 572
+1. # 500, 545
+1.
+1. # 272, 226 POI1 near 277 230 350, 284
+1. # 245, 200 POI2 far 277 230
+1.
+1. # POI1 = img[347:350, 281:284, 0]
+1. # POI2 = img[272:275, 226:229, 0]
+1.
+1. # POI1 = img[345:350, 279:284, 0]
+1. # POI2 = img[272:277, 226:231, 0]
+1.
+1. POI1 = img[345:352, 279:282, 0]
+1. POI2 = img[272:279, 226:233, 0]
+1.
+1. # plt.imshow(img)
+1.
+1. A = a.iloc[i,0]
+1.
+1. POI1 = POI1 / (A * 255)
+1. POI2 = POI1 / (A * 255)
+1.
+## 57.     POI1 = 1 - 0.95 * POI1
+## 58.     POI2 = 1 - 0.95 * POI2
+1.
+1. POI1 = np.log(POI1)
+1. POI2 = np.log(POI2)
+1.
+1. sum_POI1 = POI1.sum()
+1. sum_POI2 = POI2.sum()
+1.
+1. # 估算大气散射系数 beta
+1.
+1. # beta_d1 = - sum_POI1 / 9
+1. # beta_d2 = - sum_POI2 / 9
+
+
+
+56
+1.
+1. # beta_d1 = - sum_POI1 / 25
+1. # beta_d2 = - sum_POI2 / 25
+1.
+1. beta_d1 = - sum_POI1 / 49
+1. beta_d2 = - sum_POI2 / 49
+1.
+1. beta = np.abs(beta_d1 - beta_d2) / 9
+1. # beta = np.abs(beta_d1 - beta_d2) / 9
+1.
+1. # 能见度估算
+1.
+1. visibility = - np.log(0.05) / beta
+1. Vis.append(visibility)
+1.
+1. Vis = np.array(Vis)
+1. plt.plot(Vis)
+1. plt.show()
+1.
+1. Vis = pd.DataFrame(Vis)
+1. Vis.to_csv('vis4.csv', header=None)
+

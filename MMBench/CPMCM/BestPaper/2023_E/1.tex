@@ -24,94 +24,7 @@
 关键字：出血性脑卒中预后，朴素贝叶斯，非线性最小二乘法，K-means 聚类，决策树回归，相关性分析
 \end{abstract}
 
-\section{目录}
-\begin{itemize}
-    \item[1.] 问题重述 \dotfill 5
-        \begin{itemize}
-            \item[1.1] 问题背景 \dotfill 5
-            \item[1.2] 需要解决的问题 \dotfill 5
-        \end{itemize}
-    \item[2.] 数据说明与异常数据和非数值数据处理 \dotfill 6
-        \begin{itemize}
-            \item[2.1] 数据说明 \dotfill 6
-            \item[2.2] 异常数据处理和非数值数据处理 \dotfill 7
-        \end{itemize}
-    \item[3.] 模型假设 \dotfill 7
-    \item[4.] 问题一 \dotfill 7
-        \begin{itemize}
-            \item[4.1] 问题一(a)的分析与求解 \dotfill 7
-            \item[4.2] 问题一(b)的分析 \dotfill 9
-            \item[4.3] 问题一(b)的模型建立 \dotfill 10
-                \begin{itemize}
-                    \item[4.3.1] 伯努利朴素贝叶斯 \dotfill 11
-                    \item[4.3.2] 高斯朴素贝叶斯 \dotfill 11
-                    \item[4.3.3] 线性回归 \dotfill 12
-                \end{itemize}
-            \item[4.4] 问题一(b)的结果 \dotfill 12
-        \end{itemize}
-    \item[5.] 问题二 \dotfill 13
-        \begin{itemize}
-            \item[5.1] 问题二(a)的分析 \dotfill 13
-            \item[5.2] 问题二(a)的模型建立 \dotfill 14
-                \begin{itemize}
-                    \item[5.2.1] 局部加权回归模型 \dotfill 14
-                    \item[5.2.2] 非线性最小二乘法回归模型 \dotfill 15
-                \end{itemize}
-            \item[5.3] 问题二(a)的结果 \dotfill 17
-            \item[5.4] 问题二(b)的分析 \dotfill 17
-            \item[5.5] 问题二(b)的模型建立 \dotfill 19
-                \begin{itemize}
-                    \item[5.5.1] 手肘法 \dotfill 19
-                    \item[5.5.2] K-means聚类算法 \dotfill 20
-                    \item[5.5.3] 非线性最小二乘法回归模型 \dotfill 20
-                \end{itemize}
-            \item[5.6] 问题二(b)的结果 \dotfill 23
-            \item[5.7] 问题二(c)的分析 \dotfill 23
-            \item[5.8] 问题二(c)的模型建立 \dotfill 24
-                \begin{itemize}
-                    \item[5.8.1] 多元线性回归模型 \dotfill 24
-                \end{itemize}
-        \end{itemize}
-\end{itemize}
-
-\begin{itemize}
-    \item[5.9] 问题二(c) 的结果 \dotfill 25
-    \item[5.10] 问题二(d) 的分析 \dotfill 29
-    \item[5.11] 问题二(d) 的模型建立 \dotfill 29
-        \begin{itemize}
-            \item[5.11.1] 多元线性回归模型 \dotfill 29
-        \end{itemize}
-    \item[5.12] 问题二(d) 的结果 \dotfill 29
-    \item[6.] 问题三 \dotfill 32
-        \begin{itemize}
-            \item[6.1] 问题三(a) 的分析 \dotfill 32
-            \item[6.2] 问题三(a) 的模型建立 \dotfill 33
-                \begin{itemize}
-                    \item[6.2.1] 决策树回归模型 \dotfill 33
-                \end{itemize}
-            \item[6.3] 问题三(a) 的结果 \dotfill 36
-            \item[6.4] 问题三(b) 的分析 \dotfill 36
-            \item[6.5] 问题三(b) 的模型建立 \dotfill 37
-                \begin{itemize}
-                    \item[6.5.1] 决策树回归模型 \dotfill 37
-                \end{itemize}
-            \item[6.6] 问题三(b) 的结果 \dotfill 39
-            \item[6.7] 问题三(c) 的分析 \dotfill 39
-            \item[6.8] 问题三(c) 的模型建立 \dotfill 40
-                \begin{itemize}
-                    \item[6.8.1] 相关性分析模型 \dotfill 40
-                \end{itemize}
-            \item[6.9] 问题三(c) 的结果 \dotfill 40
-        \end{itemize}
-    \item[7.] 模型评价与改进 \dotfill 45
-        \begin{itemize}
-            \item[7.1] 模型评价 \dotfill 45
-            \item[7.2] 模型推广与改进 \dotfill 46
-        \end{itemize}
-    \item 参考文献 \dotfill 46
-    \item 附录A 我的 MATLAB 源程序 \dotfill 48
-    \item 附录B 我的 Python 源程序 \dotfill 48
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -226,17 +139,6 @@
 \end{figure}
 
 得到结果如下图 (4..2) 所示（仅展示 sub001-sub020 患者的结果，其余结果在“表 4-答案文件”中查看）：
-
-\begin{tabular}{l l}
-学 校 & 东华大学 \\
-\hline
-参赛队号 & 23102550019 \\
-\hline
-队员姓名 & 1. 靖执义 \\
- & 2. 贺祖鹏 \\
- & 3. 王素素 \\
-\hline
-\end{tabular}
 
 \subsection{问题一(b) 的分析}
 
@@ -644,6 +546,8 @@ K-means 聚类算法 [7] 是一种经典的无监督学习算法，用于将数�
 
 最终我们得到将所有患者分到了亚组 0、亚组 1、亚组 2 中，各亚组的患者如下图 (5..7) 所示：
 
+我们可以看到亚组 0 中有患者 32 位，亚组 1 中有患者 61 位，亚组 2 中有患者 7 位。
+
 \begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
@@ -686,7 +590,6 @@ sub044 & 0 & sub098 & 0 & sub025 & 1 & sub057 & 1 & sub081 & 1 & & & \\
 \caption{Caption}
 \end{table}
 
-我们可以看到亚组 0 中有患者 32 位，亚组 1 中有患者 61 位，亚组 2 中有患者 7 位。
 
 \subsubsection{非线性最小二乘法回归模型}
 
@@ -757,6 +660,10 @@ f_2(x) = e^{-5.19063820019350e-06x^2 + 0.00426430378528052x + 10.7391603011940}.
 
 图 13 非线性最小二乘法回归模型得到各亚组患者水肿体积随时间进展曲线
 
+\subsection{5.6 问题二(b) 的结果}
+本题得到各患者的所属亚组及各亚组患者与其对应的亚组所生成的水肿体积随时间
+进展曲线的残差，结果如下图(5..9) 所示(仅展示sub001-sub020 患者的结果，其余结果在
+“表4-答案文件”中查看
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|}
@@ -819,6 +726,18 @@ sub020 & 20160723000013 & 50913.40625 & 1 \\
 \end{tabular}
 \end{table}
 
+
+
+\subsection{5.7 问题二(c) 的分析}
+在本问中我们需要构建模型，分析不同治疗方法对水肿体积进展模式的影响。由于题
+目的治疗方法仅给出 0 或 1 表示每个患者是否采用此方法，所以本题假设治疗方法从首
+次影像检查时间持续到最后一次随访，并假设不同治疗方法之间独立。本题所要解决的是
+不同方法对水肿体积进展模式的影响，为了使目标量化，我们采用每个患者在每两个检查
+点之间斜率的最小值作为拟合函数的因变量，其实际意义为水肿体积减小变化率最大的值
+（若水肿体积在全程中没有下降则为增长变化率最缓慢的值），该数值将在本题中命名为
+“水肿体积变化率”。通过多元线性回归模型确定不同治疗方法的权重，通过比较治疗方法
+的权重得出各种治疗方法对水肿体积进展模式的影响。本题的流程图如下图(5..10) 所示:
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{image.png}
@@ -826,9 +745,9 @@ sub020 & 20160723000013 & 50913.40625 & 1 \\
     \label{fig:flowchart}
 \end{figure}
 
-\section{问题二(c) 的模型建立}
+\subsection{问题二(c) 的模型建立}
 
-\subsection{多元线性回归模型}
+\subsubsection{多元线性回归模型}
 
 多元线性回归模型用于建立自变量（特征）和因变量之间的线性关系。适用于多个自变量对一个因变量进行预测或建模的情况。多元线性回归模型的一般形式可以表示为：
 
@@ -887,6 +806,8 @@ R^2 = 1 - \frac{\sum_i (\hat{y}_i - y_i)}{\sum_i (y_i - \bar{y}_i)}
     \caption{拟合得到的亚组 1 模型的预测值和实际值 “水肿体积变化率”}
     \label{fig:18}
 \end{figure}
+
+各治疗方法对亚组1 的进展模式影响的权重柱状图如下图(5..14) 所示：
 
 \begin{figure}[h]
     \centering
@@ -955,6 +876,7 @@ R^2 = 1 - \frac{\sum_i (\hat{y}_i - y_i)}{\sum_i (y_i - \bar{y}_i)}
 \centering
 \includegraphics[width=0.8\textwidth]{image.png}
 \end{figure}
+
 
 \begin{figure}[h]
     \centering
@@ -1072,7 +994,7 @@ CART（Classification and Regression Tree，分类回归树）是构建决策树
 \end{figure}
 
 此外我们给出决策树回归模型、随机森林回归模型、XGboost 回归模型的预测的患者
-
+sub001-sub100 结果折线图，如下图(6..3) 所示：
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image.png}
@@ -1189,7 +1111,7 @@ sub 020 & 20160723000013 & 2 \\
 
 \newpage
 
-\section{问题三 (b) 的结果}
+\subsection{问题三 (b) 的结果}
 
 本题构建的预测模型，预测的患者 (sub001-sub100, sub130-sub160) 的 90 天 mRS 评分，结果如下图 (6..8) 所示 (仅展示 sub130-sub150 患者的结果，其余结果在 “表4-答案文件” 中查看)
 
@@ -1420,7 +1342,7 @@ sub 020 & 20160723000013 & 2 \\
 
 \subsection{模型评价}
 
-\subsubsection{问题一}
+{问题一}
 
 \paragraph{问题一 (b) 模型的优点和缺点}
 
@@ -1429,7 +1351,7 @@ sub 020 & 20160723000013 & 2 \\
     \item 缺点：对输入数据的表达形式很敏感（离散、连续，以及值极大、极小之类的）；其在属性个数比较多或者属性之间相关性较大时，分类效果不好。
 \end{enumerate}
 
-\subsubsection{问题二}
+{问题二}
 
 \paragraph{问题二 (a) 中我们提出的第一个模型：局部加权回归模型的优点和缺点}
 
@@ -1490,11 +1412,757 @@ sub 020 & 20160723000013 & 2 \\
 
 \end{document}
 
-% Missing placeholders restored
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{image.png}
-    \caption{问题三(b) 决策树回归模型预测的患者 sub001-sub100 结果及真实值}
-    \label{fig:34}
-\end{figure}
-\includegraphics[width=0.9\textwidth]{image.png}
+\section{附录}
+# 附录A 我的MATLAB 源程序
+x = [];
+y = [];
+yy = [];
+n = 1;
+for j = 2:2:18
+x(100*(n-1)+1:100*n , 1) = data1(1:100,j);
+n = n+1;
+end
+x = x(~isnan(x));
+n = 1;
+for k = 3:2:19
+y(100*(n-1)+1:100*n , 1) = data1(1:100,k);
+yy(1:100 , n) = data1(1:100,k);
+n = n+1;
+end
+y = y(~isnan(y));
+%假设函数
+fun = @(coefficients, x) exp(coefficients(1) *( x.^2 + coefficients(2)
+* x )+ coefficients(3));
+% 设置初始参数
+initialGuess = [-0.1, -1, 1];
+% 使用非线性最小二乘法拟合数据
+fittedCoefficients = lsqcurvefit(fun, initialGuess, x, y);
+disp('拟合得到的系数:');
+disp(fittedCoefficients);
+% 绘制拟合曲线
+x_fit = linspace(min(x), max(x), 200);
+y_fit = fun(fittedCoefficients, x_fit);
+scatter(x, y, 'filled', 'SizeData', 10 );
+xlabel('发病至影像检查时间单位：小时')
+48
+
+
+
+ylabel('水肿体积单位：10^-3ml')
+hold on
+plot(x_fit, y_fit,'linewidth',1)
+legend('水肿体积', '水肿体积的拟合曲线');
+hold off
+yfit = fun(fittedCoefficients, x);
+%计算并得出拟合结果
+detay = y - yfit; %输出残差结果
+n = 1;
+i = 1;
+cancha = [];
+%计算各患者残差分别的残差之和
+for j = 1:9
+for k = 1:100
+if ~isnan(yy(k,j))
+cancha(k , j) = yy(k,j) - yfit(i);
+i = i+1;
+end
+n = n+1;
+end
+end
+answer = sum(abs(cancha), 2)
+for i = 1 : length(x)
+plus(i,1)=x(i);
+plus(i,2)=y(i);
+end
+[data0, txt0, raw0] = xlsread('2(b)亚类别.xlsx', '0');
+[data1, txt1, raw1] = xlsread('2(b)亚类别.xlsx', '1');
+[data2, txt2, raw2] = xlsread('2(b)亚类别.xlsx', '2');
+x0 = data0(:,1);
+y0 = data0(:,2);
+x1 = data1(:,1);
+49
+
+
+
+y1 = data1(:,2);
+x2 = data2(:,1);
+y2 = data2(:,2);
+%假设函数
+fun = @(coefficients, x) exp(coefficients(1) * x.^2 + coefficients(2)
+* x + coefficients(3));
+% 设置初始参数
+initialGuess = [-2, 1, 1];
+% 使用非线性最小二乘法拟合数据
+fittedCoefficients0 = lsqcurvefit(fun, initialGuess, x0, y0);
+initialGuess = [-3, 5, 1];
+fittedCoefficients1 = lsqcurvefit(fun, initialGuess, x1, y1);
+initialGuess = [-5, 10, 1];
+fittedCoefficients2 = lsqcurvefit(fun, initialGuess, x2, y2);
+disp('拟合得到的亚组0系数:');
+disp(fittedCoefficients0);
+disp('拟合得到的亚组1系数:');
+disp(fittedCoefficients1);
+disp('拟合得到的亚组2系数:');
+disp(fittedCoefficients2);
+%画第一张图
+figure(1)
+x_fit0 = linspace(min(x0), max(x0), 200);
+y_fit0 = fun(fittedCoefficients0, x_fit0);
+set(gcf, 'Position', [100, 100, 600, 300]);
+scatter(x0, y0, 'filled', 'SizeData', 10 );
+xlabel('发病至影像检查时间单位：小时')
+ylabel('水肿体积单位：10^-3ml')
+hold on
+plot(x_fit0, y_fit0,'linewidth',1)
+legend('水肿体积', '水肿体积的拟合曲线');
+hold off
+saveas(gcf, '0.png');
+%画第二张图
+figure(2)
+x_fit1 = linspace(min(x1), max(x1), 200);
+50
+
+
+
+y_fit1 = fun(fittedCoefficients1, x_fit1);
+set(gcf, 'Position', [100, 100, 600, 300]);
+scatter(x1, y1, 'filled', 'SizeData', 10 );
+xlabel('发病至影像检查时间单位：小时')
+ylabel('水肿体积单位：10^-3ml')
+xlim([0, 5000]);
+ylim([0, 140000]);
+hold on
+plot(x_fit1, y_fit1,'linewidth',1)
+legend('水肿体积', '水肿体积的拟合曲线');
+xlim([0, 5000]);
+ylim([0, 140000]);
+hold off
+saveas(gcf, '1.png');
+%画第三张图
+figure(3)
+x_fit2 = linspace(min(x2), max(x2), 200);
+y_fit2 = fun(fittedCoefficients2, x_fit2);
+set(gcf, 'Position', [100, 100, 600, 300]);
+scatter(x2, y2, 'filled', 'SizeData', 10 );
+xlabel('发病至影像检查时间单位：小时')
+ylabel('水肿体积单位：10^-3ml')
+hold on
+plot(x_fit2, y_fit2,'linewidth',1)
+legend('水肿体积', '水肿体积的拟合曲线');
+xlim([0, 5000]);
+ylim([0, 140000]);
+hold off
+saveas(gcf, '2.png');
+%下面分别计算残差
+yfit0 = fun(fittedCoefficients0, x0);
+detay0 =abs( y0 - yfit0); %输出残差0
+yfit1 = fun(fittedCoefficients1, x1);
+detay1 =abs( y1 - yfit1); %输出残差1
+yfit2 = fun(fittedCoefficients2, x2);
+detay2 =abs( y2 - yfit2); %输出残差2
+51
+
+
+
+[data1, txt1, raw1] = xlsread('题目2（c）所需数据.xlsx', 'Sheet1');
+n = 1;
+for i = 13:3:34
+kk(1:100 , n) = data1(1:100,i);
+n = n+1;
+end
+## X = data1(1:100 ,2:8);%读取前一百名患者的7种治疗方法作为因变量
+mink = min(kk,[],2);%找出每个患者变化率负值最大的数作为因变量
+y = mink;
+data= horzcat(X, mink);
+r2=0;
+while r2<0.9
+[trainInd, testInd] = dividerand(size(data, 1), 0.8, 0.2); % 80%
+训练集，20% 测试集
+X_train = X(trainInd, :);
+y_train = y(trainInd);
+X_test = X(testInd, :);
+y_test = y(testInd);
+% 拟合多元线性回归模型
+mdl = fitlm(X_train, y_train);
+% 预测结果
+y_pred = predict(mdl, X_test);
+% 评估模型性能
+r2 = corr(y_pred, y_test)^2; % 计算R方值
+end
+# % 查看模型摘要信息
+disp(mdl)
+% 查看系数（权重）估计
+coeffs = mdl.Coefficients;
+% 可视化实际值与预测值
+figure;
+plot(1:length(y_test), y_test, 'bo-', 'LineWidth', 1.5);
+hold on;
+plot(1:length(y_test), y_pred, 'rx-', 'LineWidth', 1.5);
+52
+
+
+
+legend('实际值', '预测值');
+xlabel('样本编号');
+ylabel('水肿体积变化率');
+title('实际值vs 预测值');
+% 输出结果
+disp('各个治疗方法的系数估计：');
+disp(coeffs);
+disp(['模型的R方值：', num2str(r2)]);
+clear
+[data0] = xlsread('题目2（d）所需数据.xlsx', '0');
+[data1] = xlsread('题目2（d）所需数据.xlsx', '1');
+%%%%%%%%%%%%%第0亚类别%%%%%%%%%%%%%%%%%%%%%%
+n = 1;
+for i = 16:5:size(data0, 2)
+kk(1:size(data0, 1) , n) = data0(1:size(data0, 1),i);
+n = n+1;
+end
+X0 = data0(1:size(data0, 1) ,2:8);%读取前一百名患者的7种治疗方法作为因变量
+y0 = min(kk,[],2);%找出每个患者变化率负值最大的数作为因变量
+data00= horzcat(X0, y0);
+r2=0;
+while r2<0.9
+[trainInd, testInd] = dividerand(size(data00, 1), 0.8, 0.2); % 80%
+训练集，20% 测试集
+X0_train = X0(trainInd, :);
+y0_train = y0(trainInd);
+X0_test = X0(testInd, :);
+y0_test = y0(testInd);
+% 拟合多元线性回归模型
+mdl = fitlm(X0_train, y0_train);
+% 预测结果
+y0_pred = predict(mdl, X0_test);
+53
+
+
+
+% 评估模型性能
+r2 = corr(y0_pred, y0_test)^2; % 计算R方值
+end
+# % 查看模型摘要信息
+disp(mdl)
+% 查看系数（权重）估计
+coeffs = mdl.Coefficients;
+% 可视化实际值与预测值
+figure(1)
+plot(1:length(y0_test), y0_test, 'bo-', 'LineWidth', 1.5);
+hold on;
+plot(1:length(y0_test), y0_pred, 'rx-', 'LineWidth', 1.5);
+legend('实际值', '预测值');
+xlabel('样本编号');
+ylabel('水肿体积变化率');
+title('实际值vs 预测值');
+% 输出结果
+disp('各个治疗方法的系数估计：');
+disp(coeffs);
+disp(['模型的R方值：', num2str(r2)]);
+%%%%%%%%%%%%%第1亚类别%%%%%%%%%%%%%%%%%%%%%%
+n = 1;
+for i = 16:5:size(data1, 2)
+kk(1:size(data1, 1) , n) = data1(1:size(data1, 1),i);
+n = n+1;
+end
+X1 = data1(1:size(data1, 1) ,2:8);%读取前一百名患者的7种治疗方法作为因变量
+y1 = min(kk,[],2);%找出每个患者变化率负值最大的数作为因变量
+data11= horzcat(X1, y1);
+r2=0;
+while r2<0.9
+[trainInd, testInd] = dividerand(size(data11, 1), 0.8, 0.2); % 80%
+54
+
+
+
+训练集，20% 测试集
+X1_train = X1(trainInd, :);
+y1_train = y1(trainInd);
+X1_test = X1(testInd, :);
+y1_test = y1(testInd);
+% 拟合多元线性回归模型
+mdl = fitlm(X1_train, y1_train);
+% 预测结果
+y1_pred = predict(mdl, X1_test);
+% 评估模型性能
+r2 = corr(y1_pred, y1_test)^2; % 计算R方值
+end
+# % 查看模型摘要信息
+disp(mdl)
+% 查看系数（权重）估计
+coeffs = mdl.Coefficients;
+% 可视化实际值与预测值
+figure(2)
+plot(1:length(y1_test), y1_test, 'bo-', 'LineWidth', 1.5);
+hold on;
+plot(1:length(y1_test), y1_pred, 'rx-', 'LineWidth', 1.5);
+legend('实际值', '预测值');
+xlabel('样本编号');
+ylabel('水肿体积变化率');
+title('实际值vs 预测值');
+% 输出结果
+disp('各个治疗方法的系数估计：');
+disp(coeffs);
+disp(['模型的R方值：', num2str(r2)]);
+clear
+[data0] = xlsread('题目2（d）所需数据.xlsx', 'Sheet1');
+zlff = data0(1:130,2:8);
+55
+
+
+
+n = 1;
+for i = 15:5:size(data0, 2)
+kHM(1:130, n) = data0(1:130,i);
+n = n+1;
+end
+n = 1;
+for i = 16:5:size(data0, 2)
+kED(1:130 , n) = data0(1:130,i);
+n = n+1;
+end
+yHM = min(kHM,[],2);%找出每个患者变化率负值最大的数作为因变量
+yED = min(kED,[],2);
+data1= horzcat(zlff, yHM);
+data2= horzcat(zlff, yED);
+r2=0;
+while r2<0.9
+[trainInd, testInd] = dividerand(size(data2, 1), 0.8, 0.2); % 80%
+训练集，20% 测试集
+X_train = zlff(trainInd, :);
+y_train = yED(trainInd);
+X_test = zlff(testInd, :);
+y_test = yED(testInd);
+% 拟合多元线性回归模型
+mdl = fitlm(X_train, y_train);
+% 预测结果
+y_pred = predict(mdl, X_test);
+% 评估模型性能
+r2 = corr(y_pred, y_test)^2; % 计算R方值
+end
+# % 查看模型摘要信息
+disp(mdl)
+% 查看系数（权重）估计
+56
+
+
+
+coeffs = mdl.Coefficients;
+% 可视化实际值与预测值
+figure;
+plot(1:length(y_test), y_test, 'bo-', 'LineWidth', 1.5);
+hold on;
+plot(1:length(y_test), y_pred, 'rx-', 'LineWidth', 1.5);
+legend('实际值', '预测值');
+xlabel('样本编号');
+ylabel('血肿体积变化率');
+title('实际值vs 预测值');
+disp('各个治疗方法的系数估计：');
+disp(coeffs);
+disp(['模型的R方值：', num2str(r2)]);
+clear
+[data0] = xlsread('题目2（d）所需数据.xlsx', 'Sheet1');
+VHM1 = data0(1:size(data0, 1) , 10);
+n = 1;
+for i = 13:5:size(data0, 2)
+VHM2(1:size(data0, 1) , n) = data0(1:size(data0, 1),i);
+n = n+1;
+end
+VHM= horzcat(VHM1, VHM2);
+VED1 = data0(1:size(data0, 1) , 11);
+n = 1;
+for i = 14:5:size(data0, 2)
+VED2(1:size(data0, 1) , n) = data0(1:size(data0, 1),i);
+n = n+1;
+end
+VED= horzcat(VED1, VED2);
+x = VHM(~isnan(VHM));
+y = VED(~isnan(VED));
+57
+
+
+
+scatter (x,y,'filled', 'SizeData', 10 )
+xlabel('血肿体积单位：10^-3ml')
+ylabel('水肿体积单位：10^-3ml')
+r = corr(x, y)
+clear
+[data0] = xlsread('题目2（d）所需数据.xlsx', 'Sheet1');
+zlff = data0(1:130,2:8);
+n = 1;
+for i = 15:5:size(data0, 2)
+kHM(1:130, n) = data0(1:130,i);
+n = n+1;
+end
+n = 1;
+for i = 16:5:size(data0, 2)
+kED(1:130 , n) = data0(1:130,i);
+n = n+1;
+end
+yHM = min(kHM,[],2);%找出每个患者变化率负值最大的数作为因变量
+yED = min(kED,[],2);
+data1= horzcat(zlff, yHM);
+data2= horzcat(zlff, yED);
+r2=0;
+while r2<0.9
+[trainInd, testInd] = dividerand(size(data1, 1), 0.8, 0.2); % 80%
+训练集，20% 测试集
+X_train = zlff(trainInd, :);
+y_train = yHM(trainInd);
+X_test = zlff(testInd, :);
+y_test = yHM(testInd);
+% 拟合多元线性回归模型
+mdl = fitlm(X_train, y_train);
+% 预测结果
+y_pred = predict(mdl, X_test);
+58
+
+
+
+% 评估模型性能
+r2 = corr(y_pred, y_test)^2; % 计算R方值
+end
+# % 查看模型摘要信息
+disp(mdl)
+% 查看系数（权重）估计
+coeffs = mdl.Coefficients;
+% 可视化实际值与预测值
+figure;
+plot(1:length(y_test), y_test, 'bo-', 'LineWidth', 1.5);
+hold on;
+plot(1:length(y_test), y_pred, 'rx-', 'LineWidth', 1.5);
+legend('实际值', '预测值');
+xlabel('样本编号');
+ylabel('血肿体积变化率');
+title('实际值vs 预测值');
+disp('各个治疗方法的系数估计：');
+disp(coeffs);
+disp(['模型的R方值：', num2str(r2)]);
+附录B 我的Python 源程序
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import MultinomialNB
+# 读取数据
+data = pd.read_excel('题目1（b）所需数据.xlsx')
+all = data.iloc[0:160, 3:105]
+# 将自变量和因变量分开
+## X = data.iloc[0:100, 3:105] # 自变量
+y = data.iloc[0:100, 2] # 因变量
+59
+
+
+
+# 划分训练集和测试集
+X_train, X_test, y_train, y_test = train_test_split(X, y,
+test_size=0.1, random_state=42)
+# 创建高斯朴素贝叶斯模型对象
+model = GaussianNB()
+# 创建伯努利朴素贝叶斯模型对象
+model = BernoulliNB(alpha=0.5, binarize=0.1, fit_prior=False,
+class_prior=[0.3, 0.7])
+# 创建多项式朴素贝叶斯模型对象
+model = MultinomialNB()
+# 在训练集上训练模型
+model.fit(X_train, y_train)
+# 在测试集上进行预测
+y_pred = model.predict(X_test)
+# 输出预测结果
+print("预测结果：")
+print(y_pred)
+# print(y_pred.shape)
+# 输出预测概率
+print("预测概率：")
+print(model.predict_proba(X_test))
+answer = model.predict_proba(all)
+df = pd.DataFrame(answer)
+# df.to_excel('answer(1b)朴素贝叶斯.xlsx', index=False)
+df.to_excel('answer(1b).xlsx', index=False)
+#-----------------------------------------------------
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.cluster import KMeans
+data = pd.read_excel("题目2（b）所需数据.xlsx")
+df1 = data.iloc[:, 1:14].values.astype(float)
+inertia =[]
+for k in range(1, 11):
+kmeans = KMeans(n_clusters=k, random_state=0).fit(df1)
+inertia.append(kmeans.inertia_)
+#手肘法
+plt.figure(figsize=(8, 6))
+plt.plot(range(1, 11), inertia, marker='*', linestyle='-',
+color='r')
+60
+
+
+
+plt.xlabel("数量")
+plt.ylabel("总内部方差")
+plt.title("手肘法确定最优数量")
+elbow_point = None
+for i in range(1, len(inertia)):
+slope = (inertia[i - 1] - inertia[i]) / inertia[i - 1]
+if slope > 0.4: #选一个适当的网值
+elbow_point = i+1
+plt.rcParams['font.sans-serif']=["SimHei"]
+if elbow_point:
+plt.annotate(f'最优簇数量: {elbow_point}', xy=(elbow_point,
+inertia[elbow_point - 1]), xytext=(elbow_point + 1, inertia[
+elbow_point - 1]), arrowprops=dict(arrowstyle='fancy',
+connectionstyle='arc3,rad=.2'))
+# plt.grid(True)
+plt.show()
+optimal_cluster_n = 3
+#进行Keans
+kmeans = KMeans(n_clusters=optimal_cluster_n, random_state=0)
+kmeans.fit(df1)
+cluster_labels = kmeans.labels_
+data['亚类别'] = cluster_labels
+df2 = data.iloc[:, 0:14].copy()
+df2['亚类别'] = data.iloc[:, -1]
+df2['编号'] = data.iloc[:, 0]#索引为“编号”
+df2.set_index('编号', inplace=True)#df2转换为Dataprame
+df2_dataframe = pd.DataFrame(df2)
+# df2_dataframe.head()
+df2_dataframe.to_excel('answer(2b).xlsx', index=False)
+#-----------------------------------------------------
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+import pandas as pd
+from sklearn.model_selection import train_test_split
+# 最后一列为因变量（水肿体积变化率）
+data = pd.read_excel("data.xlsx")
+# 数据预处理
+## X = data.iloc[:, :-1] # 自变量数组
+61
+
+
+
+y = data.iloc[:, -1] # 因变量数组
+print(X.shape)
+print(y.shape)
+# 拆分数据集为训练集和测试集
+# train_ratio = 0.7
+# train_size = int(train_ratio * X.shape[0])
+# X_train = X[:train_size, :]
+# y_train = y[:train_size]
+# X_test = X[train_size:, :]
+# y_test = y[train_size:]
+X_train, X_test, y_train, y_test = train_test_split(X, y,
+test_size=0., random_state=42)
+# 创建和拟合多元线性回归模型
+model = LinearRegression()
+model.fit(X_train, y_train)
+# 预测结果
+y_pred = model.predict(X_test)
+# 评估模型性能
+r2 = r2_score(y_test, y_pred) # 计算R方值
+# 查看系数（权重）估计
+coeffs = model.coef_
+# 输出结果
+print('模型的R方值：', r2)
+print('各个治疗方法的系数估计：', coeffs)
+#-----------------------------------------------------
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, accuracy_score
+import pandas as pd
+import graphviz
+from sklearn import tree
+# 读取数据
+data = pd.read_excel("题目3（a）所需数据.xlsx")
+# 选择特征和目标变量
+features = data.iloc[0:100, 3:107]
+target = data.iloc[0:100, 1]
+all = data.iloc[0:160, 3:107]
+62
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(features,
+target, test_size=0.1, random_state=42)
+# 初始化随机森林回归模型
+rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+# 训练随机森林模型
+rf_model.fit(X_train, y_train)
+# 预测训练集
+Y_rf_pred_train = rf_model.predict(X_train)
+# 预测验证集
+Y_rf_pred = rf_model.predict(X_test)
+# 初始化决策树回归模型
+dt_model = DecisionTreeRegressor(random_state=42)
+# 训练决策树模型
+dt_model.fit(X_train, y_train)
+# 预测验证集和训练集
+Y_dt_pred_valid = dt_model.predict(X_test)
+Y_dt_pred_train = dt_model.predict(X_train)
+# 初始化XGBoost回归模型
+xgb_model = xgb.XGBRegressor(random_state=42)
+# 训练XGBoost模型
+xgb_model.fit(X_train, y_train)
+# 预测验证集和训练集
+Y_xgb_pred_test = xgb_model.predict(X_test)
+Y_xgb_pred_train = xgb_model.predict(X_train)
+dt_train_mse = mean_squared_error(y_train, Y_dt_pred_train)
+xgb_train_mse = mean_squared_error(y_train, Y_xgb_pred_train)
+rf_train_mse = mean_squared_error(y_train, Y_rf_pred_train)
+print(dt_train_mse)
+print(xgb_train_mse)
+print(rf_train_mse)
+# index = np.arange(1, len(y_train) + 1)
+dot_data = tree.export_graphviz(dt_model, out_file=None)
+graph = graphviz.Source(dot_data)
+graph.render("iris")
+graph.view()
+plt.figure(figsize=(16, 6))
+plt.plot(index, y_train, label="真实值", marker='o')
+plt.plot(index, Y_rf_pred_train, label="随机森林训练集预测值",
+marker="x")
+63
+
+
+
+plt.plot(index, Y_dt_pred_train, label="决策树训练集预测值", marker="s")
+plt.plot(index, Y_xgb_pred_train, label="XGBoost训练集预测值",
+marker="^")
+plt.xlabel("序号")
+plt.ylabel("数值")
+plt.title("训练集真实值vs预测值")
+plt.grid(True)
+plt.legend()
+plt.rcParams['font.sans-serif']=["SimHei"]
+# plt.show()
+all_result = dt_model.predict(all)
+df = pd.DataFrame(all_result)
+df.to_excel('answer3_(a).xlsx', index=False)
+#-----------------------------------------------------
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, accuracy_score
+from sklearn.impute import SimpleImputer
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import graphviz
+from sklearn import tree
+# 读取数据
+data = pd.read_excel("题目3（b）所需数据.xlsx")
+# 选择特征和目标变量
+features = data.iloc[0:405, 4:108]
+target = data.iloc[0:405, 1]
+all = data.iloc[436:541, 4:108]
+X_train, X_test, y_train, y_test = train_test_split(features,
+target, test_size=0.1, random_state=42)
+# 初始化随机森林回归模型
+rf_model = RandomForestRegressor(n_estimators=108, random_state=42)
+# 训练随机森林模型
+rf_model.fit(X_train, y_train)
+# 预测训练集
+Y_rf_pred_train = rf_model.predict(X_train)
+64
+
+
+
+# 预测验证集
+Y_rf_pred = rf_model.predict(X_test)
+# 初始化决策树回归模型
+dt_model = DecisionTreeRegressor(random_state=42)
+# 训练决策树模型
+dt_model.fit(X_train, y_train)
+# 预测验证集和训练集
+Y_dt_pred_valid = dt_model.predict(X_test)
+Y_dt_pred_train = dt_model.predict(X_train)
+# 初始化XGBoost回归模型
+xgb_model = xgb.XGBRegressor(random_state=42)
+# 训练XGBoost模型
+xgb_model.fit(X_train, y_train)
+# 预测验证集和训练集
+Y_xgb_pred_test = xgb_model.predict(X_test)
+Y_xgb_pred_train = xgb_model.predict(X_train)
+dt_train_mse = mean_squared_error(y_train, Y_dt_pred_train)
+xgb_train_mse = mean_squared_error(y_train, Y_xgb_pred_train)
+rf_train_mse = mean_squared_error(y_train, Y_rf_pred_train)
+print(dt_train_mse)
+print(xgb_train_mse)
+print(rf_train_mse)
+index = np.arange(1, len(y_train) + 1)
+plt.figure(figsize=(16, 6))
+plt.plot(index, y_train, label="真实值", marker='o')
+plt.plot(index, Y_rf_pred_train, label="随机森林训练集预测值",
+marker="x")
+plt.plot(index, Y_dt_pred_train, label="决策树训练集预测值", marker="s")
+plt.plot(index, Y_xgb_pred_train, label="XGBoost训练集预测值",
+marker="^")
+plt.xlabel("序号")
+plt.ylabel("数值")
+plt.title("训练集真实值vs预测值")
+plt.grid(True)
+plt.legend()
+plt.rcParams['font.sans-serif']=["SimHei"]
+plt.show()
+all_result = dt_model.predict(all)
+df = pd.DataFrame(all_result)
+65
+
+
+
+df.to_excel('answer3_(b).xlsx', index=False)
+dot_data = tree.export_graphviz(dt_model, out_file=None)
+graph = graphviz.Source(dot_data)
+graph.render("iris")
+#-----------------------------------------------------
+import pandas as pd
+data = pd.read_excel("3(c)所需数据.xlsx")
+# df = data.iloc[:, 43:]
+df = data.iloc[:, 43:86] # HM
+print(df.shape)
+rms = data.iloc[:, 0]
+print(rms)
+df1 = pd.concat([rms, df])
+print(df1.shape)
+data = pd.DataFrame(np.random.rand(100, 107), columns=[f"Var{i}"
+for i in range(1, 107)])
+correlation_matrix = df.corr()
+# 绘制热力图
+plt.rcParams['font.sans-serif'] = ["SimHei"]
+plt.figure(figsize=(10, 10))
+sns.heatmap(correlation_matrix, cmap="coolwarm", annot=True,
+fmt=".2f", linewidths=0.5, linecolor='black')
+plt.title("rms与HM影像特征相关性图像")
+plt.savefig("rms与HM影像特征相关性图像.png", dpi=600, bbox_inches="tight")
+plt.show()
+all_result = dt_model.predict(features)
+df1 = pd.DataFrame(correlation_matrix)
+df1.to_excel('answer3_(c).xlsx', index=False)
+#-----------------------------------------------------
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+# 创建一个包含106个自变量和1个因变量的数据集
+np.random.seed(0)
+data = pd.read_excel("3(c)所需数据- 副本.xlsx")
+df = data.iloc[:, :]
+print(df.shape)
+# data = pd.DataFrame(np.random.rand(100, 107), columns=[f"Var{i}"
+66
+
+
+
+for i in range(1, 107)])
+correlation_matrix = df.corr()
+# 绘制热力图
+plt.rcParams['font.sans-serif'] = ["SimHei"]
+plt.figure(figsize=(20, 20))
+sns.heatmap(correlation_matrix, cmap="coolwarm", annot=True,
+fmt=".2f", linewidths=0.5, linecolor='black')
+plt.title("rms与个人史、疾病史、治疗方法相关性图像")
+plt.savefig("rms与个人史、疾病史、治疗方法相关性图像.png", dpi=600,
+bbox_inches="tight")
+plt.show()
+67

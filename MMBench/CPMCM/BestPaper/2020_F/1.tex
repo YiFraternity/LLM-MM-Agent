@@ -13,38 +13,6 @@
 \textbf{“华为杯”第十七届中国研究生数学建模竞赛}
 \end{center}
 
-\begin{tabular}{|p{0.6\textwidth}|p{0.3\textwidth}|}
-\hline
-燃料的密度(kg/m^3) & $\rho$ \\
-\hline
-飞行器$t$时刻的俯仰角(度) & $\theta(t)$ \\
-\hline
-第$i$个油箱$t$时刻的供油速度(kg/s) & $v_{i}(t)$ \\
-\hline
-每时一刻$t$飞行器（载油）总质量(kg) & $Q(t)$ \\
-\hline
-第$i$个油箱的中心位置(m) & $x_{i}, y_{i}, z_{i}$ \\
-\hline
-每一时刻$t$第$i$个油箱燃油的质量(kg) & $q_{i}(t)$ \\
-\hline
-每一时刻$t$第$i$个油箱燃油的质心位置(m) & $p_{i}(t)$ \\
-\hline
-第$i$个油箱的供油速度上限(kg/s) & $U_{i}$ \\
-\hline
-6个油箱剩余燃油总量(m$^3$) & $L$ \\
-\hline
-每一时刻$t$发动机耗油速度(kg/s) & $R(t)$ \\
-\hline
-第$i$油箱在飞行过程中每次供油持续时间的最小值 & $t_{oil}(i)$ \\
-\hline
-飞行器飞行总时长(s) & $T$ \\
-\hline
-\end{tabular}
-
-\begin{flushleft}
-\textbf{题目} \hspace{1cm} \textbf{飞行器质心平衡供油策略优化}
-\end{flushleft}
-
 \begin{abstract}
 在任务执行过程中，飞行器的质心变化对飞行器的控制有着重要的影响，各个油箱内油量的分布和供油策略将导致飞行器质心的变化，进而影响到对飞行器的控制。因此，制定各油箱的供油策略是这类飞行器控制的一项重要任务。本文针对题目中飞行器质心平衡供油策略优化问题建立了数学模型，并提出了求解方法。通过对题目中给定的数据集进行测试，验证了本文所提出的求解方法的有效性，可以高效地制定出优质的供油策略。
 
@@ -61,52 +29,7 @@
 关键词：质心计算、超启发式方法、遗传编程、差分进化、多阶段优化
 \end{abstract}
 
-\section{目录}
-\begin{itemize}
-    \item 一、问题重述 \dotfill 4
-    \begin{itemize}
-        \item 1.1 问题背景 \dotfill 4
-        \item 1.2 待解决的问题 \dotfill 4
-    \end{itemize}
-    \item 二、模型假设及符号说明 \dotfill 5
-    \begin{itemize}
-        \item 2.1 模型假设 \dotfill 5
-        \item 2.2 符号说明 \dotfill 5
-    \end{itemize}
-    \item 三、问题一的模型建立与求解 \dotfill 6
-    \begin{itemize}
-        \item 3.1 问题分析 \dotfill 6
-        \item 3.2 质心计算模型 \dotfill 7
-        \item 3.3 求解结果及分析 \dotfill 15
-    \end{itemize}
-    \item 四、问题二的模型建立与求解 \dotfill 18
-    \begin{itemize}
-        \item 4.1 问题分析及数学模型的建立 \dotfill 18
-        \item 4.2 算法描述 \dotfill 19
-        \item 4.3 求解结果及分析 \dotfill 24
-    \end{itemize}
-    \item 五、问题三的模型建立与求解 \dotfill 28
-    \begin{itemize}
-        \item 5.1 问题分析及数学模型的建立 \dotfill 28
-        \item 5.2 算法描述 \dotfill 30
-        \item 5.3 求解结果及分析 \dotfill 32
-    \end{itemize}
-    \item 六、问题四的模型建立与求解 \dotfill 35
-    \begin{itemize}
-        \item 6.1 问题分析及数学模型的建立 \dotfill 35
-        \item 6.2 算法描述 \dotfill 36
-        \item 6.3 求解结果及分析 \dotfill 37
-    \end{itemize}
-    \item 七、总结 \dotfill 40
-    \item 八、参考文献 \dotfill 41
-    \item 九、附录 \dotfill 42
-    \begin{itemize}
-        \item 9.1 问题一代码 \dotfill 42
-        \item 9.2 问题二代码 \dotfill 44
-        \item 9.3 问题三代码 \dotfill 48
-        \item 9.4 问题四代码 \dotfill 52
-    \end{itemize}
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -131,8 +54,11 @@
 
 问题二：针对附件3的数据，包括飞行器计划耗油速度数据，与飞行器在飞行器坐标系下的理想质心位置数据，制定出满足约束条件时飞行器油箱的供油策略，且使得飞行器每一时刻的质心位置与理想质心位置的欧氏距离的最大值达到最小，并讨论算法的有效性和复杂度。
 
-问题三：针对附件4的数据，包括飞行器计划耗油速度数据，与飞行器在飞行器坐标系下的理想质心位置数据，制定出此次任务满足约束条件的6个油箱初始油量及供油策略，使得本次任务结束时6个油箱剩余燃油总量至少 $1 \, \text{m}^3$，并且飞行器每一时刻的质心位置与
-
+问题三：针对附件4的数据，包括飞行器计划耗油速度数据，与飞行器在飞行器坐标系下的理想质心位置数据，制定出此次任务满足约束条件的6个油箱初始油量及供油策略，使得本次任务结束时6个油箱剩余燃油总量至少 $1 \, \text{m}^3$，并且飞行器每一时刻的质心位置与 
+理想质心位置的欧氏距离的最大值达到最小，并讨论算法的有效性和复杂度。 
+问题四：针对附件5 的数据，包括飞行器俯仰角的变化数据和耗油速度数据，制定出
+此次任务的油箱供油策略，使得飞行器瞬时质心与飞行器(不载油)质心的最大距离达到最
+小，并讨论算法的有效性和复杂度
 \section{模型假设及符号说明}
 
 \subsection{模型假设}
@@ -267,7 +193,7 @@ h^{\prime}=\frac{S}{2 a_{i}}-\frac{c_{i}}{2}
 \tag{3-8}
 \end{equation}
 
-\subsection{飞行器俯仰角大于 0 的质心计算模型}
+\subsubsection{飞行器俯仰角大于 0 的质心计算模型}
 
 当飞行器俯仰角为 $\theta > 0$ 时，可分四种情况：
 
@@ -570,7 +496,7 @@ h &= \frac{S}{2a_i} - \frac{a_i^3 \tan^2 \theta}{8S} + \frac{a_i^3}{6S} \tan^2 \
 \vec{p}_i &= \left( -\frac{a_i^3 \tan \theta}{12S} + x_i, y_i, \frac{S}{2a_i} - \frac{a_i \tan \theta}{4} + \frac{a_i^3}{6S} \tan^2 \theta - \frac{c_i}{2} + z_i \right)
 \end{align*}
 
-\subsection{飞行器俯仰角小于 0 的质心计算模型}
+\subsubsection{飞行器俯仰角小于 0 的质心计算模型}
 
 飞行器俯仰角小于 0 时，与飞行器俯仰角大于 0 的情况类似，不同之处在于油箱中燃油对于油箱的相对质心位置与油箱中心位置的位置差为在 \(z\) 轴上是一样的，\(x\) 轴是相反的，故
 
@@ -725,7 +651,14 @@ t_{oil}(i) \geq 60 \\
 本小节所研究问题的维度为 7200*6，传统方法因其巨大的计算代价无法处理如此高维度的问题。遗传编程的超启发式（genetic programming hyper-heuristic）方法以被广泛的应用在动态车间生产调度问题和不确定的车辆路径问题等问题。遗传编程的超启发式方法在启发式解空间搜索，而不是直接在问题的解空间中搜索，因此其有效地降低了问题的维度。遗传编程的超启发式方法因其灵活的表达性和强收敛性，获得了相比人为设计的启发式贪心方法更好的表现性能 \cite{ref2}\cite{ref3}\cite{ref4}\cite{ref6}。综上所述，遗传编程的超启发式方法十分适合本小节所研究问题的求解。
 
 为了快速获取一个高质量的初始供油方案，同时为了设计启发式解空间供遗传编程来搜索 \cite{ref5}，本文设计了 35 种供油模式，如表 4-1 所示。在设计的 35 种供油模式中，若供油油箱数量为 1 时，其每秒供油量等于当前时刻发动机要求的最小供油量；若供油油箱的数量为 2 时，且供油油箱种无后备油箱（油箱 1、6），每个供油油箱的速度等于当前时刻发
-
+动机要求的最小供油量除以2；  若供油油箱数量为2 时，且其中有一后备油箱（油箱1 或
+6），直接供油油箱（油箱2、3、4 和5）的每秒供油量等于当前时刻发动机要求的最小供
+油量，后备油箱按照其约束下的最大供油速度来供油；若供油油箱数量为3 时，且其中之
+一为后备油箱，每个直接供油油箱（油箱 2、3、4 和 5）的速度等于当前时刻发动机要求
+的最小供油量除以 2，后备油箱按照约束下的最大供油速度来供油；若供油油箱数量为 3
+时，且其中之二为后备油箱，直接供油油箱（油箱 2、3、4 和 5）的速度等于当前时刻发
+动机要求的最小供油量，后备油箱（油箱1、6）按照约束下的最大供油速度来供油；若供
+油箱数量为0 时，显然供油速度也为0。
 \begin{table}
 \centering
 \caption{供油模式下的供油油箱和供油速度。}
@@ -1016,7 +949,7 @@ v_{k,i}'(t), & \text{else.}
 \caption{供油模式选择规则的超启发式函数树状表示图}
 \end{figure}
 
-\section{算法复杂度}
+算法复杂度
 
 遗传编程算法复杂度：假设油箱的数量为 $m$，优选供油模式的数量为 $w$，迭代次数为 $gen$，计算优先级的函数为 $O(1)$，供油仿真过程时间复杂度为 $O(n \times w \times gen)$。
 
@@ -1040,7 +973,7 @@ v_{k,i}'(t), & \text{else.}
 
 约束 6：任务结束时 6 个油箱剩余燃油总量至少 $1 \mathrm{~m}^{3}$。
 
-\subsection{数学模型的构建}
+\subsubsection{数学模型的构建}
 
 问题中的决策变量为每一时刻各油箱的供油策略，即供油速度，定义为 $v_{i}(t)$，表示油箱 $i$ 在 $t$ 时刻的供油速度。
 
@@ -1136,7 +1069,7 @@ t_{o i l}(i) \geq 60 \\
 \end{aligned}
 \]
 
-\section{算法描述}
+\subsection{算法描述}
 
 针对上述问题与模型，本文制定了基于差分进化的多阶段优化方法。在第一阶段，设计了差分进化方法 \({ }^{[10][11]}\) 在供油模式的基础上优化初始载油量和供油方案。在阶段二，差分进化方法对阶段一获取的高质量解进行进一步优化获取最终供油方案和初始载油量。由于阶段二采用的差分进化方法与问题二所描述的差分进化方法一致，本小节的算法描述略过阶段二的算法描述。
 
@@ -1309,7 +1242,7 @@ x_{i}^{\prime} & \text{, else.}
     \label{fig:oil_remaining}
 \end{figure}
 
-\subsection{算法的复杂度分析}
+\subsubsection{算法的复杂度分析}
 
 阶段一算法复杂度：假设油箱的数量为 $m$，优选供油模式的数量为 $w$，迭代次数为 $gen$，计算优先级的超启发式函数为 $O(1)$，供油仿真过程时间复杂度为 $O(m \times w \times gen)$。
 
@@ -1401,7 +1334,7 @@ t_{oil}(i) \geq 60 \\
 
 计算模型作为目标函数。该方法包含两个阶段：阶段一，遗传编程的超启发方法获取一个高质量初始供油方案；阶段二，采用差分进化方法对获取的高质量解进行进一步优化获取最终方案。由于阶段二采用的差分进化方法与问题二所描述的差分进化方法一致，本小节的算法描述略过阶段二的算法描述。
 
-\subsection{阶段一：遗传编程的超启发式方法获取一个高质量初始供油方案}
+阶段一：遗传编程的超启发式方法获取一个高质量初始供油方案
 
 遗传编程的超启发式流程：首先，种群内的个体被随机初始化。接着，新的子代种群在交叉、变异、重构算子下生成。同时对每一个超启发选择规则个体进行评价，再通过锦标赛规则筛选子代种群和父代获取新的种群。判断是否满足终止条件，若不满足重复上述步骤，若满足，遗传编程的超启发方法输出最佳个体所代表的最佳选择规则。最后通过优化得到的选择规则个体生成供油方案。
 
@@ -1446,7 +1379,7 @@ t_{oil}(i) \geq 60 \\
 \caption{飞行器油箱使用情况甘特图}
 \end{figure}
 
-\subsection{算法的复杂度分析}
+\subsubsection{算法的复杂度分析}
 
 本文设计的基于遗传编程的超启发式算法中，其采用的终端集合（考虑的当前及预测的状态信息）和函数集合如下表所示：
 
@@ -1494,7 +1427,7 @@ time & 当前时刻 \\
     \label{fig:6-5}
 \end{figure}
 
-\section{算法复杂度}
+算法复杂度
 
 遗传编程算法复杂度：假设油箱的数量为 $m$，优选供油模式的数量为 $w$，迭代次数为 $gen$，计算优先级的函数为 $O(1)$，供油仿真过程时间复杂度为 $O(n \times w \times gen)$。
 
@@ -1518,7 +1451,7 @@ time & 当前时刻 \\
 
 本文中所有算法的代码与结果表均作为附件上传。
 
-\section{关于飞行器质心平衡供油策略优化的指导性意见}
+关于飞行器质心平衡供油策略优化的指导性意见
 
 已知油箱初始燃油量的飞行器质心平衡供油策略优化问题从整体上看是一个带时序约束的复杂混合整数优化问题，我们曾尝试双层优化思路优化每一时刻点的各油箱供油策略，即包括：在上层考虑油箱位置、剩余油量、最大供油速度、供油时间及质心变化方向等问题知识和约束，通过启发式构造规则选择该时刻点的供油油箱，保证使用选择的油箱能够产生可行供油策略；在下层使用差分进化算法迭代调整各油箱的供油策略，最小化飞行器的质心偏差量。
 
@@ -1541,3 +1474,662 @@ time & 当前时刻 \\
 [3] 王彩虹，韩国震，吕海利，王恺，陈建华. 基于改进遗传编程的装配作业车间调度研究, Vol. 16, pp. 76-77, 2017.
 
 \end{document}
+
+\section{附录：代码与结果表}
+九、附录
+完整代码较多，处于篇幅考虑，附录仅包含各问题中关键函数的完整代码及其他函数
+的函数说明，其他代码见附件。
+1. 1 问题一代码
+主函数：功能计算质心
+load F_data.mat;
+used_oil=Data_P1(:,2:7)/Density_oil;
+theta_t=Data_P1(:,8)*pi/180;
+%% 开始算
+sum_oil=zeros(1,6);
+remain_oil=zeros(1,6);
+det_cent=zeros(length(used_oil(:,1)),3);
+for t=1:length(used_oil(:,1))
+for i=1:6
+sum_oil(i)=sum(used_oil(1:t,i));
+remain_oil(i)=Oilbox_initial(i)-sum_oil(i);
+end
+remain_oil(2)=sum_oil(1)+remain_oil(2);
+remain_oil(5)=sum_oil(6)+remain_oil(5);
+det_cent(t,:)=cal_cent(Oilbox_geo,remain_oil,Oilbox_xyz,Mass_air,Density_oil,theta_t(t));
+end
+function det_cent=cal_cent(Oilbox_geo,Oilbox_v,Oilbox_xyz,Mass_air,Density_oil,theta)
+%% 本函数主要为了计算存在倾斜角之后，质心的变化情况。
+det_cent=zeros(1,3);
+%% 计算旋转后各个油箱
+
+
+
+43
+Oilbox_xyz_new=zeros(size(Oilbox_xyz));
+Oilbox_xyz_new(:,2)=Oilbox_xyz(:,2);
+for i=1:6
+det_xz=det_single(theta,Oilbox_geo(i,:),Oilbox_v(i));
+Oilbox_xyz_new(i,1)=Oilbox_xyz(i,1)+det_xz(1);
+Oilbox_xyz_new(i,3)=Oilbox_xyz(i,3)+det_xz(2);
+end
+Mass_sum=sum(Oilbox_v)*Density_oil+Mass_air;
+for i=1:6
+det_cent(1)=Oilbox_v(i)*Density_oil*Oilbox_xyz_new(i,1)+det_cent(1);
+det_cent(2)=Oilbox_v(i)*Density_oil*Oilbox_xyz_new(i,2)+det_cent(2);
+det_cent(3)=Oilbox_v(i)*Density_oil*Oilbox_xyz_new(i,3)+det_cent(3);
+end
+det_cent=det_cent/Mass_sum;
+function det_xz=det_single(theta,geo,v)
+% 本函数主要为了计算在已知剩余油量，油箱相对于大地坐标系倾角的条件下，
+% 计算油箱内剩余油箱质心，相对于原油箱质心在大地坐标系下的偏移量det_xz，即油箱
+质心（大地坐标系）=det_xz+旋转矩阵*原油箱质心坐标
+% 由于只考虑xz 方向的倾斜角，所以略去 y 方向的计算。
+%% 参数说明
+theta:旋转角度
+geo:该油箱的几何参数
+v:油箱的油量
+density:油的密度
+det_xyz:在某一角度下的油箱质心的相对偏移量（相对于空油箱质心）
+%}
+l=geo(1);%箱体长度
+w=geo(2);%箱体宽度
+h=geo(3);%箱体高度
+## S=h*l;%整个箱体在xz 方向的投影面积
+## S1=v/w;%箱体油量在xz 方向的投影面积
+theta1=abs(theta);
+h2t=h^2/2/tan(theta1);
+l2t=l^2*tan(theta1)/2;
+minhl=min(h2t,l2t);
+rot_mat=[cos(0),-sin(0);sin(0),cos(0)];
+%% 开始分类讨论
+if(theta==0)
+det_x0=l/2-l/2;
+det_z0=S1/l/2-h/2;
+det_xz=rot_mat*[det_x0;det_z0];
+end
+%% 计算旋转后的油箱质心相对于大地坐标系的偏移向量
+if(theta~=0)
+
+
+
+44
+if(S1<minhl)%投影面积很小的时候
+x_f=sqrt(2*S1/tan(theta1))/3;
+y_f=sqrt(2*S1*tan(theta1))/3;
+det_x0=x_f-l/2;
+det_z0=y_f-h/2;
+det_xz=rot_mat*[det_x0;det_z0];
+elseif(minhl>(S-S1))%投影面积很大的时候
+S2=S-S1;
+x_f=sqrt(2*S2/tan(theta1))/3;
+y_f=sqrt(2*S2*tan(theta1))/3;
+det_x0=(l*l*h/2-S2*(l-x_f))/S1-l/2;
+det_z0=(h*h*l/2-S2*(h-y_f))/S1-h/2;
+det_xz=rot_mat*[det_x0;det_z0];
+else
+if(h2t<l2t)
+S11=h2t;
+S12=S1-S11;
+x_f=sqrt(2*S11/tan(theta1))/3;
+y_f=sqrt(2*S11*tan(theta1))/3;
+det_x0=(S11*(S12/h+x_f)+S12*S12/2/h)/S1-l/2;
+det_z0=(S11*y_f+S12*h/2)/S1-h/2;
+det_xz=rot_mat*[det_x0;det_z0];
+else
+S11=l2t;
+S12=S1-S11;
+x_f=sqrt(2*S11/tan(theta1))/3;
+y_f=sqrt(2*S11*tan(theta1))/3;
+det_x0=(S11*(x_f)+S12*l/2)/S1-l/2;
+det_z0=(S11*(S12/l+y_f)+S12*S12/2/l)/S1-h/2;
+det_xz=rot_mat*[det_x0;det_z0];
+end
+end
+end
+if(theta<0)
+det_x0=-det_x0;
+det_xz=rot_mat*[det_x0;det_z0];
+end
+end
+1. 2 问题二代码
+# from simulator2 import Point3D, AirPlaneSimulator
+from simulator2Pro import Point3D, AirPlaneSimulator
+import xlrd
+worksheet = xlrd.open_workbook(u'附件3-问题二数据.xlsx')
+sheet_names = worksheet.sheet_names()
+
+
+
+45
+# print(sheet_names)
+sheet = worksheet.sheet_by_name('发动机耗油速度')
+oilCostLst = sheet.col_values(1)
+oilCostLst.remove('耗油速度(kg/s)')
+# print(oilCostLst)
+# exit()
+all_pointLst = []
+sheet = worksheet.sheet_by_name('飞行器理想质心数据')
+for i in range(3):
+unitLst = sheet.col_values(i + 1)
+if 'X 坐标（米）' in unitLst:
+unitLst.remove('X 坐标（米）')
+if 'y 坐标（米）' in unitLst:
+unitLst.remove('y 坐标（米）')
+if 'z 坐标（米）' in unitLst:
+unitLst.remove('z 坐标（米）')
+all_pointLst.append(unitLst)
+idealCentroidLst = []
+for i in range(len(all_pointLst[0])):
+unitPoint = Point3D(all_pointLst[0][i],all_pointLst[1][i],all_pointLst[2][i])
+idealCentroidLst.append(unitPoint)
+# print(idealCentroidLst)
+all_oilSupplyLst = []
+
+g_air_plane_simulator = AirPlaneSimulator(idealCentroidLst,oilCostLst, all_oilSupplyLst)
+import operator
+import math
+import random
+import numpy
+from deap import algorithms
+from deap import base
+from deap import creator
+from deap import tools
+from deap import gp
+
+# Define new functions
+def protectedDiv(left, right):
+try:
+return left / right
+except ZeroDivisionError:
+return 1
+def max(a, b):
+if a>=b:
+return a
+
+
+
+46
+else:
+return b
+def min(a, b):
+if a<=b:
+return a
+else:
+return b
+pset = gp.PrimitiveSet("MAIN", 12)
+pset.addPrimitive(operator.add, 2)
+pset.addPrimitive(operator.sub, 2)
+pset.addPrimitive(operator.mul, 2)
+pset.addPrimitive(protectedDiv, 2)
+pset.addPrimitive(operator.neg, 1)
+# pset.addPrimitive(math.cos, 1)
+# pset.addPrimitive(math.sin, 1)
+pset.addPrimitive(min, 2,name="Min")
+pset.addPrimitive(max, 2,name="Max")
+# pset.renameArguments(ARG0='x')
+creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
+toolbox = base.Toolbox()
+toolbox.register("expr", gp.genHalfAndHalf, pset=pset, min_=1, max_=3)
+toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+toolbox.register("compile", gp.compile, pset=pset)
+def evalSymbReg(individual):
+# Transform the tree expression in a callable function
+func = toolbox.compile(expr=individual)
+fitness = g_air_plane_simulator.run(func)
+return fitness,
+# Evaluate the mean squared error between the expression
+# and the real function : x**4 + x**3 + x**2 + x
+# sqerrors = ((func(x) - x ** 4 - x ** 3 - x ** 2 - x) ** 2 for x in points)
+# return math.fsum(sqerrors) / len(points),
+
+toolbox.register("evaluate", evalSymbReg)
+toolbox.register("select", tools.selTournament, tournsize=7)
+toolbox.register("mate", gp.cxOnePoint)
+toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
+toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
+toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
+toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
+import numpy as np
+def main():
+
+
+
+47
+randomSeed = 3
+random.seed(randomSeed)
+np.random.seed(randomSeed)
+ind = toolbox.individual()
+pop = toolbox.population(n = 10)
+hof = tools.HallOfFame(1)
+stats = tools.Statistics(lambda ind: ind.fitness.values)
+stats.register("avg", numpy.mean)
+stats.register("std", numpy.std)
+stats.register("min", numpy.min)
+stats.register("max", numpy.max)
+logbook = tools.Logbook()
+logbook.header = "gen", "evals", "std", "min", "avg", "max"
+f_con = open('rgp_'+ str(randomSeed)+'.txt','w')
+## CXPB, MUTPB, NGEN = 0.5, 0.2, 40
+cxpb = 0.8
+mutpb = 0.15
+# Evaluate the entire population
+for ind in pop:
+ind.fitness.values = toolbox.evaluate(ind)
+hof.update(pop)
+record = stats.compile(pop)
+logbook.record(gen=0, evals=len(pop), **record)
+print(logbook.stream)
+for g in range(1, NGEN):
+# Select the offspring
+offspring = toolbox.select(pop, len(pop))
+# Clone the offspring
+offspring = [toolbox.clone(ind) for ind in offspring]
+
+# Apply crossover and mutation
+for i in range(1, len(offspring), 2):
+if random.random() < cxpb:
+offspring[i - 1], offspring[i] = toolbox.mate(offspring[i - 1], offspring[i])
+del offspring[i - 1].fitness.values, offspring[i].fitness.values
+for i in range(len(offspring)):
+if random.random() < mutpb:
+offspring[i], = toolbox.mutate(offspring[i])
+del offspring[i].fitness.values
+# Evaluate the individuals with an invalid fitness
+invalids = [ind for ind in offspring if not ind.fitness.valid]
+for ind in invalids:
+ind.fitness.values = toolbox.evaluate(ind)
+# Replacement of the population by the offspring
+
+
+
+48
+pop = offspring
+hof.update(pop)
+record = stats.compile(pop)
+logbook.record(gen=g, evals=len(invalids), **record)
+print(logbook.stream)
+f_con.write('gen '+ str(g) + ' ')
+f_con.write(' '+ str(record['min']) + '\n')
+f_con.write(str(hof[0]) + '\n')
+f_con.write('min  ' + str(hof[0].fitness.values[0]) + '\n')
+f_con.flush()
+if g%7 == 1:
+func = toolbox.compile(expr=hof[0])
+g_air_plane_simulator.saveDataBool = True
+fitness = g_air_plane_simulator.run(func)
+g_air_plane_simulator.saveDataBool = False
+print('Best individual : ', hof[0][0], hof[0].fitness)
+f_con.write(str(hof[0]) + '\n')
+f_con.write('min  ' + str(hof[0].fitness.values[0]) + '\n')
+return pop, stats, hof
+# print log
+return pop, log, hof
+if __name__ == "__main__":
+main()
+
+1. 3 问题三代码
+import random
+import array
+import numpy
+from itertools import chain
+from deap import base
+from deap import benchmarks
+from deap import creator
+from deap import tools
+# Problem dimension
+# NDIM = 6
+creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+creator.create("Individual", array.array, typecode='d', fitness=creator.FitnessMin)
+def mutDE(y, a, b, c, f):
+size = len(y)
+for i in range(len(y)):
+y[i] = a[i] + f * (b[i] - c[i])
+return y
+def cxBinomial(x, y, cr):
+size = len(x)
+
+
+
+49
+index = random.randrange(size)
+for i in range(size):
+if i == index or random.random() < cr:
+x[i] = y[i]
+return x
+def cxExponential(x, y, cr):
+size = len(x)
+index = random.randrange(size)
+# Loop on the indices index -> end, then on 0 -> index
+for i in chain(range(index, size), range(0, index)):
+x[i] = y[i]
+if random.random() < cr:
+break
+return x
+import simulator3Pro
+from simulator3Pro import Point3D,Size3D
+import xlrd
+worksheet = xlrd.open_workbook(u'附件4-问题三数据.xlsx')
+sheet_names = worksheet.sheet_names()
+# print(sheet_names)
+sheet = worksheet.sheet_by_name('发动机耗油数据')
+oilCostLst = sheet.col_values(1)
+oilCostLst.remove('耗油速度(kg/s)')
+# print(oilCostLst)
+# exit()
+all_pointLst = []
+sheet = worksheet.sheet_by_name('飞行器理想质心')
+for i in range(3):
+unitLst = sheet.col_values(i + 1)
+if 'X 坐标（米）' in unitLst:
+unitLst.remove('X 坐标（米）')
+if 'y 坐标（米）' in unitLst:
+unitLst.remove('y 坐标（米）')
+if 'z 坐标（米）' in unitLst:
+unitLst.remove('z 坐标（米）')
+all_pointLst.append(unitLst)
+idealCentroidLst = []
+for i in range(len(all_pointLst[0])):
+unitPoint = Point3D(all_pointLst[0][i],all_pointLst[1][i],all_pointLst[2][i])
+idealCentroidLst.append(unitPoint)
+# print(idealCentroidLst)
+import xlrd
+worksheet = xlrd.open_workbook(u'附件2-问题一数据.xlsx')
+sheet_names= worksheet.sheet_names()
+
+
+
+50
+print(sheet_names)
+sheet = worksheet.sheet_by_name('油箱供油曲线')
+timeLst = sheet.col_values(0)
+timeLst.remove('时间(s)')
+# print(timeLst)
+all_oilSupplyLst = []
+for i in range(6):
+unitLst = sheet.col_values(i + 1)
+unitLst.remove(str(i + 1 ) +'号油箱(kg/s)')
+all_oilSupplyLst.append(unitLst)
+print('sum oil cost = ', numpy.sum(oilCostLst)/850)
+g_simulator = simulator3Pro.AirPlaneSimulator(idealCentroidLst,oilCostLst,[])
+tankSizeLst = [Size3D(1.5, 0.9, 0.3), Size3D(2.2, 0.8, 1.1), Size3D(2.4, 1.1, 0.9),
+Size3D(1.7, 1.3, 1.2), Size3D(2.4, 1.2, 1), Size3D(2.4, 1, 0.5)]
+tankMaxLst = [_.x *_.y *_.z for _ in tankSizeLst]
+print(tankMaxLst)
+print(numpy.sum(tankMaxLst))
+weightFuncLst = tankMaxLst
+# weightFuncLst = []*
+def griewank(individual):
+sum = 0
+for i in range(6):
+sum = sum + weightFuncLst[i] * individual[i]
+# print(sum)
+if sum < 9.4:
+return 999999999,
+inputIndividul = []
+for i in range(6):
+if individual[i] > 0.99:
+inputIndividul.append(0.99)
+elif individual[i] < 0.01:
+inputIndividul.append(0.01)
+else:
+inputIndividul.append(individual[i])
+tankInitOilLst = []
+for i in range(6):
+tankInitOilLst.append(weightFuncLst[i] * inputIndividul[i])
+fitnessValue = g_simulator.run(tankInitOilLst)
+return fitnessValue,
+toolbox = base.Toolbox()
+toolbox.register("attr_float", random.uniform, 0, 1)
+toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, NDIM)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+toolbox.register("mutate", mutDE, f=0.8)
+
+
+
+51
+toolbox.register("mate", cxExponential, cr=0.8)
+toolbox.register("select", tools.selTournament, k=3, tournsize  = 10)
+toolbox.register("evaluate", griewank)
+def main():
+# Differential evolution parameters
+# MU = NDIM * 10
+# NGEN = 50
+randomSeed = 2
+numpy.random.seed(randomSeed)
+random.seed(randomSeed)
+pop = toolbox.population(n=MU);
+hof = tools.HallOfFame(1)
+stats = tools.Statistics(lambda ind: ind.fitness.values)
+stats.register("avg", numpy.mean)
+stats.register("std", numpy.std)
+stats.register("min", numpy.min)
+stats.register("max", numpy.max)
+logbook = tools.Logbook()
+logbook.header = "gen", "evals", "std", "min", "avg", "max"
+# Evaluate the individuals
+fitnesses = toolbox.map(toolbox.evaluate, pop)
+for ind, fit in zip(pop, fitnesses):
+ind.fitness.values = fit
+f_con = open('r_'+ str(randomSeed)+'.txt','w')
+record = stats.compile(pop)
+logbook.record(gen=0, evals=len(pop), **record)
+print(logbook.stream)
+f_con.write(str(logbook.stream) + '\n')
+for g in range(1, NGEN):
+children = []
+for agent in pop:
+# We must clone everything to ensure independance
+a, b, c = [toolbox.clone(ind) for ind in toolbox.select(pop)]
+x = toolbox.clone(agent)
+y = toolbox.clone(agent)
+y = toolbox.mutate(y, a, b, c)
+z = toolbox.mate(x, y)
+del z.fitness.values
+children.append(z)
+fitnesses = toolbox.map(toolbox.evaluate, children)
+for (i, ind), fit in zip(enumerate(children), fitnesses):
+ind.fitness.values = fit
+if ind.fitness > pop[i].fitness:
+pop[i] = ind
+
+
+
+52
+hof.update(pop)
+# f_con.write(str(hof[0]) + '\n')
+# f_con.write('min  ' + str(hof[0].fitness.values[0]) + '\n')
+record = stats.compile(pop)
+logbook.record(gen=g, evals=len(pop), **record)
+print(logbook.stream)
+# f_con.write(str(logbook.stream) + '\n')
+f_con.write('gen '+ str(g) + ' ')
+f_con.write(' '+ str(record['min']) + '\n')
+f_con.flush()
+print("Best individual is ", hof[0])
+print("with fitness", hof[0].fitness.values[0])
+f_con.write(str(hof[0]) + '\n')
+f_con.write('min  ' + str(hof[0].fitness.values[0]) + '\n')
+return logbook
+if __name__ == "__main__":
+main()
+if True:
+g_simulator.saveDataBool = True
+individual = [0.6, 0.9, 0.7, 0.9, 0.85, 0.65]
+inputIndividul = []
+for i in range(6):
+if individual[i] > 0.99:
+inputIndividul.append(0.99)
+elif individual[i] < 0.01:
+inputIndividul.append(0.01)
+else:
+inputIndividul.append(individual[i])
+tankInitOilLst = []
+for i in range(6):
+tankInitOilLst.append(weightFuncLst[i] * inputIndividul[i])
+print('初始油量为 = ',tankInitOilLst)
+g_simulator.run(tankInitOilLst)
+
+1. 4 问题四代码
+from simulator4Pro import Point3D, AirPlaneSimulator
+import xlrd
+worksheet = xlrd.open_workbook(u'附件5-问题四数据.xlsx')
+sheet_names = worksheet.sheet_names()
+# print(sheet_names)
+sheet = worksheet.sheet_by_name('发动机耗油数据')
+oilCostLst = sheet.col_values(1)
+oilCostLst.remove('耗油速度(kg/s)')
+import math
+
+
+
+53
+sheet = worksheet.sheet_by_name('飞行器俯仰角')
+angleLst = sheet.col_values(1)
+angleLst.remove('俯仰角(度)')
+angleLst = [(_/360)*math.pi *2 for _ in angleLst ]
+print(angleLst)
+idealCentroidLst = []
+for i in range(7200):
+unitPoint = Point3D(0,0,0)
+idealCentroidLst.append(unitPoint)
+# print(idealCentroidLst)
+# exit()
+g_air_plane_simulator = AirPlaneSimulator(angleLst, idealCentroidLst, oilCostLst, [])
+import operator
+import math
+import random
+import numpy
+from deap import algorithms
+from deap import base
+from deap import creator
+from deap import tools
+from deap import gp
+# Define new functions
+def protectedDiv(left, right):
+try:
+return left / right
+except ZeroDivisionError:
+return 1
+def max(a, b):
+if a>=b:
+return a
+else:
+return b
+def min(a, b):
+if a<=b:
+return a
+else:
+return b
+pset = gp.PrimitiveSet("MAIN", 13)
+pset.addPrimitive(operator.add, 2)
+pset.addPrimitive(operator.sub, 2)
+pset.addPrimitive(operator.mul, 2)
+pset.addPrimitive(protectedDiv, 2)
+pset.addPrimitive(operator.neg, 1)
+# pset.addPrimitive(math.cos, 1)
+
+
+
+54
+# pset.addPrimitive(math.sin, 1)
+pset.addPrimitive(min, 2,name="Min")
+pset.addPrimitive(max, 2,name="Max")
+# pset.renameArguments(ARG0='x')
+creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
+toolbox = base.Toolbox()
+toolbox.register("expr", gp.genHalfAndHalf, pset=pset, min_=1, max_=3)
+toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+toolbox.register("compile", gp.compile, pset=pset)
+def evalSymbReg(individual):
+# Transform the tree expression in a callable function
+func = toolbox.compile(expr=individual)
+fitness = g_air_plane_simulator.run(func)
+return fitness,
+toolbox.register("evaluate", evalSymbReg)
+toolbox.register("select", tools.selTournament, tournsize=7)
+toolbox.register("mate", gp.cxOnePoint)
+toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
+toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
+toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
+toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
+import numpy as np
+def main():
+randomSeed = 1
+random.seed(randomSeed)
+np.random.seed(randomSeed)
+ind = toolbox.individual()
+
+pop = toolbox.population(n = 10)
+hof = tools.HallOfFame(1)
+stats = tools.Statistics(lambda ind: ind.fitness.values)
+stats.register("avg", numpy.mean)
+stats.register("std", numpy.std)
+stats.register("min", numpy.min)
+stats.register("max", numpy.max)
+logbook = tools.Logbook()
+logbook.header = "gen", "evals", "std", "min", "avg", "max"
+f_con = open('pro4rgp_'+ str(randomSeed)+'.txt','w')
+## CXPB, MUTPB, NGEN = 0.5, 0.2, 40
+cxpb = 0.8
+mutpb = 0.15
+# Evaluate the entire population
+
+
+
+55
+for ind in pop:
+ind.fitness.values = toolbox.evaluate(ind)
+hof.update(pop)
+record = stats.compile(pop)
+logbook.record(gen=0, evals=len(pop), **record)
+print(logbook.stream)
+for g in range(1, NGEN):
+# Select the offspring
+offspring = toolbox.select(pop, len(pop))
+# Clone the offspring
+offspring = [toolbox.clone(ind) for ind in offspring]
+# Apply crossover and mutation
+for i in range(1, len(offspring), 2):
+if random.random() < cxpb:
+offspring[i - 1], offspring[i] = toolbox.mate(offspring[i - 1], offspring[i])
+del offspring[i - 1].fitness.values, offspring[i].fitness.values
+for i in range(len(offspring)):
+if random.random() < mutpb:
+offspring[i], = toolbox.mutate(offspring[i])
+del offspring[i].fitness.values
+# Evaluate the individuals with an invalid fitness
+invalids = [ind for ind in offspring if not ind.fitness.valid]
+for ind in invalids:
+ind.fitness.values = toolbox.evaluate(ind)
+# Replacement of the population by the offspring
+pop = offspring
+hof.update(pop)
+record = stats.compile(pop)
+logbook.record(gen=g, evals=len(invalids), **record)
+print(logbook.stream)
+f_con.write('gen '+ str(g) + ' ')
+f_con.write(' '+ str(record['min']) + '\n')
+f_con.write(str(hof[0]) + '\n')
+f_con.write('min  ' + str(hof[0].fitness.values[0]) + '\n')
+f_con.flush()
+if g%7 == 1:
+func = toolbox.compile(expr=hof[0])
+g_air_plane_simulator.saveDataBool = True
+fitness = g_air_plane_simulator.run(func)
+g_air_plane_simulator.saveDataBool = False
+print('Best individual : ', hof[0][0], hof[0].fitness)
+f_con.write(str(hof[0]) + '\n')
+f_con.write('min  ' + str(hof[0].fitness.values[0]) + '\n')
+return pop, stats, hof
+
+
+
+56
+# print log
+return pop, log, hof
+if __name__ == "__main__":
+main()

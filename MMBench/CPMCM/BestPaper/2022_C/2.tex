@@ -23,13 +23,6 @@
  & 3. 张睿智 \\
 \end{tabular}
 
-\begin{center}
-\textbf{中国研究生创新实践系列大赛} \\
-\textbf{中国光谷·“华为杯”第十九届中国研究生} \\
-\textbf{数学建模竞赛}
-\end{center}
-
-\maketitle
 
 \begin{abstract}
 汽车制造厂由于涂装车间与总装车间的约束不同导致生产调度无法按照同一序列连续生产，这就需要在两个车间之间建立涂装-总装缓存调序区（Painted Body Store, PBS），利用多条进车道与返回道将涂装车间的出车序列调整到能够尽量满足总装车间约束的进车序列，因此，PBS 缓存区的调度优化成为亟待解决的问题。
@@ -47,113 +40,7 @@
 关键字：缓存区进出车调度机制 启发式规则 贪心法 性能-效率均衡
 \end{abstract}
 
-\section*{目录}
-
-\section{问题重述}
-\subsection{引言}
-\dotfill 6
-\subsection{问题重述}
-\dotfill 6
-
-\section{模型的假设}
-\dotfill 7
-
-\section{符号说明}
-\dotfill 8
-
-\section{问题一的分析与求解}
-\subsection{问题一的分析}
-\subsubsection{进车过程分析}
-\dotfill 9
-\subsubsection{出车过程分析}
-\dotfill 11
-\subsection{PBS 优化调度模型}
-\subsubsection{基于 FIFO 和 RRF 原则的启发式进车调度算法}
-\dotfill 13
-\subsubsection{基于 LWT 原则的出车调度算法}
-\dotfill 14
-\subsubsection{基于贪心原理的启发式算法}
-\dotfill 17
-\subsection{模型的求解}
-\dotfill 18
-\subsection{问题一的结果}
-\dotfill 21
-
-\section{问题二的分析与求解}
-\dotfill 21
-\subsection{问题二模型的分析与构建}
-\subsubsection{无 PBS 约束 6 的进车过程分析}
-\dotfill 22
-\subsubsection{无 PBS 约束 7 的出车过程分析}
-\dotfill 24
-\subsubsection{问题二的 PBS 缓冲区进出车调度模型}
-\dotfill 25
-\subsection{模型的求解}
-\dotfill 26
-\subsection{问题二的结果}
-\dotfill 27
-
-\section{模型的对比与分析}
-\dotfill 29
-
-\section{7. 参考文献}
-\dotfill 32
-
-\section{附录 A 问题一 PBS 优化调度模型程序代码}
-\dotfill 33
-\begin{itemize}
-    \item[1.1] PBS 调度主程序-main.m \dotfill 33
-    \item[1.2] 进车过程子程序-Car_in.m \dotfill 37
-    \item[1.3] 出车过程子程序-Car_out.m \dotfill 37
-    \item[1.4] 出车判断子程序-Renew_lan_out.m \dotfill 37
-\end{itemize}
-
-\begin{itemize}
-    \item 1.5 进车道当前状态更新子程序-renew\_final.m \dotfill 38
-    \item 1.6 返回道当前状态更新子程序-ret\_renew\_final.m \dotfill 39
-    \item 1.7 进车道结果输出子程序-Car\_lan.m \dotfill 39
-    \item 1.8 返回道结果输出子程序-Car\_ret.m \dotfill 40
-    \item 1.9 计算 $Q_1$ 和 $Q_2$ 加权和子程序-count\_c.m \dotfill 40
-    \item 1.10 优化目标 $Q_1$ 得分子程序-fun\_obj11.m \dotfill 41
-    \item 1.11 优化目标 $Q_2$ 得分子程序-fun\_obj22.m \dotfill 41
-    \item 附录B 问题二 PBS 优化调度模型程序代码 \dotfill 42
-    \begin{itemize}
-        \item 2.1 PBS 主程序-main22.m \dotfill 42
-        \item 2.2 基于 MTT 原则的入车选择子程序-in\_decide2.m \dotfill 47
-        \item 2.3 基于 MTT 原则的出车判断子程序-out\_decide.m \dotfill 48
-        \item 2.4 出车车辆选取子程序-Renew\_lan\_out2.m \dotfill 49
-    \end{itemize}
-\end{itemize}
-
-\section{图录}
-
-\begin{enumerate}
-    \item 涂装-总装缓存调序区 (PBS) 示意图 \dotfill 6
-    \item 进车流程图 \dotfill 10
-    \item 动态出车过程流程图 \dotfill 11
-    \item PBS 调度示意图 \dotfill 12
-    \item 问题一附件 1 总调度时间 (a) 和优化目标 1、2 加权值 (b) 随返回道使用次数的变化 \dotfill 19
-    \item 问题一附件 2 总调度时间 (a) 和优化目标 1、2 加权值 (b) 随返回道使用次数的变化 \dotfill 19
-    \item 问题二流程图 \dotfill 22
-    \item 问题二动态出车过程流程图 \dotfill 24
-    \item 问题二附件 1 总调度时间 (a) 和优化目标 1、2 加权值 (b) 随返回道使用次数的变化 \dotfill 27
-    \item 问题二附件 2 总调度时间 (a) 和优化目标 1、2 加权值 (b) 随返回道使用次数的变化 \dotfill 27
-    \item 技术路线图 \dotfill 29
-    \item 遗传算法适应度迭代结果图 \dotfill 30
-    \item 遗传算法表现随车辆数增加的结果图 \dotfill 31
-\end{enumerate}
-
-\section{表录}
-
-\begin{enumerate}
-    \item 附件 1 附件 2 动力类型分布 \dotfill 18
-    \item 附件 1 附件 2 驱动类型分布 \dotfill 19
-    \item 问题一 PBS 缓冲区出车序列结果 \dotfill 20
-    \item 问题一 调度输出结果 \dotfill 21
-    \item 问题二 PBS 缓冲区出车序列结果 \dotfill 28
-    \item 问题二 调度输出结果 \dotfill 29
-    \item 本文所提缓冲区进出车调度时间统计 \dotfill 31
-\end{enumerate}
+\tableofcontents
 
 \section{1. 问题重述}
 
@@ -209,6 +96,7 @@
   9. 进车道和返回道每个时刻最多容纳 10 个车身，每个停车位最多容纳 1 个车身。
   10. 同一车道内，多个车身在不同停车位上的移动可以不同步进行。
   11. 当某车身所在停车位的下一停车位出现空位时，车身必须立即开始向下一停车位移动。
+  12. 车身在进车道和返回道不同停车位之间移动的过程中，不能被调度。
 
 \section{3. 符号说明}
 
@@ -329,7 +217,12 @@ t_{i, j}=c_{j}^{N} * \operatorname{mean}\left(t_{f, j}^{o u t}\right)+t_{f, j}^{
 
 1) 待送车横移机完成上一任务回到初始位置，若返回道 10 车位有车则将该车设置为当前待调度车辆；
 
-\section{4.1.2 出车过程分析}
+2) 若返回道10 车位不存在，则将PBS 出车口的第一辆车设置为当前待调度车辆；
+3) 根据各进车道的车辆数，结合接车横移机送至各进车道的消耗时间，计算该车送至每
+个进车道的估计送车时间ti,j ；
+4) 选择估计送车时间最小的进车道，将待调度车辆送入该进车道。
+基于最短送车时间的进车调度流程如图2所示
+\subsubsection{4.1.2 出车过程分析}
 
 不同于进车过程，出车侧需要保证最终送入 PBS 总装区的出车序列在动力形式和驱动数上保持一定的规律性，因此不能单纯考虑调度时间。返车道可以将影响规律性的到达送车口的车辆送回进车道入口，从而辅助出车序列的排序。因此，通过合理利用返回道，能够使整体车型序列尽量满足实际生产需求。
 
@@ -369,7 +262,7 @@ a_{i,1} = i, \quad a_{i,2} = \begin{cases} 1, & \text{if 混动} \\ 0, & \text{i
 
 上 1 停车位的车身运送至返回道（车道 $M_{\alpha}$）1 停车位，花费时间 $t_{b,j}^{in}$，之后车辆在返回道（车道 $M_{\alpha}$）按车道移动规则返回，每次移动车位花费时间 $t_{m}$。特别地是，当返回道的车辆到达 10 停车位时，比进车序列 $\{a_{i,1}\}$ 的车身优先处理。
 
-\subsection{4.2.1 基于 FIFO 和 RRF 原则的启发式进车调度算法}
+\subsubsection{4.2.1 基于 FIFO 和 RRF 原则的启发式进车调度算法}
 
 车身 $a_{i,1}$ 从涂装车间出车序列 $\{a_{i,1}\}_{i=1}^{N}$ 调整后的道总装车间的进车序列 $\{b_{i,1}\}_{i=1}^{N}$ 花费的总时间为 $T_{i}$，车身 $a_{i,1}$ 在 PBS 中等待的总时间为 $t_{i}^{w}$。若车身 $a_{i,1}$ 不进行返回，则车身 $a_{i,1}$ 的调度总时间 $T_{i}$ 为
 
@@ -424,8 +317,9 @@ V_{i',j} =
 \end{cases}.
 \tag{8}
 \end{equation}
-
-\section{Algorithm 1: 问题一入车过程}
+若不满足PBS 约束条件6，则按照tinf,j 和车道空闲状态xi,j,k, j ∈L, k = 1 按照FIFO 原则
+和RRF 原则进行入车过程调度，见4.2.1节Algorithm 1。
+Algorithm 1: 问题一入车过程
 
 \textbf{Input:} 进车道当前车位状态 $x_{i,j,k}$, 进车序列 $a_{i1}$, 进车道进车过程所需时间 $t_{f,j}^{in}$, 返回道出车过程所需时间 $t_{b,j}^{out}$, 进车道当前车身数量 $c_{j}^{N}$, 进车序列 $a_{i1}$
 
@@ -445,7 +339,7 @@ V_{i',j} =
     \item Step E: 基于 $t_{f,j}^{in}$, $t_{b,j}^{out}$ 更新 $x_{i,j,k}$, $c_{j}^{N}$, $a_{i,j}$
 \end{enumerate}
 
-\subsection{4.2.2 基于 LWT 原则的出车调度算法}
+\subsubsection{4.2.2 基于 LWT 原则的出车调度算法}
 
 对于 PBS 约束条件 7, 当若干进车道 1 停车位有车身等候, 同时送车横移机空闲时, 优先处理最先到达 1 停车位的车身, 设最先到达 1 停车位的车身所在车道为 $j^{fir}$, 定义出车或返回决策变量 $P_{j}$
 
@@ -458,7 +352,7 @@ P_{j}=
 \tag{9}
 \end{equation}
 
-\section{1、优化目标评价指标}
+1、优化目标评价指标
 
 为了使得车身调度尽可能高效，定义相应的优化目标得分 $Q_i, i=1,\ldots,4$。对于优化目标 $Q_1$，需要检查出车序列，找到所有混动车身，从出车序列头部按照先后顺序开始算，计算每连续两辆混动车身之间的非混动车身数，不等于 2 则扣 1 分。设出车序列 $\{b_{i,1}\}_{i=1}^N$ 中混动车型数量为 $N_m$，混动车型在总装车间入车序列中的顺序 $c_l$ 为，
 
@@ -559,7 +453,7 @@ Q_{4} = 0.01 \times (T - 9N - 8t_{m})
 \end{algorithmic}
 \end{algorithm}
 
-\section{2、基于 MILP 的出车模型}
+2、基于 MILP 的出车模型
 
 问题一的 PBS 优化调度模型可以表述为如下的混合整数线性规划 (MILP, Mixed Integer Linear Programming) 模型:
 
@@ -599,11 +493,11 @@ Q_{4} = 0.01 \times (T - 9N - 8t_{m})
 \tag{15}
 \end{equation}
 
-\subsection{4.2.3 基于贪心原理的启发式算法}
+\subsubsection{4.2.3 基于贪心原理的启发式算法}
 
 上述所述优化模型为一混合整数非凸优化模型，且问题规模随着车辆数量的增加而增大，即使采用可以趋近全局最优解的智能算法也需要较长的求解时间。针对于此，本文提出了一种基于贪心法的求解方法，即，从问题的某一个初始状态出发，在每一个阶段都根据贪心策略来做出当前最优的决策，逐步逼近给定的目标，尽可能快地求得更好的解。贪心法可以通过逐步的局部最优来达到最终的全局最优。
 
-\section{贪心法本身具有以下特点：}
+贪心法本身具有以下特点：
 
 1. 每个阶段贪心法都做出对眼前来讲是最有利的选择，不考虑该选择对将来是否有不良影响；在本设计中，对应的就是每次出车决策仅考虑使得当前评价指标达到最优（如图 3 所示），不考虑该决策是否会影响未来出车序列的评价值。
 
@@ -619,7 +513,7 @@ Q_{4} = 0.01 \times (T - 9N - 8t_{m})
 
 一个问题能够分解成各个子问题来解决，通过各个子问题的最优解能递推到原问题的最优解。那么原问题的最优解一定包含各个子问题的最优解，这是能够采用贪心法来求解问题的关键。本文所提出的基于贪心法的最优出车序列决策算法流程见 4.2.2 节中 Algorithm 2。
 
-\section{4.3 模型的求解}
+\subsection{4.3 模型的求解}
 
 接下来将对题目所给附件 1、附件 2 利用上述机制对其进行缓存区进出车调度求解。如表 1、2 所示，附件 1 中混动与燃油车辆数比例约为 2:1，而附件 2 中这一比值为 1:1，因此，相较于附件 1，附件 2 的 Q1 优化目标值更难提升。
 
@@ -683,7 +577,13 @@ Q_{4} = 0.01 \times (T - 9N - 8t_{m})
 \end{figure}
 
 图 6 问题一附件 2 总调度时间 (a) 和优化目标 1、2 加权值 (b) 随返回道使用次数的变化
-
+返回道的使用次数会影响Q1、Q2 的评价结果，理论上返回道使用次数越多，则进行
+的调序次数越多，于是会有更多子阶段达到局部最优值。然而实际中，不可能允许无限次
+使用返回道，这会导致时间的进一步增大甚至陷入轮回，也因此，题目中设置了Q3、Q4
+评价对返回道使用次数进行限制。为了达到Q1/Q2 与Q3/Q4 之间的平衡，本文设置不同的
+返回道使用次数上限作为值可变的自变量，在不同的使用上限次数下分别进行仿真，本文
+设置上线次数范围为0-318 次。根据所给出的进车、出车时间项(tinf,j , toutf,j , tinb,j , toutb,j )，对进入
+和出车两侧进行仿真，具体代码见论文附录。
 \begin{table}
 \centering
 \caption{问题一 PBS缓冲区出车序列结果}
@@ -735,7 +635,7 @@ Q_{4} = 0.01 \times (T - 9N - 8t_{m})
 
 附件1的59、附件2的32对应的出车序列仿真结果如表3所示。图中下方数字序列为车辆未经过PBS缓冲区的数据，上方车身序号为经过PBS缓冲区排序后的出车序列，可以看出，通过使用返回道及进车道，车辆经过了重排序，更符合后续PBS总装所要求的规律
 
-\section{4.4 问题一的结果}
+\subsection{4.4 问题一的结果}
 
 问题一附件1、2经过上述方法进行调度排序后的各项题目所要求优化目标得分结果（已乘系数）对比如表4所示。题目所要求的每一时刻的车辆所处位置将于附件中给出。如表4所示，附件1由于混动与柴油动力的占比约为1：2，而附件2则约为1：1，因此，相比于附件1，附件2的求解结果显著增加了 $Q_1$ 的数值，并且附件2所使用返回车道的次数也相对减小，因此最终的总评分也有了大幅提升。此外，对比附件1、2的 $Q_3$、$Q_4$ 评价结果，减少返回车道的使用次数也会相应节省一定的缓冲区排序时间消耗。
 
@@ -758,7 +658,7 @@ Q_{4} = 0.01 \times (T - 9N - 8t_{m})
 
 相比于问题一，问题二不再要求在进车道入口处优先处理返车道出口车辆，同时不必在进车道出口侧严格遵循先到先卸载原则。这样便为车辆出车顺序的调整赋予了更高的自由度。同时，由于问题一中要求优先处理到达返车道出口车辆，相比于直接处理缓存区进入车辆会消耗更多的时间，进车道出口位置的接车决策同理。因此，在问题二中，若优先处理当前期望调度时间最短的车辆，同样会提高总的调度效率。
 
-\subsection{5.1.1 无PBS约束6的进车过程分析}
+\subsubsection{5.1.1 无PBS约束6的进车过程分析}
 
 如果去除PBS约束说明中第6条约束，则返回道10停车位有车时，不一定优先处理，需要和涂装车间的出车序列一起进行调度。对于缓存区的进车过程，为进一步提高调度效率，以车辆的期望调度时间作为评判依据，选择总等待与调度时间之和最短的车辆作为目标车辆。例如，若返车道10车位有车，但其移送时间大于移送位于进车序列首位置车辆的时间，则选择不移送返车道10车位车辆；再如，若返车道的9车位有车且在2s后移至10车位，而此时，返车道移送车辆的下一目标车道为3车道，而进车序列的首位置车辆的下一移送目标车道为6车道，则等待返回车到达并移入3车道所需时间为14s，小于将进车序列首位置车辆移至6车道所需的18s，因此，在当前时刻接车横移机可选择等待2s后将进入返车道10车位的车辆送入3车道。上述流程如图7问题二流程图所示。
 
@@ -807,7 +707,7 @@ V_{i',j,n} =
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{5.1.2 无PBS约束7的出车过程分析}
+\subsubsection{5.1.2 无PBS约束7的出车过程分析}
 
 若忽略原PBS约束说明中的约束7，则进车道的1车位有车时，并不一定根据其最先到达时间优先处理。例如，若进车道1的10车位存在一辆车，同时另一辆车处于进车道4的车位9并且还有5s移动至进车道4出口处，则送车横移机对进车道1的车进行调度需要消耗18秒时间，而等待进车道4的车辆到达并进行调度仅需消耗5s时间。
 
@@ -861,7 +761,7 @@ P_{j} =
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{问题二的 PBS 缓冲区进出车调度模型}
+\subsubsection{问题二的 PBS 缓冲区进出车调度模型}
 
 基于上述分析, 可以构建问题二的优化模型如下所示:
 
@@ -1066,3 +966,1281 @@ x_{i,j,k} & \in \{0,1\} & \forall i=1,\ldots,N, \forall j=1,\ldots,M_{\alpha}, k
     \item 沈振宇. 面向汽车混流生产线的排产与调度问题研究 [D]. 重庆大学, 2019.
     \item 杜旭浩. 基于智能优化算法的汽车混流装配线排序问题研究 [D]. 燕山大学, 2013.
 \end{enumerate}
+
+\section{附录：程序代码}
+1 . 1 PBS 调度主程序-main.m
+1
+result=zeros(319,4290);
+2
+result(2:319,1)=1:318;
+3
+result(1,2:4290)=0:4288;
+4
+N_of = 0;
+5
+lane_in1 = 0;
+6
+lane_in2 = 0;
+7
+car_in_now1 = −1;
+8
+car_in_now2 = −1;
+9
+lan_fig = −ones(6,9∗10,2);
+10
+t_in1 = [18, 12, 6, 0, 12, 18];
+11
+t_in2 = [24, 18, 12, 6, 12, 18];
+12
+t_out1 = [18, 12, 6, 0, 12, 18];
+13
+t_out2 = [24, 18, 12, 6, 12, 18];
+14
+t_out = mean(t_out1);
+15
+lane_in = 0;
+16
+lane_out = 0;
+17
+18
+load type
+19
+load color
+20
+color = color';
+21
+type = type';
+22
+x_in = 1:318;%输入车
+23
+car_seq_in = x_in;
+24
+end_flg = 0;
+25
+lane = zeros(1,6);
+26
+ret_fig = −ones(1,9∗10,2);
+27
+N_fin = 0;
+28
+car_in_now = −1;
+29
+flgi = 0;
+30
+flgo = 0;
+31
+L = 0;
+32
+inflg = 0;
+33
+x_out = [];%输出车
+34
+N = 20000;
+35
+epoch = 0;
+36
+feq = 58;
+33
+
+
+
+37
+while epoch < N
+38
+if (numel(car_seq_in) == 0 && sum(ret_fig(1,1:90,1)) == −90 &&
+sum(sum(lan_fig(:,1:90,1))) == −540) || numel(x_out)>=318
+39
+break;
+40
+end
+41
+epoch = epoch+1;
+42
+ret_fig = ret_renew_final(ret_fig);
+43
+lan_fig = renew_final(lan_fig,flgo);
+44
+%% 进车过程
+45
+if flgi == 0
+46
+% N_fin=1则说明上次从返回道拉车，基于上次的lane_in进行更新
+47
+%（lan_fig都要更新，ret_fig仅在N_fin=1更新）
+48
+if N_fin == 1
+49
+if lane_in1 ~= 0
+50
+lan_fig(lane_in1,1,1) = car_in_now1;
+51
+lan_fig(lane_in1,1,2) = 0;
+52
+ret_fig(1,1,1) = −1;
+53
+end
+54
+else
+55
+if lane_in2 ~= 0
+56
+if end_flg ~= 1
+57
+lan_fig(lane_in2,1,1) = car_in_now2;
+58
+end
+59
+if car_in_now2 == 318
+60
+end_flg = 1;
+61
+end
+62
+lan_fig(lane_in2,1,2) = 0;
+63
+end
+64
+end
+65
+if ret_fig(1,1,1) ~= −1
+66
+N_fin = 1;
+67
+% 更新本次送入车道lane_in
+68
+[lane_in1,lane] =
+Car_in(1,lane,t_in1,t_in2,t_out,lan_fig,N_fin);
+69
+flgi = t_in2(lane_in1);
+70
+car_in_now1 = ret_fig(1,1,1);
+71
+else
+72
+if numel(car_seq_in) == 0
+73
+else
+34
+
+
+
+74
+N_fin = 0;
+75
+car_in_now2 = car_seq_in(1);
+76
+car_seq_in(1) = [];
+77
+[lane_in2,lane] =
+Car_in(1,lane,t_in1,t_in2,t_out,lan_fig,N_fin);
+78
+flgi = t_in1(lane_in2);
+79
+end
+80
+end
+81
+else
+82
+flgi = flgi −1;
+83
+if N_fin == 1
+84
+result(car_in_now1+1,epoch) = 1;
+85
+else
+86
+result(car_in_now2+1,epoch) = 1;
+87
+end
+88
+end
+89
+%% 出车过程
+90
+if flgo == 0
+91
+if N_of == 1
+92
+ret_fig(1,90,1) = car_out_now;
+93
+end
+94
+if lane_out ~= 0
+95
+lan_fig(lane_out,90,1) = −1;
+96
+lan_fig(lane_out,90,2) = −1;
+97
+lane(lane_out) = lane(lane_out)−1;
+98
+end
+99
+x_seq = x_out;
+100
+[car_out_now,lane_out] = Renew_lan_out(lan_fig); % 决定接哪条道的车
+101
+if car_out_now == 0
+102
+else
+103
+[if_f,x_out,feq] =
+Car_out(x_seq,type,color,car_out_now,ret_fig,feq);
+104
+if if_f == 1
+105
+flgo = t_out1(lane_out);
+106
+N_of = 0;
+107
+else
+108
+flgo = t_out2(lane_out);
+109
+N_of = 1;
+110
+end
+35
+
+
+
+111
+end
+112
+else
+113
+result(car_out_now+1,epoch) = 2;
+114
+flgo = flgo −1;
+115
+end
+116
+%% 更新过程
+117
+[lan_i,lan_j,lan_car]=Car_lan(lan_fig);
+118
+[ret_i,ret_j,ret_car]=Car_ret(ret_fig);
+119
+[m,~]=size(lan_i);
+120
+for i=1:m
+121
+if result(lan_car(i)+1,epoch) == 0
+122
+result(lan_car(i)+1,epoch)=...
+123
+str2num([num2str(lan_i(i)),num2str(lan_j(i))]);
+124
+end
+125
+end
+126
+[n,~]=size(ret_j);
+127
+for i=1:n
+128
+if result(ret_car(i)+1,epoch) == 0
+129
+result(ret_car(i)+1,epoch)=str2num(['7',...
+130
+num2str(ret_j(i))]);
+131
+end
+132
+end
+133
+for i = 1:numel(x_out)
+134
+if result(x_out(i)+1,epoch) == 0
+135
+result(x_out(i)+1,epoch) = 3;
+136
+end
+137
+end
+138
+for i = 1:numel(car_seq_in)
+139
+if result(car_seq_in(i)+1,epoch) == 0
+140
+result(car_seq_in(i)+1,epoch) = 0;
+141
+end
+142
+end
+143
+end
+144
+for kk = 1:flgo
+145
+result(car_out_now+1,epoch+kk) = 2;
+146
+end
+147
+result(car_out_now+1,epoch+flgo+1) = 3;
+36
+
+
+
+1 . 2 进车过程子程序-Car_in.m
+1
+function [L,lane] = Car_in(car_seq,lane,t_in1,t_in2,t_out,lan_fig,inflg)
+2
+ti = zeros(1,numel(lane));
+3
+for i = 1:numel(lane)
+4
+if inflg == 1 %
+5
+ti(i) = lane(i)∗t_out+t_in1(i);
+6
+else
+7
+ti(i) = lane(i)∗t_out+t_in2(i);
+8
+end
+9
+end
+10
+[~,L] = min(ti);
+11
+while sum(lan_fig(L,1:9,1)) ~= −9 && min(ti) ~= inf
+12
+ti(L) = inf;
+13
+[~,L] = min(ti);
+14
+end
+15
+lane(L) = lane(L)+1;
+16
+end
+1 . 3 出车过程子程序-Car_out.m
+1
+function [L,x_out,feq] = Car_out(x_seq,type,color,x,ret_fig,feq)
+2
+x_new = [x_seq x];
+3
+if(0.4∗fun_obj11(x_new,type)+0.3∗fun_obj22(x_new,color) >
+1. 4∗fun_obj11(x_seq,type)+0.3∗fun_obj22(x_seq,color)+0.2∗1) &&
+sum(ret_fig(1,82:90,1)) == −9 && feq > 0
+4
+L = 0;
+5
+x_out = x_seq;
+6
+feq = feq−1;
+7
+else
+8
+L = 1;
+9
+x_out = x_new;
+10
+end
+11
+end
+1 . 4 出车判断子程序-Renew_lan_out.m
+1
+function [Lo,idx] = Renew_lan_out(lan_fig)
+2
+maxva = 0;
+37
+
+
+
+3
+maxid = 0;
+4
+idx = 0;
+5
+for i = 1:6
+6
+if lan_fig(i,90,1) ~= −1
+7
+if lan_fig(i,90,2) > maxva
+8
+maxva = lan_fig(i,90,2);
+9
+maxid = lan_fig(i,90,1);
+10
+idx = i;
+11
+end
+12
+end
+13
+end
+14
+Lo = maxid;
+15
+end
+1 . 5 进车道当前状态更新子程序-renew_final.m
+1
+function lan_fig = renew_final(lan_fig,flgo)
+2
+for i = 1:6
+3
+if lan_fig(i,90,1) == −1
+4
+for j = 89:−1:81
+5
+if lan_fig(i,j,1) ~=−1
+6
+lan_fig(i,j+1,1) = lan_fig(i,j,1);
+7
+lan_fig(i,j+1,2) = lan_fig(i,j,2)+1;
+8
+lan_fig(i,j,1) = −1;
+9
+lan_fig(i,j,2) = −1;
+10
+end
+11
+end
+12
+end
+13
+end
+14
+for i = 1:6
+15
+for j = 80:−1:1
+16
+if lan_fig(i,j,1) ~= −1 &&
+sum(lan_fig(i,(1+floor(j/9))∗9:(1+floor(j/9))∗9+8,1)) == −9
+17
+lan_fig(i,j+1,1) = lan_fig(i,j,1);
+18
+lan_fig(i,j+1,2) = lan_fig(i,j,2)+1;
+19
+lan_fig(i,j,1) = −1;
+20
+lan_fig(i,j,2) = −1;
+21
+end
+22
+end
+38
+
+
+
+23
+end
+24
+end
+1 . 6 返回道当前状态更新子程序-ret_renew_final.m
+1
+function ret_fig = ret_renew_final(ret_fig)
+2
+if ret_fig(1,1,1) == −1
+3
+for j = 2:9
+4
+if ret_fig(1,j,1) ~= −1
+5
+ret_fig(1,j−1,1) = ret_fig(1,j,1);
+6
+ret_fig(1,j,1) = −1;
+7
+end
+8
+end
+9
+end
+10
+for i = 10: 90
+11
+if ret_fig(1,i,1) ~= −1 &&
+sum(ret_fig(1,(ceil(i/9)−1)∗9:−1:(ceil(i/9)−1)∗9−8,1)) == −9
+12
+ret_fig(1,i−1,1) = ret_fig(1,i,1);
+13
+ret_fig(1,i,1) = −1;
+14
+end
+15
+end
+16
+end
+1 . 7 进车道结果输出子程序-Car_lan.m
+1
+function [lan_i,lan_j,lan_car]=Car_lan(lan_fig)
+2
+car=lan_fig;
+3
+[lan_i,lan_j]=find(car(:,:,1)~=−1);
+4
+if size(lan_i,1) == 1
+5
+lan_i=lan_i';
+6
+lan_j=lan_j';
+7
+end
+8
+if numel(lan_i)==0
+9
+lan_i=[];lan_j=[];lan_car=[];
+10
+return
+11
+end
+12
+[m,~]=size(lan_i);
+13
+lan_car=[];
+14
+for i=1:m
+39
+
+
+
+15
+lan_car=[lan_car;car(lan_i(i),lan_j(i),1)];
+16
+end
+17
+lan_j=10−floor((lan_j−1)/9);
+18
+end
+1 . 8 返回道结果输出子程序-Car_ret.m
+1
+function [ret_i,ret_j,ret_car]=Car_ret(ret_fig)
+2
+car=ret_fig;
+3
+[ret_i,ret_j]=find(car(:,:,1)~=−1);
+4
+if size(ret_i,1) == 1
+5
+ret_i=ret_i';
+6
+ret_j=ret_j';
+7
+end
+8
+if numel(ret_i)==0
+9
+ret_i=[];ret_j=[];ret_car=[];
+10
+return
+11
+end
+12
+[m,~]=size(ret_i);
+13
+ret_car=[];
+14
+for i=1:m
+15
+ret_car=[ret_car;car(ret_i(i),ret_j(i),1)];
+16
+end
+17
+ret_j=10−floor((ret_j−1)/9);
+18
+end
+1 . 9 计算Q1 和Q2 加权和子程序-count_c.m
+1
+function score = count_c(x)
+2
+sum2 = 0;
+3
+sum4 = 0;
+4
+for i = 1:numel(x)
+5
+if(x(i) == 2)
+6
+sum2 = sum2+1;
+7
+else
+8
+sum4 = sum4+1;
+9
+end
+10
+end
+11
+if sum2 == sum4
+40
+
+
+
+12
+score = 0;
+13
+else
+14
+score = 1;
+15
+end
+16
+end
+1 . 10 优化目标Q1 得分子程序-fun_obj11.m
+1
+function f1 = fun_obj11(x,type)
+2
+if numel(x) == 0
+3
+f1 = 0;
+4
+end
+5
+m = numel(x);
+6
+t1 = zeros(m,1);
+7
+for i = 1:m
+8
+t1(i) = type(x(i));
+9
+end
+10
+col=find(t1==1);
+11
+res=0;
+12
+for i=1:length(col)−1
+13
+if col(i+1)−col(i)−1~=2
+14
+res=res+1;
+15
+end
+16
+end
+17
+f1 = res;
+18
+end
+1 . 11 优化目标Q2 得分子程序-fun_obj22.m
+1
+function f2 = fun_obj22(x,color)
+2
+score = 0;
+3
+m = numel(x);
+4
+if m == 0
+5
+f2 = 0;
+6
+else
+7
+flag = 1;
+8
+if color(x(1)) == 4
+9
+for i = 1:m−1
+10
+if color(x(i))==2 && color(x(i+1)) == 4
+41
+
+
+
+11
+score = score+count_c(color(x(flag:i)));
+12
+flag = i+1;
+13
+end
+14
+if i == m−1
+15
+score = score+count_c(color(x(flag:end)));
+16
+end
+17
+end
+18
+else
+19
+for i = 1:m−1
+20
+if color(x(i))==4 && color(x(i+1)) == 2
+21
+score = score+count_c(color(x(flag:i)));
+22
+flag = i+1;
+23
+end
+24
+if i == m−1
+25
+score = score+count_c(color(x(flag:end)));
+26
+end
+27
+end
+28
+end
+29
+f2 = score;
+30
+end
+31
+end
+## 附录B 问题二PBS 优化调度模型程序代码
+2 . 1 PBS 主程序-main22.m
+1
+clear,clc
+2
+value_vec1 = [];
+3
+value_vec2 = [];
+4
+epoch_vec = [];
+5
+6
+for ee = 4:4
+7
+result=zeros(319,10000);
+8
+result(2:319,1)=1:318;
+9
+result(1,2:10000)=0:9998;
+10
+N_of = 0;
+11
+lane_in1 = 0;
+12
+lane_in2 = 0;
+13
+car_in_now1 = −1;
+42
+
+
+
+14
+car_in_now2 = −1;
+15
+16
+lan_fig = −ones(6,9∗10,2);
+17
+18
+t_in1 = [18, 12, 6, 0, 12, 18];
+19
+t_in2 = [24, 18, 12, 6, 12, 18];
+20
+t_out1 = [18, 12, 6, 0, 12, 18];
+21
+t_out2 = [24, 18, 12, 6, 12, 18];
+22
+t_out = mean(t_out1);
+23
+lane_in = 0;
+24
+lane_out = 0;
+25
+26
+load type
+27
+load color
+28
+color = color';
+29
+type = type';
+30
+x_in = 1:318;%输入车
+31
+car_seq_in = x_in;
+32
+end_flg = 0;
+33
+34
+lane = zeros(1,6);
+35
+ret_fig = −ones(1,9∗10,2);
+36
+N_fin = 0;
+37
+car_in_now = −1;
+38
+39
+flgi = 0;
+40
+flgo = 0;
+41
+L = 0;
+42
+inflg = 0;
+43
+x_out = [];%输出车
+44
+N = 20000;
+45
+46
+epoch = 0;
+47
+% feq = 24;
+48
+feq = ee;
+49
+while epoch < N
+50
+%% 终止判定
+51
+if (numel(car_seq_in) == 0 && sum(ret_fig(1,1:90,1)) == −90 &&
+sum(sum(lan_fig(:,1:90,1))) == −540) || numel(x_out)>=318
+43
+
+
+
+52
+break;
+53
+end
+54
+55
+epoch = epoch+1;
+56
+ret_fig = ret_renew_final(ret_fig);
+57
+lan_fig = renew_final(lan_fig,flgo);
+58
+%% 进车过程
+59
+if flgi == 0
+60
+if N_fin == 1
+61
+if lane_in1 ~= 0 && car_in_now1 ~= −1
+62
+lan_fig(lane_in1,1,1) = car_in_now1;
+63
+lan_fig(lane_in1,1,2) = 0;
+64
+if ret_fig(1,1,1) ~= −1
+65
+ret_fig(1,1,1) = −1;
+66
+car_in_now1 = −1;
+67
+end
+68
+end
+69
+else
+70
+if lane_in2 ~= 0
+71
+if end_flg ~= 1
+72
+lan_fig(lane_in2,1,1) = car_in_now2;
+73
+lan_fig(lane_in2,1,2) = 0;
+74
+end
+75
+if car_in_now2 == 318
+76
+end_flg = 1;
+77
+end
+78
+end
+79
+end
+80
+[inflg,car_idx] = in_decide2(lan_fig,ret_fig,car_seq_in,...
+81
+t_in1,t_in2,lane,t_out);
+82
+if inflg == 1
+83
+if ret_fig(1,1,1) == −1
+84
+else
+85
+N_fin = 1;
+86
+% 更新本次送入车道lane_in
+87
+[lane_in1,lane] =
+Car_in(1,lane,t_in1,t_in2,t_out,lan_fig,N_fin);
+88
+flgi = t_in2(lane_in1);
+89
+car_in_now1 = ret_fig(1,1,1);
+44
+
+
+
+90
+end
+91
+else
+92
+if numel(car_seq_in) == 0
+93
+else
+94
+N_fin = 0;
+95
+car_in_now2 = car_seq_in(1);
+96
+car_seq_in(1) = [];
+97
+[lane_in2,lane] =
+Car_in(1,lane,t_in1,t_in2,t_out,lan_fig,N_fin);
+98
+flgi = t_in1(lane_in2);
+99
+end
+100
+end
+101
+else
+102
+flgi = flgi−1;
+103
+if N_fin == 1
+104
+result(car_in_now1+1,epoch) = 1;
+105
+else
+106
+result(car_in_now2+1,epoch) = 1;
+107
+end
+108
+end
+109
+110
+%% 出车过程
+111
+112
+if flgo == 0
+113
+if lane_out ~= 0 && car_out_now ~= 0 && lan_fig(lane_out,90,1)
+~= −1
+114
+x_out = [x_out,car_out_now];
+115
+end
+116
+if N_of == 1
+117
+ret_fig(1,90,1) = car_out_now;
+118
+end
+119
+if lane_out ~= 0
+120
+lan_fig(lane_out,90,1) = −1;
+121
+lan_fig(lane_out,90,2) = −1;
+122
+lane(lane_out) = lane(lane_out)−1;
+123
+end
+124
+x_seq = x_out;
+125
+%
+[car_out_now,lane_out] = Renew_lan_out(lan_fig); %
+决定接哪条道的车
+45
+
+
+
+126
+[lane_out,car_out_now,aa] =Renew_lan_out2(lan_fig,t_out1,t_out2);
+127
+128
+if car_out_now == 0 || lan_fig(lane_out,90,1) == −1
+129
+else
+130
+%
+x_out = [x_out,car_out_now];
+131
+if lan_fig(lane_out,90,1) == −1
+132
+else
+133
+[if_f,~,feq] =
+Car_out(x_seq,type,color,car_out_now,ret_fig,feq);
+134
+if if_f == 1
+135
+flgo = t_out1(lane_out);
+136
+N_of = 0;
+137
+else
+138
+flgo = t_out2(lane_out);
+139
+N_of = 1;
+140
+end
+141
+end
+142
+%
+end
+143
+end
+144
+else
+145
+result(car_out_now+1,epoch) = 2;
+146
+flgo = flgo −1;
+147
+end
+148
+149
+%% 更新过程
+150
+[lan_i,lan_j,lan_car]=Car_lan(lan_fig);
+151
+[ret_i,ret_j,ret_car]=Car_ret(ret_fig);
+152
+[m,~]=size(lan_i);
+153
+for i=1:m
+154
+if result(lan_car(i)+1,epoch) == 0
+155
+result(lan_car(i)+1,epoch)=str2num([num2str(lan_i(i)),...
+156
+num2str(lan_j(i))]);
+157
+end
+158
+end
+159
+[n,~]=size(ret_j);
+160
+for i=1:n
+161
+if result(ret_car(i)+1,epoch) == 0
+162
+result(ret_car(i)+1,epoch)=str2num(['7',...
+163
+num2str(ret_j(i))]);
+46
+
+
+
+164
+end
+165
+end
+166
+for i = 1:numel(x_out)
+167
+if result(x_out(i)+1,epoch) == 0
+168
+result(x_out(i)+1,epoch) = 3;
+169
+end
+170
+end
+171
+for i = 1:numel(car_seq_in)
+172
+if result(car_seq_in(i)+1,epoch) == 0
+173
+result(car_seq_in(i)+1,epoch) = 0;
+174
+end
+175
+end
+176
+end
+177
+for kk = 1:flgo
+178
+result(car_out_now+1,epoch+kk) = 2;
+179
+end
+180
+result(car_out_now+1,epoch+flgo+1) = 3;
+181
+epoch_vec = [epoch_vec epoch];
+182
+val_tmp1 = 0.4∗(100−fun_obj11(x_out,type))...
+183
++0.3∗(100−fun_obj22(x_out,color)) + 0.2∗(100−ee) +
+1. 1∗(100−0.01∗(epoch−2934));
+184
+val_tmp2 = 0.4∗(100−fun_obj11(x_out,type))...
+185
++0.3∗(100−fun_obj22(x_out,color));
+186
+%
+val_tmp = 0.4∗(100−fun_obj11(x_out,type))...
+187
+%
++0.3∗(100−fun_obj22(x_out,color))...
+188
+%
++ 0.1∗(100−0.01∗(epoch−2934));
+189
+value_vec1 = [value_vec1 val_tmp1];
+190
+value_vec2 = [value_vec2 val_tmp2];
+191
+end
+2 . 2 基于MTT 原则的入车选择子程序-in_decide2.m
+1
+function [inflg,car_idx] =
+in_decide2(lan_fig,ret_fig,x_seq,t_in1,t_in2,lane,t_out)
+2
+%% 决定将哪一辆车设置为进车车辆
+3
+4
+car_idxf= 0;
+5
+aa = 90;
+6
+if sum(ret_fig(1,1:90,1)) == −90 && numel(x_seq) ~= 0
+47
+
+
+
+7
+inflg = 0;
+8
+car_idx = x_seq(1);
+9
+return;
+10
+end
+11
+if numel(x_seq) == 0 && sum(ret_fig(1,1:90,1)) ~= −90
+12
+inflg = 1;
+13
+for k = 1:90
+14
+if ret_fig(1,k,1) ~= −1
+15
+car_idx = ret_fig(1,k,1);
+16
+break;
+17
+end
+18
+end
+19
+return;
+20
+end
+21
+if numel(x_seq) == 0 && sum(ret_fig(1,1:90,1)) == −90
+22
+inflg = 1;
+23
+car_idx = −1;
+24
+return;
+25
+end
+26
+for i = 1:90
+27
+if ret_fig(1,i,1) ~= −1
+28
+aa = i−1;
+29
+car_idxf = ret_fig(1,i,1);
+30
+break;
+31
+end
+32
+end
+33
+[fan_L,~] = count_L(lane,t_in1,t_in2,t_out,lan_fig,1);
+34
+[seq_L,~] = count_L(lane,t_in1,t_in2,t_out,lan_fig,0);
+35
+if aa+t_in2(fan_L) < t_in1(seq_L)
+36
+car_idx = car_idxf;
+37
+inflg = 1;
+38
+else
+39
+inflg = 0;
+40
+car_idx = x_seq(1);
+41
+end
+42
+end
+2 . 3 基于MTT 原则的出车判断子程序-out_decide.m
+48
+
+
+
+1
+function [outflg,aa,car_idx] = out_decide(lan_fig,t_out1,t_out2)
+2
+%% 决定将那一辆车设置为出车车辆
+3
+4
+ti = 90∗ones(1,6);
+5
+idx = zeros(1,6);
+6
+% minv = inf;
+7
+for i = 1:6
+8
+for j = 90:−1:1
+9
+if lan_fig(i,j,1) ~= −1
+10
+ti(i) = 90−j;
+11
+idx(i) = lan_fig(i,j,1);
+12
+break;
+13
+end
+14
+end
+15
+end
+16
+[~,outflg] = min(ti+(t_out1+t_out2)/9);
+17
+aa = ti(outflg);
+18
+car_idx = idx(outflg);
+19
+end
+2 . 4 出车车辆选取子程序-Renew_lan_out2.m
+1
+function [Lo,car_idx,aa] = Renew_lan_out2(lan_fig,t_out1,t_out2)
+2
+%% 获得出车车辆
+3
+% maxva = 0;
+4
+% maxid = 0;
+5
+idx = 0;
+6
+[Lo,aa,car_idx] = out_decide(lan_fig,t_out1,t_out2);
+7
+% if Lo ~= 0 && lan_fig(Lo,90,1) ~= −1
+8
+%
+lan_fig(Lo,90,1) = −1;
+9
+%
+lan_fig(Lo,90,2) = −1;
+10
+% end
+11
+end
+49

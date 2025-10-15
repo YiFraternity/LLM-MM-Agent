@@ -17,34 +17,6 @@
 \includegraphics[width=0.2\textwidth]{image4.png}
 \end{center}
 
-\begin{center}
-\textbf{中国研究生创新实践系列大赛} \\
-\textbf{“华为杯”第十八届中国研究生} \\
-\textbf{数学建模竞赛}
-\end{center}
-
-\bigskip
-
-\begin{tabular}{ll}
-学 & 校 \\
-& 景德镇陶瓷大学 \\
-\end{tabular}
-
-\bigskip
-
-\begin{tabular}{ll}
-参赛队号 & 21104080004 \\
-\end{tabular}
-
-\bigskip
-
-\begin{tabular}{ll}
-队员姓名 & 1. 肖佳涛 \\
-& 2. 覃文辉 \\
-& 3. 程文纺 \\
-\end{tabular}
-
-\maketitle
 
 \begin{abstract}
 本文主要研究了 UWB 的精确定位问题，针对室内环境复杂多变的特点，用卡尔曼滤波算法（EKF）来解决在信号干扰下数据异常波动的问题，精确超宽带定位。为了进一步提高定位精度，减小硬件自身以及其他问题对定位的干扰，加入了 BP 神经网络与集成学习思想的分类模型来提高精度。
@@ -66,45 +38,7 @@
 关键词：扩展卡尔曼滤波，BP 神经网络，集成学习，UWB 定位
 \end{abstract}
 
-\section{目录}
-
-\begin{itemize}
-    \item[1.] 问题重述 \dotfill 4
-    \begin{itemize}
-        \item[1.1] 问题背景 \dotfill 4
-        \item[1.2] 问题描述 \dotfill 4
-        \item[1.3] 已知条件说明 \dotfill 5
-    \end{itemize}
-    \item[2.] 模型条件假设 \dotfill 6
-    \item[3.] 符号说明 \dotfill 6
-    \item[4.] 模型建立过程中用到的相关知识 \dotfill 7
-    \begin{itemize}
-        \item[4.1] $3\sigma$ 原则 \dotfill 7
-        \item[4.2] K-Means 聚类算法 \dotfill 7
-        \item[4.3] 最小二乘解 \dotfill 7
-        \item[4.4] BP 神经网络 \dotfill 8
-        \item[4.5] F1 分数 \dotfill 8
-        \item[4.6] 均方误差 \dotfill 9
-        \item[4.7] 卡尔曼滤波原理 \dotfill 9
-        \item[4.8] 扩展卡尔曼滤波原理 \dotfill 11
-    \end{itemize}
-    \item[5.] 模型的建立与求解 \dotfill 13
-    \begin{itemize}
-        \item[5.1] 任务一模型建立与求解 \dotfill 13
-        \item[5.2] 任务二模型建立与求解 \dotfill 17
-        \item[5.3] 任务三模型建立与求解 \dotfill 21
-        \item[5.4] 任务四模型建立与求解 \dotfill 24
-        \item[5.5] 任务五模型建立与求解 \dotfill 28
-    \end{itemize}
-    \item[6.] 总结 \dotfill 33
-    \begin{itemize}
-        \item[6.1] 模型优点 \dotfill 33
-        \item[6.2] 模型缺点 \dotfill 33
-        \item[6.3] 总结与推广 \dotfill 33
-    \end{itemize}
-    \item[] 参考文献 \dotfill 34
-    \item[] 附 录 \dotfill 35
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -142,10 +76,25 @@ TOF[2] 测距方法属于双向测距技术，它主要利用信号在两个异�
 
 实验分为两个场景，每个场景都会安放1个靶点（Tag）与4个锚点(anchor)。每个场景的所有锚点静止不动，靶点可能静止可能运动。在没有特别说明时实验数据默认为靶点静止时收集到的数据。场景数据如表1-1所示:
 
-\begin{tabular}{ll}
-学 & 校 \\
-& 景德镇陶瓷大学 \\
+\begin{table}[h]
+\centering
+\caption{场景数据（单位：mm）}
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & \multicolumn{2}{c|}{实验场景1} & \multicolumn{1}{c|}{实验场景2} \\
+\hline
+靶点（Tag）范围 & \multicolumn{2}{c|}{$5000 \times 5000 \times 3000$} & $5000 \times 3000 \times 3000$ \\
+\hline
+\multirow{4}{*}{锚点（anchor）位置} & $A_{0}$ & $(0, 0, 1300)$ & $(0, 0, 1200)$ \\
+\cline{2-4}
+ & $A_{1}$ & $(5000, 0, 1700)$ & $(5000, 0, 1600)$ \\
+\cline{2-4}
+ & $A_{2}$ & $(0, 5000, 1700)$ & $(0, 3000, 1600)$ \\
+\cline{2-4}
+ & $A_{3}$ & $(5000, 5000, 1300)$ & $(5000, 3000, 1200)$ \\
+\hline
 \end{tabular}
+\end{table}
 
 \subsubsection{实验数据}
 
@@ -233,31 +182,39 @@ F1 分数（F1 Score），是统计学中用来衡量二分类模型精确度的
 
 假设 P 表示预测的正类，N 代表预测的负类，T 代表真实的正类，F 代表真实的负类。在进行二分类问题时，预测结果将会出现如表 \ref{tab:confusion_matrix} 所示的结果：
 
-\begin{tabular}{ll}
-参赛队号 & 21104080004 \\
+\begin{table}[htbp]
+\centering
+\caption{混淆矩阵}
+\begin{tabular}{|c|c|c|}
+\hline
+ & \textbf{预测} & \textbf{正例} & \textbf{负例} \\ \hline
+\textbf{结果} & & & & \\ \hline
+\textbf{真实} & 正例 & TP & FN \\ \cline{2-4}
+ & 负例 & FP & TN \\ \hline
 \end{tabular}
+\end{table}
 
-\subsubsection*{TP (True Positive): 本类标签预测为本类}
+TP (True Positive): 本类标签预测为本类
 
 FP (False Positive): 其他类预测为本类
 
 FN (False Negative): 本类标签预测为其他类
 
-\subsubsection*{精准度 (Precision): 在预测结果中，预测出来的正例数量占该预测总量的比例}
+精准度 (Precision): 在预测结果中，预测出来的正例数量占该预测总量的比例
 
 \begin{equation}
 \text{Precision} = \text{TP} / (\text{TP} + \text{FP})
 \tag{4-1}
 \end{equation}
 
-\subsubsection*{召回率 (Recall): 预测出来的该类数量占该类所有数量的比例}
+召回率 (Recall): 预测出来的该类数量占该类所有数量的比例
 
 \begin{equation}
 \text{Recall} = \text{TP} / (\text{TP} + \text{FN})
 \tag{4-2}
 \end{equation}
 
-\subsubsection*{F1-Score: F1 分数，综合了精准度和召回率，用于综合反映整体指标}
+F1-Score: F1 分数，综合了精准度和召回率，用于综合反映整体指标
 
 \begin{equation}
 \text{F1} = 2 (\text{Precision} \times \text{Recall}) / (\text{Precision} + \text{Recall})
@@ -291,11 +248,34 @@ z_k = H_k x_k + v_k
 
 公式 (4-5) 中，第 1 个方程为卡尔曼滤波状态估计方程，第 2 个方程为卡尔曼观测方程，式中变量含义如表 4-2 所示：
 
-\begin{tabular}{ll}
-队员姓名 & 1. 肖佳涛 \\
-& 2. 覃文辉 \\
-& 3. 程文纺 \\
+
+\begin{table}
+\centering
+\caption{卡尔曼方程符号说明表}
+\begin{tabular}{|c|c|p{12cm}|}
+\hline
+序号 & 变量 & 名称和作用 \\
+\hline
+1 & $x_{k}$ & 状态向量，估计预测状态 \\
+\hline
+2 & $F_{k}$ & $k-1$时刻到$k$时刻的状态转移矩阵 \\
+\hline
+3 & $B_{k}$ & 控制矩阵 \\
+\hline
+4 & $u_{x}$ & 控制向量 \\
+\hline
+5 & $\Gamma$ & 为噪声驱动矩阵 \\
+\hline
+6 & $w_{k}$ & 符合零均值且协方差矩阵为$Q_{k}$多元正态分布的过程噪声 \\
+\hline
+7 & $z_{k}$ & 观测向量，记录观测值$z_{k}$ \\
+\hline
+8 & $H_{k}$ & 观测矩阵 \\
+\hline
+9 & $v_{k}$ & 符合零均值且协方差矩阵为$R_{k}$的正态分布观测噪声 \\
+\hline
 \end{tabular}
+\end{table}
 
 从（4-5）式可知，状态方程建立了$k-1$时刻和$k$时刻状态向量间的关系，观测方程建立了$k$时刻状态向量和观测向量间的关系，因此在给定初始值后，可以得到任意时刻的估计值。
 
@@ -437,21 +417,27 @@ H_k = \left. \frac{\partial h}{\partial x} \right|_{x_{k,k-1}}
 
 将上一步得到的数据使用 K-Means 算法进行聚类，每个类别中的数据认为是相似数据，类别之间的数据认为不相似，然后取每个类别中的第一条数据，最后保留 30 条数据做为最终处理结果。
 
-\begin{tabular}{c c}
+
+\begin{table}
+\centering
+\caption{“24.正常.txt”文件数据处理后部分数据}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
+时间戳(ms) & $d_{0}(\mathrm{mm})$ & $d_{1}(\mathrm{mm})$ & $d_{2}(\mathrm{mm})$ & $d_{3}(\mathrm{mm})$ \\
+ & ($A_{0}$到靶点距离) & ($A_{1}$到靶点距离) & ($A_{2}$到靶点距离) & ($A_{3}$到靶点距离) \\
 \hline
-符号 & 含义说明 \\
+094843811 & 3280 & 4660 & 2600 & 3910 \\
 \hline
-$A_{i}, i=0,1,2,3$ & 锚点（anchor） \\
-$d_{i}, i=0,1,2,3$ & $A_{i}$锚点到$Tag$靶点的测距 \\
-$Tag$ & 靶点（Tag） \\
-$BP$ & Back Propagation \\
-$KF$ & 卡尔曼滤波 \\
-$EKF$ & 扩展卡尔曼滤波 \\
-$MSE$ & 均方误差 \\
+094844019 & 3280 & 4670 & 2600 & 3920 \\
 \hline
+\multicolumn{5}{|c|}{\dots} \\
+\hline
+094910925 & 3300 & 4650 & 2610 & 3900 \\
+\hline
+094912796 & 3300 & 4660 & 2610 & 3920 \\
 \hline
 \end{tabular}
+\end{table}
 
 \begin{table}
 \centering
@@ -600,7 +586,13 @@ d_{2}^{2}-d_{3}^{2}+x_{3}^{2}+y_{3}^{2}+z_{3}^{2}-x_{2}^{2}-y_{2}^{2}-z_{2}^{2}
 由最佳最小二乘解得到的 $X$ 为靶点位置的初始预测值，考虑到硬件误差、人为操作误差以及其他原因，需要对 $X$ 进行修正，修正方法采用 BP 神经网络。
 
 将场景 1 中各锚点 $A_{0}, A_{1}, A_{2}, A_{3}$ 作为输入，结合任务一处理后的 $d_{0}, d_{1}, d_{2}, d_{3}$ 数据，使用最小二乘法求解出初始的 Tag 坐标 $(x_{1}, y_{1}, z_{1})$，将 $(x_{1}, y_{1}, z_{1})$ 作为输入，真实的 Tag 坐标 $(x, y, z)$ 作为输出，输入到 BP 网络模型中进行训练，最后得出完整定位模型。由于数据分
-
+为信号无干扰数据和有干扰数据，所以会得出 2 个定位模型，分别记作无干扰定位模型、
+有干扰定位模型。
+保存训练好的模型，只需要输入锚点的位置信息，靶点返回的初始测量距离即可得到
+高精度的靶点精确定位。
+\subsubsection{5.2.4 任务求解与模型评估分析}
+（1）结果展示
+使用无干扰定位模型对附件 2 中的无干扰信号求解，最终的定位结果如表 5-5 所示：
 \begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|c|}
@@ -667,7 +659,7 @@ d_{2}^{2}-d_{3}^{2}+x_{3}^{2}+y_{3}^{2}+z_{3}^{2}-x_{2}^{2}-y_{2}^{2}-z_{2}^{2}
 \end{tabular}
 \end{table}
 
-\subsubsection{模型评估}
+(2)模型评估
 
 无干扰定位模型损失情况如图5-5所示：
 
@@ -741,6 +733,7 @@ val\_n\_loss: 模型训练过程中的测试集各个输出通道的损失值
 (3) 定位模型求取高精度定位
 
 分别使用无干扰与有干扰定位模型分别对(2)中求取的两组位置数据求解，获得两组高精度靶点位置信息数据。
+
 
 \begin{table}
 \centering
@@ -853,6 +846,7 @@ Random Forest (随机森林) [9] & 泛化能力强，可以平衡误差 & 数据
 
 分类模型训练好后，将附件 4 中预处理好的数据直接导入分类模型得出结果。
 
+
 \begin{table}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -881,12 +875,7 @@ Random Forest (随机森林) [9] & 泛化能力强，可以平衡误差 & 数据
 \hline
 \end{tabular}
 \caption{附件4 数据分类预测表}
-\end{table}
-
-\begin{table}
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
+\end{table}\hline
 Classification & Precision & Recall & F1-score & Support \\
 \hline
 0 & 0.97 & 1.00 & 0.99 & 2421 \\
@@ -910,9 +899,27 @@ Weighted avg & 0.99 & 0.98 & 0.98 & 4860 \\
     \item Macro avg表示宏平均，是所有类的F1值的算术平均。
 \end{itemize}
 
-\subsection{任务五模型建立与求解}
-
-\subsubsection{任务五问题分析}
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+序号 & 时间戳 & $d_{0}$ & $d_{1}$ & $d_{2}$ & $d_{3}$ & 数据编号 & 时间戳之差$\Delta T$ \\
+\hline
+\multirow{2}{*}{1} & 110959934 & 2420 & 4630 & 2950 & 4970 & 23203 & \multirow{2}{*}{40210} \\
+\cline{2-7}
+ & 111000144 & 2440 & 4620 & 2930 & 4970 & 63413 & \\
+\hline
+\multirow{2}{*}{2} & 111059813 & 3640 & 1550 & 5630 & 4570 & 123082 & \multirow{2}{*}{40210} \\
+\cline{2-7}
+ & 111100023 & 3630 & 1560 & 5620 & 4570 & 163292 & \\
+\hline
+\multirow{2}{*}{3} & 111127612 & 6360 & 4450 & 4500 & 870 & 190881 & \multirow{2}{*}{419} \\
+\cline{2-7}
+ & 111128031 & 6380 & 4460 & 4500 & 850 & 191300 & \\
+\hline
+\end{tabular}
+\caption{表5-15 时间戳之差特殊情况表}
+\end{table}
 
 可以发现序号1、2的两处锚点到靶点所测量出的距离相近，各出现了40s的停留，将1、2两处靶点移动的时间定为采样时间$T$，为方便起见将数据以1、2处为界分为三段。在序号3处两条记录时间戳之差为419ms，需在两条记录间线性差值补充一条记录。如表5-16所示：
 
@@ -1145,25 +1152,1501 @@ UWB室内定位最主要是解决NLOS误差以及环境噪声，本文建立的�
 
 \end{document}
 
-% Missing placeholders restored
-\begin{table}
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
-\hline
-序号 & 时间戳 & $d_{0}$ & $d_{1}$ & $d_{2}$ & $d_{3}$ & 数据编号 & 时间戳之差$\Delta T$ \\
-\hline
-\multirow{2}{*}{1} & 110959934 & 2420 & 4630 & 2950 & 4970 & 23203 & \multirow{2}{*}{40210} \\
-\cline{2-7}
- & 111000144 & 2440 & 4620 & 2930 & 4970 & 63413 & \\
-\hline
-\multirow{2}{*}{2} & 111059813 & 3640 & 1550 & 5630 & 4570 & 123082 & \multirow{2}{*}{40210} \\
-\cline{2-7}
- & 111100023 & 3630 & 1560 & 5620 & 4570 & 163292 & \\
-\hline
-\multirow{2}{*}{3} & 111127612 & 6360 & 4450 & 4500 & 870 & 190881 & \multirow{2}{*}{419} \\
-\cline{2-7}
- & 111128031 & 6380 & 4460 & 4500 & 850 & 191300 & \\
-\hline
-\end{tabular}
-\caption{表5-15 时间戳之差特殊情况表}
-\end{table}
+\section{附录}
+附录一：数据预处理列举文件
+注：其他数据及程序源码文件详见上传附件
+（1）“24.正常.txt”处理后数据
+时间戳(ms)
+݀0 mm
+݀1 mm
+݀2 mm
+݀3 mm
+094843811
+3280
+4660
+2600
+3910
+094844019
+3280
+4670
+2600
+3920
+094844643
+3280
+4660
+2600
+3900
+094844851
+3280
+4660
+2610
+3920
+094845267
+3280
+4660
+2610
+3910
+094845891
+3290
+4660
+2600
+3920
+094846499
+3300
+4650
+2590
+3920
+094846706
+3290
+4660
+2590
+3910
+094847122
+3280
+4660
+2590
+3890
+094847330
+3280
+4650
+2590
+3880
+094847953
+3280
+4660
+2590
+3920
+094848162
+3280
+4660
+2590
+3910
+094848371
+3270
+4670
+2600
+3900
+094848578
+3270
+4660
+2600
+3910
+094849394
+3290
+4660
+2610
+3910
+094851473
+3280
+4670
+2610
+3930
+094853953
+3270
+4660
+2590
+3880
+094854161
+3270
+4650
+2590
+3890
+094854784
+3270
+4670
+2590
+3900
+094854993
+3270
+4680
+2590
+3900
+094856224
+3280
+4650
+2590
+3900
+094856848
+3280
+4640
+2600
+3900
+094857056
+3270
+4660
+2600
+3890
+
+
+
+36
+094902655
+3270
+4670
+2590
+3920
+094903071
+3270
+4660
+2590
+3940
+094908446
+3270
+4670
+2600
+3910
+094908861
+3280
+4670
+2600
+3890
+094910301
+3290
+4660
+2610
+3900
+094910925
+3300
+4650
+2610
+3900
+094912796
+3300
+4660
+2610
+3920
+（2）“109.正常.txt”处理后数据
+时间戳(ms)
+݀0 mm
+݀1 mm
+݀2 mm
+݀3 mm
+144156086
+4910
+5310
+2030
+2870
+144156294
+4920
+5310
+2020
+2870
+144156710
+4920
+5310
+2020
+2880
+144157750
+4890
+5310
+2020
+2880
+144157958
+4880
+5310
+2020
+2880
+144158166
+4890
+5310
+2020
+2870
+144159829
+4880
+5320
+2020
+2860
+144200245
+4860
+5320
+2020
+2870
+144201077
+4860
+5320
+2030
+2870
+144203157
+4890
+5330
+2030
+2880
+144203572
+4910
+5320
+2020
+2880
+144204196
+4910
+5320
+2040
+2880
+144208979
+4890
+5320
+2020
+2880
+
+
+
+37
+144209811
+4890
+5320
+2010
+2880
+144210435
+4910
+5320
+2010
+2880
+144212099
+4910
+5330
+2030
+2880
+144213762
+4880
+5340
+2010
+2880
+144214386
+4880
+5330
+2040
+2880
+144215009
+4870
+5330
+2050
+2870
+144217090
+4860
+5320
+2030
+2890
+144217713
+4890
+5320
+2040
+2890
+144218753
+4880
+5330
+2040
+2870
+144222703
+4910
+5340
+2010
+2890
+144224784
+4920
+5330
+2030
+2870
+144226863
+4910
+5340
+2040
+2880
+144227487
+4920
+5340
+2040
+2890
+144232894
+4910
+5340
+2060
+2880
+144233726
+4890
+5340
+2040
+2890
+144235391
+4910
+5330
+2040
+2900
+144244123
+4930
+5340
+2020
+2880
+
+
+
+38
+（3）“1.异常.txt”处理后数据
+时间戳(ms)
+݀0 mm
+݀1 mm
+݀2 mm
+݀3 mm
+090531088
+1280
+4550
+4550
+6300
+090531296
+1260
+4550
+4550
+6300
+090531711
+1240
+4550
+4550
+6300
+090532335
+1230
+4550
+4550
+6300
+090532751
+1290
+4550
+4550
+6300
+090533983
+1250
+4550
+4560
+6300
+090534399
+1230
+4550
+4570
+6300
+090534814
+1280
+4550
+4560
+6300
+090539774
+1220
+4540
+4550
+6300
+090540605
+1270
+4540
+4550
+6310
+090541229
+1210
+4540
+4560
+6300
+090541853
+1200
+4550
+4550
+6300
+090545996
+1270
+4550
+4550
+6290
+090609799
+770
+5040
+4540
+6300
+090610007
+770
+5000
+4540
+6290
+090610215
+760
+5060
+4540
+6290
+090610422
+770
+5030
+4540
+6290
+090610822
+770
+5070
+4550
+6290
+090611030
+760
+5050
+4550
+6290
+
+
+
+39
+090611862
+780
+5030
+4550
+6300
+090613942
+760
+5010
+4550
+6300
+090617045
+760
+5030
+4550
+6300
+090617653
+760
+5030
+4550
+6310
+090618069
+750
+5070
+4550
+6310
+090621588
+770
+5070
+4550
+6310
+090621796
+760
+5050
+4540
+6310
+090623875
+780
+5000
+4550
+6310
+090624083
+770
+5000
+4550
+6300
+090626563
+780
+5050
+4550
+6300
+090640431
+780
+5010
+4550
+6280
+（4）“100.异常.txt”处理后数据
+时间戳(ms)
+݀0 mm
+݀1 mm
+݀2 mm
+݀3 mm
+115709181
+1510
+3750
+4690
+5710
+115709389
+1520
+3720
+4680
+5720
+115710413
+1510
+3730
+4680
+5710
+115710621
+1510
+3720
+4680
+5710
+115710829
+1520
+3750
+4680
+5710
+115711037
+1530
+3760
+4690
+5700
+115711453
+1510
+3770
+4690
+5700
+
+
+
+40
+115712493
+1510
+3790
+4680
+5700
+115712701
+1510
+3820
+4680
+5700
+115714348
+1520
+3860
+4680
+5710
+115718492
+1490
+3780
+4670
+5700
+115726362
+1510
+3700
+4670
+5700
+115750422
+1510
+3560
+5290
+5710
+115750630
+1510
+3560
+5230
+5710
+115750839
+1510
+3560
+5190
+5700
+115751046
+1510
+3560
+5110
+5700
+115751254
+1510
+3560
+5060
+5710
+115751461
+1510
+3560
+5010
+5710
+115751670
+1510
+3560
+4970
+5710
+115752086
+1510
+3550
+4950
+5710
+115752710
+1510
+3560
+4930
+5700
+115752918
+1510
+3560
+4910
+5700
+115753126
+1520
+3560
+4890
+5700
+115753333
+1520
+3560
+4870
+5700
+115753542
+1520
+3560
+4860
+5710
+115753750
+1520
+3560
+4850
+5710
+115754789
+1510
+3560
+5030
+5710
+115754981
+1510
+3560
+5140
+5710
+
+
+
+41
+115758725
+1520
+3560
+4910
+5690
+115806212
+1510
+3560
+4810
+5700
+附录二: 数据处理程序
+import pandas as pd
+import numpy as np
+import os.path
+from sklearn.cluster import KMeans
+# 遍历读取文件
+path_yc = './datas/附件1：UWB 数据集/异常数据/'
+path_zc = './datas/附件1：UWB 数据集/正常数据/'
+# 所有正常异常文件的名字
+zcs = os.listdir(path_zc)
+ycs = os.listdir(path_yc)
+def normfun(x, mu, sigma):
+return np.exp(-((x - mu) ** 2) / (2 * (sigma ** 2))) / (sigma * np.sqrt(2 *
+np.pi))
+def dropEx(a, index_ex):
+mean = a.mean()
+std = a.std()
+low = mean - 3 * std
+high = mean + 3 * std
+index_lex = np.where(a <= low)[0]
+index_hex = np.where(a >= high)[0]
+index_ex.append(index_lex)
+index_ex.append(index_hex)
+# 处理每个文件的方法：去重，去相似，处理异常值
+def fixdata(path):
+file_num = path.split('/')[-1].split('.')[0]
+file_type = path.split('/')[-1].split('.')[1]
+data = pd.read_table(path)
+# 1.检查有没有缺失异常，有缺失时填充该行
+if data.isnull().any()[0] == True:
+print(path + '=====有缺失')
+data.fillna(axis=0, method='backfill')
+# 2.创建空df
+hs = data.shape[0]
+lieming = ['时间戳', 'D0', 'D1', 'D2', 'D3']
+df = pd.DataFrame(columns=lieming)
+# 3.将每组数据的s0,s1,s2,s3 放置到同一行
+mindex = 0
+
+
+
+42
+for i in range(0, hs, 4):
+## RR0 = data.iloc[i, 0]
+RR0S = RR0.split(':')
+## RR1 = data.iloc[i + 1, 0]
+RR1S = RR1.split(':')
+## RR2 = data.iloc[i + 2, 0]
+RR2S = RR2.split(':')
+## RR3 = data.iloc[i + 3, 0]
+RR3S = RR3.split(':')
+# 2.获取每组的四个距离
+# T = RR0S[1]
+s0 = int(RR0S[5])
+s1 = int(RR1S[5])
+s2 = int(RR2S[5])
+s3 = int(RR3S[5])
+df.loc[mindex, lieming] = [T, s0, s1, s2, s3]
+mindex = mindex + 1
+# 5.去异常
+a0 = np.array(df['D0'])
+a1 = np.array(df['D1'])
+a2 = np.array(df['D2'])
+a3 = np.array(df['D3'])
+index_ex = []
+# 要去除的下标
+dropEx(a0, index_ex)
+dropEx(a1, index_ex)
+dropEx(a2, index_ex)
+dropEx(a3, index_ex)
+# 遍历index_ex 元素来进行删除异常值，由于可能有重复的
+# 需要二次保存要去除的下标
+index_ex2 = []
+for i in index_ex:
+for rindex in i:
+if rindex not in index_ex2:
+index_ex2.append(rindex)
+# 去重复保留第一条
+index_dup = np.where(df.iloc[:, 1:].duplicated())[0]
+for i in index_dup:
+if i not in index_ex2:
+index_ex2.append(i)
+df = df.drop(index_ex2, axis=0)
+# 重置索引，方便下面取30 条数据
+df.index = range(len(df))
+# 6.k-means 去相似
+n = 30
+if len(df) < 30:
+n = len(df)
+km = KMeans(n_clusters=n)
+x_data = df.iloc[:, 1:]
+
+
+
+43
+y = km.fit_predict(x_data)
+# 将numpy 数组转为普通数组
+yy = []
+for i in y:
+yy.append(i)
+# 保留最后n 条数据
+index_ex3 = []
+save_index = []
+for i in range(n):
+save_index.append(yy.index(i))
+for i in range(len(df)):
+if i not in save_index:
+index_ex3.append(i)
+df = df.drop(index_ex3, axis=0)
+# 7.输出最后文件
+df.to_excel('./newdatas/' + file_type + '数据/' + file_num + '.' + file_type +
+'.xls', index=False)
+return df
+# 修改后的正常数据与异常数据的汇总
+lieming = ['时间戳', 'D0', 'D1', 'D2', 'D3']
+zcdf = pd.DataFrame(columns=lieming)
+ycdf = pd.DataFrame(columns=lieming)
+for txt in zcs:
+file_path = path_zc + txt
+df = fixdata(file_path)
+zcdf = zcdf.append(df)
+for txt in ycs:
+file_path = path_yc + txt
+df = fixdata(file_path)
+ycdf = ycdf.append(df)
+zcdf.to_csv('./newdatas/正常数据.csv', index=False)
+ycdf.to_csv('./newdatas/异常数据.csv', index=False)
+附录三: 任务二求解
+1. 1、无干扰定位模型和有干扰定位模型
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import os.path
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+# 1.将所有正常与异常文件的路径合并成集合
+zcspath = './newdatas/正常数据/'
+ycspath = './newdatas/异常数据/'
+
+
+
+44
+zcfilesname = os.listdir(zcspath)
+ycfilesname = os.listdir(ycspath)
+zcfilespath = []
+ycfilespath = []
+for name in zcfilesname:
+zcfilespath.append(zcspath + name)
+for name in ycfilesname:
+ycfilespath.append(ycspath + name)
+# 2.使用最小二乘法得到初始(x,y,z)
+## # 输入A0,A1,A2,A3，以及正异常D 的值
+# 场景1 的锚点位置
+A0 = (0, 0, 1300)
+A1 = (5000, 0, 1700)
+A2 = (0, 5000, 1700)
+A3 = (5000, 5000, 1300)
+x0 = A0[0]
+y0 = A0[1]
+z0 = A0[2]
+x1 = A1[0]
+y1 = A1[1]
+z1 = A1[2]
+x2 = A2[0]
+y2 = A2[1]
+z2 = A2[2]
+x3 = A3[0]
+y3 = A3[1]
+z3 = A3[2]
+# 最小二乘法
+A = [[x0 - x3, y0 - y3, z0 - z3],
+[x1 - x3, y1 - y3, z1 - z3],
+[x2 - x3, y2 - y3, z2 - z3]]
+A = np.multiply(-2, A)
+def getRes(d0, d1, d2, d3):
+b = np.array([[d0 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x0 ** 2 - y0 ** 2 - z0 ** 2],
+[d1 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x1 ** 2 - y1 ** 2 - z1
+** 2],
+[d2 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x2 ** 2 - y2 ** 2 - z2
+** 2]])
+x, y, z = np.dot((np.dot((np.linalg.inv(np.dot(A.T, A))), A.T)), b)
+# x, y, z = np.dot(np.linalg.inv(A), b)
+return x[0], y[0], z[0]
+def getLoc(path):
+data = pd.read_excel(path)
+
+
+
+45
+# 获取每个文件的数据
+counts = data.shape[0]
+d = []
+loc = []
+for i in range(counts):
+[d0, d1, d2, d3] = data.iloc[i, 1:]
+* append([d0, d1, d2, d3])
+for dlist in d:
+x, y, z = getRes(dlist[0], dlist[1], dlist[2], dlist[3])
+loc.append([x, y, z])
+loc = np.array(loc)
+xx = range(counts)
+x = loc[:, 0]
+y = loc[:, 1]
+z = loc[:, 2]
+return np.array([x, y, z]).T
+# 3.获取正常与异常数据根据最小二乘得到的(x,y,z)
+tagData = {....}
+zcfirstxyz = []
+zcrealxyz = []
+ycfirstxyz = []
+ycrealxyz = []
+for path in zcfilespath:
+fileNum = int(path.split('/')[-1].split('.')[0])
+locs = getLoc(path) # 获取初始坐标预测结果
+num = locs.shape[0] # 该Tag 坐标组内的坐标数量
+# 将获取到的坐标信息添加到总集合
+for loc in locs:
+zcfirstxyz.append(loc)
+# 创建对应的标签值
+for i in range(num):
+zcrealxyz.append(tagData[fileNum])
+for path in ycfilespath:
+fileNum = int(path.split('/')[-1].split('.')[0])
+locs = getLoc(path) # 获取初始坐标预测结果
+num = locs.shape[0] # 该Tag 坐标组内的坐标数量
+# 将获取到的坐标信息添加到总集合
+for loc in locs:
+ycfirstxyz.append(loc)
+# 创建对应的标签值
+for i in range(num):
+ycrealxyz.append(tagData[fileNum])
+
+
+
+46
+# # 4.创建BP 模型
+def getModel():
+input = tf.keras.layers.Input(shape=[3])
+hidden1 = tf.keras.layers.Dense(30, activation='relu')(input)
+bn = tf.keras.layers.BatchNormalization()(hidden1)
+hidden2 = tf.keras.layers.Dense(30, activation='relu')(bn)
+output1 = tf.keras.layers.Dense(1)(hidden2)
+output2 = tf.keras.layers.Dense(1)(hidden2)
+output3 = tf.keras.layers.Dense(1)(hidden2)
+model = tf.keras.models.Model(inputs=input, outputs=[output1, output2, output3])
+model.compile(loss='mse', optimizer='adam')
+return model
+def lossView(h):
+pd.DataFrame(h.history).plot()
+plt.grid(True)
+plt.xlabel('epochs')
+plt.ylabel('loss')
+plt.show()
+# 5 创建正常与异常数据的模型训练集
+zcfirstxyz = np.array(zcfirstxyz)
+zcrealxyz = np.array(zcrealxyz)
+ycfirstxyz = np.array(ycfirstxyz)
+ycrealxyz = np.array(ycrealxyz)
+zcx_train, zcx_test, zcy_train, zcy_test = train_test_split(zcfirstxyz, zcrealxyz)
+ycx_train, ycx_test, ycy_train, ycy_test = train_test_split(ycfirstxyz, ycrealxyz)
+zcy_train0 = zcy_train[:,0]
+zcy_train1 = zcy_train[:,1]
+zcy_train2 = zcy_train[:,2]
+zcy_test0 = zcy_test[:,0]
+zcy_test1 = zcy_test[:,1]
+zcy_test2 = zcy_test[:,2]
+ycy_train0 = ycy_train[:,0]
+ycy_train1 = ycy_train[:,1]
+ycy_train2 = ycy_train[:,2]
+ycy_test0 = ycy_test[:,0]
+ycy_test1 = ycy_test[:,1]
+ycy_test2 = ycy_test[:,2]
+zcmodel= getModel()
+ycmodel= getModel()
+zch
+=
+zcmodel.fit(zcx_train,[zcy_train0,zcy_train1,zcy_train2],epochs=25,verbose=1,validation_data=(
+zcx_test,[zcy_test0,zcy_test1,zcy_test2]))
+ych
+=
+
+
+
+47
+ycmodel.fit(ycx_train,[ycy_train0,ycy_train1,ycy_train2],epochs=25,verbose=1,validation_data=
+(ycx_test,[ycy_test0,ycy_test1,ycy_test2]))
+lossView(zch)
+lossView(ych)
+print(zcmodel.metrics_names)
+print(zcmodel.evaluate(zcx_test, [zcy_test0, zcy_test1, zcy_test2]))
+print(ycmodel.evaluate(ycx_test, [ycy_test0, ycy_test1, ycy_test2]))
+#
+zcmodel.save('./mymodel/task2zc.h5')
+ycmodel.save('./mymodel/task2yc.h5')
+1. 附件二求解
+import tensorflow as tf
+import numpy as np
+import pandas as pd
+def fixdata(file_type, path):
+data = pd.read_table(path, header=None)
+hs = data.shape[0]
+lieming = ['时间戳', 'D0', 'D1', 'D2', 'D3']
+df = pd.DataFrame(columns=lieming)
+# 3.将每组数据的s0,s1,s2,s3 放置到同一行
+mindex = 0
+for i in range(0, hs, 4):
+## RR0 = data.iloc[i, 0]
+RR0S = RR0.split(':')
+## RR1 = data.iloc[i + 1, 0]
+RR1S = RR1.split(':')
+## RR2 = data.iloc[i + 2, 0]
+RR2S = RR2.split(':')
+## RR3 = data.iloc[i + 3, 0]
+RR3S = RR3.split(':')
+# 2.获取每组的四个距离
+# T = RR0S[1]
+s0 = int(RR0S[5])
+s1 = int(RR1S[5])
+s2 = int(RR2S[5])
+s3 = int(RR3S[5])
+df.loc[mindex, lieming] = [T, s0, s1, s2, s3]
+mindex = mindex + 1
+# 7.输出最后文件
+df.to_excel('./ 附件2 数据/' + file_type + ' 数据处理后'
+'.xls',
+
+
+
+48
+index=False)
+# 场景1 的锚点位置
+A0 = (0, 0, 1300)
+A1 = (5000, 0, 1700)
+A2 = (0, 5000, 1700)
+A3 = (5000, 5000, 1300)
+x0 = A0[0]
+y0 = A0[1]
+z0 = A0[2]
+x1 = A1[0]
+y1 = A1[1]
+z1 = A1[2]
+x2 = A2[0]
+y2 = A2[1]
+z2 = A2[2]
+x3 = A3[0]
+y3 = A3[1]
+z3 = A3[2]
+# 最小二乘法
+A = [[x0 - x3, y0 - y3, z0 - z3],
+[x1 - x3, y1 - y3, z1 - z3],
+[x2 - x3, y2 - y3, z2 - z3]]
+A = np.multiply(-2, A)
+def getRes(d0, d1, d2, d3):
+b = np.array([[d0 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x0 ** 2 -
+y0 ** 2 - z0 ** 2],
+[d1 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x1 ** 2
+- y1 ** 2 - z1 ** 2],
+[d2 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x2 ** 2
+- y2 ** 2 - z2 ** 2]])
+x, y, z = np.dot((np.dot((np.linalg.inv(np.dot(A.T, A))), A.T)), b)
+# x, y, z = np.dot(np.linalg.inv(A), b)
+return x[0], y[0], z[0]
+def getLoc(path):
+data = pd.read_excel(path)
+# 获取每个文件的数据
+counts = data.shape[0]
+d = []
+loc = []
+for i in range(counts):
+[d0, d1, d2, d3] = data.iloc[i, 1:]
+* append([d0, d1, d2, d3])
+for dlist in d:
+
+
+
+49
+x, y, z = getRes(dlist[0], dlist[1], dlist[2], dlist[3])
+loc.append([x, y, z])
+loc = np.array(loc)
+x = loc[:, 0]
+y = loc[:, 1]
+z = loc[:, 2]
+return np.array([x, y, z]).T
+if __name__ == '__main__':
+# fixdata('正常','附件2 数据/附件2 正常数据.txt')
+# fixdata('异常','附件2 数据/附件2 异常数据.txt')
+zcpath = '附件2 数据/正常数据处理后.xls'
+ycpath = '附件2 数据/异常数据处理后.xls'
+zcLoc = getLoc(zcpath)
+ycLoc = getLoc(ycpath)
+zcmodel = tf.keras.models.load_model('./mymodel/task2zc.h5')
+ycmodel = tf.keras.models.load_model('./mymodel/task2yc.h5')
+zcpre = zcmodel.predict(zcLoc)
+ycpre = ycmodel.predict(ycLoc)
+print(zcpre)
+print(ycpre)
+1. 3、定位模型精度求解
+import pandas as pd
+import numpy as np
+zcpre = pd.read_csv('temp/zcpre.csv')
+ycpre = pd.read_csv('temp/ycpre.csv')
+real = pd.read_csv('temp/real.csv').iloc[:,1:]
+pre = zcpre.append(ycpre).iloc[:,1:]
+xypre = pre.iloc[:,0:2]
+xzpre = pre.iloc[:,[0,2]]
+yzpre = pre.iloc[:,1:]
+xpre = pre.iloc[:,0]
+ypre = pre.iloc[:,1]
+zpre = pre.iloc[:,2]
+# 3 维精度
+
+
+
+50
+loss = (pre-real)**2
+xyzloss = np.sqrt(np.mean(np.mean(loss)))
+print('xyzloss:',xyzloss)
+# 2 维精度
+xyloss = (xypre-real.iloc[:,0:2])**2
+xzloss = (xzpre-real.iloc[:,[0,2]])**2
+yzloss = (yzpre-real.iloc[:,1:])**2
+xyzloss = np.sqrt(np.mean(np.mean(xyloss)))
+xzloss = np.sqrt(np.mean(np.mean(xzloss)))
+yzloss = np.sqrt(np.mean(np.mean(yzloss)))
+print('xyloss:',xyzloss)
+print('xzloss:',xzloss)
+print('yzloss:',yzloss)
+# 1 维精度
+xloss = (xpre-real.iloc[:,0])**2
+yloss = (ypre-real.iloc[:,1])**2
+zloss = (zpre-real.iloc[:,2])**2
+xloss = np.sqrt(np.mean(np.mean(xloss)))
+yloss = np.sqrt(np.mean(np.mean(yloss)))
+zloss = np.sqrt(np.mean(np.mean(zloss)))
+print('xloss:',xloss)
+print('yloss:',yloss)
+print('zloss:',zloss)
+
+
+
+51
+附录四：任务三求解
+import tensorflow as tf
+import numpy as np
+import pandas as pd
+def fixdata(file_type,path):
+data = pd.read_table(path,header=None)
+hs = data.shape[0]
+lieming = ['时间戳', 'D0', 'D1', 'D2', 'D3']
+df = pd.DataFrame(columns=lieming)
+# 3.将每组数据的s0,s1,s2,s3 放置到同一行
+mindex = 0
+for i in range(0, hs, 4):
+## RR0 = data.iloc[i, 0]
+RR0S = RR0.split(':')
+## RR1 = data.iloc[i + 1, 0]
+RR1S = RR1.split(':')
+## RR2 = data.iloc[i + 2, 0]
+RR2S = RR2.split(':')
+## RR3 = data.iloc[i + 3, 0]
+RR3S = RR3.split(':')
+# 2.获取每组的四个距离
+# T = RR0S[1]
+s0 = int(RR0S[5])
+s1 = int(RR1S[5])
+s2 = int(RR2S[5])
+s3 = int(RR3S[5])
+df.loc[mindex, lieming] = [T, s0, s1, s2, s3]
+mindex = mindex + 1
+# 7.输出最后文件
+df.to_excel('./ 附件3 数据/' + file_type + ' 数据处理后'
+'.xls',
+index=False)
+# 场景1 的锚点位置
+A0 = (0, 0, 1200)
+A1 = (5000, 0, 1600)
+A2 = (0, 3000, 1600)
+A3 = (5000, 3000, 1200)
+x0 = A0[0]
+y0 = A0[1]
+z0 = A0[2]
+x1 = A1[0]
+y1 = A1[1]
+z1 = A1[2]
+x2 = A2[0]
+y2 = A2[1]
+z2 = A2[2]
+x3 = A3[0]
+y3 = A3[1]
+z3 = A3[2]
+
+
+
+52
+# 最小二乘法
+A = [[x0 - x3, y0 - y3, z0 - z3],
+[x1 - x3, y1 - y3, z1 - z3],
+[x2 - x3, y2 - y3, z2 - z3]]
+A = np.multiply(-2, A)
+def getRes(d0, d1, d2, d3):
+b = np.array([[d0 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x0 ** 2 -
+y0 ** 2 - z0 ** 2],
+[d1 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x1 ** 2
+- y1 ** 2 - z1 ** 2],
+[d2 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x2 ** 2
+- y2 ** 2 - z2 ** 2]])
+x, y, z = np.dot((np.dot((np.linalg.inv(np.dot(A.T, A))), A.T)), b)
+# x, y, z = np.dot(np.linalg.inv(A), b)
+return x[0], y[0], z[0]
+def getLoc(path):
+data = pd.read_excel(path)
+# 获取每个文件的数据
+counts = data.shape[0]
+d = []
+loc = []
+for i in range(counts):
+[d0, d1, d2, d3] = data.iloc[i, 1:]
+* append([d0, d1, d2, d3])
+for dlist in d:
+x, y, z = getRes(dlist[0], dlist[1], dlist[2], dlist[3])
+loc.append([x, y, z])
+loc = np.array(loc)
+x = loc[:, 0]
+y = loc[:, 1]
+z = loc[:, 2]
+return np.array([x, y, z]).T
+if __name__ == '__main__':
+fixdata('正常','附件3 数据/附件3 正常数据.txt')
+fixdata('异常','附件3 数据/附件3 异常数据.txt')
+zcpath = '附件3 数据/正常数据处理后.xls'
+ycpath = '附件3 数据/异常数据处理后.xls'
+zcLoc = getLoc(zcpath)
+ycLoc = getLoc(ycpath)
+zcmodel = tf.keras.models.load_model('./mymodel/task2zc.h5')
+ycmodel = tf.keras.models.load_model('./mymodel/task2yc.h5')
+zcpre = zcmodel.predict(zcLoc)
+ycpre = ycmodel.predict(ycLoc)
+print(zcpre)
+print(ycpre)
+
+
+
+53
+附录五：任务四求解
+import joblib
+import pandas as pd
+import numpy as np
+import os.path
+import matplotlib.pyplot as plt
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report,confusion_matrix
+from sklearn.preprocessing import StandardScaler
+from sklearn import neighbors
+from sklearn.ensemble import RandomForestClassifier,BaggingClassifier
+from scipy import stats
+# 遍历单个文件的数据
+def getSingleData(path):
+data = pd.read_excel(path)
+data = data.iloc[:, 1:]
+return data
+def getAlldatas():
+allzc = pd.DataFrame()
+allyc = pd.DataFrame()
+# 遍历读取文件
+path_zc = './newdatas/正常数据/'
+path_yc = './newdatas/异常数据/'
+zcs = os.listdir(path_zc)
+ycs = os.listdir(path_yc)
+for zc in zcs:
+zc_path = path_zc + zc
+data = getSingleData(zc_path)
+allzc = allzc.append(data, ignore_index=True)
+for yc in ycs:
+yc_path = path_yc + yc
+data = getSingleData(yc_path)
+allyc = allyc.append(data, ignore_index=True)
+allzc.to_csv('./newdatas/正常数据.csv', index=False)
+allyc.to_csv('./newdatas/异常数据.csv', index=False)
+def makeModel():
+x1 = pd.read_csv('./newdatas/正常数据.csv').iloc[:,1:]
+x2 = pd.read_csv('./newdatas/异常数据.csv').iloc[:,1:]
+x = x1.append(x2,ignore_index=True)
+# 0 正常
+1 异常
+n1 = x1.shape[0]
+n2 = x2.shape[0]
+y = np.zeros(n1+n2)
+y[n1:]=1
+x = StandardScaler().fit_transform(x)
+
+
+
+54
+x_train, x_test, y_train, y_test = train_test_split(x, y)
+knn = neighbors.KNeighborsClassifier()
+knn.fit(x_train,y_train)
+print('knn_score====', knn.score(x_test,y_test))
+joblib.dump(knn, './mymodel/knn_task4.pkl')
+print(confusion_matrix(y_test, knn.predict(x_test)))
+print(classification_report(y_test, knn.predict(x_test)))
+print('===============================================')
+RF1 = RandomForestClassifier(n_estimators=10,min_samples_split=2)
+RF1.fit(x_train, y_train)
+print('RF1_score====', RF1.score(x_test, y_test))
+joblib.dump(RF1, './mymodel/RF1_task4.pkl')
+print(confusion_matrix(y_test, RF1.predict(x_test)))
+print(classification_report(y_test, RF1.predict(x_test)))
+print('===============================================')
+RF2 = RandomForestClassifier(n_estimators=100, min_samples_split=4)
+RF2.fit(x_train, y_train)
+print('RF2_score====', RF2.score(x_test, y_test))
+joblib.dump(RF2, './mymodel/RF2_task4.pkl')
+print(confusion_matrix(y_test, RF2.predict(x_test)))
+print(classification_report(y_test, RF2.predict(x_test)))
+print('===============================================')
+bagg = BaggingClassifier(RF2,n_estimators=20)
+bagg.fit(x_train, y_train)
+print('bagg_score====', bagg.score(x_test, y_test))
+joblib.dump(bagg, './mymodel/bagg_task4.pkl')
+print(confusion_matrix(y_test, bagg.predict(x_test)))
+print(classification_report(y_test, bagg.predict(x_test)))
+print('===============================================')
+mlp = MLPClassifier(hidden_layer_sizes=(20, 10), max_iter=1000)
+mlp.fit(x_train, y_train)
+print('mlp_score====', mlp.score(x_test, y_test))
+joblib.dump(mlp, './mymodel/mlp_task4.pkl')
+print(confusion_matrix(y_test, mlp.predict(x_test)))
+print(classification_report(y_test, mlp.predict(x_test)))
+def fixdata4():
+# 1.先处理附件4 的数据，将它们提取为一个数据文件
+filepath = './附件4 数据/附件4 数据.txt'
+deskpath = './附件4 数据/附件4 处理后数据.xls'
+data = pd.read_table(filepath,header=None)
+# 创建空df
+hs = data.shape[0]
+lieming = ['时间戳', 'A0', 'A1', 'A2', 'A3']
+df = pd.DataFrame(columns=lieming)
+# 将每组数据的s0,s1,s2,s3 放置到同一行
+mindex = 0
+for i in range(0, hs, 4):
+## RR0 = data.iloc[i, 0]
+
+
+
+55
+RR0S = RR0.split(':')
+## RR1 = data.iloc[i + 1, 0]
+RR1S = RR1.split(':')
+## RR2 = data.iloc[i + 2, 0]
+RR2S = RR2.split(':')
+## RR3 = data.iloc[i + 3, 0]
+RR3S = RR3.split(':')
+# 2.获取每组的四个距离
+# T = RR0S[1]
+s0 = int(RR0S[5])
+s1 = int(RR1S[5])
+s2 = int(RR2S[5])
+s3 = int(RR3S[5])
+df.loc[mindex, lieming] = [T, s0, s1, s2, s3]
+mindex = mindex + 1
+df.to_excel(deskpath, index=False) #为了方便存了一个文本，注释即可
+def getClass():
+df = pd.read_excel('附件4 数据/附件4 处理后数据.xls')
+modelpath1 = './mymodel/bagg_task4.pkl'
+modelpath2 = './mymodel/knn_task4.pkl'
+modelpath3 = './mymodel/mlp_task4.pkl'
+modelpath4 = './mymodel/RF1_task4.pkl'
+modelpath5 = './mymodel/RF2_task4.pkl'
+# 2.将数据传入模型预测
+x = df.iloc[:,1:]
+x = StandardScaler().fit_transform(x)
+model1 = joblib.load(modelpath1)
+model2 = joblib.load(modelpath2)
+model3 = joblib.load(modelpath3)
+model4 = joblib.load(modelpath4)
+model5 = joblib.load(modelpath5)
+y1 = model1.predict(x)
+y2 = model2.predict(x)
+y3 = model3.predict(x)
+y4 = model4.predict(x)
+y5 = model5.predict(x)
+res = [y1,y2,y3,y4,y5]
+res = np.array(res).T
+return stats.mode(res,axis=1)[0].flatten()
+if __name__ == '__main__':
+# 运行时分开运行，不能一块
+getAlldatas()
+makeModel()
+fixdata4()
+res = getClass()
+print(res)
+
+
+
+56
+附录六：任务五求解
+import tensorflow as tf
+import numpy as np
+import pandas as pd
+from scipy import stats
+from sklearn.preprocessing import StandardScaler
+import joblib
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+# 场景1 的锚点位置
+A0 = (0, 0, 1300)
+A1 = (5000, 0, 1700)
+A2 = (0, 5000, 1700)
+A3 = (5000, 5000, 1300)
+x0 = A0[0]
+y0 = A0[1]
+z0 = A0[2]
+x1 = A1[0]
+y1 = A1[1]
+z1 = A1[2]
+x2 = A2[0]
+y2 = A2[1]
+z2 = A2[2]
+x3 = A3[0]
+y3 = A3[1]
+z3 = A3[2]
+# 最小二乘法
+A = [[x0 - x3, y0 - y3, z0 - z3],
+[x1 - x3, y1 - y3, z1 - z3],
+[x2 - x3, y2 - y3, z2 - z3]]
+A = np.multiply(-2, A)
+def getRes(d0, d1, d2, d3):
+b = np.array([[d0 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x0 ** 2 -
+y0 ** 2 - z0 ** 2],
+[d1 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x1 ** 2
+- y1 ** 2 - z1 ** 2],
+[d2 ** 2 - d3 ** 2 + x3 ** 2 + y3 ** 2 + z3 ** 2 - x2 ** 2
+- y2 ** 2 - z2 ** 2]])
+x, y, z = np.dot((np.dot((np.linalg.inv(np.dot(A.T, A))), A.T)), b)
+# x, y, z = np.dot(np.linalg.inv(A), b)
+return x[0], y[0], z[0]
+def getLoc(path):
+data = pd.read_excel(path)
+# 获取每个文件的数据
+counts = data.shape[0]
+d = []
+loc = []
+
+
+
+57
+for i in range(counts):
+[d0, d1, d2, d3] = data.iloc[i, 1:]
+* append([d0, d1, d2, d3])
+for dlist in d:
+x, y, z = getRes(dlist[0], dlist[1], dlist[2], dlist[3])
+loc.append([x, y, z])
+loc = np.array(loc)
+x = loc[:, 0]
+y = loc[:, 1]
+z = loc[:, 2]
+return np.array([x, y, z]).T
+def getClass(path):
+df = pd.read_excel(path)
+modelpath1 = './mymodel/bagg_task4.pkl'
+modelpath2 = './mymodel/knn_task4.pkl'
+modelpath3 = './mymodel/mlp_task4.pkl'
+modelpath4 = './mymodel/RF1_task4.pkl'
+modelpath5 = './mymodel/RF2_task4.pkl'
+# 2.将数据传入模型预测
+x = df.iloc[:,1:]
+x = StandardScaler().fit_transform(x)
+model1 = joblib.load(modelpath1)
+model2 = joblib.load(modelpath2)
+model3 = joblib.load(modelpath3)
+model4 = joblib.load(modelpath4)
+model5 = joblib.load(modelpath5)
+y1 = model1.predict(x)
+y2 = model2.predict(x)
+y3 = model3.predict(x)
+y4 = model4.predict(x)
+y5 = model5.predict(x)
+res = [y1,y2,y3,y4,y5]
+res = np.array(res).T
+return stats.mode(res,axis=1)[0].flatten()
+def xyz3d(xyz):
+fig = plt.figure()
+ax = Axes3D(fig)
+x1 = xyz[:113,0]
+y1 = xyz[:113,1]
+z1 = xyz[:113,2]
+x2 = xyz[113:400, 0]
+y2 = xyz[113:400, 1]
+z2 = xyz[113:400, 2]
+x3 = xyz[400:, 0]
+y3 = xyz[400:, 1]
+z3 = xyz[400:, 2]
+ax.scatter(x1,y1,z1)
+ax.scatter(x2,y2,z2)
+
+
+
+58
+ax.scatter(x3,y3,z3)
+ax.set_xlabel('X/mm')
+ax.set_ylabel('Y/mm')
+ax.set_zlabel('Z/mm')
+ax.set_xlim(0,5000)
+ax.set_ylim(0,5000)
+ax.set_zlim(0,3000)
+plt.show()
+if __name__ == '__main__':
+'''
+zcmodel = tf.keras.models.load_model('./mymodel/task2zc.h5')
+ycmodel = tf.keras.models.load_model('./mymodel/task2yc.h5')
+filepath = 'datas/附件5 新数据.xls'
+cls = getClass(filepath)
+loc = getLoc(filepath)
+xyz_res = []
+num = 0
+indexList=[]
+for index,(cls,loc) in enumerate(zip(cls,loc)):
+loc = np.array([loc])
+if cls==0:# 无干扰
+yp = zcmodel.predict(loc)
+yp = np.array(yp).flatten()
+if
+not
+(np.min(yp,axis=0)<0
+or
+np.max(yp,axis=0)>500
+or
+yp[2]>300):
+xyz_res.append(yp)
+else:
+num+=1
+indexList.append(index)
+else:# 有干扰
+yp = ycmodel.predict(loc)
+yp = np.array(yp).flatten()
+if not (np.min(yp, axis=0) < 0 or np.max(yp, axis=0) > 500 or
+yp[2]>300):
+xyz_res.append(yp)
+else:
+num+=1
+indexList.append(index)
+print(num)
+print(np.array(indexList))
+print(len(xyz_res))
+xyz_res = np.array(np.dot(10,xyz_res))
+xyz3d(xyz_res)

@@ -25,16 +25,6 @@
  & 3. 王忠智 \\
 \end{tabular}
 
-\begin{center}
-\textbf{中国研究生创新实践系列大赛} \\
-\textbf{“华为杯”第十六届中国研究生} \\
-\textbf{数学建模竞赛}
-\end{center}
-
-\begin{center}
-\textbf{题目} \hfill \textbf{天体导航中的星图识别}
-\end{center}
-
 \maketitle
 
 \begin{abstract}
@@ -146,7 +136,7 @@ $\Omega_{m}^{ab}$ & 星点$A$与星点$B$对于导航星对$ab$的恒星编号�
 
 在星图识别的相关工作中需要用到天球坐标系、星敏感器坐标系、星敏感器图像坐标系等。
 
-\subsubsection{天球和天球坐标系}
+(1)天球和天球坐标系
 
 天球是研究天体的位置和运动而引进的一个半径为无穷大的假想圆球。根据所选取的天球中心不同，天球可分为站心天球、日心天球、地心天球等，各个天体同地球上的观测者的距离都不相同。这里使用地心天球，即假设以地球质心$M$为球心，半径为无穷大的球体，通常看到的星体实际上是天体在这个巨大的圆球表面上的投影\cite{ref1}。
 
@@ -418,12 +408,6 @@ d_{m}^{12}=\cos ^{-1}\left(\frac{\overrightarrow{s_{1}} \cdot \overrightarrow{s_
 
 以附件 2 中的 xingtu01 为例。星敏感器视场为 $20^{\circ} \times 20^{\circ}$，像素数为 $1024 \times 1024$，共有 15 个星点，记为 A01-A15。由参考文献可以给定星敏感器成像系统参数，如表 4-1 所示：
 
-\begin{tabular}{ll}
-参赛队号 & 19102690067 \\
-队员姓名 & 1. 李洋 \\
- & 2. 陈健平 \\
- & 3. 王忠智 \\
-\end{tabular}
 
 根据星敏感器坐标系角距计算公式 (4-11)，计算出星图 xingtu01 中所有星点间的角距，并选取最大的角距和最小的角距，分别记为 $\max d_{m}=12.31^{\circ}$ 和 $\min d_{m}=0.48^{\circ}$。定义角
 
@@ -446,7 +430,7 @@ d_{m}^{12}=\cos ^{-1}\left(\frac{\overrightarrow{s_{1}} \cdot \overrightarrow{s_
     \item 星图识别算法的性能评估。
 \end{enumerate}
 
-\subsubsection{已知信息}
+已知信息
 
 问题二提供的数据有两个：
 
@@ -619,7 +603,7 @@ d_{AC} - d_{BC} \geqslant \varepsilon
 
 为解决多匹配结果的问题，增加设计了“相邻验证”算法，通过选取相邻边三角形对“同步匹配”结果进行验证。具体实现步骤如下：
 
-\section*{第一步：“同步匹配”}
+第一步：“同步匹配”
 
 \begin{enumerate}
     \item 在 5.2 小节构建好的导航星特征数据库中寻找与 $AB$ 角距 $d_{AB}$ 之差满足限差的星对组合 $ab$，即 $\left|d_{AB}-d_{ab}\right| \leq \varepsilon$，其中 $a$、$b$ 分别表示成功匹配导航星对的导航星编号，记录在集合 $\Omega_{m}^{ab}$ 中，其中，$m$ 表示成功匹配的星对组合数；
@@ -704,7 +688,7 @@ C \to c
     \label{fig:5-17}
 \end{figure}
 
-\section*{第二步： “相邻验证”}
+第二步： “相邻验证”
 
 \begin{enumerate}
     \item 当 “同步匹配” 结果为无解时，说明选取的观测三角形中可能包含 “假星”，此时需要重新选取观测三角形；
@@ -736,7 +720,7 @@ C \to c
 \label{fig:5-12}
 \end{figure}
 
-\subsection{星图匹配结果}
+\subsubsection{星图匹配结果}
 
 星图 xingtu01~xingtu08 的匹配结果如下：
 
@@ -748,14 +732,30 @@ C \to c
     \caption{xingtu 01观测三角形}
 \end{figure}
 
-\begin{tabular}{|c|c|}
-\hline $f$ & 星敏感器的焦距 \\
-\hline $\alpha_{i}$ & 第 $i$ 颗恒星的赤经 \\
-\hline $\delta_{i}$ & 第 $i$ 颗恒星的赤纬 \\
-\hline $\vec{n}$ & 星像点的位置所成像平面的法向量 \\
-\hline $\vec{s}_{i}$ & 恒星 $i$ 相对于天球球心的矢量 \\
-\hline
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \caption{xingtu 01}
+    \begin{tabular}{c c}
+        星图中星点号 & 对应恒星编号 \\
+        \hline
+        1 & 1670 \\
+        2 & 1477 \\
+        3 & 1502 \\
+        4 & 1631 \\
+        5 & 1603 \\
+        6 & 1453 \\
+        7 & 1432 \\
+        8 & 1492 \\
+        9 & 1488 \\
+        10 & 1648 \\
+        11 & 1646 \\
+        12 & 1566 \\
+        13 & 1688 \\
+        14 & 1655 \\
+        15 & 1505 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \begin{figure}[h]
     \centering
@@ -763,21 +763,30 @@ C \to c
     \caption{xingtu02}
 \end{figure}
 
-\begin{tabular}{|c|c|}
-\hline
-$d_{s}$ & 星敏感器视场角 \\
-\hline
-$d(i,j)$ & 第$i$颗与第$j$颗星间的角距 \\
-\hline
-$\varepsilon$ & 角距相对误差相对误差 $\varepsilon = d_{\varepsilon} / d_{m}^{ij}$ \\
-\hline
-$\varphi_{d_{ij}}$ & 表示是否将$d(i,j)$角距存放在导航星特征数据库中 \\
-\hline
-$total_{d}$ & 导航星特征数据库中所存储的角距总个数 \\
-\hline
-$\Omega_{m}^{ab}$ & 星点$A$与星点$B$对于导航星对$ab$的恒星编号集合 \\
-\hline
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c c}
+        星图中星点号 & 对应恒星编号 \\
+        \hline
+        1 & 518 \\
+        2 & 472 \\
+        3 & 537 \\
+        4 & 428 \\
+        5 & 491 \\
+        6 & 469 \\
+        7 & 482 \\
+        8 & 503 \\
+        9 & 478 \\
+        10 & 499 \\
+        11 & 547 \\
+        12 & 460 \\
+        13 & 507 \\
+        14 & 556 \\
+        15 & 447 \\
+        16 & 479 \\
+    \end{tabular}
+    \caption{xingtu02}
+\end{table}
 
 \begin{figure}[h]
     \centering
@@ -991,3 +1000,657 @@ $\Omega_{m}^{ab}$ & 星点$A$与星点$B$对于导航星对$ab$的恒星编号�
 [5] 李超, 张利强, 吴佳泽, 等. 使用GPU并行加速的星表检索算法[J]. 宇航学报, 2012, 33
 
 \end{document}
+
+\section{附录}
+// star.cpp : 定义控制台应用程序的入口点。
+//
+
+#include "stdafx.h"
+#include <vector>
+#include <list>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <math.h>
+#include <Eigen/Dense>
+
+const double PI=3.1415926;
+
+using namespace std;
+using namespace Eigen;
+
+double adistable[4908][4908];
+int adisnum[4908][4908];//筛选临近点编号
+double adisdis[4908][4908];//筛选临近点角距
+
+double adis1(double a1,double d1,double a2,double d2)//球面计算角距
+{
+
+double x1,y1,z1;
+
+double x2,y2,z2;
+
+double d;
+
+
+
+38
+
+x1=cos(a1*PI/180)*cos(d1*PI/180);
+
+y1=sin(a1*PI/180)*cos(d1*PI/180);
+
+z1=sin(d1*PI/180);
+
+x2=cos(a2*PI/180)*cos(d2*PI/180);
+
+y2=sin(a2*PI/180)*cos(d2*PI/180);
+
+z2=sin(d2*PI/180);
+
+d=acos((x1*x2+y1*y2+z1*z2)/(sqrt(x1*x1+y1*y1+z1*z1)*sqrt(x2*x2+y2*y2+z2*z2)))
+;
+
+return d;
+}
+
+double adis2(double X1,double Y1,double X2,double Y2,int pix,int deg)//像平面计算角距
+{
+
+double x1,y1,z1;
+
+double x2,y2,z2;
+
+double d;
+
+double f=pix/2/tan(deg/2*PI/180);//焦距
+
+x1=X1-pix/2;
+
+y1=Y1-pix/2;
+
+z1=f;
+
+x2=X2-pix/2;
+
+y2=Y2-pix/2;
+
+z2=f;
+
+d=acos((x1*x2+y1*y2+z1*z2)/(sqrt(x1*x1+y1*y1+z1*z1)*sqrt(x2*x2+y2*y2+z2*z2)))
+;
+
+return d;
+}
+
+class startable
+{
+public:
+
+int n;
+
+double a,d;
+
+vector<int>num;
+
+vector<double>alpha,delta;
+
+
+
+39
+
+//----------------读取数据--------------
+
+int readstardata(string star_data)
+
+{
+
+ifstream in_table(star_data.c_str());
+
+if(in_table)
+
+{
+
+string str;
+
+while(in_table)
+
+{
+> in_table>>n>>a>>d;
+> num.push_back(n);
+> alpha.push_back(a);
+> delta.push_back(d);
+> getline(in_table,str);
+
+}
+
+return 1;
+
+}
+
+else
+
+return 0;
+
+}
+
+//----------------角距计算--------------
+
+void adis()//计算两两角距
+
+{
+
+/*for(int i=0;i<4908;i++)
+
+for(int j=i;j<4908;j++)
+> adistable[i][j]=0;*/
+
+for(int i=0;i<4908;i++)
+
+for(int j=0;j<4908;j++)
+> if(i!=j)
+> adistable[i][j]=adis1(alpha[i],delta[i],alpha[j],delta[j]);
+
+}
+
+//----------------邻近点筛选--------------
+
+int screen(double limit/*单位：度*/)
+
+{
+
+int T=0;
+
+for(int i=0;i<4908;i++)
+
+{
+
+int t=0;
+
+for(int j=0;j<4908;j++)
+
+{
+> if((adistable[i][j]<limit*PI/180)&&(adistable[i][j]>0))
+
+
+
+40
+> {
+> adisnum[i][t]=j+1;
+> adisdis[i][t]=adistable[i][j];
+> t++;
+> }
+
+}
+
+if((t+1)>T)
+> T=t+1;
+
+}
+
+return T;//邻近点最多的点数
+
+}
+};
+
+class xingtu
+{
+public:
+
+string n;
+
+double a,d;
+
+vector<string>num;
+
+vector<double>x,y;
+
+double xingtutable[15][15];
+
+int readxingtu(string xingtu_data)
+
+{
+
+ifstream in_xingtu(xingtu_data.c_str());
+
+if(in_xingtu)
+
+{
+
+string str;
+
+while(in_xingtu)
+
+{
+> in_xingtu>>n>>a>>d;
+> num.push_back(n);
+> * push_back(a);
+> * push_back(d);
+> getline(in_xingtu,str);
+
+}
+
+return 1;
+
+}
+
+else
+
+return 0;
+
+}
+
+//-------------------角距计算----------------------
+
+void adis()
+
+
+
+41
+
+{
+
+for(int i=0;i<15;i++)
+
+for(int j=0;j<15;j++)
+
+{
+> if(i!=j)
+> xingtutable[i][j]=adis2(x[i],y[i],x[j],y[j],512,12);
+> else
+> xingtutable[i][j]=0;
+
+}
+
+}
+
+//-------------------三角形选取--------------------
+
+void point(int &p1,int &p2,int &p3,double &Dis1,double &Dis2,double &Dis3)
+
+{
+
+double t1=3,t2=3,t3=3;
+
+double dis,dis1,dis2,disd;
+
+for(int i=0;i<num.size();i++)
+
+{
+
+dis=adis2(x[i],y[i],256,256,512,12);
+
+if(dis>0/*2.5/2*PI/180*/)
+> if(dis<t1)
+> {
+> t1=dis;
+> p1=i;
+> }
+
+}
+
+for(int i=0;i<num.size();i++)
+
+{
+
+dis=adis2(x[i],y[i],x[p1],y[p1],512,12);
+
+if(dis>5/2*PI/180)
+> if(dis<t2)
+> {
+> t2=dis;
+> p2=i;
+> Dis1=t2;
+> }
+
+}
+
+for(int i=0;i<num.size();i++)
+
+{
+
+dis1=adis2(x[i],y[i],x[p1],y[p1],512,12);
+
+dis2=adis2(x[i],y[i],x[p2],y[p2],512,12);
+
+if((dis1>5/2*PI/180)&&(dis2>5/2*PI/180))
+
+{
+
+
+
+42
+> disd=abs(dis1-dis2);
+> if((disd<t3)&&(abs(dis1-Dis1)>0.5*8.7266e-4)&&(abs(dis2-Dis1)>0.5*8.7266e-4))
+> {
+> t3=disd;
+> p3=i;
+> Dis2=dis2;
+> Dis3=dis1;
+> }
+
+}
+
+}
+
+}
+};
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+
+string star_table="star_data.txt";
+
+string xing="xingtu01.txt";
+
+string outfile="结果.txt";
+
+ofstream fout(outfile);
+
+startable table;
+
+xingtu xin;
+
+int t;//邻近点最多点数
+
+int p1,p2,p3;//星图选取的三角形
+
+double dis1,dis2,dis3;
+
+vector<vector<int> > M1(4908, vector<int>(200,0));//匹配一个角距的点记录
+
+vector<vector<double> > M1dis(4908, vector<double>(200,0));//匹配一个角距的角距
+记录
+
+vector<vector<int> > N1(5000, vector<int>(2,0));//一、二号点备选组合
+
+vector<vector<int> > N2(5000, vector<int>(3,0));//一、二、三号点备选组合
+
+int r1,r2;
+
+r1=table.readstardata(star_table);
+
+r2=xin.readxingtu(xing);
+
+if(r1=0)
+
+cout<<"缺少星表文件！"<<endl;
+
+if(r2=0)
+
+cout<<"缺少星图文件！"<<endl;
+
+if((r1=1)&&(r2=1))
+
+{
+
+
+
+43
+
+table.adis();
+
+t=table.screen(12);
+
+xin.adis();
+
+xin.point(p1,p2,p3,dis1,dis2,dis3);
+
+//fout<<p1+1<<'\t'<<p2+1<<'\t'<<p3+1<<'\t'<<dis1*180/PI<<'\t'<<dis2*180/PI<<'\t
+'<<dis3*180/PI;
+
+//匹配第一个角距
+
+for(int i=0;i<4908;i++)
+
+{
+
+int k=0;
+
+for(int j=0;j<t;j++)
+
+{
+> if((adisdis[i][j]>0)&&(abs(adisdis[i][j]-dis1)<0.5*8.7266e-4))
+> //if((adisdis[i][j]>0.08)&&(adisdis[i][j]<0.10))
+> {
+> M1[i][k]=adisnum[i][j];
+> M1dis[i][k]=adisdis[i][j];
+> k++;
+> }
+
+}
+
+}
+
+int k1=0;
+
+for(int i=0;i<4908;i++)
+
+{
+
+for(int j=0;j<200;j++)
+
+{
+> if(M1[i][j]>0)
+> {
+> N1[k1][0]=i+1;
+> N1[k1][1]=M1[i][j];
+> k1++;
+> }
+
+}
+
+}
+
+//匹配第二个角距
+
+int k2=0;
+
+for(int i=0;i<5000;i++)
+
+{
+
+if(N1[i][0]>0)
+
+{
+
+
+
+44
+> for(int j=0;j<4908;j++)
+> if((adisdis[N1[i][1]-1][j]>0)&&(abs(adisdis[N1[i][1]-1][j]-dis2)<1.2*8.7266e-4)&&(abs
+((adistable[N1[i][0]-1][adisnum[N1[i][1]-1][j]-1])-dis3)<1.2*8.7266e-4))
+> {
+> N2[k2][0]=N1[i][0];
+> N2[k2][1]=N1[i][1];
+> N2[k2][2]=adisnum[N1[i][1]-1][j];
+> k2++;
+> }
+
+}
+
+}
+/*
+
+//-------------------  -------------------
+
+double a,b,c;
+
+double alphaD,deltaD;
+
+double o1,o2,o3;//旋转角
+
+int pix=512;int deg=12;
+
+double f=pix/2/tan(deg/2*PI/180);//焦距
+
+//天球空间坐标
+
+double
+x1=sqrt(f*f+(xin.x[p1]-256)*(xin.x[p1]-256)+(xin.y[p1]-256)*(xin.y[p1]-256))*cos(table.de
+lta[N2[0][0]]*PI/180)*cos(table.alpha[N2[0][0]]*PI/180);
+
+double
+y1=sqrt(f*f+(xin.x[p1]-256)*(xin.x[p1]-256)+(xin.y[p1]-256)*(xin.y[p1]-256))*cos(table.de
+lta[N2[0][0]]*PI/180)*sin(table.alpha[N2[0][0]]*PI/180);
+
+double
+z1=sqrt(f*f+(xin.x[p1]-256)*(xin.x[p1]-256)+(xin.y[p1]-256)*(xin.y[p1]-256))*sin(table.del
+ta[N2[0][0]]*PI/180);
+
+double
+x2=sqrt(f*f+(xin.x[p2]-256)*(xin.x[p2]-256)+(xin.y[p2]-256)*(xin.y[p2]-256))*cos(table.de
+lta[N2[0][1]]*PI/180)*cos(table.alpha[N2[0][1]]*PI/180);
+
+double
+y2=sqrt(f*f+(xin.x[p2]-256)*(xin.x[p2]-256)+(xin.y[p2]-256)*(xin.y[p2]-256))*cos(table.de
+lta[N2[0][1]]*PI/180)*sin(table.alpha[N2[0][1]]*PI/180);
+
+double
+z2=sqrt(f*f+(xin.x[p2]-256)*(xin.x[p2]-256)+(xin.y[p2]-256)*(xin.y[p2]-256))*sin(table.del
+ta[N2[0][1]]*PI/180);
+
+double
+x3=sqrt(f*f+(xin.x[p3]-256)*(xin.x[p3]-256)+(xin.y[p3]-256)*(xin.y[p3]-256))*cos(table.de
+lta[N2[0][2]]*PI/180)*cos(table.alpha[N2[0][2]]*PI/180);
+
+double
+
+
+
+45
+y3=sqrt(f*f+(xin.x[p3]-256)*(xin.x[p3]-256)+(xin.y[p3]-256)*(xin.y[p3]-256))*cos(table.de
+lta[N2[0][2]]*PI/180)*sin(table.alpha[N2[0][2]]*PI/180);
+
+double
+z3=sqrt(f*f+(xin.x[p3]-256)*(xin.x[p3]-256)+(xin.y[p3]-256)*(xin.y[p3]-256))*sin(table.del
+ta[N2[0][2]]*PI/180);
+
+//像空间坐标
+
+double X1=xin.x[p1]-256;
+
+double Y1=xin.y[p1]-256;
+
+double Z1=f;
+
+double X2=xin.x[p2]-256;
+
+double Y2=xin.y[p2]-256;
+
+double Z2=f;
+
+double X3=xin.x[p3]-256;
+
+double Y3=xin.y[p3]-256;
+
+double Z3=f;
+
+MatrixXd W(3,3);
+
+MatrixXd V(3,3);
+
+W(0,0)=X1; W(0,1)=X2; W(0,2)=X3;
+
+W(1,0)=Y1; W(1,1)=Y2; W(1,2)=Y3;
+
+W(2,0)=Z1; W(2,1)=Z2; W(2,2)=Z3;
+
+V(0,0)=x1; V(0,1)=x2; V(0,2)=x3;
+
+V(1,0)=y1; V(1,1)=y2; V(1,2)=y3;
+
+V(2,0)=z1; V(2,1)=z2; V(2,2)=z3;
+
+MatrixXd R(3,3);
+
+R=V*W.inverse();
+
+MatrixXd xingtu1(3,15);
+
+for(int i=0;i<15;i++)
+
+{
+
+xingtu1(0,i)=xin.x[i]-256;
+
+xingtu1(1,i)=xin.y[i]-256;
+
+xingtu1(2,i)=f;
+
+}
+
+MatrixXd xingtu2(3,15);
+
+xingtu2=R*xingtu1;
+> MatrixXd xingtu3(2,15);
+
+for(int i=0;i<15;i++)
+
+
+
+46
+
+{
+
+xingtu3(0,i)=atan2(xingtu2(1,i),xingtu2(0,i));
+
+if(xingtu3(0,i)<0)
+> xingtu3(0,i)=xingtu3(0,i)+2*PI;
+
+xingtu3(1,i)=atan(xingtu1(2,i)/sqrt(xingtu1(0,i)*xingtu1(0,i)+xingtu1(1,i)*xingtu1(1,i))
+);
+
+xingtu3(0,i)=xingtu3(0,i)*180/PI;
+
+xingtu3(1,i)=xingtu3(1,i)*180/PI;
+
+}
+
+//fout<<xingtu3;
+
+int result[15]={0};
+
+for(int i=0;i<15;i++)
+
+{
+
+for(int j=0;j<4908;j++)
+> if(abs(xingtu3(0,i)-table.alpha[j])<0.02)
+> result[i]=table.num[j]+1;
+
+}
+
+/*for(int i=0;i<15;i++)
+
+{
+
+fout<<result[i]<<endl;
+
+}*/
+
+fout<<p1+1<<'\t'<<p2+1<<'\t'<<p3+1<<'\t'<<dis1*180/PI<<'\t'<<dis2*180/PI<<'\t'<
+<dis3*180/PI<<endl;//输出三角形点号，及角距
+
+for(int i=0;i<100;i++)
+
+{
+
+for(int j=0;j<3;j++)
+
+{
+> fout<<N2[i][j]<<"\t";
+
+}
+
+fout<<endl;
+
+}
+
+}
+
+return 0;
+}
+

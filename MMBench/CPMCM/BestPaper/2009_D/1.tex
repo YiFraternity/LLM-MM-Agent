@@ -202,12 +202,13 @@ $R_{F}$：警车流动覆盖率。
 
 覆盖问题分为完全覆盖问题与最大覆盖问题。完全覆盖问题的目标函数是在给定时间（距离）内满足所有需求的最小设施建设成本。如果每个设施建设费用相同，那么目标函数就是最小化设施的数量。模型具体表示为：
 
-\begin{align*}
-\text{max } & \sum_{i} h_i y_i \\
-\text{s.t. } & y_i \leq \sum_{j \in N_i} X_j, \forall i \\
-& \sum_{j} X_j \leq P \\
-& y_i \in \{0, 1\}, \forall i
-\end{align*}
+\begin{equation}
+\begin{aligned}
+& \min \sum_{j} c_{j} X_{j} \\
+& s.t. \sum_{j \in N_{i}} X_{j} \geq 1, \forall i \\
+& X_{j} \in \{0,1\}, \forall j
+\end{aligned}
+\end{equation}
 
 其中 $c_{j}$ 为设施建设成本，$X_{j}$ 是表示需求点 $j$ 是否修建设施的参数，如果在 $j$ 点修建设施，$X_{j}$ 为 1，否则为 0。
 
@@ -234,10 +235,9 @@ Daskin 与 Stern 将覆盖模型扩展为支援覆盖模型 (Backup coverage) �
 
 首先，我们先对题目中给出地图数据和道路数据表格进行了扩充，主要添加了各条道路的长度信息。在这里，选择欧式距离表达位于同一条道路上的结点的距离，计
 
-\begin{align*}
-\text{min } D \\
-D \geq \sum_{j} d(i, j) y_{ij}, \forall i
-\end{align*}
+\begin{equation}
+D(i, j) = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}
+\end{equation}
 
 其次，结合了道路信息和 MATLAB 生成图，通过对道路交叉口数目沿 \(x\) 坐标数目和道路长度分布的统计（分别见图 5.1 和表 5.1），我们得出了该城市的地图布局结构有以下特点：地图左半部分的道路密集而且每段的长度较小，而地图右半部分的道路分布稀疏并且道路较长。
 
@@ -339,11 +339,13 @@ D \geq \sum_{j} d(i, j) y_{ij}, \forall i
 
 根据模型假设2，在添加了6个结点后，我们认为警车到达报警点所在道路的端点就覆盖了该点。考虑用最少的警车达到要求D1时，我们假设警车静止在它所覆盖的区域的中心位置，接警后出动，完成后返回该位置。如果警车只配置在结点处，并且把要求D1简化为警车可在3分钟之内到达全部需求点的90\%，则可以套用离散设施选址的完全覆盖模型。设结点$i$对应变量$X_{i}$，由于题目中不考虑在不同地点设置警车成本的差异，模型为
 
-\begin{align*}
-C_i &\neq \phi, \, i = 1, \ldots, m \\
-\bigcup_{i=1}^m C_i &= X \\
-C_i \cap C_j &= \phi, \, i \neq j, \quad i, j = 1, \ldots, m
-\end{align*}
+\begin{equation}
+\begin{aligned}
+& \min \sum_{j} X_{j} \\
+& s.t. \sum_{j \in N_{i}} X_{j} \geq 1, \forall i \\
+& X_{j} \in \{0,1\}, \forall j
+\end{aligned}
+\end{equation}
 
 为了求解这个问题，先用直径为2km的圆形去覆盖整个区域，估计出需要的警车在10辆以上。这个模型计算量比较大，改用$k$-中心问题的模型去描述这个问题：
 
@@ -372,10 +374,9 @@ D(k) = \min \{ W(i, k) \mid v_k \in V - \{i\} \}
 
 3) 修改从 $v_i$ 出发到集合 $V - S$ 上任一点 $v_k$ 可达的最短路径长度。如果 $D(j) + W(j, k) < D(k)$，则修改 $D(k)$ 为
 
-\begin{align*}
-\min \sum_i x_i(t) \\
-s.t. \sum_j y_j(t) \geq 90\% \times 5142, \forall i, j
-\end{align*}
+\begin{equation}
+D(k) = D(j) + W(j, k)
+\end{equation}
 
 4) 重复操作 2)、3) 共 \( n-1 \) 次，并记录各最短路径经过的所有顶点。由此得到从始点 \( v_i \) 到图上其余各顶点的最短路径是依据路径长度递增的序列。
 
@@ -537,12 +538,9 @@ R_{C} = \frac{\sum L_{i}}{L_{T}} \times 100\%
 
 上面所求的警车响应覆盖率指标主要是评估警车巡逻方案满足安全响应时间性能基本需求的程度，警车只有满足一定数量才能达到安全需求。然而，并不是警车数量越多越好，还应当考虑警车分配和巡逻的经济性。因此，我们提出了警车交叉响应覆盖评估指标，其值是指在警车巡逻时重复响应的结点总个数占所有警车响应路径总结点个数的比率。其数学描述为：
 
-\begin{align*}
-\text{max } & \sum_{i} h_i y_i \\
-\text{s.t. } & s.t. y_i \leq \sum_{j \in N_i} X_j, \forall i \\
-& \sum_{j} X_j \leq 10 \\
-& y_i \in \{0, 1\}, \forall i
-\end{align*}
+\begin{equation}
+C_{RT} = \left[ \frac{\sum\limits_{k=1}^{N} N_{eT}(k)}{\sum\limits_{i} N_{i}} - 1 \right] \times 100\%
+\end{equation}
 
 其中，$\sum\limits_{k=1}^{N} N_{eT}(k)$ 表示了各警车在其相关邻域里覆盖到所有路径总个数的和，$\sum N_{i}$ 表示各警车覆盖到所有路径的总个数。
 

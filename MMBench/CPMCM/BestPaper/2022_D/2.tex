@@ -17,28 +17,6 @@
 \textbf{数学建模竞赛}
 \end{center}
 
-\begin{tabular}{l l}
-\hline
-符号 & 说明 \\
-\hline
-$I$ & 基本块数目 \\
-$J$ & 流水线级数 \\
-$u$ & 初始设定流水线级数 \\
-$x_{ij}$ & 基本块$i$是否置于流水线第$j$级中， \\
-& 如果是，则$x_{ij}$为1，否则为0 \\
-$Z_{i}$ & 第$i$个基本块所在的级数 \\
-$T_{i}$ & 第$i$个基本块对TCAM资源的占用 \\
-$H_{i}$ & 第$i$个基本块对HASH资源的占用 \\
-$A_{i}$ & 第$i$个基本块对ALU资源的占用 \\
-$Q_{i}$ & 第$i$个基本块对QUALIFY资源的占用 \\
-$S$ & 数据依赖矩阵 \\
-$S_{mn}$ & 第$m$个基本块对第$n$个基本块是否有数据依赖 \\
-$C$ & 控制依赖矩阵 \\
-$c_{mn}$ & 第$m$个基本块对第$n$个基本块是否存在控制依赖 \\
-$P$ & 路径矩阵 \\
-$P_{in}$ & 第$i$个基本块是否在第$n$条路径上，如果在则为1，否则为0 \\
-\hline
-\end{tabular}
 
 \begin{flushleft}
 题目 \quad 多约束条件下 PISA 架构芯片资源排布规划
@@ -54,47 +32,7 @@ $P_{in}$ & 第$i$个基本块是否在第$n$条路径上，如果在则为1，�
 \textbf{关键词：} PISA 架构芯片资源排布；0-1 线性规划模型；Gurobi；模拟退火算法
 \end{abstract}
 
-\section*{目录}
-\begin{itemize}
-    \item 摘要 \dotfill 1
-    \item 1. 问题重述 \dotfill 3
-        \begin{itemize}
-            \item 1.1 问题背景 \dotfill 3
-            \item 1.2 问题提出 \dotfill 3
-        \end{itemize}
-    \item 2. 问题分析 \dotfill 5
-        \begin{itemize}
-            \item 2.1 问题一的分析 \dotfill 5
-            \item 2.2 问题二的分析 \dotfill 6
-        \end{itemize}
-    \item 3. 模型假设 \dotfill 7
-    \item 4. 符号说明 \dotfill 7
-    \item 5. 问题一模型的建立与求解 \dotfill 8
-        \begin{itemize}
-            \item 5.1 数据预处理 \dotfill 8
-                \begin{itemize}
-                    \item 5.1.1 邻接矩阵 \dotfill 8
-                    \item 5.1.2 数据依赖矩阵 \dotfill 9
-                    \item 5.1.3 控制依赖矩阵 \dotfill 11
-                \end{itemize}
-            \item 5.2 模型建立 \dotfill 12
-            \item 5.3 模型求解 \dotfill 15
-            \item 5.4 灵敏性分析 \dotfill 16
-        \end{itemize}
-    \item 6. 问题二模型的建立与求解 \dotfill 17
-        \begin{itemize}
-            \item 6.1 模型建立 \dotfill 17
-            \item 6.2 模型求解 \dotfill 19
-            \item 6.3 结果展示 \dotfill 20
-        \end{itemize}
-    \item 7. 模型的评价与改进 \dotfill 22
-        \begin{itemize}
-            \item 7.1 模型的优点 \dotfill 22
-            \item 7.2 模型的缺点 \dotfill 22
-        \end{itemize}
-    \item 参考文献 \dotfill 22
-    \item 源程序 \dotfill 23
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -234,7 +172,7 @@ $P_{in}$ & 第$i$个基本块是否在第$n$条路径上，如果在则为1，�
     \label{fig:basic_block_connectivity}
 \end{figure}
 
-\subsection{数据依赖矩阵}
+\subsubsection{数据依赖矩阵}
 
 数据依赖定义为：语句或代码块间数据流造成的一种约束，具体包括三种形式：写后读、读后写、写后写。
 
@@ -252,7 +190,10 @@ $P_{in}$ & 第$i$个基本块是否在第$n$条路径上，如果在则为1，�
 数据预处理将数据依赖情况处理成矩阵展示，其中基本块有写后读依赖或写后写依赖矩阵元素数值显示为 1，有读后写依赖数值为-1，没有数据依赖数值为 0。
 
 根据数据依赖矩阵，可得所有基本块数据依赖情况如图 5-4 所示，其中有 3055 对基本
+块存在写后读或者写后写依赖，有607 对基本块存在读后写依赖。
 
+基本块数据依赖强约束（写后读、写后写依赖）部分情况如表 5-1 所示，弱约束（读
+后写数据依赖）部分情况如表5-2 所示。所有基本块完整数据依赖参见附件。
 \begin{table}
 \centering
 \begin{tabular}{l l}
@@ -307,7 +248,7 @@ $P_{in}$ & 第$i$个基本块是否在第$n$条路径上，如果在则为1，�
 \label{tab:5-2}
 \end{table}
 
-\subsection{控制依赖矩阵}
+\subsubsection{控制依赖矩阵}
 
 控制依赖定义为：当从某个基本块出发的路径，只有部分路径通过下游某个基本块时，这两个基本块构成控制依赖。将基本块抽象为节点，综上所述只有一条出向边的节点不会和其它任何节点构成控制依赖。
 
@@ -481,7 +422,7 @@ Z_{m} - Z_{n} \leq 0 \quad , \quad c_{mn} = 1 \quad , \quad m=0,1,\ldots,I-1 \qu
 \right.
 \end{equation}
 
-\section{模型求解}
+\subsection{模型求解}
 
 Gurobi 采用最新的优化技术，充分利用了多核处理器的优势，经过 Gurobi 的处理，得到的结果确定而非随机，对于分析求解数学规划优化问题有着巨大优势，可以求解线性规划、整数规划等数学问题。本文建立了线性规划模型对芯片资源排布问题进行分析，结合数学模型，在 Python 的语言环境下利用大规模数学规划优化器 Gurobi 对该问题进行求解 [3]。
 
@@ -695,7 +636,7 @@ Z_m - Z_n &\leq 0, \, c_{mn} = 1, \, m=0,1,\ldots,I-1, \, n=0,1,\ldots,I-1
 
 问题要求的基本项流水线排布，无法通过穷举法来求出解，因此我们选用模拟退火算法来解决问题。模拟退火算法的优点就是在解决此类问题有非常广泛的适用性，它可以跳出局部最优解，具有强大的搜索能力，并且稳定性更好，非常适合本问题的求解[4]。
 
-\subsubsection{决策变量设置}
+决策变量设置
 
 首先设置 607 行 100 列的决策变量 \( A_{ij} \)，\( A_{ij} \) 为 0-1 变量，当 \( A_{ij}=1 \) 时，表示基本块 \( i \) 位于流水线的第 \( j \) 级上，反之，则表示基本块 \( i \) 不在流水线的第 \( j \) 级上。本文将 Gurobi 求出的较优的可行解作为初始解 \( X_i \)，这样可以大大地提高求解速度。决策变量设定如图 6-1 所示。
 
@@ -724,7 +665,7 @@ Z_m - Z_n &\leq 0, \, c_{mn} = 1, \, m=0,1,\ldots,I-1, \, n=0,1,\ldots,I-1
 \caption{决策变量设定示意图}
 \end{figure}
 
-\subsubsection{确定目标函数}
+确定目标函数
 
 因为题目要求所有基本块在流水线中占用的级数要尽可能少，先设定一个较大的数 \( J \)，令每个基本块所在的级数 \( Z_i \) 要小于等于 \( J \)，再将 \( J \) 最小化，即求 \( \min J \)，这样就
 
@@ -760,7 +701,7 @@ P =
 \caption{模拟退火算法流程图}
 \end{figure}
 
-\section{结果展示}
+\subsection{结果展示}
 
 根据上述分析，更新线性规划模型，通过模拟退火算法，最终得到最小化所有基本块占用的流水线级数的结果，从第 0 级到第 39 级，共占用 40 级，其中第 28-32 级流水线上未排布基本块。同时输出基本块的部分排布结果如表 6-1 所示，所有基本块的排布情况参见附件。
 
@@ -825,3 +766,357 @@ P =
 [5] 康雯轩. 基于模拟退火算法的共享单车城市配送路径规划[J]. 科技与创新, 2022(000-013).
 
 \end{document}
+
+\section{附录}
+源程序
+题号
+数据预处理
+代码语言
+# Matlab
+clc,clear;
+%%求解通路矩阵 tl
+%输入有向图
+path=xlsread('C:\Users\lwy03\Desktop\2022 年D 题\有向图.xlsx',1,'B2:WJ608');
+%将有向图中的0 值变为inf
+for i=1:607
+for j=1:607
+if(path(i,j)==0)
+path(i,j)=inf;
+end
+end
+end
+a=path;
+n=size(a,1);
+% 初始化距离矩阵
+tl=a;
+% 初始化路由矩阵
+for i=1:n
+for j=1:n
+r(i,j)=j;
+end
+end
+r;
+
+% Floyd 算法开始
+for k=1:n
+for i=1:n
+for j=1:n
+if tl(i,k)+tl(k,j)<tl(i,j)
+tl(i,j)=tl(i,k)+tl(k,j);
+r(i,j)=r(i,k);
+end
+end
+end
+k;
+tl;
+r;
+end
+%化简通路矩阵
+for i=1:607
+for j=1:607
+if tl(i,j)==inf
+tl(i,j)=0;
+end
+end
+
+
+
+24
+end
+for i=1:607
+for j=1:607
+if tl(i,j)~=0
+tl(i,j)=1;
+end
+end
+end
+%%
+%输入读写矩阵
+[wr,txt]=xlsread('C:\Users\lwy03\Desktop\2022 年D 题\attachment2.xlsx');
+tw=zeros(607,1000);
+tr=zeros(607,1000);%tw 为写矩阵、tr 为读矩阵
+for i=1:1214
+for j=2:48
+if(mod(i,2)==1)
+if(isnan(wr(i,j))==0)
+wr(i,j)=wr(i,j)+1;
+tw((i+1)/2,wr(i,j))=1;
+end
+else
+if(isnan(wr(i,j))==0)
+wr(i,j)=wr(i,j)+1;
+tr(i/2,wr(i,j))=1;
+end
+end
+end
+end
+
+%tl 通路矩阵和t 读写矩阵
+s1=zeros(607);%写写
+s2=zeros(607);%写读
+s3=zeros(607);%读写
+
+%计数器，计算共产生几次约束
+j1=zeros(607);%写写
+j2=zeros(607);%写读
+j3=zeros(607);%读写
+
+%先判断写后写
+for i=1:607
+for j=1:607
+if(tl(i,j)==1)
+for k=1:1000
+if(tw(i,k)==1&&tw(j,k)==1)
+s1(i,j)=5;
+j1(i,j)=j1(i,j)+1;
+end
+
+
+
+25
+end
+end
+end
+end
+
+%判断写后读
+for i=1:607
+for j=1:607
+if(tl(i,j)==1)
+for k=1:1000
+if(tw(i,k)==1&&tr(j,k)==1)
+s2(i,j)=3;
+j2(i,j)=j2(i,j)+1;
+end
+end
+end
+end
+end
+%判断读后写
+for i=1:607
+for j=1:607
+if(tl(i,j)==1)
+for k=1:1000
+if(tr(i,k)==1&&tw(j,k)==1)
+s3(i,j)=1;
+j3(i,j)=j3(i,j)+1;
+end
+end
+end
+end
+end
+
+%将读后写约束置为-1，其他约束置为1
+s4=s1+s2+s3;
+for i=1:607
+for j=1:607
+if(s4(i,j)==1)
+s4(i,j)=-1;
+end
+if(s4(i,j)>1)
+s4(i,j)=1;
+end
+end
+end
+
+%找到写写、写读依赖
+for i=1:607
+for j=1:607;
+if(s4(i,j)~=1)
+
+
+
+26
+s4(i,j)=0;
+end
+end
+end
+
+%找到基本块
+for i=1:607
+for j=1:607
+s3(i,j)=s3(i,j)*j;
+s4(i,j)=s4(i,j)*j;
+end
+end
+
+c1=zeros(607);
+c2=zeros(607);
+
+for i=1:607
+e3=s3(i,:);
+f3=e3(e3~=0);
+for j=1:length(f3)
+c1(i,j)=f3(j);
+end
+end
+
+for i=1:607
+e4=s4(i,:);
+f4=e4(e4~=0);
+for k=1:length(f4)
+c2(i,k)=f4(k);
+end
+end
+
+for i=1:607
+for j=1:607
+if(c1(i,j)==0)
+c1(i,j)=nan;
+end
+if(c2(i,j)==0)
+c2(i,j)=nan;
+end
+end
+end
+%c1 读后写 级数-1
+for i=1:607
+for j=1:607
+if(isnan(c1(i,j))~=1)
+
+
+
+27
+c1(i,j)=c1(i,j)-1;
+end
+if(isnan(c2(i,j))~=1)
+c2(i,j)=c2(i,j)-1;
+end
+end
+end
+
+题号
+问题一
+代码语言
+# Python
+from gurobipy import *
+import xlrd, xlsxwriter, datetime, math, xlwt
+import numpy as np
+import gurobipy as gp
+from gurobipy import GRB
+
+##########################################################################读取数据约束
+data = xlrd.open_workbook('dd.xlsx')
+table = data.sheet_by_index(0)
+dd = []
+for i in range(table.nrows):  # table.nrows 表示总行数
+line = table.row_values(i)  # 读取每行数据，保存在line 里面，line 是list
+dd.append(line)  # 将line 加入到resArray 中，resArray 是二维list
+dd = np.array(dd)  # 将resArray 从二维list 变成数组
+
+##########################################################################读取控制约束
+data = xlrd.open_workbook('cd.xlsx')
+table = data.sheet_by_index(0)
+cd = []
+for i in range(table.nrows):  # table.nrows 表示总行数
+line = table.row_values(i)  # 读取每行数据，保存在line 里面，line 是list
+cd.append(line)  # 将line 加入到resArray 中，resArray 是二维list
+cd = np.array(cd)  # 将resArray 从二维list 变成数组
+
+##########################################################################读取资源约束
+data = xlrd.open_workbook('rd.xlsx')
+table = data.sheet_by_index(0)
+# T = []
+# H = []
+# A = []
+# Q = []
+# J = []
+T = table.col_values(0)
+T = np.array(T)
+H = table.col_values(1)
+H = np.array(H)
+A = table.col_values(2)
+A = np.array(A)
+Q = table.col_values(3)
+Q = np.array(Q)
+data = xlrd.open_workbook('J.xlsx')
+table = data.sheet_by_index(0)
+for i in range(table.nrows):
+line = table.row_values(i)
+
+
+
+28
+* append(line)
+J = np.array(J)
+
+# Ip = 607
+# Jp = 80
+print(type(J))
+##########################################################################依赖读取完毕
+
+##########################################################################开始模型构建
+m = gp.Model('basic_project_distribution_model')
+X = m.addVars(Ip, Jp, vtype=GRB.BINARY, name='X')
+M = m.addVar(vtype=GRB.INTEGER, name='M')
+#Z = m.addVars(1, 607, vtype=GRB.INTEGER, name='Z')
+
+# Limit how many solutions to collect
+#m.setParam(GRB.Param.PoolSolutions, 1)
+
+# Limit the search space by setting a gap for the worst possible solution
+# that will be accepted
+#m.setParam(GRB.Param.PoolGap, 0.1)
+
+# do a systematic search for the k- best solutions
+#m.setParam(GRB.Param.PoolSearchMode, 2)
+> #  #################################资源约束
+for j in range(Jp):
+* addConstr(gp.quicksum(X[i, j] * T[i] for i in range(Ip)) <= 1, 'tc')
+for j in range(Jp):
+* addConstr(gp.quicksum(X[i, j] * H[i] for i in range(Ip)) <= 2, 'hc')
+for j in range(Jp):
+* addConstr(gp.quicksum(X[i, j] * A[i] for i in range(Ip)) <= 56, 'ac')
+for j in range(Jp):
+* addConstr(gp.quicksum(X[i, j] * Q[i] for i in range(Ip)) <= 64, 'qc')
+
+#  ################################基本块只能排布到一级
+for i in range(Ip):
+* addConstr(gp.quicksum(X[i, j] for j in range(Jp)) == 1, 'oc')
+
+#  ##################################折叠资源约束
+for j in range(15):
+* addConstr(gp.quicksum(X[i, j] * T[i]+X[i, j+16] * T[i] for i in range(Ip)) <=1, 'zc')
+
+for j in range(15):
+* addConstr(gp.quicksum(X[i, j] * H[i] + X[i, j+16] * H[i] for i in range(Ip)) <=3, 'ic')
+
+#  ####################################数据依赖约束
+
+for a in range(Ip):
+for b in range(Ip):
+
+
+
+29
+if dd[a, b] == 1:
+* addConstr(gp.quicksum((J[a, j] * X[a, j] - J[b, j] * X[b, j]) for j in range(Jp)) <= -1)
+
+for a in range(Ip):
+for b in range(Ip):
+if dd[a, b] == -1:
+* addConstr(gp.quicksum((J[a, j] * X[a, j] - J[b, j] * X[b, j]) for j in range(Jp)) <= 0)
+
+#  ####################################控制依赖约束
+for a in range(Ip):
+for b in range(Ip):
+if cd[a, b] == 1:
+* addConstr(gp.quicksum((J[a, j] * X[a, j] - J[b, j] * X[b, j]) for j in range(Jp)) <= 0)
+
+#  ####################################偶数级约束
+
+* addConstr(gp.quicksum((1+(-1)**j) * gp.quicksum(X[i, j] * T[i] for i in range(Ip))for j in range(Jp)) <=
+10)
+
+for i in range(Ip):
+* addConstr(gp.quicksum(X[i, j] * J[i, j] for j in range(Jp)) <= M)
+
+* setObjective(M, GRB.MINIMIZE)
+#m.setParam('Timelimit', 4200)
+
+* optimize()
+
+##########################################################################
+
+* write("mip1.sol")
+

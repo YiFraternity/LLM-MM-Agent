@@ -30,14 +30,8 @@
 \end{tabular}
 \end{table}
 
-\begin{flushleft}
-题目 \quad PISA 架构芯片资源排布问题
-\end{flushleft}
 
 \title{PISA 架构芯片资源排布问题}
-\author{}
-\date{}
-\maketitle
 
 \begin{abstract}
 可编程的交换芯片架构 PISA（Protocol Independent Switch Architecture）相较于传统固定性能的交换芯片，其大大提高了研发效率，同时性能不输传统固定性能的交换芯片，有广阔的应用前景。本文针对 PISA 架构的多级报文流水线处理部分提出优化方案，首先对数据进行预处理，得到数据依赖、控制依赖及资源约束查询表，基于贪婪—遗传算法的思想，建立基本块排布优化模型，并针对这一多约束的组合优化问题设计出对应的求解算法，结果表明所设计的算法是有效的，具体问题的解决方案如下所述。
@@ -51,41 +45,7 @@
 \textbf{关键字：} 芯片资源排布；0-1 整数规划；贪婪算法；遗传算法
 \end{abstract}
 
-\section*{目录}
-\begin{itemize}
-    \item 一、问题重述 \dotfill 3
-    \begin{itemize}
-        \item 1.1 问题背景 \dotfill 3
-        \item 1.2 待解决的问题 \dotfill 3
-    \end{itemize}
-    \item 二、模型假设 \dotfill 4
-    \item 三、符号说明 \dotfill 5
-    \item 四、问题分析与数据处理 \dotfill 6
-    \begin{itemize}
-        \item 4.1 邻接基本块信息表的处理 \dotfill 6
-        \item 4.2 控制依赖关系的计算 \dotfill 7
-        \item 4.3 数据依赖关系的计算 \dotfill 8
-    \end{itemize}
-    \item 五、问题的建模与求解 \dotfill 10
-    \begin{itemize}
-        \item 5.1 问题一的建模与求解 \dotfill 10
-        \begin{itemize}
-            \item 5.1.1 建模准备 \dotfill 10
-            \item 5.1.2 问题一模型的建立 \dotfill 10
-            \item 5.1.3 模型求解 \dotfill 12
-            \item 5.1.4 求解结果与分析 \dotfill 14
-        \end{itemize}
-        \item 5.2 问题二的建模与求解 \dotfill 17
-        \begin{itemize}
-            \item 5.2.1 问题二模型的建立 \dotfill 17
-            \item 5.2.2 模型求解 \dotfill 19
-            \item 5.2.3 结果分析 \dotfill 19
-        \end{itemize}
-    \end{itemize}
-    \item 六、总结 \dotfill 23
-    \item 七、参考文献 \dotfill 24
-    \item 八、附录 \dotfill 25
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -193,7 +153,13 @@ Block & \multicolumn{6}{c|}{后续基本块编号} \\
 \end{figure}
 
 通过上一节得到的基本块执行顺序表和流程图可以计算出基本块之间的控制依赖关系。由控制依赖定义可知，当一个基本块没有下一步执行的基本块或只有一个邻接基本块时则它与后续所有基本块均无控制依赖关系，所以在 attachment3 表中可以先筛选掉这一部分基本块。而对于有多条有向边连接的基本块则采取标记法来计算后续基本块是否与其有控制依赖关系。其基本思路如图 \ref{fig:2} 所示，对于 1 号基本块来说，其后向邻接基本块有2号和3号两个，则对于这两条有向边分别赋予标记“Mark1”和“Mark2”，分别传递给2号基本块和3号基本块，2号和3号再将它们收到的标记传递到后续基本块，则4号得到的标记即为“Mark1+Mark2”包含了1号基本块所有出发路径带有的标记，这意味着从1号基本块开始的所有路径最后都经过了4号基本块，所以1号基本块与4号基本块之间没有控制依赖。而2号和3号基本块只含有1号所有出发路径标记的一部分，表示从1号基本块出发只有部分路径到达2号和3号，所以存在控制依赖关系，符合控制依赖的定义。
-
+接基本块有2 号和3 号两个，则对于这两条有向边分别赋予标记“Mark1”和“ Mark2”，
+分别传递给2 号基本块和3 号基本块，2 号和3 号再将它们收到的标记传递到后续基本
+块，则4 号得到的标记即为“Mark1+Mark2”包含了1 号基本块所有出发路径带有的标
+记，这意味着从1 号基本块开始的所有路径最后都经过了4 号基本块，所以1 号基本块
+与4 号基本块之间没有控制依赖。而2 号和3 号基本块只含有1 号所有出发路径标记的
+一部分，表示从 1 号基本块出发只有部分路径到达 2 号和 3 号，所以存在控制依赖关
+系，符合控制依赖的定义。
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.5cm,semithick]
@@ -250,7 +216,17 @@ Block & 5 & 6 & 7 & 8 & 9 & $\cdots$ \\ \hline
    - 前一个block存在写操作的变量集合与后一个block存在写操作的变量集合存在交集，判定为存在写后写依赖，记为A；
 
    - 前一个block存在写操作的变量集合与后一个block存在读操作的变量集合
-
+存在交集，判定为存在写后读依赖，记为B； 
+⚫ 前一个block 存在读操作的变量集合与后一个block 存在写操作的变量集合
+存在交集，判定为存在读后写依赖，记为C； 
+⚫ 以上3 种条件均不满足时，表示不存在数据依赖，记为D； 
+⚫ 根据上述规则，生成表格:data_depend2.csv(见附录)。 
+3. 将得到的表格进行整理： 
+⚫ 写后写依赖与写后读依赖都要求前一个 block 级数小于后一个 block 级数，
+因此归为同一类，记为-1； 
+⚫ 读后写依赖要求前一个block 级数小于等于后一个block 级数，记为1； 
+⚫ 不存在数据依赖的情况记为0。 
+4. 根据上述规则，生成如下表4-3(截取自附录文件data_depend3.csv)。
 \begin{table}[h]
 \centering
 \caption{表4-3 数据依赖关系表（部分）}
@@ -513,7 +489,7 @@ P_i * C(i, j) \leq P_j, \quad i, j \in [0, 606]
     \caption{基本块排布情况}
     \label{fig:basic_block_layout}
 \end{figure}
-
+（2）各流水线级资源利用情况
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image.png}
@@ -688,3 +664,1089 @@ P_i * C(i, j) &\leq P_j, \quad \forall \, i, j \in [0, 606] \\
 6. 丁可,徐言民,关宏旭,李诗杰,李柏苇.基于贪心-遗传优化算法的中长期船舶进出港调度优化[J/OL].武汉理工大学学报(交通科学与工程版):1-10[2022-10-09].
 
 \end{document}
+
+\section{附录：代码清单}
+1. 八、附录
+附录1：问题的求解
+问题一主程序：
+import numpy as np
+import csv
+import pandas as pd
+
+## CROSSOVER_RATE = 0.6
+## MUTATION_RATE = 0.01
+# N_GENERATIONS = 100
+control1 = np.load('control.npy')
+data_ziyuan = []
+df = pd.read_csv('data_depend3.csv', index_col=0)
+with open('data1.csv', encoding='utf-8-sig') as f:
+for row in csv.reader(f, skipinitialspace=True):
+data_ziyuan.append(row)
+
+def ziyuan1(block):             #输入快的序号，输出相应的资源数
+a = data_ziyuan[block+1]
+return a[1:5]
+
+def SSS(num, temp):                #查询数据依赖
+list_shujuyilai = []
+for i in range(607):
+# Shuju = True
+if temp[i] == 0:
+if df.iloc[i, num] == 1:
+list_shujuyilai.append(i)
+if df.iloc[i, num] == -1:
+# Shuju = False
+return Shuju, list_shujuyilai
+
+def judge(block1, block2):
+"""
+判定两个block 是否在同一执行流程上
+:param block1:
+:param block2:
+:return:bool
+"""
+df = pd.read_csv('先后顺序.csv', index_col = 0).astype('int')
+if df.iloc[block1, block2] == 1:
+
+
+
+26
+flag1 = True  #在
+else:
+flag1 = False
+if df.iloc[block2, block1] == 1:
+flag2 = True  #不在
+else:
+flag2 = False
+return flag1|flag2
+
+def Kongzhi(temp):              #返回控制依赖的初始表
+list_K1 = []
+for i in range(607):
+list_K2 = []
+list_K2.append(i)
+if temp[i] == 0:
+for j in range(607):
+if temp[j] == 0:
+if control1[j, i] == 1:
+list_K2.append(j)
+list_K1.append(list_K2)
+return list_K1
+def Jiaocha_ziyuan(list1, list2):       #根据list1 查询list2，对list1 进行添加
+# A1 = 0
+for i in range(len(list1)):   #对list1 进行遍历
+for j in list1[i]:        #list1[i]中的元素查询
+for h in range(len(list2)):
+if j == list2[h][0]:
+for m in list2[h]:
+if m not in list1[i]:
+# A1 = A1 + 1
+list1[i].append(m)
+break
+return list1, A1
+
+def Ziyuan_xianzhi(list1):
+list_ziyuanxianzhi = []
+for i in range(len(list1)):
+# Ziyuanxianzhi1 = 0
+ziyuan2 = np.zeros(4)
+for j in list1[i]:
+temp1 = np.array(ziyuan1(j))
+for t1 in range(4):
+ziyuan2[t1] = ziyuan2[t1] + int(temp1[t1])
+if ziyuan2[0] > list_zongziyuan1[0]:
+
+
+
+27
+# Ziyuanxianzhi1 = 1
+if ziyuan2[1] > list_zongziyuan1[1]:
+# Ziyuanxianzhi1 = 1
+if ziyuan2[2] > list_zongziyuan1[2]:
+# Ziyuanxianzhi1 = 1
+if ziyuan2[3] > list_zongziyuan1[3]:
+# Ziyuanxianzhi1 = 1
+if Ziyuanxianzhi1 == 0:
+list_ziyuanxianzhi.append(list1[i])
+return list_ziyuanxianzhi
+def Kongzhi_list(list1):
+for i in range(606):
+u = 0
+list1, u = Jiaocha_ziyuan(list1, list1)
+list1 = Ziyuan_xianzhi(list1)
+print('控制u', u)
+if u == 0:
+break
+return list1
+
+def Shuju(temp):
+list_shuju1 = []
+for i in range(607):
+if temp[i] == 0:
+list_shuju2 = []
+list_shuju2.append(i)
+A3, list_shuju3 = SSS(i, temp)
+if A3 and temp[i] == 0:
+for j in list_shuju3:
+if temp[j] == 0:
+list_shuju2.append(j)
+list_shuju1.append(list_shuju2)
+return list_shuju1
+
+def guolv(list):
+# 还需要加一步，去掉不能放在第一级的
+list_guolv = []
+for i in range(len(list)):
+list_guolv.append(list[i][0])
+list_guolv1 = []
+for i in range(len(list)):
+s = 0
+for j in list[i]:
+
+
+
+28
+if j not in list_guolv:
+s = 1
+if s == 0:
+list_guolv1.append(list[i])
+return list_guolv1
+def Shuju_list(list):
+for i in range(607):
+list,u = Jiaocha_ziyuan(list, list)
+list = guolv(list)
+print('资源u', u)
+list = Ziyuan_xianzhi(list)
+if u == 0:
+break
+return list
+
+def Kongzhi_Shuju(list_K,list_S):
+for i in range(607):
+list_zong, u0 = Jiaocha_ziyuan(list_K, list_S)
+list_zong, u1 = Jiaocha_ziyuan(list_zong, list1)
+list_zong = Ziyuan_xianzhi(list_zong)
+if (u0+u1) == 0:
+break
+return list_zong
+
+def crossover_and_mutation(pop, CROSSOVER_RATE=0.8):
+new_pop = []
+for father in pop:  # 遍历种群中的每一个个体，将该个体作为父亲
+child = father  # 孩子先得到父亲的全部基因（这里我把一串二进制串的那些
+0，1 称为基因）
+if np.random.rand() < CROSSOVER_RATE:  # 产生子代时不是必然发生交叉，
+而是以一定的概率发生交叉
+mother = pop[np.random.randint(POP_SIZE)]  # 再种群中选择另一个个体，
+并将该个体作为母亲
+cross_points = np.random.randint(low=0, high=DNA_SIZE)  # 随机产生交
+叉的点
+child[cross_points:] = mother[cross_points:]  # 孩子得到位于交叉点后的母
+亲的基因
+mutation(child)  # 每个后代有一定的机率发生变异
+new_pop.append(child)
+
+return new_pop
+
+def mutation(child, MUTATION_RATE=0.003):
+if np.random.rand() < MUTATION_RATE:  # 以MUTATION_RATE 的概率进行变异
+
+
+
+29
+mutate_point = np.random.randint(0, DNA_SIZE)  # 随机产生一个实数，代表
+要变异基因的位置
+child[mutate_point] = child[mutate_point] ^ 1  # 将变异点的二进制为反转
+
+def F(pop,list):
+list_F = []
+for i in range(POP_SIZE):
+list_F1 = []
+for j in range(len(list)):
+if pop[i, j] == 1:
+for t in list[j]:
+if t not in list_F1:
+list_F1.append(t)
+list_F.append(list_F1)
+ziyuan_F = np.zeros(POP_SIZE)
+for i in range(POP_SIZE):
+ziyuan_F1 = np.zeros(4)
+for j in list_F[i]:
+temp1 = np.array(ziyuan1(j))
+for t1 in range(4):
+ziyuan_F1[t1] = ziyuan_F1[t1] + int(temp1[t1])
+if ziyuan_F1[0] > list_zongziyuan1[0]:
+ziyuan_F[i] = 0
+continue
+if ziyuan_F1[1] > list_zongziyuan1[1]:
+ziyuan_F[i] = 0
+continue
+if ziyuan_F1[2] > list_zongziyuan1[2]:
+ziyuan_F[i] = 0
+continue
+if ziyuan_F1[3] > list_zongziyuan1[3]:
+ziyuan_F[i] = 0
+continue
+ziyuan_F[i] = ziyuan_F1[0]*64 + ziyuan_F1[1]*32 + ziyuan_F1[2]*1.1143 +
+ziyuan_F1[3] + len(list_F[i])*7
+return ziyuan_F, list_F
+def get_fitness(pop, list):
+pred, list_F = F(pop,list)
+return pred, list_F
+# return pred - np.min(pred)+1e-3  # 求最大值时的适应度
+# return np.max(pred) - pred + 1e-3  # 求最小值时的适应度，通过这一步fitness 的
+范围为[0, np.max(pred)-np.min(pred)]
+
+
+
+30
+def select(pop, fitness):  # nature selection wrt pop's fitness
+# pop_size 种群数量
+if fitness.sum() != 0:
+idx = np.random.choice(np.arange(POP_SIZE), size=POP_SIZE, replace=True,
+p=(fitness) / (fitness.sum()))
+else:
+return pop
+
+return pop[idx]
+
+def GA(list):
+fitness_GA = []
+list_GA = []
+pop = np.random.randint(DNA_SIZE, size=(POP_SIZE, DNA_SIZE))
+for i in range(POP_SIZE):
+for j in range(DNA_SIZE):
+if pop[i,j] == (DNA_SIZE-1):
+pop[i,j] == 1
+else:
+pop[i,j] == 0
+for _ in range(N_GENERATIONS):  # 迭代N 代
+pop = np.array(crossover_and_mutation(pop, CROSSOVER_RATE))
+fitness,list_GA_jieduan = get_fitness(pop, list)
+max_fitness_index = np.argmax(fitness)
+fitness_GA.append(fitness[max_fitness_index])
+if list_GA_jieduan[max_fitness_index] != 0:
+list_GA.append(list_GA_jieduan[max_fitness_index])
+else:
+list_GA.append([])
+
+pop = select(pop, fitness)  # 选择生成新的种群
+
+print("max_fitness:", fitness[max_fitness_index])
+return fitness_GA, list_GA
+def jisuanziyuan(list):
+ziyuan_F1 = np.zeros(4)
+for i in list:
+temp1 = np.array(ziyuan1(i))
+for t1 in range(4):
+ziyuan_F1[t1] = ziyuan_F1[t1] + int(temp1[t1])
+return ziyuan_F1
+list_jishuziyuan = []
+# N_oushuziyuan = 0
+
+
+
+31
+temp = np.zeros(607)
+list_block = []
+list_zongziyuan = []
+for i in range(100):
+list_zongziyuan1 = [1, 2, 56, 64]
+if i >= 16 and i <= 31:
+list_zongziyuan1[0] = 1 - list_jishuziyuan[i-16][0]
+list_zongziyuan1[1] = 3 - list_jishuziyuan[i - 16][1]
+if N_oushuziyuan > 4:
+if i % 2 == 0:
+list_zongziyuan1[0] = 0
+list1 = Kongzhi(temp)
+list1 = Kongzhi_list(list1)
+list2 = Shuju(temp)
+list2 = Shuju_list(list2)
+list_zong = Kongzhi_Shuju(list1, list2)
+## POP_SIZE = len(list_zong)*10
+DNA_SIZE = len(list_zong)
+print('输入遗传算法的样本长度', DNA_SIZE)
+A11, B11 = GA(list_zong)
+list_block.append(B11[np.argmax(A11)])
+for j in list_block[i]:
+temp[j] = temp[j]+1
+list_jishuziyuan.append(jisuanziyuan(list_block[i]))
+if i % 2 == 0:
+## N_oushuziyuan += list_jishuziyuan[i][0]
+print('偶数级数的0 号资源占用情况', N_oushuziyuan)
+print('第',i,'级','放置子程序块数目', len(list_block[i]))
+if len(list_block[i]) == 0:
+break
+
+问题二主程序：
+import numpy as np
+import csv
+import pandas as pd
+
+## CROSSOVER_RATE = 0.6
+## MUTATION_RATE = 0.01
+# N_GENERATIONS = 10
+control1 = np.load('control.npy')
+data_ziyuan = []
+df = pd.read_csv('data_depend3.csv', index_col=0)
+with open('data1.csv', encoding='utf-8-sig') as f:
+for row in csv.reader(f, skipinitialspace=True):
+
+
+
+32
+data_ziyuan.append(row)
+
+def ziyuan1(block):             #输入快的序号，输出相应的资源数
+a = data_ziyuan[block+1]
+return a[1:5]
+
+df1 = pd.read_csv('先后顺序.csv', index_col = 0).astype('int')
+def judge1(block1, block2):
+"""
+判定两2 是否在1 后面
+:param block1:
+:param block2:
+:return:bool
+"""
+if df1.iloc[block1, block2] == 1:
+flag1 = True  #在
+else:
+flag1 = False
+return flag1
+
+class Solution:
+#graph 表示一张图
+# #start 表示起始节点
+# #target 表示终止节点
+#cut 表示最大路长
+def searchpaths(self, start, target, cut, graph):
+paths = []
+path = []
+# graph = {1:[2, 5], 2:[3, 4], 3:[4, 5], 5:[6]}
+# print(graph[1])
+# graph = {'A': ['B', 'C'], 'B': ['C'], 'C': ['D']}
+
+def dfs(start, target):
+# #如果起始节点不在图中，则结束
+if start not in graph:
+return
+#如果路长大于阈值，则结束
+if len(path) >= cut:
+return
+# #遍历起始节点的邻居节点
+for neighbor in graph[start]:
+## #如果起始节点没有在单条path 出现，则追加
+if neighbor not in path:
+
+
+
+33
+path.append(neighbor)
+#出现环，则结束
+else:
+return
+#如果单条path 没有出现在paths 里且满足终点等于target，则在结果
+中追加
+if path not in paths and path[-1] == target:
+#拷贝
+paths.append(path[:])
+# #以新的邻居节点dfs
+dfs(neighbor, target)
+#last 的追加了neighbor，需要返回
+path.pop()
+path.append(start)
+dfs(start, target)
+return paths
+
+def find_path(list):
+temp_xunlu = np.zeros(607)
+# Record1 = []
+for i in range(len(list)):
+# Record2 = []
+Record2.append(list[i])
+for j in range(len(list)):
+if judge1(list[i], list[j]) and i != j:
+Record2.append(list[j])
+Record1.append(Record2)
+return Record1
+
+def Zhuanhuan(list):
+dict1 = {}
+temp_shunxu = np.zeros(len(list))
+qidian1 = []
+zhongdian1 = []
+for j in range(len(list)):
+list_max = []
+for i in range(len(list)):
+if temp_shunxu[i] == 0:
+if len(list[i]) > len(list_max):
+list_max = list[i]
+qidian = []
+zhongdian = []
+qidian.append(list_max[0])
+for i in range(len(list)):
+
+
+
+34
+if list[i][0] in list_max:
+temp_shunxu[i] = 1
+if len(list[i]) == 1:
+zhongdian.append(list[i][0])
+qidian1.append(qidian)
+zhongdian1.append(zhongdian)
+if 0 not in temp_shunxu:
+break
+> for i in range(len(list)):
+if len(list[i]) == 1:
+continue
+else:
+value_dict = []
+for j in range(len(list[i])-1):
+value_dict.append(int(list[i][j+1]))
+dict1[list[i][0]] = value_dict
+return qidian1,zhongdian1,dict1
+
+def ALL_path(qidian,zhongdian,list_xunxu,dict_allpath):
+# ALL_rob_path = []
+for i in range(len(qidian)):
+for j in range(len(qidian[i])):
+for k in range(len(zhongdian[i])):
+for sr in list_xunxu:
+if qidian[i][j] == sr[0]:
+cut_zuizhong = len(sr)
+ALL_rob_path.append(Solution().searchpaths(start=qidian[i][j],
+target=zhongdian[i][k], cut=cut_zuizhong,
+graph=dict_allpath))
+return ALL_rob_path
+
+def baohanyu(list1,list2):
+# Flag1 = True
+for i in list1:
+if i not in list2:
+# Flag1 = False
+return Flag1
+
+def path_quchong(all_path):
+
+
+
+35
+shengyu_path = []
+for i in range(len(all_path)):
+temp_quchu = np.zeros(len(all_path[i]))
+for j in range(len(all_path[i])):
+biaozhi_quchu = 0
+for t in range(len(all_path[i])):
+if temp_quchu[t] == 1:
+continue
+if baohanyu(all_path[i][j], all_path[i][t]) and len(all_path[i][j]) <
+len(all_path[i][t]):
+temp_quchu[j] = 1
+biaozhi_quchu = 1
+break
+if biaozhi_quchu == 0:
+shengyu_path.append(all_path[i][j])
+return shengyu_path
+> def  xunzhaoluxian(list):
+list_xunxu = find_path(list)
+qidian, zhongdian, dict_allpath = Zhuanhuan(list_xunxu)
+all_path = ALL_path(qidian,zhongdian,list_xunxu,dict_allpath)
+shengyu_path = path_quchong(all_path)
+return shengyu_path
+
+def Ziyuan_liucheng(list):
+max_HASH = 0
+max_ALU = 0
+for i in range(len(list)):
+ziyuan_F1 = np.zeros(4)
+for j in list[i]:
+temp1 = np.array(ziyuan1(j))
+for t1 in range(4):
+ziyuan_F1[t1] = ziyuan_F1[t1] + int(temp1[t1])
+if ziyuan_F1[1] > max_HASH:
+max_HASH = ziyuan_F1[1]
+if ziyuan_F1[2] > max_ALU:
+max_ALU = ziyuan_F1[2]
+return max_HASH, max_ALU
+
+
+
+36
+> def SSS(num, temp):                #查询数据依赖
+list_shujuyilai = []
+for i in range(607):
+# Shuju = True
+if temp[i] == 0:
+if df.iloc[i, num] == 1:
+list_shujuyilai.append(i)
+if df.iloc[i, num] == -1:
+# Shuju = False
+return Shuju, list_shujuyilai
+
+def judge(block1, block2):
+"""
+判定两个block 是否在同一执行流程上
+:param block1:
+:param block2:
+:return:bool
+"""
+df = pd.read_csv('先后顺序.csv', index_col = 0).astype('int')
+if df.iloc[block1, block2] == 1:
+flag1 = True  #在
+else:
+flag1 = False
+if df.iloc[block2, block1] == 1:
+flag2 = True  #不在
+else:
+flag2 = False
+return flag1|flag2
+
+def Kongzhi(temp):              #返回控制依赖的初始表
+list_K1 = []
+for i in range(607):
+list_K2 = []
+list_K2.append(i)
+if temp[i] == 0:
+for j in range(607):
+if temp[j] == 0:
+if control1[j, i] == 1:
+list_K2.append(j)
+
+
+
+37
+list_K1.append(list_K2)
+return list_K1
+def Jiaocha_ziyuan(list1, list2):       #根据list1 查询list2，对list1 进行添加
+# A1 = 0
+for i in range(len(list1)):   #对list1 进行遍历
+for j in list1[i]:        #list1[i]中的元素查询
+for h in range(len(list2)):
+if j == list2[h][0]:
+for m in list2[h]:
+if m not in list1[i]:
+# A1 = A1 + 1
+list1[i].append(m)
+break
+return list1, A1
+
+def Ziyuan_xianzhi(list1):
+list_ziyuanxianzhi = []
+for i in range(len(list1)):
+# Ziyuanxianzhi1 = 0
+ziyuan2 = np.zeros(4)
+for j in list1[i]:
+temp1 = np.array(ziyuan1(j))
+for t1 in range(4):
+ziyuan2[t1] = ziyuan2[t1] + int(temp1[t1])
+if ziyuan2[0] > list_zongziyuan1[0]:
+# Ziyuanxianzhi1 = 1
+if ziyuan2[1] > list_zongziyuan1[1]:
+# Ziyuanxianzhi1 = 1
+if ziyuan2[2] > list_zongziyuan1[2]:
+# Ziyuanxianzhi1 = 1
+if ziyuan2[3] > list_zongziyuan1[3]:
+# Ziyuanxianzhi1 = 1
+if Ziyuanxianzhi1 == 0:
+list_ziyuanxianzhi.append(list1[i])
+return list_ziyuanxianzhi
+def Kongzhi_list(list1):
+for i in range(606):
+u = 0
+list1, u = Jiaocha_ziyuan(list1, list1)
+list1 = Ziyuan_xianzhi(list1)
+print('控制u', u)
+if u == 0:
+break
+return list1
+
+
+
+38
+
+def Shuju(temp):
+list_shuju1 = []
+for i in range(607):
+if temp[i] == 0:
+list_shuju2 = []
+list_shuju2.append(i)
+A3, list_shuju3 = SSS(i, temp)
+if A3 and temp[i] == 0:
+for j in list_shuju3:
+if temp[j] == 0:
+list_shuju2.append(j)
+list_shuju1.append(list_shuju2)
+return list_shuju1
+
+def guolv(list):
+# 还需要加一步，去掉不能放在第一级的
+list_guolv = []
+for i in range(len(list)):
+list_guolv.append(list[i][0])
+list_guolv1 = []
+for i in range(len(list)):
+s = 0
+for j in list[i]:
+if j not in list_guolv:
+s = 1
+if s == 0:
+list_guolv1.append(list[i])
+return list_guolv1
+def Shuju_list(list):
+for i in range(607):
+list, u = Jiaocha_ziyuan(list, list)
+list = guolv(list)
+print('资源u', u)
+list = Ziyuan_xianzhi(list)
+if u == 0:
+break
+return list
+
+def Kongzhi_Shuju(list_K,list_S):
+for i in range(607):
+list_zong, u0 = Jiaocha_ziyuan(list_K, list_S)
+list_zong, u1 = Jiaocha_ziyuan(list_zong, list1)
+
+
+
+39
+list_zong = Ziyuan_xianzhi(list_zong)
+if (u0+u1) == 0:
+break
+return list_zong
+
+def crossover_and_mutation(pop, CROSSOVER_RATE=0.8):
+new_pop = []
+for father in pop:  # 遍历种群中的每一个个体，将该个体作为父亲
+child = father  # 孩子先得到父亲的全部基因（这里我把一串二进制串的那些
+0，1 称为基因）
+if np.random.rand() < CROSSOVER_RATE:  # 产生子代时不是必然发生交叉，
+而是以一定的概率发生交叉
+mother = pop[np.random.randint(POP_SIZE)]  # 再种群中选择另一个个体，
+并将该个体作为母亲
+cross_points = np.random.randint(low=0, high=DNA_SIZE)  # 随机产生交
+叉的点
+child[cross_points:] = mother[cross_points:]  # 孩子得到位于交叉点后的母
+亲的基因
+mutation(child)  # 每个后代有一定的机率发生变异
+new_pop.append(child)
+
+return new_pop
+
+def mutation(child, MUTATION_RATE=0.003):
+if np.random.rand() < MUTATION_RATE:  # 以MUTATION_RATE 的概率进行变异
+mutate_point = np.random.randint(0, DNA_SIZE)  # 随机产生一个实数，代表
+要变异基因的位置
+child[mutate_point] = child[mutate_point] ^ 1  # 将变异点的二进制为反转
+
+def F(pop,list):
+list_F = []
+for i in range(POP_SIZE):
+list_F1 = []
+for j in range(len(list)):
+if pop[i, j] == 1:
+for t in list[j]:
+if t not in list_F1:
+list_F1.append(t)
+list_F.append(list_F1)
+ziyuan_F = np.zeros(POP_SIZE)
+for i in range(POP_SIZE):
+ziyuan_F1 = np.zeros(4)
+for j in list_F[i]:
+temp1 = np.array(ziyuan1(j))
+
+
+
+40
+for t1 in range(4):
+ziyuan_F1[t1] = ziyuan_F1[t1] + int(temp1[t1])
+if ziyuan_F1[0] > list_zongziyuan1[0]:
+ziyuan_F[i] = 0
+continue
+if ziyuan_F1[3] > list_zongziyuan1[3]:
+ziyuan_F[i] = 0
+continue
+if ziyuan_F1[1] > list_zongziyuan1[1] or ziyuan_F1[2] > list_zongziyuan1[2]:
+path_shengyu = xunzhaoluxian(list_F[i])
+max_HASH, max_ALU = Ziyuan_liucheng(path_shengyu)
+if max_HASH > list_zongziyuan1[1] or max_ALU > list_zongziyuan1[2]:
+ziyuan_F[i] = 0
+continue
+else:
+ziyuan_F[i] = ziyuan_F1[0] * 64 + ziyuan_F1[1] * 32 + ziyuan_F1[2] *
+1.1143 + ziyuan_F1[3] + len(list_F[i]) * 7
+continue
+ziyuan_F[i] = ziyuan_F1[0]*64 + ziyuan_F1[1]*32 + ziyuan_F1[2]*1.1143 +
+ziyuan_F1[3] + len(list_F[i])*7
+return ziyuan_F, list_F
+def get_fitness(pop, list):
+pred, list_F = F(pop,list)
+return pred, list_F
+# return pred - np.min(pred)+1e-3  # 求最大值时的适应度
+# return np.max(pred) - pred + 1e-3  # 求最小值时的适应度，通过这一步fitness 的
+范围为[0, np.max(pred)-np.min(pred)]
+
+def select(pop, fitness):  # nature selection wrt pop's fitness
+# pop_size 种群数量
+if fitness.sum() != 0:
+idx = np.random.choice(np.arange(POP_SIZE), size=POP_SIZE, replace=True,
+p=(fitness) / (fitness.sum()))
+else:
+return pop
+
+return pop[idx]
+
+def GA(list):
+fitness_GA = []
+list_GA = []
+pop = np.random.randint(DNA_SIZE, size=(POP_SIZE, DNA_SIZE))
+
+
+
+41
+for i in range(POP_SIZE):
+for j in range(DNA_SIZE):
+if pop[i,j] == (DNA_SIZE-1):
+pop[i,j] == 1
+else:
+pop[i,j] == 0
+for ssr in range(N_GENERATIONS):  # 迭代N 代
+pop = np.array(crossover_and_mutation(pop, CROSSOVER_RATE))
+fitness,list_GA_jieduan = get_fitness(pop, list)
+max_fitness_index = np.argmax(fitness)
+fitness_GA.append(fitness[max_fitness_index])
+if list_GA_jieduan[max_fitness_index] != 0:
+list_GA.append(list_GA_jieduan[max_fitness_index])
+else:
+list_GA.append([])
+
+pop = select(pop, fitness)  # 选择生成新的种群
+
+print("max_fitness:", fitness[max_fitness_index])
+return fitness_GA, list_GA
+def jisuanziyuan(list):
+ziyuan_F1 = np.zeros(4)
+for i in list:
+temp1 = np.array(ziyuan1(i))
+for t1 in range(4):
+ziyuan_F1[t1] = ziyuan_F1[t1] + int(temp1[t1])
+return ziyuan_F1
+
+list_jishuziyuan = []
+# N_oushuziyuan = 0
+temp = np.zeros(607)
+list_block = []
+list_zongziyuan = []
+for i in range(100):
+list_zongziyuan1 = [1, 2, 56, 64]
+if i >= 16 and i <= 31:
+list_zongziyuan1[0] = 1 - list_jishuziyuan[i-16][0]
+list_zongziyuan1[1] = 3 - list_jishuziyuan[i - 16][1]
+if N_oushuziyuan > 4:
+if i % 2 == 0:
+list_zongziyuan1[0] = 0
+list1 = Kongzhi(temp)
+list1 = Kongzhi_list(list1)
+list2 = Shuju(temp)
+
+
+
+42
+list2 = Shuju_list(list2)
+list_zong = Kongzhi_Shuju(list1, list2)
+# POP_SIZE = 40
+DNA_SIZE = len(list_zong)
+print('输入遗传算法的样本长度', DNA_SIZE)
+A11, B11 = GA(list_zong)
+list_block.append(B11[np.argmax(A11)])
+for j in list_block[i]:
+temp[j] = temp[j]+1
+list_jishuziyuan.append(jisuanziyuan(list_block[i]))
+if i % 2 == 0:
+## N_oushuziyuan += list_jishuziyuan[i][0]
+print('偶数级数的0 号资源占用情况', N_oushuziyuan)
+print('第',i,'级','放置子程序块数目', len(list_block[i]))
+if len(list_block[i]) == 0:
+break
+
+附录2：数据预处理
+生成基本块先后顺序表：
+import numpy as np
+import pandas as pd
+import math
+# import sys
+import csv
+class Solution:
+#graph 表示一张图
+# #start 表示起始节点
+# #target 表示终止节点
+#cut 表示最大路长
+def searchpaths(self, start, graph):
+path = []
+
+def dfs(start):
+# #如果起始节点不在图中，则结束
+if start not in graph:
+return
+# #遍历起始节点的邻居节点
+for neighbor in graph[start]:
+## #如果起始节点没有在单条path 出现，则追加
+print(neighbor)
+if neighbor not in path:
+path.append(neighbor)
+
+# #以新的邻居节点dfs
+
+
+
+43
+dfs(neighbor)
+dfs(start)
+return path
+data = []                           #导入有向无环数据
+with open('data3.csv', encoding='utf-8-sig') as f:
+for row in csv.reader(f, skipinitialspace=True):
+data.append(row)
+path = np.array(data)               #将数据DataFrame 转化为numpy
+record = np.zeros((607, 607))         #将路径保存到numpy 中
+a = []                              #用于记录所有方向
+for i in range (607):               #将所有路径保存到list 中
+for j in range(11):
+if str.isdigit(path[i, j+1]):
+* append([i, int(path[i, j+1])])
+else:
+break
+for i in a:
+record[i[0],i[1]] = 1
+dict = {}
+for i in range(607):
+y = []
+for o in range(607):
+if record[i,o] != 0:
+* append(o)
+dict[i] = y
+successively = np.zeros((607,607))
+for i in range(607):
+print(i)
+temp = Solution().searchpaths(start=i, graph=dict)
+for j in temp:
+successively[i,j] = 1
+a = np.zeros((607,607))
+for i in range(607):
+for j in range(607):
+a[i,j] = successively[i,j]+successively[j,i]
+import pandas as pd
+data1 = pd.DataFrame(successively)
+data1.to_csv('先后顺序.csv')
+
+生成控制依赖表：
+import numpy as np
+import pandas as pd
+import math
+# import sys
+
+
+
+44
+import csv
+class Solution:
+#graph 表示一张图
+# #start 表示起始节点
+# #target 表示终止节点
+#cut 表示最大路长
+def searchpaths(self, start, graph):
+path = []
+
+def dfs(start):
+# #如果起始节点不在图中，则结束
+if start not in graph:
+return
+# #遍历起始节点的邻居节点
+for neighbor in graph[start]:
+## #如果起始节点没有在单条path 出现，则追加
+print(neighbor)
+if neighbor not in path:
+path.append(neighbor)
+
+# #以新的邻居节点dfs
+dfs(neighbor)
+dfs(start)
+return path
+data = []                           #导入有向无环数据
+with open('data3.csv', encoding='utf-8-sig') as f:
+for row in csv.reader(f, skipinitialspace=True):
+data.append(row)
+path = np.array(data)               #将数据DataFrame 转化为numpy
+record = np.zeros((607, 607))         #将路径保存到numpy 中
+a = []                              #用于记录所有方向
+for i in range (607):               #将所有路径保存到list 中
+for j in range(11):
+if str.isdigit(path[i, j+1]):
+* append([i, int(path[i, j+1])])
+else:
+break
+for i in a:
+record[i[0],i[1]] = 1
+dict = {}
+for i in range(607):
+y = []
+for o in range(607):
+if record[i,o] != 0:
+
+
+
+45
+* append(o)
+dict[i] = y
+successively = np.zeros((607,607))
+for i in range(607):
+print(i)
+temp = Solution().searchpaths(start=i, graph=dict)
+for j in temp:
+successively[i,j] = 1
+a = np.zeros((607,607))
+for i in range(607):
+for j in range(607):
+a[i,j] = successively[i,j]+successively[j,i]
+import pandas as pd
+data1 = pd.DataFrame(successively)
+data1.to_csv('先后顺序.csv')
+control1 = np.zeros((607,607))
+for t in range(607):
+y = []
+temp1 = np.zeros(607)
+for o in range(607):
+if record[t, o] != 0:
+* append(o)
+if len(y) > 1:
+for j in y:
+temp1[j] = temp1[j] + 1
+temp1 = temp1 + successively[j,:]
+for i in range(607):
+if temp1[i] > 0 and temp1[i] < len(y):
+temp1[i] = 1
+else:
+temp1[i] = 0
+control1[t,:] = temp1
+data2 = pd.DataFrame(control1)
+data2.to_csv('控制依赖.csv')
+
+生成数据依赖表：
+import pandas as pd
+import numpy as np
+
+def inter(list1, list2):
+"""
+判断两个列表是否存在交集
+:param list1:
+:param list2:
+
+
+
+46
+:return: bool
+"""
+inter = set(list1)&set(list2)
+#True 代表存在交集，False 代表不存在
+if inter:
+flag = True
+else:
+flag = False
+return flag
+
+def trans():
+df = pd.read_csv('out/data_depend2.csv', index_col = 0)
+for i in range(0, 607):
+col_index = get_columns(i)
+for j in col_index:
+if df.iloc[i, j] == "['D']":
+df.iloc[i, j] = 0  # 代表没有数据依赖
+elif df.iloc[i, j] == "['C']":
+df.iloc[i, j] = 1   # 存在依赖<=
+elif inter(df.iloc[i, j], ['A', 'B']) == True:
+#存在交集
+df.iloc[i, j] = -1   # 存在依赖<
+else:
+pass
+df.to_csv('out/data_depend3.csv')
+
+def get_columns(row):
+"""
+根据【先后顺序.csv】，输入行号，输出值为1 的元素的列索引存入列表
+row: 输入的行号
+:return: 存放列索引的列表
+"""
+df = pd.read_csv('out/先后顺序.csv', index_col=0)
+lst = [item for item in df.iloc[row, :]]
+tmp = []
+tag = 0
+for i in lst:
+if i == 1:
+tmp.append(tag)
+else:
+pass
+tag += 1
+return tmp
+
+
+
+47
+def data_depend(tar):
+"""
+判断两个block 是否存在读写依赖
+:param tar: 接收的block 对,元组类型
+:return:
+"""
+df = pd.read_csv('data/attachment2.csv', header=None)
+a = tar[0]
+b = tar[1]
+
+# 存储每个block 读写的变量
+list_a_w = (df.iloc[2*a, 1:]).dropna().to_list()[1:]
+list_a_r = (df.iloc[2*a+1, 1:]).dropna().to_list()[1:]
+list_b_w = (df.iloc[2*b, 1:]).dropna().to_list()[1:]
+list_b_r = (df.iloc[2*b+1, 1:]).dropna().to_list()[1:]
+
+list = [list_a_w, list_a_r, list_b_w, list_b_r]
+
+res = []    #存储判断结果
+flag = ['A', 'B', 'C', 'D']    #判断标志
+ww = inter(list_a_w, list_b_w)
+wr = inter(list_a_w, list_b_r)
+rw = inter(list_a_r, list_b_w)
+# rr = inter(list_a_r, list_b_r)
+
+if ww==True:
+res.append(flag[0])
+if wr==True:
+res.append(flag[1])
+if rw==True:
+res.append(flag[2])
+# if rr==True:
+#     # res.append(flag[3])
+#     pass
+
+## # 以上条件都不成立时，表示不存在控制依赖，置为'D'
+if ww|wr|rw == True:
+pass
+else:
+res.append(flag[3])
+
+return res
+
+
+
+48
+#初始化表格
+df = pd.DataFrame(index = [a for a in range(0, 607)], columns = [a for a in range(0, 607)])
+
+for i in range(0, 607):
+col_index = get_columns(i)
+for j in col_index:
+res = data_depend(tar=(i,j))
+df.iloc[i, j] = res
+
+df.to_csv('out/data_depend2.csv')
+

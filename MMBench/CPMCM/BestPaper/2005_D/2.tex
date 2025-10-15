@@ -178,12 +178,14 @@ E[f(L, X)] = \int_0^\infty f(L, x) p(x) dx = \int_0^{\frac{L}{r}} f(L, x) p(x) d
 
 第二步：考虑 \( L > Q_0 \) 时一个周期内平均每天的费用 \( f(L, X) \)。
 
-\begin{align*}
-c_1 + c_3 \times S(Q, Q_0, c) + c_2 \times S(0, Q_0, c, a+X) &= \\
-c_1 + c_2 \times S(0, Q, \frac{Q}{r}) + (c_3 - c_2) \times S(Q, Q_0, c) - c_2 \times S(d, a+X, \frac{Q}{r}) &= \\
-c_1 + c_2 \int_{0}^{\frac{Q}{r}} r t dt + (c_3 - c_2) \int_{0}^{\frac{Q-Q_0}{r}} r t dt - c_2 \int_{0}^{\frac{L-X}{r}} r t dt &= \\
-A - \frac{c_2 r}{2} \left( X - \frac{L}{r} \right)^2
-\end{align*}
+\begin{equation}
+f(L, X) =
+\begin{cases}
+\frac{A - \frac{c_2 r}{2} \left( X - \frac{L}{r} \right)^2 - \frac{(c_3 - c_2) r}{2} \left( X - \frac{L - Q_0}{r} \right)^2}{X + \frac{Q - L}{r}} & (0 \leq X \leq \frac{L - Q_0}{r}) \\
+\frac{A - \frac{c_2 r}{2} \left( X - \frac{L}{r} \right)^2}{X + \frac{Q - L}{r}} & \left( \frac{L - Q_0}{r} < X \leq \frac{L}{r} \right) \\
+\frac{A + r \left( X - \frac{L}{r} \right)}{X + \frac{Q - L}{r}} & \left( X > \frac{L}{r} \right)
+\end{cases}
+\end{equation}
 
 其中 \( A = c_1 + \frac{c_2 Q^2}{2r} + \frac{(c_3 - c_2)(Q - Q_0)^2}{2r} \)
 
@@ -616,19 +618,20 @@ E[f(L^*, X)] = \min E[f(L, X)] = \int_0^\infty \sum_{i=1}^m f_i(L_i, x)p(x)dx
 
 由于货物到达商场的时间 \(X\) 是整数，所以可以认为 \(X\) 服从 1 天到 3 天之间的均匀分布实际上是一种离散分布，等价于 \(P(X=1) = P(X=2) = P(X=3) = \frac{1}{3}\)。问题 2 中原来的商品单价是以商品的个数为单位考虑的；而要利用问题 3 中的多品种商品存贮模型，则必须以商品的体积为单位进行考虑，所以我们对问题 2 中损失费用的单价进行转化处理，将它除以每单位商品的体积得到模型所需要的单价，如下表：
 
-\begin{tabular}{|l|l|}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
 \hline
- & VAR00002 \\
+ & \(c_{2i}\) & \(c_{3i}\) & \(c_{4i}\) \\
 \hline
-N & 61 \\
-Exponential parameter. a, b Mean & 1.9508 \\
-Most Extreme & Absolute .401 \\
-Differences & Positive .129 \\
- & Negative -.401 \\
-Kolmogorov-Smirnov Z & 3.132 \\
-Asymp. Sig. (2-tailed) & .000 \\
+商品一 \((i=1)\) & 0.2 & 0.4 & 19 \\
+\hline
+商品二 \((i=2)\) & 0.75 & 1 & 37.5 \\
+\hline
+商品三 \((i=3)\) & 0.6 & 0.8 & 12.5 \\
 \hline
 \end{tabular}
+\end{table}
 
 由于每种商品的个数是有限的，所以我们可以参照问题 2 中的求解办法，采用遍历搜索算法。但是由于 $Q_{i}$ 和 $Q_{0i}$ 都是未知量，这对于我们利用 (3.1) 以及 (3.2) 进行遍历搜索的求解增加了很大难度。所以我们可以对 $Q_{i}$ 和 $Q_{0i}$ 也进行遍历搜索，对于搜索的每一个 $Q_{i}$ 和 $Q_{0i}$，作为已知参数，然后利用问题 2 的模型求解 $L^{*}$。
 

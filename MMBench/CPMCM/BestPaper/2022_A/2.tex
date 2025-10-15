@@ -18,90 +18,7 @@
 关键词：超分辨定位，2D-MUSIC 算法，FMCW-MUSIC 算法，移动场景
 \end{abstract}
 
-\begin{center}
-\includegraphics[width=0.9\textwidth]{image.png}
-\end{center}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{l l}
-学校 & 武汉大学 \\
-\hline
-参赛队号 & 22104860055 \\
-\hline
-队员姓名 & 1. 易旭憧 \\
- & 2. 周宇轩 \\
- & 3. 潘娟霞 \\
-\end{tabular}
-\end{table}
-
-\section*{目录}
-
-\begin{itemize}
-    \item[1.] 问题重述与分析 \dotfill 4
-        \begin{itemize}
-            \item[1.1] 问题背景 \dotfill 4
-            \item[1.2] 问题分析 \dotfill 4
-        \end{itemize}
-    \item[2.] 模型假设与符号说明 \dotfill 6
-        \begin{itemize}
-            \item[2.1] 模型假设 \dotfill 6
-            \item[2.2] 符号说明 \dotfill 6
-        \end{itemize}
-    \item[3.] 问题一模型建立与求解 \dotfill 7
-        \begin{itemize}
-            \item[3.1] 模型建立 \dotfill 7
-                \begin{itemize}
-                    \item[3.1.1] FMCW 雷达信号基本形式 \dotfill 7
-                    \item[3.1.2] FMCW 快速傅里叶变换测距的基本原理 \dotfill 7
-                    \item[3.1.3] FMCW-MUSIC 算法基本原理 \dotfill 8
-                \end{itemize}
-            \item[3.2] 问题求解 \dotfill 12
-                \begin{itemize}
-                    \item[3.2.1] 数据预处理 \dotfill 12
-                    \item[3.2.2] 使用 FMCW-MUSIC 算法进行目标定位 \dotfill 13
-                    \item[3.2.3] 目标物体数 $K$ 值的确定 \dotfill 13
-                    \item[3.2.4] 搜索步长的选取 \dotfill 15
-                    \item[3.2.5] 目标物体定位结果 \dotfill 17
-                    \item[3.2.6] FMCW-MUSIC 算法搜索效率的优化 \dotfill 18
-                \end{itemize}
-        \end{itemize}
-    \item[4.] 问题二模型建立与求解 \dotfill 20
-        \begin{itemize}
-            \item[4.1] 模型建立 \dotfill 20
-            \item[4.2] 模型求解 \dotfill 20
-                \begin{itemize}
-                    \item[4.2.1] 数据预处理 \dotfill 20
-                    \item[4.2.2] 噪声环境下 FMCW-MUSIC 窗口参数 $l_1, l_2$ 的调优 \dotfill 21
-                    \item[4.2.3] 噪声环境下的目标物体定位 \dotfill 24
-                \end{itemize}
-        \end{itemize}
-    \item[5.] 问题三模型建立与求解 \dotfill 26
-        \begin{itemize}
-            \item[5.1] 模型建立 \dotfill 26
-            \item[5.2] 模型求解 \dotfill 27
-                \begin{itemize}
-                    \item[5.2.1] 数据基本情况分析 \dotfill 27
-                    \item[5.2.2] 不考虑物体运动连续性情况下的 FMCW-MUSIC 定位 \dotfill 28
-                    \item[5.2.3] 考虑物体运动连续性情况下的 FMCW-MUSIC 定位 \dotfill 29
-                    \item[5.2.4] 目标物体连续跟踪定位结果 \dotfill 30
-                    \item[5.2.5] 性能分析评估 \dotfill 31
-                \end{itemize}
-        \end{itemize}
-    \item[6.] 问题四模型建立与求解 \dotfill 32
-        \begin{itemize}
-            \item[6.1] 模型建立 \dotfill 32
-            \item[6.2] 模型求解 \dotfill 32
-                \begin{itemize}
-                    \item[6.2.1] 数据预处理 \dotfill 32
-                    \item[6.2.2] 在结构误差下进行 FMCW-MUSIC 目标定位 \dotfill 33
-                    \item[6.2.3] 单天线测距信息约束的 FMCW-MUSIC 目标定位 \dotfill 34
-                    \item[6.2.4] 结构误差下目标物体定位结果 \dotfill 34
-                \end{itemize}
-        \end{itemize}
-    \item[] 参考文献 \dotfill 36
-    \item[] 附录 \dotfill 37
-\end{itemize}
+\tableofcontents
 
 \section{问题重述与分析}
 
@@ -195,11 +112,10 @@ $step_{\theta}$ & 方位角搜索步长 \\
 \end{figure}
 
 假设在一个 chirp 周期 $T$ 内，雷达发射信号的频率及发射波信号分别为：
-\begin{align*}
-&e^{-j2\pi[f_0\boldsymbol{\tau}_i(1)]}, e^{-j2\pi\left[f_0\boldsymbol{\tau}_i(1)+\gamma\boldsymbol{\tau}_i(1)\frac{1}{f_s}\right]}, \dots, e^{-j2\pi\left[f_0\boldsymbol{\tau}_i(1)+\gamma\boldsymbol{\tau}_i(1)\frac{(l_2-1)}{f_s}\right]}, \\
-&\dots, \\
-&e^{-j2\pi[f_0\boldsymbol{\tau}_i(l_1-1)]}, e^{-j2\pi\left[f_0\boldsymbol{\tau}_i(l_1-1)+\gamma\boldsymbol{\tau}_i(1)\frac{(l_2-1)}{f_s}\right]} \dots, e^{-j2\pi\left[f_0\boldsymbol{\tau}_i(l_1-1)+\gamma\boldsymbol{\tau}_i(1)\frac{(l_2-1)}{f_s}\right]}]^\mathrm{T}
-\end{align*}
+\begin{equation}
+f(t) = f_0 + \gamma t, \, 0 \leq t < T
+\tag{1}
+\end{equation}
 \begin{equation}
 s_{TX}(t) = A_{TX} \exp \left( j 2 \pi \left( f_0 t + \frac{\gamma}{2} t^2 \right) \right), \, 0 \leq t < T
 \tag{2}
@@ -599,6 +515,8 @@ step_\theta &= 0.25^\circ
 
 从频谱中可以看到环境噪声的存在，但是 FMCW 的中频信号峰值还是很锐利，可以用于获取距离的近似值。
 
+
+\subsubsection{4.22  噪声环境下 FMCW-MUSIC 窗口参数𝒍𝟏,𝒍𝟐的调优}
 接下来绘制天线阵列信号的频谱，如图 19 所示。天线阵列信号的频谱上存在一个明显的峰值，且各天线是一致的；基本情况和问题一情况类似，不过能看到中频以外频率上存在一定水平的噪声。
 
 \begin{figure}[h]
@@ -731,11 +649,11 @@ $(l_{1}, l_{2})$ & \\
 
 在此对考虑物体运动连续性情况下 FMCW-MUSIC 目标跟踪算法做出具体的说明。利用一帧数据中的多个 chirp 对目标进行连续的定位，具体过程如下：
 
-\subsubsection{第 1 个 chirp}
+第 1 个 chirp
 
 处理第 1 个 chirp 的数据时，由于不存在物体位置先验信息，处理与之前的 FMCW-MUSIC 相同，同样需要确定出物体数目 $K$，以及对物体的具体位置进行定位（测距、测角）。设第一个 chirp 目标物体 $k$ 的测距和测角值为 $(\hat{R}_{k,1}, \hat{\theta}_{k,1})$。
 
-\subsubsection{第 1 个 chirp 到第 2 个 chirp}
+第 1 个 chirp 到第 2 个 chirp
 
 在处理第 2 个 chirp 时，考虑到目标物体在短时间内位移较小，可以用第一个 chirp 时探测出目标物体的位置来预测当前时刻目标物体的位置。不妨假设在该系统的应用场景下，两个 chirp 之间目标物体的运动不会超过 0.1 米，则目标物体 $k$ 在当前时刻的搜索范围为
 
@@ -755,7 +673,7 @@ $(l_{1}, l_{2})$ & \\
 
 搜索的复杂度从全局二维平面变为局部二维平面最后变为了一维的路径，复杂度得以大大降低。
 
-\subsubsection{第 $n$ 个 chirp 到第 $n+1$ 个 chirp}
+第 $n$ 个 chirp 到第 $n+1$ 个 chirp
 
 第 $n$ 个 chirp 到第 $n+1$ 个 chirp 的搜索过程与第 1 个 chirp 到第 2 个 chirp 的过程类似，但是可以进一步使用近似的“匀速”模型，基于物体短时间内运动的连续性获取更好的位置初值，即
 
@@ -980,3 +898,946 @@ $(l_{1}, l_{2})$ & \\
 [9] G. O. Manokhin, Z. T. Erdynee, A. A. Geltser, et al. MUSIC-based algorithm for range-azimuth FMCW radar data processing without estimating number of targets[C]. Microwave Symposium. IEEE, 2016.
 
 [10] N. Jorge, J. W. Stephen. Numerical Optimization[M]. New York. Springer, 2006.
+
+\section{附录}
+37
+附录
+MATLAB 源程序：
+1. 问题一（1） code_q1.m：使用FMCW-MUSIC 算法求解目标物体位置
+close all;
+clear all;
+
+Ts = 1.25e-7; Fs = 1/Ts; T = 3.2e-5;
+Nf = 32; L = 0.0815; gamma = 78.986e12;
+Na = 86; d = L / (Na-1); f0 = 78.8e9;
+c = 2.99792458e8; N = 256;
+K = 2;
+
+% 读取信号数据
+load('data_q1.mat');
+
+% 建立窗口
+l1 = 10; p1 = Na - l1 + 1;
+l2 = 10; p2 = N - l2 + 1;
+X = zeros(l1*l2, p1*p2);
+
+count = 0;
+for i = 1 : Na - l1 + 1
+for j = 1 : N - l2 +1
+count = count + 1;
+m_sub = Z(i:i+l1-1, j:j+l2-1);
+x_sub = reshape(m_sub,[l1*l2,1]);
+X(:,count) = x_sub;
+end
+end
+
+% 计算协方差矩阵
+
+
+
+38
+J = fliplr(eye(l1*l2,l1*l2));
+XXH = X*X';
+C = 1/(2*p1*p2) * (XXH + J/XXH*det(XXH)*J);
+% C = 1/(p1*p2) * (XXH );
+
+% 分解子空间
+[U,S] = svd(C);
+W = U(:,K+1:l1*l2);
+WWH = W*W';
+
+% 选取搜索步长
+nR = 1000; resoR = 0.01;
+ntheta = 2001; resotheta=0.05;
+
+t0 = tic;
+count = 0;
+SS = zeros(nR,ntheta);
+for iRk = 1:1:nR
+Rk = iRk * resoR;
+for itheta = 1:1:ntheta
+theta = (itheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+
+
+
+39
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk,itheta)=1/(a_sub' * WWH *a_sub);
+count = count+1;
+end
+end
+toc(t0)
+
+% 寻找局部极值点
+SSabs= abs(SS);
+pt = [];
+SSabsmax= max(max(SSabs))
+for i = 2:size(SSabs,1)-1
+for j = 2:size(SSabs,2)-1
+if SSabs(i,j)>SSabsmax/2 && SSabs(i,j)>SSabs(i-1,j)...
+&& SSabs(i,j)>SSabs(i+1,j)...
+&& SSabs(i,j)>SSabs(i,j-1)...
+&& SSabs(i,j)>SSabs(i,j+1)
+pt=[pt;[i,j]];
+end
+end
+end
+
+% 绘制定位结果
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+yticks([-50,-40,-30,-20,-10,0,10,20,30,40,50]);
+scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+set(gca,'YDir','reverse');
+
+
+
+40
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+plot([6.5,6.5,7.5,7.5,6.5],[-5,5,5,-5,-5],'r');
+set(gcf,'Position',[100,100,400,500]);
+
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+(pt(:,2) -(ntheta+1)/2)*resotheta ,pt(:,1)*resoR
+set(gca,'YDir','reverse');
+ylim([-5,5]);
+xlim([6.5,7.5]);
+caxis([400,480]);
+set(gcf,'Position',[100,100,350,350]);
+legend('目标物体');
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+
+for i = 1:size(pt,1)
+fprintf('目标物体%d 坐标：%f °，%f m\n',i,(pt(i,2) -(ntheta+1)/2)*resotheta,pt(i,1)*resoR);
+end
+
+1. 问题一（2） code_q1_acc.m：使用改进的高效率FMCW-MUSIC 算法求解目标物体位
+置
+
+close all;
+clear all;
+
+Ts = 1.25e-7; Fs = 1/Ts; T = 3.2e-5;
+Nf = 32; L = 0.0815; gamma = 78.986e12;
+
+
+
+41
+Na = 86; d = L / (Na-1); f0 = 78.8e9;
+c = 2.99792458e8; N = 256;
+K = 2;
+
+% 读取信号数据
+load('data_q1.mat');
+
+% 进行快速傅里叶变换实现测距
+f_abs = abs(fft(Z(1,:)));
+[M,f_peaks] = findpeaks(f_abs);
+dist_peaks = (f_peaks-1)/N/Ts*c/2/gamma;
+
+% 建立窗口
+l1 = 10; p1 = Na - l1 + 1;
+l2 = 10; p2 = N - l2 + 1;
+X = zeros(l1*l2, p1*p2);
+
+count = 0;
+for i = 1 : Na - l1 + 1
+for j = 1 : N - l2 +1
+count = count + 1;
+m_sub = Z(i:i+l1-1, j:j+l2-1);
+x_sub = reshape(m_sub,[l1*l2,1]);
+X(:,count) = x_sub;
+end
+end
+
+% 计算协方差矩阵
+J = fliplr(eye(l1*l2,l1*l2));
+XXH = X*X';
+C = 1/(2*p1*p2) * (XXH + J/XXH*det(XXH)*J);
+% C = 1/(p1*p2) * (XXH );
+
+% 分解子空间
+[U,S] = svd(C);
+W = U(:,K+1:l1*l2);
+WWH = W*W';
+
+% 选取搜索步长
+nR = 1000; resoR = 0.01;
+ntheta = 2001; resotheta=0.05;
+
+t0 = tic;
+
+
+
+42
+SS = zeros(nR,ntheta);
+
+% 选取多层级搜索的步长系数及阈值
+step_R_scale = [10,2,1];
+step_theta_scale = [20,4,1];
+step_thr_scale=[0.04,2,1];
+
+% 开始进行多层级分辨率的搜索（搜索层级1）
+count = 0;
+for iRk = 1:step_R_scale(1):nR
+Rk = iRk * resoR;
+skip_Rk = 1;
+
+% 使用频谱峰值的距离约束距离搜索范围
+for iii = 1:size(dist_peaks,1)
+if abs(Rk - dist_peaks(iii,1))<0.1
+skip_Rk =0; break
+end
+end
+if skip_Rk==1
+continue
+end
+
+for itheta = 1:step_theta_scale(1):ntheta
+theta = (itheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk,itheta)=1/(a_sub' * WWH *a_sub);
+count = count +1;
+
+% 进入搜索层级2
+if abs(SS(iRk,itheta))>step_thr_scale(1)
+Rk_bound = step_R_scale(1)/2/step_R_scale(2);
+theta_bound = step_theta_scale(1)/2/step_theta_scale(2);
+for iiRk = (floor(-Rk_bound):ceil(Rk_bound))*step_R_scale(2)
+for iitheta = (floor(-theta_bound):ceil(theta_bound))*step_theta_scale(2)
+Rk = (iRk+iiRk) * resoR;
+theta = (itheta + iitheta -(ntheta+1)/2)*resotheta/180.0*pi;
+
+
+
+43
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk+iiRk,itheta+iitheta)=1/(a_sub' * WWH *a_sub);
+count = count +1;
+
+% 进入搜素层级3
+if abs(SS(iRk+iiRk,itheta+iitheta))>step_thr_scale(2)
+Rk_bound = step_R_scale(2)/2/step_R_scale(3);
+theta_bound = step_theta_scale(2)/2/step_theta_scale(3);
+for iiiRk = (floor(-Rk_bound):ceil(Rk_bound))*step_R_scale(3)
+for iiitheta =(floor(-theta_bound):ceil(theta_bound))*step_theta_scale(3)
+Rk = (iRk+iiRk+iiiRk) * resoR;
+theta = (itheta + iitheta +iiitheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk+iiRk+iiiRk,itheta + iitheta +iiitheta)=1/(a_sub' * WWH *a_sub);
+count = count +1;
+
+end
+end
+end
+end
+end
+end
+end
+end
+toc(t0)
+
+% 寻找局部极值点
+SSabs= abs(SS);
+pt = [];
+SSabsmax= max(max(SSabs))
+
+
+
+44
+for i = 2:size(SSabs,1)-1
+for j = 2:size(SSabs,2)-1
+if SSabs(i,j)>SSabsmax/2 && SSabs(i,j)>SSabs(i-1,j)...
+&& SSabs(i,j)>SSabs(i+1,j)...
+&& SSabs(i,j)>SSabs(i,j-1)...
+&& SSabs(i,j)>SSabs(i,j+1)
+pt=[pt;[i,j]];
+end
+end
+end
+
+% 绘制定位结果
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+yticks([-50,-40,-30,-20,-10,0,10,20,30,40,50]);
+scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+set(gca,'YDir','reverse');
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+plot([6.5,6.5,7.5,7.5,6.5],[-5,5,5,-5,-5],'r');
+set(gcf,'Position',[100,100,400,500]);
+
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+(pt(:,2) -(ntheta+1)/2)*resotheta ,pt(:,1)*resoR
+set(gca,'YDir','reverse');
+ylim([-5,5]);
+xlim([6.5,7.5]);
+caxis([400,480]);
+set(gcf,'Position',[100,100,350,350]);
+legend('目标物体');
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+
+for i = 1:size(pt,1)
+fprintf('目标物体%d 坐标：%f °，%f m\n',i,(pt(i,2) -(ntheta+1)/2)*resotheta,pt(i,1)*resoR);
+end
+>
+
+45
+
+1. 问题二  code_q2_acc.m：使用改进的FMCW-MUSIC 算法求解噪声环境下目标物体位
+置
+close all;
+clear all;
+
+Ts = 1.25e-7; Fs = 1/Ts; T = 3.2e-5;
+Nf = 32; L = 0.0815; gamma = 78.986e12;
+Na = 86; d = L / (Na-1); f0 = 78.8e9;
+c = 2.99792458e8; N = 256;
+K = 2;
+
+% 读取信号数据
+load('data_q2.mat'); Z = Z_noisy;
+
+% 进行快速傅里叶变换实现测距
+f_abs = abs(fft(Z(1,:)));
+[M,f_peaks] = findpeaks(f_abs,'MinPeakProminence',100);
+dist_peaks = (f_peaks-1)/N/Ts*c/2/gamma;
+
+% 建立窗口
+l1 = 20; p1 = Na - l1 + 1;
+l2 = 10; p2 = N - l2 + 1;
+X = zeros(l1*l2, p1*p2);
+
+count = 0;
+for i = 1 : Na - l1 + 1
+for j = 1 : N - l2 +1
+count = count + 1;
+m_sub = Z(i:i+l1-1, j:j+l2-1);
+x_sub = reshape(m_sub,[l1*l2,1]);
+X(:,count) = x_sub;
+end
+end
+
+% 计算协方差矩阵
+J = fliplr(eye(l1*l2,l1*l2));
+XXH = X*X';
+% C = 1/(2*p1*p2) * (XXH + J/XXH*det(XXH)*J);
+C = 1/(p1*p2) * (XXH );
+
+
+
+46
+% 分解子空间
+[U,S] = svd(C);
+W = U(:,K+1:l1*l2);
+WWH = W*W';
+
+% 选取搜索步长
+nR = 1000; resoR = 0.01;
+ntheta = 2001; resotheta=0.05;
+
+t0 = tic;
+SS = zeros(nR,ntheta);
+
+% 选取多层级搜索的步长系数及阈值
+step_R_scale = [10,2,1];
+step_theta_scale = [20,4,1];
+step_thr_scale=[0.02*10*10/l1/l2,1*10*10/l1/l2,1];
+
+% 开始进行多层级分辨率的搜索（搜索层级1）
+count = 0;
+for iRk = 1:step_R_scale(1):nR
+Rk = iRk * resoR;
+skip_Rk = 1;
+
+% 使用频谱峰值的距离约束距离搜索范围
+for iii = 1:size(dist_peaks,1)
+if abs(Rk - dist_peaks(iii,1))<0.1
+skip_Rk =0; break
+end
+end
+if skip_Rk==1
+continue
+end
+
+for itheta = 1:step_theta_scale(1):ntheta
+theta = (itheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk,itheta)=1/(a_sub' * WWH *a_sub);
+
+
+
+47
+count = count +1;
+
+% 进入搜索层级2
+if abs(SS(iRk,itheta))>step_thr_scale(1)
+Rk_bound = step_R_scale(1)/2/step_R_scale(2);
+theta_bound = step_theta_scale(1)/2/step_theta_scale(2);
+for iiRk = (floor(-Rk_bound):ceil(Rk_bound))*step_R_scale(2)
+for iitheta = (floor(-theta_bound):ceil(theta_bound))*step_theta_scale(2)
+Rk = (iRk+iiRk) * resoR;
+theta = (itheta + iitheta -(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk+iiRk,itheta+iitheta)=1/(a_sub' * WWH *a_sub);
+count = count +1;
+
+% 进入搜素层级3
+if abs(SS(iRk+iiRk,itheta+iitheta))>step_thr_scale(2)
+Rk_bound = step_R_scale(2)/2/step_R_scale(3);
+theta_bound = step_theta_scale(2)/2/step_theta_scale(3);
+for iiiRk = (floor(-Rk_bound):ceil(Rk_bound))*step_R_scale(3)
+for iiitheta =(floor(-theta_bound):ceil(theta_bound))*step_theta_scale(3)
+Rk = (iRk+iiRk+iiiRk) * resoR;
+theta = (itheta + iitheta +iiitheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk+iiRk+iiiRk,itheta + iitheta +iiitheta)=1/(a_sub' * WWH *a_sub);
+count = count +1;
+
+end
+end
+end
+end
+
+
+
+48
+end
+end
+end
+end
+toc(t0)
+
+% 寻找局部极值点
+SSabs= abs(SS);
+pt = [];
+SSabsmax= max(max(SSabs))
+for i = 2:size(SSabs,1)-1
+for j = 2:size(SSabs,2)-1
+if SSabs(i,j)>SSabsmax/2 && SSabs(i,j)>SSabs(i-1,j)...
+&& SSabs(i,j)>SSabs(i+1,j)...
+&& SSabs(i,j)>SSabs(i,j-1)...
+&& SSabs(i,j)>SSabs(i,j+1)
+pt=[pt;[i,j]];
+end
+end
+end
+
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+yticks([-50,-40,-30,-20,-10,0,10,20,30,40,50]);
+scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+xlabel('方位角 [度]');
+ylabel('距离 [米]');
+plot([8.1,8.1,8.3,8.3,8.1],[-3,3,3,-3,-3],'r');
+set(gcf,'Position',[100,100,400,500]);
+set(gca,'YDir','reverse');
+
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+(pt(:,2) -(ntheta+1)/2)*resotheta ,pt(:,1)*resoR
+ylim([-3,3]);
+xlim([8.1,8.3]);
+% set(gcf,'Position',[100,100,300,300]);
+set(gcf,'Position',[100,100,350,350]);%colorbar;
+legend('目标物体');
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+
+
+
+49
+set(gca,'YDir','reverse');
+
+for i = 1:size(pt,1)
+fprintf('目标物体%d 坐标：%f °，%f m\n',i,(pt(i,2) -(ntheta+1)/2)*resotheta,pt(i,1)*resoR);
+end
+
+1. 问题三  code_q3.m：使用连续跟踪FMCW-MUSIC 算法求解动态物体位置
+close all;
+clear all;
+
+Ts = 1.25e-7; Fs = 1/Ts; T = 3.2e-5;
+Nf = 32; L = 0.0815; gamma = 78.986e12;
+Na = 86; d = L / (Na-1); f0 = 78.8e9;
+c = 2.99792458e8; N = 256;
+K = 2;
+
+tracking_mode = 0; % 0 为局部搜索，1 为梯度下降
+
+load('data_q3.mat');
+
+all_pt={};
+
+for ttt = 1:32
+close all;
+Z = reshape(Z_time(ttt,:,:),[86,256]);
+
+% 建立窗口
+l1 = 20; p1 = Na - l1 + 1;
+l2 = 10; p2 = N - l2 + 1;
+X = zeros(l1*l2, p1*p2);
+
+count = 0;
+for i = 1 : Na - l1 + 1
+for j = 1 : N - l2 +1
+count = count + 1;
+m_sub = Z(i:i+l1-1, j:j+l2-1);
+x_sub = reshape(m_sub,[l1*l2,1]);
+X(:,count) = x_sub;
+end
+end
+J = fliplr(eye(l1*l2,l1*l2));
+XXH = X*X';
+C = 1/(2*p1*p2) * (XXH + J/XXH*det(XXH)*J);
+
+
+
+50
+% C = 1/(p1*p2) * (XXH );
+
+[U,S] = svd(C);
+W = U(:,K+1:l1*l2);
+WWH = W*W';
+
+t0 = tic;
+
+nR = 1000; resoR = 0.01;
+ntheta = 2001; resotheta=0.05;
+
+SS = zeros(nR,ntheta);
+count = 0;
+
+% 第一个chirp 的处理，不考虑位置先验信息
+if ttt == 1
+% 进行快速傅里叶变换实现测距
+f_abs = abs(fft(Z(1,:)));
+[M,f_peaks] = findpeaks(f_abs,'MinPeakProminence',100);
+dist_peaks = (f_peaks-1)/N/Ts*c/2/gamma;
+for iRk = 1:1:nR
+Rk = iRk * resoR;
+% 对于第一个chirp 来说，可以使用FFT 得到的测距值来辅助
+skip_Rk = 0;
+% 使用频谱峰值的距离约束距离搜索范围
+for iii = 1:size(dist_peaks,1)
+if abs(Rk - dist_peaks(iii,1))>0.1
+skip_Rk =1; break
+end
+end
+if skip_Rk==1
+continue
+end
+for itheta = 1:1:ntheta
+theta = (itheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+
+
+
+51
+SS(iRk,itheta)=1/(a_sub' * WWH *a_sub);
+count = count+1;
+end
+end
+SSabs= abs(SS);
+pt = [];
+SSabsmax= max(max(SSabs))
+for i = 2:size(SSabs,1)-1
+for j = 2:size(SSabs,2)-1
+if SSabs(i,j)>SSabsmax/2 && SSabs(i,j)>SSabs(i-1,j)...
+&& SSabs(i,j)>SSabs(i+1,j)...
+&& SSabs(i,j)>SSabs(i,j-1)...
+&& SSabs(i,j)>SSabs(i,j+1)
+pt=[pt;[i,j]];
+end
+end
+end
+all_pt{ttt} = pt;
+end
+
+% 第2~Nf 个chirp 的处理，考虑之前获得的位置先验信息
+if ttt > 1 && tracking_mode ==0  %使用局部搜索的方法进行连续跟踪
+pt = all_pt{ttt-1};
+pt_new = pt;
+t1= tic;count = 0;
+% 限定搜索范围，局部搜索
+for ip = 1:size(pt,1)
+for iRk = floor(pt(ip,1) - 0.1/resoR):1:ceil(pt(ip,1) + 0.1/resoR)
+Rk = iRk * resoR;
+for itheta = floor(pt(ip,2) - 0.1/Rk*180/pi/resotheta):1:ceil(pt(ip,2) +
+1. 1/Rk*180/pi/resotheta)
+theta = (itheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk,itheta)=1/(a_sub' * WWH *a_sub);
+count = count+1;
+end
+end
+
+
+
+52
+SSabs =abs(SS);
+max_value = 0;
+for iRk = floor(pt(ip,1) - 0.1/resoR):1:ceil(pt(ip,1) + 0.1/resoR)
+for itheta = floor(pt(ip,2) - 0.1/Rk*180/pi/resotheta):1:ceil(pt(ip,2) +
+1. 1/Rk*180/pi/resotheta)
+if SSabs(iRk,itheta) > max_value
+max_value = SSabs(iRk,itheta);
+pt_new(ip,1)= iRk;
+pt_new(ip,2)= itheta;
+end
+end
+end
+
+end
+toc(t1),count
+all_pt{ttt}= pt_new;
+end
+
+if ttt > 1  && tracking_mode ==1  %使用梯度下降的方法进行连续跟踪
+pt = all_pt{ttt-1};
+pt_new = pt;
+% 寻找下降梯度最大的方向
+try_direction = [0,0;0,1;0,-1;-1,0;1,0];
+t1 = tic;
+count = 0;
+for ip = 1:size(pt,1)
+search_traj = [];
+search_traj =[search_traj;pt_new(ip,:)];
+while 1
+max_direction_zzz=0;
+max_value =0;
+for zzz = 1:5
+iRk = pt_new(ip,1) + try_direction(zzz,1);
+itheta = pt_new(ip,2) + try_direction(zzz,2);
+if abs(SS(iRk,itheta))<0.0001 % 如果该点还没有被计算过
+Rk = iRk * resoR;
+theta = (itheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+
+
+
+53
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk,itheta)=1/(a_sub' * WWH *a_sub);
+count = count +1;
+end
+if abs(SS(iRk,itheta)) > max_value
+max_value = SS(iRk,itheta);
+max_direction_zzz = zzz;
+end
+end
+if max_direction_zzz == 1
+break
+else
+pt_new(ip,1) = pt_new(ip,1) + try_direction(max_direction_zzz,1);
+pt_new(ip,2) = pt_new(ip,2) + try_direction(max_direction_zzz,2);
+pt_new(ip,:)
+abs(SS(pt_new(ip,1),pt_new(ip,2)))
+search_traj =[search_traj;pt_new(ip,:)];
+end
+end
+end
+toc(t1),count
+all_pt{ttt}= pt_new;
+end
+end
+
+% 绘制目标物体运动轨迹
+figure;
+mycolormap_r=interp1([1,32,64],[255,255,192],1:64,'linear','extrap');
+mycolormap_g=interp1([1,32,64],[180,0,0],1:64,'linear','extrap');
+mycolormap_b=interp1([1,32,64],[180,0,0],1:64,'linear','extrap');
+mycolor_red=[mycolormap_r',mycolormap_g',mycolormap_b']/255;
+
+mycolormap_b=interp1([1,32,64],[255,255,192],1:64,'linear','extrap');
+mycolormap_g=interp1([1,32,64],[180,  0,  0],1:64,'linear','extrap');
+mycolormap_r=interp1([1,32,64],[180,  0,  0],1:64,'linear','extrap');
+mycolor_blue=[mycolormap_r',mycolormap_g',mycolormap_b']/255;
+
+for i = 1:32
+scatter(all_pt{i}(1,1)*resoR,(all_pt{i}(1,2) -
+(ntheta+1)/2)*resotheta ,30,'MarkerEdgeColor',mycolor_red(i*2,:),'Marker','x'); hold on;
+scatter(all_pt{i}(2,1)*resoR,(all_pt{i}(2,2) -
+(ntheta+1)/2)*resotheta ,30,'MarkerEdgeColor',mycolor_blue(i*2,:),'Marker','x'); hold on;
+end
+
+
+
+54
+plot([5,5,7,7,5],[-15,15,15,-15,-15],'magenta');
+
+ylim([-50,50]);
+xlim([0,10]);
+set(gcf,'Position',[100,100,400,400]);
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+set(gca,'YDir','reverse');
+
+figure;
+for i = 1:32
+hdl1 = scatter(all_pt{i}(1,1)*resoR,(all_pt{i}(1,2) -
+(ntheta+1)/2)*resotheta ,30,'MarkerEdgeColor',mycolor_red(i*2,:),'Marker','x'); hold on;
+hdl2 = scatter(all_pt{i}(2,1)*resoR,(all_pt{i}(2,2) -
+(ntheta+1)/2)*resotheta ,30,'MarkerEdgeColor',mycolor_blue(i*2,:),'Marker','x'); hold on;
+end
+legend([hdl1,hdl2],{'目标物体1','目标物体2'})
+ylim([-15,15]);
+xlim([5.0,7.0]);
+set(gcf,'Position',[100,100,350,400]);
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+
+set(gca,'YDir','reverse');
+
+1. 问题四  code_q4.m：使用改进的FMCW-MUSIC 算法在结构性噪声下求解目标物体位
+置
+
+close all;
+clear all;
+
+Ts = 1.25e-7; Fs = 1/Ts; T = 3.2e-5;
+Nf = 32; L = 0.0815; gamma = 78.986e12;
+Na = 86; d = L / (Na-1); f0 = 78.8e9;
+c = 2.99792458e8; N = 256;
+K = 2;
+
+load('data_q4.mat'); Z = Z_antnoisy;
+
+% 进行快速傅里叶变换实现测距
+f_abs = abs(fft(Z(1,:)));
+
+
+
+55
+[M,f_peaks] = findpeaks(f_abs,'MinPeakProminence',100);
+dist_peaks = (f_peaks-1)/N/Ts*c/2/gamma;
+
+% 建立窗口
+l1 = 20; p1 = Na - l1 + 1;
+l2 = 10; p2 = N - l2 + 1;
+X = zeros(l1*l2, p1*p2);
+
+count = 0;
+for i = 1 : Na - l1 + 1
+for j = 1 : N - l2 +1
+count = count + 1;
+m_sub = Z(i:i+l1-1, j:j+l2-1);
+x_sub = reshape(m_sub,[l1*l2,1]);
+X(:,count) = x_sub;
+end
+end
+J = fliplr(eye(l1*l2,l1*l2));
+XXH = X*X';
+% C = 1/(2*p1*p2) * (XXH + J/XXH*det(XXH)*J);
+C = 1/(p1*p2) * (XXH );
+
+[U,S] = svd(C);
+W = U(:,K+1:l1*l2);
+WWH = W*W';
+
+t0 = tic;
+
+nR = 1000; resoR = 0.01;
+ntheta = 2001; resotheta=0.05;
+
+SS = zeros(nR,ntheta);
+count = 0;
+
+for iRk = 1:1:nR
+Rk = iRk * resoR;
+skip_Rk = 1;
+% 使用频谱峰值的距离约束距离搜索范围
+% 在此为了压制结构性噪声的影响，选取比较小的范围
+for iii = 1:size(dist_peaks,2)
+if abs(Rk - dist_peaks(1,iii))<0.03
+skip_Rk =0; break
+end
+end
+
+
+
+56
+if skip_Rk==1
+continue
+end
+for itheta = 1:1:ntheta
+theta = (itheta-(ntheta+1)/2)*resotheta/180.0*pi;
+a_sub = zeros(l1,l2);
+for i = 1:l1
+tau = 2/c * (Rk + (i-1)*d* sin(theta));
+for j = 1:l2
+a_sub(i,j) = exp(1i*2*pi*(f0*tau + gamma*tau * (j)*Ts));
+end
+end
+
+a_sub = reshape(a_sub,[l1*l2,1]);
+SS(iRk,itheta)=1/(a_sub' * WWH *a_sub);
+count = count+1;
+end
+end
+toc(t0)
+SSabs= abs(SS);
+
+% 寻找局部极值点
+pt = [];
+SSabsmax= max(max(SSabs))
+for i = 2:size(SSabs,1)-1
+for j = 2:size(SSabs,2)-1
+if SSabs(i,j)>SSabsmax/2 && SSabs(i,j)>SSabs(i-1,j)...
+&& SSabs(i,j)>SSabs(i+1,j)...
+&& SSabs(i,j)>SSabs(i,j-1)...
+&& SSabs(i,j)>SSabs(i,j+1)...
+&& SSabs(i,j)>SSabs(i+1,j+1)...
+&& SSabs(i,j)>SSabs(i-1,j-1)...
+&& SSabs(i,j)>SSabs(i+1,j-1)...
+&& SSabs(i,j)>SSabs(i-1,j+1)
+pt=[pt;[i,j]];
+end
+end
+end
+figure;
+[XX,YY] = meshgrid((1:nR)*resoR,((1:ntheta)-(ntheta+1)/2)*resotheta);
+s = surf(XX,YY,abs(SS'));
+* EdgeColor = 'none';
+yticks(-50:10:50);
+xlabel('距离 [米]');
+
+
+
+57
+ylabel('方位角 [度]');
+view(-45,37);
+set(gca,'YDir','reverse');
+
+figure;
+[XX,YY] = meshgrid((1:nR)*resoR,((1:ntheta)-(ntheta+1)/2)*resotheta);
+s = surf(XX,YY,abs(SS'));
+* EdgeColor = 'none';
+xlim([5.5,6.5]);
+ylim([-5,5]);
+yticks(-5:1:5);
+xlabel('距离 [米]');
+ylabel('方位角 [度]');
+view(-45,37);
+set(gca,'YDir','reverse');
+
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+yticks([-50,-40,-30,-20,-10,0,10,20,30,40,50]);
+% scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+set(gca,'YDir','normal');
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+plot([5.5,5.5,6.5,6.5,5.5],[-5,5,5,-5,-5],'r');
+set(gcf,'Position',[100,100,400,500]);
+set(gca,'YDir','reverse');
+
+figure;
+imagesc([1*resoR,nR*resoR],[(1-(ntheta+1)/2)*resotheta,( ntheta - (ntheta+1)/2)*resotheta],...
+SSabs'); hold on;
+% scatter(pt(:,1)*resoR,(pt(:,2) -(ntheta+1)/2)*resotheta ,'rx');
+set(gca,'YDir','reverse');
+
+(pt(:,2) -(ntheta+1)/2)*resotheta ,pt(:,1)*resoR
+set(gca,'YDir','normal');
+ylim([-5,5]);
+xlim([5.5,6.5]);
+% set(gcf,'Position',[100,100,300,300]);
+set(gcf,'Position',[100,100,400,350]);colorbar;
+% legend('目标物体');
+ylabel('方位角 [度]');
+xlabel('距离 [米]');
+
+
+
+58
+set(gca,'YDir','reverse');
+
+for i = 1:size(pt,1)
+fprintf('目标物体%d 坐标：%f °，%f m\n',i,(pt(i,2) -(ntheta+1)/2)*resotheta,pt(i,1)*resoR);
+end
+

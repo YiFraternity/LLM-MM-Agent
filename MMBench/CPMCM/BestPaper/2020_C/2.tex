@@ -29,9 +29,7 @@
 3. 刘琦
 \end{center}
 
-\begin{flushleft}
-题 \hspace{1cm} 目 \hspace{1cm} \textbf{脑电信号分析与判别模型研究}
-\end{flushleft}
+\tableofcontents
 
 \begin{abstract}
 对脑电信号的准确有效分析，有助于把握大脑的活动状态，是实现脑机接口技术和评估睡眠质量的重要前提。本文分别考虑了目标字符识别问题、最优组合通道的选取问题，使用部分无标签数据进行半监督学习问题、数据集选取方式和分配比例问题、睡眠分期问题，并分别建立模型进行求解。
@@ -46,113 +44,6 @@
 
 关键字：脑电信号 傅里叶变换 1D-CNN LSTM CatBoost
 \end{abstract}
-
-\section{目录}
-
-\begin{itemize}
-    \item[1.] 问题重述 \dotfill 5
-    \begin{itemize}
-        \item[1.1] 问题背景 \dotfill 5
-        \item[1.2] 问题解析 \dotfill 5
-        \begin{itemize}
-            \item[1.2.1] 问题一解析 \dotfill 5
-            \item[1.2.2] 问题二解析 \dotfill 5
-            \item[1.2.3] 问题三解析 \dotfill 6
-            \item[1.2.4] 问题四解析 \dotfill 6
-        \end{itemize}
-    \end{itemize}
-    \item[2.] 模型假设 \dotfill 7
-    \item[3.] 符号说明 \dotfill 7
-    \item[4.] 问题一的分析与求解 \dotfill 8
-    \begin{itemize}
-        \item[4.1] 问题一的分析 \dotfill 8
-        \item[4.2] 数据预处理 \dotfill 8
-        \begin{itemize}
-            \item[4.2.1] 经验模态分解 (EMD) \dotfill 8
-            \item[4.2.2] Butterworth 滤波器 \dotfill 9
-            \item[4.2.3] 快速傅里叶变换 (FFT) \dotfill 15
-        \end{itemize}
-        \item[4.3] 数据集构建与划分 \dotfill 16
-        \item[4.4] 模型建立 \dotfill 18
-        \begin{itemize}
-            \item[4.4.1] 支持向量机 (SVM) \dotfill 18
-            \item[4.4.2] 全连接神经网络 (DNN) \dotfill 19
-            \item[4.4.3] 长短时记忆网络 (LSTM) \dotfill 20
-            \item[4.4.4] 一维卷积神经网络 (1D-CNN) \dotfill 21
-            \item[4.4.5] 模型训练 \dotfill 22
-        \end{itemize}
-        \item[4.5] 模型性能评估 \dotfill 22
-        \item[4.6] 结果预测 \dotfill 23
-        \begin{itemize}
-            \item[4.6.1] 测试集结果预测 \dotfill 23
-            \item[4.6.2] 基于预测结果的性能分析 \dotfill 24
-        \end{itemize}
-    \end{itemize}
-    \item[5.] 问题二的分析与求解 \dotfill 25
-    \begin{itemize}
-        \item[5.1] 问题二的分析 \dotfill 25
-        \item[5.2] 注意力机制模型 \dotfill 25
-        \begin{itemize}
-            \item[5.2.1] 注意力机制算法原理 \dotfill 26
-            \item[5.2.2] 模型搭建 \dotfill 26
-        \end{itemize}
-        \item[5.3] 基于注意力权重的通道选择 \dotfill 27
-        \item[5.4] 性能评估与结果预测 \dotfill 28
-        \begin{itemize}
-            \item[5.4.1] 性能评估 \dotfill 28
-            \item[5.4.2] 结果预测 \dotfill 29
-        \end{itemize}
-    \end{itemize}
-    \item[6.] 问题三的分析与求解 \dotfill 30
-    \begin{itemize}
-        \item[6.1] 问题三的分析 \dotfill 30
-        \item[6.2] 基本半监督学习算法 \dotfill 30
-        \item[6.3] 半监督模型搭建 \dotfill 31
-        \begin{itemize}
-            \item[6.3.1] 伪标签方案设计 \dotfill 31
-            \item[6.3.2] 半监督训练流程 \dotfill 31
-        \end{itemize}
-    \end{itemize}
-    \item[6.4] 性能评估与结果预测 \dotfill 32
-    \begin{itemize}
-        \item[6.4.1] 模型训练与评估 \dotfill 32
-        \item[6.4.2] 结果预测 \dotfill 32
-    \end{itemize}
-    \item[7.] 问题四的分析与求解 \dotfill 35
-    \begin{itemize}
-        \item[7.1] 问题四的分析 \dotfill 35
-        \item[7.2] 脑电特征构造与数据处理 \dotfill 35
-        \begin{itemize}
-            \item[7.2.1] 脑电波特征分析 \dotfill 35
-            \item[7.2.2] 脑电波能量特征构造 \dotfill 35
-            \item[7.2.3] 脑电数据集划分 \dotfill 36
-        \end{itemize}
-        \item[7.3] 分类器的构建 \dotfill 36
-        \begin{itemize}
-            \item[7.3.1] 决策树和随机森林 \dotfill 36
-            \item[7.3.2] GBDT 和 CatBoost \dotfill 37
-        \end{itemize}
-        \item[7.4] 实验性能对比 \dotfill 39
-        \begin{itemize}
-            \item[7.4.1] 不同分类器的性能对比 \dotfill 39
-            \item[7.4.2] 脑电特征有效性分析 \dotfill 39
-            \item[7.4.3] 数据集划分方式的性能对比 \dotfill 40
-        \end{itemize}
-    \end{itemize}
-    \item[8.] 模型的评价 \dotfill 42
-    \begin{itemize}
-        \item[8.1] 模型的优点 \dotfill 42
-        \item[8.2] 模型的缺点 \dotfill 42
-    \end{itemize}
-    \item[9.] 参考文献 \dotfill 43
-    \item[附录 A] 补充对比实验（消融实验） \dotfill 44
-    \begin{itemize}
-        \item[1.1] 采样时段长度 $S$ 对模型精度的影响实验 \dotfill 44
-        \item[1.2] 不同优化器对模型精度的影响实验 \dotfill 44
-        \item[1.3] 滤波算法预处理数据对模型精度的影响实验 \dotfill 44
-    \end{itemize}
-    \item[附录 B] 程序代码 \dotfill 45
-\end{itemize}
 
 \section{问题重述}
 
@@ -378,17 +269,10 @@ n 阶 Butterworth 低通滤波器频率响应可由式7计算得到。
     \label{fig:4-7}
 \end{figure}
 
-\begin{align}
-Ratio_{\theta+\delta} &= \frac{E_{\theta} + E_{\delta}}{100} \tag{30} \\
-Ratio_{\alpha+\beta} &= \frac{E_{\alpha} + E_{\beta}}{100} \tag{31} \\
-Product_{\theta\&\delta} &= \frac{E_{\theta} * E_{\delta}}{1000} \tag{32} \\
-MeanEnergy &= \frac{E_{\alpha} + E_{\beta} + E_{\theta} + E_{\delta}}{4} \tag{33} \\
-Product_{\alpha\&\beta} &= \frac{E_{\alpha} * E_{\beta}}{1000} \tag{34} \\
-\ln E_{\alpha} &= \ln (E_{\alpha} + 1) \tag{35} \\
-\ln E_{\beta} &= \ln (E_{\beta} + 1) \tag{36} \\
-\ln E_{\gamma} &= \ln (E_{\gamma} + 1) \tag{37} \\
-\ln E_{\delta} &= \ln (E_{\delta} + 1) \tag{38}
-\end{align}
+\begin{equation}
+H(j\omega) = \frac{1}{\sqrt{1 + \varepsilon^2 \left( \frac{\omega}{\omega_C} \right)^{2n}}}
+\tag{7}
+\end{equation}
 
 其中，$n$ 表示滤波器的阶数，$\omega$ 表示通频带频率，$\omega_C$ 表示截止频率，$\varepsilon$ 表示最大通频带增益。
 
@@ -498,7 +382,7 @@ x(t) = \frac{1}{N} \sum_{k=0}^{N-1} X(k) W^{-nk}
 
 利用 FFT 及其逆变换 IFFT 对上述滤波后的数据进行处理，可以进一步提升数据质量。以上述四阶低通 Butterworth 滤波器对字符 char14 通道 1 滤波后的数据为例，经过 FFT 处理后可以进一步去除部分干扰噪声，数据更加平坦质量更高，如图 4-13 所示。
 
-\section{数据集构建与划分}
+\subsection{数据集构建与划分}
 
 经过上述分析，原始脑波信号经过 Butterworth 滤波以及 FFT 处理后，数据质量得到了明显提升。接下来，本文利用预处理后的数据建立模型分类所需的数据集。
 
@@ -524,7 +408,27 @@ x(t) = \frac{1}{N} \sum_{k=0}^{N-1} X(k) W^{-nk}
 
 \begin{figure}[h]
     \centering
-    [TABLEENV:2]
+    \begin{tabular}{c c c c c c c}
+        & 7 & 8 & 9 & 10 & 11 & 12 \\
+        1 & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+        & A & B & C & D & E & F \\
+        2 & G & H & I & J & K & L \\
+        3 & M & N & O & P & Q & R \\
+        4 & S & T & U & V & W & X \\
+        5 & Y & Z & 1 & 2 & 3 & 4 \\
+        6 & 5 & 6 & 7 & 8 & 9 & 0 \\
+    \end{tabular}
+    \caption{行/列的标识符}
+    \label{fig:4-14}
+\end{figure}
+        1 & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ & $\downarrow$ \\
+        & A & B & C & D & E & F \\
+        2 & G & H & I & J & K & L \\
+        3 & M & N & O & P & Q & R \\
+        4 & S & T & U & V & W & X \\
+        5 & Y & Z & 1 & 2 & 3 & 4 \\
+        6 & 5 & 6 & 7 & 8 & 9 & 0 \\
+    \end{tabular}
     \caption{行/列的标识符}
     \label{fig:4-14}
 \end{figure}
@@ -533,11 +437,11 @@ x(t) = \frac{1}{N} \sum_{k=0}^{N-1} X(k) W^{-nk}
 
 为此，本文采用了样本标签平衡策略，将标签为 1 的样本重复采样五次，使得 0 标签和 1 标签的比例为 1:1。以字符 char01(B) 为例，采用样本标签平衡策略后，会向原始 12 个样本数据（1 个第 1 行样本，1 个第 8 列样本以及 10 个其余行列的样本）中再添加 4 个第 1 行样本和 4 个第 8 列样本（对应标签为 1），此时样本数据由 12 个扩充为 20 个（5 个第 1 行样本，5 个第 8 列样本以及 10 个其余行列的样本），0 标签和 1 标签数据比例为 1:1。
 
-\section{模型建立}
+\subsection{模型建立}
 
 基于上一小节建立的二分类数据集，可以使用不同的方法建立二分类模型，包括支持向量机（SVM）、全连接神经网络（DNN）、长短时记忆网络（LSTM）、一维卷积神经网络（1D CNN）。
 
-\subsection{支持向量机（SVM）}
+\subsubsection{支持向量机（SVM）}
 
 考虑到脑电信号是非线性的，本文选用非线性 SVM 进行数据分类。首先，利用非线性算子 $\Phi(\cdot)$ 将输入模式 $\mathbf{X}$ 映射到高维空间 $\mathcal{H}$，从而将线性 SVM 推广到非线性 SVM。得到的非线性 SVM 分类器可以用下式表示：
 
@@ -571,7 +475,7 @@ y_i (\mathbf{w}^T \Phi(\mathbf{x}_i) + b) \geq 1 - \xi_i, \quad \xi_i \geq 0; \;
 
 本文中，SVM 分类器使用 sklearn 库中的 svm 方法，参数设置为：C=10（错误项的惩罚系数）, kernel='linear'（核函数选用线性核函数），其余参数为默认参数。
 
-\subsection{全连接神经网络（DNN）}
+\subsubsection{全连接神经网络（DNN）}
 
 全连接神经网络 (DNN) 是最朴素的神经网络，它的网络参数最多，计算量最大。DNN 的结构不固定，一般神经网络包括输入层、隐藏层和输出层，一个 DNN 结构只有一个输入层，一个输出层，输入层和输出层之间的都是隐藏层。每一层神经网络有若干神经，层与层之间神经元相互连接，层内神经元互不连接，而且下一层神经元连接上一层所有的神经元。图\ref{fig:dnn}展示了一个 3 层的 DNN 网络。
 
@@ -595,7 +499,7 @@ DNN 网络如4-17所示。
 
 输入尺寸为 $(20,160)$ 的数据，160 是采样的序列长度，20 为通道数目；将输入 reshape 成一个一维的张量，张量尺寸为 $(3200)$；将 reshape 后的张量输入到 2 个串联的全连接层中，全连接层的输出尺寸分别为 $(2048)$ 和 $(30)$，激活函数采用 ReLU 非线性激活函数。最后，特征经过输出层和 softmax 激活函数，输出一个二分类结果。
 
-\subsection{长短时记忆网络（LSTM）}
+\subsubsection{长短时记忆网络（LSTM）}
 
 每个被试者在单次实验中所记录的脑电波数据信号，是一个按固定采样频率采样的时间序列。为此，本文选用 LSTM 网络提取数据之间包含的隐藏时序性信息。
 
@@ -661,7 +565,7 @@ h_{t}=o_{t} * \tanh \left(C_{t}\right)
 
 与 DNN 网络一样，考虑到训练用的数据较少，搭建的 LSTM 网络层数也不多。如图\ref{fig:lstm_network_structure}所示。输入尺寸为 $(20,160)$ 的数据，160 是采样的序列长度，20 为通道数目；将输入经过一个 LSTM 层提取时序信息后，将输出 reshape 成一个一维的张量，张量尺寸为 $(3200)$；将 reshape 后的张量输入到全连接层中，全连接层的输出尺寸为 $(2048)$，激活函数采用 ReLU 非线性激活函数。最后，特征经过输出层和 softmax 激活函数，输出一个二分类结果。
 
-\subsection{一维卷积神经网络（1D-CNN）}
+\subsubsection{一维卷积神经网络（1D-CNN）}
 
 卷积神经网络（Convolutional Neural Networks, CNN）是一类包含卷积计算且具有深度结构的前馈神经网络（Feedforward Neural Networks），是深度学习（deep learning）的代表算法之一。1D CNN 可以很好地应用于传感器数据的时间序列分析（比如陀螺仪或加速度计数据），同样也可以很好地用于分析具有固定长度周期的信号数据（比如音频信号、脑电波信号），图4-20展示了一个具有 3 个 CNN 隐藏层和 2 个和 MLP 隐藏层的 1D CNN 网络。
 
@@ -689,7 +593,7 @@ h_{t}=o_{t} * \tanh \left(C_{t}\right)
     \label{fig:cnn_structure}
 \end{figure}
 
-\subsection{模型训练}
+\subsubsection{模型训练}
 
 除 SVM 训练外，其余模型的训练过程基本完全一致。以一维卷积神经网络 (1D-CNN) 为例。训练时，选用 mini-batch 训练策略，以 64 个样本为一个 batch 进行批量训练，网络用完所有训练数据作为一个 epoch，共训练 200 个 epoch，由于网络比较简单，每个 epoch 在 1080ti 上的训练时间大约为 60ms。训练 Loss 采用交叉熵损失，表达式如下：
 
@@ -842,7 +746,7 @@ z_{c} = \mathbf{F}_{sq}(\mathbf{u}_{c}) = \frac{1}{H \times W} \sum_{i=1}^{H} \s
 
 其中 $\delta$ 函数是 ReLU，而 $\sigma$ 是一个 sigmoid 激活函数，用于激活每一层通道。得到了每一个特征通道的权重之后，就将该权重应用于原来的每个特征通道，之后通过参数 $W$ 调整每个特征通道生成权重，就可以实现有选择性地加强包含有用信息的通道并抑制无效通道。
 
-\subsection{模型搭建}
+\subsubsection{模型搭建}
 
 为了从 20 个通道中选取最优的组合通道数，本文搭建了如图5-2所示的带通道注意力机制的 1D-CNN 神经网络模型。该模型的运行流程主要包括以下几个步骤：
 
@@ -925,11 +829,18 @@ z_{c} = \mathbf{F}_{sq}(\mathbf{u}_{c}) = \frac{1}{H \times W} \sum_{i=1}^{H} \s
 \end{table}
 
 从表中可以看出：（1）引入注意力机制后，网络性能有所提高，但提高不明
-
-\subsubsection{结果预测}
-
 表6展示了5个被试者利用所选取的5个最优组合通道在测试集上的字符预测结果。可以看出，通过所选取的5个最优组合通道可以准确预测出测试集的前五个字符char13-char17，验证了所选取的5个通道的有效性。
-
+显，原因是注意力机制带来的模型参数量增加，使得网络训练难以收敛；（2）选
+用注意力机制筛选得到的5 个被试者不同的15 个通道，性能在仅仅使用注意力
+机制的基础上得到了进一步提高，由此可见注意力机制筛选得到的通道相较于
+使用20 个通道，冗余数据更少，网络提取到的有效信息更多；（3）选用适合所
+有被试者的5 个通道后，每个被试者最终的表现都比15 通道略有下降，但是总
+体性能依然很高。并且，由于减少通道带来的模型参数量减少，可以缩短训练时
+间，减少所需的训练样本数量。
+\subsubsection{结果预测}
+表6展示了5 个被试者利用所选取的5 个最优组合通道在测试集上的字符预
+测结果。可以看出，通过所选取的5 个最优组合通道可以准确预测出测试集的前
+五个字符char13-char17，验证了所选取的5 个通道的有效性。
 \begin{table}[h]
 \centering
 \caption{预测结果}
@@ -1218,11 +1129,11 @@ CatBoost 在类别特征和特征组合方面有独特的处理方式：(1) 类�
 
 数设置为：loss_function='MultiClass', learning_rate=0.1, depth=6（树的深度）, iterations=1000（数的数量），其余参数使用默认参数。
 
-\section{实验性能对比}
+\subsection{实验性能对比}
 
 本小节比较了不同分类器的睡眠分期准确率，并进一步分析了扩充后的 13 个脑电特征在不同模型中对分类准确率的贡献度。同时，本小节还研究了训练集和测试集划分比例对分类识别准确率的影响。
 
-\subsection{不同分类器的性能对比}
+\subsubsection{不同分类器的性能对比}
 
 针对问题四，为了确定最优的睡眠分期分类器，本文设计并进行了 100 轮重复实验。具体来说，本文对 3000 多个相同的样本按 4:1 的比例随机划分了 100 次，总共生成了 100 组不同的训练集与测试集划分情况，并分别测试了各睡眠分期分类器在 100 组测试集上的平均正确率（Accuracy）、准确率（Precision）和召回率（Recall），结果分别如表 8、表 9 所示。图 7-3 展示了不同分类器的平均睡眠分期准确率。
 
@@ -1258,7 +1169,7 @@ CatBoost & 0.9766 & 0.9171 & 0.9252 & 0.9579 & 0.9733 \\
 \end{tabular}
 \end{table}
 
-\subsection{脑电特征有效性分析}
+\subsubsection{脑电特征有效性分析}
 
 为了验证本文新构建的脑电特征的有效性，本文进一步分析了扩充后的 13 个脑电特征在不同模型中对分类准确率的贡献度。图 7-4 展示了 CatBoost 分类器训练得到的 13 个脑电特征的重要性条形图。可以得到，在 CatBoost 分类器下，原有数据数据集中对模型预测结果有较高贡献的特征有 $E_{\alpha}, E_{\beta}, E_{\theta}, E_{\delta}$，以及新构建的特征 MeanEnergy 和 $\ln E_{\delta}$。
 
@@ -1284,7 +1195,7 @@ CatBoost & 0.9766 & 0.9171 & 0.9252 & 0.9579 & 0.9733 \\
     \label{fig:7-4}
 \end{figure}
 
-\subsection{数据集划分方式的性能对比}
+\subsubsection{数据集划分方式的性能对比}
 
 在上述实验基础上，为了进一步分析不同的测试集和训练集划分比例对睡眠分期准确率的影响，选择 CatBoost 分类器，观测在不同的训练集与测试集分割比例下模型预测效果的差异，结果如表10和图7-7所示。不难发现，当测试样本占总样本比例越小时，5 种睡眠分期预测的准确率越高，正确率也越高。值得注意的是，即使是测试样本占总样本比例高达 0.6，也即训练样本占总样本比例
 
@@ -1362,3 +1273,1243 @@ CatBoost & 0.9766 & 0.9171 & 0.9252 & 0.9579 & 0.9733 \\
 \end{enumerate}
 
 \end{document}
+
+\section{程序代码}
+附录A 补充对比实验（消融实验）
+## 1 . 1 采样时段长度S 对模型精度的影响实验
+## 为了找到合适的采样时长S，本文设计采样时段长度S 对模型精度的影响实
+验如下。采样时段长度以40 的步长从80 依次增加到240，网络采用1D-CNN，
+优化器选用Adam 优化器，数据选用经过Butterworth 和FFT 处理后的数据。实
+验结果如表11所示。从表中结果可以看出，采样时段选择受刺激后的160 个采样
+点为最佳（即观测时长为640ms）。
+表11
+不同采样时长对模型精度的影响
+采样时段长度
+80
+120
+160
+200
+240
+验证集准确率
+1. 60%
+1. 74%
+1. 87%
+1. 14
+1. 89
+1 . 2 不同优化器对模型精度的影响实验
+神经网络的优化器对于网络的训练有一定的影响。合适的优化器可以加快
+## 网络收敛，节省训练时间并提高模型性能。本文分别采用SGD 算法、Momentum
+算法和Adam 算法作为网络的优化器，采样长度固定160 个采样点，数据选用经
+过Butterworth 和FFT 处理后的数据。实验结果如表12所示。从表中结果可以看
+出，Adam 优化器的性能最佳。
+表12
+不同优化器对模型精度的影响
+滤波方法
+# Sgd
+# Momentum
+# Adam
+验证集准确率
+1. 32%
+1. 93%
+1. 87%
+1 . 3 滤波算法预处理数据对模型精度的影响实验
+脑电原始数据中包含眼电、伪迹等干扰信号，需要使用合适的滤波方法处
+理。本文比较了滤波算法对模型精度的影响，如表13对模型精度的影响。可以看
+到，将数据滤波后再加入网络训练大幅提高的网络的性能。
+表13
+不同滤波处理对模型精度的影响
+滤波方法
+无滤波
+# Butterworth
+# Butterworth+FFT
+验证集准确率
+1. 27%
+
+1. 87%
+44
+
+
+
+# 附录B 程序代码
+（1）主函数代码main.py
+from trainer import Trainer
+import numpy as np
+from tqdm import tqdm
+char = [['A', 'B', 'C', 'D', 'E', 'F'],
+['G', 'H', 'I', 'J', 'K', 'L'],
+['M', 'N', 'O', 'P', 'Q', 'R'],
+['S', 'T', 'U', 'V', 'W', 'X'],
+['Y', 'Z', '1', '2', '3', '4'],
+['5', '6', '7', '8', '9', '0']]
+def get_ave_result(p,skip22_12 = False):
+global char
+a = np.array(p)
+b = a.reshape(5,10,5,2)
+b = b.transpose(0,2,1,3)
+count_i = np.zeros([6,10])
+count_j = np.zeros([6,10])
+for i,b1 in enumerate(b):
+for j,b11 in enumerate(b1):
+for char_i in range(10):
+if i in [1,2] and char_i==9 and skip22_12:
+continue
+count_i[b11[char_i,0],char_i]+=1
+count_j[b11[char_i,1],char_i]+=1
+index_i = count_i.argmax(axis=0)
+index_j = count_j.argmax(axis=0)
+for i,j in zip(index_i,index_j):
+print(char[i][j])
+if __name__ == '__main__':
+#data_root:'data_mat' 'data_mat_revised/'
+s = []
+p = []
+r = []
+epoch = 100
+attention = []
+for member in range(1,6):
+model =
+Trainer(member,data_root='data_mat_revised/',opti='adam')
+mean_acc = []
+mean_loss = []
+with tqdm(total=epoch) as t:
+acc = []
+loss = []
+for i in range(epoch):
+train_loss,train_acc = model.trainA(i)
+val_acc = model.valA(i)
+* set_description('Member %i' % member)
+45
+
+
+
+* set_postfix(loss='{:.3f}'.format(val_loss),\
+acc='{:.2f}%'.format(100*val_acc))
+* update(1)
+if epoch - i<10:
+loss.append(val_loss.cpu().item())
+acc.append(val_acc)
+acc = np.mean(np.array(acc))
+loss = np.mean(np.array(loss))
+attention.append(\
+np.array(model.model.atten.cpu().detach()))
+mean_acc.append(acc)
+mean_loss.append(loss)
+series,predicts,result = model.predictA()
+* append(result)
+* append(predicts)
+loss = np.mean(np.array(mean_loss))
+acc = np.mean(np.array(mean_acc))
+r = np.mean(np.array(r),axis= 0)
+print('test:\nchar acc:{:.2f}% \n row acc:{:.2f}% \n col
+acc:{:.2f}%'.format(*list(r*100)))
+print('mean val acc:{:.2f}%'.format(float(acc*100)))
+print('mean val loss:',loss)
+get_ave_result(p,True)
+# import pickle
+# with open('atten.pkl','wb') as f:
+#
+pickle.dump(attention,f)
+（2）网络代码net.py
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
+class FullyConnected(nn.Module):
+def __init__(self,seq_length=None):
+super(FullyConnected, self).__init__()
+if seq_length == None:
+seq_length = 160
+self.seq_length = seq_length
+self.fc1 = nn.Sequential(
+nn.Linear(20*seq_length,2048),
+nn.Dropout(0.5),
+nn.ReLU()
+)
+self.fc2 = nn.Sequential(
+nn.Linear(2048,30),
+nn.Dropout(0.5),
+nn.ReLU()
+)
+= nn.Sequential(
+nn.Linear(30, 2),
+46
+
+
+
+nn.Dropout(0.5),
+nn.Softmax()
+)
+self.atten = torch.tensor([0])
+def forward(self, x):
+b,c,s = x.shape
+x = x.view(b,-1)
+x = self.fc1(x)
+x = self.fc2(x)
+x = self.out(x)
+return x, 0
+class CNN(nn.Module):
+def __init__(self,seq_length=None):
+super(CNN, self).__init__()
+self.atten = torch.zeros([1])
+if seq_length == None:
+seq_length = 240
+self.attention = nn.Sequential(
+nn.Linear(seq_length*20,20),
+nn.Sigmoid()
+)
+self.conv = nn.Sequential(
+nn.Conv1d(20, 5, 5, padding=2),
+nn.MaxPool1d(2),
+nn.ReLU()
+)
+self.fc = nn.Sequential(
+nn.Linear(5*seq_length//2, 30),
+nn.Dropout(0.5),
+nn.ReLU()
+)
+self.out = nn.Sequential(
+nn.Linear(30, 2),
+nn.Dropout(0.5),
+nn.Softmax(dim = 1)
+)
+def forward(self, x,use_attention = 0):
+b,c,s = x.shape
+if use_attention==1:
+x_atten = x.view(b,c*s)
+self.atten = self.attention(x_atten) #(b,20)
+# x = x.view(b,s,c)
+elf.atten.repeat(240,1,1)
+# print(atten.shape)
+47
+
+
+
+atten = atten.permute(1,2,0)
+# print(atten.shape)
+x = atten*x
+elif use_attention==2:
+self.atten = np.zeros([b,c,s])
+for i in [ 0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 13, 16,
+19]:
+self.atten[:,i,:] = 1
+self.atten =
+torch.tensor(self.atten,dtype=torch.float32).cuda()
+x = self.atten*x
+elif use_attention==3:
+self.atten = np.zeros([b,c,s])
+for i in [1, 3, 4, 7, 8, 9, 10, 11, 13, 19]:
+self.atten[:,i,:] = 1
+self.atten =
+torch.tensor(self.atten,dtype=torch.float32).cuda()
+x = self.atten*x
+elif use_attention==4:
+self.atten = np.zeros([b,c,s])
+for i in [1,9,19]:
+self.atten[:,i,:] = 1
+self.atten =
+torch.tensor(self.atten,dtype=torch.float32).cuda()
+x = self.atten*x
+elif use_attention==5:
+self.atten = np.zeros([b,c,s])
+for i in [5,12,14]:
+self.atten[:,i,:] = 1
+self.atten =
+torch.tensor(self.atten,dtype=torch.float32).cuda()
+x = self.atten*x
+#(b,240,20)
+x = self.conv(x) #(b,240,20) -> (b,240,5) -> (b,120,5)
+fc = self.fc(x.view(x.size(0), -1)) #(b,600) -> (b,30)
+x = self.out(fc)#.squeeze() #(b,2)
+return x, fc
+class LSTM(nn.Module):
+def __init__(self,seq_length=None):
+super(LSTM, self).__init__()
+if seq_length == None:
+seq_length = 160
+self.seq_length = seq_length
+self.rnn = nn.LSTM( # LSTM 效果要比nn.RNN() 好多了
+input_size=20, # 图片每行的数据像素点
+hidden_size=64, # rnn hidden unit
+num_layers=1,
+# 有几层RNN layers
+batch_first=True, # input & output 会是以batch size
+为第一维度的特征集e.g. (batch, time_step, input_size)
+
+self.atten = torch.tensor([0])
+48
+
+
+
+self.fc = nn.Linear(seq_length*64,64)
+self.out = nn.Linear(64, 2) # 输出层
+def forward(self, x):
+x = x.permute(0,2,1)
+r_out, (h_n, h_c) = self.rnn(x, None) # None 表示hidden
+state 会用全0的state
+# 选取最后一个时间点的r_out 输出
+# 这里r_out[:, -1, :] 的值也是h_n 的值
+x = self.fc(r_out.contiguous().view(-1,self.seq_length*64))
+out = self.out(x)
+return out, 0
+（3）训练代码trainer.py
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+import numpy as np
+import hiddenlayer as hl
+import torch.onnx as onnx
+from Dataset import Trainset, Testset
+from train_valid_split import train_valid_split
+from Model import CNN,LSTM,FullyConnected
+class Trainer(object):
+def __init__(self,member = 1,data_root =
+'data_mat/',train_batch = 64,val_batch =
+80,opti='adam',seq_length = None,model='CNN'):
+self.member = member
+self.device = torch.device('cuda' if
+torch.cuda.is_available() else 'cpu')
+if model=='CNN':
+self.model = CNN(seq_length =
+seq_length).to(self.device)
+elif model=='LSTM':
+self.model = LSTM(seq_length =
+seq_length).to(self.device)
+else:
+self.model = FullyConnected(seq_length =
+seq_length).to(self.device)
+self.random_seed = np.random.seed(666)
+self.trainsetA, _ = train_valid_split(Trainset('A',\
+ta_root=data_root,seq_length = seq_length),\
+random_seed=self.random_seed)
+49
+
+
+
+self.valsetA,_ = train_valid_split(Trainset('B',\
+member,data_root=data_root,seq_length = seq_length), \
+random_seed=self.random_seed)
+# testset, valsetB = train_valid_split(Test('B',1),
+random_seed=random_seed)
+self.train_loaderA = DataLoader(
+dataset=self.trainsetA,
+batch_size=train_batch,
+shuffle=True,
+)
+self.valid_loaderA = DataLoader(
+dataset=self.valsetA,
+batch_size=val_batch,
+shuffle=True,
+)
+self.test_loaderA = DataLoader(
+dataset=Testset('A',member,data_root=data_root,seq_length
+= seq_length),
+shuffle=False
+)
+self.mse_criterion = nn.MSELoss()
+self.cross_entropy_criterion = nn.CrossEntropyLoss()
+if opti == 'sgd':
+self.optimizer = optim.SGD(self.model.parameters(),
+lr=5e-4, momentum=0.9,
+weight_decay=1e-4)
+else:
+self.optimizer = optim.Adam(self.model.parameters(),
+lr=5e-4,weight_decay=1e-4)
+def trainA(self,ep):
+self.model.train()
+total_loss = 0
+total_acc = 0
+for step, (x, y) in enumerate(self.train_loaderA):
+data, target = x.to(self.device),
+* to(self.device).long()
+output, _ = self.model(data)
+self.optimizer.zero_grad()
+loss = self.cross_entropy_criterion(output, target)
+total_loss += loss
+loss.backward()
+self.optimizer.step()
+ output.data.max(1)[1]
+acc = predict.eq(target.data).sum()
+50
+
+
+
+total_acc += acc.item() / self.train_loaderA.batch_size
+avg_loss = total_loss / len(self.train_loaderA)
+avg_acc = total_acc / len(self.train_loaderA)
+# print("Epoch: {} Loss: {}, Acc: {}".format(ep, avg_loss,
+#
+avg_acc))
+if ep == 499:
+torch.save({
+'epoch': ep,
+'model_state_dict': self.model.state_dict(),
+'optimizer_state_dict': self.optimizer.state_dict(),
+'loss': total_loss,
+'acc': total_acc
+}, './vallina_cnn_A')
+return avg_loss,avg_acc
+def valA(self,ep):
+self.model.eval()
+total_loss = 0
+total_acc = 0
+all_acc = []
+with torch.no_grad():
+ii=0
+for step, (x, y) in enumerate(self.valid_loaderA):
+data, target = x.to(self.device),
+* to(self.device).long()
+output, _ = self.model(data)
+loss = self.cross_entropy_criterion(output, target)
+total_loss += loss
+predict = output.data.max(1)[1]
+acc = predict.eq(target.data).sum()
+total_acc += acc.item() / len(predict)
+ii=step
+all_acc.append(float(acc.item() / len(predict)))
+# print("Valid Epoch: {} Loss: {}, Acc: {}".format(ep,
+total_loss / (ii+1),
+#
+total_acc /
+(ii+1)))
+return total_loss/(ii+1),total_acc / (ii+1)
+def predictA(self):
+char = [['A', 'B', 'C', 'D', 'E', 'F'],
+['G', 'H', 'I', 'J', 'K', 'L'],
+['M', 'N', 'O', 'P', 'Q', 'R'],
+['S', 'T', 'U', 'V', 'W', 'X'],
+, '1', '2', '3', '4'],
+['5', '6', '7', '8', '9', '0']]
+51
+
+
+
+char2index = {'A': (0, 0),'B': (0, 1),'C': (0, 2),'D': (0,
+3),'E': (0, 4),'F': (0, 5),
+'G': (1, 0),'H': (1, 1),'I': (1, 2),'J': (1,
+3),'K': (1, 4),'L': (1, 5),
+'M': (2, 0),'N': (2, 1),'O': (2, 2),'P': (2,
+3),'Q': (2, 4),'R': (2, 5),
+'S': (3, 0),'T': (3, 1),'U': (3, 2),'V': (3,
+3),'W': (3, 4),'X': (3, 5),
+'Y': (4, 0),'Z': (4, 1),'1': (4, 2),'2': (4,
+3),'3': (4, 4),'4': (4, 5),
+'5': (5, 0),'6': (5, 1),'7': (5, 2),'8': (5,
+3),'9': (5, 4),'0': (5, 5)}
+series = []
+real_a = 'M'*5+'F'*5+'5'*5+'2'*5+'I'*5
+real_index = [char2index[i] for i in real_a]
+index_predicts = []
+self.model.eval()
+with torch.no_grad():
+for step, (cols, rows) in enumerate(self.test_loaderA):
+col_pred_set = []
+row_pred_set = []
+# print("
+0 - 6")
+for line in range(6):
+data = cols[:, line, :, :].to(self.device)
+output, _ = self.model(data)
+col_pred_set.append(output.data.cpu().numpy())
+# print("
+7 - 12")
+for line in range(6):
+data = rows[:, line, :, :].to(self.device)
+output, _ = self.model(data)
+row_pred_set.append(output.data.cpu().numpy())
+col_pred_set = np.array(col_pred_set).squeeze()
+row_pred_set = np.array(row_pred_set).squeeze()
+col_pred = np.argmax(col_pred_set, axis=0)[1]
+row_pred = np.argmax(row_pred_set, axis=0)[1]
+series.append(char[col_pred][row_pred])
+index_predicts.append([col_pred,row_pred])
+series = ''.join(series)
+for i in range(13,23):
+print("char({}):{}".format(i,series[5*(i-13):5*(i-12)]))
+counter = 0
+for i in range(len(real_a)):
+if real_a[i] == series[i]:
+counter += 1
+i_counter = 0
+j_counter = 0
+for (i_t,j_t),(i,j) in zip(real_index,index_predicts):
+if i_t ==i:
+i_counter+=1
+if j_t ==j:
+j_counter+=1
+ar acc:',counter / len(real_a))
+print('i acc:',i_counter / len(real_a))
+52
+
+
+
+print('j acc:',j_counter/len(real_a))
+return series,index_predicts,[counter /
+len(real_a),i_counter /
+len(real_a),j_counter/len(real_a)]
+（4）数据生成代码gen_mat.py
+import pandas as pd
+import numpy as np
+import torch
+import matplotlib.pyplot as plt
+from torch.utils.data import Dataset, DataLoader
+import torch
+from torch import nn
+import torch.nn.functional as F
+import time
+import sys
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_recall_curve
+import os
+import scipy.io as scio
+sheet2label = {
+'char01(B)':[1,8],
+'char02(D)':[1,10],
+'char03(G)':[2,7],
+'char04(L)':[2,12],
+'char05(O)':[3,9],
+'char06(Q)':[3,11],
+'char07(S)':[4,7],
+'char08(V)':[4,10],
+'char09(Z)':[5,8],
+'char10(4)':[5,12],
+'char11(7)':[6,9],
+'char12(9)':[6,11]
+}
+def get_test_datas(test_data_files,test_label_files):
+test_datas = []
+test_labels = []
+for train_data_file,train_label_file in
+zip(test_data_files,test_label_files):
+trainval_data = pd.read_excel(train_data_file,sheet_name =
+None,header=None)
+trainval_label = pd.read_excel(train_label_file,sheet_name
+= None,header=None)
+ = dict()
+for i,key in enumerate(trainval_data.keys()):
+53
+
+
+
+tmp = np.array(trainval_data[key])
+tmp_min = tmp.min(axis=0).reshape(1,-1)
+tmp_max = tmp.max(axis=0).reshape(1,-1)
+tmp = (tmp-tmp_min)/(tmp_max-tmp_min)
+test_data[key] = tmp
+test_label = dict()
+for i,key in enumerate(trainval_label.keys()):
+if i % 6 != 0:
+test_label[key] = np.array(trainval_label[key])[1:]
+else:
+test_label[key] = np.array(trainval_label[key])[1:]
+test_labels.append(test_label)
+test_datas.append(test_data)
+return test_datas,test_labels
+def test_write_mat_like_norm_putinplace(datas,labels,file =
+'test_like_norm_place.mat',length = 50):
+data_out = np.zeros([12,240,20,length],dtype=np.float32)
+label_out = np.zeros([12,length],dtype=np.float32)
+jj = 0
+for key in datas.keys():
+for stimulate,line in labels[key]:
+if stimulate<=12:
+tmp = datas[key][line:line+240,:]
+tmp_min = tmp.min(axis=0).reshape(1,-1)
+tmp_max = tmp.max(axis=0).reshape(1,-1)
+tmp = (tmp-tmp_min)/(tmp_max-tmp_min)
+data_out[stimulate-1,:,:,jj] = tmp
+label_out[stimulate-1,jj] = 0
+else:
+jj+=1
+data_numpy = np.array(data_out)
+label_numpy = np.array(label_out)
+scio.savemat(file,\
+{"responses":data_numpy,"is_stimulate":label_numpy})
+return data_numpy,label_numpy
+def get_trainval_datas(train_data_files,train_label_files):
+train_datas = []
+train_labels = []
+val_datas = []
+val_labels = []
+for train_data_file,train_label_file in
+zip(train_data_files,train_label_files):
+trainval_data = pd.read_excel(train_data_file,sheet_name =
+None,header=None)
+trainval_label = pd.read_excel(train_label_file,sheet_name
+= None,header=None)
+a = dict()
+val_data = dict()
+54
+
+
+
+for i,key in enumerate(trainval_data.keys()):
+tmp = np.array(trainval_data[key])
+tmp_min = tmp.min(axis=0).reshape(1,-1)
+tmp_max = tmp.max(axis=0).reshape(1,-1)
+tmp = (tmp-tmp_min)/(tmp_max-tmp_min)
+if i % 6 != 0:
+train_data[key] = tmp
+else:
+val_data[key] = tmp
+train_label = dict()
+val_label = dict()
+for i,key in enumerate(trainval_label.keys()):
+if i % 6 != 0:
+train_label[key] = np.array(trainval_label[key])[1:]
+else:
+val_label[key] = np.array(trainval_label[key])[1:]
+train_labels.append(train_label)
+train_datas.append(train_data)
+val_labels.append(val_label)
+val_datas.append(val_data)
+return train_datas,train_labels,val_datas,val_labels
+def write_mat_like_norm_putinplace(datas,labels,file =
+'train_like_norm_place.mat',length = 50):
+data_out = np.zeros([12,240,20,length],dtype=np.float32)
+label_out = np.zeros([12,length],dtype=np.float32)
+jj = 0
+for key in labels.keys():
+for stimulate,line in labels[key]:
+if stimulate<=12:
+tmp = datas[key][line:line+240,:]
+tmp_min = tmp.min(axis=0).reshape(1,-1)
+tmp_max = tmp.max(axis=0).reshape(1,-1)
+tmp = (tmp-tmp_min)/(tmp_max-tmp_min)
+data_out[stimulate-1,:,:,jj] = tmp
+label_out[stimulate-1,jj] = 1 if stimulate in
+sheet2label[key] else 0
+else:
+jj+=1
+data_numpy = np.array(data_out)
+label_numpy = np.array(label_out)
+scio.savemat(file,\
+{"responses":data_numpy,"is_stimulate":label_numpy})
+return data_numpy,label_numpy
+def main(root_in = './data/',root_out = './data_mat/',range1 =
+1,range2 = 6):
+test_data_files =
+[root_in+'/S{}/S{}_test_data.xlsx'.format(i,i) for i in
+ge1,range2)]
+test_label_files =
+55
+
+
+
+[root_in+'/S{}/S{}_test_event.xlsx'.format(i,i) for i in
+range(range1,range2)]
+train_data_files =
+[root_in+'/S{}/S{}_train_data.xlsx'.format(i,i) for i in
+range(range1,range2)]
+train_label_files =
+[root_in+'/S{}/S{}_train_event.xlsx'.format(i,i) for i in
+range(range1,range2)]
+test_datas,test_labels =
+get_test_datas(test_data_files,test_label_files)
+train_datas,train_labels,val_datas,val_labels =
+get_trainval_datas(train_data_files,train_label_files)
+for i in range(5):
+print(i+1)
+test_write_mat_like_norm_putinplace(
+test_datas[i],test_labels[i],\
+file = root_out+str(i+1)+'test_like_norm_place.mat',length
+= 50)
+write_mat_like_norm_putinplace(
+train_datas[i],train_labels[i],\
+file =
+root_out+str(i+1)+'train_like_norm_place.mat',length =
+50)
+write_mat_like_norm_putinplace(
+val_datas[i],val_labels[i],\
+file = root_out+str(i+1)+'val_like_norm_place.mat',length
+= 10)
+#main('./origin_data/','./data_mat/')
+main('./data_revised/','./data_mat_revised/')
+（5）数据加载代码Dataset.py
+import torch
+from torch.utils.data import Dataset
+import numpy as np
+from scipy.io import loadmat
+class Trainset(Dataset):
+def __init__(self,subject_name, fileindex,data_root =
+'data_mat/',seq_length = None,halfdata = False):
+if seq_length==None:
+seq_length = 240
+if subject_name == 'A':
+raw_data = loadmat(data_root+str(fileindex)+\
+'train_like_norm_place.mat')
+else:
+raw_data = loadmat(data_root+str(fileindex)+\
+_norm_place.mat')
+signals = raw_data['responses']
+56
+
+
+
+label = raw_data['is_stimulate']
+data = []
+target = []
+self.halfdata = halfdata
+for i in range(signals.shape[0]):
+for j in range(signals.shape[3]):
+if label[i, j] == 1:
+data.append(signals[i, :, :, j].reshape(-1, 20))
+target.append(label[i, j])
+data.append(signals[i, :, :, j].reshape(-1, 20))
+target.append(label[i, j])
+data.append(signals[i, :, :, j].reshape(-1, 20))
+target.append(label[i, j])
+data.append(signals[i, :, :, j].reshape(-1, 20))
+target.append(label[i, j])
+data.append(signals[i, :, :, j].reshape(-1, 20))
+target.append(label[i, j])
+self.data = np.array(data)
+self.target = np.array(target)
+self.seq_length = seq_length
+def __len__(self):
+num=1
+if self.halfdata:
+num = 2
+return self.target.shape[0]//num
+def __getitem__(self, index):
+return self.data[index, :self.seq_length,
+:].astype(np.float32).T,
+self.target[index].astype(np.float32)
+class Testset(Dataset):
+def __init__(self,subject_name, fileindex,data_root =
+'data_mat/',seq_length = None):
+if seq_length==None:
+seq_length = 240
+self.seq_length = seq_length
+assert subject_name == 'A'
+raw_data = loadmat(
+data_root+str(fileindex)+'test_like_norm_place.mat')
+# else:
+self.signals = raw_data['responses']
+__(self):
+return 50
+57
+
+
+
+def __getitem__(self, index):
+col = self.signals[:6, :self.seq_length, :,
+index].astype(np.float32).transpose([0, 2, 1])
+row = self.signals[6:, :self.seq_length, :,
+index].astype(np.float32).transpose([0, 2, 1])
+return col, row
+（6）经验模态分解代码EMD.py
+from PyEMD import EMD, Visualisation
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.io as scio
+f=open('train.csv',encoding='utf-8')
+df = pd.read_csv(f)
+S = np.array(df)
+emd = EMD()
+emd.emd(S[:,16])
+imfs, res = emd.get_imfs_and_residue()
+# # 绘制IMF
+vis = Visualisation()
+vis.plot_imfs(imfs=imfs, residue=res, t=np.arange(0,3117),
+include_residue=True)
+vis.show()
+vis.plot_instant_freq(t=np.arange(0,3117), imfs=imfs)
+vis.show()
+（7）快速傅里叶变换代码FIFFT.m
+function [ new_data ] = FiFFT( x )
+fc = 250;
+%采样频率250Hz
+[a,b] = size(x);
+N = a;
+%采样点数
+n = 0:N-1;
+f = n*fc/N;
+%频率序列
+## Wn = [0.3*2 25*2]/fc;%设置通带为0.5-25Hz
+[k,l] = butter(2,Wn);%4阶IIR滤波器
+new_data = zeros(N,20);
+for i=1:20
+VarName1 = x(:,i);
+result = filtfilt(k,l,VarName1);
+tmp = fft(result);
+VarName1_IFFT = ifft(tmp);
+new_data(:,i) = VarName1_IFFT ;
+i=i+1;
+end
+
+（8）问题一SVM 分类器代码svm.py
+58
+
+
+
+from numpy import loadtxt
+from matplotlib import pyplot as plt
+import pandas as pd
+import numpy as np
+from sklearn.metrics import roc_auc_score, f1_score
+from sklearn import metrics
+from sklearn import svm
+import random
+from sklearn.utils import shuffle
+from scipy.io import loadmat
+import pickle
+import heapq
+sheet2label = {
+'char01(B)':[1,8],
+'char02(D)':[1,10],
+'char03(G)':[2,7],
+'char04(L)':[2,12],
+'char05(O)':[3,9],
+'char06(Q)':[3,11],
+'char07(S)':[4,7],
+'char08(V)':[4,10],
+'char09(Z)':[5,8],
+'char10(4)':[5,12],
+'char11(7)':[6,9],
+'char12(9)':[6,11]
+}
+def getDataLabel(random_seed=2,train_test_split = 0.2 ):
+# X = []
+# Y =[]
+test_X=[]
+test_Y=[]
+for charName,val in sheet2label.items():
+df =
+pd.read_excel('data/S1/S1_train_data.xlsx',sheet_name=charName,header=N
+df.index = df.index +1
+train_event =
+pd.read_excel('data/S1/S1_train_event.xlsx',sheet_name=charName,header=N
+for i in train_event.index.values:
+if train_event.loc[i,0]<100:
+# X.append(df.loc[
+(train_event.loc[i,1]):(train_event.loc[i,1]+125)
+, 0 ].values)
+if train_event.loc[i,0] in sheet2label[charName]:
+* append(1)
+else:
+* append(0)
+X = np.array(X)
+Y =np.array(Y)
+index = [i for i in range(len(X))]
+ = len(X)
+random.shuffle(index)
+59
+
+
+
+# X = X[index]
+# Y = Y[index]
+test_X = X[ int((1-train_test_split)*total_num): ,:]
+test_Y = Y[ int((1-train_test_split)*total_num): ]
+## X = X[ :int((1-train_test_split)*total_num) ,:]
+## Y = Y[ :int((1-train_test_split)*total_num) ]
+print('hello')
+return X, Y ,test_X, test_Y
+def calculate_metrics(test_Y,pred_Y):
+true_num = np.sum(test_Y == pred_Y)
+accuracy = true_num/ test_Y.shape[0]
+return accuracy
+def getData_Label(feature_id=None):
+pkl_dir = 'sz_data/pkl'
+with open(pkl_dir+'/'+'train.pkl','rb') as f:
+trainData, trainLabel = pickle.load(f)
+with open(pkl_dir+'/'+'val.pkl','rb') as f:
+valData,valLabel = pickle.load(f)
+# X = trainData
+# Y = trainLabel
+test_X = valData
+test_Y = valLabel
+index = [i for i in range(len(X))]
+random.shuffle(index)
+# X = X[index]
+# Y = Y[index]
+index = [i for i in range(len(test_X))]
+random.shuffle(index)
+test_X = test_X[index]
+test_Y = test_Y[index]
+X = X.reshape(len(X), -1)
+test_X = test_X.reshape(len(test_X),-1)
+if not feature_id:
+print('hello')
+return X, Y, test_X, test_Y
+else:
+## X = X[:, feature_id]
+test_X = test_X[:, feature_id]
+return X, Y, test_X, test_Y
+if __name__ == '__main__':
+meanAUC=np.array([])
+meanAccuracy=np.array([])
+meanPrecision=np.array([])
+meanRecall = np.array([])
+range(0,1):
+X, Y ,test_X, test_Y = getData_Label()
+60
+
+
+
+# #SVM
+model = svm.SVC(C=10,kernel='linear')
+model.fit(X , Y)
+# make predictions for test data
+pred_Y = model.predict(test_X)
+pred_Y = np.squeeze(pred_Y)
+accuracy = calculate_metrics(test_Y,pred_Y)
+meanAccuracy=np.append(meanAccuracy, accuracy)
+fpr, tpr, thresholds = metrics.roc_curve(test_Y , pred_Y)
+roc_auc=metrics.auc(fpr,tpr)
+meanAUC=np.append(meanAUC,roc_auc)
+meanPrecision=np.append(meanPrecision,metrics.precision_score(test_Y,pred_Y
+meanRecall=np.append(meanRecall,metrics.recall_score(test_Y,pred_Y))
+print('test meanAUC= %0.4f'% ( np.mean(meanAUC)))
+print('test meanAccuracy= %0.4f'% ( np.mean(meanAccuracy)))
+print('test meanPrecision= %0.4f'% ( np.mean(meanPrecision)))
+print('test meanRecall= %0.4f'% ( np.mean(meanAccuracy)))
+（9）问题四睡眠分期代码Q4.py
+from numpy import loadtxt
+from xgboost import XGBClassifier
+from catboost import CatBoostClassifier
+from matplotlib import pyplot as plt
+import pandas as pd
+import numpy as np
+from sklearn.metrics import roc_auc_score, f1_score
+from sklearn import metrics
+from xgboost import plot_importance
+from sklearn import svm
+from sklearn.externals import joblib
+import random
+from sklearn.utils import shuffle
+from scipy.io import loadmat
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+from sklearn.feature_selection import RFE
+from sklearn.svm import SVR
+def getDataLabel(random_seed=2,train_test_split = 0.2 ):
+df = pd.read_csv('eegData2.csv')
+output = 'label'
+df['Theta+Delta'] = (df['Theta'] + df['Delta']) / 100.0
+df['Theta*Delta'] = (df['Theta'] * df['Delta']) / 1000.0
+df['mean_val'] = (df['Alpha'] + df['Beta'] + df['Theta'] +
+df['Delta']) / 4.0
+df['Alpha+Beta'] = (df['Alpha'] + df['Beta']) / 100.0
+df['Alpha*Beta'] = (df['Alpha'] * df['Beta']) / 1000.0
+df['logDelta'] = df['Delta'].apply(np.log)
+eta'] = df['Theta'].apply(np.log)
+df['logAlpha'] = df['Delta'].apply(np.log)
+61
+
+
+
+df['logBeta'] = df['Theta'].apply(np.log)
+feature_columns = df.columns.values
+feature_columns = np.delete(feature_columns, 0).tolist()
+'''
+# 特征删除
+delete_fea = [feature_columns.index(name) for name in
+['mean_val'] ]
+feature_columns = np.delete(feature_columns, delete_fea)'''
+random.seed(random_seed)
+df = shuffle(df)
+## Index = df.index.values
+train_num = int((1-train_test_split) * Index.shape[0])
+train_Ind= Index[:train_num]
+test_Ind=Index[train_num:]
+## X = df.loc[train_Ind,feature_columns].values
+## Y = df.loc[train_Ind,output].values
+test_X = df.loc[test_Ind,feature_columns].values
+test_Y = df.loc[test_Ind,output].values
+return X, Y ,test_X, test_Y,feature_columns
+def calculate_metrics(test_Y,pred_Y):
+true_num = np.sum(test_Y == pred_Y)
+accuracy = true_num/ test_Y.shape[0]
+precisionDict=dict()
+recallDict=dict()
+for i in range(2,7):
+true_num = np.sum( (test_Y==i) & (pred_Y==test_Y))
+precisionDict['precision_%d'%(i)]=true_num/(np.sum(pred_Y==i))
+recallDict['recall_%d'%(i)]=true_num/(np.sum(test_Y==i))
+return accuracy,precisionDict,recallDict
+if __name__ == '__main__':
+meanAccuracy=np.array([])
+meanPrecision=[ [],[],[],[],[] ]
+meanRecall=[ [],[],[],[],[] ]
+for i in range(0,100):
+## X, Y ,test_X, test_Y,feature_columns =
+getDataLabel(random_seed= i ,train_test_split = 0.2)
+# CatBoost
+model =
+CatBoostClassifier(loss_function='MultiClass',learning_rate=0.1,
+depth=6, iterations=1000)
+model.load_model('question4_model/' + 'CatBoost_.model')
+#model.fit(X, Y, verbose=True)
+#model.save_model('question4_model/' + 'CatBoost_.model')
+
+fea_ = model.feature_importances_
+62
+
+
+
+fea_name = feature_columns
+print('hello')
+plt.figure(figsize=(8, 5))
+plt.xlabel('Weights of Feature Importances')
+plt.ylabel('Feature Names')
+plt.title('CatBoost Feature Importances')
+plt.barh(fea_name, fea_, height=0.5)
+plt.savefig('feature_importance.png',dpi=300)'''
+'''
+# #RF
+model = RandomForestClassifier(n_estimators=500,
+random_state=0, n_jobs=-1)
+model.fit(X, Y)
+joblib.dump(model, 'question4_model/' + 'RF_.model')
+fea_ = model.feature_importances_
+fea_name = feature_columns
+plt.figure(figsize=(8, 5))
+plt.xlabel('Weights of Feature Importances')
+plt.ylabel('Feature Names')
+plt.title('Random Forest Feature Importances')
+plt.barh(fea_name, fea_, height=0.5)
+plt.savefig('RF_feature_importance.png',dpi=300)
+#model = joblib.load('question4_model/' + 'RF_.model')'''
+'''
+# #SVM
+model = svm.SVC(C=10,kernel='linear')
+model.fit(X , Y)
+joblib.dump(model,'question4_model/' +'SVM_.model')
+#model=joblib.load('question4_model/' +'SVM_.model')
+estimator = SVR(kernel="linear")
+selector = RFE(estimator, n_features_to_select=1, step=1)
+selector = selector.fit(X, Y)
+print(selector.ranking_)'''
+# make predictions for test data
+pred_Y = model.predict(test_X)
+pred_Y = np.squeeze(pred_Y)
+accuracy,precisionDict,recallDcit =
+calculate_metrics(test_Y,pred_Y)
+meanAccuracy=np.append(meanAccuracy, accuracy)
+for i in range(2,7):
+meanPrecision[i-2].append(precisionDict['precision_%d'%(i)])
+meanRecall[i-2].append(recallDcit['recall_%d'%(i)])
+print('test meanPrecision= ', ( np.mean(meanPrecision,axis=1)
+))
+print('test meanRecall= ', (np.mean(meanRecall,axis=1) ))
+print('test meanAccuracy= %0.4f'% ( np.mean(meanAccuracy)))
+awPics.py
+import numpy as np
+63
+
+
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.pyplot import MultipleLocator
+import heapq
+def drawPics():
+df = pd.read_csv('grid0920.csv')
+pic_dir = './pics/all_data'
+for y_name in ['chars_vote_acc', 'row_vote_acc',
+'col_vote_acc']:
+plt.figure(figsize=(10, 10))
+ax1 = plt.subplot(1, 1, 1, facecolor='white')
+ax1.set_title(y_name+' VS. turn')
+ax1.set_xlabel('turn')
+ax1.set_ylabel(y_name)
+x_major_locator=MultipleLocator(1)
+ax1.xaxis.set_major_locator(x_major_locator)
+for epoch in [100, 150, 200, 250]:
+for times in [0, 1, 2, 3, 4]:
+df_curve = df[(df['epoch'] == epoch) & (df['times']
+== times) ].loc[:,y_name].values
+turn_list = np.array([1, 2, 3, 4, 5])
+plot1 = ax1.plot(turn_list,df_curve ,
+linestyle='--', alpha=0.5,
+label='epoch=%d,time=%d'%(epoch,times+1))
+mean_list = []
+for turn in [1, 2, 3, 4,5]:
+df_bar = df[(df['turn'] == turn)].loc[:, y_name].values
+mean_list.append(np.mean(df_bar))
+ax1.bar(x=[1, 2, 3, 4, 5], height=mean_list, label='mean',
+color='steelblue', alpha=0.2,width=0.7)
+plt.legend(loc=4)
+plt.savefig(pic_dir+'/'+y_name+' VS.
+turn'+'.png',dpi=300,bbox_inches='tight')
+plt.clf()
+print('hello')
+def drawPics_Q4_models():
+svm_acc = [0.7826, 0.6131, 0.5454, 0.5526, 0.7105]
+rf_acc = [0.9749, 0.9289, 0.9396, 0.9060, 0.9643]
+cat_acc = [0.9624, 0.9451, 0.9210, 0.9399, 0.9818]
+pic_dir = 'pics/Q4'
+plt.figure(figsize=(5, 4))
+ax1 = plt.subplot(1, 1, 1, facecolor='white')
+ax1.set_title('precision'+' VS. sleep stage')
+ax1.set_xlabel('sleep stage')
+ax1.set_ylabel('precision')
+turn_list=['stage 2','stage 3','stage 4','stage 5','stage 6']
+plot1 = ax1.plot(turn_list, svm_acc, linestyle='--',
+alpha=0.5, label='SVM')
+x1.plot(turn_list,rf_acc , linestyle='--',
+alpha=0.5, label='Random Forest')
+64
+
+
+
+plot3 = ax1.plot(turn_list, cat_acc, linestyle='--',
+alpha=0.5, label='CatBoost')
+plt.legend(loc=7)
+plt.savefig(pic_dir+'/'+'precision'+' VS. sleep
+stage'+'.png',dpi=300,bbox_inches='tight')
+plt.clf()
+def drawPics_Q4_splitTest():
+split_02 = [0.9624, 0.9451, 0.9210, 0.9399, 0.9818]
+split_03 = [0.9486, 0.9009, 0.8476, 0.8878, 0.9694]
+split_04 = [0.9325, 0.8354, 0.8190, 0.8798, 0.9395]
+split_05 = [0.9132, 0.8227, 0.7808, 0.8106, 0.9493]
+split_06 = [0.8887, 0.7771, 0.7365, 0.7678, 0.9214]
+pic_dir = 'pics/Q4'
+plt.figure(figsize=(8, 6.4))
+ax1 = plt.subplot(1, 1, 1, facecolor='white')
+ax1.set_title('precision'+' VS. sleep stage(different test
+ratios)')
+ax1.set_xlabel('sleep stage')
+ax1.set_ylabel('precision')
+turn_list=['stage 2','stage 3','stage 4','stage 5','stage 6']
+plot1 = ax1.plot(turn_list, split_02, linestyle='--',
+alpha=0.5, label='test ratio=0.2')
+plot2 = ax1.plot(turn_list, split_03, linestyle='--',
+alpha=0.5, label='test ratio=0.3')
+plot3 = ax1.plot(turn_list, split_04, linestyle='--',
+alpha=0.5, label='test ratio=0.4')
+plot4 = ax1.plot(turn_list, split_05, linestyle='--',
+alpha=0.5, label='test ratio=0.5')
+plot5 = ax1.plot(turn_list, split_06, linestyle='--',
+alpha=0.5, label='test ratio=0.6')
+plt.legend(loc=4)
+plt.savefig(pic_dir+'/'+'precision'+' VS. sleep
+stage(different test
+ratios)'+'.png',dpi=300,bbox_inches='tight')
+plt.clf()
+def drawPics_Q4_featureSelection():
+only4 = [0.90757417, 0.78840346, 0.7529841, 0.77944082,
+1. 92979261]
+nomean = [0.94534922, 0.92787586, 0.88894686, 0.88478347,
+1. 96894546]
+noalpha = [0.96746961, 0.90585537, 0.90308763, 0.88163454,
+1. 95255275]
+nobeta = [0.95644995, 0.91385205, 0.88671653, 0.89323518,
+1. 93668056]
+nof3 = [0.93071798, 0.83696177, 0.86884802, 0.83645828,
+29]
+allfea=[0.9624, 0.9451, 0.9210, 0.9399, 0.9818]
+65
+
+
+
+pic_dir = 'pics/Q4'
+plt.figure(figsize=(8, 6.4))
+ax1 = plt.subplot(1, 1, 1, facecolor='white')
+ax1.set_title('precision'+' VS. sleep stage(different feature
+selections)')
+ax1.set_xlabel('sleep stage')
+ax1.set_ylabel('precision')
+turn_list=['stage 2','stage 3','stage 4','stage 5','stage 6']
+plot1 = ax1.plot(turn_list, only4, linestyle='--', alpha=0.5,
+label='original features')
+plot2 = ax1.plot(turn_list, nomean, linestyle='--',
+alpha=0.5, label='no mean_val')
+plot3 = ax1.plot(turn_list, noalpha, linestyle='--',
+alpha=0.5, label='no alpha')
+plot4 = ax1.plot(turn_list, nobeta, linestyle='--',
+alpha=0.5, label='no beta')
+plot5 = ax1.plot(turn_list, nof3, linestyle='--', alpha=0.5,
+label='no alpha+beta+mean_val')
+plot6 = ax1.plot(turn_list, allfea, linestyle='--',
+alpha=0.5, label='all features')
+plt.legend(loc=4)
+plt.savefig(pic_dir+'/'+'precision'+' VS. sleep
+stage(different feature
+selections)'+'.png',dpi=300,bbox_inches='tight')
+plt.clf()
+def drawAtten(topK_num=15):
+df = pd.read_csv('atten.csv')
+att_name = ['att' + str(x) for x in range(0, 20)]
+pic_dir = './pics/Q2/'
+topK_list=list(range(0,20))
+for member in [0, 1, 2, 3, 4]:
+'''
+plt.figure(figsize=(5, 4.5))
+ax1 = plt.subplot(1, 1, 1, facecolor='white')
+ax1.set_title('Attention weights of 20 channels(member
+%d)' % (member + 1))
+ax1.set_xlabel('weight') #设置x轴名称,plt.xlabel
+df_use = df[(df['member'] == member)].loc[:, att_name]
+data = df_use.values
+mean_data = np.mean(data, axis=0)
+topK_index = heapq.nlargest(topK_num,
+range(len(mean_data)), mean_data.take)
+plt.barh(np.array(att_name)[topK_index],
+mean_data[topK_index], height=0.5)
+plt.savefig(pic_dir+'Attention weights of 20
+channels(member %d)' % (member + 1)+'.png',dpi=300)
+'''
+df_use = df[(df['member'] == member)].loc[:, att_name]
+_use.values
+mean_data = np.mean(data, axis=0)
+66
+
+
+
+topK_index = heapq.nlargest(topK_num,
+range(len(mean_data)), mean_data.take)
+print('topK_index_%d'%(member+1),topK_index)
+topK_list =
+list(set(topK_list).intersection(set(topK_index)))
+print('topK_list: ', np.array(att_name)[topK_list])
+def drawPics_Q3():
+pic_dir = 'pics/Q3/'
+'''
+train_num = [500, 813, 874, 916, 977, 993, 996, 1000, 1000,
+1000]
+all_num = [1000-x for x in train_num]
+val_acc = [63.30113306059693, 67.70241900287103,
+1. 19546324122186, 70.06258898725791,
+1. 14816301881214, 71.60553802582892, 71.1421054921608,
+1. 36844175798016,
+1. 2004581246644, 71.48270246266668] '''
+train_num = [500, 730, 840, 881, 929, 960, 975, 985, 988, 992]
+all_num = [1000-x for x in train_num]
+val_acc = [63.13570226074297, 62.82996290564528,
+1. 41236107701262,
+1. 05747541680154, 65.36986864901041, 66.82857890163497,
+1. 10069139956038, 67.82799748945725, 67.29152755884778,
+1. 23224108653888]
+plt.figure(figsize=(5, 4.5))
+ax1 = plt.subplot(1, 1, 1, facecolor='white')
+ax1.set_xlabel('turns')
+ax1.set_ylabel('sample_size')
+ax1.set_ylim(0, 1000)
+x_major_locator=MultipleLocator(1)
+ax1.xaxis.set_major_locator(x_major_locator)
+ind = np.arange(1,11)
+p1 = plt.bar(ind, train_num, width=0.35)
+p2 = plt.bar(ind, all_num, width=0.35, bottom=train_num)
+plt.legend((p1[0], p2[0]), ('train_samples',
+'unlabeled_samples'),loc=3)
+ax2 = ax1.twinx()
+ax2.plot(ind, val_acc, '--',color='green', label='val_acc')
+ax2.set_ylabel('val_acc')
+ax2.set_ylim(60, 74)
+ax2.legend(loc=4)
+plt.savefig(pic_dir + 'results1.png', dpi=300)
+if __name__ == '__main__':
+drawPics()
+drawPics_Q4_splitTest()
+drawPics_Q4_featureSelection()
+drawAtten()
+drawPics_Q3()
+67

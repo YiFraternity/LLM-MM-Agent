@@ -14,11 +14,6 @@
 \textbf{数学建模竞赛}
 \end{center}
 
-\begin{flushleft}
-题目 \hspace{1cm} 对恐怖主义袭击事件数据的量化分析
-\end{flushleft}
-\hrule
-
 \begin{abstract}
 恐怖主义是人类的共同威胁，打击恐怖主义是每个国家应该承担的责任。对恐怖袭击事件相关数据的深入分析有助于加深人们对恐怖主义的认识，为反恐防恐提供有价值的信息支持。
 
@@ -33,77 +28,7 @@
 关键词：改进 k-means 主成分分析 逻辑回归 灰色预测 机器学习
 \end{abstract}
 
-\section*{目录}
-\begin{itemize}
-    \item 一、前言 \dotfill 5
-    \begin{itemize}
-        \item 1.1 研究背景 \dotfill 5
-        \item 1.2 问题重述 \dotfill 5
-    \end{itemize}
-    \item 二、模型假设 \dotfill 6
-    \item 三、模型符号分析与说明 \dotfill 6
-    \item 四、问题一的模型建立与求解 \dotfill 7
-    \begin{itemize}
-        \item 4.1 问题分析 \dotfill 7
-        \item 4.2 数据预处理 \dotfill 8
-        \begin{itemize}
-            \item 4.2.1 信息剔除与数据化 \dotfill 8
-            \item 4.2.2 缺失数据填充与处理 \dotfill 10
-            \item 4.2.3 数据标准化 \dotfill 11
-        \end{itemize}
-        \item 4.3 恐怖袭击分级特征向量提取 \dotfill 12
-        \item 4.4 聚类分析-事件分级 \dotfill 16
-        \begin{itemize}
-            \item 4.4.1 聚类分析方法调研 \dotfill 17
-            \item 4.4.2 改进的 k-means 算法 \dotfill 18
-            \item 4.4.3 聚类结果求解 \dotfill 18
-        \end{itemize}
-        \item 4.5 主成分分析排序-前十恐怖袭击事件 \dotfill 21
-        \item 4.6 模型检验 \dotfill 23
-        \begin{itemize}
-            \item 4.6.1 聚类结果评价 \dotfill 23
-            \item 4.6.2 相关性检验 \dotfill 24
-        \end{itemize}
-    \end{itemize}
-    \item 五、问题二的模型建立与求解 \dotfill 24
-    \begin{itemize}
-        \item 5.1 问题分析 \dotfill 24
-        \item 5.2 数据处理 \dotfill 25
-        \begin{itemize}
-            \item 5.2.1 范围界定筛选 \dotfill 26
-            \item 5.2.2 属性特征确定 \dotfill 26
-            \item 5.2.3 信息规范化 \dotfill 27
-        \end{itemize}
-        \item 5.3 恐怖主义事件关联规则挖掘 \dotfill 27
-        \begin{itemize}
-            \item 5.3.1 恐怖主义事件特征统计分析 \dotfill 27
-            \item 5.3.2 逻辑回归事件相似度计算 \dotfill 29
-            \item 5.3.3 逻辑回归预测模型确立 \dotfill 30
-            \item 5.3.4 利用逻辑回归预测模型进行求解 \dotfill 30
-        \end{itemize}
-        \item 5.4 模型评价 \dotfill 32
-    \end{itemize}
-    \item 六、问题三的模型建立与求解 \dotfill 33
-    \begin{itemize}
-        \item 6.1 问题分析 \dotfill 33
-        \item 6.2 特征可视化统计分析 \dotfill 33
-        \begin{itemize}
-            \item 6.2.1 主要原因分析 \dotfill 34
-            \item 6.2.2 时空与蔓延特性分析 \dotfill 36
-        \end{itemize}
-        \item 6.3 基于灰色预测的恐怖袭击预测 \dotfill 38
-        \item 6.4 模型验证 \dotfill 39
-        \item 6.5 反恐斗争的见解和建议 \dotfill 40
-    \end{itemize}
-    \item 七、问题四的模型建立与求解 \dotfill 41
-    \begin{itemize}
-        \item 7.1 问题分析 \dotfill 41
-        \item 7.2 模型建立 \dotfill 41
-        \item 7.3 网络训练与测试 \dotfill 42
-    \end{itemize}
-    \item 八、参考文献 \dotfill 48
-    \item 附录 \dotfill 49
-\end{itemize}
+
 
 \section{一、前言}
 
@@ -115,7 +40,7 @@
 
 基于上述研究背景，本文需研究完成以下任务：
 
-\subsubsection{任务1：依据危害性对恐怖袭击事件分级}
+任务1：依据危害性对恐怖袭击事件分级
 
 依据某组织搜集整理的全球恐怖主义数据库（GTD）中1998-2017年世界上发生的恐怖袭击事件的记录（附件1）以及其它有关信息，结合现代信息处理技术，借助数学建模方法建立基于数据分析的量化分级模型，将附件1给出的事件按危害程度从高到低分为一至五级，列出近二十年来危害程度最高的十大恐怖袭击事件，并对部分要求的事件进行分级，并给出列表中事件的分级。
 
@@ -139,7 +64,7 @@
 \hline
 \end{tabular}
 
-\subsubsection{任务2：依据事件特征发现恐怖袭击事件制造者}
+任务2：依据事件特征发现恐怖袭击事件制造者
 
 针对在2015、2016年度发生的、尚未有组织或个人宣称负责的恐怖袭击事件，运用数学建模方法寻找是否可以将可能是同一个恐怖组织或个人在不同时间、不同地点多次作案的若干案件串联起来统一组织侦查的可能性，将可能是同一个恐怖组织或个人在不同时间、不同地点多次作案的若干案件归为一类，对应的未知作案组织或个人标记不同的代号，并按该组织或个人的危害性从大到小选出其中的前5个，记为1号-5号。再对表中列出的恐怖袭击事件，按嫌疑程度对5个嫌疑人排序，并将结果填入表中（表中样例的意思是：对事件编号为XX的事件，
 
@@ -164,11 +89,11 @@
 \hline
 \end{tabular}
 
-\section{任务3：对未来反恐态势的分析}
+任务3：对未来反恐态势的分析
 
 依据附件1并结合因特网上的有关信息，建立适当的数学模型，研究近三年来恐怖袭击事件发生的主要原因、时空特性、蔓延特性、级别分布等规律，进而分析研判下一年全球或某些重点地区的反恐态势，用图/表给出你们的研究结果，提出你们对反恐斗争的见解和建议。
 
-\section{任务4：数据的进一步利用}
+任务4：数据的进一步利用
 
 通过数学建模还可以发挥附件1数据的哪些作用？给出模型和方法。
 
@@ -184,21 +109,32 @@
 
 \section{三、模型符号分析与说明}
 
+\begin{table}
+\centering
+\caption{模型符号分析与说明}
 \begin{tabular}{c c}
 \hline
-事件编号 & 危害级别 \\
+符号 & 符号说明 \\
 \hline
-200108110012 & \\
-200511180002 & \\
-200901170021 & \\
-201402110015 & \\
-201405010071 & \\
-201411070002 & \\
-201412160041 & \\
-201508010015 & \\
-201705080012 & \\
+$R$ & 相关系数 \\
+$S_i(A, B)$ & 相似度 \\
+$v_i(A)$ & A事件特征属性值 \\
+$O(n)$ & 计算复杂度 \\
+$P(linked)$ & 事件关联概率 \\
+$\alpha$ & 常量 \\
+$\beta_i$ & 逻辑回归 \\
+$X_n$ & 事件属性相似度 \\
+$n$ & 网络输入层节点数 \\
+$I$ & 隐含层节点数 \\
+$m$ & 输出层节点数 \\
+$w_{ij}$, $w_{jk}$ & 连接权值 \\
+$b$ & 输出层阈值 \\
+$\eta$ & 学习效率 \\
+$\omega$ & 权重 \\
+$e$ & 网络预测误差 \\
 \hline
 \end{tabular}
+\end{table}
 
 \section{四、问题一的模型建立与求解}
 
@@ -223,24 +159,19 @@
 
 对于附件 1 中所给的 Excel 进行分析，对照附件 2 以及附件 1 中的解释说明掌握附件 1 中恐怖事件每个属性的含义。查阅相关文献，为了后续数据的处理，对附件 1 进行简单处理。保留对本任务数据分析处理有价值的数据信息，剔除明显没有数据价值意义的问题解释信息等栏，剔除部分栏如下表 4.1 所示，并将部分恐怖事件属性的文本描述转化为数字代码。
 
-\begin{tabular}{c c c c c}
-\hline
- & 1号嫌疑人 & 2号嫌疑人 & 3号嫌疑人 & 4号嫌疑人 & 5号嫌疑人 \\
-\hline
-样例XX & 4 & 3 & 1 & 2 & 5 \\
-\hline
-201701090031 & & & & & \\
-201702210037 & & & & & \\
-201703120023 & & & & & \\
-201705050009 & & & & & \\
-201705050010 & & & & & \\
-201707010028 & & & & & \\
-201707020006 & & & & & \\
-201708110018 & & & & & \\
-201711010006 & & & & & \\
-201712010003 & & & & & \\
-\hline
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \caption{剔除信息列表}
+    \label{tab:4.1}
+    \begin{tabular}{c c c}
+        \hline
+        编号 & 剔除栏名称 & 含义 \\
+        \hline
+        1 & location & 位置描述 \\
+        2 & summary & 事件摘要 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \begin{tabular}{c l l}
 3 & attacktype1\_txt & 攻击类型名称 \\
@@ -315,30 +246,24 @@ $\cdot$ & dbsource & 数据收集 \\
 
 分析给出的附件 1 恐怖事件数据发现，恐怖事件不同属性之间的量级存在着较大的差异，如附件 1 中给出的 nwound（受伤总数），其数据分布十分广泛，最大到 8191，最小到 0，而且颇大的数据分布较少，部分数据如表 4.2 所示 \cite{ref3}。
 
-\begin{tabular}{c l l}
-3 & attacktype1\_txt & 攻击类型名称 \\
-4 & attacktype2\_txt & 第二攻击类型名称 \\
-5 & attacktype3\_txt & 第三攻击类型名称 \\
-6 & targtype1\_txt & 目标/受害者类型名称 \\
-7 & argsubtype1\_txt & 目标/受害者子类型名称 \\
-8 & targtype2\_txt & 第二目标/受害者类型名称 \\
-9 & targsubtype2\_txt & 第二目标/受害者子类型名称 \\
-10 & natlty2\_txt & 第二目标/受害者的国籍名称 \\
-11 & argtype3\_txt & 第三目标/受害者类型名称 \\
-12 & targsubtype3\_txt & 第三目标/受害者子类型名称 \\
-13 & natlty3\_txt & 第三目标/受害者的国籍名称 \\
-14 & gsubname & 犯罪子集团名称 \\
-$\cdot$ & $\cdot$ & $\cdot$ \\
-$\cdot$ & $\cdot$ & $\cdot$ \\
-$\cdot$ & $\cdot$ & $\cdot$ \\
-$\cdot$ & claimmode\_txt & claimmode\_txt \\
-$\cdot$ & claimmode2\_txt & 声称负责的第二组织 \\
-$\cdot$ & claimmode2\_txt & 声称负责的第二组织的模式名称 \\
-$\cdot$ & scite1 & 第一引用来源 \\
-$\cdot$ & Scite2 & 第二引用来源 \\
-$\cdot$ & Scite3 & 第三引用来源 \\
-$\cdot$ & dbsource & 数据收集 \\
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \caption{受伤总数量级比例示意表}
+    \label{tab:injured_total_distribution}
+    \begin{tabular}{c c c}
+        \hline
+        受伤人数 & 频数 & 所占比例 \\
+        \hline
+        8191 & 1 & 0.00\% \\
+        8190 & 1 & 0.00\% \\
+        4000 & 1 & 0.00\% \\
+        1500 & 1 & 0.00\% \\
+        1001 & 1 & 0.00\% \\
+        851 & 1 & 0.00\% \\
+        817 & 1 & 0.00\% \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \begin{tabular}{c c c}
 \hline
@@ -365,19 +290,23 @@ x_{k} = (x_{k} - x_{\text{min}}) / (x_{k} - x_{\text{max}})
 
 经过数据预处理后，获得的原始危险等级特征向量如表 4.3 所示，处理后的数据共包含有 14 组与恐怖袭击相关的特征向量，但是这些特征向量并非全都与危害等级评价有关，需要对特征向量进行进一步地筛选和降维处理。
 
-\begin{tabular}{c c c}
+\begin{table}[h]
+\centering
+\caption{表 4.3 危害性影响主要指标}
+\begin{tabular}{c c c c}
 \hline
-750 & 2 & 0.00\% \\
-\(\cdot\) & \(\cdot\) & \(\cdot\) \\
-\(\cdot\) & \(\cdot\) & \(\cdot\) \\
-\(\cdot\) & \(\cdot\) & \(\cdot\) \\
-4 & 4025 & 3.53\% \\
-3 & 5891 & 5.16\% \\
-2 & 8049 & 7.05\% \\
-1 & 11520 & 10.09\% \\
-0 & 57626 & 50.47\% \\
+编号 & 含义 & 编号 & 含义 \\
+\hline
+1 & 武器种类 & 8 & 受伤总数 \\
+2 & 地区代码 & 9 & 组织声明 \\
+3 & 成功攻击 & 10 & 绑架人数 \\
+4 & 攻击类型 & 11 & 自杀式袭击 \\
+5 & 受害者类型 & 12 & 凶手死亡人数 \\
+6 & 国家代码 & 13 & 凶手受伤总数 \\
+7 & 死亡总数 & 14 & 财产损失等级 \\
 \hline
 \end{tabular}
+\end{table}
 
 \subsection{4.3 恐怖袭击分级特征向量提取}
 
@@ -463,24 +392,55 @@ F_{n1} & F_{n2} & \cdots & F_{nk}
 
 依照上述建立的主成分分析模型，求解个主成分向量所对应的特征值，贡献率，以及累计贡献率如表 4.4 所示。
 
-\begin{tabular}{llllll}
-数据对名称 & imonth & region & weaptype1 & targtype1 & attacktype1 \\
-相似关联数据对1 & 1 & 0.91667 & 1 & 1 & 1 \\
-相似关联数据对2 & 0.91667 & 0.75 & 1 & 1 & 1 \\
-相似关联数据对3 & 0.91667 & 0.75 & 1 & 1 & 1 \\
-相似关联数据对4 & 0.58333 & 0.75 & 1 & 1 & 1 \\
-相似关联数据对5 & 0.58333 & 0.75 & 1 & 1 & 1 \\
-\end{tabular}
+\begin{table}[htbp]
+    \centering
+    \caption{各主成分特征值与贡献率}
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{特征值} & \textbf{贡献率} & \textbf{累计贡献率} \\ \hline
+    5.7361 & 0.6421 & 0.6421 \\
+    1.0972 & 0.2385 & 0.8806 \\
+    0.5896 & 0.0472 & 0.9278 \\
+    0.2858 & 0.0256 & 0.9534 \\
+    0.1456 & 0.0135 & 0.9669 \\
+    0.1369 & 0.0092 & 0.9761 \\
+    0.1256 & 0.0088 & 0.9849 \\
+    0.0945 & 0.0066 & 0.9915 \\
+    0.0698 & 0.0034 & 0.9949 \\
+    0.0365 & 0.0022 & 0.9971 \\
+    0.0268 & 0.0011 & 0.9982 \\
+    0.0189 & 0.0009 & 0.9991 \\
+    0.0105 & 0.0006 & 0.9997 \\
+    \hline
+    \multicolumn{3}{|r|}{\textbf{总计}} & 0.0098 & 0.0003 & 1 \\
+    \end{tabular}
+    \end{table}
+由于各主成分是原向量的线性组合，根据主成分向量的贡献率可以反过求原向量的贡献权重，各个原向量权重如表 4.6 所示：
+\begin{table}[htbp]
+    \centering
+    \caption{保留率为 0.9 时提取的特征向量}
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{特征向量 1} & \textbf{特征值向量 2} & \textbf{特征值向量 3} \\ \hline
+    0.4155 & -0.144 & -0.2886 \\
+    0.3957 & -0.3925 & 0.0601 \\
+    0.3148 & 0.5782 & -0.4523 \\
+    0.3745 & -0.0163 & 0.6274 \\
+    0.3599 & 0.4866 & 0.1241 \\
+    0.6689 & 0.1021 & 0.5943 \\
+    0.6638 & 0.6065 & -0.1222 \\
+    0.4844844 & 0.6591 & 0.2938 \\
+    0.6041 & -0.5008 & 0.1323 \\
+    0.3539 & 0.5498 & -0.168 \\
+    0.4603 & 0.5408 & 0.6765 \\
+    0.648 & 0.3232 & 0.5864 \\
+    0.3872 & 0.0864 & 0.322 \\
+    0.6647 & -0.0861 & 0.7652 \\
+    \hline
+    \end{tabular}
+    \end{table}
 
-\begin{tabular}{llllll}
- & B & S.E. & wald & df & sig \\
-step1 & 月份 & 1.356 & 2.198 & 6.123 & 0.023 \\
- & 地区 & 2.135 & 1.697 & 6.696 & 0.013 \\
- & 武器类型 & 3.269 & 4.216 & 5.462 & 0.008 \\
- & 受害者类型 & 5.236 & 1.930 & 9.757 & 0.002 \\
- & 攻击类型 & 4.187 & 3.564 & 2.868 & 0.019 \\
- & constant & -8.330 & 1.806 & 6.162 & 0.002 \\
-\end{tabular}
+各向量之间的相关性强弱分布如图 4.7 所示，其中对脚线元素表示自相关，其他位置的元素表示互相关，颜色越深，接近于黄色表明相关性越强，反之相关性越弱。 
 
 \begin{tabular}{llll}
 step & -2lg likelihood & Cox\&Snell R Square & Nagelkerke R Square \\
@@ -523,32 +483,22 @@ step & -2lg likelihood & Cox\&Snell R Square & Nagelkerke R Square \\
 
 针对问题一的要求，需要对近二十年的恐怖事件进行分级，聚类分析方法在大数据的挖掘处理过程中起着重要的作用。目前主流的聚类分析方法有划分聚类、层次聚类、基于密度的聚类、基于网格的聚类。对这些聚类方法的特点和适用范围进行调研，得到结果如下表 \ref{tab:clustering_comparison} 所示。
 
-\begin{tabular}{c c c c c c c c}
-\hline
-3 & 0 & 0.0\% & 3 & 0 & 0.00\% & 3 & 0 \\
- &  &  &  &  &  &  & 0.00\% \\
-4 & 0 & 0.0\% & 4 & 0 & 0.00\% & 4 & 0 \\
- &  &  &  &  &  &  & 0.00\% \\
-5 & 3952 & 26.\% & 5 & 3483 & 25.6\% & 5 & 3145 \\
- &  &  &  &  &  &  & 28.8\% \\
-6 & 8381 & 56.\% & 6 & 7603 & 55.9\% & 6 & 5465 \\
- &  &  &  &  &  &  & 50.1\% \\
-7 & 0 & 0.0\% & 7 & 0 & 0.00\% & 7 & 1 \\
- &  &  &  &  &  &  & 0.01\% \\
-8 & 703 & 4.7\% & 8 & 630 & 4.64\% & 8 & 656 \\
- &  &  &  &  &  &  & 6.02\% \\
-9 & 387 & 2.5\% & 9 & 335 & 2.46\% & 9 & 305 \\
- &  &  &  &  &  &  & 2.80\% \\
-10 & 34 & 0.2\% & 10 & 13 & 0.10\% & 10 & 23 \\
- &  &  &  &  &  &  & 0.21\% \\
-11 & 10 & 0.07\% & 11 & 8 & 0.06\% & 11 & 11 \\
- &  &  &  &  &  &  & 0.10\% \\
-12 & 8 & 0.05\% & 12 & 10 & 0.07\% & 12 & 10 \\
- &  &  &  &  &  &  & 0.09\% \\
-13 & 1466 & 9.80\% & 13 & 1481 & 10.9\% & 13 & 1254 \\
- &  &  &  &  &  &  & 11.5\% \\
-\hline
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \caption{聚类分析比较}
+    \label{tab:clustering_comparison}
+    \begin{tabular}{l l l l}
+        \hline
+        聚类方法 & 适用范围 & 优点 & 缺点 \\
+        \hline
+        划分聚类 & 中等体量数量集 & 对于大型数据集也是简单高效、时间复杂度、空间复杂度低 & 结果容易局部最优；需预设 K 值，且对 K 点个数选取敏感；对噪声和离群值敏感。 \\
+        & & 可解释性好；能产生高质量的聚类 & \\
+        层次聚类 & 小数量集 & 可以用于非球形簇 & 时间复杂度高。 \\
+        基于密度的聚类 & 任意族形状 & 对噪声不敏感；能发现任意形状的聚类。 & 聚类的结果与参数关系紧密；较稀的聚类或离得较近的类效果不好。 \\
+        基于网格的聚类 & 底层数据密度小 & 速度很快 & 参数敏感、无法处理不规则分布的数据、维数灾难等；算法效率以聚类结果的精确性为代价 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 由上表可知，划分聚类和层次聚类应用较为普遍，但是层次聚类的计算复杂度是 \(O(n^2)\)，对于本文对 11 万个样本的处理并不适合，因此本文选择 K-means 聚类方法来对数据进行分析。K-means 方法的计算复杂度是 \(O(n)\)，适合于大数据的处理分析。但 k-means 方法存在以下缺点：首先，需要事先给定 K-means 算法中，但 K 值的选定通常是不确定的。很多时候，事先并不知道给定的数据集应该分成多少个类别才最合适；其次在 K-means 算法中，首先需要随机选择初始聚类质心，然后不断进行迭代计算。这个初始聚类中心的选择对聚类结果影响较大，一旦初始质心选择的不好，可能无法得到有效的聚类结果。
 
@@ -625,7 +575,7 @@ step & -2lg likelihood & Cox\&Snell R Square & Nagelkerke R Square \\
     \end{tabular}
 \end{table}
 
-\section{4.5 主成分分析排序-前十恐怖袭击事件}
+\subsection{4.5 主成分分析排序-前十恐怖袭击事件}
 
 根据上一问聚类分析结果，可以得到分级结果为1级的恐怖事件样本，由于问题一还要求找出近二十年的十大恐怖主义事件，因此本文对1级恐怖主义事件样本进行主成分分析，把综合得分排名前十的恐怖主义袭击事件定义为近二十年十大恐怖主义袭击事件。
 
@@ -808,7 +758,7 @@ R = 0.7233
 
 根据任务要求得出，该问题数据源范围为 2015-2016 年，尚未有组织或个人宣称负责，并且未知犯罪集团的恐怖袭击事件。分析数据信息，其中每个恐怖事件包含了年月日编号、年、月、日、大概日期、国家代码、国家名称、死亡人数等诸多事件属性信息，经查阅文献，事件数据信息具有较大的数据冗余，并且部
 
-\section{分属性信息采用文字描述，在结构规范性上存在一定缺陷。}
+分属性信息采用文字描述，在结构规范性上存在一定缺陷。
 
 需要完成的具体任务为，运用数学模型将不同时间、不同地点多次作案的若干案件寻找将其归为一类的可能性，并对其所对应的未知作案组织或个人进行标识，然后根据其危害性进行排序，并预测列表中给出的部分 2017 年恐怖事件归为哪个组织的嫌疑度大小。经调研相关文献信息，了解了常用的事件关联方法，挖掘数据源信息，采用逻辑回归等方法对事件进行模型构建，并利用第一问危害性分级指标对未知作案组织或个人进行排序，并依据所给列表中事件属性进行嫌疑度排序。
 
@@ -1084,7 +1034,7 @@ p(\text{linked}) = \frac{e^{-8.330 + 1.356X_1 + 2.135X_2 + 3.269X_3 + 5.236X_4 +
 \end{figure}
 
 根据逻辑回归预测模型，将所有未宣称负责的事件分为了 A-L 类，并且统计出了每一组织犯下的事件数。
-
+对所有未宣称负责的恐怖主义事件进行归类后，需要对各个分类后的恐怖组织进行按危害性进行排序并标记前 5 个，本文利用第一问主成分分析得到的指标对每一类组织犯下的事件进行综合得分排序。最后筛选出得分排序前 5 号结果如下表 5.8 所示。
 \begin{table}
 \centering
 \caption{组织危害性前5排序}
@@ -1100,7 +1050,7 @@ p(\text{linked}) = \frac{e^{-8.330 + 1.356X_1 + 2.135X_2 + 3.269X_3 + 5.236X_4 +
 \hline
 \end{tabular}
 \end{table}
-
+针对要求对第二问表中给出的 2017 年恐怖主义事件寻找它们的可能嫌疑人，并对嫌疑度进行排序，由于逻辑回归预测模型计算出了事件关联的概率，因此可以根据概率大小对嫌疑度进行排序，最后得到结果如下表 5.9 所示。
 \begin{table}
 \centering
 \caption{恐怖分子关于典型事件的嫌疑度}
@@ -1122,7 +1072,7 @@ p(\text{linked}) = \frac{e^{-8.330 + 1.356X_1 + 2.135X_2 + 3.269X_3 + 5.236X_4 +
 \hline
 \end{tabular}
 \end{table}
-
+\subsection{5.4  模型评价}
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{roc_curve.png}
@@ -1280,7 +1230,7 @@ p(\text{linked}) = \frac{e^{-8.330 + 1.356X_1 + 2.135X_2 + 3.269X_3 + 5.236X_4 +
 
 由图 \ref{fig:6.6} 和图 \ref{fig:6.7} 可知，恐怖袭击发生最集中的前两个地区为中东和北非（10）和南亚（6），虽然随着国际恐怖袭击环境的改善，各大地区的恐怖事件总体有所下降，但是南亚（6）、撒哈拉以南的非洲（11）以及东南亚（5）未见明显下降趋势，并且其所占比例还有升高的趋势，尤其是南亚地区，这将是下一步反恐的重点。东欧（9）近两年恐怖事件所占的比例有所下滑。
 
-\section{6.3 基于灰色预测的恐怖袭击预测}
+\subsection{6.3 基于灰色预测的恐怖袭击预测}
 
 通过对2015年—2018年12个季度的恐怖袭击进行统计，可得各个季度的恐怖袭击事件数量的分布如表6.3所示：
 
@@ -1402,7 +1352,7 @@ $f(x) = a*x^b$ & $4.228；-0.1548$ & $3.765；-0.2198$ \\
 \caption{变化较大地区恐怖袭击案件数量预测}
 \end{figure}
 
-\section{反恐斗争的见解和建议}
+\subsection{反恐斗争的见解和建议}
 
 通过特征可视化统计和灰色预测模型对未来三年恐怖袭击事件发生的原因、时空特性、蔓延特性等进行了深入地研究，得出了如下的结论和建议：
 
@@ -1595,7 +1545,8 @@ b_{k}=b_{k}+e \quad k=1,2 \cdots m,
 \end{figure}
 
 其中测试评价矩阵的横坐标代表的是机器学习神经网络预测的恐怖袭击事件的等级（1—5 级），纵坐标代表的是训练数据中该恐怖袭击事件的等级标签（1—5），对角线蓝色元素代表的是当预测等级与标签等级一直时，则表示分类正确，颜色的深浅代表该类等级测试结果的数据量，数据量越多颜色越深，反之颜色越浅。红色代表分类错误的情况的集合，颜色越深的部分代表分类错误的数据越大。以 Model 1 模型的为例，第 2 行，第 3 列的 “4” 代表的是有 4 类恐怖
-
+袭击事件样本等级标签为 2 级，但是在实际模型分类时被划分为第 3 级。其他的情况以此类推。 
+通过测试结果评价矩阵矩阵可以看出通过网络训练获得的恐怖袭击等级分类模型就有较好的准确性，其等级分类结果如表 7.3 所示
 \begin{table}
 \centering
 \caption{等级分类结果图}
@@ -1636,10 +1587,17 @@ b_{k}=b_{k}+e \quad k=1,2 \cdots m,
 \hline
 \end{tabular}
 \end{table}
+综上所述基于机器学习的恐怖等级识别算法准确率较高，这也很好的验证了第一问危险等级分类方法的合理性。
 
-代表特征向量，$y$ 代表样本标签（危害等级），因为 nca 是一种迭代算法，在进行运算时需要对一些参数进行设置，包括迭代方法，最小批量处理，得跌周期等。
+\subsubsection{7.3.1 NCA 近邻分析}
+NCA 是一种基于邻域分量的特征选择方法，在有监督的机器学习方法中，通过 NCA 多步跌代算法对用于分类的特征向量进行分析，以此获得不同的特征向量的分类中的权重大小，可根据权重的大小对原始的特征向量进行进一步筛选，进一步对数据进行降维，对整个训练网络进行优化。 
+在第一问中我们已经通过 PCA 降维算法对影响恐怖袭击的危害等级的特征向量进行了排序和权重计算，在第四问中我们再利用 NCA 对影响恐怖袭击等级的特征向量的排序和权重进行进一步的讨论，以此来验证第一问中的计算结果的合理性和有效性。
 
-考虑到样本的数量和计算精度的要求，对 NCA 计算参数的设置如下，为提高计算精度网络的迭代方式采用 SGD 随机梯度下降的计算方式，最小计算批量 (MiniBatchSize) 为 50，PassLimitd 等于 10，调谐子集合为 150，迭代周期为 20。网络运行迭代过程中 loss 不断减小，直到稳定达到误差要求。其迭代过程如图 7.6 所示，计算得出的 NCA 与 PCA 特征向量权重/得分如图 7.7 所示，最终各类结果 PCA 权重及排名、NCA 打分与排名结果如表 7.4 所示。
+\subsubsection{7.3.2 NCA 计算参数设置}
+Matlab 2018 有用于 NCA 近邻分析的工具箱，函数命令为 fscnca(x,y),其中 x
+代表特征向量，y 代表样本标签（危害等级），因为 nca 是一中迭代算法，在进行运算时需要对一些参数进行设置，包括迭代方法，最小批量处理，得跌周期等。 
+考虑到样本的数量和计算精度的要求，对 NCA 计算参数的设置如下，为提高计算精度网络的迭代方式采用 SGD 随机梯度下降的计算方式，最小计算批量（MiniBatchSize）为 50，PassLimitd 等于 10，调谐子集合为 150，迭代周期为 20。网络运行迭代过程中 loss 不断减小，直到稳定达到误差要求。其迭代过程如图
+7.6 所示，计算得出的 NCA 与 PCA 特征向量权重/得分如图 7.7 所示，最终各类结果 PCA 权重及排名、NCA 打分与排名结果如表 7.4 所示。
 
 \begin{figure}[h]
     \centering
@@ -1707,3 +1665,655 @@ b_{k}=b_{k}+e \quad k=1,2 \cdots m,
 [13] 王策. 一种基于k-means算法和关联规则的缺失数据填补方法[D]. 哈尔滨工程大学, 2014.
 
 \end{document}
+
+\section{附录}
+附录
+# K-means 代码
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+
+#define N 11
+#define K 3
+
+typedef struct
+{
+
+float x;
+
+float y;
+}Point;
+
+int center[N];  ///  判断每个点属于哪个簇
+
+# Point point[N] = {
+
+{2.0, 10.0},
+
+{2.0, 5.0},
+
+{8.0, 4.0},
+
+{5.0, 8.0},
+
+{7.0, 5.0},
+
+{6.0, 4.0},
+
+{1.0, 2.0},
+
+{4.0, 9.0},
+
+{7.0, 3.0},
+
+
+
+50
+
+{1.0, 3.0},
+
+{3.0, 9.0}
+};
+
+## Point mean[K];  ///  保存每个簇的中心点
+
+float getDistance(Point point1, Point point2)
+{
+
+float d;
+
+d = sqrt((point1.x - point2.x) * (point1.x - point2.x) + (point1.y - point2.y)
+* (point1.y - point2.y));
+
+return d;
+}
+
+/// 计算每个簇的中心点
+void getMean(int center[N])
+{
+
+Point tep;
+
+int i, j, count = 0;
+
+for(i = 0; i < K; ++i)
+
+{
+
+count = 0;
+
+tep.x = 0.0;   /// 每算出一个簇的中心点值后清0
+
+tep.y = 0.0;
+for(j = 0; j < N; ++j)
+
+{
+
+if(i == center[j])
+
+{
+> count++;
+> tep.x += point[j].x;
+> tep.y += point[j].y;
+
+}
+
+}
+
+tep.x /= count;
+
+tep.y /= count;
+
+mean[i] = tep;
+
+}
+
+for(i = 0; i < K; ++i)
+{
+
+printf("The new center point of %d is : \t( %f, %f )\n", i+1, mean[i].x,
+mean[i].y);
+}
+}
+
+
+
+51
+/// 计算平方误差函数
+float getE()
+{
+
+int i, j;
+
+float cnt = 0.0, sum = 0.0;
+
+for(i = 0; i < K; ++i)
+
+{
+
+for(j = 0; j < N; ++j)
+
+{
+
+if(i == center[j])
+
+{
+> cnt = (point[j].x - mean[i].x) * (point[j].x - mean[i].x) +
+(point[j].y - mean[i].y) * (point[j].y - mean[i].y);
+> sum += cnt;
+
+}
+
+}
+
+}
+
+return sum;
+}
+
+# /// 把N 个点聚类
+void cluster()
+{
+
+int i, j, q;
+
+float min;
+
+float distance[N][K];
+
+for(i = 0; i < N; ++i)
+
+{
+
+min = 999999.0;
+
+for(j = 0; j < K; ++j)
+
+{
+
+distance[i][j] = getDistance(point[i], mean[j]);
+> /// printf("%f\n", distance[i][j]);  /// 可以用来测试对于每个点
+与3 个中心点之间的距离
+
+}
+
+for(q = 0; q < K; ++q)
+
+{
+
+if(distance[i][q] < min)
+
+{
+> min = distance[i][q];
+
+center[i] = q;
+
+}
+
+}
+
+
+
+52
+
+printf("( %.0f, %.0f )\t in cluster-%d\n", point[i].x, point[i].y, center[i]
++ 1);
+
+}
+
+printf("-----------------------------\n");
+}
+
+int main()
+{
+int i, j, n = 0;
+float temp1;
+float temp2, t;
+printf("----------Data sets----------\n");
+for(i = 0; i < N; ++i)
+{
+
+printf("\t( %.0f, %.0f )\n", point[i].x, point[i].y);
+}
+printf("-----------------------------\n");
+
+/*
+可以选择当前时间为随机数
+srand((unsigned int)time(NULL));
+for(i = 0; i < K; ++i)
+{
+
+j = rand() % K;
+
+mean[i].x = point[j].x;
+
+mean[i].y = point[j].y;
+}
+*/
+mean[0].x = point[0].x;      /// 初始化k 个中心点
+mean[0].y = point[0].y;
+
+mean[1].x = point[3].x;
+mean[1].y = point[3].y;
+
+mean[2].x = point[6].x;
+mean[2].y = point[6].y;
+
+cluster();          /// 第一次根据预设的k 个点进行聚类
+temp1 = getE();        ///  第一次平方误差
+n++;                   ///  n 计算形成最终的簇用了多少次
+
+printf("The E1 is: %f\n\n", temp1);
+
+getMean(center);
+
+
+
+53
+cluster();
+temp2 = getE();        ///  根据簇形成新的中心点，并计算出平方误
+差
+n++;
+
+printf("The E2 is: %f\n\n", temp2);
+
+while(fabs(temp2 - temp1) != 0)   ///  比较两次平方误差 判断是否相
+等，不相等继续迭代
+{
+
+temp1 = temp2;
+getMean(center);
+
+cluster();
+
+temp2 = getE();
+
+n++;
+
+printf("The E%d is: %f\n", n, temp2);
+}
+
+printf("The total number of cluster is: %d\n\n", n);  /// 统计出迭代次数
+system("pause");
+return 0;
+}
+# PCA 主成分分析代码
+function main()
+%*************主成份分析************
+%see also http://www.matlabsky.com
+%读入文件数据
+X=load('data.txt');
+%标准化处理
+[p,n]=size(X);
+for j=1:n
+mju(j)=mean(X(:,j));
+sigma(j)=sqrt(cov(X(:,j)));
+end
+for i=1:p
+for j=1:n
+Y(i,j)=(X(i,j)-mju(j))/sigma(j);
+end
+end
+sigmaY=cov(Y);
+## %求X 标准化的协差矩阵的特征根和特征向量
+[T,lambda]=eig(sigmaY);
+disp('特征根(由小到大):');
+disp(lambda);
+
+
+
+54
+disp('特征向量:');
+disp(T);
+%方差贡献率;累计方差贡献率
+Xsum=sum(sum(lambda,2),1);
+for i=1:n
+fai(i)=lambda(i,i)/Xsum;
+end
+for i=1:n
+psai(i)= sum(sum(lambda(1:i,1:i),2),1)/Xsum;
+end
+disp('方差贡献率:');
+disp(fai);
+disp('累计方差贡献率:');
+disp(psai);
+
+逻辑回归代码
+#include "main.h"
+int main()
+{
+char
+*file
+=
+"C:\\Users\\Administrator\\Desktop\\machine_learnning\\wpbc.data";
+DataSample *data = new DataSample[sampleNum];
+double *logisW = new double[attriNum+1];
+
+if( -1!=ReadData( data,file ) )
+{
+Logistic( data,logisW );
+}
+
+for(int i=0;i<(attriNum+1);++i)
+{
+printf("%f\t",logisW[i]);
+}
+printf("\n\n");
+
+int correct = 0;
+int sum = 0;
+for(int i=trainNum;i<sampleNum; ++i)
+{
+++sum;
+bool eva = Predict(data[i],logisW);
+if(eva)
+++correct;
+}
+
+
+
+55
+
+double rp = double(correct)/sum;
+printf("the right correction: %f\n",rp);
+
+delete []data;
+delete []logisW;
+
+return 0;
+}
+
+#ifndef MAIN_H
+#define MAIN_H
+
+#include "stdio.h"
+#include "stdlib.h"
+#include "iostream"
+#include "string"
+#include "string.h"
+#include <sstream>
+#include <memory.h>
+
+#include "math.h"
+
+using namespace std;
+
+#define maxClassLabelNum 10;
+int curLabelNum = 0;
+
+const double alph = 0.3; //set  the newton gradient algorithm fixed step
+const int attriNum = 33;
+const int sampleNum = 198;
+int trainNum = 140;
+
+struct DataSample
+{
+
+double attriValue[attriNum];
+
+bool classLabel;
+};
+
+double StringTodouble(char * src)
+{
+
+double a;
+
+stringstream str;
+
+
+
+56
+
+str<<src;
+
+str>>a;
+
+str.clear();
+
+return a;
+}
+
+int ReadData( DataSample* data, char *file)
+{
+
+FILE *pFile;
+
+char buf[1024];
+
+pFile = fopen(file,"rt");
+
+if(pFile==NULL)
+
+{
+
+printf("the data file is not existing： %s\n", file);
+
+return -1;
+
+}
+
+int row = 0;    //data line
+
+int cloumn = 0; //data attribute
+
+char delim[] = ",";//data delimiter
+
+char *tmpdata = NULL;//data cache
+
+while(!feof(pFile)&&row<sampleNum)
+
+{
+
+buf[0] = '\0';
+
+fgets(buf,1024,pFile);
+
+if( buf[strlen(buf)-1]=='\n' )
+
+{
+
+buf[strlen(buf)-1]='\0';
+
+}
+
+//the first column is non-used,and second column is class label;
+
+for( int column = 0;column<(attriNum+2);++column )
+
+{
+
+if( column==0 )
+
+{
+> tmpdata = strtok(buf,delim);
+> continue;
+
+}
+
+else if( column==1 )
+
+{
+
+
+
+57
+> tmpdata = strtok(NULL,delim);
+> if( tmpdata[0]=='R' )
+> data[row].classLabel = 1; //R:1;  N:0
+> else
+> data[row].classLabel = 0;
+> }
+
+else
+
+{
+> tmpdata = strtok(NULL,delim);
+> if(tmpdata[0]!='?')// '?' mean the loss attribute value
+> data[row].attriValue[column-2]
+=
+StringTodouble(tmpdata);
+> else
+> data[row].attriValue[column-2] = -1000;
+
+}
+
+}
+
+++row;
+
+}
+
+return 1;
+}
+
+void Normalize( DataSample* data )
+{
+
+double atrriMinValue[attriNum];
+
+double atrriMaxValue[attriNum];//for normalization (x-xmin)/(xmax-xmin)
+
+//think about the first sample is none-loss
+
+//get the min and max value of each attribute without thinking about the loss
+atrribute
+
+for( int i=0;i<attriNum;++i )
+
+{
+
+atrriMinValue[i] = data[0].attriValue[i];
+
+atrriMaxValue[i] = data[0].attriValue[i];
+
+}
+
+for( int row = 1; row < sampleNum; ++row )
+
+for( int column = 0; column < attriNum; ++column )
+
+{
+
+
+
+58
+
+if( data[row].attriValue[column] > atrriMaxValue[column] &&
+(data[row].attriValue[column]+1000)>0.0001 )
+> atrriMaxValue[column] = data[row].attriValue[column];
+> if( data[row].attriValue[column] < atrriMinValue[column] &&
+(data[row].attriValue[column]+1000)>0.0001 )
+> atrriMinValue[column] = data[row].attriValue[column];
+
+}
+
+for( int row = 1; row < sampleNum; ++row )
+
+for( int column = 0; column < attriNum; ++column )
+
+{
+
+if( (data[row].attriValue[column]+1000)>0.0001)
+> data[row].attriValue[column]
+=
+(data[row].attriValue[column]-atrriMinValue[column])/(atrriMaxValue[column]-
+atrriMinValue[column]);
+
+else
+> data[row].attriValue[column] = 0;//set loss value 0;
+
+}
+}
+
+void Logistic( DataSample* data, double *logisW )
+{
+
+//memset( logisW,1.0,(attriNum+1)*sizeof(double) );//initial
+
+for( int i=0;i<(attriNum+1);++i )
+
+{
+
+logisW[i] = 1.0;
+
+}
+> Normalize( data );
+
+double h = 0.0;
+
+double error = 0.0;
+
+for( int row=0; row<trainNum; ++row )
+
+{
+
+h = 0.0;
+
+for( int column=0; column<attriNum; ++column )
+
+{
+
+h += data[row].attriValue[column]*logisW[column];
+
+}
+
+h += logisW[attriNum]*1;
+
+
+
+59
+
+h = 1/(1+exp(-h));
+
+error = data[row].classLabel-h;
+
+for( int column=0; column<attriNum; ++column )
+
+{
+
+logisW[column] += error*alph*data[row].attriValue[column];
+
+}
+
+logisW[attriNum] = error*alph*1;
+
+}
+}
+
+bool Predict( DataSample sample, double *logisW )
+{
+
+double h = 0.0;
+
+bool label = 0;
+
+for( int column=0; column<attriNum; ++column )
+
+{
+
+h += sample.attriValue[column]*logisW[column];
+
+}
+
+h += logisW[attriNum];
+
+if( h>0.5 )
+
+label = 1;
+
+else
+
+label = 0;
+
+if( label==sample.classLabel )
+
+return 1;
+
+else
+
+return 0;
+}
+

@@ -44,54 +44,7 @@
 关键词：FMCW，毫米波雷达，定位，虚拟天线阵列，超分辨，恒虚警率，L1 正则化，最小二乘法，DFT，插值。
 \end{abstract}
 
-\section{目录}
-
-\begin{itemize}
-    \item[1.] 任务背景和问题重述 \dotfill 4
-        \begin{itemize}
-            \item[1.1] 任务背景 \dotfill 4
-            \item[1.2] 问题重述 \dotfill 5
-        \end{itemize}
-    \item[2.] 模型假设和符号说明 \dotfill 7
-        \begin{itemize}
-            \item[2.1] 模型假设 \dotfill 7
-            \item[2.2] 符号说明 \dotfill 7
-        \end{itemize}
-    \item[3.] 任务一、无噪条件下的目标超分辨定位 \dotfill 8
-        \begin{itemize}
-            \item[3.1] 任务一问题分析 \dotfill 8
-            \item[3.2] 基于DFT的方位频谱插值方法 \dotfill 9
-            \item[3.3] 基于L1正则化的最小二乘法模型 \dotfill 9
-            \item[3.4] 模型与算法结果 \dotfill 10
-            \item[3.5] 任务一结果总结 \dotfill 14
-        \end{itemize}
-    \item[4.] 任务二、噪声条件下的目标超分辨定位 \dotfill 15
-        \begin{itemize}
-            \item[4.1] 任务二问题分析 \dotfill 15
-            \item[4.2] 基于恒虚警率CFAR的距离向目标检测 \dotfill 16
-            \item[4.3] 基于平滑滤波与DFT方位频谱插值改进方法 \dotfill 17
-            \item[4.4] 噪声条件下基于L1正则化的最小二乘法模型改进及求解 \dotfill 17
-            \item[4.5] 模型结果 \dotfill 18
-            \item[4.6] 任务二模型总结与评价 \dotfill 19
-        \end{itemize}
-    \item[5.] 任务三、移动场景中在线低复杂度算法目标定位与轨迹估计 \dotfill 21
-        \begin{itemize}
-            \item[5.1] 任务三问题分析 \dotfill 21
-            \item[5.2] 在线低复杂度算法 \dotfill 21
-            \item[5.3] 目标运动轨迹计算结果 \dotfill 23
-            \item[5.4] 任务三算法结果总结 \dotfill 28
-        \end{itemize}
-    \item[6.] 任务四、天线阵元存在误差下的目标超分辨定位 \dotfill 29
-        \begin{itemize}
-            \item[6.1] 任务四问题分析 \dotfill 29
-            \item[6.2] 模型与算法 \dotfill 31
-            \item[6.3] 模型结果 \dotfill 32
-            \item[6.4] 模型在天线阵元缺失数据的目标定位超分辨扩展实验 \dotfill 32
-            \item[6.5] 任务四模型结果总结与评价 \dotfill 35
-        \end{itemize}
-    \item[7.] 参考文献 \dotfill 36
-    \item[附录A] 程序代码 \dotfill 37
-\end{itemize}
+\tableofcontents
 
 \section{任务背景和问题重述}
 
@@ -133,15 +86,15 @@ s(n, t) = \sum_{i=1}^{M} a_i e^{j\left(\frac{2\pi}{\lambda}nd\sin\theta_i - \fra
 
 针对提供的无噪声仿真数据，建立定位模型，计算出物体相对位置，并以二维极坐标图（横坐标表示距离，纵坐标表示角度）展示。
 
-\section{任务二、噪声条件下的目标超分辨定位}
+任务二、噪声条件下的目标超分辨定位
 
 在任务一的基础上，针对提供的高斯噪声仿真数据，利用一个 Chirp 周期内的中频信号，设计超分辨算法精确定位多个物体。
 
-\section{任务三、移动场景中在线低复杂度算法目标定位与轨迹估计}
+任务三、移动场景中在线低复杂度算法目标定位与轨迹估计
 
 设计在线低复杂度算法，利用一帧中频信号来超分辨定位，并且通过数值实验验证算法性能。针对提供的一帧数据，计算出物体相对运动轨迹，并以二维图（横坐标表示距离，纵坐标表示角度）展示。
 
-\section{任务四、天线阵元存在误差下的目标超分辨定位}
+任务四、天线阵元存在误差下的目标超分辨定位
 
 不同于任务二的噪声条件，考虑实际场景中由于老化等原因，天线阵列对于自身的定位也会有误差。针对提供的仿真数据，设计提升定位算法的鲁棒性的改进算法。
 
@@ -422,7 +375,7 @@ J(\mathbf{x}, \mathbf{u})=\eta_{1}\|\mathbf{x}\|_{1}+\eta_{1}(\mathbf{x}-\mathbf
     \label{fig:3-6}
 \end{figure}
 
-\section{任务一结果总结}
+\subsection{任务一结果总结}
 
 根据第一章分析可知，雷达目标检测具有最佳方位角度分辨率为 $\frac{2}{N_{d}}$ 弧度，本任务的数据对应原角度分辨率为 $1.33^\circ$。通过本节提出的方法及实验结果，特别是基于 L1 正则化的最小二乘法模型可突破原天线阵列物理极限分辨率，从 $1.33^\circ$ 提升至 $0.4^\circ$。最后，按要求生成显示了目标的二维极坐标图。另外，该任务实验结果可运行附件代码程序 \textcolor{blue}{Q1\_main.m} 再现。
 
@@ -1025,7 +978,7 @@ L_A(\mathbf{x}, \lambda, \mu) = J(\mathbf{x}) + \lambda\|\mathbf{x} - \mathbf{v}
 
 图 6-9 对任务三数据丢失 36 阵元后的目标超分辨定位结果
 
-\section{任务四模型结果总结与评价}
+\subsection{任务四模型结果总结与评价}
 
 由模型算法的实验结果可知，提出的两种方法均能有效地克服天线噪声的影响，具有较好的抗噪声干扰的鲁棒性能。另外，还对本任务的问题进行了天线阵元丢失数据的目标超分辨定位扩展实验。提出的两种方法之所以能在丢失阵元数据的情况下，准确定位目标，其理论在于两种方法都对目标信号进行相参插值，进而保持目标信号的相位和能量。另外，两种算法主要运算为 FFT，结合当前毫米波雷达芯片硬件资源，都可编写成芯片可运行的代码，具有一定的市场应用推广价值。该任务实验结果可运行附件代码程序 Q4\_main.m 与 Q4\_Extend\_main.m 再现。
 
@@ -1040,3 +993,658 @@ L_A(\mathbf{x}, \lambda, \mu) = J(\mathbf{x}) + \lambda\|\mathbf{x} - \mathbf{v}
     \item Herman M A, Strohmer T. High-resolution radar via compressed sensing[J]. IEEE Transactions on Signal Processing, 57(6):2275-2284,2009.
     \item Richards, Mark A. Fundamentals of radar signal processing, McGraw-Hill Education, 347-352, 2014.
 \end{enumerate}
+
+\section{附录：程序代码}
+# 附录A 程序代码
+%程序名称：Q1_main.m
+# %任务一：无噪雷达数据MIMO定位模型
+## %该程序根据无噪雷达数据MIMO定位模型，计算出物体相对位置，结果以二维极坐标显示
+clc;clear; close all;
+# %MIMO 雷达系统参数
+# Ts=1.25e-7;
+# T=3.2e-5;
+# Nf=32;
+# Na=86;
+# L=0.0815;
+d=L/(Na-1);
+# Light_speed=3e8;
+# Kr=7.8986e13;
+f0=78.8e9;
+wavelenth=Light_speed/f0;
+fs=1/Ts;
+## Ridx=(0:255)/256*fs*Light_speed/2/Kr;
+load('data_q1.mat');
+rafData=(fft(Z,[],2));
+# AzNfft=Na;
+az0=linspace( 0.6428,-0.6428,Na);
+azz0=acosd(az0)-90;
+data=fftshift(fft(rafData,AzNfft,1),1);
+figure;
+## PloarPlot(Ridx,azz0,data);
+# ImageFormat(16);
+%方法一：对方位向进行频谱插值精细化的超分辨方法
+fac=2;
+# AzNfft=256*fac;
+data=fftshift(fft(rafData,AzNfft,1),1);
+az=linspace( 0.6428,-0.6428,AzNfft);
+%az= wavelenth/2/pi/d*az;
+azz=acosd(az)-90;
+figure;
+## PloarPlot(Ridx,azz,data);
+# ImageFormat(16);
+% 距离向目标检测
+td=abs(rafData(1,:));
+figure;plot(abs(td));
+idx=find(td==max(td));
+37
+
+
+
+%方位向插值频谱精细化超分辨
+az_sig_dft=rafData(:,idx);
+figure;plot(imag(az_sig_dft));xlim([0 86]);
+xlabel('方位阵元采样点');ylabel('信号强度');
+az_sig_dft=fftshift(fft(az_sig_dft,AzNfft));
+az_sig_dft=az_sig_dft/max(abs(az_sig_dft));
+% Define functions (Matlab function handles)
+# Trans_num=AzNfft;
+## H = @(x) InvTransformation(x,Na,Trans_num);
+## HT = @(x) Transformation(x,Na,Trans_num);
+p = Trans_num; % 变换点数
+# Nit = 20;
+% 迭代次数
+mu =1e-1;
+% 模型参数
+## %方法2：基于L1正则最小二乘法的方位向超分辨算法处理
+y=rafData(:,idx);
+% [coef, cost] = mimo_anttena_salsa(y, H, HT, p, mu, Nit);
+lambda = 7;
+[coef, cost] = mimo_anttena_denoising_salsa(y, H, HT, p, lambda,
+mu, Nit);
+err = y - InvTransformation(coef,Na,Trans_num);
+err_max = max(abs(err));
+lsz=2;
+figure;plot(cost,'linewidth',lsz);
+xlabel('迭代次数');ylabel('目标函数值');
+# ImageFormat(16);
+az_sig_ls=fftshift(abs(coef));
+az_sig_ls=az_sig_ls/max(abs(az_sig_ls));
+figure; plot(azz,20*log10(abs(az_sig_dft)),'linewidth',lsz);
+hold on;plot(azz,20*log10(abs(az_sig_ls)),':','linewidth',lsz);
+xlabel('方位角度(°)');ylabel('相对强度(dB)');
+legend('DFT 插值', '基于L1正则化的最小二乘法');
+xlim([-20 20]);ylim([-40 1]);
+# ImageFormat(16);
+data2=data*0+eps;
+data2(:,119)=fftshift(coef);
+38
+
+
+
+a_data=(abs(fftshift(coef)));
+figure;plot(a_data);
+% 方位目标峰值检测
+num_train=27.4;
+num_guard=0;
+rate_fa=1e-1;
+num_train_half = round(num_train / 2);
+num_guard_half = round(num_guard / 2);
+num_side = num_train_half + num_guard_half;
+alpha = num_train*(rate_fa.^(-1/num_train) - 1);
+peak_idx = 0;
+pk=0;
+for k=num_side : AzNfft - num_side
+tem=a_data(k-num_side+1:k+num_side);
+[M,Ix] = max(tem,[],1);
+if (k ~= k-num_side+Ix)
+sum1 = sum(a_data);
+sum2 =sum(a_data(k-num_guard_half+1:k+num_guard_half));
+p_noise = (sum1 - sum2) / num_train ;
+threshold = alpha * p_noise;
+if a_data(k)> threshold
+pk=pk+1;
+peak_idx(pk)=k;
+end
+end
+end
+for k=1:pk
+theta(k)=azz(peak_idx(k))/180*pi;
+rho(k)=Ridx(idx);
+end
+figure;%雷达目标信息极坐标显示
+apo = polaraxes;
+polarplot(theta,rho,'o','MarkerSize',3,'MarkerFaceColor','b');
+thetalim([-20 20]);ImageFormat(16);
+figure;%雷达超分辨处理后数据极坐标显示
+## PloarPlot(Ridx,azz,data2);ImageFormat(16);
+%程序名称：Q2_main.m
+# %任务二：含噪雷达数据MIMO定位模型
+## %该程序根据含噪雷达数据MIMO定位模型，计算出物体相对位置，结果以二维极坐标显示
+39
+
+
+
+clc;clear; close all;
+# Ts=1.25e-7;
+# T=3.2e-5;
+# Nf=32;
+# Na=86;
+# L=0.0815;
+# Light_speed=3e8;
+# Kr=7.8986e13;
+f0=78.8e9;
+wavelength=Light_speed/f0;
+fs=1/Ts;
+## Ridx=(0:255)/256*fs*Light_speed/2/Kr;
+load('data_q2.mat');
+figure;
+imagesc(abs(Z_noisy));
+ylabel('方位向阵元采样点');
+xlabel('快时间域（距离向）采样点');
+rafData=(fft(Z_noisy,[],2));
+# AzNfft=Na;
+az0=linspace( 0.6428,-0.6428,Na);
+azz0=acosd(az0)-90;
+data=fftshift(fft(rafData,AzNfft,1),1);
+figure;
+## PloarPlot(Ridx,azz0,data);
+fac=2;
+# AzNfft=256*fac;
+data=fftshift(fft(rafData,AzNfft,1),1);
+az=linspace( 0.6428,-0.6428,AzNfft);
+azz=acosd(az)-90;
+figure;
+## PloarPlot(Ridx,azz,data);
+td=abs(rafData(1,:));
+figure;plot(abs(td));
+idx=find(td==max(td));
+figure; plot(abs(rafData(:,idx)));
+%figure; plot(azz,20*log10(abs(data(:,idx))));
+# % CFAR 处理
+# RefLength=15;
+# GuardLength=3;
+offset=2e3;
+## Cfar_win=ones((RefLength+GuardLength)*2+1,1);
+Cfar_win(RefLength+1:RefLength+1+2*GuardLength)=0;
+40
+
+
+
+## Cfar_win=Cfar_win/sum(Cfar_win);
+noiseLevel=conv(abs(data(:,idx)),Cfar_win,'same');
+cfarThreshold=noiseLevel+offset;
+Cfar_sig=data(:,idx).*(abs(data(:,idx))>cfarThreshold);
+figure;plot(abs(data(:,idx)));
+hold on;
+plot(cfarThreshold);
+hold on;
+plot(abs(Cfar_sig));
+xlabel('采样点');
+ylabel('信号强度');
+xlim([0 AzNfft]);
+legend('原信号','CFAR阈值','CFAR输出');
+data=data*0+eps;
+data(:,idx)=Cfar_sig;
+figure;
+## PloarPlot(Ridx,azz,data);
+# Trans_num=AzNfft;
+## H = @(x) InvTransformation(x,Na,Trans_num);
+## HT = @(x) Transformation(x,Na,Trans_num);
+p = Trans_num; % 变换点数
+# Nit = 20;
+% 迭代次数
+mu =1e-1;
+% 模型参数
+% 同时去噪与超分辨处理
+y=rafData(:,idx);
+lambda = 7;
+[coef, cost] = mimo_anttena_denoising_salsa(y, H, HT, p, lambda,
+mu, Nit);
+err = y - InvTransformation(coef,Na,Trans_num);
+err_max = max(abs(err));
+figure;plot(cost)
+c0 = HT(y);
+figure;
+subplot(121)
+plot(fftshift(abs(c0)));
+subplot(122)
+plot((fftshift(abs(coef))));
+% plot(20*log10(fftshift(abs(coef))));
+az_sig_dft=rafData(:,idx);
+% figure;plot(imag(az_sig_dft));xlim([0 86]);
+% xlabel('方位阵元采样点');ylabel('信号强度');
+41
+
+
+
+az_sig_dft=fftshift(fft(az_sig_dft,AzNfft));
+az_sig_dft=az_sig_dft/max(abs(az_sig_dft));
+az_sig_ls=fftshift(abs(coef));
+az_sig_ls=az_sig_ls/max(abs(az_sig_ls));
+lsz=2;
+figure; plot(azz,20*log10(abs(az_sig_dft)),'linewidth',lsz);
+hold on;plot(azz,20*log10(abs(az_sig_ls)),':','linewidth',lsz);
+xlabel('方位角度(°)');ylabel('相对强度(dB)');
+legend('改进的DFT 插值', '改进的L1正则化最小二乘法');
+xlim([-20 20]);ylim([-40 1]);
+# ImageFormat(16);
+data2=data*0+eps;
+data2(:,idx)=fftshift(coef);
+a_data=(abs(fftshift(coef)));
+figure;plot(a_data);
+% 目标峰值检测
+num_train=26;
+num_guard=0;
+rate_fa=1e-1;
+num_train_half = round(num_train / 2);
+num_guard_half = round(num_guard / 2);
+num_side = num_train_half + num_guard_half;
+alpha = num_train*(rate_fa.^(-1/num_train) - 1);
+peak_idx = 0;
+pk=0;
+for k=num_side : AzNfft - num_side
+tem=a_data(k-num_side+1:k+num_side);
+[M,Ix] = max(tem,[],1);
+if (k ~= k-num_side+Ix)
+sum1 = sum(a_data);
+sum2 =sum(a_data(k-num_guard_half+1:k+num_guard_half));
+p_noise = (sum1 - sum2) / num_train ;
+threshold = alpha * p_noise;
+if a_data(k)> threshold
+pk=pk+1;
+peak_idx(pk)=k;
+end
+end
+42
+
+
+
+end
+for k=1:pk
+theta(k)=azz(peak_idx(k))/180*pi;
+rho(k)=Ridx(idx);
+end
+figure; %雷达目标信息极坐标显示
+apo = polaraxes;
+polarplot(theta,rho,'o','MarkerSize',5,'MarkerFaceColor','b');
+thetalim([-20 20]);
+figure;%雷达超分辨处理后数据极坐标显示
+## PloarPlot(Ridx,azz,data2);
+%程序名称：Q3_main.m
+%任务三：在线低复杂度算法
+%该程序用于计算物体相对运动轨迹，并以二维图展示
+clc;clear; close all;
+load('data_q3.mat');
+# %MIMO 雷达系统参数
+# Ts=1.25e-7;
+# T=3.2e-5;
+# Nf=32;
+# Na=86;
+# L=0.0815;
+# C0=3e8;
+# Kr=7.8986e13;
+f0=78.8e9;
+lambda=C0/f0;
+fs=1/Ts;
+# Range_num=256;
+## Ridx=(0:Range_num-1)/Range_num*fs*C0/2/Kr;
+fac=4;
+# AzNfft=256*fac;
+az=linspace( 0.6428,-0.6428,AzNfft);
+azz=acosd(az)-90;
+# Xr=Ridx'*cosd(azz);
+# Yr=Ridx'*sind(azz);
+# Trans_num=AzNfft;
+## H = @(x) InvTransformation(x,Na,Trans_num);
+## HT = @(x) Transformation(x,Na,Trans_num);
+lambda = 7;
+p = Trans_num;
+43
+
+
+
+# Nit = 20;
+mu =1e-1;
+for t=1:Nf
+## Z=reshape(Z_time(t,:,:),Na,Range_num);
+rafData=fft(Z,[ ],2);
+data=fftshift(fft(rafData,AzNfft,1),1);
+% figure;PloarPlot(Ridx,azz,data);
+range_sig=abs(rafData(1,:));
+%
+figure;plot(range_sig);
+% 距离向目标检测
+# RefLength=1;
+# GuardLength=0;
+offset=40;
+## Cfar_win=ones((RefLength+GuardLength)*2+1,1);
+Cfar_win(RefLength+1:RefLength+1+2*GuardLength)=0;
+## Cfar_win=Cfar_win/sum(Cfar_win);
+noiseLevel=conv(range_sig,Cfar_win,'same');
+cfarThreshold=noiseLevel+offset;
+%
+hold on;plot(cfarThreshold);
+range_sig_new=range_sig.*(range_sig>cfarThreshold);
+%
+hold on;stem(range_sig_new);
+idx=find(range_sig_new>0);
+len=length(idx);
+if(len>2)
+[M0,rdi0] = max(range_sig_new,[],2);
+range_sig_new(rdi0)=-1;
+for lp=2:length(idx)
+[M1,rdi1] = max(range_sig_new,[],2);
+if(M0-M1<M0*0.2 && abs(rdi1-rdi0)==1)
+range_sig_new(rdi1)=0;
+else
+if(lp>2)
+range_sig_new(rdi1)=0;
+else
+range_sig_new(rdi1)=-1;
+end
+end
+rdi0=rdi1;
+44
+
+
+
+# M0=M1;
+end
+idx=find(-1==range_sig_new);
+len=length(idx);
+end
+data2=data*0+eps;
+%方位角度超分辨处理
+for k=1:len
+y=rafData(:,idx(k));
+[coef, cost] = mimo_anttena_denoising_salsa(y, H, HT, p,
+lambda, mu, Nit);
+data2(:,idx(k))=fftshift(coef);
+## PeakDetection;% L1方位目标峰值检测
+az_sig_dft=fftshift(fft(y,AzNfft));
+## PeakDetection_dft;% DFT 方位目标峰值检测
+end
+%
+figure; PloarPlot(Ridx,azz,data2);
+end
+figure; %基于DFT 最小二乘雷达目标运动轨迹极坐标显示
+apo = polaraxes;
+polarplot(theta_dft(:,1),rho_dft(:,1),'linewidth',1.5);%目标1
+hold on;
+polarplot(theta_dft(:,2),rho_dft(:,2),'linewidth',1.5);%目标2
+thetalim([-30 30]);rlim([3.5 7]);
+legend('目标1轨迹','目标2轨迹');
+figure; %L1 最小二乘雷达目标运动轨迹极坐标显示
+apo = polaraxes;
+polarplot(theta(:,1),rho(:,1),'linewidth',1.5);%目标1
+hold on;
+polarplot(theta(:,2),rho(:,2),'linewidth',1.5);%目标2
+thetalim([-30 30]);rlim([3.5 7]);
+legend('目标1轨迹','目标2轨迹');
+lsz=2;
+figure; plot(theta_dft(:,2)*180/pi,'linewidth',lsz);
+hold on;plot(theta(:,2)*180/pi,':','linewidth',lsz);
+ylabel('方位角度(°)');xlabel('帧号');
+legend('基于DFT 插值的算法', '基于L1正则化最小二乘法的算法');
+xlim([0 32]);ylim([-6 0]);
+# ImageFormat(16);
+45
+
+
+
+%程序名称：Q4_main.m
+%任务四：天线阵元存在误差下的角度超分辨算法
+%该程序用于消除天线阵元误差，目标角度超分辨
+clc;clear; close all;
+# %MIMO 雷达系统参数
+# Ts=1.25e-7;
+# T=3.2e-5;
+# Nf=32;
+# Na=86;
+# L=0.0815;
+# C0=3e8;
+# Kr=7.8986e13;
+f0=78.8e9;
+lambda=C0/f0;
+fs=1/Ts;
+## Ridx=(0:255)/256*fs*C0/2/Kr;
+load('data_q4.mat');
+figure;
+imagesc(abs(Z_antnoisy));
+ylabel('方位向阵元采样点');
+xlabel('快时间域（距离向）采样点');
+colormap(jet);
+fac=16;
+# AzNfft=256*fac;
+rafData=(fft(Z_antnoisy,[],2));
+data=fftshift(fft(rafData,AzNfft,1),1);
+# Trans_num=AzNfft;
+## H = @(x) InvTransformation(x,Na,Trans_num);
+## HT = @(x) Transformation(x,Na,Trans_num);
+lambda = 7;
+p = Trans_num;
+# Nit = 20;
+mu =1e-1;
+for k=1:Na
+figure(1); plot(abs(rafData(k,:)));
+end
+xlim([0 256]);xlabel('距离向采样点');ylabel('信号强度');
+figure; plot(20*log10(abs(rafData(k,:))));
+xlim([0 256]);ylim([10 60]);xlabel('距离向采样点');ylabel('信号强度
+(dB)');
+46
+
+
+
+az=linspace( 0.6428,-0.6428,AzNfft);
+azz=acosd(az)-90;
+lpfcoef=0.5*[1 1];
+rafData1=rafData;
+data=fftshift(fft(rafData,AzNfft,1),1);
+figure;PloarPlot(Ridx,azz,data);
+range_sig=abs(rafData(1,:));
+%%距离向目标检测
+# RefLength=2;
+# GuardLength=0;
+offset=50;
+## Cfar_win=ones((RefLength+GuardLength)*2+1,1);
+Cfar_win(RefLength+1:RefLength+1+2*GuardLength)=0;
+## Cfar_win=Cfar_win/sum(Cfar_win);
+noiseLevel=conv(range_sig,Cfar_win,'same');
+cfarThreshold=noiseLevel+offset;
+figure;plot(cfarThreshold);
+range_sig_new=range_sig.*(range_sig>cfarThreshold);
+hold on;stem(range_sig_new);
+idx=find(range_sig_new>0);
+len=length(idx);
+data2=data*0+eps;
+%方位向天线去噪声及超分辨率处理
+for k=1:len
+rafData1(:,idx(k))=conv(rafData(:,idx(k)),lpfcoef,'same');
+y=rafData(:,idx(k));
+[coef, cost] = mimo_anttena_denoising_salsa(y, H, HT, p,
+lambda, mu, Nit);
+data2(:,idx(k))=fftshift(coef);
+end
+figure; plot(imag(rafData(:,idx(1))));xlim([0 86]);
+xlabel('方位阵元采样点');ylabel('信号强度');
+figure; plot(imag(rafData(:,idx(2))));
+hold on; plot(imag(rafData1(:,idx(2))));
+xlim([0 85]);
+xlabel('方位阵元采样点');ylabel('信号强度');
+legend('滤波前','滤波后');
+data1=fftshift(fft(rafData1,AzNfft,1),1);
+figure;
+## PloarPlot(Ridx,azz,data1);
+47
+
+
+
+figure;
+## PloarPlot(Ridx,azz,data2);
+%程序名称：Q4_Extend_main.m
+%任务四问题扩展：天线阵元数据部分丢失下的角度超分辨算法
+%该程序用于补偿天线阵元丢失的数据，实现目标角度超分辨
+clc;clear; close all;
+# %MIMO 雷达系统参数
+# Ts=1.25e-7;
+# T=3.2e-5;
+# Nf=32;
+# Na=86;
+# L=0.0815;
+# C0=3e8;
+# Kr=7.8986e13;
+f0=78.8e9;
+lambda=C0/f0;
+fs=1/Ts;
+## Ridx=(0:255)/256*fs*C0/2/Kr;
+load('data_q4.mat');Z=Z_antnoisy;clear Z_antnoisy;
+%load('Q4.mat');
+# Z_new=Z;
+fac=1;
+# AzNfft=256*fac;
+az=linspace( 0.6428,-0.6428,AzNfft);
+azz=acosd(az)-90;
+%产生缺失36个通道数据。
+for rd=1:256
+%方位向某些天线阵元因老化无法接收信号
+%缺失数据
+# K = 50;
+k = randperm(Na);
+k = k(1:K);
+s = false(1,Na)';
+s(k) = true;
+ids=find(s==0);
+y=Z(:,rd);
+y(ids) =0;
+## Z_new(:,rd)=y+rand(Na,1)+1i*rand(Na,1);
+end
+48
+
+
+
+figure;
+imagesc(abs(Z_new));
+ylabel('方位向阵元采样点');
+xlabel('快时间域（距离向）采样点');
+colormap(hot)
+h=colorbar;
+a = h.Position;
+set(h,'Position',[a(1)+0.1 a(2)+0.1 0.01 0.6]);
+figure;
+imagesc(abs(Z));
+ylabel('方位向阵元采样点');
+xlabel('快时间域（距离向）采样点');
+colormap(hot)
+h=colorbar;
+a = h.Position;
+set(h,'Position',[a(1)+0.1 a(2)+0.1 0.01 0.6]);
+clear Z;
+fac=16;
+# AzNfft=256*fac;
+rafData=(fft(Z_new,[],2));
+data=fftshift(fft(rafData,AzNfft,1),1);
+# Trans_num=AzNfft;
+## H = @(x) InvTransformation(x,Na,Trans_num);
+## HT = @(x) Transformation(x,Na,Trans_num);
+lambda = 7;
+p = Trans_num;
+# Nit = 20;
+mu =1e-1;
+for k=1:Na
+figure(10); plot(abs(rafData(k,:)));
+end
+xlim([0 256]);xlabel('距离向采样点');ylabel('信号强度');
+figure; plot(20*log10(abs(rafData(k,:))));
+xlim([0 256]);ylim([10 60]);xlabel('距离向采样点');ylabel('信号强度
+(dB)');
+az=linspace( 0.6428,-0.6428,AzNfft);
+azz=acosd(az)-90;
+lpfcoef=0.5*[1 1];
+rafData1=rafData;
+data=fftshift(fft(rafData,AzNfft,1),1);
+figure;PloarPlot(Ridx,azz,data);
+49
+
+
+
+range_sig=abs(rafData(1,:));
+%%距离向目标检测
+# RefLength=2;
+# GuardLength=0;
+offset=50;
+## Cfar_win=ones((RefLength+GuardLength)*2+1,1);
+Cfar_win(RefLength+1:RefLength+1+2*GuardLength)=0;
+## Cfar_win=Cfar_win/sum(Cfar_win);
+noiseLevel=conv(range_sig,Cfar_win,'same');
+cfarThreshold=noiseLevel+offset;
+figure;plot(cfarThreshold);
+range_sig_new=range_sig.*(range_sig>cfarThreshold);
+hold on;stem(range_sig_new);
+idx=find(range_sig_new>0);
+len=length(idx);
+data2=data*0+eps;
+%方位向天线去噪声及超分辨率处理
+for k=1:len
+rafData1(:,idx(k))=conv(rafData(:,idx(k)),lpfcoef,'same');
+y=rafData(:,idx(k));
+[coef, cost] = mimo_anttena_denoising_salsa(y, H, HT, p,
+lambda, mu, Nit);
+data2(:,idx(k))=fftshift(coef);
+end
+figure; plot(imag(rafData(:,idx(1))));xlim([0 86]);
+xlabel('方位阵元采样点');ylabel('信号强度');
+figure; plot(imag(rafData(:,idx(2))));
+hold on; plot(imag(rafData1(:,idx(2))));
+xlim([0 85]);
+xlabel('方位阵元采样点');ylabel('信号强度');
+legend('滤波前','滤波后');
+data1=fftshift(fft(rafData1,AzNfft,1),1);
+figure;
+## PloarPlot(Ridx,azz,data1);
+figure;
+## PloarPlot(Ridx,azz,data2);
+function [x, cost] = mimo_anttena_denoising_salsa(y, A, At, p,
+50
+
+
+
+lambda, mu, Nit)
+# % 噪声条件下L1正则化最小二乘法
+if nargout > 1
+# ComputeCost = true;
+cost = zeros(1,Nit);
+else
+## ComputeCost = false;
+end
+x = At(y);
+d = zeros(size(x));
+for i = 1:Nit
+u = soft(x + d, 0.5*lambda/mu) - d;
+d = 1/(mu + p) * At(y - A(u));
+x = d + u;
+if ComputeCost
+residual = y - A(x);
+cost(i) = sum(abs(residual(:)).^2) + sum(abs(lambda *
+x(:)));
+end
+end
+function [x, cost] = mimo_anttena_salsa(y, A, At, p, mu, Nit,
+lambda)
+# % 无噪声条件下L1正则化最小二乘法
+if nargin < 7
+lambda = 1;
+end
+x = At(y);
+d = zeros(size(x));
+cost = zeros(1,Nit);
+for i = 1:Nit
+u = soft(x + d, 0.5*lambda/mu) - d;
+d = (1/p) * At(y - A(u));
+x = d + u;
+cost(i) = sum(lambda(:) .* abs(x(:)));
+end
+function y = soft(x, T)
+%软阈值运算
+y = max(1 - T./abs(x), 0) .* x;
+51

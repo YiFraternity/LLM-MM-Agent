@@ -13,24 +13,7 @@
 \textbf{“华为杯”第十七届中国研究生数学建模竞赛}
 \end{center}
 
-\begin{tabular}{|c|c|}
-\hline 符号 & 含义 \\
-\hline \(P_{i}(E_{i})\) & 红(蓝)方第 \(i\) 个无人机 \\
-\hline \(H_{i}\) & 红方第 \(i\) 个运载机 \\
-\hline \(V_{P_{i}}(V_{E_{i}})\) & 红(蓝)方第 \(i\) 个无人机速度 \\
-\hline \(V_{H_{i}}\) & 红方第 \(i\) 个运载机速度 \\
-\hline \(R_{P_{i}}(R_{E_{i}})\) & 红(蓝)方第 \(i\) 个无人机转弯半径 \\
-\hline \(R_{H_{i}}\) & 红方第 \(i\) 个运载机转弯半径 \\
-\hline \(t_{E_{i}}\) & 蓝方第 \(i\) 个无人机的突防时间 \\
-\hline \(l_{E_{i}}\) & 蓝方第 \(i\) 个无人机的突防路径长度 \\
-\hline \(S_{P_{k}}\) & 红方第 \(k\) 个集群有效拦截面积 \\
-\hline \(P_{k}^{*}\) & 红方第 \(k\) 个集群队形的尖端点无人机 \\
-\hline \(D\) & 红方集群有效拦截面的最大宽度 \\
-\hline \(M\) & 通道宽度(突防带宽) \\
-\hline \(L\) & 攻击纵深 \\
-\hline \(N\) & 蒙特卡洛试验次数 \\
-\hline
-\end{tabular}
+
 
 \begin{flushleft}
 题目 \hspace{10em} 无人机集群协同对抗
@@ -48,82 +31,11 @@
 针对问题四，构建了基于 NLP 的红蓝双方攻防策略推演模型。综合考虑前述的多重非线性约束和红蓝双方无人机集群博弈的复杂环境，我们通过前述建立的红蓝双方攻防策略推演模型，对红蓝无人机集群的协同突防和协同拦截状态进行推演，最后对不同条件下的红方最优拦截策略和蓝方最优突防策略进行分析。
 
 整体来说，红蓝双方的最优攻防策略均以红蓝双方无人机集群的距离为评价标准，针对蓝方突防，尽量选择远离红方无人机的方向突防；针对红方拦截，尽量选择朝向蓝方无人机的移动方向拦截。
+
+关键词:非线性约束 最优规划 集群协同 蒙特卡洛方法 全联立正交配置有限元法
 \end{abstract}
 
-\section*{关键词}
-非线性约束 最优规划 集群协同 蒙特卡洛方法 全联立正交配置有限元法
-
-\section*{目录}
-
-\begin{itemize}
-    \item 摘要: \dotfill 1
-    \item 1. 问题重述 \dotfill 4
-    \item 2. 问题假设及符号说明 \dotfill 6
-        \begin{itemize}
-            \item 2.1 问题假设 \dotfill 6
-            \item 2.2 符号说明 \dotfill 6
-        \end{itemize}
-    \item 3. 问题一模型的建立与求解 \dotfill 7
-        \begin{itemize}
-            \item 3.1 针对问题一的分析 \dotfill 7
-            \item 3.2 攻防区域的数值化 \dotfill 8
-            \item 3.3 基于贪婪队形的红方协作拦截策略 \dotfill 9
-                \begin{itemize}
-                    \item 3.3.1 基于队形的红方无人机集群有效拦截面扩展 \dotfill 9
-                    \item 3.3.2 基于贪婪队形的集群协作拦截 \dotfill 10
-                \end{itemize}
-            \item 3.4 基于内点法的蓝方突防求解模型 \dotfill 11
-                \begin{itemize}
-                    \item 3.4.1 基于非线性规划 NLP 模型 \dotfill 11
-                    \item 3.4.2 基于最小化性能指标的最优控制指标转化 \dotfill 12
-                    \item 3.4.3 基于内点法的非线性最优规划模型 \dotfill 12
-                \end{itemize}
-            \item 3.5 基于蒙特卡洛法的蓝方突防概率模型 \dotfill 13
-                \begin{itemize}
-                    \item 3.5.1 基于蒙特卡洛法的概率推演 \dotfill 13
-                    \item 3.5.2 蓝方突防概率建模 \dotfill 14
-                \end{itemize}
-            \item 3.6 蓝方突防概率结果与最优突防策略分析 \dotfill 14
-                \begin{itemize}
-                    \item 3.6.1 针对蓝方突防概率结果 \dotfill 14
-                    \item 3.6.2 针对蓝方最优突防策略 \dotfill 16
-                \end{itemize}
-        \end{itemize}
-    \item 4. 问题二模型的建立与求解 \dotfill 18
-        \begin{itemize}
-            \item 4.1 针对问题二的分析 \dotfill 18
-            \item 4.2 基于 L2 正则化思想的目标函数优化 \dotfill 19
-            \item 4.3 基于正则化目标函数的蓝方突防策略推演模型 \dotfill 20
-            \item 4.4 最小带宽与蓝方突防时间最短策略分析 \dotfill 21
-                \begin{itemize}
-                    \item 4.4.1 针对最小带宽 \dotfill 21
-                    \item 4.4.2 蓝方突防时间最短策略 \dotfill 22
-                \end{itemize}
-        \end{itemize}
-    \item 5. 问题三模型的建立与求解 \dotfill 25
-        \begin{itemize}
-            \item 5.1 针对问题三的分析 \dotfill 25
-            \item 5.2 基于全联立正交配置有限元法的非线性求解优化模型 \dotfill 25
-            \item 5.3 最大带宽与红方最优拦截策略分析 \dotfill 26
-                \begin{itemize}
-                    \item 5.3.1 针对最大带宽 \dotfill 26
-                    \item 5.3.2 针对红方最优拦截策略 \dotfill 26
-                \end{itemize}
-        \end{itemize}
-    \item 6. 问题四模型的建立与求解 \dotfill 31
-        \begin{itemize}
-            \item 6.1 针对问题四的分析 \dotfill 31
-            \item 6.2 基于 NLP 的红蓝双方攻防策略推演模型 \dotfill 31
-            \item 6.3 红方最优拦截策略与蓝方最优突防策略分析 \dotfill 32
-        \end{itemize}
-    \item 7. 模型的评价 \dotfill 36
-        \begin{itemize}
-            \item 7.1 模型的优点 \dotfill 36
-            \item 7.2 模型的缺点 \dotfill 36
-        \end{itemize}
-    \item 8. 参考文献 \dotfill 37
-    \item 附录 \dotfill 38
-\end{itemize}
+\tableofcontents
 
 \section{问题重述}
 
@@ -1112,4 +1024,567 @@ t = \overline{t}_{i-1} + (\overline{t}_i - \overline{t}_{i-1}) \cdot \tau, \tau 
 
 [9] Green P L, Moore R E, Jackson R J, et al. Increasing the efficiency of Sequential Monte Carlo samplers through the use of approximately optimal L-kernels[J]. arXiv preprint arXiv:2004.12838, 2020.
 
-\end{document}
+\end{document}\
+
+\section{附录}
+附  录
+1. %% 《无人机集群协同对抗》实现源码
+1. %% main 主函数
+1. clc;clear; close all;
+1. % 基础参数设置 注:为方便计算与作图，本文采用Km,Km/s,s 作为距离,速度,时间的度量单位
+1. global params_ bandwidth
+1. % 基于贪婪队形的红方协作拦截策略 队形(A)/(B)/(C)
+1. Formation_Red = 0;          % (A):0 / (B):1 / (C):2
+1. if Formation_Red == 0
+1. params_.maxwidth = 0.87528;
+1. elseif Formation_Red == 1
+1. params_.maxwidth = 0.94641;
+1. elseif Formation_Red == 2
+1. params_.maxwidth = 1.0000;
+1. end
+1. params_.vE_max = 0.25;
+1. params_.vP_max = 0.20;
+1. params_.vT_max = 0.30;
+1. params_.a_max = 0;
+1. params_.phy_max = 0;
+1. params_.w_max = 0;
+1. params_.x_min = 0;
+1. params_.x_max = 50;
+1. params_.y_min = 0;
+1. params_.y_max = 70;
+1. params_.x_scale = params_.x_max - params_.x_min;
+1. params_.y_scale = params_.y_max - params_.y_min;
+1. params_.tf = 1;
+1. params_.num_nodes_x = 1500;
+1. params_.num_nodes_y = 1500;
+1. params_.num_nodes_t = 200;
+1. params_.resolution_t = params_.tf / (params_.num_nodes_t - 1);
+1. params_.resolution_x = params_.x_scale / (params_.num_nodes_x - 1);
+1. params_.resolution_y = params_.y_scale / (params_.num_nodes_y - 1);
+1. params_.multiplier_for_H = 2.0;
+1. params_.weight_for_time = 5.0;
+1. params_.max_cycle = 1000;
+1. params_.n_large_value = 10000000;
+1. params_.Rcos_ang = params_.radius .* cos(linspace(0, 2 * pi, 30));
+1. params_.Rsin_ang = params_.radius .* sin(linspace(0, 2 * pi, 30));
+1. params_.Nfe = 100;
+1. params_.norm_L_threshold = 1;
+
+
+
+39
+1. params_.L_threshold = params_.norm_L_threshold;
+1. params_.alpha = 0.5;
+1. params_.Iter_max = 10;
+1. bandwidth = 100;
+1. num_cases = 5000;
+1. success_flag = zeros(1, num_cases);
+1. cpu_time = zeros(1, num_cases);
+1. xv_library = 50*rand(1,num_cases);
+1. yv_library = 70*rand(1,num_cases);
+1. theta0_library = -1.6+(3.2)*rand(1,num_cases);
+1. yvtf_library = abs(50*rand(1,num_cases));
+1. thetatf_library = -1.6+(3.2)*rand(1,num_cases);
+1.
+1. for case_id = 1:num_cases
+1. clc;
+1. str=['Iterations =' num2str(case_id)];
+1. disp(str);
+1. str1=['Success flag =' num2str(success_flag)];
+1. disp(str1);
+1. case_str = ['BenchmarkCases\', num2str(1)];
+1. global boundary_configs_ obstacles_ original_obstacle_layers_
+1. load(case_str);
+1. tic;
+1. WriteBoundaryValuesAndBasicParams(Nv, Nobs);
+1. [init_x, init_y, init_theta, init_v, init_a, init_phy, init_w] = GenerateInitialGue
+ss(Nv);
+1. iter = 0; fail_flag = 0;
+1. while (~IsCollisionFree(init_x, init_y, init_theta))
+1. if (iter > params_.Iter_max)
+1. fail_flag = 1;
+1. break;
+1. end
+1. WriteObstaclesForReducedNLP(init_x, init_y, init_theta, Nv);
+1. !ampl rr.run
+1. load opti_flag.txt
+1. if (~opti_flag)
+1. params_.L_threshold = params_.L_threshold * params_.alpha;
+1. else
+1. [init_x, init_y, init_theta, init_phy] = UpdateInitialGuess(Nv);
+1. params_.L_threshold = params_.norm_L_threshold;
+1. end
+1. iter = iter + 1;
+1. end
+1. cpu_time(case_id) = toc;
+
+
+
+40
+1. if (~fail_flag)
+1. success_flag(case_id) = 1;
+1. GenerateVideo_task04(init_x, init_y, init_theta, init_phy);
+1. else
+1. success_flag(case_id) = 0;
+1. end
+1. end
+
+1. %% WriteObstaclesForReducedNLP.m
+1. function  num_constraints= WriteObstaclesForReducedNLP( x, y, theta, Nv)
+1. global  params_
+1. Nfe= params_. Nfe;
+1. index= ones( Nfe, Nv- 1, Nv- 1).*- 99;
+1. num_conflict_vehicles= ones( Nfe, Nv- 1).*- 99;
+1. num_v2v_constraints= 0;
+1. for  ii= 1: Nfe
+1. for  jj= 1:( Nv- 1)
+1. counter= 0;
+1. for  kk=( jj+ 1): Nv
+1. if (~ IsConfig1FarFromConfig2([ x( jj, ii), y( jj, ii), theta( jj, ii)],[ x
+( kk, ii), y( kk, ii), theta( kk, ii)]))
+1. counter= counter+ 1;
+1. num_v2v_constraints= num_v2v_constraints+ 1;
+1. index( ii, jj, counter)= kk;
+1. end
+1. end
+1. num_conflict_vehicles( ii, jj)= counter;
+1. end
+1. end
+1.
+1. delete( 'IND_V2V');
+1. fid= fopen( 'IND_V2V', 'w');
+1. for  ii= 1: Nfe
+1. for  jj= 1:( Nv- 1)
+1. for  kk= 1:( Nv- 1)
+1. fprintf( fid, '%g  %g  %g  %g\r\n', ii, jj, kk, index( ii, jj, kk));
+1. end
+1. end
+1. end
+1. fclose( fid);
+1.
+1. delete( 'NUM_IND_V2V');
+
+
+
+41
+1. fid= fopen( 'NUM_IND_V2V', 'w');
+1. for  ii= 1: Nfe
+1. for  jj= 1:( Nv- 1)
+1. fprintf( fid, '%g  %g  %g\r\n', ii, jj, num_conflict_vehicles( ii, jj));
+1. end
+1. end
+1. fclose( fid);
+1.
+1. global  obstacles_
+1. Nobs= size( obstacles_, 2);
+1. Precision= length( obstacles_{ 1, 1});
+1. index_list= round( linspace( 1, Precision, Nfe));
+1. delete( 'OBS_XY');
+1. fid= fopen( 'OBS_XY', 'w');
+1. for  ii= 1: Nobs
+1. elem= obstacles_{ 1, ii};
+1. for  jj= 1: Nfe
+1. frame= elem{ 1, index_list( jj)};
+1. fprintf( fid, '%g  %g  1  %f\r\n', ii, jj, frame. x);
+1. fprintf( fid, '%g  %g  2  %f\r\n', ii, jj, frame. y);
+1. fprintf( fid, '%g  %g  3  %f\r\n', ii, jj, frame. radius);
+1. end
+1. end
+1. fclose( fid);
+1.
+1. index= ones( Nfe, Nv, Nobs).*- 99;
+1. num_conflict_obstacles= ones( Nfe, Nv).*- 99;
+1. num_v2o_constraints= 0;
+1. for  ii= 1: Nfe
+1. for  jj= 1: Nv
+1. counter= 0;
+1. for  kk= 1: Nobs
+1. obs= obstacles_{ 1, kk};
+1. frame= obs{ 1, index_list( ii)};
+1. if (~ IsConfigFarFromObstacle([ x( jj, ii), y( jj, ii), theta( jj, ii)], fr
+ame. x, frame. y, frame. radius))
+1. counter= counter+ 1;
+1. num_v2o_constraints= num_v2o_constraints+ 1;
+1. index( ii, jj, counter)= kk;
+1. end
+1. end
+1. num_conflict_obstacles( ii, jj)= counter;
+1. end
+1. end
+
+
+
+42
+1.
+1. delete( 'IND_V2O');
+1. fid= fopen( 'IND_V2O', 'w');
+1. for  ii= 1: Nfe
+1. for  jj= 1: Nv
+1. for  kk= 1: Nobs
+1. fprintf( fid, '%g  %g  %g  %g\r\n', ii, jj, kk, index( ii, jj, kk));
+1. end
+1. end
+1. end
+1. fclose( fid);
+1.
+1. delete( 'NUM_IND_V2O');
+1. fid= fopen( 'NUM_IND_V2O', 'w');
+1. for  ii= 1: Nfe
+1. for  jj= 1: Nv
+1. fprintf( fid, '%g  %g  %g\r\n', ii, jj, num_conflict_obstacles( ii, jj));
+1. end
+1. end
+1. fclose( fid);
+1.
+1. num_constraints= 4* num_v2v_constraints+ 2* num_v2o_constraints;
+1. end
+1.
+1. function  is_distant= IsConfig1FarFromConfig2( vec1, vec2)
+1. global  params_
+1. xr=[ vec1( 1), vec2( 1)]+ params_. r2p* cos([ vec1( 3), vec2( 3)]);
+1. yr=[ vec1( 2), vec2( 2)]+ params_. r2p* sin([ vec1( 3), vec2( 3)]);
+1. xf=[ vec1( 1), vec2( 1)]+ params_. f2p* cos([ vec1( 3), vec2( 3)]);
+1. yf=[ vec1( 2), vec2( 2)]+ params_. f2p* sin([ vec1( 3), vec2( 3)]);
+1. P11=[ xr( 1), yr( 1)];
+1. P12=[ xf( 1), yf( 1)];
+1. P21=[ xr( 2), yr( 2)];
+1. P22=[ xf( 2), yf( 2)];
+1. distance= min([ norm( P11- P21), norm( P11- P22), norm( P12- P21), norm( P12- P22)])-
+2* params_. radius;
+1.
+1. if ( distance> params_. L_threshold)
+1. is_distant= 1;
+1. else
+1. is_distant= 0;
+1. end
+1. end
+1.
+
+
+
+43
+1. function  is_distant= IsConfigFarFromObstacle( vec, obs_x, obs_y, obs_radius)
+1. global  params_
+1. xr= vec( 1)+ params_. r2p* cos( vec( 3));
+1. yr= vec( 2)+ params_. r2p* sin( vec( 3));
+1. xf= vec( 1)+ params_. f2p* cos( vec( 3));
+1. yf= vec( 2)+ params_. f2p* sin( vec( 3));
+1. P1=[ xr, yr];
+1. P2=[ xf, yf];
+1. P0=[ obs_x, obs_y];
+1. distance= min([ norm( P1- P0), norm( P2- P0)])- params_. radius- abs( obs_radius);
+1. if ( distance> params_. L_threshold)
+1. is_distant= 1;
+1. else
+1. is_distant= 0;
+1. end
+1. end
+
+1. function WriteBoundaryValuesAndBasicParams(Nv, Nobs)
+1. global params_ boundary_configs_
+1.
+1. warning off
+1. delete('BV');
+1. fid = fopen('BV', 'w');
+1. for ii = 1 : size(boundary_configs_,2)
+1. theta0 = boundary_configs_{1,ii}.theta0;
+1. thetatf = boundary_configs_{1,ii}.thetatf;
+1. while (thetatf - theta0 > pi + 0.01)
+1. thetatf = thetatf - 2 * pi;
+1. end
+1. while (thetatf - theta0 < -pi - 0.01)
+1. thetatf = thetatf + 2 * pi;
+1. end
+1. fprintf(fid, '%g 1  %f\r\n', ii, boundary_configs_{1,ii}.x0);
+1. fprintf(fid, '%g 2  %f\r\n', ii, boundary_configs_{1,ii}.y0);
+1. fprintf(fid, '%g 3  %f\r\n', ii, boundary_configs_{1,ii}.theta0);
+1. fprintf(fid, '%g 4  %f\r\n', ii, boundary_configs_{1,ii}.xtf);
+1. fprintf(fid, '%g 5  %f\r\n', ii, boundary_configs_{1,ii}.ytf);
+1. fprintf(fid, '%g 6  %f\r\n', ii, thetatf);
+1. end
+1. fclose(fid);
+1.
+1. delete('BP');
+1. fid = fopen('BP', 'w');
+
+
+
+44
+1. fprintf(fid, '1  %f\r\n', params_.wheelbase);
+1. fprintf(fid, '2  %f\r\n', params_.radius);
+1. fprintf(fid, '3  %f\r\n', params_.r2p);
+1. fprintf(fid, '4  %f\r\n', params_.f2p);
+1.
+1. fprintf(fid, '5  %f\r\n', params_.v_max);
+1. fprintf(fid, '6  %f\r\n', params_.a_max);
+1. fprintf(fid, '7  %f\r\n', params_.phy_max);
+1. fprintf(fid, '8  %f\r\n', params_.w_max);
+1.
+1. fprintf(fid, '9  %f\r\n', params_.tf);
+1. fprintf(fid, '10  %g\r\n', Nv);
+1. fprintf(fid, '11  %g\r\n', params_.Nfe);
+1. fprintf(fid, '12  %g\r\n', Nobs);
+1. fclose(fid);
+1. end
+
+1. %% UpdateInitialGuess.m
+1. function [init_x, init_y, init_theta, init_phy] = UpdateInitialGuess(Nv)
+1. global params_
+1.
+1. load x.txt; load y.txt; load theta.txt; load phy.txt;
+1. init_x = reshape(x', params_.Nfe, Nv)';
+1. init_y = reshape(y', params_.Nfe, Nv)';
+1. init_theta = reshape(theta', params_.Nfe, Nv)';
+1. init_phy = reshape(phy', params_.Nfe, Nv)';
+1. end
+
+1. %% UpdateObstacleLayers
+1. function UpdateObstacleLayers(x, y, theta)
+1. global original_obstacle_layers_ vehicle_geometrics_ xyt_graph_search_
+1. xr = x + vehicle_geometrics_.r2p * cos(theta);
+1. yr = y + vehicle_geometrics_.r2p * sin(theta);
+1. xf = x + vehicle_geometrics_.f2p * cos(theta);
+1. yf = y + vehicle_geometrics_.f2p * sin(theta);
+1.
+1. for ii = 1 : length(x)
+1. x = xr(ii) + xyt_graph_search_.Rcos_ang;
+1. y = yr(ii) + xyt_graph_search_.Rsin_ang;
+1. x = [x, xf(ii) + xyt_graph_search_.Rcos_ang];
+1. y = [y, yf(ii) + xyt_graph_search_.Rsin_ang];
+
+
+
+45
+1. original_obstacle_layers_{1,ii}.x = [original_obstacle_layers_{1,ii}.x, x];
+1. original_obstacle_layers_{1,ii}.y = [original_obstacle_layers_{1,ii}.y, y];
+1. end
+1. end
+
+1. NLP.mod
+1. param BP{i in {1..12}};
+1. param wheelbase == BP[1];
+1. param FourSqR == 4 * ((BP[2])^2);
+1. param R == BP[2];
+1. param r2p == BP[3];
+1. param f2p == BP[4];
+1. param vmax == BP[5];
+1. param amax == BP[6];
+1. param phymax == BP[7];
+1. param wmax == BP[8];
+1. param tf == BP[9];
+1. param Nv == BP[10];
+1. param Nfe == BP[11];
+1. param Nobs == BP[12];
+1. param hi = tf / Nfe;
+1.
+1. param BV{i in {1..Nv}, j in {1..6}};
+1. param IND_V2V{i in {1..Nfe}, j in {1..(Nv-1)}, k in {1..(Nv-1)}};
+1. param NUM_IND_V2V{i in {1..Nfe}, j in {1..(Nv-1)}};
+1. param OBS_XY{i in {1..Nobs}, j in {1..Nfe}, k in {1..3}};
+1. param IND_V2O{i in {1..Nfe}, j in {1..Nv}, k in {1..Nobs}};
+1. param NUM_IND_V2O{i in {1..Nfe}, j in {1..Nv}};
+1.
+1. var x{i in {1..Nv}, j in {1..Nfe}};
+1. var y{i in {1..Nv}, j in {1..Nfe}};
+1. var xf{i in {1..Nv}, j in {1..Nfe}};
+1. var yf{i in {1..Nv}, j in {1..Nfe}};
+1. var xr{i in {1..Nv}, j in {1..Nfe}};
+1. var yr{i in {1..Nv}, j in {1..Nfe}};
+1. var theta{i in {1..Nv}, j in {1..Nfe}};
+1. var v{i in {1..Nv}, j in {1..Nfe}};
+1. var a{i in {1..Nv}, j in {1..Nfe}};
+1. var phy{i in {1..Nv}, j in {1..Nfe}};
+1. var w{i in {1..Nv}, j in {1..Nfe}};
+1.
+1. minimize cost_function:
+1. hi * sum{i in {1..Nv}, j in {1..Nfe}}(d[i,j]^2 + t[i,j]^2);
+
+
+
+46
+1.
+1. s.t. Bonds_x {k in {1..Nv}, i in {1..Nfe}}:
+1. 0 <= x[k,i] <= 50;
+1. s.t. Bonds_y {k in {1..Nv}, i in {1..Nfe}}:
+1. 0 <= y[k,i] <= 70;
+1. s.t. Bonds_vE {k in {1..Nv}, i in {1..Nfe}}:
+1. vE[k,i] = vE_max;
+1. s.t. Bonds_vP {k in {1..Nv}, i in {1..Nfe}}:
+1. vP[k,i] = vP_max;
+1. s.t. Bonds_vT {k in {1..Nv}, i in {1..Nfe}}:
+1. vT[k,i] = vT_max;
+1. s.t. Bonds_RP {k in {1..Nv}, i in {1..Nfe}}:
+1. RP[k,i] >= 0.3;
+1. s.t. Bonds_RH {k in {1..Nv}, i in {1..Nfe}}:
+1. RH[k,i] >= 1.0;
+1. s.t. Bonds_RE {k in {1..Nv}, i in {1..Nfe}}:
+1. RE[k,i] >= 0.5;
+1. s.t. Bonds_M {k in {1..Nv}, i in {1..Nfe}}:
+1. M[k,i] >= 70;
+1. s.t. Bonds_tE {k in {1..Nv}, i in {1..Nfe}}:
+1. tE[k,i] >= 360;
+1. s.t. Bonds_Pkm {k in {1..Nv}, i in {1..Nfe}}:
+1. abs(Pkm[k,i]-Pkm[k,i-1])^2 = abs(Pkm[k,i]-Pkm[k,i+1])^2 ;
+1. s.t. Bonds_PI {k in {1..Nv}, i in {1..Nfe}}:
+1. PI[k,i] >= 0.03
+1. s.t. Bonds_HP {k in {1..Nv}, i in {1..Nfe}}:
+1. HP[k,i] >= 0.1
+1. s.t. Bonds_HE {k in {1..Nv}, i in {1..Nfe}}:
+1. HE[k,i] >= 5
+1. s.t. Bonds_Pkij {k in {1..Nv}, i in {1..Nfe}}:
+1. Pkij[k,i] >= 0.2
+1.
+1. s.t. DIFF_dxdt {k in {1..Nv}, i in {2..Nfe}}:
+1. x[k,i] = x[k,i-1] + hi * v[k,i] * cos(theta[k,i]);
+1. s.t. DIFF_dydt {k in {1..Nv}, i in {2..Nfe}}:
+1. y[k,i] = y[k,i-1] + hi * v[k,i] * sin(theta[k,i]);
+1. s.t. DIFF_dvdt {k in {1..Nv}, i in {2..Nfe}}:
+1. v[k,i] = v[k,i-1] + hi * a[k,i];
+1. s.t. DIFF_dthetadt {k in {1..Nv}, i in {2..Nfe}}:
+1. theta[k,i] = theta[k,i-1] + hi * tan(phy[k,i]) * v[k,i] / wheelbase;
+1. s.t. DIFF_dphydt {k in {1..Nv}, i in {2..Nfe}}:
+1. phy[k,i] = phy[k,i-1] + hi * w[k,i];
+1.
+1. s.t. RELATIONSHIP_XF {k in {1..Nv}, i in {1..Nfe}}:
+
+
+
+47
+1. xf[k,i] = x[k,i] + f2p * cos(theta[k,i]);
+1. s.t. RELATIONSHIP_YF {k in {1..Nv}, i in {1..Nfe}}:
+1. yf[k,i] = y[k,i] + f2p * sin(theta[k,i]);
+1. s.t. RELATIONSHIP_XR {k in {1..Nv}, i in {1..Nfe}}:
+1. xr[k,i] = x[k,i] + r2p * cos(theta[k,i]);
+1. s.t. RELATIONSHIP_YR {k in {1..Nv}, i in {1..Nfe}}:
+1. yr[k,i] = y[k,i] + r2p * sin(theta[k,i]);
+1.
+1.
+1. ### Collision Avoidance Type 1 ###
+1. s.t. ObsToFrontDics {i in {1..Nfe}, j in {1..Nv}, k in {1..NUM_IND_V2O[i,j]}}:
+1. (xf[j,i] - OBS_XY[IND_V2O[i,j,k],i,1])^2 + (yf[j,i] - OBS_XY[IND_V2O[i,j,k],i,2])^2 >=
+(R + OBS_XY[IND_V2O[i,j,k],i,3])^2;
+1.
+1. s.t. ObsToRearDics {i in {1..Nfe}, j in {1..Nv}, k in {1..NUM_IND_V2O[i,j]}}:
+1. (xr[j,i] - OBS_XY[IND_V2O[i,j,k],i,1])^2 + (yr[j,i] - OBS_XY[IND_V2O[i,j,k],i,2])^2 >=
+(R + OBS_XY[IND_V2O[i,j,k],i,3])^2;
+1.
+1. ### Collision Avoidance Type 2 ###
+1. s.t. VehicleItoJff {i in {1..Nfe}, j in {1..(Nv-1)}, k in {1..NUM_IND_V2V[i,j]}}:
+1. (xf[j,i] - xf[IND_V2V[i,j,k],i])^2 + (yf[j,i] - yf[IND_V2V[i,j,k],i])^2 >= FourSqR;
+1.
+1. s.t. VehicleItoJrr {i in {1..Nfe}, j in {1..(Nv-1)}, k in {1..NUM_IND_V2V[i,j]}}:
+1. (xr[j,i] - xr[IND_V2V[i,j,k],i])^2 + (yr[j,i] - yr[IND_V2V[i,j,k],i])^2 >= FourSqR;
+1.
+1. s.t. VehicleItoJfr {i in {1..Nfe}, j in {1..(Nv-1)}, k in {1..NUM_IND_V2V[i,j]}}:
+1. (xf[j,i] - xr[IND_V2V[i,j,k],i])^2 + (yf[j,i] - yr[IND_V2V[i,j,k],i])^2 >= FourSqR;
+1.
+1. s.t. VehicleItoJrf {i in {1..Nfe}, j in {1..(Nv-1)}, k in {1..NUM_IND_V2V[i,j]}}:
+1. (xr[j,i] - xf[IND_V2V[i,j,k],i])^2 + (yr[j,i] - yf[IND_V2V[i,j,k],i])^2 >= FourSqR;
+1.
+1.
+1. s.t. EQ_init_x {m in {1..Nv}}:
+1. x[m,1] = BV[m,1];
+1. s.t. EQ_init_y {m in {1..Nv}}:
+1. y[m,1] = BV[m,2];
+1. s.t. EQ_init_theta {m in {1..Nv}}:
+1. theta[m,1] = BV[m,3];
+1. s.t. EQ_init_v {m in {1..Nv}}:
+1. v[m,1] = 0.25;
+1. # v[m,1] = 0;
+1. s.t. EQ_init_a {m in {1..Nv}}:
+1. a[m,1] = 0;
+1. s.t. EQ_init_phy {m in {1..Nv}}:
+
+
+
+48
+1. phy[m,1] = 0;
+1. s.t. EQ_init_w {m in {1..Nv}}:
+1. w[m,1] = 0;
+1. s.t. EQ_end_x {m in {1..Nv}}:
+1. x[m,Nfe] = BV[m,4];
+1. s.t. EQ_end_y {m in {1..Nv}}:
+1. y[m,Nfe] = BV[m,5];
+1. s.t. EQ_end_theta {m in {1..Nv}}:
+1. tan(theta[m,Nfe]) = tan(BV[m,6]);
+1. #theta[m,Nfe] = BV[m,6];
+1.
+1. s.t. EQ_end_v {m in {1..Nv}}:
+1. v[m,Nfe] = 0;
+1. # v[m,Nfe] = 0.25;
+1. s.t. EQ_end_a {m in {1..Nv}}:
+1. a[m,Nfe] = 0;
+1. s.t. EQ_end_phy {m in {1..Nv}}:
+1. phy[m,Nfe] = 0;
+1. s.t. EQ_end_w {m in {1..Nv}}:
+1. w[m,Nfe] = 0;
+1.
+1. data;
+1. param: BV := include BV;
+1. param: BP := include BP;
+1. param: IND_V2V := include IND_V2V;
+1. param: NUM_IND_V2V := include NUM_IND_V2V;
+1. param: OBS_XY := include OBS_XY;
+1. param: IND_V2O := include IND_V2O;
+1. param: NUM_IND_V2O := include NUM_IND_V2O;
+
+1. runNLP.run
+1. reset;
+1. model NLP.mod;
+1. include IG.INIVAL;
+1. option solver ipopt;
+1.
+1. shell ("del " & ("opti_flag.txt"));
+1. printf "0">>("opti_flag.txt");
+1. close ("opti_flag.txt");
+1.
+1. solve;
+1.
+1. shell ("del " & ("opti_flag.txt"));
+
+
+
+49
+1. if match (solve_message, "Optimal") > 0 then {
+1. printf "1">>("opti_flag.txt");
+1. } else{
+1. printf "0">>("opti_flag.txt");
+1. }
+1. close ("opti_flag.txt");
+1.
+1. shell ("del " & ("x.txt"));
+1. shell ("del " & ("y.txt"));
+1. shell ("del " & ("theta.txt"));
+1. shell ("del " & ("phy.txt"));
+1.
+1. for {i in {1..Nv}} {
+1. for {j in {1..Nfe}} {
+1. printf "%5.4f;", x[i,j]>>("x.txt");
+1. printf "%5.4f;", y[i,j]>>("y.txt");
+1. printf "%5.4f;", theta[i,j]>>("theta.txt");
+1. printf "%5.4f;", phy[i,j]>>("phy.txt");
+1. }
+1. }
+1. close ("x.txt");
+1. close ("y.txt");
+1. close ("theta.txt");
+1. close ("phy.txt");
+1.
+1. if match (solve_message, "Optimal") > 0 then {
+1. shell ("del " & ("IG.INIVAL"));
+1. for {k in {1..Nv}} {
+1. for {i in {1..Nfe}} {
+1. printf "let x[%d,%d]:=%5.3f;\n", k, i, x[k,i]>>("IG.INIVAL");
+1. printf "let y[%d,%d]:=%5.3f;\n", k, i, y[k,i]>>("IG.INIVAL");
+1. printf "let xr[%d,%d]:=%5.3f;\n", k, i, xr[k,i]>>("IG.INIVAL");
+1. printf "let yr[%d,%d]:=%5.3f;\n", k, i, yr[k,i]>>("IG.INIVAL");
+1. printf "let xf[%d,%d]:=%5.3f;\n", k, i, xf[k,i]>>("IG.INIVAL");
+1. printf "let yf[%d,%d]:=%5.3f;\n", k, i, yf[k,i]>>("IG.INIVAL");
+1. printf "let theta[%d,%d]:=%5.3f;\n", k, i, theta[k,i]>>("IG.INIVAL");
+1. printf "let v[%d,%d]:=%5.3f;\n", k, i, v[k,i]>>("IG.INIVAL");
+1. printf "let a[%d,%d]:=%5.3f;\n", k, i, a[k,i]>>("IG.INIVAL");
+1. printf "let phy[%d,%d]:=%5.3f;\n", k, i, phy[k,i]>>("IG.INIVAL");
+1. printf "let w[%d,%d]:=%5.3f;\n", k, i, w[k,i]>>("IG.INIVAL");
+1. }
+1. }
+1. }

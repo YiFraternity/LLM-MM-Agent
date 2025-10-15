@@ -138,12 +138,12 @@ h_t &= \omega + \sum_{i=1}^q \alpha_i v_{t-i}^2 + \sum_{j=1}^p \gamma_j h_{t-j}
     \item \textbf{模型的建立}
 
     Logistic 模型的描述如下：
-    \begin{align*}
-Y_t &= u + \sum_{i=1}^k \phi_i Y_{t-i} + u_t \\
-u_t &= v_t - \sum_{i=1}^m \varphi_i u_{t-i} \\
-v_t &= \sqrt{h_t} e_t \\
-h_t &= \omega + \sum_{i=1}^q \alpha_i v_{t-i}^2 + \sum_{j=1}^p \gamma_j h_{t-j}
-\end{align*}
+    \begin{equation}
+        \begin{cases}
+            \dfrac{dN(t)}{dt} = (a - bN(t)) \cdot N(t) \\
+            N(t_0) = N(0)
+        \end{cases}
+    \end{equation}
     $N(t)$ 为 $t$ 时刻的人口总量，$N(0)$ 为初始人口总量，$a, b$ 为待定参数。
 
     \item \textbf{模型的求解}

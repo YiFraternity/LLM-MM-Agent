@@ -133,11 +133,9 @@ DNA 是脱氧核糖核酸的简称，是绝大部分生物遗传信息的化学�
 
 为简化信噪比的计算，我们进行以下分析：令 $x_{b}, y_{b}, z_{b}$ 分别表示各核苷酸 $b$ 在 3 个密码子位置上的频数，即核苷酸 $b$ 在序列的 $0, 3, 6, \ldots$ 和 $1, 4, 7, \ldots$ 以及 $2, 5, 8, \ldots$ 位置上分别出现的频数。其中 $b \in I$, $I = \{A, T, G, C\}$，有公式如下：
 
-\begin{align}
-X(m) &= \sum_{n=0}^{M-1} x(n) e^{-j2\pi n/3} \\
-&= 2 \sum_{n=0}^{M-1} \left[ x_A(n) + x_G(n) \right] e^{-j2\pi n/3} - \sum_{n=0}^{M-1} e^{-j2\pi n/3}
-\tag{4-12}
-\end{align}
+\begin{equation}
+P\left[\frac{N}{3}\right] = \sum_{b \in I} \left| U_{b}\left[\frac{N}{3}\right] \right|^{2} = \sum_{b \in I} \left| \sum_{n=0}^{N-1} u_{b}[n] \cdot e^{-j \frac{2\pi n \cdot \frac{N}{3}}{N}} \right|^{2} = \sum_{b \in I} \left| \sum_{n=0}^{N-1} u_{b}[n] \cdot e^{-j \frac{2\pi}{3} n} \right|^{2}
+\end{equation}
 
 \begin{equation}
 = \sum_{b \in I} \left| x_{b} + y_{b} \cdot e^{-j \frac{2\pi}{3}} + z_{b} \cdot e^{j \frac{2\pi}{3}} \right|^{2} = \sum_{b \in I} \left( x_{b}^{2} + y_{b}^{2} + z_{b}^{2} - x_{b} y_{b} - x_{b} z_{b} - y_{b} z_{b} \right)

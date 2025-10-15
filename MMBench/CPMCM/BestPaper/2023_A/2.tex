@@ -24,9 +24,7 @@
 \textbf{关键字：} 网络信道 马尔科夫链 分布式协调 状态机
 \end{abstract}
 
-\begin{flushright}
-1
-\end{flushright}
+\tableofcontents
 
 \section{问题重述}
 
@@ -76,15 +74,36 @@ DCF 机制提供了一种分布式、基于竞争的信道接入功能。可将�
 \end{itemize}
 
 \subsection{符号说明}
-\begin{tabular}{l l}
-学 校 & 上海交通大学 \\
+\begin{table}[h]
+\centering
+\begin{tabular}{c c}
 \hline
-参赛队号 & 23102480015 \\
+符号 & 意义 \\
 \hline
-队员姓名 & 1. 税昀昊 \\
-& 2. 陈晓萌 \\
-& 3. 曾卓 \\
+$\tau$ & 发送概率（此时节点退避计数器归零） \\
+\hline
+$p$ & 条件传输失败概率（退避计数器升阶） \\
+\hline
+$\delta$ & 协议中标准时隙长度 \\
+\hline
+$P_{tr}$ & 传输概率 \\
+\hline
+$P_{s}$ & 条件传输成功概率 \\
+\hline
+$T_{s}$ & 成功传输花费时间 \\
+\hline
+$T_{c}$ & 传输失败花费时间 \\
+\hline
+$S^{*}$ & 归一化吞吐 \\
+\hline
+$r$ & 最大重传次数 \\
+\hline
+$W_{i}$ & 第 $i$ 阶竞争窗口大小 \\
+\hline
+$b_{i,k}$ & 当第 $i$ 次重传，退避计数器到达 $k$ 时节点状态 \\
+\hline
 \end{tabular}
+\end{table}
 
 \section{问题分析}
 
@@ -130,13 +149,14 @@ DCF 机制提供了一种分布式、基于竞争的信道接入功能。可将�
 
 令 $b(t)$ 和 $s(t)$ 代表 $t$ 时刻一个节点退避随机过程的退避计数和退避阶数，这里的 $t$ 是一个离散的虚拟时隙的开始时刻。用 $i$ 表示一个数据的发送次数，也叫作阶数，$r$ 为最大重传次数，$m$ 是最大退避阶数，则 $CW$ 可用公式 (4-1) 表示：
 
-\begin{align*}
-T_s &= H + E[P] + SIFS + ACK + DIFS \\
-T_c &= H + E^*[P] + DIFS + ACKTimeout \\
-E[P] &= E^*[P] \\
-E[P] &= \frac{PAYLOAD}{SPEED} \\
-MAC &= \frac{MAC_{length}}{SPEED}
-\end{align*}
+\begin{equation}
+W_i =
+\begin{cases}
+2^i W_0, & 0 \leq i \leq m \\
+2^m W_0, & m \leq i \leq r
+\end{cases}
+\tag{4-1}
+\end{equation}
 
 基于 Markov chain 推导 $\tau$ 和 $p$ 的过程如下：
 
@@ -151,12 +171,15 @@ MAC &= \frac{MAC_{length}}{SPEED}
 
 图中 $p$ 为某个时隙传输失败的概率，Markov chain 一步状态转移概率为(4-2)所示：
 
-\begin{align}
-S &= \frac{P_{s} P_{tr1} E[P]}{\left(1-P_{tr}\right) \sigma+P_{tr} T_{s}} \times SPEED + \nonumber \\
-& \quad \frac{P_{s} P_{tr2} E[P]}{\left(1-P_{tr}\right) \sigma+P_{tr} T_{s}} \times 2SPEED \\
-&= 70.558Mbps
-\tag{6-20}
-\end{align}
+\begin{equation}
+\begin{cases}
+P\{i,k|i,k+1\}=1, & k\in[0,W_{i}-2], i\in[0,r] \\
+P\{0,k|i,0\}=(1-p)/W_{0} & k\in[0,W_{0}-1], i\in[0,r] \\
+P\{0,k|i-1,0\}=p/W_{i} & k\in[0,W_{i}-1], i\in[1,r] \\
+P\{0,k|r,0\}=1/W_{0} & k\in[0,W_{0}-1]
+\end{cases}
+\tag{4-2}
+\end{equation}
 
 式(4-2)中每个式子分别代表一定的物理含义。第一个等式代表，未达到重传上限时，退避计数器在每个空闲时隙的开始时刻减 1 的概率是 1。第二个等式代表，未达到重传上限时，当一个数据成功传输后，新到达的数据在 $[0,W_{0}-1]$ 中等概率选一个随机数进行回退。第三个等式代表，未达到重传上限时，当一个数据第 $i-1$ 次传输过程发生碰撞，节点进入第 $i$ 阶回退过程，并在 $[0,W_{i}-1]$ 中等概率选一个随机数进行回退。最后一个等式代表，当节点到达最大的传输次数以后，无论成功还是失败，CW 都会重置。
 
@@ -216,7 +239,7 @@ p = 1 - (1 - \tau)^{n-1}
 
 由此我们得到了式 4-8 和 4-9 两个含有未知待求参数 \( p \) 和 \( \tau \) 的二元非线性方程组，联立即可求解。
 
-\section{基于节点 Markov chain 建模的信道吞吐计算}
+\subsection{基于节点 Markov chain 建模的信道吞吐计算}
 
 在上述的建模过程中，我们是基于多 BSS 系统（仅下行）中的单个节点进行分析的，下面将介绍如何利用单节点的建模计算出信道吞吐的过程。
 
@@ -267,13 +290,10 @@ MAC &= \frac{MAC_{length}}{SPEED}
 对于上述两者的计算，则可以通过我们对节点建立的 Markov chain 求解，至此我们就建立出来单节点的 Markov chain 和信道状态的关系。
 
 所以，对于传输概率 \( P_{tr} \)，其物理意义是至少有一个节点，在这个时隙内准备传输。对于基本的传输模型，它的表达式为
-\begin{align}
-p_h &= \sum_{i=l_p}^r \sum_{j=k+1}^{W_i-1} b_{i,j} \\
-&= \sum_{i=l_p}^r b_{i,0} \sum_{n=k+1}^{W_i-1} \frac{W_i - n}{W_i} \\
-&= \sum_{i=l_p}^r b_{i,0} \frac{(W_i - k - 1)(W_i - k)}{2W_i} \\
-&= \sum_{i=l_p}^r p^i b_{0,0} \frac{(W_i - k - 1)(W_i - k)}{2W_i}
-\tag{6-31}
-\end{align}
+\begin{equation}
+P_{tr} = 1 - (1 - \tau)^n
+\tag{4-12}
+\end{equation}
 
 该式子中的 \( n \) 是指总的竞争节点数目，由于我们的模型假设中是单一信道网络，并且始终计算饱和吞吐量，所以可以认为所有的节点都在竞争信道。
 
@@ -349,7 +369,7 @@ S^* = \frac{P_sP_{tr}E[P]}{(1-P_{tr})\sigma + P_sP_{tr}T_s + P_{tr}(1-P_s)T_c}
 \label{fig:state_diagram}
 \end{figure}
 
-\section{仿真主算法简述}
+\subsection{仿真主算法简述}
 
 在对信道模型以及节点模型进行建立之后，我们可以将节点封装为一个类，只需要通过传递每个时刻的信道状态，每个节点便会在内部进行状态的转化。我们可以运用离散事件的思想，通过设置一个最大仿真时间，在每一个时刻对每个节点的状态进行更新，再通过节点此时状态对信道状态进行更新。在每个循环最后，我们会统计已经成功传输的节点，将有效载荷发送时长进行统计。
 
@@ -576,13 +596,12 @@ S^{*}=\frac{P_{s} P_{tr} E[P]}{\left(1-P_{tr}\right) \sigma+P_{tr} T_{s}}=0.2412
 \end{equation}
 
 在求实际吞吐时，并发时传输成功，单位时间内传输的比特数是不并发时的两倍，故而此时的物理速率可以看作为单发时的 2 倍，同理我们将 $P_{tr}$ 看作两部分，分别由只有一个节点发送概率 $P_{tr1}$（两个节点中选一个节点发送）和两个节点并发概率 $P_{tr2}$（两个节点同时发送）构成，此时有：
-\begin{align*}
-T_s &= H + E[P] + SIFS + ACK + DIFS \\
-T_c &= H + E^*[P] + DIFS + ACKTimeout \\
-E[P] &= E^*[P] \\
-E[P] &= \frac{PAYLOAD}{SPEED} \\
-MAC &= \frac{MAC_{length}}{SPEED}
-\end{align*}
+\begin{align}
+P_{tr1} &= C_{2}^{1} \tau(1-\tau) \\
+P_{tr2} &= \tau^{2} \\
+P_{tr} &= P_{tr1}+P_{tr2}
+\tag{6-19}
+\end{align}
 
 也就是说，在信道有效信息传输的时间中，一部分时间时单发传输，一部分是并发传输，而总的虚拟时隙时间不会因为是否并发而变化，那么实际的信道吞吐量为：
 \begin{align}
@@ -618,7 +637,7 @@ S^{*}=0.23326
 
 在问题三中，两个 AP 之间的 RSSI 被设定为 -90dBm，小于 CAA 阈值 -84dBm，这意味着两个 AP 之间不互听，那么 AP 会一直认为信道为空闲状态，其会不断的尝试发送信号，这就意味着，此时和互听状况不同，当一个 AP 向其对应的 STA 传输数据的时候，另一个 AP 也可能向它对应的 STA 发送信号，那么就会存在交叠的状况。另外，在基本模型中，我们假设了理想信道，不会因为信道质量而丢包，在问题三的要求中，我们需要考虑实际的传输情况下，当有遮挡物或者人走动时，无线信道都可能会快速发生比较大的变化。当仅有一个 AP 发送数据时，即便不存在邻 BSS 干扰，也会有 10\% 以内不同程度的丢包，丢包时我们认为此时可视作一次需要重传的失败传输而不是直接丢弃数据帧，从而重新回到升阶后的随机回避阶段。该丢包的含义为数据包在发送的过程中，STA 由于自身接收机的异常导致包的解调失败，也就是说如果数据包丢失，该包也在信道中存在，从而可以得出结论：丢包过程是在接收端发生的，不影响传输过程，如果传输过程中发生了交叠，那么在接收端依然是交叠的情况。在该问题中，两个 AP 间 SIR 较小，一旦两个 AP 发包在时间上有交叠时，由于 SIR 比较小，会导致两个 AP 的发包均失败。
 
-\subsubsection{交叠过程分析}
+交叠过程分析
 
 对于该问题，我们依然沿用前面的研究方法，首先分析该条件下的信道状态，第三问最大的区别就是，当两个 AP 不互听的时候，AP 总是认为信道空闲，从而不断尝试发送信息，导致所有 AP 在传输数据的时候，不进行 hold，从而导致信号交叠。在此问题中，来
 
@@ -636,11 +655,11 @@ S^{*}=0.23326
 
 综上所述，当且仅当信号和干扰发生交叠的时候，会导致传输失败。
 
-\subsection{二维 Markov chain 建模}
+二维 Markov chain 建模
 
 所以，我们可以分析出信道可能所处的状态为：空闲，传输成功（不交叠），传输失败（交叠）。类似的，我们将信道的每个状态看作一个虚拟时隙，信道在三种虚拟时隙中转化，由于节点的对称性，我们将其中一个节点的退避器所处阶数和随机回退数用二维 Markov chain 表示。我们在这里构建出和基本模型结构一致，但参数含义略有不同，将在后续进行
 
-\subsection{模型求解}
+\subsubsection{模型求解}
 
 \subsubsection{$p$ 的重构}
 
@@ -703,7 +722,7 @@ P_s = \frac{C_2^1\tau p_h(1-P_e)}{P_{tr}}
 
 式 5-21 即最终的本问题中的 $P_s$ 表达式。
 
-\subsubsection{$S$ 的重构}
+$S$ 的重构
 
 在问题一和问题二中，都是互听的，从信道时序上来看，信道在传输成功时是以 $T_s$ 的稳定间隔运行的，如图 6.5 中 (a) 所示，也就是说在互听的情况下，信道状态中传输成功是离散的进行转移。但是我们发现，在第三问中，由于引入了交叠现象，信道在传输成功时，其运行的时间长度将不再是一个常数，如图 6.5 中 (b) 所示，在传输成功的情况中，当传输两个包成功时，存在有传输时间中的 SIFS 和 ACK 段重叠的可能性（我们在此称之为无关
 
@@ -755,7 +774,7 @@ E[P]' = \frac{p_h * 2EP}{p_h} + \frac{(p_h - p_u) * EP}{p_h}
 
 我们定义当一个时隙中成功传输一个数据包时，产生的有效载荷时长为 \( EP \)，在问题三中，正如图 6.5 所示，发生无关交叠时产生的有效载荷传输时长为 \( 2EP \)，所以公式 6-28 的物理含义就是：一次成功传输中不同传输情况的概率乘以此时产生的有效载荷传输时长，相加得到总的载荷传输时长的均值。
 
-\subsubsection{求解计算}
+求解计算
 
 经过上述分析，求解过程如下，首先依据基本模型，有：
 
@@ -827,7 +846,8 @@ S^* = \frac{P_s P_{tr} \left( \frac{p_h * 2E[P]}{p_h} + \frac{(p_h - p_u) * E[P]
 \subsubsection{仿真验证}
 
 在仿真算法中，我们设置节点个数为 \( num_{nodes} = 2 \), \( sim_{time} = 10000000 \)（一千万微秒）。由于 AP1 与 AP2 间处于不互听的状态，两者会始终认为信道始终处于空闲状态，因此在每个循环会直接在给节点传输信道状态时，直接传递 IDLE\_STATE。对于 SIR 较小导
-
+致数据包交叠时的发包失败，我们会通过检测两个节点发送数据包的起始和结束时间实
+现。运行如上仿真代码，我们可以得到归一化吞吐S∗ 与最终吞吐S 大小如Table 6.2所示
 \begin{table}
 \centering
 \caption{问题三仿真实验计算不同参数下的吞吐}
@@ -1057,4 +1077,1646 @@ S^* = \frac{P_s P_{tr} \left[ \frac{3}{2}EP p_{o_1} + 2EP p_{o_2} + (1 - p_{o_1}
 \end{document}
 
 % Missing placeholders restored
-\includegraphics[width=0.9\textwidth]{image.png}
+\section{附录}
+# 附录A 问题一求解程序
+global r;
+global m;
+global node_num;
+%参数定义
+r = 32;
+CW_min = 16;
+CW_max = 1024;
+m = log2(CW_max/CW_min);
+node_num = 2;
+ACK = 32;
+SIFS = 16;
+DIFS = 43;
+SLOT = 9;
+ACKTimeout = 65;
+PAYLOAD = 1500;
+MAC = 30;
+PHY = 13.6;
+SPEED = 455.8;
+p_t = fsolve(@bianchi_p_tau,[0, 0],optimset('Display','off'));
+%求解马尔科夫链中的转移概率，以及发送概率
+p = p_t(1);
+tau = p_t(2);
+P_tr = 1 - (1-tau)^node_num;
+P_s = node_num * tau * (1-tau)^(node_num-1) / (1 -
+(1-tau)^node_num);
+H = MAC * 8 / SPEED + PHY;
+EP = PAYLOAD * 8 / SPEED;
+T_s = H + EP +SIFS + ACK + DIFS;
+T_c = H + EP + DIFS + ACKTimeout;
+S = P_s*P_tr*EP / ((1-P_tr)*SLOT + P_tr*P_s*T_s + P_tr*(1-P_s)*T_c);
+37
+
+
+
+disp('归一化吞吐量为:')
+disp(S)
+disp('实际吞吐量为:')
+disp(S*SPEED)
+# 附录B 问题二求解程序
+%参数定义
+r = 32;
+CW_min = 16;
+CW_max = 1024;
+m = log2(CW_max/CW_min);
+node_num = 2;
+ACK = 32;
+SIFS = 16;
+DIFS = 43;
+SLOT = 9;
+ACKTimeout = 65;
+PAYLOAD = 1500;
+MAC = 30;
+PHY = 13.6;
+SPEED = 275.3;
+% 一维马尔科夫链求解
+b0 = 2 / (1 + CW_min);
+tau = b0;
+%计算吞吐量
+P_tr = 1 - (1-tau)^node_num;
+P_tr1 = 2*tau*(1-tau);
+P_tr2 = tau^2;
+%P_s = node_num * tau * (1-tau)^(node_num-1) / (1 -
+(1-tau)^node_num);
+P_s = 1;
+H = MAC * 8 / SPEED + PHY;
+38
+
+
+
+EP = PAYLOAD * 8 / SPEED;
+T_s = H + EP +SIFS + ACK + DIFS;
+T_c = T_s;
+S = P_s*P_tr*EP / ((1-P_tr)*SLOT + P_tr*P_s*T_s + P_tr*(1-P_s)*T_c);
+S1 = P_s*P_tr1*EP / ((1-P_tr)*SLOT + P_tr*P_s*T_s +
+P_tr*(1-P_s)*T_c);
+S2 = P_s*P_tr2*EP / ((1-P_tr)*SLOT + P_tr*P_s*T_s +
+P_tr*(1-P_s)*T_c);
+disp('归一化吞吐量为:')
+disp(S)
+disp('实际吞吐量为:')
+disp(S*SPEED)
+disp('实际吞吐量为:')
+disp(S1*SPEED+S2*2*SPEED)
+# 附录C 问题三求解程序
+global CW_max
+global CW_min;
+global r;
+global m;
+global node_num;
+global ACK;
+global SIFS;
+global DIFS;
+global SLOT;
+global ACKTimeout;
+global PAYLOAD;
+global MAC;
+global PHY;
+global SPEED;
+global P_e;
+global p_nonoverlap;
+39
+
+
+
+global b00;
+global l_p;
+global k;
+node_num = 2;
+ACK = 32;
+SIFS = 16;
+DIFS = 43;
+SLOT = 9;
+ACKTimeout = 65;
+PAYLOAD = 1500;
+MAC = 30;
+PHY = 13.6;
+P_e = 0.1;
+fprintf('￿参数序号￿改进归一化吞吐量￿实际吞吐量￿\n');
+rs = [6 5 32 6 5 32];
+CW_mins = [16 32 16 16 32 16];
+CW_maxs = [1024, 1024, 1024, 1024, 1024, 1024];
+SPEEDs = [286.8 286.8 286.8 158.4 158.4 158.4];
+for idx = 1:6
+r = rs(idx);
+CW_min = CW_mins(idx);
+CW_max = CW_maxs(idx);
+SPEED = SPEEDs(idx);
+m = log2(CW_max/CW_min);
+if r <= m
+p_t = fsolve(@q3_markov_solver_1,[0.1,
+1. 1],optimset('Display','off'));
+else
+p_t = fsolve(@q3_markov_solver_2,[0.1,
+1. 1],optimset('Display','off'));
+end
+p = p_t(1);
+tau = p_t(2);
+40
+
+
+
+P_tr = 1 - (1-tau)^node_num;
+P_s = node_num * tau * (1-tau) * (1-P_e) * p_nonoverlap / (1 -
+(1-tau)^node_num);
+H = MAC * 8 / SPEED + PHY;
+EP = PAYLOAD * 8 / SPEED;
+T_s = H + EP +SIFS + ACK + DIFS;
+k_2 = T_s / SLOT;
+p_new_h = 0;
+if r <= m
+for i=l_p:r
+if 2^i*CW_min <= k_2
+p_new_h = p_new_h + p^i * b00 * (2^i*CW_min - k -
+1)*(2^i*CW_min - k) / (2*2^i*CW_min);
+else
+p_new_h = p_new_h + p^i * b00 * (k_2 - k)*(2^i*CW_min -
+k - 1 + 2^i*CW_min - k_2) / (2*2^i*CW_min);
+end
+end
+else
+for i=l_p:m
+if 2^i*CW_min <= k_2
+p_new_h = p_new_h + p^i * b00 * (2^i*CW_min - k -
+1)*(2^i*CW_min - k) / (2*2^i*CW_min);
+else
+p_new_h = p_new_h + p^i * b00 * (k_2 - k)*(2^i*CW_min -
+k - 1 + 2^i*CW_min - k_2) / (2*2^i*CW_min);
+end
+end
+for i=m+1:r
+p_new_h = p_new_h + p^i * b00 * (k_2 - k)*(2^i*CW_min - k
+- 1 + 2^i*CW_min - k_2) / (2*2^i*CW_min);
+end
+41
+
+
+
+end
+T_c = H + EP + DIFS + ACKTimeout;
+T_s_new = (H + EP) / 2 + 3*T_s / 2;
+## S = P_s*P_tr*EP / ((1-P_tr)*SLOT + P_tr*P_s*T_s +
+P_tr*(1-P_s)*T_c);
+# S_new =
+P_s*P_tr*((p_new_h*2*EP/p_nonoverlap)+((p_nonoverlap-p_new_h)*EP/p_nonove
+/ ((1-P_tr)*SLOT + P_tr*P_s*((p_new_h * T_s_new) +
+(p_nonoverlap-p_new_h)*T_s) + P_tr*(1-P_s)*T_c);
+fprintf('￿%6d ￿%13.5f ￿%9.5f ￿\n', idx, S_new, S*SPEED);
+end
+# 附录D 问题四求解代码
+global CW_max
+global CW_min;
+global r;
+global m;
+global node_num;
+global ACK;
+global SIFS;
+global DIFS;
+global SLOT;
+global ACKTimeout;
+global PAYLOAD;
+global MAC;
+global PHY;
+global SPEED;
+global b001;
+global p1;
+node_num = 3;
+ACK = 32;
+SIFS = 16;
+42
+
+
+
+DIFS = 43;
+SLOT = 9;
+ACKTimeout = 65;
+PAYLOAD = 1500;
+MAC = 30;
+PHY = 13.6;
+fprintf('￿参数序号￿改进归一化吞吐量￿实际吞吐量￿\n');
+rs = [6 5 32 6 5 32];
+CW_mins = [16 32 16 16 32 16];
+CW_maxs = [1024, 1024, 1024, 1024, 1024, 1024];
+SPEEDs = [286.8 286.8 286.8 158.4 158.4 158.4];
+for idx = 1:6
+r = rs(idx);
+CW_min = CW_mins(idx);
+CW_max = CW_maxs(idx);
+SPEED = SPEEDs(idx);
+m = log2(CW_max/CW_min);
+k = (PHY + MAC * 8 / SPEED + PAYLOAD * 8 / SPEED) / SLOT;
+k = ceil(k);
+l_p = ceil(log2((k+1)/CW_min));
+if l_p < 0
+l_p = 0;
+end
+if (r <= m)
+p_t = fsolve(@q4_markov_solver_1,[0.1, 0.1, 0.1,
+1. 1],optimset('Display','off'));
+else
+p_t = fsolve(@q4_markov_solver_2,[0.1, 0.1, 0.1,
+1. 1],optimset('Display','off'));
+end
+p1 = p_t(1);
+p2 = p_t(2);
+tau1 = p_t(3);
+tau2 = p_t(4);
+43
+
+
+
+P_tr = 1-(1-tau1)^2*(1-tau2);
+P_s = (2*tau1*(1-tau1)*(1-tau2) + (1-tau1)^2*tau2 +
+tau1^2*(1-tau2)) / P_tr;
+H = MAC * 8 / SPEED + PHY;
+EP = PAYLOAD * 8 / SPEED;
+T_s = H + EP +SIFS + ACK + DIFS;
+T_s_new = 3*T_s / 2;
+T_c = H + EP + DIFS + ACKTimeout;
+k_2 = T_s / SLOT;
+p_old_h = 0; %p1
+p_new_h = 0; %p2
+if r<=m
+for i=0:r
+if 2^i*CW_min <= k_2
+p_old_h = p_old_h + p1^i * b001 * (2^i*CW_min + 1) / 2;
+else
+p_old_h = p_old_h + p1^i * b001 * (k + 1) * (2^i*CW_min
++ 2^i*CW_min - k) / (2*2^i*CW_min);
+end
+end
+else
+for i=0:m
+if 2^i*CW_min <= k_2
+p_old_h = p_old_h + p1^i * b001 * (2^i*CW_min + 1) / 2;
+else
+p_old_h = p_old_h + p1^i * b001 * (k + 1) * (2^i*CW_min
++ 2^i*CW_min - k) / (2*2^i*CW_min);
+end
+end
+for i=m+1:r
+p_old_h = p_old_h + p1^i * b001 * (k + 1) * (2^i*CW_min +
+2^i*CW_min - k) / (2*2^i*CW_min);
+44
+
+
+
+end
+end
+if r <= m
+for i=l_p:r
+if 2^i*CW_min <= k_2
+p_new_h = p_new_h + p1^i * b001 * (2^i*CW_min - k -
+1)*(2^i*CW_min - k) / (2*2^i*CW_min);
+else
+p_new_h = p_new_h + p1^i * b001 * (k_2 - k)*(2^i*CW_min
+- k - 1 + 2^i*CW_min - k_2) / (2*2^i*CW_min);
+end
+end
+else
+for i=l_p:m
+if 2^i*CW_min < k_2
+p_new_h = p_new_h + p1^i * b001 * (2^i*CW_min - k -
+1)*(2^i*CW_min - k) / (2*2^i*CW_min);
+else
+p_new_h = p_new_h + p1^i * b001 * (k_2 - k)*(2^i*CW_min
+- k - 1 + 2^i*CW_min - k_2) / (2*2^i*CW_min);
+end
+end
+for i=m+1:r
+p_new_h = p_new_h + p1^i * b001 * (k_2 - k)*(2^i*CW_min -
+k - 1 + 2^i*CW_min - k_2) / (2*2^i*CW_min);
+end
+end
+## S = P_s*P_tr*EP / ((1-P_tr)*SLOT + P_tr*P_s*T_s +
+P_tr*(1-P_s)*T_c);
+S_new = P_s*P_tr*((3/2*EP*p_old_h + 2*EP*p_new_h +
+(1-p_old_h-p_new_h)*EP)) / ((1-P_tr)*SLOT +
+P_tr*P_s*((p_new_h * T_s_new) + (1-p_new_h)*T_s) +
+P_tr*(1-P_s)*T_c);
+fprintf('￿%6d ￿%13.5f ￿%9.5f ￿\n', idx, S_new, S*SPEED);
+45
+
+
+
+end
+# 附录E 问题三、四求解函数
+5 . 1 问题三求解函数r ≤m
+% r <= m
+function output = q3_markov_solver_1(input)
+global CW_max
+global CW_min;
+global r;
+global m;
+global node_num;
+global ACK;
+global SIFS;
+global DIFS;
+global SLOT;
+global ACKTimeout;
+global PAYLOAD;
+global MAC;
+global PHY;
+global SPEED;
+global P_e;
+global p_nonoverlap
+global b00;
+global l_p;
+global k;
+k = (PHY + MAC * 8 / SPEED + PAYLOAD * 8 / SPEED) / SLOT;
+k = ceil(k);
+l_p = ceil(log2((k+1)/CW_min));
+if l_p < 0
+l_p = 0;
+end
+p = input(1);
+tau = input(2);
+b00 = 2*(1-p)*(1-2*p) / ((1-2*p)*(1-p^(r+1)) +
+46
+
+
+
+CW_min*(1-p)*(1-(2*p)^(r+1)));
+%b00 = 2*(1-p)*(1-2*p) / (CW_min*(1-(2*p)^(m+1))*(1-p) +
+(1-2*p)*(1-p^(r+1)) +
+CW_min*(2^m)*p^(m+1)*(1-p^(r-m))*(1-2*p));
+p_nonoverlap = 0;
+for i=l_p:r
+p_nonoverlap = p_nonoverlap + p^i * b00 * (2^i*CW_min - k -
+1)*(2^i*CW_min - k) / (2*2^i*CW_min);
+end
+%output(1) = (1 - p_nonoverlap) + p_nonoverlap * P_e - p;
+output(1) = P_e + (1-P_e)*(1-p_nonoverlap) - p;
+%output(1) = (1 - p_nonoverlap)- p_nonoverlap*P_e - p;
+%output(1) = 1 - p_nonoverlap*(1-P_e) - p;
+%output(1) = P_e + tau*(1-p_nonoverlap)*(1-P_e) - p;
+output(2) = b00 * (1-p^(r+1)) / (1-p) - tau;
+end
+5 . 2 问题三求解函数r > m
+% r > m
+function output = q3_markov_solver_2(input)
+global CW_max
+global CW_min;
+global r;
+global m;
+global node_num;
+global ACK;
+global SIFS;
+global DIFS;
+global SLOT;
+global ACKTimeout;
+global PAYLOAD;
+global MAC;
+global PHY;
+global SPEED;
+47
+
+
+
+global P_e;
+global p_nonoverlap;
+global b00;
+global l_p;
+global k;
+k = (PHY + MAC * 8 / SPEED + PAYLOAD * 8 / SPEED) / SLOT;
+k = ceil(k);
+l_p = ceil(log2((k+1)/CW_min));
+if l_p < 0
+l_p = 0;
+end
+p = input(1);
+tau = input(2);
+%b00 = 2*(1-p)*(1-2*p) / ((1-2*p)*(1-p^(r+1)) +
+CW_min*(1-p)*(1-(2*p)^(r+1)));
+b00 = 2*(1-p)*(1-2*p) / (CW_min*(1-(2*p)^(m+1))*(1-p) +
+(1-2*p)*(1-p^(r+1)) +
+CW_min*(2^m)*p^(m+1)*(1-p^(r-m))*(1-2*p));
+p_nonoverlap = 0;
+for i=l_p:m
+p_nonoverlap = p_nonoverlap + p^i * b00 * (2^i*CW_min - k -
+1)*(2^i*CW_min - k) / (2*2^i*CW_min);
+end
+for i=m+1:r
+p_nonoverlap = p_nonoverlap + p^i * b00 * (CW_max - k -
+1)*(CW_max - k) / (2*CW_max);
+end
+output(1) = P_e + (1-P_e)*(1-p_nonoverlap) - p;
+output(2) = b00 * (1-p^(r+1)) / (1-p) - tau;
+end
+5 . 3 问题四求解函数r ≤m
+48
+
+
+
+% r <= m
+function output = q4_markov_solver_1(input)
+global CW_max
+global CW_min;
+global r;
+global m;
+global node_num;
+global ACK;
+global SIFS;
+global DIFS;
+global SLOT;
+global ACKTimeout;
+global PAYLOAD;
+global MAC;
+global PHY;
+global SPEED;
+global P_e;
+global p_nonoverlap
+global b001;
+global p1;
+p1 = input(1);
+p2 = input(2);
+tau1 = input(3);
+tau2 = input(4);
+b002 = 2*(1-p2)*(1-2*p2) / ((1-2*p2)*(1-p2^(r+1)) +
+CW_min*(1-p2)*(1-(2*p2)^(r+1)));
+b001 = 2*(1-p1)*(1-2*p1) / ((1-2*p1)*(1-p1^(r+1)) +
+CW_min*(1-p1)*(1-(2*p1)^(r+1)));
+output_tmp_tau2 = b002 * (1-p2^(r+1)) / (1-p2);
+output_tmp_tau1 = b001 * (1-p1^(r+1)) / (1-p1);
+output_tmp_p2 = 1 - (1 - tau1) ^ 2;
+output_tmp_p1 = tau2;
+output(1) = output_tmp_p1 - p1;
+output(2) = output_tmp_p2 - p2;
+49
+
+
+
+output(3) = output_tmp_tau1 - tau1;
+output(4) = output_tmp_tau2 - tau2;
+end
+5 . 4 问题四求解函数r > m
+% r > m
+function output = q4_markov_solver_2(input)
+global CW_max
+global CW_min;
+global r;
+global m;
+global node_num;
+global ACK;
+global SIFS;
+global DIFS;
+global SLOT;
+global ACKTimeout;
+global PAYLOAD;
+global MAC;
+global PHY;
+global SPEED;
+global P_e;
+global p_nonoverlap
+global b001;
+global p1;
+p1 = input(1);
+p2 = input(2);
+tau1 = input(3);
+tau2 = input(4);
+b002 = 2*(1-p2)*(1-2*p2) / (CW_min*(1-(2*p2)^(m+1))*(1-p2) +
+(1-2*p2)*(1-p2^(r+1)) +
+CW_min*(2^m)*p2^(m+1)*(1-p2^(r-m))*(1-2*p2));
+b001 = 2*(1-p1)*(1-2*p1) / (CW_min*(1-(2*p1)^(m+1))*(1-p1) +
+(1-2*p1)*(1-p2^(r+1)) +
+CW_min*(2^m)*p1^(m+1)*(1-p1^(r-m))*(1-2*p1));
+50
+
+
+
+output_tmp_tau2 = b002 * (1-p2^(r+1)) / (1-p2);
+output_tmp_tau1 = b001 * (1-p1^(r+1)) / (1-p1);
+output_tmp_p2 = 1 - (1 - tau1) ^ 2;
+output_tmp_p1 = tau2;
+output(1) = output_tmp_p1 - p1;
+output(2) = output_tmp_p2 - p2;
+output(3) = output_tmp_tau1 - tau1;
+output(4) = output_tmp_tau2 - tau2;
+end
+# 附录F 仿真程序代码
+# 6 . 1 节点类定义
+from state_enum import TimerState,NodeState,ChannelState
+import random
+import math
+class Node:
+def __init__(self, node_num, ACK, SIFS, DIFS, SLOT, ACKTimeout,
+CW_min, CW_max, max_retry, payload_length,
+phy_header_duration, mac_header_length, phy_rate,drop_rate):
+# -----------------------------------------#
+# 原始参数传递
+self.node_num = node_num
+self.ACK = ACK
+self.SIFS = SIFS
+self.DIFS = DIFS
+self.SLOT = SLOT
+self.ACKTimeout = ACKTimeout
+self.CW_min = CW_min
+self.CW_max = CW_max
+self.max_retry = max_retry
+self.payload_length = payload_length
+self.phy_header_duration = phy_header_duration
+51
+
+
+
+self.mac_header_length = mac_header_length
+self.phy_rate = phy_rate
+self.drop_rate = drop_rate
+# -----------------------------------------#
+# -----------------------------------------#
+# 传输各时段时长设置
+# @formulation:这里没有考虑DIFS
+# Ts = H + E[P] + SIFS + ACK (+ DIFS)
+# T_c = H + E_P_collision （+ DIFS）+ ACKTimeout
+# @param:
+# idel_time:载波侦听时长
+# backoff_time：回退时隙长度
+# send_data_time:数据帧时长，这里为了方便仿真进行取整
+# wait_ACK_time：若传输成功需要等待的时间
+# wait_ACKTIMEOUT_time：若传输失败需要等待的时间
+self.idle_time = self.DIFS
+self.backoff_time = self.SLOT
+self.send_data_time = self.phy_header_duration +
+(self.mac_header_length + self.payload_length) * 8 /
+self.phy_rate
+self.send_data_time = math.ceil(self.send_data_time)
+self.wait_ACK_time = self.SIFS + self.ACK
+self.wait_ACKTIMEOUT_time = self.ACKTimeout
+# -----------------------------------------#
+# -----------------------------------------#
+# 状态机所需要参数设置
+# @param:
+52
+
+
+
+# current_state:状态机当前状态
+# next_state：状态机下一时刻应该的状态
+# # CW：当前时刻竞争窗口数
+# CW_counter:用于计数的竞争窗口数
+# prev_CW_counter:前一时刻竞争窗口数(wait状态使用)
+# current_try: 失败次数
+# TX_start_time：发送数据包开始时间
+# TX_end_time：发送数据包结束时间
+self.current_state = NodeState.IDLE
+self.next_state = NodeState.IDLE
+self.CW = self.CW_min
+self.CW_counter = 0
+self.prev_CW_counter = 0
+self.current_try = 0
+self.TX_start_time = 0
+self.TX_end_time = 0
+self.timer = self.Timer(self)
+# -----------------------------------------#
+class Timer:
+def __init__(self,outer_node):
+self.outer = outer_node
+self.state = TimerState.READY
+self.counter = 0
+self.prev_counter = 0
+def update(self,channel_state):
+# 当处于wait状态并且信道转为空闲时：
+53
+
+
+
+if self.state == TimerState.WAIT and channel_state ==
+ChannelState.IDLE:
+## # 当之前处于IDLE状态，接着DIFS计数
+if self.outer.current_state == NodeState.IDLE:
+self.state = TimerState.COUNTING
+self.counter = self.outer.DIFS
+## # 当之前处于BACKOFF状态，接着BACKOFF计数
+if self.outer.current_state == NodeState.BACKOFF:
+self.prev_counter = self.counter
+self.outer.prev_CW_counter = self.outer.CW_counter
+self.state = TimerState.COUNTING
+self.counter = self.outer.DIFS
+# # 节点计数时突然信道繁忙
+if self.state == TimerState.COUNTING and \
+channel_state in [ChannelState.TX,
+ChannelState.COLLISION]:
+# 转为等待状态
+if self.outer.current_state == NodeState.IDLE or
+self.outer.current_state == NodeState.BACKOFF:
+self.state = TimerState.WAIT
+# 自身处于传输状态，保持计数
+elif self.outer.current_state == NodeState.SEND_DATA or
+\
+self.outer.current_state == NodeState.WAIT_ACK or \
+self.outer.current_state ==
+NodeState.WAIT_ACKTIMEOUT:
+self.counter = self.counter - 1
+if self.counter == 0:
+self.state = TimerState.READY
+# 计数完成，可以状态机转换
+elif self.state == TimerState.COUNTING and channel_state
+54
+
+
+
+== ChannelState.IDLE:
+self.counter = self.counter - 1
+if self.counter == 0:
+self.state = TimerState.READY
+def set(self, timer_state, timer_counter, next_state):
+self.timer.state = timer_state
+self.timer.counter = timer_counter
+self.next_state = next_state
+def run(self, channel_state, bus_clock):
+self.timer.update(channel_state)
+if self.timer.state == TimerState.READY:
+self.current_state = self.next_state
+# # IDLE状态：计数DIFS
+if self.current_state == NodeState.IDLE:
+self.CW_counter = random.randint(0, self.CW - 1) + 1
+self.set(timer_state = TimerState.COUNTING,
+timer_counter = self.idle_time,
+next_state = NodeState.BACKOFF)
+## # BACKOFF状态：计数SLOTTIME
+if self.current_state == NodeState.BACKOFF:
+if self.prev_CW_counter !=0 and self.timer.prev_counter
+!=0:
+self.set(timer_state = TimerState.COUNTING,
+timer_counter = self.timer.prev_counter,
+next_state = NodeState.BACKOFF)
+self.prev_CW_counter = 0
+self.timer.prev_counter = 0
+else:
+55
+
+
+
+if self.CW_counter > 0:
+self.set(timer_state = TimerState.COUNTING,
+timer_counter = self.backoff_time,
+next_state = NodeState.BACKOFF)
+if self.CW_counter == 0 and self.timer.counter == 0:
+self.current_state = NodeState.SEND_DATA
+if self.CW_counter > 0:
+self.CW_counter = self.CW_counter - 1
+## # SEND_DATA状态：计数数据包时长
+if self.current_state == NodeState.SEND_DATA:
+self.TX_start_time = bus_clock
+self.set(timer_state = TimerState.COUNTING,
+timer_counter = self.send_data_time,
+next_state = NodeState.UNKNOWN)
+if self.current_state == NodeState.UNKNOWN:
+# 根据丢包率判断传输是否成功
+random_number = random.random() # 生成一个0到1之间的随机数
+if random_number < self.drop_rate:
+# 代表丢包
+self.current_state = NodeState.WAIT_ACKTIMEOUT
+else:
+self.current_state = NodeState.WAIT_ACK
+# # WAIT_ACK状态：传输成功
+if self.current_state == NodeState.WAIT_ACK:
+self.TX_end_time = bus_clock
+self.set(timer_state = TimerState.COUNTING,
+timer_counter = self.wait_ACK_time,
+next_state = NodeState.IDLE)
+self.current_try = 0
+self.CW = self.CW_min
+## # WAIT_ACKTIMEOUT状态：传输失败
+if self.current_state == NodeState.WAIT_ACKTIMEOUT:
+56
+
+
+
+self.TX_start_time = 0
+self.TX_end_time = 0
+self.set(timer_state = TimerState.COUNTING,
+timer_counter = self.wait_ACKTIMEOUT_time,
+next_state = NodeState.IDLE)
+self.current_try = self.current_try + 1
+if self.current_try == self.max_retry:
+self.CW = self.CW_min
+self.current_try = 0
+self.CW = min(self.CW *2,self.CW_max)
+6 . 2 状态定义
+from enum import Enum
+class TimerState(Enum):
+# WAIT = 1
+# COUNTING = 2
+# READY = 3
+class NodeState(Enum):
+# IDLE= 1
+# BACKOFF = 2
+# SEND_DATA = 3
+# WAIT_ACK = 4
+# WAIT_ACKTIMEOUT = 5
+# UNKNOWN = -1
+class ChannelState(Enum):
+# IDLE = 1
+# TX = 2
+# COLLISION= 3
+6 . 3 问题一主程序
+import random
+57
+
+
+
+import math
+from node import Node
+from state_enum import TimerState, NodeState, ChannelState
+if __name__ == "__main__":
+# -----------------------------------------#
+# 基本仿真参数设置
+## num_nodes = 2 # 设置节点数量
+sim_time = 10000000 # 设置仿真时间
+# -----------------------------------------#
+# -----------------------------------------#
+# 通用参数设置
+## ACK = 32 # ACK帧长度,单位微秒
+## SIFS = 16 # SIFS间隔时长,单位微秒
+## DIFS = 43 # DIFS间隔时长,单位微秒
+## SLOT = 9 # 时隙长度,单位微秒
+## ACKTimeout = 65 # ACK超时长度,单位微秒
+## CW_min = 16 # 冲突窗口最小值
+## CW_max = 1024 # 冲突窗口最大值
+max_retry = 32 # 最大重传次数
+# -----------------------------------------#
+# -----------------------------------------#
+# 题目具体参数设置
+## payload_length = 1500 # AP发送数据包的载荷长度,单位字节
+phy_header_duration = 13.6 # PHY头时长,单位微秒
+## mac_header_length = 30 # MAC头长度,单位字节
+58
+
+
+
+phy_rate = 455.8 # 物理层速率,单位Mbps
+# phy_rate = 275.3 # 物理层速率,单位Mbps
+drop_rate = 0 # 丢包率
+# -----------------------------------------#
+# -----------------------------------------#
+# 仿真所需元素初始化
+nodes = []
+send_num = 0
+send_index1 = []
+send_index2 = []
+# TX_total_time = 0
+channel_state = ChannelState.IDLE
+log_messages = []
+send_data_time = phy_header_duration + (mac_header_length +
+payload_length) * 8 / phy_rate
+scale = (payload_length * 8 / phy_rate) / send_data_time
+# # 初始化每个节点并添加到节点列表中
+for i in range(num_nodes):
+node = Node(node_num=i + 1,
+ACK=ACK,
+SIFS=SIFS,
+DIFS=DIFS,
+SLOT=SLOT,
+ACKTimeout=ACKTimeout,
+CW_min=CW_min,
+CW_max=CW_max,
+max_retry=max_retry,
+payload_length=payload_length,
+59
+
+
+
+phy_header_duration=phy_header_duration,
+mac_header_length=mac_header_length,
+phy_rate=phy_rate,
+drop_rate=drop_rate)
+nodes.append(node)
+for bus_clock in range(sim_time + 1):
+for node in nodes:
+node.run(channel_state, bus_clock)
+if send_index1:
+send_index1 = [
+node for node in send_index1 if node.current_state ==
+## NodeState.SEND_DATA]
+for node in nodes:
+if node.current_state == NodeState.SEND_DATA:
+if node not in send_index1:
+send_index1.append(node)
+send_index2.append(node)
+if send_index1:
+if len(send_index1) == 1:
+channel_state = ChannelState.TX
+elif len(send_index1) >= 2:
+for node in send_index1:
+node.next_state = NodeState.WAIT_ACKTIMEOUT
+# node.next_state = NodeState.WAIT_ACK
+channel_state = ChannelState.COLLISION
+if send_index2:
+send_index2 = [
+node for node in send_index2 if node.current_state !=
+# NodeState.IDLE]
+if not send_index2:
+channel_state = ChannelState.IDLE
+60
+
+
+
+# for node in nodes:
+#
+if node.TX_start_time > 0 and node.TX_end_time > 0:
+#
+TX_total_time = TX_total_time + (node.TX_end_time -
+node.TX_start_time) * scale
+#
+node.TX_start_time = 0
+#
+node.TX_end_time = 0
+node1 = None
+node2 = None
+# # 遍历节点列表
+for node in nodes:
+if node.node_num == 1:
+node1 = node
+if node.node_num == 2:
+node2 = node
+if node1.TX_start_time > 0 and node1.TX_end_time > 0:
+if node2.TX_start_time == 0 and node2.TX_end_time == 0:
+## TX_total_time = TX_total_time + \
+(node1.TX_end_time - node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+if node2.TX_start_time > 0 and node2.TX_end_time == 0:
+if node2.TX_start_time >= node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+## TX_total_time = TX_total_time + \
+(node1.TX_end_time - node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+elif node2.TX_start_time >= node1.TX_start_time and
+node2.TX_start_time < node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node1.TX_start_time = node1.TX_start_time
+node1.TX_end_time = node1.TX_end_time
+if node2.TX_start_time > 0 and node2.TX_end_time > 0:
+61
+
+
+
+if node1.TX_start_time == 0 and node1.TX_end_time == 0:
+## TX_total_time = TX_total_time + \
+(node2.TX_end_time - node2.TX_start_time) * scale
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+if node1.TX_start_time > 0 and node1.TX_end_time == 0:
+if node1.TX_start_time >= node2.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+## TX_total_time = TX_total_time + \
+(node2.TX_end_time - node2.TX_start_time) * scale
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+elif node1.TX_start_time >= node2.TX_start_time and
+node1.TX_start_time < node2.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node2.TX_start_time = node2.TX_start_time
+node2.TX_end_time = node2.TX_end_time
+if node1.TX_start_time > 0 and node1.TX_end_time > 0 and \
+node2.TX_start_time > 0 and node2.TX_end_time > 0:
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale + \
+math.fabs(node1.TX_start_time - node2.TX_start_time)
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+# # 添加以下代码来打印信息
+# print(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+#
+print(f"Node {i + 1}:")
+#
+print(f" Current State: {node.current_state}, Next State:
+{node.next_state}, CW: {node.CW}, CW_counter:
+{node.CW_counter}")
+#
+print(f" Timer State: {node.timer.state}, Timer Counter:
+{node.timer.counter}")
+62
+
+
+
+# # 打印send_index1和send_index2的信息
+# print(f"Send Index 1 (Count: {len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+print(f" Node {node.node_num}")
+# print(f"Send Index 2 (Count: {len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+print(f" Node {node.node_num}")
+# print(f"Channel State: {channel_state}\n")
+# # 添加每个循环中的print 消息到log_messages 列表中
+# log_messages.append(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+#
+log_messages.append(f"Node {i + 1}:")
+#
+log_messages.append(f" Current State:
+{node.current_state}, Next State: {node.next_state}, CW:
+{node.CW}, CW_counter: {node.CW_counter}")
+#
+log_messages.append(f" Timer State: {node.timer.state},
+Timer Counter: {node.timer.counter}")
+# log_messages.append(f"Channel State: {channel_state}")
+# # 添加send_index1和send_index2的信息
+# log_messages.append(f"Send Index 1 (Count:
+{len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+log_messages.append(f" Node {node.node_num}")
+# log_messages.append(f"Send Index 2 (Count:
+{len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+log_messages.append(f" Node {node.node_num}")
+# log_messages.append(f"TX_total_time: {TX_total_time}")
+# log_messages.append(f"\n")
+throughput_all = TX_total_time / sim_time
+print(throughput_all)
+63
+
+
+
+# with open("simulation_log.txt", "w") as log_file:
+#
+log_file.write("\n".join(log_messages))
+6 . 4 问题二主程序
+import random
+import math
+from node import Node
+from state_enum import TimerState,NodeState,ChannelState
+if __name__ == "__main__":
+# -----------------------------------------#
+# 基本仿真参数设置
+## num_nodes = 2 # 设置节点数量
+sim_time = 10000000 # 设置仿真时间
+# -----------------------------------------#
+# -----------------------------------------#
+# 通用参数设置
+## ACK = 32 # ACK帧长度,单位微秒
+## SIFS = 16 # SIFS间隔时长,单位微秒
+## DIFS = 43 # DIFS间隔时长,单位微秒
+## SLOT = 9 # 时隙长度,单位微秒
+## ACKTimeout = 65 # ACK超时长度,单位微秒
+## CW_min = 16 # 冲突窗口最小值
+## CW_max = 1024 # 冲突窗口最大值
+max_retry = 32 # 最大重传次数
+# -----------------------------------------#
+# -----------------------------------------#
+# 题目具体参数设置
+64
+
+
+
+## # payload_length = 1500 # AP发送数据包的载荷长度,单位字节
+## payload_length = 1500 # AP发送数据包的载荷长度,单位字节
+phy_header_duration = 13.6 # PHY头时长,单位微秒
+## mac_header_length = 30 # MAC头长度,单位字节
+# phy_rate = 455.8 # 物理层速率,单位Mbps
+phy_rate = 275.3 # 物理层速率,单位Mbps
+drop_rate = 0 # 丢包率
+# -----------------------------------------#
+nodes = []
+send_num = 0
+send_index1 = []
+send_index2 = []
+# TX_total_time = 0
+channel_state = ChannelState.IDLE
+log_messages = []
+send_data_time = phy_header_duration + (mac_header_length +
+payload_length) * 8 / phy_rate
+scale = (payload_length * 8 / phy_rate) / send_data_time
+# # 初始化每个节点并添加到节点列表中
+for i in range(num_nodes):
+node = Node(node_num = i + 1,
+ACK = ACK,
+SIFS = SIFS,
+DIFS = DIFS,
+SLOT = SLOT,
+ACKTimeout = ACKTimeout,
+CW_min = CW_min,
+CW_max = CW_max,
+max_retry = max_retry,
+65
+
+
+
+payload_length = payload_length,
+phy_header_duration = phy_header_duration,
+mac_header_length = mac_header_length,
+phy_rate = phy_rate,
+drop_rate = drop_rate)
+nodes.append(node)
+for bus_clock in range(sim_time + 1):
+for node in nodes:
+node.run(channel_state,bus_clock)
+if send_index1:
+send_index1 = [node for node in send_index1 if
+node.current_state == NodeState.SEND_DATA]
+for node in nodes:
+if node.current_state == NodeState.SEND_DATA:
+if node not in send_index1:
+send_index1.append(node)
+send_index2.append(node)
+if send_index1:
+if len(send_index1) == 1:
+channel_state = ChannelState.TX
+elif len(send_index1) >= 2:
+for node in send_index1:
+# node.next_state = NodeState.WAIT_ACKTIMEOUT
+node.next_state = NodeState.WAIT_ACK
+channel_state = ChannelState.COLLISION
+if send_index2:
+send_index2 = [node for node in send_index2 if
+node.current_state != NodeState.IDLE]
+if not send_index2:
+channel_state = ChannelState.IDLE
+# for node in nodes:
+66
+
+
+
+#
+if node.TX_start_time > 0 and node.TX_end_time > 0:
+#
+TX_total_time = TX_total_time + (node.TX_end_time -
+node.TX_start_time)
+#
+node.TX_start_time = 0
+#
+node.TX_end_time = 0
+node1 = None
+node2 = None
+# # 遍历节点列表
+for node in nodes:
+if node.node_num == 1:
+node1 = node
+if node.node_num == 2:
+node2 = node
+if node1.TX_start_time > 0 and node1.TX_end_time > 0 :
+if node2.TX_start_time == 0 and node2.TX_end_time == 0:
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+if node2.TX_start_time > 0 and node2.TX_end_time == 0:
+if node2.TX_start_time >= node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+elif node2.TX_start_time >= node1.TX_start_time and
+node2.TX_start_time < node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node1.TX_start_time = node1.TX_start_time
+node1.TX_end_time = node1.TX_end_time
+if node2.TX_start_time > 0 and node2.TX_end_time > 0 :
+if node1.TX_start_time == 0 and node1.TX_end_time == 0:
+67
+
+
+
+TX_total_time = TX_total_time + (node2.TX_end_time -
+node2.TX_start_time) * scale
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+if node1.TX_start_time > 0 and node1.TX_end_time == 0:
+if node1.TX_start_time >= node2.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+TX_total_time = TX_total_time + (node2.TX_end_time -
+node2.TX_start_time) * scale
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+elif node1.TX_start_time >= node2.TX_start_time and
+node1.TX_start_time < node2.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node2.TX_start_time = node2.TX_start_time
+node2.TX_end_time = node2.TX_end_time
+if node1.TX_start_time > 0 and node1.TX_end_time > 0 and \
+node2.TX_start_time > 0 and node2.TX_end_time > 0 :
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale + \
+math.fabs(node1.TX_start_time -
+node2.TX_start_time)
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+# # 添加以下代码来打印信息
+# print(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+68
+
+
+
+#
+print(f"Node {i + 1}:")
+#
+print(f" Current State: {node.current_state}, Next State:
+{node.next_state}, CW: {node.CW}, CW_counter:
+{node.CW_counter}")
+#
+print(f" Timer State: {node.timer.state}, Timer Counter:
+{node.timer.counter}")
+# # 打印send_index1和send_index2的信息
+# print(f"Send Index 1 (Count: {len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+print(f" Node {node.node_num}")
+# print(f"Send Index 2 (Count: {len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+print(f" Node {node.node_num}")
+# print(f"Channel State: {channel_state}\n")
+# # 添加每个循环中的print 消息到log_messages 列表中
+# log_messages.append(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+#
+log_messages.append(f"Node {i + 1}:")
+#
+log_messages.append(f" Current State:
+{node.current_state}, Next State: {node.next_state}, CW:
+{node.CW}, CW_counter: {node.CW_counter}")
+#
+log_messages.append(f" Timer State: {node.timer.state},
+Timer Counter: {node.timer.counter}")
+# log_messages.append(f"Channel State: {channel_state}")
+# # 添加send_index1和send_index2的信息
+# log_messages.append(f"Send Index 1 (Count:
+{len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+log_messages.append(f" Node {node.node_num}")
+# log_messages.append(f"Send Index 2 (Count:
+{len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+log_messages.append(f" Node {node.node_num}")
+69
+
+
+
+# log_messages.append(f"TX_total_time: {TX_total_time}")
+# log_messages.append(f"\n")
+throughput_all = TX_total_time / sim_time
+print(throughput_all)
+# with open("simulation_log.txt", "w") as log_file:
+#
+log_file.write("\n".join(log_messages))
+6 . 5 问题三主程序
+import random
+import math
+from node import Node
+from state_enum import TimerState,NodeState,ChannelState
+if __name__ == "__main__":
+# -----------------------------------------#
+# 基本仿真参数设置
+## num_nodes = 2 # 设置节点数量
+sim_time = 10000000 # 设置仿真时间
+# -----------------------------------------#
+# -----------------------------------------#
+# 通用参数设置
+## ACK = 32 # ACK帧长度,单位微秒
+## SIFS = 16 # SIFS间隔时长,单位微秒
+## DIFS = 43 # DIFS间隔时长,单位微秒
+## SLOT = 9 # 时隙长度,单位微秒
+## ACKTimeout = 65 # ACK超时长度,单位微秒
+## CW_min = 16 # 冲突窗口最小值
+70
+
+
+
+## CW_max = 1024 # 冲突窗口最大值
+max_retry = 32 # 最大重传次数
+# -----------------------------------------#
+# -----------------------------------------#
+# 题目具体参数设置
+## payload_length = 1500 # AP发送数据包的载荷长度,单位字节
+phy_header_duration = 13.6 # PHY头时长,单位微秒
+## mac_header_length = 30 # MAC头长度,单位字节
+# phy_rate = 455.8 # 物理层速率,单位Mbps
+# phy_rate = 286.8 # 物理层速率,单位Mbps
+phy_rate = 158.4 # 物理层速率,单位Mbps
+drop_rate = 0.1 # 丢包率
+# -----------------------------------------#
+nodes = []
+send_num = 0
+send_index1 = []
+send_index2 = []
+# TX_total_time = 0
+channel_state = ChannelState.IDLE
+log_messages = []
+send_data_time = phy_header_duration + (mac_header_length +
+payload_length) * 8 / phy_rate
+scale = (payload_length * 8 / phy_rate) / send_data_time
+# # 初始化每个节点并添加到节点列表中
+for i in range(num_nodes):
+node = Node(node_num = i + 1,
+ACK = ACK,
+SIFS = SIFS,
+71
+
+
+
+DIFS = DIFS,
+SLOT = SLOT,
+ACKTimeout = ACKTimeout,
+CW_min = CW_min,
+CW_max = CW_max,
+max_retry = max_retry,
+payload_length = payload_length,
+phy_header_duration = phy_header_duration,
+mac_header_length = mac_header_length,
+phy_rate = phy_rate,
+drop_rate = drop_rate)
+nodes.append(node)
+for bus_clock in range(sim_time + 1):
+for node in nodes:
+node.run(ChannelState.IDLE,bus_clock)
+if send_index1:
+send_index1 = [node for node in send_index1 if
+node.current_state == NodeState.SEND_DATA]
+for node in nodes:
+if node.current_state == NodeState.SEND_DATA:
+if node not in send_index1:
+send_index1.append(node)
+send_index2.append(node)
+if send_index1:
+if len(send_index1) == 1:
+channel_state = ChannelState.TX
+elif len(send_index1) >= 2:
+for node in send_index1:
+node.next_state = NodeState.WAIT_ACKTIMEOUT
+# node.next_state = NodeState.WAIT_ACK
+channel_state = ChannelState.COLLISION
+if send_index2:
+72
+
+
+
+send_index2 = [node for node in send_index2 if
+node.current_state != NodeState.IDLE]
+if not send_index2:
+channel_state = ChannelState.IDLE
+node1 = None
+node2 = None
+# # 遍历节点列表
+for node in nodes:
+if node.node_num == 1:
+node1 = node
+if node.node_num == 2:
+node2 = node
+if node1.TX_start_time > 0 and node1.TX_end_time > 0 :
+if node2.TX_start_time == 0 and node2.TX_end_time == 0:
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+if node2.TX_start_time > 0 and node2.TX_end_time == 0:
+if node2.TX_start_time >= node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+elif node2.TX_start_time >= node1.TX_start_time and
+node2.TX_start_time < node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node1.TX_start_time = node1.TX_start_time
+node1.TX_end_time = node1.TX_end_time
+if node2.TX_start_time > 0 and node2.TX_end_time > 0 :
+if node1.TX_start_time == 0 and node1.TX_end_time == 0:
+TX_total_time = TX_total_time + (node2.TX_end_time -
+73
+
+
+
+node2.TX_start_time) * scale
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+if node1.TX_start_time > 0 and node1.TX_end_time == 0:
+if node1.TX_start_time >= node2.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+TX_total_time = TX_total_time + (node2.TX_end_time -
+node2.TX_start_time) * scale
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+elif node1.TX_start_time >= node2.TX_start_time and
+node1.TX_start_time < node2.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node2.TX_start_time = node2.TX_start_time
+node2.TX_end_time = node2.TX_end_time
+if node1.TX_start_time > 0 and node1.TX_end_time > 0 and \
+node2.TX_start_time > 0 and node2.TX_end_time > 0 :
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale + \
+math.fabs(node1.TX_start_time -
+node2.TX_start_time)
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+# # 添加以下代码来打印信息
+# print(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+#
+print(f"Node {i + 1}:")
+#
+print(f" Current State: {node.current_state}, Next State:
+{node.next_state}, CW: {node.CW}, CW_counter:
+{node.CW_counter}")
+#
+print(f" Timer State: {node.timer.state}, Timer Counter:
+74
+
+
+
+{node.timer.counter}")
+# # 打印send_index1和send_index2的信息
+# print(f"Send Index 1 (Count: {len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+print(f" Node {node.node_num}")
+# print(f"Send Index 2 (Count: {len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+print(f" Node {node.node_num}")
+# print(f"Channel State: {channel_state}\n")
+# # 添加每个循环中的print 消息到log_messages 列表中
+# log_messages.append(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+#
+log_messages.append(f"Node {i + 1}:")
+#
+log_messages.append(f" Current State:
+{node.current_state}, Next State: {node.next_state}, CW:
+{node.CW}, CW_counter: {node.CW_counter}")
+#
+log_messages.append(f" Timer State: {node.timer.state},
+Timer Counter: {node.timer.counter}")
+# log_messages.append(f"Channel State: {channel_state}")
+# # 添加send_index1和send_index2的信息
+# log_messages.append(f"Send Index 1 (Count:
+{len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+log_messages.append(f" Node {node.node_num}")
+# log_messages.append(f"Send Index 2 (Count:
+{len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+log_messages.append(f" Node {node.node_num}")
+# log_messages.append(f"TX_total_time: {TX_total_time}")
+# log_messages.append(f"\n")
+throughput_all = TX_total_time / sim_time
+print(throughput_all)
+75
+
+
+
+# with open("simulation_log.txt", "w") as log_file:
+#
+log_file.write("\n".join(log_messages))
+6 . 6 问题四主程序
+import random
+import math
+from node import Node
+from state_enum import TimerState,NodeState,ChannelState
+if __name__ == "__main__":
+# -----------------------------------------#
+# 基本仿真参数设置
+## num_nodes = 3 # 设置节点数量
+sim_time = 10000000 # 设置仿真时间
+# -----------------------------------------#
+# -----------------------------------------#
+# 通用参数设置
+## ACK = 32 # ACK帧长度,单位微秒
+## SIFS = 16 # SIFS间隔时长,单位微秒
+## DIFS = 43 # DIFS间隔时长,单位微秒
+## SLOT = 9 # 时隙长度,单位微秒
+## ACKTimeout = 65 # ACK超时长度,单位微秒
+## CW_min = 16 # 冲突窗口最小值
+## CW_max = 1024 # 冲突窗口最大值
+max_retry = 32 # 最大重传次数
+# -----------------------------------------#
+76
+
+
+
+# -----------------------------------------#
+# 题目具体参数设置
+## payload_length = 1500 # AP发送数据包的载荷长度,单位字节
+phy_header_duration = 13.6 # PHY头时长,单位微秒
+## mac_header_length = 30 # MAC头长度,单位字节
+# phy_rate = 455.8 # 物理层速率,单位Mbps
+# phy_rate = 286.8 # 物理层速率,单位Mbps
+phy_rate = 158.4 # 物理层速率,单位Mbps
+drop_rate = 0 # 丢包率
+# -----------------------------------------#
+nodes = []
+send_num = 0
+send_index1 = []
+send_index2 = []
+# TX_total_time = 0
+channel_state = ChannelState.IDLE
+log_messages = []
+send_data_time = phy_header_duration + (mac_header_length +
+payload_length) * 8 / phy_rate
+scale = (payload_length * 8 / phy_rate) / send_data_time
+sub_channel_state = ChannelState.IDLE
+# # 初始化每个节点并添加到节点列表中
+for i in range(num_nodes):
+node = Node(node_num = i + 1,
+ACK = ACK,
+SIFS = SIFS,
+DIFS = DIFS,
+SLOT = SLOT,
+ACKTimeout = ACKTimeout,
+CW_min = CW_min,
+77
+
+
+
+CW_max = CW_max,
+max_retry = max_retry,
+payload_length = payload_length,
+phy_header_duration = phy_header_duration,
+mac_header_length = mac_header_length,
+phy_rate = phy_rate,
+drop_rate = drop_rate)
+nodes.append(node)
+for bus_clock in range(sim_time + 1):
+for node in nodes:
+if node.node_num == 1 or node.node_num == 3 :
+node.run(sub_channel_state,bus_clock)
+for node in nodes:
+if node.node_num == 2 :
+node.run(channel_state,bus_clock)
+if send_index1:
+send_index1 = [node for node in send_index1 if
+node.current_state == NodeState.SEND_DATA]
+for node in nodes:
+if node.current_state == NodeState.SEND_DATA:
+if node not in send_index1:
+send_index1.append(node)
+send_index2.append(node)
+if send_index1:
+if len(send_index1) == 1:
+channel_state = ChannelState.TX
+elif len(send_index1) >= 2:
+for node in send_index1:
+if node.node_num == 1 or node.node_num == 3 :
+node.next_state = NodeState.WAIT_ACK
+channel_state = ChannelState.COLLISION
+78
+
+
+
+if send_index2:
+send_index2 = [node for node in send_index2 if
+node.current_state != NodeState.IDLE]
+if not send_index2:
+channel_state = ChannelState.IDLE
+node1 = None
+node2 = None
+node3 = None
+# # 遍历节点列表
+for node in nodes:
+if node.node_num == 1:
+node1 = node
+if node.node_num == 2:
+node2 = node
+if node.node_num == 3:
+node3 = node
+if node2.current_state == NodeState.IDLE or
+node2.current_state == NodeState.BACKOFF:
+sub_channel_state = ChannelState.IDLE
+if node2.current_state == NodeState.SEND_DATA or
+node2.current_state == NodeState.WAIT_ACK or \
+node2.current_state == NodeState.WAIT_ACKTIMEOUT:
+sub_channel_state = ChannelState.TX
+if node1.TX_start_time > 0 and node1.TX_end_time > 0 :
+if node3.TX_start_time == 0 and node3.TX_end_time == 0:
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+if node3.TX_start_time > 0 and node3.TX_end_time == 0:
+if node3.TX_start_time >= node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+79
+
+
+
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale
+node1.TX_start_time = 0
+node1.TX_end_time = 0
+elif node3.TX_start_time >= node1.TX_start_time and
+node3.TX_start_time < node1.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node1.TX_start_time = node1.TX_start_time
+node1.TX_end_time = node1.TX_end_time
+if node3.TX_start_time > 0 and node3.TX_end_time > 0 :
+if node1.TX_start_time == 0 and node1.TX_end_time == 0:
+TX_total_time = TX_total_time + (node3.TX_end_time -
+node3.TX_start_time) * scale
+node3.TX_start_time = 0
+node3.TX_end_time = 0
+if node1.TX_start_time > 0 and node1.TX_end_time == 0:
+if node1.TX_start_time >= node3.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+TX_total_time = TX_total_time + (node3.TX_end_time -
+node3.TX_start_time) * scale
+node3.TX_start_time = 0
+node3.TX_end_time = 0
+elif node1.TX_start_time >= node3.TX_start_time and
+node1.TX_start_time < node3.TX_start_time +
+math.ceil(payload_length * 8 / phy_rate):
+node3.TX_start_time = node3.TX_start_time
+node3.TX_end_time = node3.TX_end_time
+if node1.TX_start_time > 0 and node1.TX_end_time > 0 and \
+node3.TX_start_time > 0 and node3.TX_end_time > 0 :
+TX_total_time = TX_total_time + (node1.TX_end_time -
+node1.TX_start_time) * scale + \
+math.fabs(node1.TX_start_time -
+node3.TX_start_time)
+node1.TX_start_time = 0
+80
+
+
+
+node1.TX_end_time = 0
+node3.TX_start_time = 0
+node3.TX_end_time = 0
+if node2.TX_start_time > 0 and node2.TX_end_time > 0 :
+TX_total_time = TX_total_time + (node2.TX_end_time -
+node2.TX_start_time) * scale
+node2.TX_start_time = 0
+node2.TX_end_time = 0
+# # 添加以下代码来打印信息
+# print(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+#
+print(f"Node {i + 1}:")
+#
+print(f" Current State: {node.current_state}, Next State:
+{node.next_state}, CW: {node.CW}, CW_counter:
+{node.CW_counter}")
+#
+print(f" Timer State: {node.timer.state}, Timer Counter:
+{node.timer.counter}")
+# # 打印send_index1和send_index2的信息
+# print(f"Send Index 1 (Count: {len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+print(f" Node {node.node_num}")
+# print(f"Send Index 2 (Count: {len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+print(f" Node {node.node_num}")
+# print(f"Channel State: {channel_state}\n")
+# # 添加每个循环中的print 消息到log_messages 列表中
+# log_messages.append(f"Bus Clock: {bus_clock}")
+# for i, node in enumerate(nodes):
+#
+log_messages.append(f"Node {i + 1}:")
+#
+log_messages.append(f" Current State:
+{node.current_state}, Next State: {node.next_state}, CW:
+81
+
+
+
+{node.CW}, CW_counter: {node.CW_counter}")
+#
+log_messages.append(f" Timer State: {node.timer.state},
+Timer Counter: {node.timer.counter}")
+# log_messages.append(f"Channel State: {channel_state}")
+# # 添加send_index1和send_index2的信息
+# log_messages.append(f"Send Index 1 (Count:
+{len(send_index1)}):")
+# for i, node in enumerate(send_index1):
+#
+log_messages.append(f" Node {node.node_num}")
+# log_messages.append(f"Send Index 2 (Count:
+{len(send_index2)}):")
+# for i, node in enumerate(send_index2):
+#
+log_messages.append(f" Node {node.node_num}")
+# log_messages.append(f"TX_total_time: {TX_total_time}")
+# log_messages.append(f"\n")
+throughput_all = TX_total_time / sim_time
+print(throughput_all)
+# print("payload_length:{},
+throughput_all:{}".format(payload_length,throughput_all))
+# with open("simulation_log.txt", "w") as log_file:
+#
+log_file.write("\n".join(log_messages))
+82
+

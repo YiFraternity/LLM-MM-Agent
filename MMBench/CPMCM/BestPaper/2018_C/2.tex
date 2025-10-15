@@ -27,22 +27,7 @@
 关键词：全球恐怖主义；量化分析；遗传模拟退火算法；支持向量机；贝叶斯网络；
 \end{abstract}
 
-\section*{目录}
-
-\begin{itemize}
-    \item[§1] 问题的重述 \dotfill 5
-    \item[§2] 问题的分析 \dotfill 6
-    \item[§3] 模型的假设与符号说明 \dotfill 7
-    \item[§4] 数据的处理 \dotfill 7
-    \item[§5] 问题一的解答 \dotfill 9
-    \item[§6] 问题二的解答 \dotfill 13
-    \item[§7] 问题三的解答 \dotfill 18
-    \item[§8] 问题四的解答 \dotfill 24
-    \item[§9] 模型的评价与推广 \dotfill 30
-    \item[§10] 模型的改进 \dotfill 30
-    \item 参考文献 \dotfill 31
-    \item 附录 \dotfill 32
-\end{itemize}
+\tableofcontents
 
 \section{问题的重述}
 
@@ -147,18 +132,33 @@ GTD 数据库中对袭击事件描述的有 134 个变量，主要分为 (1) GTD
 
 由 4.1 的初步筛选，进一步参考现有文献的研究结果 \({ }^{[1-2]}\)，选取的指标和数据预处理如表 1 所示：
 
-\begin{tabular}{|c|c|l|}
-\hline 序号 & 符号 & 符号说明 \\
-\hline 1 & $L$ & 事件造成的直接经济损失 \\
-2 & $T_{0}$ & 初始温度 \\
-3 & $T_{end}$ & 终止温度 \\
-4 & $Sizepop$ & 个体数目 \\
-5 & $MAXGEN$ & 最大遗传代数 \\
-6 & $P_{c}$ & 交叉概率 \\
-7 & $P_{m}$ & 变异概率 \\
-8 & $J_{b}$ & 目标函数值 \\
+\begin{table}[h]
+\centering
+\caption{指标的选择和预处理}
+\begin{tabular}{l l l}
+\hline
+变量类别 & 字段 & 预处理 \\
+\hline
+GTD 的标志号和日期 & 标志号(eventid) & 无 \\
+& 日期(idate) & 由 iyear, imonth, iday 合成 \\
+事件信息 & 疑似恐怖主义(doubtterr) & 无 \\
+& 相关事件(related) & 问题一中将其合并为同一事件 \\
+事件发生的地点 & 地区(region) & 无 \\
+& 地理编码特征(specificity) & 无 \\
+攻击信息 & 成功的攻击(success) & 无 \\
+& 自杀式袭击(suicide) & 无 \\
+& 攻击类型(attacktype1) & 无 \\
+目标/受害者信息 & 目标/受害者类型(targtype1) & 无 \\
+武器信息 & 武器类型(weaptype1) & 无 \\
+伤亡和后果 & 死亡总数(nkill) & 死亡总数(nkill)-凶手死亡人数 \\
+& & (nkilatter) \\
+& 受伤总数(nwound) & 受伤总数(nwound)-凶手受伤人数 \\
+& & (nwoundte) \\
+& 财产损害程度(propextent) & 空值替换为该事件对应财产损失 \\
+& & (property)字段的取值 \\
 \hline
 \end{tabular}
+\end{table}
 
 其中财产损害程度字段针对财产损失字段取 1 的变量，对确定恐怖袭击造成财产损失的程度进行分级(1-4 级)，该字段空值部分表示袭击事件并未造成财产损失或者不知道事件是否造成财产损失，因此对空值部分取 4 处理是合理可行的。
 
@@ -188,20 +188,22 @@ GTD 数据库中对袭击事件描述的有 134 个变量，主要分为 (1) GTD
 
 为了尽量避免人为划分造成主观性影响，对伤亡类指标和损失类指标使用已有的标准进行折算；对其余的分类指标进行统计分析，得到相应的折算因子。
 
-\begin{tabular}{c c c c}
-\hline 序号 & 标志号 & 事件名称 & 危害度 \\
-\hline 1 & 200109110004 & 911事件 & 1770.5754 \\
-2 & 199808070002 & 美国驻肯尼亚大使馆遭汽车炸弹袭击 & 501.8333 \\
-3 & 201408030059 & IS与伊拉克库尔德武装交战 & 325.8900 \\
-4 & 201710140002 & 索马里首都酒店袭击事件 & 238.0787 \\
-5 & 201406100042 & ISIS攻陷伊拉克第二大城市 & 234.0884 \\
-6 & 200409010002 & 俄罗斯别斯兰人质事件 & 191.9522 \\
-7 & 200708150005 & 8.14伊拉克雅兹迪区爆炸案 & 185.0564 \\
-8 & 200607120001 & 7·11孟买连环爆炸案 & 171.5033 \\
-9 & 201603080001 & 伊拉克芥子气火箭弹事件 & 170.6112 \\
-10 & 200802010006 & 乍得反政府武装攻入首都 & 161.8911 \\
+\begin{table}[h]
+\centering
+\caption{等效死亡折算因子标准}
+\begin{tabular}{l l l}
+\hline
+类别 & & 折算因子 \\
+\hline
+死亡人数 & 无 & 1 \\
+受伤人数 & 无 & 0.3 \\
+财产损失程度 & 1=灾难性的（$L>10$ 亿美元） & 1000 \\
+ & 2=重大的（$100$ 万美元 $\leq L<10$ 亿美元） & 50 \\
+ & 3=较小的（$L<100$ 万美元） & 3 \\
+ & 4=未知 & 0 \\
 \hline
 \end{tabular}
+\end{table}
 
 *其中 $L$ 表示事件造成的直接经济损失，单位：美元。
 
@@ -218,19 +220,23 @@ GTD 数据库中对袭击事件描述的有 134 个变量，主要分为 (1) GTD
     \label{fig:2}
 \end{figure}
 
-\begin{tabular}{c c}
-\hline 事件编号 & 危害级别 \\
-\hline 200108110012 & 一级 \\
-200511180002 & 二级 \\
-200901170021 & 一级 \\
-201402110015 & 三级 \\
-201405010071 & 四级 \\
-201411070002 & 四级 \\
-201412160041 & 二级 \\
-201508010015 & 五级 \\
-201705080012 & 四级 \\
-\hline
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \caption{地区的“等效死亡”折算因子}
+    \label{tab:3}
+    \begin{tabular}{c l c c l c}
+        \hline
+        地区 & 注释 & 折算因子 & 地区 & 注释 & 折算因子 \\
+        \hline
+        1 & 北美 & 32.8005 & 7 & 中亚 & 2.8198 \\
+        2 & 中美洲和加勒比海地区 & 2.6414 & 8 & 西欧 & 3.1654 \\
+        3 & 南美 & 4.6214 & 9 & 东欧 & 3.8348 \\
+        4 & 东亚 & 7.7542 & 10 & 中东和北非 & 4.9116 \\
+        5 & 东南亚 & 2.6824 & 11 & 撒哈拉以南的非洲 & 5.8771 \\
+        6 & 南亚 & 3.4348 & 12 & 澳大利亚和大洋洲 & 1.6930 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 根据表3，北美地区的等效死亡折算因子最高，说明恐怖袭击造成的社会危害（心理恐慌）最大，其次为东亚地区，澳大利亚和大洋洲的等效死亡折算因子最低，符合常识，说明了折算因子的有效性。
 
@@ -434,7 +440,7 @@ SVM 算法的参数设置：
 \subsubsection{6.2.3 各类危害性计算}
 
 由问题一结果，可以得出每个恐怖袭击事件造成的危害度，求解每一类中所
-
+有事件的危害度之和，作为这一类犯罪分子造成的总危害度，结果见表 10。
 \begin{table}
 \centering
 \caption{各类危害度}
@@ -458,7 +464,19 @@ SVM 算法的参数设置：
 15 & 2624.9903 & 30 & 16704.0427 \\
 \end{tabular}
 \end{table}
+危害度最大的前五类分别是第 11、30、26、28、16 类，从原样本中筛选出
+这 5 类，共 8031 条样本，然后依次为 5 类样本标号 1-5（数据见附件表 2.3）。
 
+
+\subsubsection{6.2.4  新样本分类}
+根据支持向量机多分类算法，在附件表 2.3 中随机选取 75%的数据作为训练
+集，剩余数据作为验证集，利用 Python 编程（程序见附程序 2），得到训练集的
+预测准确度为 100%，验证集的预测准确度为 99.6%，说明 2008 条验证样本只有
+8 条分类错误，分类准确度很高，模型训练效果较好。 
+利用训练好的模型对问题二中给定的 2017 年 10 条恐怖袭击事件分类，输出
+每个事件的 decision_function 结果，SVM 算法中的 decision_function 计算得出样
+本点归属于某一类别时到分割超平面的函数距离，距离越大，样本点归属于该类
+的可能性越大。计算的函数距离见表 11。
 \begin{table}
 \centering
 \caption{函数距离表}
@@ -477,7 +495,8 @@ SVM 算法的参数设置：
 201712010003 & 4.5000 & -0.2786 & 0.8337 & 3.0803 & 1.8646 \\
 \end{tabular}
 \end{table}
-
+将表 11 中的负向距离取绝对值，然后分别处理使每一行的距离之和为 1，
+得到的即为事件归属于每一类的可能性，结果见表 12。
 \begin{table}
 \centering
 \caption{事件归属于每一类的可能性及预测类别}
@@ -745,13 +764,18 @@ SVM 算法的参数设置：
 \subsubsection{7.2.4 级别分布}
 
 根据问题一求解的危险度及级别，衡量不同空间和时间的级别分布。对于空间，分别求出近三年 130 个国家受到所有恐怖袭击的平均危险度，然后根据危险度定出恐怖事件所在的级别。得出 130 个国家中，有 102 个属于级别 4，剩余 28 个属于级别 5，说明绝大部分恐怖袭击都属于不太严重的袭击，国家级别分布情况如图 15 所示。
-
+对于时间，分别求出每年及每个月恐怖袭击事件的平均危险度，并根据危险
+度划分级别，得出不同时间的平均级别都是 4，与空间划分结果基本一致。
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image3.png}
     \caption{国家级别分布情况}
     \label{fig:15}
 \end{figure}
+
+\subsubsection{7.2.5  全球反恐态势预测 }
+将全球划分为 12 个区域，分别以半年为一个时间区间，计算出 12 个区域近三年
+来共 6 个时间区间的恐怖袭击密度，结果见表 17。
 
 \begin{table}
 \centering
@@ -788,7 +812,9 @@ SVM 算法的参数设置：
 \hline
 \end{tabular}
 \end{table}
-
+使用灰色预测模型分别对 12 个区域的时间序列做预测（程序见附程序 5），得到
+下一年各地区恐怖袭击密度的预测值及预测残差值，残差的绝对值大部分小于
+0.1，模型预测性能较好。
 \begin{table}
 \centering
 \caption{表18 恐怖袭击密度的预测值}
@@ -811,7 +837,8 @@ SVM 算法的参数设置：
 \hline
 \end{tabular}
 \end{table}
-
+根据原数据和预测数据，做出 12 个地区 2015 至 2018 年恐怖袭击密度图，如图
+16 所示。
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image.png}
@@ -1110,3 +1137,902 @@ $nkill\geq 30$ or $nwound\geq 100$ & 5 \\
 [11] 周文峰, 陈菊娟. 大型活动恐怖袭击风险及其治理路径[J]. 领导科学, 2017(17):32-34.
 
 \end{document}
+
+\section{附录}
+## 附程序1 基于遗传模拟退火算法的FCM聚类
+clc
+clear all
+close all
+X=load('julei2.txt');
+for i = 1 : size(X, 2)
+temp = X(:, i);
+temp = (temp-min(temp))/(max(temp)-min(temp));
+X(:, i) = temp;
+end
+m=size(X,2);
+lb=min(X);
+ub=max(X);
+# %% 模糊C均值聚类参数
+% 设置幂指数为3，最大迭代次数为20，目标函数的终止容限为1e-6
+options=[3,20,1e-6];
+%类别数cn
+cn=10;
+%% 模拟退火算法参数
+q =0.8;
+T0=100;
+Tend=1;
+%% 定义遗传算法参数
+sizepop=10;
+MAXGEN=50;
+NVAR=m*cn;
+PRECI=10;
+pc=0.7;
+pm=0.01;
+trace=zeros(NVAR+1,MAXGEN);
+FieldD=[rep([PRECI],[1,NVAR]);rep([lb;ub],[1,cn]);rep([1;0;1;1],[1,NVAR])];
+Chrom=CRTBP(sizepop, NVAR*PRECI);
+V=BS2RV(Chrom, FieldD);
+ObjV=ObjFun(X,cn,V,options);
+T=T0;
+while T>Tend
+gen=0;
+while gen<MAXGEN
+%分配适应度值
+FitnV=RANKING(ObjV);
+SelCh=SELECT('SUS', Chrom, FitnV);
+SelCh=RECOMBIN('XOVSP', SelCh,pc);
+SelCh=MUT(SelCh,pm);
+32
+
+
+
+V=BS2RV(SelCh, FieldD);
+newObjV=ObjFun(X,cn,V,options);
+newChrom=SelCh;
+
+for i=1:sizepop
+if ObjV(i)>newObjV(i)
+ObjV(i)=newObjV(i);
+Chrom(i,:)=newChrom(i,:);
+else
+p=rand;
+if p<=exp((newObjV(i)-ObjV(i))/T)
+ObjV(i)=newObjV(i);
+Chrom(i,:)=newChrom(i,:);
+end
+end
+end
+gen=gen+1; %代计数器增加
+[trace(end,gen),index]=min(ObjV);
+trace(1:NVAR,gen)=V(index,:);
+fprintf(1,'%d ',gen);
+end
+T=T*q;
+fprintf(1,'\n温度:%1.3f\n',T);
+end
+%计算最佳初始聚类中心的目标函数值
+[newObjV,center,U]=ObjFun(X,cn,[trace(1:NVAR,end)]',options);
+%查看聚类结果
+# Jb=newObjV
+U=U{1};
+center=center{1};
+maxU = max(U);
+index1 = find(U(1,:) == maxU);
+index2 = find(U(2, :) == maxU);
+index3 = find(U(3, :) == maxU);
+index4 = find(U(4, :) == maxU);
+index5 = find(U(5,:) == maxU);
+index6 = find(U(6, :) == maxU);
+index7 = find(U(7, :) == maxU);
+index8 = find(U(8, :) == maxU);
+index9 = find(U(9, :) == maxU);
+index10 = find(U(10, :) == maxU);
+
+33
+
+
+
+附程序2 支持向量机分类
+#coding=utf-8
+import numpy as np
+import pandas as pd
+from sklearn import svm,preprocessing,metrics
+from sklearn.model_selection import train_test_split
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+def show_accuracy(a, b, tip):
+acc = a.ravel() == b.ravel()
+print('%s Accuracy:%.3f' %(tip, np.mean(acc)))
+
+if __name__ == '__main__':
+
+a=[]
+b=[]
+# 加载数据
+data = pd.read_csv(r'C:\Users\cy\Desktop\svm_duofenlei.csv',
+encoding='utf-8',header=None)
+yuce=pd.read_csv(r'C:\Users\cy\Desktop\svm_yuce.csv', encoding='utf-8',header=None)
+x, y = np.split(data, (10,), axis=1)
+x=preprocessing.scale(x)
+yuce=preprocessing.scale(yuce)
+
+print('--------------------------')
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=1, train_size=0.75)
+
+# 高斯核
+clf1 = svm.SVC(C=6, kernel='rbf', gamma=0.2, decision_function_shape='ovr')
+# 线性核
+#clf = svm.SVC(C=0.5, kernel='linear', decision_function_shape='ovr')
+clf1.fit(x_train, y_train.values.ravel())
+
+# 中间结果的输出
+print('trianing prediction:%.3f' %(clf1.score(x_train, y_train)))
+# 预测值
+y_hat = clf1.predict(x_train)
+show_accuracy(y_hat, y_train.values, 'traing data')
+print('test data prediction:%.3f' %(clf1.score(x_test, y_test)))
+y_hat_test = clf1.predict(x_test)
+show_accuracy(y_hat_test, y_test.values, 'testing data')
+yuce_test = clf1.predict(yuce)
+# decision function
+a=clf1.decision_function(x_test)
+b=clf1.predict(x_test)
+c=clf1.decision_function(yuce)
+d=clf1.predict(yuce)
+
+# with open(r'C:\Users\cy\Desktop\decision_function1.txt',"w",encoding='utf-8') as fw:
+# for data in a:
+# data=str(data)
+# data.encode('utf-8')
+# data=data.strip()
+34
+
+
+
+# if len(data)!=0:
+# fw.write(data)
+# fw.write("\n")
+
+# print ("end1")
+
+# with open(r'C:\Users\cy\Desktop\predict1.txt',"w",encoding='utf-8') as fw:
+# for data in b:
+# data=str(data)
+# data.encode('utf-8')
+# data=data.strip()
+# if len(data)!=0:
+# fw.write(data)
+# fw.write("\n")
+
+# print ("end2")
+
+# with open(r'C:\Users\cy\Desktop\decision_function2.txt',"w",encoding='utf-8') as fw:
+# for data in c:
+# data=str(data)
+# data.encode('utf-8')
+# data=data.strip()
+# if len(data)!=0:
+# fw.write(data)
+# fw.write("\n")
+
+# print ("end3")
+
+# with open(r'C:\Users\cy\Desktop\predict2.txt',"w",encoding='utf-8') as fw:
+# for data in d:
+# data=str(data)
+# data.encode('utf-8')
+# data=data.strip()
+# if len(data)!=0:
+# fw.write(data)
+# fw.write("\n")
+
+# print ("end4")
+附程序3 灵敏度分析
+gamma=[0.01 0.1 1   10  100];
+a1=[0.354   0.371   0.563   0.354   0.354];
+a2=[0.582   0.939   0.964   0.812   0.564];
+a3=[0.953   0.99    0.983   0.963   0.877];
+a4=[0.995   0.994   0.995   0.983   0.941];
+a5=[0.998   0.997   0.995   0.984   0.943];
+a6=[0.999   0.997   0.995   0.984   0.943];
+hold on
+plot(gamma,a1,'-+',gamma,a2,'-*',gamma,a3,'->',gamma,a4,'-o',gamma,a5,'-',gamma,a6,'b*')
+%plot(gamma,a4,'-o',gamma,a5,'->',gamma,a6,'-p')
+gtext('C=0.001')
+gtext('C=0.01')
+gtext('C=0.1')
+35
+
+
+
+gtext('C=1')
+gtext('C=10')
+gtext('C=100')
+
+# 附程序4 PYTHON绘图
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import plotly.plotly as py
+py.sign_in('Aorigami', 'H64SFtVv5Kbd2rBGdIcK')
+import pandas as pd
+
+df = pd.read_csv(r'C:\Users\cy\Desktop\Country_KXCS.csv', encoding='utf-8')
+data =[dict(
+type = 'choropleth',
+locations = df['CODE'],
+z = df['KXCS'],
+text = df['COUNTRY'],
+colorscale = [[0,"rgb(5,48,97)"],
+[0.15265666689933938,"rgb(35,48,97)"],
+[0.20531333379867875,"rgb(33,102,172)"],
+[0.30531333379867875,"rgb(33,80,162)"],
+[0.4079700006980182,"rgb(97,137,195)"],
+[0.4579700006980182,"rgb(67,147,195)"],
+[0.5279700006980182,"rgb(67,127,225)"],
+[0.6006266675973575,"rgb(146,197,222)"],
+[0.7032833344966969,"rgb(209,229,240)"],
+[0.7577361120805807,"rgb(247,247,247)"],
+[0.8021888896644646,"rgb(244,165,130)"],
+[0.85066416672483484,"rgb(244,145,130)"],
+[0.9010944448322323,"rgb(214,96,77)"],
+[0.9555472224161161,"rgb(103,0,56)"],
+[1,"rgb(103,0,31)"]],
+autocolorscale = False,
+# reversecale = True,
+marker = dict(
+line = dict(
+color = 'rgb(180,180,180)',
+width = 0.5,
+)),
+colorbar = dict(
+title = '恐怖袭击数量'),
+)]
+36
+
+
+
+layout = dict(
+title = '每个国家恐怖袭击数量 (2015--2017年)',
+geo = dict(
+showframe=False,
+showcoastlines =True,
+projection = dict(
+type = 'mercator'
+)
+)
+)
+
+fig =dict(data = data,layout=layout)
+py.plot(fig,validata=False,filename='world_map')
+
+# 附程序5 GM(1,1)模型
+%x0=[0.005778438 0.016097078 0.008667657 0.01774806
+1. 016097078 0.012382368];
+A=load('yuce.txt');
+A1=A(1,:);
+A2=A(2,:);
+A3=A(3,:);
+A4=A(4,:);
+A5=A(5,:);
+A6=A(6,:);
+A7=A(7,:);
+A8=A(8,:);
+A9=A(9,:);
+A10=A(10,:);
+A11=A(11,:);
+A12=A(12,:);
+x0=A6;
+n=length(x0);
+lamda=x0(1:n-1)./x0(2:n);
+range=minmax(lamda);
+x1=cumsum(x0);
+for i=2:n
+z(i)=0.5*(x1(i)+x1(i-1));
+end
+B=[-z(2:n)',ones(n-1,1)];
+Y=x0(2:n)';
+u=B\Y;
+x=dsolve('Dx+a*x=b','x(0)=x0');
+x=subs(x,{'a','b','x0'},{u(1),u(2),x1(1)});
+37
+
+
+
+yuce1=subs(x,'t',[0:n-1]);  %yuce1=subs(x,'t',[0:n+2]);
+digits(6),y=vpa(x);
+yuce=[x0(1),diff(yuce1)];
+epsilon=x0-yuce;
+delta=abs(epsilon./x0);
+rho=1-(1-0.5*u(1))/(1+0.5*u(1))*lamda;
+h1=mean(delta);
+附程序6 财产损失模块
+n=7;
+ns=[12,5,2,9,22,13,4];
+names={'x1','x2','x3','x4','x5','x6','x7'};
+x1=1;x2=2;x3=3;x4=4;x5=5;x6=6;x7=7;
+order=[1 6 2 5 4 7 3];
+result_matrix=zeros(ns(x7),ns(x7));
+max_fan_in=2;
+data=load('C:\Users\Administrator\Desktop\text1.txt');
+[num_n,num_m]=size(data');
+data_train=zeros(num_n,num_m);
+dag=zeros(n,n);
+dag=learn_struct_K2(data',ns,order,'max_fan_in',max_fan_in);
+bnet=mk_bnet(dag,ns);
+draw_graph(dag);
+%下面是参数学习
+priors=1;
+seed=0;
+rand('state',seed);
+for i=1:n
+
+bnet.CPD{i}=tabular_CPD(bnet,i,'CPT','unif','prior_type','dirichlet','dirichlet_type','BDeu','dirichle
+t_weight',priors);
+% 采用全局联合树推理算法，提高运算速度
+end
+bnet2=bayes_update_params(bnet,data');
+CPT3=cell(1,n);
+for i=1:n
+s=struct(bnet2.CPD{i});
+CPT3{i}=s.CPT;
+end
+%给定证据，求最大后验概率
+engine = jtree_inf_engine(bnet2);
+evidence = cell(1,n);
+evidence{x1} = 1;
+evidence{x2} = 1;
+evidence{x3} = 1;
+evidence{x4} = 4;
+evidence{x5} = 11;
+evidence{x6} = 10;
+
+[engine, loglik] = enter_evidence(engine, evidence);
+marg = marginal_nodes(engine,x7);
+# M=marg.T
+m1=find(M==max(M))
+
+38
+
+
+
+附程序7 人员伤亡模块
+n=7；
+ns=[12,5,2,9,22,13,5];
+names={'x1','x2','x3','x4','x5','x6','x7'};
+x1=1;x2=2;x3=3;x4=4;x5=5;x6=6;x7=7;
+order=[1 6 2 5 4 7 3];
+result_matrix=zeros(ns(x8),ns(x8));
+max_fan_in=2;
+data=load('C:\Users\Administrator\Desktop\text2.txt');
+[num_n,num_m]=size(data');
+data_train=zeros(num_n,num_m);
+dag=zeros(n,n);
+dag=learn_struct_K2(data',ns,order,'max_fan_in',max_fan_in);
+bnet=mk_bnet(dag,ns);
+draw_graph(dag);
+%下面是参数学习
+priors=1;
+seed=0;
+rand('state',seed);
+for i=1:n
+
+bnet.CPD{i}=tabular_CPD(bnet,i,'CPT','unif','prior_type','dirichlet','dirichlet_type','BDeu','dirichle
+t_weight',priors);
+% 采用全局联合树推理算法，提高运算速度
+end
+bnet2=bayes_update_params(bnet,data');
+CPT3=cell(1,n);
+for i=1:n
+s=struct(bnet2.CPD{i});
+CPT3{i}=s.CPT;
+end
+%给定证据，求最大后验概率
+engine = jtree_inf_engine(bnet2);
+evidence = cell(1,n);
+evidence{x1} = 1;
+evidence{x2} = 1;
+evidence{x3} = 1;
+evidence{x4} = 4;
+evidence{x5} = 11;
+evidence{x6} = 10;
+
+[engine, loglik] = enter_evidence(engine, evidence);
+marg = marginal_nodes(engine,x8);
+# M=marg.T
+
+m2=find(M==max(M))
+附程序8 不良社会影响模块
+
+N = 5;
+dag = zeros(N,N);
+x1=1; x2=2; x3=3;x4=4;x5=5;
+dag(x1,[x2 x3 x4 x5]) = 1;
+draw_graph(dag);
+discrete_nodes = 1:N;
+node_sizes = [4 4 5 2 4];
+bnet = mk_bnet(dag, node_sizes, 'discrete', discrete_nodes);
+39
+
+
+
+bnet.CPD{x1} = tabular_CPD(bnet, x1, [0.25 0.25 0.25 0.25]);
+bnet.CPD{x2} = tabular_CPD(bnet, x2, [0.55 0.10 0.05 0.01 0.40 0.60 0.15 0.04 0.07 0.25 0.55
+1. 25 0.03 0.05 0.25 0.70]);
+bnet.CPD{x3} = tabular_CPD(bnet, x3, [0.60 0.03 0.02 0.01 0.30 0.45 0.03 0.02 0.06 0.40 0.50
+1. 05 0.03 0.10 0.40 0.22 0.01 0.02 0.05 0.70]);
+bnet.CPD{x4} = tabular_CPD(bnet, x4, [0.10 0.40 0.60 0.90 0.90 0.60 0.40 0.10]);
+bnet.CPD{x5} = tabular_CPD(bnet, x5, [0.01 0.03 0.15 0.92 0.02 0.07 0.80 0.05 0.07 0.70 0.03
+1. 02 0.90 0.20 0.02 0.01]);
+engine = jtree_inf_engine(bnet);
+evidence = cell(1,N);
+
+evidence{x2} = m1;
+evidence{x3} = m2;
+evidence{x4} = 2;
+evidence{x5} = 1;
+
+[engine, loglik] = enter_evidence(engine, evidence);
+marg = marginal_nodes(engine,x1);
+# M=marg.T
+m3=find(M==max(M))
+附程序9 恐怖袭击事件威胁程度模块
+N = 4;
+dag = zeros(N,N);
+x1=1; x2=2; x3=3;x4=4;
+dag(x1,[x2 x3 x4]) = 1;
+draw_graph(dag);
+discrete_nodes = 1:N;
+node_sizes = [4 4 5 4];
+bnet = mk_bnet(dag, node_sizes, 'discrete', discrete_nodes);
+bnet.CPD{x1} = tabular_CPD(bnet, x1, [0.25 0.25 0.25 0.25]);
+bnet.CPD{x2} = tabular_CPD(bnet, x2, [0.50 0.10 0.05 0.02 0.44 0.60 0.15 0.08 0.05 0.25 0.55
+1. 25 0.01 0.05 0.25 0.65]);
+bnet.CPD{x3} = tabular_CPD(bnet, x3, [0.65 0.03 0.02 0.01 0.25 0.45 0.03 0.02 0.06 0.40 0.50
+1. 03 0.03 0.10 0.40 0.29 0.01 0.02 0.05 0.65]);
+bnet.CPD{x4} = tabular_CPD(bnet, x4, [0.80 0.07 0.04 0.01 0.15 0.75 0.06 0.09 0.04 0.15 0.60
+1. 15 0.01 0.03 0.30 0.85]);
+engine = jtree_inf_engine(bnet);
+evidence = cell(1,N);
+
+evidence{x2} = m1;
+evidence{x3} = m2;
+evidence{x4} = m3;
+[engine, loglik] = enter_evidence(engine, evidence);
+marg = marginal_nodes(engine,x1);
+# M=marg.T
+
+附表1 指标的“等效死亡”折算因子
+地理编码特征
+折算因子
+1
+1. 6867
+2
+1. 9404
+3
+1. 1070
+4
+1. 0702
+40
+
+
+
+5
+1. 2733
+
+成功攻击与否
+折算因子
+0
+1. 6164
+1
+1. 9504
+
+攻击类型
+折算因子
+1
+1. 4446
+2
+1. 7986
+3
+1. 8850
+4
+1. 4704
+5
+1. 4136
+6
+1. 8075
+7
+1. 5169
+8
+1. 2644
+9
+1. 3820
+
+武器类型
+折算因子
+1
+1.2375
+2
+1. 8775
+3
+1. 3909
+5
+1. 5719
+6
+1. 2133
+7
+1. 2500
+8
+1. 9342
+9
+1. 3558
+10
+1. 2957
+11
+1. 0095
+12
+1. 3232
+13
+1.7912
+附表2 恐怖袭击事件威胁程度模块的贝叶斯网络条件概率矩阵
+)
+|
+(
+# T
+# P
+# P
+
+)
+|
+(
+# T
+# C
+# P
+
+)
+|
+(
+# T
+# A
+# P
+
+# Threat
+level
+1，  2，   3，  4
+1     2    3    4     5
+1     2    3    4
+1
+2
+3
+4
+
+
+
+
+
+
+
+
+
+
+
+
+1. 65
+
+1. 25
+
+1. 08
+
+1. 02
+1. 25
+
+1. 55
+
+1. 15
+
+1. 05
+1. 05
+
+1. 25
+
+1. 60
+
+1. 10
+1. 01
+
+1. 05
+
+1. 44
+
+1. 50
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. 65
+
+1. 29
+
+1. 03
+
+1. 02
+
+1. 01
+1. 05
+
+1. 40
+
+1. 50
+
+1. 03
+
+1. 02
+1. 02
+
+1. 10
+
+1. 40
+
+1. 45
+
+1. 03
+1. 01
+
+1. 03
+
+1. 06
+
+1. 25
+
+1. 65
+
+
+
+
+
+
+
+
+
+
+
+
+1. 85
+
+1. 15
+
+1. 09
+
+1. 01
+1. 30
+
+1. 60
+
+1. 06
+
+1. 04
+1. 03
+
+1. 15
+
+1. 75
+
+1. 07
+1. 01
+
+1. 04
+
+1. 15
+
+1. 80
+
+41
+
+
+
+42
+附表3 不良社会影响模块的贝叶斯网络条件概率矩阵
+)
+|
+(
+# A
+# P
+# P
+
+)
+|
+(
+# A
+# C
+# P
+
+)
+|
+(
+# A
+# TA
+# P
+
+)
+|
+(
+# A
+# DK
+# P
+
+# Threat
+level
+1    2     3    4
+1     2    3    4     5
+1     2
+1     2    3    4
+1
+2
+3
+4
+
+
+
+
+
+
+
+
+
+
+
+
+1. 70
+
+1. 25
+
+1. 04
+
+1. 01
+1. 25
+
+1. 55
+
+1. 15
+
+1. 05
+1. 05
+
+1. 25
+
+1. 60
+
+1. 10
+1. 03
+
+1. 07
+
+1. 40
+
+1. 55
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. 70
+
+1. 22
+
+1. 05
+
+1. 02
+
+1. 01
+1. 05
+
+1. 40
+
+1. 50
+
+1. 03
+
+1. 02
+1. 02
+
+1. 10
+
+1. 40
+
+1. 45
+
+1. 03
+1. 01
+
+1. 03
+
+1. 06
+
+1. 30
+
+1. 60
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. 10
+
+1. 90
+1. 40
+
+1. 60
+1. 60
+
+1. 40
+1. 90
+
+1. 10
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. 85
+
+1. 15
+
+1. 09
+
+1. 01
+1. 30
+
+1. 60
+
+1. 06
+
+1. 04
+1. 03
+
+1. 15
+
+1. 75
+
+1. 07
+1. 01
+
+1. 04
+
+1. 15
+
+1. 80
+

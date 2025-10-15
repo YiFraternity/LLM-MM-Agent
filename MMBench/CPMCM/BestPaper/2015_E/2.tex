@@ -32,89 +32,17 @@
 针对问题一，主要研究了折线交点的速度变化的问题，利用前瞻算法计算出折线交点的最大允许速度，建立了基于前瞻法 $S$ 型加减速改进算法模型，分析了初始速度 $v_{s}$ 和末速度 $v_{e}$ 对模型的影响。利用所建模型，在假设插补周期 $T=1\text{ms}$ 的前提下，求解得到 $90^\circ$ 和 $135^\circ$ 的最大转角速度分别为 $4.24\text{mm}/\text{s}$ 和 $7.84\text{mm}/\text{s}$。最后在误差允许范围内，改变加工路径，增大了交点的最大允许速度，利用所建模型，求解得到 $90^\circ$ 和 $135^\circ$ 的最大转角速度分别为 $11.59\text{mm}/\text{s}$ 和 $15.38\text{mm}/\text{s}$。
 
 针对问题二，首先在考虑弦高误差的限制下，给出圆弧粗插补方案，进而在考虑分辨率的情况下，给出了插补点的实时搜索算法；其次，分情况对直线与圆弧之间的转接进行分析，得到实时加工算法；然后，利用该算法对实例进行求解，得到加工方案，其加工时间 $103.3890\text{s}$，最大误差 $0.9976\mu\text{m}$；最后，从理论和仿
-\end{abstract}
 
-\begin{center}
-- 1 -
-\end{center}
-
-\section{真分别分析了圆弧半径对加工效率的影响，得到结论：半径越大，加工效率越高。}
+真分别分析了圆弧半径对加工效率的影响，得到结论：半径越大，加工效率越高。
 
 针对问题三，在考虑瞬时启动速度及加速度的情况下，对 $S$ 型曲线加减速算法的参数进行修正，并对实例进行求解和对比分析，观察发现在短距离加工时，速度变化剧烈，不能平滑地过渡折线交点；并且不考虑瞬时启动速度及加速度的情况下，进行仿真实验比较，实际仿真结果显示考虑瞬时启动速度及加速度的情况下，机床运行时间更短，算法效率更高。
 
 针对问题四，在前三问的基础上，充分分析 $S$ 型算法的优缺点。提出基于改进型三角函数算法，建立了改进型三角函数的加减速控制模型。其中，改进型三角函数改进了三角函数算法不能满足以最大速度 $v_{\text{max}}$ 匀速加工，在仿真实验中并且利用加加速度 $J$ 按照三角函数线型曲线变化，在相较于 $S$ 型加减速算法的运行时间差别不大的情况下，可以使得速度和加速度都满足平滑性变化，改善了加工过程的稳定性，提高了机床加工的精度，减小了对刀具的损耗。
+关键词：S 型曲线加减速 数控加工 前瞻算法 插补模型 路径优化 改进型三角函数算法
+\end{abstract}
 
-\section{关键词：S 型曲线加减速 数控加工 前瞻算法 插补模型 路径优化 改进型三角函数算法}
+\tableofcontents
 
-\section{目录}
-\begin{itemize}
-    \item 一、问题的重述 \dotfill 5
-    \begin{itemize}
-        \item 1.1 问题由来 \dotfill 5
-        \item 1.2 问题要求 \dotfill 5
-        \item 1.3 问题的提出 \dotfill 5
-    \end{itemize}
-    \item 二、问题的假设 \dotfill 5
-    \item 三、符号说明 \dotfill 6
-    \item 四、问题一的分析与求解 \dotfill 6
-    \begin{itemize}
-        \item 4.1 问题一的分析 \dotfill 6
-        \item 4.2 相邻折线型线连接点处夹角与进给速度的关系 \dotfill 8
-        \item 4.3 刀具在折线上运动的控制模型 \dotfill 9
-        \begin{itemize}
-            \item 4.3.1 理想型 S 型加减速度算法 \dotfill 9
-            \item 4.3.2 非理想 S 型加减速度算法 \dotfill 11
-            \item 4.3.3 基于前瞻法改进 S 型加减速度算法 \dotfill 12
-            \item 4.3.4 基于前瞻法改进 S 型加减速度算法控制流程 \dotfill 18
-        \end{itemize}
-        \item 4.4 模型应用 \dotfill 19
-        \begin{itemize}
-            \item 4.4.1 刀具运动状态模型 \dotfill 19
-            \item 4.4.2 折线交点角度与速度模型 \dotfill 20
-            \item 4.4.3 刀具在折线上运动速度控制模型 \dotfill 20
-        \end{itemize}
-        \item 4.5 问题一的求解 \dotfill 21
-        \item 4.6 问题一的进一步求解 \dotfill 24
-    \end{itemize}
-    \item 五、问题二的分析与求解 \dotfill 25
-    \begin{itemize}
-        \item 5.1 问题二的分析 \dotfill 25
-        \begin{itemize}
-            \item 5.1.1 弦高误差分析 \dotfill 25
-            \item 5.1.2 圆弧轨迹插补方案 \dotfill 26
-            \item 5.1.3 搜索算法 \dotfill 27
-        \end{itemize}
-        \item 5.2 直线和圆弧转接分析 \dotfill 28
-        \begin{itemize}
-            \item 5.2.1 直线与圆弧相切分析 \dotfill 28
-            \item 5.2.2 直线与圆弧不相切分析 \dotfill 29
-        \end{itemize}
-    \end{itemize}
-\end{itemize}
-
-\begin{itemize}
-    \item 5.3 问题二的模型求解 \dotfill -30-
-    \item 5.3.1 算法控制流程 \dotfill -30-
-    \item 5.3.2 算例结果 \dotfill -31-
-    \item 5.4 圆弧半径的变化对算法效率的影响 \dotfill -33-
-    \item 六、问题三的分析与求解 \dotfill -34-
-    \item 6.1 问题三的分析 \dotfill -34-
-    \item 6.1.1 瞬时速度的影响的因素 \dotfill -34-
-    \item 6.1.2 瞬时加速度的影响的因素 \dotfill -35-
-    \item 6.2 问题三的模型建立 \dotfill -35-
-    \item 6.2.1 考虑瞬时量的理想S型算法 \dotfill -35-
-    \item 6.2.2 考虑瞬时量的前瞻S型算法 \dotfill -37-
-    \item 6.3 问题三的模型求解 \dotfill -38-
-    \item 七、问题四的分析与求解 \dotfill -41-
-    \item 7.1 问题四的分析 \dotfill -41-
-    \item 7.2 S型加减速控制算法的优缺点 \dotfill -41-
-    \item 7.3 三角函数加减速算法 \dotfill -42-
-    \item 7.4 四次位移加减速控制算法 \dotfill -45-
-    \item 7.5 三种加减速控制方法的比较 \dotfill -46-
-    \item 八、模型总结及其改进 \dotfill -49-
-    \item 参考文献: \dotfill -49-
-    \item 附录: \dotfill -50-
-\end{itemize}
 
 \section{一、问题的重述}
 
@@ -178,7 +106,7 @@
 
 \subsection{4.1 问题一的分析}
 
-正常数控操作中，待加工型可能比较复杂，因此有三轴，六轴和八轴控制系
+正常数控操作中，待加工型可能比较复杂，因此有三轴，六轴和八轴控制系统。本问题考虑的待加工型件为平面型，加工型为折线，如图 4.1
 
 \begin{figure}[h]
     \centering
@@ -813,16 +741,19 @@ S_{y} = S \times \sin(\alpha) = 0;
 
 此时刀具进行减速运动，由折线之间夹角与允许进给速度值之间的对应关系可知，在不同角度，相对应的折线交点的进给速度分别为:
 
-\begin{tabular}{l l}
-学校 & 空军预警学院 \\
+\begin{table}
+\centering
+\caption{折线交点角度与速度关系 ($\beta=90^\circ$ 和 $\beta=135^\circ$)}
+\begin{tabular}{l c c}
 \hline
-参赛队号 & 90047006 \\
 \hline
-队员姓名 & \begin{tabular}{l l}
-1. & 熊智敏 \\
-2. & 王庚 \\
-3. & 漆家辉
+角度值(度) & 90 & 135 \\
+\hline
+进给速度(mm/s) & 4.24 & 7.84 \\
+\hline
+\hline
 \end{tabular}
+\end{table}
 
 假定两折线长度分别为 $0.2m$ 和 $0.3m$，最大限制进给速度为 $v_{\text{max}}=0.1m/s$，最大加速度 $a_{\text{max}}=0.6m/s^2$，加加速度恒值 $J=0.3$，插补周期 $T=5ms$。
 
@@ -1148,12 +1079,6 @@ B_4(x_{B_4}, y_{B_4}) &= (x_0 + \lfloor \Delta x \rfloor, y_0 + \lceil \Delta y 
     \label{fig:flowchart}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{algorithm_flowchart.png}
-    \caption{算法流程图}
-    \label{fig:algorithm_flowchart}
-\end{figure}
 
 \subsection{5.3.2 算例结果}
 
@@ -1169,7 +1094,8 @@ B_4(x_{B_4}, y_{B_4}) &= (x_0 + \lfloor \Delta x \rfloor, y_0 + \lceil \Delta y 
 \end{figure}
 
 由上图整体趋势可以看出，弦长越短，机床整体运行时间越长，所以，在插补方案中选取允许的最长弦长为优化方案的弦长，这样的机床整体运行时间为可
-
+行方案中具有较高的算法运行效率。通过弦长的选取进而完成插补方案的优化。 
+2.速度,加速度在坐标轴上的分量呈现:
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image1.png}
@@ -1205,7 +1131,7 @@ B_4(x_{B_4}, y_{B_4}) &= (x_0 + \lfloor \Delta x \rfloor, y_0 + \lceil \Delta y 
     \label{fig:5.12}
 \end{figure}
 
-\subsection{时间与误差分析结果}
+2.时间与误差分析结果
 
 \begin{table}[h]
     \centering
@@ -1278,11 +1204,11 @@ v = \frac{R T a_{\max}}{2R - \delta_h}
 
 在理想模型中，即最大加速度和最大速度都能够达到的情况，此时计算 1 阶段时间时引入 $v_0$ 的影响，即 $T_1 = \frac{v_0 - v_{\max}}{J_{\text{const}}} $。
 
-\subsubsection{6.1.2 加工路程}
+4.加工路程
 
 在计算加工路程时，需要考虑初始速度 $v_s$ 的影响，即速度从初始速度 $v_s$ 开始，而初始速度的大小要大于或者等于 $v_0$。
 
-\subsection{6.1.3 瞬时加速度的影响的因素}
+\subsection{6.1.2 瞬时加速度的影响的因素}
 
 1. 加速度范围
 
@@ -1512,7 +1438,7 @@ V_s < V_e \text{ 时， } & V_e - V_s = JT_5^2 + 2a_0 T_5;
     \label{fig:parameters}
 \end{figure}
 
-\subsection{无瞬时量与有瞬时量对比结果}
+2.无瞬时量与有瞬时量对比结果
 
 \begin{figure}[h]
     \centering
