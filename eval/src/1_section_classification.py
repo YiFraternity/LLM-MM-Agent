@@ -1,15 +1,12 @@
-
+import os
+from pathlib import Path
 import json
 import argparse
-import glob
-from pathlib import Path
 
-from .utils import (
+from utils import (
     load_tex_content,
     load_json,
     load_yaml,
-    clean_json_txt,
-    batch_standardize_json,
     prepare_batch_prompts,
     load_llm,
     write_jsonl,
@@ -119,85 +116,102 @@ def get_criteria_str(criteria_file: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description='Batch section classification for LaTeX files')
-    parser.add_argument('--latex_files', nargs='*', default=None,
-                        help='Glob patterns for LaTeX files (e.g., output/**/latex/solution.tex)')
-    parser.add_argument('--input_dir', default=None,
-                        help='Directory to search for LaTeX files (will use pattern **/latex/solution.tex)')
-    parser.add_argument('--criteria_file', default='MMBench/CPMCM/criteria/2010_D.json',
+    parser.add_argument('--latex-file', default=None,
+                        help='LaTeX file to process')
+    parser.add_argument('--criteria-file', default=None,
                         help='Criteria JSON file')
-    parser.add_argument('--prompt_template_file', default='eval/prompts/section_classification.yaml',
+    parser.add_argument('--latex-dir', default='MMBench/CPMCM/BestPaper',
+                        help='Directory to search for LaTeX files')
+    parser.add_argument('--latex-file-name', default='1.tex',
+                        help='LaTeX file name')
+    parser.add_argument('--criteria-dir', default='MMBench/CPMCM/criteria',
+                        help='Criteria JSON directory')
+    parser.add_argument('--latex-files', nargs='+', default=None,
+                        help='List of LaTeX files to process')
+    parser.add_argument('--criteria-files', nargs='+', default=None,
+                        help='List of Criteria JSON files to process')
+    parser.add_argument('--prompt-template-file', default='eval/prompts/section_classification.yaml',
                         help='YAML file containing prompt templates')
-    parser.add_argument('--output', default='eval/output/2010_D/section_classification_output.jsonl',
+    parser.add_argument('--output', default='eval/output/1_bestpaper_section_classification',
                         help='Output JSONL file path (appended)')
-    parser.add_argument('--model_name', default='/home/share/models/modelscope/Qwen/Qwen2.5-32B-Instruct',
+    parser.add_argument('--model-name', default='/group_homes/our_llm_domain/home/share/open_models/Qwen/Qwen2.5-32B-Instruct',
                         help='Model name or path for vLLM')
-    parser.add_argument('--gpu_num', type=int, default=4, help='Number of GPUs for tensor parallelism')
-    parser.add_argument('--max_content_chars', type=int, default=2000, help='Max chars of content to include in prompt')
+    parser.add_argument('--gpu-num', type=int, default=4, help='Number of GPUs for tensor parallelism')
+    parser.add_argument('--max-content-chars', type=int, default=8192, help='Max chars of content to include in prompt')
     args = parser.parse_args()
 
     # 1) Resolve LaTeX files to process
-    latex_files: list[str] = []
-    if args.latex_files:
-        for pattern in args.latex_files:
-            latex_files.extend(glob.glob(pattern, recursive=True))
-    elif args.input_dir:
-        search_pattern = str(Path(args.input_dir) / '**' / 'latex' / 'solution.tex')
-        latex_files.extend(glob.glob(search_pattern, recursive=True))
-    else:
-        # Sensible default: search whole repo for typical solution.tex paths
-        default_pattern = str(Path('output') / '**' / 'latex' / 'solution.tex')
-        latex_files.extend(glob.glob(default_pattern, recursive=True))
+    latex_files, criteria_files = [], []
+    if args.latex_file and args.criteria_file:
+        latex_files.append(args.latex_file)
+        criteria_files.append(args.criteria_file)
+    elif args.latex_files and args.criteria_files:
+        latex_files.extend(args.latex_files)
+        criteria_files.extend(args.criteria_files)
+    elif args.latex_dir and args.criteria_dir and args.latex_file_name:
+        raw_task_ids = sorted(os.listdir(args.latex_dir))
+        task_ids = ["_".join(_.split('_')[:2]) for _ in raw_task_ids]
+        for raw_task_id, task_id in zip(raw_task_ids, task_ids):
+            latex_files.append(os.path.join(args.latex_dir, raw_task_id, args.latex_file_name))
+            criteria_files.append(os.path.join(args.criteria_dir, f'{task_id}.json'))
 
-    latex_files = sorted(set(latex_files))
-    if not latex_files:
-        print('No LaTeX files found. Please specify --latex_files or --input_dir.')
-        return
-
-    # 2) Load shared resources once
-    criteria_str = get_criteria_str(args.criteria_file)
+    assert len(latex_files) == len(criteria_files), "Number of LaTeX files and criteria files must match."
     prompts_yaml = load_yaml(args.prompt_template_file)
     classification_prompt = prompts_yaml['classification']
 
-    model, sampling_params = load_llm(args.model_name, gpu_num=args.gpu_num)
-
     total_items = 0
-    for latex_file in latex_files:
-        try:
-            latex_content = load_tex_content(latex_file)
-            sections = latex_to_json(latex_content)
+    batch_prompts, all_content_infos = [], []
+    for latex_file, criteria_file in zip(latex_files, criteria_files):
+        if not os.path.exists(criteria_file):
+            print(f"Criteria file {criteria_file} not found, skipping.")
+            continue
+        if not os.path.exists(latex_file):
+            print(f"LaTeX file {latex_file} not found, skipping.")
+            continue
+        criteria_str = get_criteria_str(criteria_file)
+        latex_content = load_tex_content(latex_file)
+        sections = latex_to_json(latex_content)
 
-            contents = extract_content_from_sections(sections)
-            for content_info in contents:
-                content_info['subtasks_dimensions'] = criteria_str
-                cur_section_path = '->'.join(content_info['title_path'])
-                content_info['section_content'] = '当前章节路径：' \
-                    + cur_section_path + '\n' \
-                    + '内容：' \
-                    + content_info['content'][:args.max_content_chars]
-                # 附加文件元数据，便于追踪
-                content_info['source_latex_file'] = latex_file
-                content_info['source_name'] = Path(latex_file).parent.parent.parent.name if len(Path(latex_file).parts) >= 3 else Path(latex_file).name
+        contents = extract_content_from_sections(sections)
 
-            if not contents:
-                continue
+        for content_info in contents:
+            content_info['subtasks_dimensions'] = criteria_str
+            cur_section_path = '->'.join(content_info['title_path'])
+            content_info['section_content'] = '当前章节路径：' \
+                + cur_section_path + '\n' \
+                + '内容：' \
+                + content_info['content'][:args.max_content_chars]
+            # 附加文件元数据，便于追踪
+            content_info['source_latex_file'] = Path(criteria_file).stem
 
-            batch_prompts = prepare_batch_prompts(contents, classification_prompt)
-            outputs = model.chat(batch_prompts, sampling_params, use_tqdm=True)
+        if not contents:
+            continue
 
-            raw_outputs = [output.outputs[0].text for output in outputs]
-            cleaned_outputs = batch_standardize_json(raw_outputs, model)
+        one_latex_prompt = prepare_batch_prompts(contents, classification_prompt)
+        batch_prompts.extend(one_latex_prompt)
+        all_content_infos.extend(contents)
 
-            for content_info, raw_output, cleaned_output in zip(contents, raw_outputs, cleaned_outputs):
-                content_info['model_output'] = cleaned_output if isinstance(cleaned_output, dict) else {}
-                content_info['raw_output'] = raw_output
+    model, sampling_params = load_llm(args.model_name, gpu_num=args.gpu_num)
+    outputs = model.chat(batch_prompts, sampling_params, use_tqdm=True)
 
-            write_jsonl(contents, args.output)
-            total_items += len(contents)
-            print(f"Processed {latex_file}: {len(contents)} items")
-        except Exception as e:
-            print(f"Error processing {latex_file}: {e}")
+    raw_outputs = [output.outputs[0].text for output in outputs]
 
-    print(f"Done. Total items written: {total_items}. Output: {args.output}")
+    assert len(all_content_infos) == len(raw_outputs), "Number of content infos and raw outputs must match."
+    for content_info, raw_output in zip(all_content_infos, raw_outputs):
+        content_info['model_output'] = raw_output
+        del content_info['subtasks_dimensions']
+
+    os.makedirs(args.output, exist_ok=True)
+    cleared_outputs = set()
+    for content_info in all_content_infos:
+        output_path = os.path.join(args.output, content_info['source_latex_file'] + '.jsonl')
+        if output_path not in cleared_outputs:
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            open(output_path, 'w', encoding='utf-8').close()
+            cleared_outputs.add(output_path)
+        write_jsonl(content_info, output_path)
+    total_items += len(all_content_infos)
+    print(f"Processed total items: {len(all_content_infos)}")
 
 
 if __name__ == "__main__":

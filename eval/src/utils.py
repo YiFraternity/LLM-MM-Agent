@@ -105,8 +105,25 @@ def batch_standardize_json(texts: List[str], llm) -> List[Dict]:
         print(f"Error during batch JSON standardization: {str(e)}")
         return [{}] * len(texts)
 
+def dict_to_latex_table(data: List[Dict[str, Any]]) -> str:
+    """Converts the list of dictionaries into a simple LaTeX tabular environment."""
+    if not data:
+        return ""
 
-def clean_json_txt(json_txt: str, standardize: bool = True, llm=None) -> Union[str, Dict[str, Any]]:
+    headers = list(data[0].keys())
+    latex_str = "\\begin{tabular}{|" + "|".join(["l"] * len(headers)) + "|}\n"
+    latex_str += "\\hline\n"
+    latex_str += " & ".join([h.replace("_", "\\_") for h in headers]) + " \\\\\n"
+    latex_str += "\\hline\n"
+    for row in data:
+        escaped_row = [str(v).replace("\\", "\\textbackslash ").replace("_", "\\_").replace("&", "\\&") for v in row.values()]
+        latex_str += " & ".join(escaped_row) + " \\\\\n"
+    latex_str += "\\hline\n"
+    latex_str += "\\end{tabular}\n"
+
+    return latex_str
+
+def clean_json_txt(json_txt: str, standardize: bool = True, llm=None) -> Union[str, Dict[str, Any], List[Dict[str, Any]]]:
     """
     从可能包含 ```json ... ``` 或 ``` ... ``` 的文本中提取 JSON 并解析为 dict。
 
@@ -126,25 +143,26 @@ def clean_json_txt(json_txt: str, standardize: bool = True, llm=None) -> Union[s
     if not isinstance(json_txt, str):
         raise TypeError("json_txt must be a str")
 
-    # 1) 优先查找 ```json ... ```（不区分大小写）
     m = re.search(r'```(?:\s*json\b)[\r\n]*([\s\S]*?)```', json_txt, re.IGNORECASE)
-    # 2) 若没有带 json 标记的，再查找任意 ``` ... ``` 代码块
     if not m:
         m = re.search(r'```[\r\n]*([\s\S]*?)```', json_txt)
 
     if m:
         payload = m.group(1).strip()
     else:
-        # 没有 code fence，就用原始字符串
         payload = json_txt.strip()
 
-    # 首先尝试直接解析
     try:
         return json.loads(payload)
     except json.JSONDecodeError:
-        if not standardize or not llm:
-            return {}
-
+        # If it fails, check if the error is likely due to unescaped backslashes
+        corrected_payload = re.sub(r'\\', r'\\\\', payload)
+        try:
+            return json.loads(corrected_payload)
+        except json.JSONDecodeError:
+            if not standardize or not llm:
+                print("Failed to parse JSON even after backslash correction.")
+                return json_txt
     try:
         current_dir = Path(__file__).parent
         prompt_path = current_dir / 'json_standardization.yaml'
@@ -164,10 +182,10 @@ def clean_json_txt(json_txt: str, standardize: bool = True, llm=None) -> Union[s
         try:
             return json.loads(standardized_json)
         except json.JSONDecodeError:
-            return {}
+            return json_txt
     except Exception as e:
         print(f"Error during JSON standardization: {str(e)}")
-        return {}
+        return json_txt
 
 def populate_template(template: str, variables: dict) -> str:
     """
@@ -222,7 +240,7 @@ def load_llm(model_name_or_path, tokenizer_name_or_path=None, gpu_num=1, lora_mo
         "tokenizer_mode": "slow",
         "tensor_parallel_size" : gpu_num,
         "enable_lora": bool(lora_model_name_or_path),
-        'max_model_len': 8192,
+        'max_model_len': 16384,
     }
     llm = LLM(**kw_args)
     kwargs={
