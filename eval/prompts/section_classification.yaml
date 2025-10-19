@@ -26,7 +26,7 @@ classification: |-
   [
     {
       "subtask": "子任务名称[子任务1|子任务2|...|子任务N]",
-      "dimensions": "维度名称",
+      "dimension": "维度名称",
       "reason": "解释该章节内容对应这一子任务与维度，并给出判断依据"
     }
   ]
