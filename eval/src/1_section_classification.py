@@ -1,7 +1,9 @@
 import os
+import re
 from pathlib import Path
 import json
 import argparse
+from typing import List
 
 from utils import (
     load_tex_content,
@@ -11,6 +13,7 @@ from utils import (
     load_llm,
     write_jsonl,
     latex_to_json,
+    find_task_id_from_path,
 )
 
 
@@ -116,23 +119,19 @@ def get_criteria_str(criteria_file: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description='Batch section classification for LaTeX files')
-    parser.add_argument('--latex-file', default=None,
+    parser.add_argument('--latex-file', default=None, type=Path,
                         help='LaTeX file to process')
-    parser.add_argument('--criteria-file', default=None,
-                        help='Criteria JSON file')
-    parser.add_argument('--latex-dir', default='MMBench/CPMCM/BestPaper',
+    parser.add_argument('--latex-dir', default='MMBench/CPMCM/BestPaper', type=Path,
                         help='Directory to search for LaTeX files')
     parser.add_argument('--latex-file-name', default='1.tex',
-                        help='LaTeX file name')
-    parser.add_argument('--criteria-dir', default='MMBench/CPMCM/criteria',
+                        help='LaTeX file name, if used latex-dir')
+    parser.add_argument('--criteria-dir', default='MMBench/CPMCM/criteria', type=Path,
                         help='Criteria JSON directory')
-    parser.add_argument('--latex-files', nargs='+', default=None,
+    parser.add_argument('--latex-files', nargs='+', default=None, type=Path,
                         help='List of LaTeX files to process')
-    parser.add_argument('--criteria-files', nargs='+', default=None,
-                        help='List of Criteria JSON files to process')
     parser.add_argument('--prompt-template-file', default='eval/prompts/section_classification.yaml',
                         help='YAML file containing prompt templates')
-    parser.add_argument('--output', default='eval/output/1_bestpaper_section_classification',
+    parser.add_argument('--output', default='eval/output/1_bestpaper_section_classification', type=Path,
                         help='Output JSONL file path (appended)')
     parser.add_argument('--model-name', default='/group_homes/our_llm_domain/home/share/open_models/Qwen/Qwen2.5-32B-Instruct',
                         help='Model name or path for vLLM')
@@ -141,27 +140,22 @@ def main():
     args = parser.parse_args()
 
     # 1) Resolve LaTeX files to process
-    latex_files, criteria_files = [], []
-    if args.latex_file and args.criteria_file:
+    latex_files: List[Path] = []
+    if args.latex_file:
         latex_files.append(args.latex_file)
-        criteria_files.append(args.criteria_file)
-    elif args.latex_files and args.criteria_files:
+    elif args.latex_files:
         latex_files.extend(args.latex_files)
-        criteria_files.extend(args.criteria_files)
-    elif args.latex_dir and args.criteria_dir and args.latex_file_name:
-        raw_task_ids = sorted(os.listdir(args.latex_dir))
-        task_ids = ["_".join(_.split('_')[:2]) for _ in raw_task_ids]
-        for raw_task_id, task_id in zip(raw_task_ids, task_ids):
-            latex_files.append(os.path.join(args.latex_dir, raw_task_id, args.latex_file_name))
-            criteria_files.append(os.path.join(args.criteria_dir, f'{task_id}.json'))
+    elif args.latex_dir and args.latex_file_name:
+        latex_files = [(task_dir / args.latex_file_name) for task_dir in args.latex_dir.iterdir() if task_dir.is_dir()]
 
-    assert len(latex_files) == len(criteria_files), "Number of LaTeX files and criteria files must match."
     prompts_yaml = load_yaml(args.prompt_template_file)
     classification_prompt = prompts_yaml['classification']
 
     total_items = 0
     batch_prompts, all_content_infos = [], []
-    for latex_file, criteria_file in zip(latex_files, criteria_files):
+    for latex_file in latex_files:
+        task_id = find_task_id_from_path(latex_file)
+        criteria_file = args.criteria_dir / f'{task_id}.json'
         if not os.path.exists(criteria_file):
             print(f"Criteria file {criteria_file} not found, skipping.")
             continue

@@ -325,3 +325,16 @@ def latex_to_json(latex_content):
             del level_parents[k]
 
     return result_tree
+
+def find_task_id_from_path(path: Path) -> str:
+    task_id_pattern = re.compile(r'(\d{4}_[A-F])')
+    for part in path.parts:
+        match = task_id_pattern.search(part)
+        if match:
+            return match.group(0)
+
+    match = task_id_pattern.search(str(path))
+    if match:
+        return match.group(0)
+
+    return None
