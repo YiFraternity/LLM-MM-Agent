@@ -16,45 +16,24 @@
 import os
 import json
 import argparse
-from typing import List, Dict
-
-from utils import (
-    load_json,
-    load_yaml,
-    load_subtasks_from_criteria,
-    populate_template,
-)
+from pathlib import Path
+from typing import List, Dict, Union, Set, Tuple
+import logging
 
 from dotenv import load_dotenv
 load_dotenv(override=True)
 from openai import OpenAI
 
+from utils import (
+    load_json,
+    load_yaml,
+    populate_template,
+    DIMENSION_MAPPING,
+)
 
-dimensions = {
-    '问题识别': 'problem_identify',
-    '问题复述': 'problem_formulation',
-    '假设建立': 'assumption_develop',
-    '模型构建': 'model_construction',
-    '模型求解': 'model_solving',
-    '代码实现': 'code_implementation',
-    '结果分析': 'result_analysis',
-}
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def get_evaluation_prompt(step_chinese_name: str, evaluation_prompts: Dict[str, str]) -> str:
-    """
-    Get evaluation prompt for a specific step
-
-    Args:
-        step_chinese_name: Chinese name of the step
-        evaluation_prompts: Dictionary of evaluation prompts
-
-    Returns:
-        str: Evaluation prompt for the step
-    """
-    step_english_key = dimensions.get(step_chinese_name)
-    if step_english_key is None:
-        raise ValueError(f"Unknown step name: {step_chinese_name}")
-    return evaluation_prompts.get(step_english_key, "")
 
 def get_str(section_contents: List[dict], max_length: int = 2000) -> str:
     """
@@ -80,18 +59,15 @@ def get_str(section_contents: List[dict], max_length: int = 2000) -> str:
     return '\n'.join(formatted_sections)
 
 
-def get_batch_messages(prompt_dict: List[dict]) -> List[List[Dict[str, str]]]:
-    message_list = []
-    for _prompt_ in prompt_dict:
-        template = _prompt_.pop('prompt_template')
-        prompt = populate_template(template, _prompt_)
-        message_list.append([
-            {"role": "user", "content": prompt}
-        ])
-    return message_list
+def get_openai_message(prompt_dict: dict) -> List[Dict[str, str]]:
+    template = prompt_dict.pop('prompt_template')
+    prompt = populate_template(template, prompt_dict)
+    return [
+        {"role": "user", "content": prompt}
+    ]
 
 
-def call_openai_single(messages: List[Dict[str, str]], model: str) -> str:
+def call_openai(messages: List[Dict[str, str]], model: str) -> str:
     """Call OpenAI API for a single message with error handling"""
     if OpenAI is None:
         raise ImportError("请先安装 openai 包：pip install openai>=1.0.0")
@@ -118,127 +94,184 @@ def call_openai_single(messages: List[Dict[str, str]], model: str) -> str:
         print(f"Error calling OpenAI API: {str(e)}")
         raise
 
-
-def main():
-    parser = argparse.ArgumentParser(description='评估子任务')
-    parser.add_argument('--model_generate_index', required=True, help='模型生成的倒排索引 JSON 路径')
-    parser.add_argument('--bestpaper_index', required=True, help='最优论文的倒排索引 JSON 路径')
-    parser.add_argument('--criteria_file', required=True, help='评估标准 JSON 路径')
-    parser.add_argument('--eval_prompt_file', default='eval/prompts/eval_prompt.yaml', help='评估提示词 YAML 路径')
-    parser.add_argument('--output', required=True, help='输出 JSONL 文件路径（追加写入）')
-
-    parser.add_argument('--openai_model', default='gpt-5-mini', help='OpenAI 模型名称，例如 gpt-4o-mini')
-
-    args = parser.parse_args()
-
-    # Load subtasks from criteria file
-    subtasks, subtask_ens = load_subtasks_from_criteria(args.criteria_file)
-    model_generate_inverted_index = load_json(args.model_generate_index)
-    bestpaper_inverted_index = load_json(args.bestpaper_index)
-
-    evaluation_prompts = load_yaml(args.eval_prompt_file)['evaluation_prompts']
-    criteria_dict = load_json(args.criteria_file)
-
-    # 2) Assemble prompt_dict
+def assemble_prompt_dict(
+    model_generate_inverted_index: Dict[str, List[Dict]],  # 模型生成的倒排索引，从 model_generate_index_file 中读取
+    bestpaper_inverted_index: Dict[str, List[Dict]],  # 最优论文的倒排索引，从 bestpaper_index_file 中读取
+    criteria_dict: Dict[str, Dict],  # 评估标准，从 criteria_file 中读取
+    evaluation_prompts: Dict[str, str],  # 评估提示词，从 eval_prompt_file 中读取
+) -> List[dict]:
+    """
+    Assemble prompt dict for evaluation
+    """
+    all_tasks = list(criteria_dict.keys())
     prompt_dict: List[dict] = []
-    for subtask in subtasks:
-        for dimension_cn in dimensions.keys():
-            subtask_en = subtask_ens[subtask]
-            task_dimens_str = str((subtask, dimension_cn))
-            bestpaper_lst = bestpaper_inverted_index.get(task_dimens_str, [])
-            modelgenerate_lst = model_generate_inverted_index.get(task_dimens_str, [])
+    dimension_cn_lst = DIMENSION_MAPPING.keys()
+    for subtask in all_tasks:
+        task_id = subtask.split('_')[1]
+        for dimension_cn in dimension_cn_lst:
+            task_dimension_str = str((f"子任务{task_id}", dimension_cn))
+            bestpaper_lst = bestpaper_inverted_index.get(task_dimension_str, [])
+            modelgenerate_lst = model_generate_inverted_index.get(task_dimension_str, [])
             bestpaper_str = get_str(bestpaper_lst)
             modelgenerate_str = get_str(modelgenerate_lst)
 
-            _criteria_dimension = criteria_dict[subtask_en]['criteria'][dimension_cn]
-            criteria_dimension = []
-            for _ in _criteria_dimension:
-                _.pop('dimension', None)
-                criteria_dimension.append(_)
+            criteria_dimension = [{k: v for k, v in d.items() if k != 'dimension'}
+                      for d in criteria_dict[subtask]['criteria'][dimension_cn]]
 
+            dimension_english = DIMENSION_MAPPING.get(dimension_cn)
             _prompt_ = {
-                'task_id': subtask,
+                'subtask_id': f"子任务{task_id}",
                 'eval_dimension': dimension_cn,
-                'subtask': criteria_dict[subtask_en]['subtask'],
+                'subtask': criteria_dict[subtask]['subtask'],
                 'bestpaper': bestpaper_str,
                 'model_generate': modelgenerate_str,
                 'criteria': criteria_dimension,
-                'prompt_template': get_evaluation_prompt(dimension_cn, evaluation_prompts)
+                'prompt_template': evaluation_prompts[dimension_english],
             }
             prompt_dict.append(_prompt_)
+    return prompt_dict
 
-    # 3) 准备 messages 并逐个处理
-    batch_messages = get_batch_messages(prompt_dict)
-
-    # 检查输出文件是否已存在，如果存在则加载已处理的结果
+def check_processed_indices(output_file):
     processed_indices = set()
-    output_file = args.output
-
     if os.path.exists(output_file):
-        print(f"检测到已存在的输出文件 {output_file}，将尝试从中恢复...")
+        logger.info(f"检测到已存在的输出文件 {output_file}，将尝试从中恢复...")
         try:
             with open(output_file, 'r', encoding='utf-8') as f:
                 for line in f:
                     try:
                         data = json.loads(line.strip())
-                        task_id = data.get('task_id', '')
+                        subtask = data.get('subtask_id', '')
                         eval_dimension = data.get('eval_dimension', '')
-                        subtask_content = data.get('subtask', '')
-                        if task_id and eval_dimension:
-                            processed_indices.add((task_id, eval_dimension))
+                        if subtask and eval_dimension:
+                            processed_indices.add((subtask, eval_dimension))
                     except json.JSONDecodeError:
                         continue
-            print(f"已加载 {len(processed_indices)} 条已处理记录")
+            logger.info(f"已加载 {len(processed_indices)} 条已处理记录")
         except Exception as e:
-            print(f"加载已存在文件时出错: {e}，将创建新文件")
+            logger.error(f"加载已存在文件时出错: {e}，将创建新文件")
+    return processed_indices
 
-    # 4) 逐个处理并写入结果
-    total = len(prompt_dict)
+def append_result(
+    output_file: Path,
+    prompt_dict_lst: List[dict],
+    processed_indices: Set[Tuple[str, str]],
+    openai_model: str = 'gpt-5-mini'
+):
+    """
+    将结果追加到输出文件
+    Args:
+        output_file (str): 输出文件路径
+        prompt_dict_lst (List[dict]):
+            - subtask_id (str): 任务ID
+            - eval_dimension (str): 评估维度
+            - subtask (str): 任务描述
+            - bestpaper (str): 最佳论文
+            - model_generate (str): 模型生成
+            - criteria (List[dict]): 评估标准
+            - prompt_template (str): 提示词模板
+        processed_indices (Set[Tuple[str, str]]): 已处理的索引集合
+    """
     processed_count = 0
     success_count = 0
-
-    os.makedirs(os.path.dirname(os.path.abspath(output_file)), exist_ok=True)
-
+    total = len(prompt_dict_lst)
     with open(output_file, 'a', encoding='utf-8') as f:
-        for i, (prompt, messages) in enumerate(zip(prompt_dict, batch_messages), 1):
-            # 检查是否已经处理过
-            task_id = prompt.get('task_id', '')
-            subtask_content = prompt.get('subtask', '')
-            eval_dimension = prompt.get('eval_dimension', '')
-
-            if (task_id, eval_dimension) in processed_indices:
-                print(f"[{i}/{total}] 跳过已处理项: [{task_id}]({subtask_content}) - 维度[{eval_dimension}]")
+        for i, prompt_dict in enumerate(prompt_dict_lst):
+            subtask_id = prompt_dict.get('subtask_id', '')
+            subtask = prompt_dict.get('subtask', '')
+            eval_dimension = prompt_dict.get('eval_dimension', '')
+            if (subtask_id, eval_dimension) in processed_indices:
+                logger.info(f"[{i}/{total}] 跳过已处理项: [{subtask_id}]({subtask}) - 维度[{eval_dimension}]")
                 processed_count += 1
                 continue
 
-            print(f"[{i}/{total}] 正在处理: [{task_id}]({subtask_content}) - 维度[{eval_dimension}]")
-            # print(f"Prompt: {messages[0]['content']}")
-            print(f"Model Generate: {prompt['model_generate'][:2000]}\n")
-
-            model_generate_str = prompt.get('model_generate', '')
+            model_generate_str = prompt_dict.get('model_generate', '')
             if not model_generate_str:
-                print(f"跳过 {task_id}({subtask_content}) - {eval_dimension}，因为 model_generate_str 为空")
+                logger.info(f"跳过 {subtask_id}({subtask}) - 维度[{eval_dimension}]，因为 model_generate_str 为空")
                 processed_count += 1
                 continue
+
+            logger.info(f"[{i}/{total}] 正在处理: [{subtask_id}]({subtask}) - 维度[{eval_dimension}]")
+            openai_message = get_openai_message(prompt_dict)
 
             try:
-                output = call_openai_single(messages, model=args.openai_model)
-                prompt['output'] = output
+                output = call_openai(openai_message, model=openai_model)
+                prompt_dict['output'] = output
 
-                f.write(json.dumps(prompt, ensure_ascii=False) + '\n')
+                f.write(json.dumps(prompt_dict, ensure_ascii=False) + '\n')
                 f.flush()
 
                 success_count += 1
-                print(f"成功处理: [{task_id}]({subtask_content}) - 维度[{eval_dimension}]")
+                logger.info(f"成功处理: [{subtask_id}]({subtask}) - 维度[{eval_dimension}]")
 
             except Exception as e:
-                print(f"处理 [{task_id}]({subtask_content}) - 维度[{eval_dimension}] 时出错: {str(e)}")
+                logger.info(f"处理 [{subtask_id}]({subtask}) - 维度[{eval_dimension}] 时出错: {str(e)}")
                 continue
+    logger.info(f"总计{total}条，成功处理 {success_count} 条，跳过 {processed_count} 条，保存到 {output_file}")
 
-            processed_count += 1
 
-    print(f"\n处理完成! 总计: {total}, 成功: {success_count}, 已跳过: {len(processed_indices)}")
-    print(f"输出文件: {os.path.abspath(output_file)}")
+def main():
+    parser = argparse.ArgumentParser(description='评估子任务')
+    parser.add_argument('--model-generate-index-file', default=None, type=Path, help='模型生成的倒排索引 JSON 路径')
+    parser.add_argument('--bestpaper-index-file', default=None, type=Path, help='最优论文的倒排索引 JSON 路径')
+
+    parser.add_argument('--model-generate-indexs', nargs='+', type=Path, help='模型生成的倒排索引 JSON 路径')
+    parser.add_argument('--bestpaper-indexs', nargs='+', type=Path, help='最优论文的倒排索引 JSON 路径')
+
+    parser.add_argument('--model-generate-index-dir', default=None, type=Path, help='模型生成的倒排索引 JSON 目录')
+    parser.add_argument('--bestpaper-index-dir', default=None, type=Path, help='最优论文的倒排索引 JSON 目录')
+    parser.add_argument('--criteria-dir', default=None, type=Path, help='评估标准 JSON 目录')
+
+    parser.add_argument('--eval-prompt-file', default='eval/prompts/eval_prompt.yaml', type=Path, help='评估提示词 YAML 路径')
+    parser.add_argument('--output-dir', default='eval/output', type=Path, help='输出 JSONL 文件目录（追加写入）')
+
+    parser.add_argument('--openai-model', default='gpt-5-mini', help='OpenAI 模型名称，例如 gpt-4o-mini')
+
+    args = parser.parse_args()
+
+    # Load subtasks from criteria file
+    model_generate_index = []
+    if args.model_generate_index_file:
+        model_generate_index.append(args.model_generate_index_file)
+    elif args.model_generate_indexs:
+        model_generate_index.extend(args.model_generate_indexs)
+    elif args.model_generate_index_dir:
+        for _ in args.model_generate_index_dir.iterdir():
+            model_generate_index.append(_)
+    else:
+        raise ValueError("未提供模型生成的倒排索引 JSON 路径")
+    model_generate_index = sorted(model_generate_index)
+    print(f"模型生成的倒排索引文件数：{len(model_generate_index)}")
+
+    evaluation_prompts = load_yaml(args.eval_prompt_file)['evaluation_prompts']
+
+    for task in model_generate_index:
+        task_id = task.stem
+
+        criteria_dict = load_json(args.criteria_dir / f'{task_id}.json')
+        model_generate_inverted_index = load_json(task)
+        bestpaper_path = args.bestpaper_index_dir / f'{task_id}.json'
+        if not os.path.exists(bestpaper_path):
+            logger.warning(f"未找到最优论文的倒排索引文件：{bestpaper_path}")
+            continue
+        bestpaper_inverted_index = load_json(bestpaper_path)
+
+        prompt_dict_lst = assemble_prompt_dict(
+            model_generate_inverted_index=model_generate_inverted_index,
+            bestpaper_inverted_index=bestpaper_inverted_index,
+            criteria_dict=criteria_dict,
+            evaluation_prompts=evaluation_prompts
+        )
+
+        os.makedirs(args.output_dir, exist_ok=True)
+        output_file = args.output_dir / f'{task_id}.jsonl'
+        processed_indices = check_processed_indices(output_file)
+
+        append_result(
+            output_file=output_file,
+            prompt_dict_lst=prompt_dict_lst,
+            processed_indices=processed_indices,
+            openai_model=args.openai_model
+        )
 
 
 if __name__ == '__main__':

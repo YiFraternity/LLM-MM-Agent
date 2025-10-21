@@ -11,6 +11,16 @@ import yaml
 os.environ['VLLM_WORKER_MULTIPROC_METHOD'] = 'spawn'
 
 
+DIMENSION_MAPPING = {
+    '问题识别': 'problem_identify',
+    '问题复述': 'problem_formulation',
+    '假设建立': 'assumption_develop',
+    '模型构建': 'model_construction',
+    '模型求解': 'model_solving',
+    '代码实现': 'code_implementation',
+    '结果分析': 'result_analysis',
+}
+
 def load_tex_content(latex_file):
     """
     Load LaTeX file content.

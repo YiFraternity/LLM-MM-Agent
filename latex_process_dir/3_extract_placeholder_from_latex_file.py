@@ -63,9 +63,9 @@ def extract_subitems(content: str):
         subsections.append({'title': title, 'subsubsections': subsubs})
     return subsections
 
-def extract_equations(text: str):
+def extract_equations(text: str, skip_inline=True):
     eqs = []
-    for r in (EQUATION_ENV_RE, DISPLAY_MATH_RE, INLINE_EQ_RE):
+    for r in (EQUATION_ENV_RE, DISPLAY_MATH_RE, INLINE_EQ_RE if not skip_inline else []):
         for m in r.finditer(text):
             eqs.append(m.group(1).strip())
     # 去重且保持顺序
@@ -227,12 +227,12 @@ def clean_tex_content(text: str) -> Tuple[str, Dict[str, Any]]:
         record_matches(pattern, 'MATHENV')
 
     # Display math constructs (inline $...$ are ignored as requested in original logic)
-    # record_matches(r"\$\$[\s\S]*?\$\$", 'DISPLAYMATH')
-    # record_matches(r"\\\[[\s\S]*?\\\]", 'DISPLAYMATH')
+    record_matches(r"\$\$[\s\S]*?\$\$", 'DISPLAYMATH')
+    record_matches(r"\\\[[\s\S]*?\\\]", 'DISPLAYMATH')
 
     # # Graphics commands
-    # record_matches(r"\\includegraphics\s*(?:\[[^\]]*\])?\s*\{[^\}]*\}", 'GRAPHIC')
-    # record_matches(r"\\includegraphics\*?\s*(?:\[[^\]]*\])?\s*\{[^\}]*\}", 'GRAPHIC')
+    record_matches(r"\\includegraphics\s*(?:\[[^\]]*\])?\s*\{[^\}]*\}", 'GRAPHIC')
+    record_matches(r"\\includegraphics\*?\s*(?:\[[^\]]*\])?\s*\{[^\}]*\}", 'GRAPHIC')
 
     # Return original text unchanged
     return text, mapping
