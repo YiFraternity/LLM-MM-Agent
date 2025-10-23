@@ -2,6 +2,8 @@
 import os
 import time
 import argparse
+import logging
+
 from dotenv import load_dotenv
 from llm.llm import LLM
 from utils.problem_analysis import problem_analysis
@@ -11,13 +13,17 @@ from utils.solution_reporting import generate_paper
 from utils.utils import write_json_file, get_info
 
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 load_dotenv(override=True)
 def run(problem_path, config, name, dataset_path, output_dir):
     # Initialize LLM
     llm = LLM()
 
     # Stage 1: Problem Analysis
-    print('********************* Stage 1: Problem Analysis start *********************')
+    logger.info('********************* Stage 1: Problem Analysis start *********************')
     problem, order, with_code, coordinator, task_descriptions, solution = problem_analysis(
         llm,
         problem_path,
@@ -25,12 +31,12 @@ def run(problem_path, config, name, dataset_path, output_dir):
         dataset_path,
         output_dir
     )
-    print('********************* Stage 1: Problem Analysis finish *********************')
+    logger.info('********************* Stage 1: Problem Analysis finish *********************')
 
     # Stage 2 & 3: Mathematical Modeling & Computational Solving
-    print('********************* Stage 2 & 3: Mathematical Modeling & Computational Solving start *********************')
+    logger.info('********************* Stage 2 & 3: Mathematical Modeling & Computational Solving start *********************')
     for id in order:
-        print('********************* Solving Task {} *********************'.format(id))
+        logger.info('********************* Solving Task {} *********************'.format(id))
         task_description, task_analysis, task_modeling_formulas, task_modeling_method, dependent_file_prompt = mathematical_modeling(
             id,
             problem,
@@ -56,23 +62,23 @@ def run(problem_path, config, name, dataset_path, output_dir):
             name,
             output_dir
         )
-    print('********************* Stage 2 & 3: Mathematical Modeling & Computational Solving finish *********************')
+    logger.info('********************* Stage 2 & 3: Mathematical Modeling & Computational Solving finish *********************')
 
     # optional
-    print('********************* Stage 4: Solution Reporting start *********************')
+    logger.info('********************* Stage 4: Solution Reporting start *********************')
     generate_paper(llm, output_dir, name, config['mathmodel_category'])
-    print('********************* Stage 4: Solution Reporting finish *********************')
+    logger.info('********************* Stage 4: Solution Reporting finish *********************')
 
     # print(solution)
-    print('Usage:', llm.get_total_usage())
+    logger.info('Usage: %s', llm.get_total_usage())
     write_json_file(f'{output_dir}/usage/{name}.json', llm.get_total_usage())
     return solution
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mm_dataset', type=str, default='CPMCM')
-    parser.add_argument('--method_name', type=str, default='MM-Agent')
+    parser.add_argument('--mm-dataset', type=str, default='CPMCM')
+    parser.add_argument('--method-name', type=str, default='MM-Agent')
     parser.add_argument('--task', type=str, default='2020_F')
 
     return parser.parse_args()
@@ -83,8 +89,9 @@ if __name__ == "__main__":
     args.model_name = os.getenv('MODEL_NAME')
     problem_path, config, dataset_dir, output_dir = get_info(args)
     config['embed_model'] = os.getenv('EMBED_MODEL')
-    config['mathmodel_category'] = os.getenv('MATHMODEL_CATEGORY')
+    config['mathmodel_category'] = args.mm_dataset
     start = time.time()
+    logger.info('Config: %s', config)
     solution = run(
         problem_path=problem_path,
         config=config,
