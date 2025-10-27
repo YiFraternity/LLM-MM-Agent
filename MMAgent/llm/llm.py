@@ -15,7 +15,7 @@ class LLM:
         self.user_id = user_id
         self.api_key = os.getenv('OPENAI_API_KEY')
         if self.model_name in ['deepseek-chat', 'deepseek-reasoner']:
-            self.api_base = os.getenv('DEEPSEEK_API_BASE')
+            self.api_base = os.getenv('DEEPSEEK_API_BASE') or os.getenv('OPENAI_API_BASE') or 'https://api.deepseek.com/v1'
         elif self.model_name in ['gpt-4o', 'gpt-4']:
             self.api_base = os.getenv('OPENAI_API_BASE')
         else:
