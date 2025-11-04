@@ -27,10 +27,7 @@ import argparse
 import glob
 from pathlib import Path
 from typing import List, Dict
-from openai import OpenAI
 from tqdm import tqdm
-import time
-import os
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -45,6 +42,7 @@ from utils import (
     write_jsonl,
     latex_to_json,
     populate_template,
+    call_openai_api,
 )
 
 def extract_content_from_sections(sections: List[Dict]) -> List[Dict]:
@@ -124,49 +122,7 @@ def get_criteria_str(criteria_file: str) -> str:
         criteria_temp_str += '- [评估维度]\n' + dimension_str + '\n'
     return criteria_temp_str
 
-def call_openai_api(prompt: str, model: str = "gpt-4-turbo", max_retries: int = 3) -> str:
-    """Call OpenAI API with retry logic using v1.0+ client.
 
-    Args:
-        prompt: The prompt to send to the model
-        model: The model to use (default: gpt-4-turbo)
-        max_retries: Maximum number of retry attempts
-
-    Returns:
-        The model's response as a string
-
-    Raises:
-        Exception: If all retry attempts fail
-    """
-    base_url = os.getenv("OPENAI_API_BASE") or os.getenv("OPENAI_BASE_URL")
-    client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        base_url=base_url,
-    )
-    for attempt in range(max_retries):
-        try:
-            response = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": "你是一个专业的文本分类助手。"},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.3,
-                max_tokens=32768,
-                top_p=1.0,
-                frequency_penalty=0.0,
-                presence_penalty=0.0,
-            )
-            return response.choices[0].message.content
-        except Exception as e:  # pylint: disable=broad-except
-            if attempt == max_retries - 1:
-                raise
-            wait_time = (attempt + 1) * 2  # Exponential backoff
-            print(f"Error calling OpenAI API (attempt {attempt + 1}/{max_retries}): {e}")
-            print(f"Retrying in {wait_time} seconds...")
-            time.sleep(wait_time)
-
-    raise Exception("Failed to get response from OpenAI API after multiple retries")
 
 def process_content_with_openai(content_info: Dict, prompt_template: str, model: str = "gpt-4-turbo") -> Dict:
     """Process a single content item with OpenAI API."""

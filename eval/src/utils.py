@@ -3,13 +3,18 @@ import re
 from pathlib import Path
 import json
 from typing import Dict, Any, List, Union
-from vllm import LLM, SamplingParams
+import logging
+import time
+
 from jinja2 import Template, StrictUndefined
 import yaml
+from openai import OpenAI
 
 
 os.environ['VLLM_WORKER_MULTIPROC_METHOD'] = 'spawn'
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 DIMENSION_MAPPING = {
     '问题识别': 'problem_identify',
@@ -35,7 +40,7 @@ def load_json(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
 
-def load_yaml(config_file):
+def load_yaml(config_file: Union[str, Path]) -> Dict[str, Any]:
     """
     Load YAML configuration file.
     """
@@ -133,22 +138,22 @@ def dict_to_latex_table(data: List[Dict[str, Any]]) -> str:
 
     return latex_str
 
-def clean_json_txt(json_txt: str, standardize: bool = True, llm=None) -> Union[str, Dict[str, Any], List[Dict[str, Any]]]:
+def clean_json_txt(json_txt: str, standardize: bool = False) -> Union[str, Dict[str, Any], List[Dict[str, Any]]]:
     """
     从可能包含 ```json ... ``` 或 ``` ... ``` 的文本中提取 JSON 并解析为 dict。
 
     优先级：
       1) 第一个标记为 ```json 的代码块（忽略大小写）
       2) 第一个任意 ``` ... ``` 代码块
+      3) 解析包含latex公式的json
       3) 整个输入字符串
 
     参数:
         json_txt: 要处理的JSON文本
         standardize: 是否尝试标准化非标准JSON
-        llm: 可选的LLM实例，用于标准化
 
     返回:
-        解析后的JSON对象，如果standardize为True且标准化失败，则返回空字典
+        解析后的JSON对象，如果standardize为True且标准化失败，则返回空字典，否则返回json_txt
     """
     if not isinstance(json_txt, str):
         raise TypeError("json_txt must be a str")
@@ -170,32 +175,10 @@ def clean_json_txt(json_txt: str, standardize: bool = True, llm=None) -> Union[s
         try:
             return json.loads(corrected_payload)
         except json.JSONDecodeError:
-            if not standardize or not llm:
-                print("Failed to parse JSON even after backslash correction.")
+            if standardize:
+                return {}
+            else:
                 return json_txt
-    try:
-        current_dir = Path(__file__).parent
-        prompt_path = current_dir / 'json_standardization.yaml'
-
-        with open(prompt_path, 'r', encoding='utf-8') as f:
-            prompt_template = yaml.safe_load(f).get('json_standardization', '')
-
-        if not prompt_template:
-            return {}
-
-        template = Template(prompt_template)
-        prompt = template.render(input_text=payload)
-
-        response = llm.generate([prompt])
-        standardized_json = response[0].outputs[0].text.strip()
-
-        try:
-            return json.loads(standardized_json)
-        except json.JSONDecodeError:
-            return json_txt
-    except Exception as e:
-        print(f"Error during JSON standardization: {str(e)}")
-        return json_txt
 
 def populate_template(template: str, variables: dict) -> str:
     """
@@ -225,11 +208,24 @@ def prepare_batch_prompts(prompts_kwargs: List[dict[str, Any]], prompt_template:
                 {"role": "user", "content": prompt}
             ])
     return message_list
+def write_json(data: Any, file_path: Union[str, Path]) -> None:
+    """
+    将数据写入 JSON 文件，自动创建父目录。
 
-def write_json(data, file_path):
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    Args:
+        data: 要写入的 JSON 可序列化数据。
+        file_path: 输出文件路径（字符串或 Path 对象）。
+    """
+    file_path = Path(file_path)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        with file_path.open('w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except (TypeError, ValueError) as e:
+        raise ValueError(f"数据无法序列化为 JSON: {e}") from e
+    except OSError as e:
+        raise OSError(f"无法写入文件 {file_path}: {e}") from e
 
 def write_jsonl(data, file_path):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -240,17 +236,24 @@ def write_jsonl(data, file_path):
         else:
             f.write(json.dumps(data, ensure_ascii=False)+ '\n')
 
-def load_llm(model_name_or_path, tokenizer_name_or_path=None, gpu_num=1, lora_model_name_or_path=None):
+
+def load_jsonl_file(file_path: str) -> List[Dict]:
+    """加载 JSONL 文件"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return [json.loads(line) for line in f]
+
+def load_llm(model_name_or_path, tokenizer_name_or_path=None, gpu_num=1, lora_model_name_or_path=None, max_model_len=32768):
     """
     Load a VLLM model.
     """
+    from vllm import LLM, SamplingParams
     kw_args = {
         "model": model_name_or_path,
         "tokenizer": tokenizer_name_or_path,
         "tokenizer_mode": "slow",
         "tensor_parallel_size" : gpu_num,
         "enable_lora": bool(lora_model_name_or_path),
-        'max_model_len': 16384,
+        'max_model_len': max_model_len,
     }
     llm = LLM(**kw_args)
     kwargs={
@@ -336,7 +339,7 @@ def latex_to_json(latex_content):
 
     return result_tree
 
-def find_task_id_from_path(path: Path) -> str:
+def find_task_id_from_path(path: Path) -> Union[None, str]:
     task_id_pattern = re.compile(r'(\d{4}_[A-F])')
     for part in path.parts:
         match = task_id_pattern.search(part)
@@ -348,3 +351,75 @@ def find_task_id_from_path(path: Path) -> str:
         return match.group(0)
 
     return None
+
+def call_openai_api(
+    user_prompt: str,
+    system_prompt: str = "你是一个专业的文本分类助手。",
+    model: str = "gpt-4-turbo",
+    max_retries: int = 3,
+    max_tokens: int = 32768,
+    temperature: float = 0.3,
+    top_p: float = 1.0,
+    frequency_penalty: float = 0.0,
+    presence_penalty: float = 0.0,
+    **kwargs: Any
+) -> str:
+    """
+    Call OpenAI API with retry logic using v1.0+ client.
+
+    Args:
+        user_prompt: The prompt to send to the model.
+        system_prompt: The system prompt to send to the model.
+        model: The model to use (default: gpt-4-turbo).
+        max_retries: Maximum number of retry attempts.
+        max_tokens: Maximum number of tokens to generate.
+        temperature: Sampling temperature.
+        top_p: Nucleus sampling threshold.
+        frequency_penalty: Frequency penalty.
+        presence_penalty: Presence penalty.
+        **kwargs: Additional arguments to pass to chat.completions.create.
+
+    Returns:
+        The model's response as a string.
+
+    Raises:
+        Exception: If all retry attempts fail.
+    """
+    client = OpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        base_url=os.getenv("OPENAI_API_BASE") or os.getenv("OPENAI_BASE_URL"),
+    )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ]
+
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                top_p=top_p,
+                frequency_penalty=frequency_penalty,
+                presence_penalty=presence_penalty,
+                **kwargs,  # 支持额外参数（如 timeout, response_format 等）
+            )
+            content = response.choices[0].message.content
+            if content is None:
+                raise ValueError("Empty response from OpenAI API")
+            return content
+
+        except Exception as e:  # 捕获网络/限流等异常
+            if attempt == max_retries - 1:
+                logger.error(f"OpenAI API failed after {max_retries} attempts: {e}")
+                raise Exception(f"Failed to get response from OpenAI API: {e}") from e
+
+            wait_time = (2 ** attempt) * 1.0  # 指数退避：1s, 2s, 4s...
+            logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait_time}s...")
+            time.sleep(wait_time)
+
+    # 理论上不会执行到这里
+    raise RuntimeError("Unexpected fall-through in retry loop")

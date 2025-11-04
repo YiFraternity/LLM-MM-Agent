@@ -1,7 +1,13 @@
 from collections import deque
-from prompt.template import TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT, TASK_DEPENDENCY_ANALYSIS_PROMPT, DAG_CONSTRUCTION_PROMPT, CODE_STRUCTURE_PROMPT
 import json
 import sys
+from typing import List
+from prompt.template import (
+    TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT,
+    TASK_DEPENDENCY_ANALYSIS_PROMPT,
+    DAG_CONSTRUCTION_PROMPT,
+    CODE_STRUCTURE_PROMPT,
+)
 
 class Coordinator:
     def __init__(self, llm):
@@ -41,7 +47,7 @@ class Coordinator:
 
         return order
 
-    def analyze(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, with_code: bool):
+    def analyze(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: List[str], with_code: bool):
         if with_code:
             prompt = TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT.format(tasknum=tasknum, modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, task_descriptions=task_descriptions).strip()
         else:
@@ -59,7 +65,7 @@ class Coordinator:
         ).strip()
         return self.llm.generate(prompt)
 
-    def analyze_dependencies(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, with_code: bool):
+    def analyze_dependencies(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: list[str], with_code: bool):
         task_dependency_analysis = self.analyze(
             len(task_descriptions),
             modeling_problem,
