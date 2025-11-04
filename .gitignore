@@ -8,8 +8,8 @@ logs/
 workspace/
 bak/
 __pycache__/
-/*.sh
-!*/**/*.sh
+*.pyc
+*.sh
 **/.DS_Store
 .DS_Store
 tmp/
@@ -20,10 +20,8 @@ scripts/
 .python-version
 data/
 output/
-# data
 papers/
 eval_workspace/
-# MMBench/
 problem_0/
 problem_1/
 problem_2/
@@ -33,3 +31,14 @@ images2latex/
 latexs/
 latexs_json_str/
 2023_F
+bestpaper_latex.bak/
+bast_paper_tex_clean/
+*.log
+criteria_*
+criteria-root
+BestPaper1_only_model_stage/
+BestPaper2_only_model_stage/
+key_points*/
+*.egg-info/
+*.egg/
+criteria-gpt5/
