@@ -6,12 +6,16 @@ language models to create content for each section.
 """
 
 import json
+from math import log
+from pathlib import Path
 import subprocess
 import os
 import re
 import shutil
 from typing import Dict, List, Any
 from dataclasses import dataclass
+
+import logging
 
 # Import statements would be here in a real application
 from prompt.template import (
@@ -22,15 +26,29 @@ from prompt.template import (
 )
 from llm.llm import LLM
 from utils.utils import parse_llm_output_to_json
-from .soluation_template import *
+from utils.retry_utils import (
+    retry_on_api_error,
+    retry_on_logic_error,
+    ensure_parsed_json_output,
+    LogicError,
+)
+from .soluation_template import (
+    SafeDict,
+    add_figure,
+    add_code,
+    create_preamble,
+    create_abstract
+)
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 # --------------------------------
 # Data Models
 # --------------------------------
 
-class SafeDict(dict):
-    def __missing__(self, key):
-        return " "
 
 @dataclass
 class Chapter:
@@ -56,6 +74,18 @@ class Chapter:
         """Returns the chapter title to display (custom title or last path element)"""
         return self.title if self.title else self.path[-1]
 
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "path": self.path,
+            "content": self.content,
+            "title": self.title,
+            "is_generated": self.is_generated,
+            "needs_content": self.needs_content
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]):
+        return cls(**data)
 # --------------------------------
 # Language Model Interface
 # --------------------------------
@@ -102,6 +132,7 @@ class ContentGenerator:
 
         return text.strip()
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def generate_chapter_content(self, prompt: str) -> str:
         """Generate chapter content using the language model"""
         response = self.llm.generate(prompt)
@@ -136,7 +167,7 @@ class OutlineGenerator:
 
     def create_outline(self, task_count: int) -> List[Chapter]:
         """根据任务数量创建完整的章节结构（输出中文日志）"""
-        print(f"正在为 {task_count} 个任务创建论文大纲")
+        logger.info(f"正在为 {task_count} 个任务创建论文大纲")
 
         # 定义基础结构模板（内部键为中文）
         outline = self._create_base_outline(task_count)
@@ -150,9 +181,9 @@ class OutlineGenerator:
             chapters.append(Chapter(path=path, needs_content=needs_content))
 
         content_chapters = sum(1 for c in chapters if c.needs_content)
-        print(f"共创建 {len(chapters)} 个章节，其中 {content_chapters} 个需要生成内容")
+        logger.info(f"共创建 {len(chapters)} 个章节，其中 {content_chapters} 个需要生成内容")
         for chapter in chapters:
-            print(" > ".join(chapter.path))
+            logger.info(" > ".join(chapter.path))
         return chapters
 
     def _create_base_outline(self, task_count: int) -> List[List[str]]:
@@ -430,8 +461,8 @@ class LatexDocumentAssembler:
 
         # Build document parts
         document_parts = [
-            self._create_preamble(metadata),
-            self._create_abstract(metadata),
+            create_preamble(metadata, self.mathmodel_category),
+            create_abstract(metadata),
             "\\maketitle",
             "\\renewcommand\\cfttoctitlefont{\\hfil\\Large\\bfseries}",
             "\\renewcommand{\\contentsname}{目录}",
@@ -456,60 +487,6 @@ class LatexDocumentAssembler:
 
         return reordered
 
-    def _add_figure(self, figures: List[str]) -> List[str]:
-        """插入图片"""
-        figure_str: List[str] = []
-        for figure_path in figures:
-            name = figure_path.split('/')[-1].split('.')[0].replace('_', '\\_')
-            figure_str.append(f"""
-\\begin{{figure}}[H]
-\\centering
-\\includegraphics[width=0.5\\textwidth]{{{figure_path}}}
-\\caption{{图：{name}}}
-\\end{{figure}}
-""")
-        return figure_str
-
-    def _add_code(self, codes: List[str]) -> List[str]:
-        """附录中包含 Python 代码清单"""
-        code_str: List[str] = [
-            "\\clearpage",
-            "\\section{附录}",
-        ]
-        for code_path in codes:
-            with open(code_path, 'r') as f:
-                code = f.read()
-            name = code_path.split('/')[-1].replace('_', '\\_')
-            code_str.append(f"""
-\\subsubsection*{{{name}}}
-
-\\begin{{lstlisting}}[language=Python, frame=single, basicstyle=\\ttfamily\\small]
-{code}
-\\end{{lstlisting}}
-""")
-        return code_str
-
-    def _create_preamble(self, metadata: Dict[str, Any]) -> str:
-        """LaTeX 导言区"""
-        metadata['title'] = metadata.get("title", "paper_title")
-        metadata['baominghao'] = metadata.get("baominghao", "0123")
-        metadata['schoolname'] = metadata.get("schoolname", "Agent")
-        metadata['membera'] = metadata.get("membera", "Agent")
-        metadata['memberb'] = metadata.get("memberb", "Agent")
-        metadata['memberc'] = metadata.get("memberc", "Agent")
-        contest = eval(self.mathmodel_category)
-        print(metadata)
-        return contest.format_map(SafeDict(metadata))
-
-    def _create_abstract(self, metadata: Dict[str, str]) -> str:
-        """摘要与关键词（环境名仍为 abstract/keywords）"""
-        return f"""\\begin{{abstract}}
-{metadata.get('summary', '')}
-
-\\begin{{keywords}}
-{metadata.get('keywords', '')}
-\\end{{keywords}}
-\\end{{abstract}}"""
 
     def _create_body(self, chapters: List[Chapter], metadata: Dict[str, Any]) -> str:
         """拼装正文"""
@@ -517,9 +494,9 @@ class LatexDocumentAssembler:
         current_path: List[str] = []
 
         for chapter in chapters:
-            # 在 “模型结论 > 模型优点” 处插图（若有）
+            # 在 "模型结论 > 模型优点" 处插图（若有）
             if chapter.path == ["模型结论", "模型优点"] and metadata.get('figures', []):
-                body_parts += self._add_figure(metadata['figures'])
+                body_parts += add_figure(metadata['figures'])
 
             for i, section in enumerate(chapter.path):
                 # If this path level is new or different
@@ -548,7 +525,7 @@ class LatexDocumentAssembler:
                 body_parts.append(chapter.content)
 
         body_parts.append("\\section{参考文献}")
-        body_parts += self._add_code(metadata['codes'])
+        body_parts += add_code(metadata['codes'])
         return "\n\n".join(body_parts)
 
 # --------------------------------
@@ -564,12 +541,12 @@ class FileManager:
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         with open(filepath, 'w') as f:
             f.write(content)
-        print(f"文档已保存到 {filepath}")
+        logger.info(f"文档已保存到 {filepath}")
 
     @staticmethod
     def generate_pdf(latex_path: str) -> None:
         """Generate a PDF from a LaTeX file"""
-        print(f"正在从 {latex_path} 生成PDF...")
+        logger.info(f"正在从 {latex_path} 生成PDF...")
 
         # Run pdflatex twice to ensure references and TOC are correct
         latex_dir = os.path.dirname(latex_path)
@@ -580,7 +557,7 @@ class FileManager:
         FileManager._clean_temp_files(latex_path)
 
         pdf_path = latex_path.replace('.tex', '.pdf')
-        print(f"PDF已生成: {pdf_path}")
+        logger.info(f"PDF已生成: {pdf_path}")
 
     @staticmethod
     def _clean_temp_files(latex_path: str) -> None:
@@ -597,7 +574,7 @@ class FileManager:
 class PaperGenerator:
     """Main class that orchestrates the paper generation process"""
 
-    def __init__(self, llm, mathmodel_category='MCMICM'):
+    def __init__(self, llm, mathmodel_category='MCMICM', ckpt_path=Path('tmp/solution.json')):
         self.content_generator = ContentGenerator(llm)
         self.outline_generator = OutlineGenerator()
         self.context_extractor = ContextExtractor()
@@ -605,6 +582,30 @@ class PaperGenerator:
         self.document_assembler = LatexDocumentAssembler(mathmodel_category)
         self.file_manager = FileManager()
         self.llm = llm
+        self.ckpt_path = ckpt_path
+        self.ckpt_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def _load_checkpoint(self) -> Dict[str, Any]:
+        """Load checkpoint file if exists"""
+        if self.ckpt_path.exists():
+            with open(self.ckpt_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        return {}
+
+    def _save_checkpoint(self, data: Dict[str, Any]) -> None:
+        """Save checkpoint file (after each chapter)"""
+        with open(self.ckpt_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def _detect_start_index(self, ckpt: dict) -> int:
+        """Detect from which chapter to resume generation based on checkpoint"""
+        if not ckpt.get("outline"):
+            return -1
+        chapters = [Chapter.from_dict(ch) for ch in ckpt["outline"]]
+        for i, ch in enumerate(chapters):
+            if not ch.is_generated and ch.needs_content:
+                return i
+        return len(chapters)
 
     def generate_paper(self,
                     json_data: Dict[str, Any],
@@ -612,23 +613,47 @@ class PaperGenerator:
                     output_dir: str,
                     filename: str) -> None:
         """Generate a complete academic paper from JSON data"""
-        # 1. Create chapter structure
-        task_count = len(json_data.get("tasks", []))
-        print(f"Starting paper generation with {task_count} tasks")
-        chapters = self.outline_generator.create_outline(task_count)
+
+        start_idx = self._detect_start_index()
+        ckpt = self._load_checkpoint()
+        if start_idx < 0:
+            logger.info("No checkpoint found, starting from the beginning")
+            # 1. Create chapter structure
+            task_count = len(json_data.get("tasks", []))
+            logger.info(f"Starting paper generation with {task_count} tasks")
+            chapters = self.outline_generator.create_outline(task_count)
+            ckpt['outline'] =  [ch.to_dict() for ch in chapters]
+        else:
+            logger.info(f"Resuming from checkpoint, starting at chapter #{start_idx}")
+            chapters = [Chapter.from_dict(ch) for ch in ckpt["outline"]]
+            metadata = ckpt.get("metadata", metadata)
+            task_count = len(json_data.get("tasks", []))
 
         # Generate chapter relevance map if not provided
         chapter_relevance_map = self.outline_generator.generate_chapter_relevance_map(task_count)
 
         # 2. Generate content for each chapter that needs it
-        completed_chapters = []
-        for chapter in chapters:
+        for idx in range(start_idx, len(chapters)):
+            chapter = chapters[idx]
             if chapter.needs_content:
-                self._generate_chapter_content(chapter, json_data, completed_chapters, chapter_relevance_map)
-                completed_chapters.append(chapter)
+                try:
+                    self._generate_chapter_content(chapter, json_data, chapters[:idx], chapter_relevance_map)
+                    chapters[idx] = chapter
+                    ckpt["outline"][idx] = chapter.to_dict()
+                    logger.info(f"✅ Saved checkpoint after {chapter.path_string}")
+                except Exception as e:
+                    self._save_checkpoint(ckpt)
+                    logger.error(f"❌ Error generating chapter {chapter.path_string}: {e}")
+                    logger.info("💾 Partial progress saved. You can re-run to resume.")
+                    return
+        self._save_checkpoint(ckpt)  # Final save
 
         # 3. Complete metadata if needed
-        complete_metadata = self._complete_metadata(chapters, metadata)
+        if 'metadata' not in ckpt:
+            complete_metadata = self._complete_metadata(chapters, metadata)
+            ckpt['metadata'] = complete_metadata
+        else:
+            complete_metadata = ckpt['metadata']
 
         # 4. Assemble the final document
         document = self.document_assembler.create_document(chapters, complete_metadata)
@@ -644,7 +669,7 @@ class PaperGenerator:
                             completed_chapters: List[Chapter],
                             chapter_relevance_map: Dict[str, List[str]]) -> None:
         """Generate content for a single chapter"""
-        print(f"正在生成内容: {chapter.path_string}")
+        logger.info(f"正在生成内容: {chapter.path_string}")
 
         # Get relevant context data for this chapter
         context = self.context_extractor.get_context_for_chapter(chapter, json_data)
@@ -692,56 +717,64 @@ class PaperGenerator:
             return generated_title
         return ''
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
+    @retry_on_logic_error(max_attempts=3, wait_time=3)
+    @ensure_parsed_json_output
+    def _call_llm_for_metadata(self, prompt: str) -> dict:
+        """内部封装的 LLM 调用 + 自动 JSON 提取 + 双层重试"""
+        logger.info("🔍 Calling LLM to generate paper metadata...")
+        response = self.llm.generate(prompt)
+        if not response or not isinstance(response, str):
+            raise LogicError("Empty or invalid LLM response.")
+        return response  # ensure_parsed_json_output 会自动提取 JSON
+
     def _complete_metadata(self,
                         chapters: List[Chapter],
                         provided_metadata: Dict[str, Any]) -> Dict[str, Any]:
         """Complete paper metadata, generating missing fields if needed"""
-        # If we need to generate metadata
-        if not all(key in provided_metadata for key in
-                ["title", "summary", "keywords"]):
-            print("Generating missing paper metadata...")
+        required_keys = ["title", "summary", "keywords"]
+        missing_fields = [k for k in required_keys if k not in provided_metadata]
 
-            # Prepare prompt with chapter contents
-            chapters_text = "\n\n".join(
-                f"Chapter: {ch.path_string}\n{ch.content}"
-                for ch in chapters if ch.is_generated
-            )
+        if not missing_fields:
+            logger.info("✅ Metadata already complete, skipping generation.")
+            return provided_metadata
 
-            prompt = PAPER_INFO_PROMPT.format(paper_chapters=chapters_text)
+        logger.info(f"🧩 Missing metadata fields: {missing_fields}")
 
-            # Retry up to 3 times to get valid metadata
-            max_retries = 3
+        chapters_text = "\n\n".join(
+            f"Chapter: {ch.path_string}\n{ch.content}"
+            for ch in chapters if ch.is_generated
+        )
+        prompt = PAPER_INFO_PROMPT.format(paper_chapters=chapters_text)
+
+        try:
+            generated_metadata = self._call_llm_for_metadata(prompt)
+            if not generated_metadata:
+                raise LogicError("No metadata generated or parsed.")
+
+            logger.info("✅ Successfully generated metadata from LLM.")
+        except Exception as e:
+            logger.error(f"❌ Failed to generate metadata after retries: {e}")
             generated_metadata = {}
 
-            for attempt in range(max_retries):
-                try:
-                    metadata_response = self.llm.generate(prompt)
-                    generated_metadata = parse_llm_output_to_json(metadata_response)
-                    if not generated_metadata:
-                        raise Exception("No metadata generated")
-                    break
-                except Exception as e:
-                    print(f"Attempt {attempt+1} failed: {str(e)}")
-                    if attempt == max_retries - 1:  # If this was the last attempt
-                        print("All attempts to generate metadata failed")
-            # Merge with provided metadata (provided takes precedence)
-            return {**generated_metadata, **provided_metadata}
-
-        return provided_metadata
+        # --- 合并已有与生成字段 ---
+        complete_metadata = {**generated_metadata, **provided_metadata}
+        logger.info(f"🧾 Final metadata keys: {list(complete_metadata.keys())}")
+        return complete_metadata
 
 # --------------------------------
 # Main Function
 # --------------------------------
 
-def generate_paper_from_json(llm, mathmodel_category, json_data: dict, info: dict, output_dir: str, output_name: str) -> None:
+def generate_paper_from_json(llm, mathmodel_category, json_data: dict, info: dict, output_dir: str, output_name: str, ckpt_path=Path('tmp/solution.json')) -> None:
     """Generate a paper from JSON data"""
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    generator = PaperGenerator(llm, mathmodel_category)
+    generator = PaperGenerator(llm, mathmodel_category, ckpt_path)
     generator.generate_paper(json_data, info, output_dir, output_name)
 
 
-def generate_paper(llm, output_dir, name, mathmodel_category='MCMICM'):
+def generate_paper(llm, output_dir, name, mathmodel_category='MCMICM', ckpt_path=Path('tmp/solution.json')):
     metadata = {
         "team": "Agent",
         "year": name.split('_')[0],
@@ -758,5 +791,5 @@ def generate_paper(llm, output_dir, name, mathmodel_category='MCMICM'):
     shutil.copytree(latex_template_dir, f"{output_dir}/latex/", dirs_exist_ok=True)
 
     # Generate paper with chapter relevance mapping
-    generate_paper_from_json(llm, mathmodel_category, json_data, metadata, f"{output_dir}/latex", 'solution')
+    generate_paper_from_json(llm, mathmodel_category, json_data, metadata, f"{output_dir}/latex", 'solution', ckpt_path)
 

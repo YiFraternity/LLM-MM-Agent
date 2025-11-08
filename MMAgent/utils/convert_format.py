@@ -1,11 +1,6 @@
 import json
 import re
 import pypandoc
-from pylatexenc.latexwalker import (
-    LatexWalker,
-    LatexCharsNode, LatexMacroNode, LatexEnvironmentNode,
-    LatexGroupNode, LatexMathNode, LatexCommentNode
-)
 
 # A sample Markdown string
 markdown_text = """

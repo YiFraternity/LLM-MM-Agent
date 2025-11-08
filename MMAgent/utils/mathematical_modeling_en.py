@@ -67,7 +67,7 @@ def mathematical_modeling(task_id, problem, task_descriptions, llm, config, coor
 
     # Hierarchical Modeling Knowledge Retrieval
     description_and_analysis = f'## Task Description\n{task_description}\n\n## Task Analysis\n{task_analysis}'
-    top_modeling_methods = mr.retrieve_meethods(description_and_analysis, top_k=config['top_method_num'])
+    top_modeling_methods = mr.retrieve_methods(description_and_analysis, top_k=config['top_method_num'])
 
     # Task Modeling
     task_modeling_formulas, task_modeling_method = ts.modeling(task_formulas_prompt, task_modeling_prompt, problem['data_description'], task_description, task_analysis, top_modeling_methods, round=config['task_formulas_round'])

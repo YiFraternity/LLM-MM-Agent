@@ -1,3 +1,7 @@
+from pathlib import Path
+from typing import List
+
+from torch.jit.annotations import Dict
 from agent.retrieve_method import MethodRetriever
 from agent.task_solving import TaskSolver
 from prompt.template import (
@@ -5,15 +9,36 @@ from prompt.template import (
     TASK_FORMULAS_APPEND_PROMPT,
     TASK_MODELING_APPEND_PROMPT,
 )
+from utils.utils import (
+    try_load_backup,
+    backup_solution,
+)
 
+def detct_start_index(state: dict) -> int:
+    """
+    根据 solution 内容决定从哪个阶段开始恢复
+    返回阶段索引：
+      0 - task-analysis
+      1 - retrieve-method
+      2 - task-formulas
+    """
+    if not state:
+        return 0
+    if 'task_analysis' not in state:
+        return 0
+    if 'retrieve_content' not in state:
+        return 1
+    if 'task_modeling_formulas' not in state:
+        return 2
+    return 3
 
-def get_dependency_prompt(with_code, coordinator, task_id):
-    task_dependency = [int(i) for i in coordinator.DAG[str(task_id)]]
+def get_dependency_prompt(with_code, coordinator, subtask_id):
+    task_dependency = [int(i) for i in coordinator.DAG[str(subtask_id)]]
     dependent_file_prompt = ""
     if len(task_dependency) > 0:
         dependency_prompt = f"""\
-这是任务 {task_id}，它依赖于以下任务: {task_dependency}。
-该任务的依赖关系分析如下: {coordinator.task_dependency_analysis[task_id - 1]}
+这是任务 {subtask_id}，它依赖于以下任务: {task_dependency}。
+该任务的依赖关系分析如下: {coordinator.task_dependency_analysis[subtask_id - 1]}
 """
         for id in task_dependency:
             dependency_prompt += f"""\
@@ -57,28 +82,81 @@ def get_dependency_prompt(with_code, coordinator, task_id):
     return task_analysis_prompt, task_formulas_prompt, task_modeling_prompt, dependent_file_prompt
 
 
-def mathematical_modeling(task_id, problem, task_descriptions, llm, config, coordinator, with_code):
+def mathematical_modeling(llm, task_id: str, subtask_id: int, problem: dict, task_descriptions: List[str], config: Dict, coordinator, with_code: bool, tmp_dir: Path):
+    f"""
+    进行子任务的数学建模，包含以下步骤：
+        1. 任务分析
+        2. 分层建模方法检索
+        3. 任务建模
+    Args:
+        task_id: 任务编号 (2004_B)
+        subtask_id: 子任务编号 (1, 2, ...)
+        problem: 问题描述字典
+        task_descriptions: 任务描述列表
+        llm: 大语言模型实例
+        config: 配置字典
+        coordinator: 协调者实例
+        with_code: 是否生成代码
+        tmp_dir: 临时文件目录路径
+    Returns:
+        solution: 包含子任务数学建模各阶段结果的字典
+            {
+                'task_description': 任务描述字符串,
+                'task_analysis': 任务分析字符串,
+                'task_modeling_formulas': 任务建模公式字符串,
+                'task_modeling_method': 任务建模方法字符串
+            }
+        dependent_file_prompt: 依赖文件提示字符串
+    """
+    tmp_path = tmp_dir / task_id / "mathematical_modeling.json"
+    backup_data = try_load_backup(tmp_path)
+    if backup_data:
+        all_solution = backup_data
+        solution = all_solution.get(str(subtask_id), {})
+    else:
+        solution = {
+            'task_description': task_descriptions[subtask_id - 1]
+        }
+        all_solution[str(subtask_id)] = solution
+
     ts = TaskSolver(llm)
     mr = MethodRetriever(llm, embed_model=config['embed_model'])
-    task_analysis_prompt, task_formulas_prompt, task_modeling_prompt, dependent_file_prompt = get_dependency_prompt(with_code, coordinator, task_id)
+    task_analysis_prompt, task_formulas_prompt, task_modeling_prompt, dependent_file_prompt = get_dependency_prompt(with_code, coordinator, subtask_id)
 
     # 任务分析
-    task_description = task_descriptions[task_id - 1]
-    task_analysis = ts.analysis(task_analysis_prompt, task_description)
-
-    # 分层建模方法检索
-    description_and_analysis = f'## 任务描述\n{task_description}\n\n## 任务分析\n{task_analysis}'
-    top_modeling_methods = mr.retrieve_meethods(description_and_analysis, top_k=config['top_method_num'])
-
-    # 任务建模
-    task_modeling_formulas, task_modeling_method = ts.modeling(
-        task_formulas_prompt,
-        task_modeling_prompt,
-        problem['data_description'],
-        task_description,
-        task_analysis,
-        top_modeling_methods,
-        round=config['task_formulas_round']
-    )
-
-    return task_description, task_analysis, task_modeling_formulas, task_modeling_method, dependent_file_prompt
+    task_description = solution['task_description']
+    start_idx = detct_start_index(solution)
+    try:
+        if start_idx <= 0:
+            task_analysis = ts.analysis(task_analysis_prompt, task_description)
+            solution['task_analysis'] = task_analysis
+        else:
+            task_analysis = solution.get('task_analysis', '')
+        # 分层建模方法检索
+        if start_idx <= 1:
+            description_and_analysis = f'## 任务描述\n{task_description}\n\n## 任务分析\n{task_analysis}'
+            top_modeling_methods = mr.retrieve_methods(description_and_analysis, top_k=config['top_method_num'])
+        else:
+            top_modeling_methods = solution.get('retrieve_content', [])
+            # 任务建模
+        # 任务建模
+        if start_idx <= 2:
+            task_modeling_formulas, task_modeling_method = ts.modeling(
+                task_formulas_prompt,
+                task_modeling_prompt,
+                problem['data_description'],
+                task_description,
+                task_analysis,
+                top_modeling_methods,
+                round=config['task_formulas_round']
+            )
+            solution['task_modeling_formulas'] = task_modeling_formulas
+            solution['task_modeling_method'] = task_modeling_method
+        else:
+            task_modeling_formulas = solution.get('task_modeling_formulas', '')
+            task_modeling_method = solution.get('task_modeling_method', '')
+        backup_solution(tmp_path, all_solution)
+        return solution, dependent_file_prompt
+    except Exception as e:
+        backup_solution(tmp_path, all_solution, e)
+        raise e

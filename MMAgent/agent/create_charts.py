@@ -1,10 +1,12 @@
 from .base_agent import BaseAgent
 from prompt.template import CREATE_CHART_PROMPT
+from utils.retry_utils import retry_on_api_error
 
 class ChartCreator(BaseAgent):
     def __init__(self, llm):
         super().__init__(llm)
-    
+
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def create_single_chart(self, paper_content: str, existing_charts: str, user_prompt: str=''):
         prompt = CREATE_CHART_PROMPT.format(paper_content=paper_content, existing_charts=existing_charts, user_prompt=user_prompt)
         return self.llm.generate(prompt)

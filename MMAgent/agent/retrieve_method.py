@@ -98,7 +98,7 @@ class MethodRetriever(BaseAgent):
     def format_methods(self, methods: List[str]):
         return '\n'.join([f"**{method['method']}:** {method['description']}" for method in methods])
 
-    def retrieve_meethods(self, problem_description: str, top_k: int=6, method: str='embedding'):
+    def retrieve_methods(self, problem_description: str, top_k: int=6, method: str='embedding'):
         if self.rag:
             if method == 'embedding':
                 score_func = partial(self.embedding_scorer.score_method, problem_description)

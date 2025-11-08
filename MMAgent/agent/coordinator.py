@@ -8,6 +8,7 @@ from prompt.template import (
     DAG_CONSTRUCTION_PROMPT,
     CODE_STRUCTURE_PROMPT,
 )
+from utils.retry_utils import retry_on_api_error
 
 class Coordinator:
     def __init__(self, llm):
@@ -47,6 +48,7 @@ class Coordinator:
 
         return order
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def analyze(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: List[str], with_code: bool):
         if with_code:
             prompt = TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT.format(tasknum=tasknum, modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, task_descriptions=task_descriptions).strip()
@@ -54,6 +56,7 @@ class Coordinator:
             prompt = TASK_DEPENDENCY_ANALYSIS_PROMPT.format(tasknum=tasknum, modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, task_descriptions=task_descriptions).strip()
         return self.llm.generate(prompt)
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def dag_construction(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, task_dependency_analysis: str):
         prompt = DAG_CONSTRUCTION_PROMPT.format(
             tasknum=tasknum,

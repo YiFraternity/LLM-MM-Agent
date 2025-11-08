@@ -1,9 +1,15 @@
 import json
-from typing import Dict
+from pathlib import Path
+import re
+import logging
+from typing import Dict, Union
 import os
 from datetime import datetime
 import yaml
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def read_text_file(file_path: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -205,6 +211,35 @@ def json_to_markdown(paper):
     markdown_str = "\n".join(markdown_lines)
     return markdown_str
 
+def find_task_id_from_path(path: Union[Path, str]) -> Union[None, str]:
+    task_id_pattern = re.compile(r'(\d{4}_[A-F])')
+    if isinstance(path, Path):
+        for part in path.parts:
+            match = task_id_pattern.search(part)
+            if match:
+                return match.group(0)
+    else:
+        match = task_id_pattern.search(path)
+        if match:
+            return match.group(0)
+    return None
+
+def backup_solution(backup_path: Path, solution, error=None):
+    backup_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(backup_path, "w", encoding="utf-8") as f:
+        json.dump(solution, f, ensure_ascii=False, indent=2)
+    if error:
+        logger.warning(f"⚠️ 出错，已自动备份到：{backup_path}，错误信息：{error}")
+    else:
+        logger.info(f"🧩 分析过程完成，已自动备份到：{backup_path}")
+
+def try_load_backup(tmp_path: Path):
+    if not tmp_path.exists():
+        return None
+    logger.info(f"🧩 检测到备份文件，尝试从 {tmp_path} 恢复。")
+
+    with open(tmp_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 def json_to_markdown_general(json_data):
     """
@@ -256,21 +291,22 @@ def mkdir(path):
     os.makedirs(path + '/usage', exist_ok=True)
 
 
-def load_config(args, config_path='config.yaml'):
+def load_config(config_path='config.yaml'):
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
-    config['model_name'] = args.model_name
-    config['method_name'] = args.method_name
     return config
 
 
 def get_info(args):
-    model_name = os.getenv('MODEL_NAME')
+    model_name = args.model_name
     if model_name is None:
         raise ValueError("Please set the MODEL_NAME environment variable.")
     model_name = model_name.split('/')[-1]
     problem_path = 'MMBench/{}/problem/{}.json'.format(args.mm_dataset, args.task)
-    config = load_config(args)
+    config = load_config()
+    config['model_name'] = args.model_name
+    config['method_name'] = args.method_name
+    config['embed_model'] = args.embed_model
     dataset_dir = 'MMBench/{}/dataset/{}'.format(args.mm_dataset, args.task)
     output_dir = os.path.join(
         'output/{}/{}/{}'.format(model_name, args.mm_dataset, args.method_name),

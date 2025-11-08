@@ -6,6 +6,13 @@ import selectors
 import tiktoken
 
 from .base_agent import BaseAgent
+from utils.retry_utils import (
+    LogicError,
+    retry_on_logic_error,
+    retry_on_api_error,
+    ensure_parsed_json_output,
+    ensure_parsed_python_code,
+)
 from prompt.template import (
     TASK_ANALYSIS_PROMPT,
     TASK_RESULT_PROMPT,
@@ -84,23 +91,27 @@ class TaskSolver(BaseAgent):
     def __init__(self, llm):
         super().__init__(llm)
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def analysis(self, prompt: str, task_description: str, user_prompt: str = ''):
         prompt = TASK_ANALYSIS_PROMPT.format(prompt=prompt, task_description=task_description, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
-    def formulas_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, modeling_methods: str, user_prompt: str = ''):
+    @retry_on_api_error(max_attempts=3, wait_time=3)
+    def formulas_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, modeling_methods: str, user_prompt: str = '') -> str:
         prompt = TASK_FORMULAS_PROMPT.format(prompt=prompt, data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_methods=modeling_methods, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def formulas_critic(self, data_summary: str, task_description: str, task_analysis: str, modeling_formulas: str):
         prompt = TASK_FORMULAS_CRITIQUE_PROMPT.format(data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=modeling_formulas).strip()
         return self.llm.generate(prompt)
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def formulas_improvement(self, data_summary: str, task_description: str, task_analysis: str, modeling_formulas: str, modeling_formulas_critique: str, user_prompt: str = ''):
         prompt = TASK_FORMULAS_IMPROVEMENT_PROMPT.format(data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=modeling_formulas, modeling_formulas_critique=modeling_formulas_critique, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
-    def modeling(self, formulas_prompt: str, modeling_prompt: str, data_summary: str, task_description: str, task_analysis: str, modeling_methods: str, round: int = 1, user_prompt: str = ''):
+    def modeling(self, formulas_prompt: str, modeling_prompt: str, data_summary: str, task_description: str, task_analysis: str, modeling_methods: str, round: int = 1, user_prompt: str = '') -> (str, str):
         formulas = self.formulas_actor(formulas_prompt, data_summary, task_description, task_analysis, modeling_methods, user_prompt)
         for i in range(round):
             formulas_critique = self.formulas_critic(data_summary, task_description, task_analysis, formulas)
@@ -110,7 +121,8 @@ class TaskSolver(BaseAgent):
 
         return formulas, modeling_method
 
-    def modeling_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, formulas: str, user_prompt: str = ''):
+    @retry_on_api_error(max_attempts=3, wait_time=3)
+    def modeling_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, formulas: str, user_prompt: str = '') -> str:
         prompt = TASK_MODELING_PROMPT.format(prompt=prompt, data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=formulas, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
@@ -130,19 +142,16 @@ class TaskSolver(BaseAgent):
     #         process = self.modeling_improvement(task_description, task_analysis, data_summary, formulas, process, process_critique)
     #     return process
 
-    def coding_actor(self, data_file, data_summary, variable_description, task_description: str, task_analysis: str, formulas: str, modeling: str, dependent_file_prompt: str, code_template: str, script_name: str, work_dir: str, user_prompt: str = ''):
+
+    @retry_on_logic_error(max_attempts=3, wait_time=3)
+    @ensure_parsed_python_code
+    @retry_on_api_error(max_attempts=3, wait_time=3)
+    def _generate_code(self, prompt: str):
+        return self.llm.generate(prompt)
+
+    def coding_actor(self, data_file, data_summary, variable_description, task_description: str, task_analysis: str, formulas: str, modeling: str, dependent_file_prompt: str, code_template: str, script_name: str, work_dir: str, user_prompt: str = '') -> (str, str):
         prompt = TASK_CODING_PROMPT.format(data_file=data_file, data_summary=data_summary, variable_description=variable_description, task_description=task_description, task_analysis=task_analysis, modeling_formulas=formulas, modeling_process=modeling, dependent_file_prompt=dependent_file_prompt, code_template=code_template, user_prompt=user_prompt).strip()
-        max_retry = 0
-        while max_retry < 5:
-            max_retry += 1
-            try:
-                completion = self.llm.generate(prompt)
-                new_content = completion.split("```python")[1].split("```")[0].strip()
-                break
-            except Exception as e:
-                # Format control.
-                print(f"Retry! The code does not start with ```python")
-                continue
+        new_content = self._generate_code(prompt)
 
         with open(os.path.join(work_dir, script_name), "w") as f:
             f.write(new_content)
@@ -165,18 +174,7 @@ class TaskSolver(BaseAgent):
     def coding_debugger(self, code_template: str, modeling: str, code: str, observation: str, script_name: str, work_dir: str, user_prompt: str = ''):
 
         prompt = TASK_CODING_DEBUG_PROMPT.format(code_template=code_template, modeling_process=modeling, code=code, observation=observation, user_prompt=user_prompt).strip()
-
-        max_retry = 0
-        while max_retry < 5:
-            max_retry += 1
-            try:
-                completion = self.llm.generate(prompt)
-                new_content = completion.split("```python")[1].split("```")[0].strip()
-                break
-            except Exception as e:
-                # Format control.
-                print(f"Retry! The code does not start with ```python")
-                continue
+        new_content = self._generate_code(prompt)
 
         with open(os.path.join(work_dir, script_name), "w") as f:
             f.write(new_content)
@@ -196,7 +194,7 @@ class TaskSolver(BaseAgent):
 
         return new_content, observation
 
-    def coding(self, data_file, data_summary, variable_description, task_description: str, task_analysis: str, formulas: str, modeling: str, dependent_file_prompt: str, code_template: str, script_name: str, work_dir: str, try_num: int = 5, round: int = 1, user_prompt: str = ''):
+    def coding(self, data_file, data_summary, variable_description, task_description: str, task_analysis: str, formulas: str, modeling: str, dependent_file_prompt: str, code_template: str, script_name: str, work_dir: str, try_num: int = 5, round: int = 1, user_prompt: str = '') -> (str, bool, str|None):
         for i in range(try_num):
             print("="*10 + f" Try: {i + 1} " + "="*10)
             iteration = 0
@@ -217,6 +215,7 @@ class TaskSolver(BaseAgent):
 
         return code, False, None
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def result(self, task_description: str, task_analysis: str, task_formulas: str, task_modeling: str, user_prompt: str = '', execution_result: str = ''):
         if execution_result == '':
             prompt = TASK_RESULT_PROMPT.format(task_description=task_description, task_analysis=task_analysis, task_formulas=task_formulas, task_modeling=task_modeling, user_prompt=user_prompt).strip()
@@ -224,22 +223,29 @@ class TaskSolver(BaseAgent):
             prompt = TASK_RESULT_WITH_CODE_PROMPT.format(task_description=task_description, task_analysis=task_analysis, task_formulas=task_formulas, task_modeling=task_modeling, user_prompt=user_prompt, execution_result=execution_result).strip()
         return self.llm.generate(prompt)
 
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     def answer(self, task_description: str, task_analysis: str, task_formulas: str, task_modeling: str, task_result: str, user_prompt: str = ''):
         prompt = TASK_ANSWER_PROMPT.format(task_description=task_description, task_analysis=task_analysis, task_formulas=task_formulas, task_modeling=task_modeling, task_result=task_result, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
+    @retry_on_api_error
+    @ensure_parsed_json_output
+    def _generate_json_structure(self, prompt: str):
+        return self.llm.generate(prompt)
+
+    @retry_on_api_error
     def extract_code_structure(self, task_id, code: str, save_path: str):
         prompt = CODE_STRUCTURE_PROMPT.format(code=code, save_path=save_path)
-        count = 0
-        for i in range(5):
-            try:
-                strucutre = self.llm.generate(prompt)
-                structure_string = strucutre.strip('```json\n').strip('```')
-                structure_json = json.loads(structure_string)
-                for i in range(len(structure_json['file_outputs'])):
-                    structure_json['file_outputs'][i]['file_description'] = 'This file is generated by code for Task {}. '.format(task_id) + structure_json['file_outputs'][i]['file_description']
-                return structure_json
-            except:
-                continue
-        if count == 5:
-            sys.exit("Fail at extract_code_structure")
+        structure_json = self._generate_json_structure(prompt)
+        if not isinstance(structure_json, dict):
+            raise LogicError("[extract_code_structure] Output is not a valid JSON object.")
+        if "file_outputs" not in structure_json:
+            raise LogicError("[extract_code_structure] Missing key 'file_outputs'.")
+        if not isinstance(structure_json["file_outputs"], list) or len(structure_json["file_outputs"]) == 0:
+            raise LogicError("[extract_code_structure] Invalid or empty 'file_outputs' list.")
+
+        for t in structure_json["file_outputs"]:
+            desc = t.get("file_description", "")
+            t["file_description"] = f"This file is generated by code for Task {task_id}. {desc}"
+
+        return structure_json
