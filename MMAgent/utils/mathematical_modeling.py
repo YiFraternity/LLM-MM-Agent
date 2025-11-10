@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import List
+import logging
 
 from torch.jit.annotations import Dict
 from agent.retrieve_method import MethodRetriever
@@ -14,6 +15,13 @@ from utils.utils import (
     backup_solution,
 )
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 def detct_start_index(state: dict) -> int:
     """
     根据 solution 内容决定从哪个阶段开始恢复
@@ -22,13 +30,11 @@ def detct_start_index(state: dict) -> int:
       1 - retrieve-method
       2 - task-formulas
     """
-    if not state:
-        return 0
-    if 'task_analysis' not in state:
+    if not state or 'task_analysis' not in state:
         return 0
     if 'retrieve_content' not in state:
         return 1
-    if 'task_modeling_formulas' not in state:
+    if 'task_modeling_formulas' not in state or 'task_modeling_method' not in state:
         return 2
     return 3
 
@@ -83,7 +89,7 @@ def get_dependency_prompt(with_code, coordinator, subtask_id):
 
 
 def mathematical_modeling(llm, task_id: str, subtask_id: int, problem: dict, task_descriptions: List[str], config: Dict, coordinator, with_code: bool, tmp_dir: Path):
-    f"""
+    """
     进行子任务的数学建模，包含以下步骤：
         1. 任务分析
         2. 分层建模方法检索
@@ -109,15 +115,17 @@ def mathematical_modeling(llm, task_id: str, subtask_id: int, problem: dict, tas
         dependent_file_prompt: 依赖文件提示字符串
     """
     tmp_path = tmp_dir / task_id / "mathematical_modeling.json"
+    tmp_path.parent.mkdir(parents=True, exist_ok=True)
     backup_data = try_load_backup(tmp_path)
     if backup_data:
         all_solution = backup_data
-        solution = all_solution.get(str(subtask_id), {})
+        solution = all_solution.get(str(subtask_id), {'task_description': task_descriptions[subtask_id - 1]})
     else:
+        all_solution = {}
         solution = {
             'task_description': task_descriptions[subtask_id - 1]
         }
-        all_solution[str(subtask_id)] = solution
+    all_solution[str(subtask_id)] = solution
 
     ts = TaskSolver(llm)
     mr = MethodRetriever(llm, embed_model=config['embed_model'])
@@ -128,19 +136,23 @@ def mathematical_modeling(llm, task_id: str, subtask_id: int, problem: dict, tas
     start_idx = detct_start_index(solution)
     try:
         if start_idx <= 0:
+            logger.info(f"开始任务分析，subtask_id: {subtask_id}")
             task_analysis = ts.analysis(task_analysis_prompt, task_description)
             solution['task_analysis'] = task_analysis
         else:
             task_analysis = solution.get('task_analysis', '')
         # 分层建模方法检索
         if start_idx <= 1:
+            logger.info(f"开始分层建模方法检索，subtask_id: {subtask_id}")
             description_and_analysis = f'## 任务描述\n{task_description}\n\n## 任务分析\n{task_analysis}'
             top_modeling_methods = mr.retrieve_methods(description_and_analysis, top_k=config['top_method_num'])
+            solution['retrieve_content'] = top_modeling_methods
         else:
             top_modeling_methods = solution.get('retrieve_content', [])
             # 任务建模
         # 任务建模
         if start_idx <= 2:
+            logger.info(f"开始任务建模，subtask_id: {subtask_id}")
             task_modeling_formulas, task_modeling_method = ts.modeling(
                 task_formulas_prompt,
                 task_modeling_prompt,

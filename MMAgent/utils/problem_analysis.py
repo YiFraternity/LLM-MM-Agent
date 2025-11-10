@@ -59,7 +59,7 @@ def detect_start_index(state: dict) -> int:
       3 - dependency_analysis
       4 - finished
     """
-    if not state:
+    if not state or 'problem' not in state:
         return 0
     if 'problem_analysis' not in state:
         return 1
@@ -96,6 +96,7 @@ def problem_analysis(
     if not task_id:
         raise ValueError(f"无法从 {problem_path} 中解析出 task_id。")
     tmp_path = tmp_dir / task_id / 'analysis.json'
+    tmp_path.parent.mkdir(exist_ok=True, parents=True)
     problem_type = os.path.splitext(os.path.basename(problem_path))[0].split('_')[-1]
     try:
         backup_data = try_load_backup(tmp_path)
@@ -104,8 +105,6 @@ def problem_analysis(
         else:
             solution = {
                 'tasks': [],
-                'problem_background': problem['background'],
-                'problem_requirement': problem['problem_requirement'],
             }
         start_idx = detect_start_index(solution)
 
@@ -115,6 +114,8 @@ def problem_analysis(
             problem_str, problem = get_problem(problem_path, llm)
             solution['problem_str'] = problem_str
             solution['problem'] = problem
+            solution['problem_background'] = problem['background']
+            solution['problem_requirement'] = problem['problem_requirement']
         else:
             problem_str = solution.get('problem_str', '')
             problem = solution.get('problem', {})
@@ -146,20 +147,23 @@ def problem_analysis(
             task_descriptions = solution.get('task_descriptions', [])
 
         # Task Dependency Analysis
-        with_code = len(problem['dataset_path']) > 0
+        with_code = 'dataset_path' in problem and len(problem['dataset_path']) > 0
         if with_code:
             shutil.copytree(dataset_path, os.path.join(output_dir,'code'), dirs_exist_ok=True)
         solution['with_code'] = with_code
 
-        coordinator = Coordinator(llm)
         if start_idx <= 4:
             coordinator = Coordinator(llm)
             order = coordinator.analyze_dependencies(problem_str, problem_analysis, modeling_solution, task_descriptions, with_code)
             order = [int(i) for i in order]
+            coord_dict = coordinator.to_dict()
+            solution['coordinator'] = coord_dict
             solution['order'] = order
             logger.info('4️⃣  Analysis - Task Dependency Analysis - finished.')
         else:
             order = solution.get('order', [])
+            coord_dict = solution.get('coordinator', {})
+            coordinator = Coordinator.from_dict(llm, coord_dict)
         backup_solution(tmp_path, solution)
         return problem, task_id, solution, coordinator
     except Exception as e:

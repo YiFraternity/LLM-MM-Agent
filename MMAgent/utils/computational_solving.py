@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import logging
 from utils.utils import (
     save_solution,
     try_load_backup,
@@ -7,6 +8,12 @@ from utils.utils import (
 )
 from agent.task_solving import TaskSolver
 from agent.create_charts import ChartCreator
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 def detect_start_index_with_code(state: dict) -> int:
     """
@@ -50,34 +57,42 @@ def computational_solving(llm, task_id, coordinator, with_code, problem, subtask
     script_name = 'main{}.py'.format(subtask_id)
 
     tmp_path = tmp_dir / task_id / "computational_solving.json"
+    tmp_path.parent.mkdir(parents=True, exist_ok=True)
     backup_data = try_load_backup(tmp_path)
     if backup_data:
         all_state = backup_data
         state = all_state.get(str(subtask_id), {})
     else:
-        state = {}
-        all_state[str(subtask_id)] = state
+        state, all_state = {}, {}
+    all_state[str(subtask_id)] = state
 
     if with_code:
         start_idx = detect_start_index_with_code(state)
         try:
             if start_idx <= 0:
+                logger.info(f"开始编码阶段，subtask_id: {subtask_id}")
                 task_code, is_pass, execution_result = ts.coding(problem['dataset_path'], problem['data_description'], problem['variable_description'], task_description, task_analysis, task_modeling_formulas, task_modeling_method, dependent_file_prompt, code_template, script_name, work_dir)
+                state['task_code'] = task_code
+                state['is_pass'] = is_pass
+                state['execution_result'] = execution_result
             else:
                 task_code = state.get('task_code', '')
                 is_pass = state.get('is_pass', False)
                 execution_result = state.get('execution_result', '')
             if start_idx <= 1:
+                logger.info(f"开始解析代码，subtask_id: {subtask_id}")
                 code_structure = ts.extract_code_structure(subtask_id, task_code, save_path)
                 state['code_structure'] = code_structure
             else:
                 code_structure = state.get('code_structure', {})
             if start_idx <= 2:
+                logger.info(f"开始计算结果，subtask_id: {subtask_id}")
                 task_result = ts.result(task_description, task_analysis, task_modeling_formulas, task_modeling_method, execution_result)
                 state['task_result'] = task_result
             else:
                 task_result = state.get('task_result', '')
             if start_idx <= 3:
+                logger.info(f"开始解析结果，subtask_id: {subtask_id}")
                 task_answer = ts.answer(task_description, task_analysis, task_modeling_formulas, task_modeling_method, task_result)
                 state['task_answer'] = task_answer
             else:
@@ -102,11 +117,13 @@ def computational_solving(llm, task_id, coordinator, with_code, problem, subtask
         start_idx = detect_start_index(state)
         try:
             if start_idx <= 0:
+                logger.info(f"开始计算结果，subtask_id: {subtask_id}")
                 task_result = ts.result(task_description, task_analysis, task_modeling_formulas, task_modeling_method)
                 state['task_result'] = task_result
             else:
                 task_result = state.get('task_result', '')
             if start_idx <= 1:
+                logger.info(f"开始解析结果，subtask_id: {subtask_id}")
                 task_answer = ts.answer(task_description, task_analysis, task_modeling_formulas, task_modeling_method, task_result)
                 state['task_answer'] = task_answer
             else:
@@ -127,6 +144,7 @@ def computational_solving(llm, task_id, coordinator, with_code, problem, subtask
     if 'charts' in state:
         charts = state['charts']
     else:
+        logger.info(f"开始生成图表，subtask_id: {subtask_id}")
         charts = cc.create_charts(str(task_dict), config['chart_num'])
         state['charts'] = charts
         backup_solution(tmp_path, all_state)

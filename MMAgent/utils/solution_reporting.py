@@ -613,9 +613,8 @@ class PaperGenerator:
                     output_dir: str,
                     filename: str) -> None:
         """Generate a complete academic paper from JSON data"""
-
-        start_idx = self._detect_start_index()
         ckpt = self._load_checkpoint()
+        start_idx = self._detect_start_index(ckpt)
         if start_idx < 0:
             logger.info("No checkpoint found, starting from the beginning")
             # 1. Create chapter structure

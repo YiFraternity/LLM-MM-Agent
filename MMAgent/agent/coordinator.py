@@ -15,6 +15,29 @@ class Coordinator:
         self.llm = llm
         self.memory = {}
         self.code_memory = {}
+        self.task_dependency_analysis = None
+        self.DAG = None
+        self.order = None
+        self.task_descriptions = None
+
+    def to_dict(self):
+        return {
+            "memory": self.memory or {},
+            "code_memory": self.code_memory or {},
+            "task_dependency_analysis": self.task_dependency_analysis or [],
+            "DAG": self.DAG or {},
+            "order": self.order or []
+        }
+
+    @classmethod
+    def from_dict(cls, llm, data: dict):
+        instance = cls(llm)
+        instance.memory = data.get("memory", {})
+        instance.code_memory = data.get("code_memory", {})
+        instance.task_dependency_analysis = data.get("task_dependency_analysis", [])
+        instance.DAG = data.get("DAG", {})
+        instance.order = data.get("order", [])
+        return instance
 
     def compute_dag_order(self, graph):
         """

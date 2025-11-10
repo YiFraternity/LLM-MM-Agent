@@ -143,7 +143,6 @@ class TaskSolver(BaseAgent):
     #     return process
 
 
-    @retry_on_logic_error(max_attempts=3, wait_time=3)
     @ensure_parsed_python_code
     @retry_on_api_error(max_attempts=3, wait_time=3)
     def _generate_code(self, prompt: str):
@@ -228,12 +227,12 @@ class TaskSolver(BaseAgent):
         prompt = TASK_ANSWER_PROMPT.format(task_description=task_description, task_analysis=task_analysis, task_formulas=task_formulas, task_modeling=task_modeling, task_result=task_result, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
-    @retry_on_api_error
+    @retry_on_api_error(max_attempts=3, wait_time=3)
     @ensure_parsed_json_output
     def _generate_json_structure(self, prompt: str):
         return self.llm.generate(prompt)
 
-    @retry_on_api_error
+    @retry_on_logic_error(max_attempts=3, wait_time=3)
     def extract_code_structure(self, task_id, code: str, save_path: str):
         prompt = CODE_STRUCTURE_PROMPT.format(code=code, save_path=save_path)
         structure_json = self._generate_json_structure(prompt)

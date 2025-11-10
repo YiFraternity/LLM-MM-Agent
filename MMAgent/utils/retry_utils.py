@@ -1,4 +1,5 @@
 import json
+import time
 import logging
 from functools import wraps
 from tenacity import (
@@ -39,52 +40,56 @@ class EmptyOutputError(Exception):
 # ------------------------------
 # 🚦 Retry Decorators
 # ------------------------------
-def retry_on_api_error(
-    max_attempts: int = 5,
-    min_wait: int = 2,
-    max_wait: int = 20,
-    multiplier: int = 2,
-    wait_time: int | None = None,
-):
+def retry_on_api_error(max_attempts=5, min_wait=2, max_wait=20, multiplier=2, wait_time=None):
     """
-    通用的 API 调用重试装饰器，处理 OpenAI 和网络相关错误。
-    支持两种等待机制：
-      1. 若传入 wait_time，则使用固定等待（适合逻辑可控的重试）
-      2. 否则默认使用指数退避等待（适合网络波动与限流）
+    通用的 API 调用重试装饰器。
+    支持实例方法（self, ...）且能自定义固定等待时间或指数退避。
     """
-    wait_strategy = (
-        wait_fixed(wait_time)
-        if wait_time is not None
-        else wait_exponential(multiplier=multiplier, min=min_wait, max=max_wait)
-    )
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            wait_strategy = (
+                wait_exponential(multiplier=multiplier, min=min_wait, max=max_wait)
+                if wait_time is None else
+                wait_fixed(wait_time)
+            )
 
-    return retry(
-        retry=retry_if_exception_type((
-            OpenAIError,
-            RateLimitError,
-            APIError,
-            ConnectionError,
-            RequestsTimeout,
-            TimeoutError,  # Python 内置 TimeoutError
-        )),
-        wait=wait_strategy,
-        stop=stop_after_attempt(max_attempts),
-        before_sleep=before_sleep_log(logger, logging.WARNING),
-        reraise=True,  # ✅ 保留原始异常栈信息，方便调试
-    )
+            retry_decorator = retry(
+                retry=retry_if_exception_type((
+                    OpenAIError,
+                    RateLimitError,
+                    APIError,
+                    ConnectionError,
+                    RequestsTimeout,
+                    TimeoutError,
+                )),
+                wait=wait_strategy,
+                stop=stop_after_attempt(max_attempts),
+                before_sleep=before_sleep_log(logger, logging.WARNING),
+                reraise=True,
+            )
+
+            return retry_decorator(func)(*args, **kwargs)
+
+        return wrapper
+    return decorator
+
 
 def retry_on_logic_error(max_attempts=3, wait_time=3):
-    """
-    用于在抛出 LogicError 时重试（逻辑级别错误）。
-    比如 LLM 输出为空、格式错误等。
-    """
-    return retry(
-        retry=retry_if_exception_type(LogicError),
-        stop=stop_after_attempt(max_attempts),
-        wait=wait_fixed(wait_time),
-        reraise=True,
-    )
-
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except LogicError as e:
+                    print(f"⚠️  attempt {attempt} failed: {e}")
+                    if attempt == max_attempts:
+                        print("❌ All attempts failed.")
+                        raise
+                    time.sleep(wait_time)
+        return wrapper
+    return decorator
 
 # ------------------------------
 # 🧩 Output Validation Decorators
