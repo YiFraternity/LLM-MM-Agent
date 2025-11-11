@@ -8,7 +8,7 @@ import tiktoken
 from .base_agent import BaseAgent
 from utils.retry_utils import (
     LogicError,
-    retry_on_logic_error,
+    reflective_retry_on_logic_error,
     retry_on_api_error,
     ensure_parsed_json_output,
     ensure_parsed_python_code,
@@ -232,7 +232,11 @@ class TaskSolver(BaseAgent):
     def _generate_json_structure(self, prompt: str):
         return self.llm.generate(prompt)
 
-    @retry_on_logic_error(max_attempts=3, wait_time=3)
+    @reflective_retry_on_logic_error(
+        max_attempts=3,
+        wait_time=3,
+        reflection_template="\n⚠️ Last attempt failed: {error}. Please correct and output valid JSON."
+    )
     def extract_code_structure(self, task_id, code: str, save_path: str):
         prompt = CODE_STRUCTURE_PROMPT.format(code=code, save_path=save_path)
         structure_json = self._generate_json_structure(prompt)

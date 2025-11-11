@@ -25,10 +25,9 @@ from prompt.template import (
     PAPER_NOTATION_PROMPT
 )
 from llm.llm import LLM
-from utils.utils import parse_llm_output_to_json
 from utils.retry_utils import (
     retry_on_api_error,
-    retry_on_logic_error,
+    reflective_retry_on_logic_error,
     ensure_parsed_json_output,
     LogicError,
 )
@@ -104,7 +103,7 @@ def escape_underscores_in_quotes(text):
 class ContentGenerator:
     """Interface for generating content using language models"""
 
-    def __init__(self, llm):
+    def __init__(self, llm: LLM):
         self.llm = llm
 
     def _extract_fenced_block(self, text: str) -> str:
@@ -717,12 +716,16 @@ class PaperGenerator:
         return ''
 
     @retry_on_api_error(max_attempts=3, wait_time=3)
-    @retry_on_logic_error(max_attempts=3, wait_time=3)
+    @reflective_retry_on_logic_error(
+        max_attempts=3,
+        wait_time=3,
+    )
     @ensure_parsed_json_output
     def _call_llm_for_metadata(self, prompt: str) -> dict:
         """内部封装的 LLM 调用 + 自动 JSON 提取 + 双层重试"""
+        prompt_copy = prompt  # 防止原始 prompt 被修改
         logger.info("🔍 Calling LLM to generate paper metadata...")
-        response = self.llm.generate(prompt)
+        response = self.llm.generate(prompt_copy)
         if not response or not isinstance(response, str):
             raise LogicError("Empty or invalid LLM response.")
         return response  # ensure_parsed_json_output 会自动提取 JSON

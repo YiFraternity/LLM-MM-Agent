@@ -6,9 +6,13 @@ from prompt.template import (
     TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT,
     TASK_DEPENDENCY_ANALYSIS_PROMPT,
     DAG_CONSTRUCTION_PROMPT,
-    CODE_STRUCTURE_PROMPT,
 )
-from utils.retry_utils import retry_on_api_error
+from utils.retry_utils import (
+    LogicError,
+    retry_on_api_error,
+    reflective_retry_on_logic_error,
+    ensure_parsed_json_output,
+)
 
 class Coordinator:
     def __init__(self, llm):
@@ -80,7 +84,9 @@ class Coordinator:
         return self.llm.generate(prompt)
 
     @retry_on_api_error(max_attempts=3, wait_time=3)
-    def dag_construction(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, task_dependency_analysis: str):
+    @reflective_retry_on_logic_error(max_attempts=5, wait_time=2)
+    @ensure_parsed_json_output
+    def dag_construction(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, task_dependency_analysis: str) -> dict:
         prompt = DAG_CONSTRUCTION_PROMPT.format(
             tasknum=tasknum,
             modeling_problem=modeling_problem,
@@ -91,7 +97,7 @@ class Coordinator:
         ).strip()
         return self.llm.generate(prompt)
 
-    def analyze_dependencies(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: list[str], with_code: bool):
+    def analyze_dependencies(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: list[str], with_code: bool) -> List[int]:
         task_dependency_analysis = self.analyze(
             len(task_descriptions),
             modeling_problem,
@@ -101,20 +107,18 @@ class Coordinator:
             with_code
         )
         self.task_dependency_analysis = task_dependency_analysis.split('\n\n')
-        count = 0
-        for i in range(5):
-            count += 1
-            try:
-                dependency_DAG = self.dag_construction(len(task_descriptions), modeling_problem, problem_analysis, modeling_solution, task_descriptions, task_dependency_analysis)
-                dependency_DAG_string = dependency_DAG.strip('```json\n').strip('```')
-                self.DAG = json.loads(dependency_DAG_string)
-                break
-            except:
-                continue
-        if count == 5:
-            sys.exit("Fail at Task Dependency Analysis")
+        try:
+            self.DAG = self.dag_construction(
+                len(task_descriptions),
+                modeling_problem,
+                problem_analysis,
+                modeling_solution,
+                task_descriptions,
+                task_dependency_analysis
+            )
+        except LogicError as e:
+            print(f"❌ Dependency analysis failed after retries: {e}")
+            self.DAG = {}
+            return []
         order = self.compute_dag_order(self.DAG)
-
         return order
-
-

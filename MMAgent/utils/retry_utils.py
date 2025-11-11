@@ -2,6 +2,7 @@ import json
 import time
 import logging
 from functools import wraps
+from typing import Callable, Optional
 from tenacity import (
     retry,
     retry_if_exception_type,
@@ -75,22 +76,6 @@ def retry_on_api_error(max_attempts=5, min_wait=2, max_wait=20, multiplier=2, wa
     return decorator
 
 
-def retry_on_logic_error(max_attempts=3, wait_time=3):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            for attempt in range(1, max_attempts + 1):
-                try:
-                    return func(*args, **kwargs)
-                except LogicError as e:
-                    print(f"⚠️  attempt {attempt} failed: {e}")
-                    if attempt == max_attempts:
-                        print("❌ All attempts failed.")
-                        raise
-                    time.sleep(wait_time)
-        return wrapper
-    return decorator
-
 # ------------------------------
 # 🧩 Output Validation Decorators
 # ------------------------------
@@ -149,3 +134,62 @@ def ensure_parsed_json_output(func):
 
         return parsed
     return wrapper
+
+
+def reflective_retry_on_logic_error(
+    max_attempts: int = 3,
+    wait_time: float = 2,
+    reflection_template: Optional[str] = None,
+    error_types=(LogicError, EmptyOutputError)
+):
+    """
+    ✅ 反思性重试装饰器（简化版）
+    - 捕获逻辑错误或空输出错误；
+    - 每次失败自动反思并修改 prompt/文本参数；
+    - 使用固定等待，无需依赖 tenacity 的生成器；
+    """
+
+    def decorator(func: Callable):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            last_error: Optional[Exception] = None
+
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except error_types as e:
+                    last_error = e
+                    logger.warning(f"⚠️ [{func.__name__}] Attempt {attempt}/{max_attempts} failed: {e}")
+
+                    if attempt == max_attempts:
+                        logger.error(f"❌ [{func.__name__}] All {max_attempts} attempts failed.")
+                        raise
+
+                    # 生成反思性提示
+                    reflective_instruction = (
+                        reflection_template.format(error=str(e))
+                        if reflection_template
+                        else f"\n\n⚠️ Previous attempt failed due to: {e}. "
+                             "Please carefully reflect on this issue and regenerate a valid, complete output."
+                    )
+
+                    # 修改 prompt 或文本参数
+                    modified = False
+                    for key in ["prompt", "code", "text", "query"]:
+                        if key in kwargs and isinstance(kwargs[key], str):
+                            kwargs[key] += reflective_instruction
+                            modified = True
+                            break
+                    if not modified and args and isinstance(args[0], str):
+                        args = (args[0] + reflective_instruction, *args[1:])
+
+                    # 等待固定时间再重试
+                    logger.info(f"⏳ Waiting {wait_time:.2f}s before next attempt...")
+                    time.sleep(wait_time)
+
+            # 最后仍失败，抛出异常
+            raise last_error
+
+        return wrapper
+
+    return decorator
