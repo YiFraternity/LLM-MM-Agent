@@ -5,7 +5,7 @@ import json
 import argparse
 from typing import List
 
-from utils import (
+from eval_utils import (
     load_tex_content,
     load_json,
     load_yaml,

@@ -10,7 +10,7 @@ from pathlib import Path
 import logging
 from dotenv import load_dotenv
 
-from utils import (
+from eval_utils import (
     load_yaml,
     load_json,
     write_json,

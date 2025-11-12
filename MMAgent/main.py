@@ -19,7 +19,7 @@ logger.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 load_dotenv(override=True)
-def run(problem_path, config, name, dataset_path, output_dir, tmp_dir: Path):
+def run(problem_path, config, name, dataset_path, output_dir, tmp_dir: Path, is_split_subtask: bool = False):
     # Initialize LLM
     llm = LLM()
 
@@ -32,6 +32,7 @@ def run(problem_path, config, name, dataset_path, output_dir, tmp_dir: Path):
         dataset_path,
         output_dir,
         tmp_dir=tmp_dir,
+        is_split_subtask=is_split_subtask,
     )
     task_descriptions = solution['task_descriptions']
     with_code = solution.get('with_code', False)
@@ -99,6 +100,8 @@ def parse_arguments():
                         help='Name of llm, if None, return os.MODEL_NAME')
     parser.add_argument('--embed-model', type=str, default=None,
                         help='Name of llm, if None, return os.EMBED_MODEL')
+    parser.add_argument('--is-split-subtask', action='store_true', default=False,
+                        help='split substask or generate mathematical model report')
 
     return parser.parse_args()
 
@@ -118,6 +121,7 @@ if __name__ == "__main__":
         dataset_path=dataset_dir,
         output_dir=output_dir,
         tmp_dir=args.tmp_dir,
+        is_split_subtask=args.is_split_subtask,
     )
     end = time.time()
     with open(output_dir + '/usage/runtime.txt', 'w') as f:

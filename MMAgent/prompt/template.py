@@ -751,8 +751,6 @@ TASK_DEPENDENCY_ANALYSIS_PROMPT = """\
 
 ## 输入信息：
 - **数学建模问题：** {modeling_problem}
-- **问题分析：** {problem_analysis}
-- **建模解决方案：** {modeling_solution}
 - **分解后的任务：** {task_descriptions}
 
 ## 任务依赖分析指令：
@@ -776,8 +774,6 @@ TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT = """\
 
 ## 输入信息：
 - **数学建模问题：** {modeling_problem}
-- **问题分析：** {problem_analysis}
-- **建模解决方案：** {modeling_solution}
 - **分解后的任务：** {task_descriptions}
 
 ## 任务依赖分析指令：
@@ -798,26 +794,36 @@ TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT = """\
 
 
 DAG_CONSTRUCTION_PROMPT = """\
-一个结构良好的有向无环图（DAG）对于可视化和优化数学建模过程中不同任务之间的依赖关系至关重要。给定一个问题及其解决方案分解为 {tasknum} 个子任务，构建一个 DAG，准确表示这些任务之间的依赖关系。DAG 应捕捉所有必要的依赖关系，同时确保结构中不存在循环。
+你是一名擅长结构化任务建模的专家。
+你的任务是根据给定的数学建模问题及其任务分解结果，**构建一个有向无环图（DAG）**，用以清晰表示各个子任务之间的依赖关系。
+
+## 指令要求：
+
+请根据输入内容，输出一个**有效的 JSON 邻接列表**，准确反映任务间的依赖结构。
+输出中每个键（task_ID）代表一个任务编号，其对应的值为该任务**直接依赖**的任务编号列表。
+DAG 必须满足以下约束条件：
+1. 图中**不存在任何环路**；
+2. 所有依赖关系都基于任务逻辑推导；
+3. 不得遗漏任何关键依赖；
+4. 输出中只包含任务间的依赖关系，不得包含任何多余文本或说明。
 
 ## 输入信息：
-- **数学建模问题：** {modeling_problem}
-- **问题分析：** {problem_analysis}
-- **建模解决方案：** {modeling_solution}
-- **分解后的任务：** {task_descriptions}
-- **依赖分析：** {task_dependency_analysis}
+### 数学建模问题
+{modeling_problem}
 
-## 输出格式（严格要求）：
-你**必须**返回一个有效的 JSON 格式的邻接列表，**不带**任何额外的文本、解释或注释。**只**输出 JSON 对象。
+### 分解后的任务：
+{task_descriptions}
+### 依赖分析：
+{task_dependency_analysis}
 
-### JSON 格式（严格遵循此格式）：
-```json
-{{
-  "task_ID": [dependent_IDs],
-  ...
-}}
 
-## 示例输出：
+## 输出格式（必须严格遵循）：
+
+你必须仅输出一个合法的 JSON 对象（**使用 ```json ```` 包裹**），
+不得添加任何额外文本、解释或注释。
+
+格式如下：
+
 ```json
 {{
 "1": []

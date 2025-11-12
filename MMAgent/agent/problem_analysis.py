@@ -1,4 +1,3 @@
-from dotenv.main import logger
 from .base_agent import BaseAgent
 from utils.retry_utils import retry_on_api_error
 

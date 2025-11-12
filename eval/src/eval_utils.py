@@ -33,10 +33,14 @@ def load_tex_content(latex_file):
     with open(latex_file, 'r', encoding='utf-8') as file:
         return file.read()
 
-def load_json(file_path):
+def load_json(file_path: Union[str, Path]):
     """
     Load JSON file content.
     """
+    if isinstance(file_path, str):
+        file_path = Path(file_path)
+    if not file_path.exists():
+        return {}
     with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
 

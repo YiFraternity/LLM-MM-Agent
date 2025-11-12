@@ -1,7 +1,9 @@
 import os
+import sys
 from pathlib import Path
 import logging
 import shutil
+from typing import Any
 
 from utils.utils import (
     read_json_file,
@@ -19,7 +21,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-def get_problem(problem_path, llm):
+def get_problem(problem_path, llm) -> tuple[str, dict]:
     problem = read_json_file(problem_path)
     data_description = problem.get('dataset_description', {})
     ds = DataDescription(llm)
@@ -61,13 +63,13 @@ def detect_start_index(state: dict) -> int:
     """
     if not state or 'problem' not in state:
         return 0
-    if 'problem_analysis' not in state:
+    if 'problem_analysis' not in state or state['problem_analysis'] == '':
         return 1
-    if 'modeling_solution' not in state:
+    if 'modeling_solution' not in state or state['modeling_solution'] == '':
         return 2
-    if 'task_descriptions' not in state:
+    if 'task_descriptions' not in state or state['task_descriptions'] == []:
         return 3
-    if 'order' not in state:
+    if 'order' not in state or state['order'] == []:
         return 4
     return 5
 
@@ -78,8 +80,9 @@ def problem_analysis(
     config,
     dataset_path,
     output_dir,
-    tmp_dir: Path
-) -> tuple[dict, dict, Coordinator]:
+    tmp_dir: Path,
+    is_split_subtask: bool = False
+) -> tuple[dict, str, dict, Coordinator]:
     """
     进行问题分析，包含以下步骤：
     1. 问题理解
@@ -103,7 +106,7 @@ def problem_analysis(
         if backup_data:
             solution = backup_data
         else:
-            solution = {
+            solution: dict[str, Any] = {
                 'tasks': [],
             }
         start_idx = detect_start_index(solution)
@@ -146,6 +149,9 @@ def problem_analysis(
         else:
             task_descriptions = solution.get('task_descriptions', [])
 
+        if is_split_subtask:
+            backup_solution(tmp_path, solution)
+            sys.exit('task decomposition finished')
         # Task Dependency Analysis
         with_code = 'dataset_path' in problem and len(problem['dataset_path']) > 0
         if with_code:
@@ -154,7 +160,7 @@ def problem_analysis(
 
         if start_idx <= 4:
             coordinator = Coordinator(llm)
-            order = coordinator.analyze_dependencies(problem_str, problem_analysis, modeling_solution, task_descriptions, with_code)
+            order = coordinator.analyze_dependencies(problem_str, task_descriptions, with_code)
             order = [int(i) for i in order]
             coord_dict = coordinator.to_dict()
             solution['coordinator'] = coord_dict

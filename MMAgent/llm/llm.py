@@ -67,9 +67,7 @@ class LLM:
                 {'role': 'user', 'content': prompt}
             ],
             temperature=temperature,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0,
+            top_p=0.95,
             timeout=timeout,
         )
 

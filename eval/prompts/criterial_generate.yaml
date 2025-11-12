@@ -1,0 +1,329 @@
+math_modeling_criteria_generator:
+  description: |
+    数学建模任务评价
+  system: |-
+    你是一名全国研究生数学建模竞赛的资深命题与阅卷专家。回答时始终从“题目要考什么——按题型拆解关键能力”的角度出发，强调数学建模思维（先建模再选算法、再验证），并以便于阅卷/制订评分细则的结构化形式输出。
+  zh:
+    number_of_questions: |-
+      {{question}}
+      请仔细阅读上述数学建模任务描述，识别其中包含的所有**可独立执行的子任务**。
+      每个子任务应是一个逻辑上独立、可执行的分析或建模步骤。
+      若某个子任务需要依赖前面任务的结果（例如：数据预处理依赖原始数据采集），则在"depend_on_prev_tasks"中明确列出其依赖的子任务编号。
+      只有在确实存在先后依赖时，才填写该字段。
+
+      ✅ 输出格式：
+      ```json
+      {
+        "number_of_tasks": [子任务总数],
+        "subtask_1": {
+          "description": "子任务1的完整描述",
+          "depend_on_prev_tasks": []
+        },
+        "subtask_2": {
+          "description": "子任务2的完整描述",
+          "depend_on_prev_tasks": []
+        },
+        "subtask_3": {
+          "description": "子任务3的完整描述",
+          "depend_on_prev_tasks": ["subtask_1", "subtask_2"]
+        }
+      }
+      ```
+      ⚙️ 生成规则：
+      1. 优先根据任务目标、输入输出关系来划分子任务；
+      2. 不强制所有子任务都填写依赖，仅在存在显式逻辑关联时才填写；
+      3. 子任务描述应完整复述原题中该部分的任务目标与要求，而非仅关键词；
+      4. 若题中有综合性任务（如“综合前面模型给出优化建议”），需在依赖字段中明确依赖关系。
+
+    eval_dimension: |-
+      📜 背景信息：
+      {{background}}
+
+      📜 问题描述：
+      {{question}}
+
+      你现在的任务是：针对一个已明确的数学建模子任务，生成**基于任务语义理解的细粒度评分细则**。
+
+      {% if previous_subtasks %}
+      📍 依赖子任务：{{previous_subtasks}}
+      {% endif %}
+      🧩 当前子任务：
+      {{subtask}}
+
+      请你首先对该子任务进行**语义理解与任务抽象**，包括：
+      1. 明确该子任务的**核心目标**（该子任务想要解决的关键问题是什么？）
+      2. 提炼该子任务的**预期输出或结果形式**（是数值预测？最优方案？可视化指标？）
+      3. 识别其**输入条件、关键假设与约束**；
+      4. 判断其主要涉及的**建模类型**（预测类、优化类、仿真类、评估类、拟合类、分类类等）；
+      5. 分析该任务在整体建模流程中的**逻辑角色与难点**（例如是否依赖前序建模、是否为最终验证环节）。
+
+      在完成以上分析后，再针对以下七个建模阶段，生成多点评分细则：
+      1. 问题识别（Problem Identification）
+      2. 问题复述（Problem Restatement）
+      3. 假设建立（Assumption Formulation）
+      4. 模型构建（Model Construction）
+      5. 模型求解（Model Solution）
+      6. 代码实现（Code Implementation）
+      7. 结果分析（Result Analysis）
+
+      ✳️ 评分细则生成要求：
+
+      每个维度需包含若干（建议3–5个）**评分点（sub-criteria）**。
+      评分点必须**紧密结合该子任务的具体内容**，而非套用模板语言。
+
+      每个评分点包含以下字段：
+      - `sub_criteria`: 评分点主题（应与子任务具体要素相关）；
+      - `description`: 结合任务语义，说明该项评分标准；
+      - `score`: 在该维度内的相对分数（总分为100）；
+      - `evaluation_focus`: 指明考察的核心能力（如建模思维、逻辑分析、结果解释等）；
+      - `scoring_hint`: 明确区分高分与低分表现的标准。
+
+      ### ⚙️ 生成逻辑：
+      1. **必须先对该子任务进行语义理解**，展示模型对该子任务的理解；
+      2. 每个评分点的内容必须从 `task_understanding` 中提取逻辑要素；
+        * 例如：如果核心目标是“预测区域空气质量指数”，则评分点中必须出现“预测”“空气质量指数”等语义；
+      3. 禁止生成模板化语句如“能否正确理解任务目标”，必须结合任务语义改写为具体内容；
+      4. 若某维度不适用，需说明原因（如该任务仅涉及模型验证，不涉及代码实现）；
+      5. 最后输出严格JSON格式，支持程序化解析。
+
+      ✅ 输出格式如下：
+      ```json
+      {
+        "task_understanding": {
+          "core_goal": "（结合子任务语义自动生成的核心目标）",
+          "expected_output": "（模型或结果的预期形式）",
+          "key_inputs_constraints": "（主要输入条件与约束说明）",
+          "modeling_type": "（如预测/优化/仿真/拟合/分类/评价等）",
+          "role_in_pipeline": "（该任务在整个建模流程中的功能定位与依赖关系）"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "核心目标明确度",
+              "description": "识别并清晰表述该任务的关键建模目标，例如{模型目标}。",
+              "score": 30,
+              "evaluation_focus": "任务目标理解与数学抽象能力",
+              "scoring_hint": "高分：准确提炼目标且与任务需求一致；低分：目标模糊或偏离核心问题。"
+            },
+            {
+              "sub_criteria": "输入输出映射识别",
+              "description": "能否准确界定输入变量（如{关键变量}）与输出目标（如{输出指标}）之间的关系。",
+              "score": 25,
+              "evaluation_focus": "变量分析与建模结构识别",
+              "scoring_hint": "高分：关系明确且逻辑合理；低分：关系模糊或方向错误。"
+            },
+            ...
+          ],
+          "问题复述": [
+            ...
+          ],
+          "假设建立": [
+            ...
+          ],
+          "模型构建": [
+            ...
+          ],
+          "模型求解": [
+            ...
+          ],
+          "代码实现": [
+            ...
+          ],
+          "结果分析": [
+            ...
+          ]
+        }
+      }
+      ```
+
+  en:
+    number_of_questions: |-
+      {{question}}
+      Please identify all subproblems contained in the mathematical modeling task described above. List the total number of subproblems and provide a full description for each one.
+      ✅ Output Format:
+      ```json
+      {
+        "number_of_questions": [Total number of subproblems],
+        "SubProblem_1": "[Full description of Subproblem 1]",
+        "SubProblem_2": "[Full description of Subproblem 2]",
+        ...
+      }
+      ```
+
+    eval_dimension: |-
+      ✍️ Mathematical Modeling Task:
+      {{question}}
+
+      🧩 Current Subproblem:
+      {{subproblem}}
+
+      You are developing the evaluation criteria for the **"{{eval_dimension}}"** aspect of Subproblem {{number_of_subproblem}} in the modeling task above (you may refer to but are not limited to the following aspects).
+      First, clarify the content of this subproblem. Then, design a reasonable set of scoring dimensions and descriptions for a **10-point scale** based on the "{{eval_dimension}}" aspect.
+
+      🌟 Reference dimensions for "{{eval_dimension}}":
+      {{eval_dimension_ref}}
+
+      ✅ Output Format (JSON):
+
+      ```json
+      {
+        "problem": "[Description of Subproblem {{number_of_subproblem}}]",
+        "evaluation_criteria": [
+          {
+            "dimension": "[Name of evaluation dimension]",
+            "description": "[Description of this dimension]",
+            "score": [Score assigned to this dimension]
+          },
+          {
+            "dimension": "[Name of evaluation dimension]",
+            "description": "[Description of this dimension]",
+            "score": [Score assigned to this dimension]
+          }
+          ...
+        ]
+      }
+      ```
+
+
+model_key_insight:
+  system: |-
+    你是一名全国研究生数学建模竞赛的资深命题与阅卷专家。回答时始终从“题目要考什么——按题型拆解关键能力”的角度出发，强调数学建模思维（先建模再选算法、再验证），并以便于阅卷/制订评分细则的结构化形式输出。
+  task: |-
+    我将为你提供一份【数学建模题目】和一篇【优秀论文】，请完成两步：
+    1) 精准识别该题目最接近的题型（从题型库中选择：最优化/运筹（Optimization）、时间序列与预测（Time Series）、网络/图论（Graph & Network）、排队/排程（Queueing & Scheduling）、动力学/连续系统（Dynamical Systems & PDE/ODE）、概率/随机过程（Stochastic Models）、组合与搜索（Combinatorial）、数据拟合与回归（Fitting/Regression）、图像/信号处理（Image/Signal）、实验设计/统计推断（Design & Inference）、混合多阶段决策/Agent模型（Multi-stage/Decision）、其他—请说明）并给出判定理由（用一句话说明为何属于该类型，结合题目关键词）。
+
+    2) 针对该题型，从命题者与阅卷专家视角生成**本题的核心考点清单**（细化到“考点级别”——能直接用于出题说明或评分要点）。要求输出为**JSON 列表**，每个元素为一个“核心考点段落”，字段如下：
+    - id: 整数 id
+    - theme: 要点主题（简短）
+    - purpose: 该要点考察的能力与目标（1-2句）
+    - key_points: 该要点下的细化检查点数组（每项短句，尽量可量化）
+    - suggested_score_weight: 建议分值占比（百分比形式，整数，所有要点之和应为100，可由模型合理分配）
+    - how_to_expand: 如何把此要点扩展为评分细则（给审卷员的判分提示，至少3条）
+
+    额外要求：
+    - 列表项尽量细化（每项 key_points 至少 3 条），覆盖题型内常见陷阱与优秀解法应体现的“深度”与“创新”。
+    - 若题目为“复合题（多个题型混合）”，先列出主/次题型并分别产出对应的子考点（用同样 JSON 结构，主次在 identified_type 中注明，例如 "Optimization (主) + Time Series (次)"）。
+    - **核心目标是提炼题目的考察要点**——即命题人真正希望学生在建模、推理与验证中展现的能力。
+    - **优秀论文仅作为参考材料，用于辅助判断考点是否被覆盖或体现；不得照搬论文结构或结论。**
+    - 输出语言务必简洁，避免冗词；必须是**有效的 JSON**（便于后续自动化处理）。
+    - 输出中应优先标注那些“直接影响模型正确性 / 可解释性 / 可复现性”的考点（例如关键变量定义、一致性假设、边界条件、收敛性/复杂度说明、鲁棒性/灵敏度分析、实验设置/基线比较）。
+    - 以```json ```格式输出
+
+    题型示例（给模型的内部参考；生成时无需输出这些示例，但请依此为依据细化考点）：
+    - 最优化/运筹（Optimization）关键考点示例：
+      - 是否明确目标函数与约束（凸性/可行域）；
+      - 变量与尺度归一化/单位一致性；
+      - 求解方法选择理由（解析/数值/启发式），算法复杂度与收敛性证明或实验说明；
+      - 可行性、算例规模扩展能力、时间复杂度与实现细节（伪代码/工程化说明）；
+      - 敏感性/参数分析、模型松弛或近似误差界；
+      - 与基线或启发式方法定量比较、统计显著性检验。
+    - 时间序列与预测关键考点示例：
+      - 数据预处理与缺失值处理策略、稳态/季节性判别；
+      - 模型选择与假设（ARIMA/LSTM/Prophet等）及超参调优策略；
+      - 交叉验证/滚动预测的评估设计、误差指标与置信区间；
+      - 异常检测/模型鲁棒性、多步预测误差传播分析。
+    （……可参考更多题型库）
+
+    🏆【优秀论文】
+    {{excellent_report}}
+    📋 【题目】
+     {{question}}
+
+    ✅ 【输出示例】：
+    ```json
+    {
+      "identified_type":"Optimization",
+      "reason":"题目要求在约束下最小化运输成本，明显为组合+连续最优化问题",
+      "core_checkpoints":[
+        {
+          "id":1,
+          "theme":"目标函数与约束的数学化",
+          "purpose":"检验选手是否能把实际问题准确转化为数学目标与约束",
+          "key_points":["清晰定义目标函数（含单位）","列出所有约束并解释物理/业务含义","判断目标/约束的凸性或离散性"],
+          "suggested_score_weight":20,
+          "how_to_expand":["若目标函数含隐含项，扣分并要求改正","若未说明单位或量纲，扣一半分","若能证明凸性或给出近似界，给加分"]
+        },
+        ...
+      ]
+    }
+    ```
+
+math_modeling_report_eval:
+  zh: |-
+    🧩 当前子问题：
+    {{subproblem}}
+
+    📋 数学建模论文的内容：
+    {{report_content}}
+
+    📜 评分准则：
+    ```json
+    {{report_criteria}}
+    ```
+    请你充当一位严格且专业的技术评审专家，依据我提供的【评分准则】和【问题背景】，对一段【数学建模论文的内容】进行逐项评分与评语分析。
+    请遵循以下要求完成评分：
+    1. 请依次提供每个评分项的分值和评语说明;
+    2. 严格依据评分准则中的每一个维度进行评分，在每个评分项中明确指出是否满足评分项描述，并说明原因；
+    3. 每个评分项请给出准确分值（在该评分项的指定分值范围内），并附简洁清晰的评语说明；
+    4. 保持专业性与客观性，重点关注技术表达的完整性、准确性、建模逻辑与公式推导清晰性；
+    5. 不要对内容做修改，也不要生成新的答案，仅评估已有回复的质量。
+
+    ✅ 输出格式（JSON）：
+    ```json
+    {
+      "问题识别": [
+        {
+          "dimension": "[评分维度名称]",
+          "comment": "[评语说明]",
+          "score": [得分]
+        },
+        ...
+      ],
+      "问题复述": [
+        {
+          "dimension": "[评分维度名称]",
+          "comment": "[评语说明]",
+          "score": [得分]
+        },
+        ...
+      ]
+    }
+    ```
+  en: |-
+    🧩 Current subproblem:
+    {{subproblem}}
+
+    📋 Mathematical modeling report content:
+    {{report_content}}
+
+    📜 Evaluation criteria:
+    ```json
+    {{report_criteria}}
+    ```
+    You are a strict and professional technical reviewer, according to the provided evaluation criteria and background problem, analyze and score a piece of mathematical modeling report content.
+    Please follow the following requirements to complete the scoring:
+    1. Provide a total score first, and then provide the score and comment for each scoring item;
+    2. Strictly follow the evaluation criteria for each dimension and provide a clear explanation of whether the scoring item is satisfied and explain the reason;
+    3. Provide accurate score (within the specified score range) for each scoring item and provide a concise and clear comment;
+    4. Maintain professionalism and objectivity, focus on the completeness, accuracy, and clarity of technical expression and mathematical derivation;
+    5. Do not modify the content, do not generate new answers, and only evaluate the quality of the existing replies.
+
+    ✅ Output format (JSON):
+    ```json
+    {
+      "total_score": [Total score],
+      "evaluation_criteria": [
+        {
+          "dimension": "[Evaluation dimension name]",
+          "score": [Score],
+          "comment": "[Comment]"
+        },
+        {
+          "dimension": "[Evaluation dimension name]",
+          "score": [Score],
+          "comment": "[Comment]"
+        },
+        ...
+      ]
+    }
+    ```

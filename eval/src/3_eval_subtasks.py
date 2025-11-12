@@ -29,7 +29,7 @@ import os
 import argparse
 from typing import List, Dict
 
-from utils import (
+from eval_utils import (
     load_json,
     load_yaml,
     populate_template,

@@ -127,7 +127,7 @@ def append_result(
             openai_message = get_openai_message(prompt_dict)
 
             try:
-                output = call_openai(openai_message, model=openai_model)
+                output = call_openai_api(openai_message, model=openai_model)
                 prompt_dict['output'] = output
 
                 f.write(json.dumps(prompt_dict, ensure_ascii=False) + '\n')

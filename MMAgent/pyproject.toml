@@ -1,0 +1,9 @@
+[project]
+name = "MMAgent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+[tool.setuptools.packages.find]
+include = ["llm", "HMML", "agent", "prompt", "code_template", "utils"]

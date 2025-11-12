@@ -1,6 +1,6 @@
 from collections import deque
-import json
 import sys
+import logging
 from typing import List
 from prompt.template import (
     TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT,
@@ -13,6 +13,13 @@ from utils.retry_utils import (
     reflective_retry_on_logic_error,
     ensure_parsed_json_output,
 )
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 class Coordinator:
     def __init__(self, llm):
@@ -76,33 +83,40 @@ class Coordinator:
         return order
 
     @retry_on_api_error(max_attempts=3, wait_time=3)
-    def analyze(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: List[str], with_code: bool):
+    def analyze(self, tasknum: int, modeling_problem: str, task_descriptions: List[str], with_code: bool):
+        problem_str = modeling_problem[:5000]
         if with_code:
-            prompt = TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT.format(tasknum=tasknum, modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, task_descriptions=task_descriptions).strip()
+            prompt = TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT.format(
+                tasknum=tasknum,
+                modeling_problem=problem_str,
+                task_descriptions=task_descriptions
+            ).strip()
         else:
-            prompt = TASK_DEPENDENCY_ANALYSIS_PROMPT.format(tasknum=tasknum, modeling_problem=modeling_problem, problem_analysis=problem_analysis, modeling_solution=modeling_solution, task_descriptions=task_descriptions).strip()
+            prompt = TASK_DEPENDENCY_ANALYSIS_PROMPT.format(
+                tasknum=tasknum,
+                modeling_problem=problem_str,
+                task_descriptions=task_descriptions
+            ).strip()
         return self.llm.generate(prompt)
 
     @retry_on_api_error(max_attempts=3, wait_time=3)
     @reflective_retry_on_logic_error(max_attempts=5, wait_time=2)
     @ensure_parsed_json_output
-    def dag_construction(self, tasknum: int, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: str, task_dependency_analysis: str) -> dict:
+    def dag_construction(self, tasknum: int, modeling_problem: str, task_descriptions: str, task_dependency_analysis: str) -> dict:
+        problem_str = modeling_problem[:5000]
         prompt = DAG_CONSTRUCTION_PROMPT.format(
             tasknum=tasknum,
-            modeling_problem=modeling_problem,
-            problem_analysis=problem_analysis,
-            modeling_solution=modeling_solution,
+            modeling_problem=problem_str,
             task_descriptions=task_descriptions,
             task_dependency_analysis=task_dependency_analysis
         ).strip()
+        logger.info(prompt)
         return self.llm.generate(prompt)
 
-    def analyze_dependencies(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, task_descriptions: list[str], with_code: bool) -> List[int]:
+    def analyze_dependencies(self, modeling_problem: str, task_descriptions: list[str], with_code: bool) -> List[int]:
         task_dependency_analysis = self.analyze(
             len(task_descriptions),
             modeling_problem,
-            problem_analysis,
-            modeling_solution,
             task_descriptions,
             with_code
         )
@@ -111,13 +125,11 @@ class Coordinator:
             self.DAG = self.dag_construction(
                 len(task_descriptions),
                 modeling_problem,
-                problem_analysis,
-                modeling_solution,
                 task_descriptions,
                 task_dependency_analysis
             )
         except LogicError as e:
-            print(f"❌ Dependency analysis failed after retries: {e}")
+            logger.error(f"❌ Dependency analysis failed after retries: {e}")
             self.DAG = {}
             return []
         order = self.compute_dag_order(self.DAG)
