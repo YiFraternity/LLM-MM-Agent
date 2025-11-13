@@ -11,6 +11,7 @@ load_dotenv(override=True)
 
 from eval_utils import (
     call_openai_api,
+    clean_json_txt,
     find_task_id_from_path,
     load_tex_content,
     write_json,
@@ -150,6 +151,7 @@ def main(args):
                 }
                 user_prompt = populate_template(user_prompt_template, prompt_info)
                 response = call_openai_api(user_prompt, system_prompt, model=args.openai_model)
+                response = clean_json_txt(response)
                 # response = '模拟的评估结果'
                 eval_results[str(subtask_id)] = response
                 tmp_results[str(subtask_id)] = {
