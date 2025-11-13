@@ -71,7 +71,32 @@ def computational_solving(llm, task_id, coordinator, with_code, problem, subtask
         try:
             if start_idx <= 0:
                 logger.info(f"开始编码阶段，subtask_id: {subtask_id}")
-                task_code, is_pass, execution_result = ts.coding(problem['dataset_path'], problem['data_description'], problem['variable_description'], task_description, task_analysis, task_modeling_formulas, task_modeling_method, dependent_file_prompt, code_template, script_name, work_dir)
+
+                var_description = problem['variable_description']
+                MAX_KEYS = 15
+                trimmed_var_description = []
+                for item in var_description:
+                    if not isinstance(item, dict):
+                        continue
+                    # 只保留前 MAX_KEYS 个 key
+                    limited_item = {k: v for i, (k, v) in enumerate(item.items()) if i < MAX_KEYS}
+                    trimmed_var_description.append(limited_item)
+
+                var_description = trimmed_var_description
+
+                task_code, is_pass, execution_result = ts.coding(
+                    problem['dataset_path'],
+                    problem['data_description'],
+                    var_description,
+                    task_description,
+                    task_analysis,
+                    task_modeling_formulas,
+                    task_modeling_method,
+                    dependent_file_prompt,
+                    code_template,
+                    script_name,
+                    work_dir
+                )
                 state['task_code'] = task_code
                 state['is_pass'] = is_pass
                 state['execution_result'] = execution_result

@@ -5,6 +5,7 @@ import json
 import selectors
 import tiktoken
 
+import logging
 from .base_agent import BaseAgent
 from utils.retry_utils import (
     LogicError,
@@ -29,6 +30,11 @@ from prompt.template import (
     TASK_RESULT_WITH_CODE_PROMPT
 )
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 class EnvException(Exception):
     def __init__(self, message):
@@ -150,6 +156,7 @@ class TaskSolver(BaseAgent):
 
     def coding_actor(self, data_file, data_summary, variable_description, task_description: str, task_analysis: str, formulas: str, modeling: str, dependent_file_prompt: str, code_template: str, script_name: str, work_dir: str, user_prompt: str = '') -> (str, str):
         prompt = TASK_CODING_PROMPT.format(data_file=data_file, data_summary=data_summary, variable_description=variable_description, task_description=task_description, task_analysis=task_analysis, modeling_formulas=formulas, modeling_process=modeling, dependent_file_prompt=dependent_file_prompt, code_template=code_template, user_prompt=user_prompt).strip()
+        logger.info("Generated coding prompt: %s", prompt)
         new_content = self._generate_code(prompt)
 
         with open(os.path.join(work_dir, script_name), "w") as f:
