@@ -110,7 +110,6 @@ class Coordinator:
             task_descriptions=task_descriptions,
             task_dependency_analysis=task_dependency_analysis
         ).strip()
-        logger.info(prompt)
         return self.llm.generate(prompt)
 
     def analyze_dependencies(self, modeling_problem: str, task_descriptions: list[str], with_code: bool) -> List[int]:
