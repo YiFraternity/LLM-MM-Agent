@@ -78,7 +78,6 @@ def generate_criterial(llm, problem: dict, task_descriptions: list[str], subtask
     data['previous_subtasks'] = previous_subtasks
 
     prompt = populate_template(template, data)
-    logger.info(prompt)
     content = llm.generate(prompt, system, timeout=300)
     return clean_json_txt(content)
 

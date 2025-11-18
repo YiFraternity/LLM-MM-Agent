@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import logging
+from typing import Union
 from utils.utils import (
     save_solution,
     try_load_backup,
@@ -23,13 +24,13 @@ def detect_start_index_with_code(state: dict) -> int:
     """
     if not state:
         return 0
-    if 'task_code' not in state:
+    if not state.get('task_code'):
         return 0
-    if 'code_structure' not in state:
+    if not state.get('code_structure', {}):
         return 1
-    if 'task_result' not in state:
+    if not state.get('task_result'):
         return 2
-    if 'task_answer' not in state:
+    if not state.get('task_answer'):
         return 3
     return 4
 
@@ -42,13 +43,30 @@ def detect_start_index(state: dict) -> int:
     """
     if not state:
         return 0
-    if 'task_result' not in state:
+    if not state.get('task_result'):
         return 0
-    if 'task_answer' not in state:
+    if not state.get('task_answer'):
         return 1
     return 2
 
-def computational_solving(llm, task_id, coordinator, with_code, problem, subtask_id, task_description, task_analysis, task_modeling_formulas, task_modeling_method, dependent_file_prompt, config, solution, name, output_dir, tmp_dir: Path):
+def computational_solving(
+    llm,
+    task_id: str,
+    coordinator,
+    with_code: bool,
+    problem: dict,
+    subtask_id: int,
+    task_description: str,
+    task_analysis: str,
+    task_modeling_formulas: str,
+    task_modeling_method: str,
+    dependent_file_prompt: str,
+    config: dict,
+    solution: dict,
+    name: str,
+    output_dir: Union[Path, str],
+    tmp_dir: Path
+):
     ts = TaskSolver(llm)
     cc = ChartCreator(llm)
     code_template = open(os.path.join('MMAgent/code_template','main{}.py'.format(subtask_id))).read()

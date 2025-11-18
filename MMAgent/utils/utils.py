@@ -276,7 +276,7 @@ def json_to_markdown_general(json_data):
     return markdown
 
 
-def save_solution(solution, name, path):
+def save_solution(solution: dict, name: str, path: str):
     write_json_file(f'{path}/json/{name}.json', solution)
     markdown_str = json_to_markdown(solution)
     write_text_file(f'{path}/markdown/{name}.md', markdown_str)

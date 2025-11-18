@@ -34,7 +34,7 @@ def parse_latex(file_content: str, target_level: int) -> Node:
 
     Args:
         file_content: LaTeX 文件的全部内容字符串。
-        target_level: 决定最终叶子节点内容的层级（例如 2 for \section, 3 for \subsection）。
+        target_level: 决定最终叶子节点内容的层级（例如 1 for section, 2 for subsection）。
 
     Returns:
         Node: 树的根节点 (Root Node)。
