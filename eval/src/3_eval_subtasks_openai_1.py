@@ -5,6 +5,7 @@
 import argparse
 from pathlib import Path
 import logging
+import re
 
 from dotenv import load_dotenv
 load_dotenv(override=True)
@@ -39,31 +40,43 @@ def extract_sections_and_parents(report_dict: dict, subtask_id: str) -> list:
     """
     results = []
 
-    # 遍历 Document Root 的直接子节点，这些是 level 1 的祖先节点
-    for parent_node in report_dict.get('children', []):
-        if parent_node['level'] != 1:
-            # 仅处理 level 1 的节点作为祖先起点
-            continue
+    pattern = re.compile(r'(?:任务|子任务)\s*(\d+)', re.IGNORECASE)
 
-        parent_title = parent_node['title']
-        parent_content = parent_node.get('content', '').strip()
+    def get_task_number(title: str):
+        m = pattern.search(title)
+        return m.group(1) if m else None
 
-        def recursive_search(node):
-            node_title = node['title']
+    def recursive_search(node, parent_title="", parent_content="", parent_task_no=None):
+        node_title = node['title']
+        node_content = node.get('content', '').strip()
+        node_task_no = get_task_number(node_title)
 
-            # 检查当前节点的标题是否包含 subtask_id
-            if str(subtask_id) in node_title:
-                results.append({
-                    "section_title": parent_title,
-                    "section_content": parent_content,
-                    "subsection_title": node_title,
-                    "subsection_level": node['level'],
-                    "subsection_content": node.get('content', '').strip()
-                })
+        # 检查当前节点是否属于目标子任务
+        if str(subtask_id) in node_title:
+            parent_should_include = True
+            if parent_task_no is not None and parent_task_no != str(subtask_id):
+                parent_should_include = False
 
-            for child in node.get('children', []):
-                recursive_search(child)
-        recursive_search(parent_node)
+            results.append({
+                "section_title": parent_title if parent_should_include else "",
+                "section_content": parent_content if parent_should_include else "",
+                "subsection_title": node_title,
+                "subsection_level": node['level'],
+                "subsection_content": node_content
+            })
+
+        # DFS 遍历子节点，更新父节点信息
+        for child in node.get('children', []):
+            recursive_search(
+                child,
+                parent_title=node_title,
+                parent_content=node_content,
+                parent_task_no=node_task_no
+            )
+
+    # 遍历 Document Root 的第一层节点
+    for top_node in report_dict.get('children', []):
+        recursive_search(top_node)
 
     return results
 
@@ -160,9 +173,11 @@ def main(args):
                 }
         except Exception as e:
             logger.error(f"❌  任务 {task_id} 子任务 {subtask_id} 评估出错: {e}")
-        write_json(eval_results, output_path)
-        write_json(tmp_results, tmp_path)
+        eval_results_sorted = dict(sorted(eval_results.items(), key=lambda x: int(x[0])))
+        tmp_results_sorted = dict(sorted(tmp_results.items(), key=lambda x: int(x[0])))
 
+        write_json(eval_results_sorted, output_path)
+        write_json(tmp_results_sorted, tmp_path)
 
 if __name__ == '__main__':
     args = parse_args()
