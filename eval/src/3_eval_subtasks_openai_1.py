@@ -92,6 +92,7 @@ def parse_args() -> argparse.Namespace:
                         help='评估提示词 YAML 路径')
     parser.add_argument('--output-dir', default='eval/output/deepseek-chat-v3.1:free', type=Path, help='输出 Json 文件目录')
     parser.add_argument('--tmp-dir', default='tmp/eval/deepseek-chat-v3.1:free', type=Path, help='输出 Json 文件目录')
+    parser.add_argument('--ai-model-name', default='deepseek-chat-v3.1:free', help='AI 模型名称，例如 deepseek-chat-v3.1:free')
 
     parser.add_argument('--openai-model', default='gpt-5-mini', help='OpenAI 模型名称，例如 gpt-4o-mini')
 
@@ -133,8 +134,8 @@ def main(args):
 
         args.output_dir.mkdir(parents=True, exist_ok=True)
         args.tmp_dir.mkdir(parents=True, exist_ok=True)
-        output_path = args.output_dir / f'{task_id}.json'
-        tmp_path = args.tmp_dir / f'{task_id}.json'
+        output_path = args.output_dir / task_id / f'{args.ai_model_name}.json'
+        tmp_path = args.tmp_dir / task_id / f'{args.ai_model_name}.json'
 
         tmp_results = load_json(tmp_path)
         eval_results = load_json(output_path)

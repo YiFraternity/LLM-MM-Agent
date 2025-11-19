@@ -54,9 +54,10 @@ def main(input_path: Path | str | None = None, output_path: Path | str | None = 
             raise ValueError("处理目录时必须提供输出目录 output_path。")
         output_dir = Path(output_path)
         output_dir.mkdir(parents=True, exist_ok=True)
-        for json_file in sorted(input_path.glob("*.json")):
-            target_excel = output_dir / f"{json_file.name}.xlsx"
-            _process_file(json_file, target_excel)
+        for task_id in input_path.iterdir():
+            for json_file in sorted(task_id.glob("*.json")):
+                target_excel = output_dir / task_id.name / f"{json_file.stem}.xlsx"
+                _process_file(json_file, target_excel)
     else:
         _process_file(input_path, output_path)
 
