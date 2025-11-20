@@ -73,6 +73,7 @@ class LLM:
 
     def generate(self, prompt: str, system: str = '', usage: bool = True, temperature: float = 0.7, timeout: int = 180):
         """Generate response with automatic retry (tenacity)"""
+        self.logger.info(f"🚀  Calling OpenAI API | model={self.model_name}, temp={temperature}")
         try:
             response = self._safe_completion(system, prompt, temperature, timeout)
             answer = response.choices[0].message.content

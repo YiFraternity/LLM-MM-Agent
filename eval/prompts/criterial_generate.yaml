@@ -77,8 +77,6 @@ math_modeling_criteria_generator:
       三、输出格式与其它要求：
         - 必须只返回一个完全符合下述 JSON 结构的对象（不应包含任何多余文字或注释），保证 JSON 可被直接 parse。
         - JSON 编码须为 UTF-8，字段顺序须与示例保持一致（`task_understanding` 在前，`evaluation_criteria` 在后）。
-        - 所有 `description` 和 `scoring_hint` 字段不得超过 300 字。
-        - 若提示词中的某处缺失必要信息（例如 `{subtask}` 非明确句子），请**基于可用信息作最合理的假设并写入 `task_understanding.assumptions` 字段（此字段可选）**，不要再次向用户提问。
         - 最后只输出 JSON（不允许输出其他解释性文字）。
 
       ✅ 输出格式如下：
