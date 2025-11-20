@@ -1,0 +1,833 @@
+{
+  "task_id": "2023_A",
+  "problem": "\\section{WLAN组网中的多BSS建模问题}\n\n节点发送数据后，电磁波信号在自由空间中传播，随着距离的增加，能量衰减越严重。周围节点收到该信号后，根据RSSI是否高于CCA门限，判断信道为忙或闲。一个节点发出信号的RSSI高于CCA门限的区域叫作通信区域，位于该通信区域内的节点与该发送节点互听。随着设备数量、应用类型、网络流量的飞速增长，AP部署日趋高密，如企业办公、工厂、教育场景。如图2.2（a）所示，将信道号为36、44、52、60、149、157的六个信道分配给区域内12个BSS，由于可用信道数有限，不同的BSS复用同一个信道。同频AP（使用相同信道号的AP）之间通信区域存在重叠时，存在相互干扰问题，叫作同频干扰。同频干扰是WLAN组网最显著的干扰问题，本题不考虑异频干扰的情况。家庭或宿舍等单BSS场景中，STA距离AP较近，RSSI较强，互听，假设理想信道，不会因信道质量差而丢包，只有在2个及以上STA同时发送数据时导致碰撞而丢包。而在教学区等场景，同频多BSS场景的情况更复杂。\n\n\\begin{figure}[h]\n    \\centering\n    \\includegraphics[width=\\textwidth]{ap_deployment.png}\n    \\caption{(a) AP密集部署 (b) 两同频BSS场景 (c) 三同频BSS场景}\n    \\label{fig:ap_deployment}\n\\end{figure}\n首先，并不是所有的节点之间都能互听。假定 AP 和 STA 的发射功率相同，由于节点间距离不同，信号衰减不同，因此 RSSI 不同。节点在 DIFS 时长侦听信号的 RSSI > CCA 门限时，节点才认为信道繁忙，否则认为信道空闲，启动随机回退，发送数据。其次，当有多个 BSS 的节点同时发送数据（叫作并发传输）时，其成功与否与信干比（SIR，signal to interference ratio）有关，若 SIR 足够高，则信号能被成功解调，若 SIR 很低，则信号解调失败。信干比是信号强度与干扰强度的比值，单位是 dB，RSSI 的单位是 dBm，则 SIR 可以用信号 RSSI 与干扰信号 RSSI 的差值表示，本文中不考虑环境噪声。\n\n发送节点间能否互听，并发传输时是否成功，是进行系统建模需要考虑的两个先决条件，前者决定了退避计数器能否回退，后者决定了一次并发传输是成功还是失败，从而直接影响成功、失败和空闲三种状态之间的转换。\n\n\\subsection*{2.1 两 BSS 互听}\n\n考虑 2 个 BSS 互听的场景，仅下行，即两个 AP 分别向各自关联的 STA 发送数据，如图 2.2（b）所示。以 AP1 -> STA1 方向的数据传输为例，其会受到相邻 BSS2 的干扰，对于 STA1 来说，AP1 -> STA1 是信号，AP2 -> STA1 是干扰。对于 AP2 -> STA2 情况类似。假设 ACK 一定能发送成功。根据节点之间的 RSSI 估算两个 AP 并发时的 SIR，考虑不同的情景进行建模。\n\n\\subsubsection*{问题 1：}\n\n假设 AP 发送包的载荷长度为 1500 Bytes（1 Byte = 8 bits），PHY 头时长为 13.6 μs，MAC 头为 30 Bytes，MAC 头和有效载荷采用物理层速率 455.8 Mbps 发送。AP 之间的 RSSI 为 -70 dBm。大部分时候只有一个 AP 能够接入信道，数据传输一定成功。当两个 AP 同时回退到 0 而同时发送数据时，存在同频干扰。假设并发时的 SIR 较低，导致两个 AP 的数据传输都失败。请对该 2BSS 系统进行建模，用数值分析方法求解，评估系统的吞吐。（参数参考附录 4，可编写仿真器验证模型精确度）\n\n\\subsubsection*{问题 2}\n\n假设两个 AP 采用物理层速率 275.3 Mbps 发送数据，并发时两个终端接收到数据的 SIR 较高，两个 AP 的数据传输都能成功。其他条件同问题 1。请对该 2BSS 系统进行建模，用数值分析方法求解，评估系统的吞吐。（参数参考附录 4，可编写仿真器验证模型精确度）\n\n\\subsection*{2.2 两 BSS 不互听}\n\n在 AP 密集部署时，同频 AP 之间的距离远，AP 间 RSSI 低于 CCA 门限，不互听。AP 认为信道空闲，因此总是在退避和发送数据。这是 Wi-Fi 里常见的隐藏节点问题，详见附录。可以预见的是，有很大概率出现二者同时或先后开始发送数据的情况。接收机解调信号时，PHY 头的前面部分码元用于 Wi-Fi 信号识别、频率纠错、定时等功能，叫作前导（Preamble）。如图 2.3 所示，当信号包先到时，接收机先解信号包的 Preamble 并锁定，干扰包被视为干扰，信号包是否接收成功由 SIR 决定；当干扰包先到时，接收机先锁定到干扰包的 Preamble，错过信号包的 Preamble，导致信号包无法解调。小信号屏蔽算法能有效解决这个问题，因为信号包 RSSI 一般大于邻小区的干扰包，接收机在信号包到达时转为锁定 RSSI 更大的信号包，此时信号包能否接收成功同样也由 SIR 决定。由此可以得知，在 SIR 比较小的情况下，如果信号包和干扰包在时间上有如图 2.3 的交叠时，一定会导致本次传输的失败。\\begin{table}\n\\centering\n\\begin{tabular}{c c c c c c c}\n\\hline\n信号 & PHY hdr & MAC hdr & Payload & 信号 & PHY hdr & MAC hdr & Payload \\\\\n\\hline\nPreamble & & & & Preamble & & & \\\\\n\\hline\n干扰 & PHY hdr & MAC hdr & Payload & 干扰 & PHY hdr & MAC hdr & Payload \\\\\n\\hline\n\\end{tabular}\n\\caption{图2.3 并发传输交叠示意图}\n\\end{table}\n\n\\section*{问题3}\n\n假设AP间RSSI为-90dBm，AP发送包的载荷长度为1500Bytes，PHY头时长为13.6，MAC头为30Bytes，MAC头和载荷采用物理层速率455.8Mbps发送。Bianchi模型假设理想信道，实际上，无线传输环境是复杂多变的，当有遮挡物或者人走动时，无线信道都可能会快速发生比较大的变化。实测发现，当仅有一个AP发送数据时，即便不存在邻BSS干扰，也会有10%以内不同程度的丢包。假设因信道质量导致的丢包率$P_e=10\\%$。当两个AP发包在时间上有交叠时，假设SIR比较小，会导致两个AP的发包均失败。请对该2BSS系统进行建模，尽量用数值分析方法求解，评估系统的吞吐。（参数参考附录4和6，可编写仿真器验证模型精确度）\n\n\\section*{2.3 三BSS}\n\n\\section*{问题4}\n\n考虑3BSS场景，如图2.2(c)所示，其中AP1与AP2之间，AP2与AP3之间RSSI均为-70dBm，AP1与AP3之间RSSI为-96dBm。该场景中，AP1与AP3不互听，AP2与两者都互听，可以预见的是，AP2的发送机会被AP1和AP3挤占。AP1与AP3由于不互听可能同时或先后发送数据。假设三个AP发送包的载荷长度为1500Bytes，PHY头时长为13.6$\\mu s$，MAC头为30Bytes，MAC头和载荷采用物理层速率455.8Mbps发送。假设AP1和AP3发包时间交叠时，SIR较大，两者发送均成功。请对该3BSS系统进行建模，尽量用数值分析方法求解，评估系统的吞吐。（参数参考附录4和6，可编写仿真器验证模型精确度）\n\n\\section*{缩略语}\n\n\\begin{itemize}\n    \\item AP: access point (无线接入点)\n    \\item ACK: Acknowledgement (确认)\n    \\item ACK Timeout: 确认超时\n    \\item BSS: basic service set (基本服务集)\n    \\item CCA: clear channel assessment (信道可用评估)\n    \\item CSMA/CA: carrier sense multi-access and collision avoidance (载波监听多址接入/退避)\n    \\item CW: contention window (竞争窗口)\n    \\item DCF: distributed coordination function (分布式协调功能)\n    \\item DIFS: DCF inter-frame space (DCF帧间距)\n    \\item MAC: medium access control (媒体控制)\n    \\item PHY: physical (物理层)\n    \\item RSSI: received signal strength indication (接收信号能量强度)\n    \\item SIFS: short inter-frame space (短帧间距)\n    \\item SIR: signal to interference ratio (信干比)\n    \\item STA: station (站点)\n    \\item WLAN: wireless local area network (无线局域网)\n\\end{itemize}\\section*{缩略语}\n\n\\begin{tabular}{|c|c|c|}\n\\hline\nAP & access point & 无线接入点 \\\\\n\\hline\nACK & Acknowledgement & 确认 \\\\\n\\hline\nACKTimeout &  & 确认超时 \\\\\n\\hline\nBSS & basic service set & 基本服务集 \\\\\n\\hline\nCCA & clear channel assessment & 信道可用性评估 \\\\\n\\hline\nCSMA/CA & carrier sense multi-access and collision avoidance & 载波监听多址接入退避 \\\\\n\\hline\nCW & contention window & 竞争窗口 \\\\\n\\hline\nDCF & distributed coordination function & 分布式协调功能 \\\\\n\\hline\nDIFS & DCF inter-frame space & DCF 帧间距 \\\\\n\\hline\nMAC & medium access control & 媒体控制 \\\\\n\\hline\nPHY & physical & 物理层 \\\\\n\\hline\nRSSI & received signal strength indication & 接收信号能量强度 \\\\\n\\hline\nSIFS & short inter-frame space & 短帧间距 \\\\\n\\hline\nSIR & signal to interference ratio & 信干比 \\\\\n\\hline\nSTA & station & 站点 \\\\\n\\hline\nWLAN & wireless local area network & 无线局域网 \\\\\n\\hline\n\\end{tabular}",
+  "subtask": {
+    "1": {
+      "subtask": "子任务1 的目标是把物理层的接收强度与载波感知行为以及并发解调成功判据，形式化为可计算的“载波感知图（carrier‑sense graph）”与“并发成功函数 Φ_i(T)”两个明确接口，并输出一套规范化的数据结构和参数表供后续 MAC 层建模使用。具体工作步骤与要求如下：一) 输入数据与单位：接受或计算节点间接收功率矩阵 RSSI_{a→b}（dBm 或 mW）、CCA 门限（dBm）、物理层速率 rate（bps）、PHY 头时长 t_phy（μs）、MAC 头长度 L_mac（Bytes）、payload 大小（Bytes）、SIFS/DIFS/slot/ACK/ACKTimeout（μs）、发射功率（dBm）、路径损耗模型参数（若需由位置计算 RSSI）、SIR 判决阈值或 capture_delta（dB）、是否存在独立信道丢包率 Pe、ACK 成功假设、以及退避参数 CW_min/CW_max/m/r；所有量须注明单位并以一致制式输入（例如 JSON/CSV）。二) 载波感知图构造：对每一对发射方 a 与监听方 b 比较 RSSI_{a→b} 与 CCA 门限，若 RSSI ≥ CCA_threshold 则在载波感知图中添加有向或无向边（按是否对称），最终输出二进制邻接矩阵 CS[i,j]（i 可检测到 j 的发送）；同时输出每个节点的“感知邻居集合” CS_neighbors(i)。三) 干扰／解调判据定义（Φ 函数规范）：为每个接收端（或每个发送—接收对）定义一个可调用函数 Φ_i(T)（T 为同时发送的其它节点集合），其值为当 i 发送且集合 T 同时发起时在 i 的接收端“能否成功解码”的二值指示或[0,1]概率；明确 Φ 的计算逻辑：（1）到达时序处理：规定若存在“先到优先”的前导（preamble）效应，需输入或假定包起始时间偏移模型（例如同一时隙内的均匀偏移或离散偏移），并定义当某 j∈T 的前导先到且被成功解码时，后到的 i 必然失败的规则；（2）捕获与 SIR 判定：若未被前导抢占，则计算接收端的线性功率（将 dBm 转为 mW 并求和），SIR_i = P_i(mW) / Σ_{j∈T} P_j(mW) 或以 dB 差表示，比较 SIR_i 与给定阈值或比较 P_i 与 max_j P_j 加上 capture_delta 来决定成功；（3）小信号屏蔽/切换规则：若允许接收机在前导后切换到更强信号，规定相应条件（RSSI 优势阈值与时间窗）并在 Φ 中实现；（4）信道质量独立丢包：若存在 Pe，则在单发情形 Φ_i(∅)=1−Pe（或把 Pe 作为乘法因子应用于所有成功事件）；（5）特殊/简化情形接口：允许直接指定简化策略（并发必败、并发必胜或基于 SIR 的阈值）以便按题设快速应用。四) 时隙/时长输出：基于上述判定规范，为每个可能的并发集合 U 定义并输出所需的事件时长 T(U) = max_{j∈U} T_event_j，其中 T_event_j = t_phy + (L_mac + payload)/rate + SIFS + ACK（成功）或 = t_phy + (L_mac + payload)/rate + DIFS + ACKTimeout（失败），并说明在 Φ 概率化时如何取期望时长。五) 可选的随机化扩展说明：规定若需考虑随机衰落或到达偏移，则 Φ_i(T) 应返回基于指定分布的成功概率（通过解析积分或 Monte‑Carlo 估计），并明确输入随机分布参数（阴影标准差、瑞利/Rician 参数、起始时间分布）。六) 输出格式与工具建议：要求把 CS 邻接矩阵、每个节点的 interferer set、对所有子集 T 的 Φ 值或可调用函数句柄、以及 T(U) 表格以机器可读格式（JSON/CSV/NumPy arrays）导出，并建议使用 Python（numpy, scipy）、或 MATLAB 做数值实现与验证，文档化所有参数和单位以便复现。最终交付物应包含（i）参数清单与输入样本文件、（ii）载波感知邻接矩阵与每节点感知集合、（iii）对任意并发集合可评估的 Φ_i(T) 实现（或离散化概率表）、（iv）并发时隙持续时间表 T(U)、以及（v）一页说明文档，明确每一项计算规则、假设与可替换的简化策略，确保后续 MAC 层建模可以直接调用这些接口而无需对物理判据作二次解释。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "形式化并实现物理层判据以构造载波感知图（carrier‑sense graph）并定义/实现并发成功函数 Φ_i(T)；用以评估并导出可供后续 MAC 层建模调用的接口与数据文件（评估/构造/导出）",
+          "expected_output": "机器可读的数据与接口：CS 邻接矩阵（JSON/CSV/NumPy array）、每节点 CS_neighbors 列表、对任意并发集合 T 可评估的 Φ_i(T)（可调用函数句柄或离散概率表）、并发集合时长表 T(U)、参数清单与示例输入文件、说明文档与（可选）Monte‑Carlo 随机化模块实现代码",
+          "key_inputs_constraints": "必须输入并一致单位：RSSI_{a→b} 矩阵（dBm 或 mW）；CCA_threshold（dBm）；rate（bps）；t_phy（μs）；L_mac（Bytes）；payload（Bytes）；SIFS/DIFS/slot/ACK/ACKTimeout（μs）；tx_power（dBm）；路径损耗参数或位置（用于计算 RSSI）；capture_delta 或 SIR_threshold（dB）；Pe（[0,1]，若存在）；ACK_success 假设（布尔）；CW_min/CW_max/m/r（整数）；输入文件格式为 JSON/CSV，单位须文档化并保持一致。",
+          "modeling_type": "仿真+评价",
+          "role_in_pipeline": "作为物理层—MAC 层接口构造子任务：位于几何/路径损耗计算后、MAC 层 Markov/仿真前；直接依赖前序：节点位置或 RSSI 计算模块、PHY 参数表；为后序：Bianchi 型 MAC 建模/吞吐仿真/数值求解提供输入与判据接口。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "列出并规范化所有输入变量（RSSI、CCA 门限、rate、t_phy 等）",
+              "description": "检验是否完整识别并说明 RSSI_{a→b}、CCA_threshold、rate、t_phy、L_mac、payload、SIFS/DIFS/ACK/ACKTimeout、tx_power、路径损耗参数、capture_delta、Pe、ACK 假设与 CW 参数等输入及单位一致性要求。",
+              "score": 40,
+              "evaluation_focus": "输入识别",
+              "scoring_hint": "高分：列出全部变量并指定单位/格式且给出范围或典型值；中分：列出大部分关键变量但缺少若干（如 capture_delta 或 Pe）；低分：遗漏 RSSI 矩阵或未指明单位/格式。"
+            },
+            {
+              "sub_criteria": "区分载波感知图（CS）与并发成功函数 Φ_i(T) 的建模目标",
+              "description": "评估是否明确把 CS 用作二值邻接矩阵来表示载波检测能力，而把 Φ_i(T) 作为对任意并发集合的解调成功判据或概率函数。",
+              "score": 30,
+              "evaluation_focus": "建模分工",
+              "scoring_hint": "高分：明确 CS 为二值邻接且 Φ_i(T) 为可调用判定/概率函数；中分：描述两者但边界模糊；低分：未区分 CS 与 Φ_i(T) 或把两者混为一处。"
+            },
+            {
+              "sub_criteria": "识别时序/前导(preamble)与随机化扩展的必要性",
+              "description": "验证是否识别并提出对前导抢占、包起始时间偏移模型（如同一时隙内均匀偏移）及可选随机衰落/时间偏移的处理需求。",
+              "score": 30,
+              "evaluation_focus": "时序识别",
+              "scoring_hint": "高分：明确需要时序模型与随机化选项并列出替代方案；中分：提到前导或时间偏移但未量化；低分：忽略时序或随机化影响。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述 CS 邻接矩阵与 CS_neighbors 输出规范",
+              "description": "检验文本是否精确复述：若 RSSI_{a→b} ≥ CCA_threshold 则 CS[a,b]=1（有向或对称视发射/接收对称性），并要求输出二进制邻接矩阵与每节点感知邻居集合 CS_neighbors(i)。",
+              "score": 30,
+              "evaluation_focus": "产物规范",
+              "scoring_hint": "高分：精确给出阈值比较、方向性处理与输出格式（JSON/CSV/NumPy）；中分：给出二值构造但未说明方向或格式；低分：对构造规则或输出格式含糊。"
+            },
+            {
+              "sub_criteria": "复述 Φ_i(T) 判定逻辑要点（前导抢占、SIR、capture_delta、Pe）",
+              "description": "检验是否明确列出 Φ 的三类判定：前导先到优先导致失败、SIR 或 capture_delta 的数值比较、以及把 Pe 作为单发情形或乘法因子处理。",
+              "score": 40,
+              "evaluation_focus": "判据复述",
+              "scoring_hint": "高分：逐项列出前导规则、SIR 计算（dBm→mW）、capture_delta 比较与 Pe 应用；中分：列出部分判据但缺少数学形式；低分：判定逻辑不完整或矛盾。"
+            },
+            {
+              "sub_criteria": "复述并发时隙时长 T(U) 的计算规则",
+              "description": "检验是否明确 T(U)=max_j T_event_j，其中成功与失败的 T_event_j 分别按 t_phy+(L_mac+payload)/rate+SIFS+ACK 与 t_phy+(L_mac+payload)/rate+DIFS+ACKTimeout 计算，及概率化情形的期望取法。",
+              "score": 30,
+              "evaluation_focus": "时长说明",
+              "scoring_hint": "高分：给出成功/失败时长公式与概率化期望计算；中分：给出 max 规则但遗漏 ACKTimeout 或 SIFS；低分：时长公式错误或缺失概率化说明。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "明确 RSSI 单位与 dBm↔mW 转换规则等数值假设",
+              "description": "要求说明采用 dBm 或 mW，给出转换公式 mW=10^{(dBm/10)} 并指明输入矩阵是否对角为 -∞ 或 tx_power‑pathloss，及单位一致性假设。",
+              "score": 25,
+              "evaluation_focus": "数值假设",
+              "scoring_hint": "高分：提供明确转换公式与边界值约定并注明单位；中分：指出单位但不提供转换公式；低分：未说明单位或转换不一致。"
+            },
+            {
+              "sub_criteria": "规定 SIR 判决阈值或 capture_delta 的默认/可替换值策略",
+              "description": "要求给出 SIR_threshold 或 capture_delta 的使用规则与默认值来源（文献或附录），并允许用户覆盖或采用简化策略（并发必败/必胜）。",
+              "score": 25,
+              "evaluation_focus": "阈值假设",
+              "scoring_hint": "高分：给出数值默认与替代策略并注明来源；中分：给出规则但未提供默认值；低分：未说明阈值或不可替换。"
+            },
+            {
+              "sub_criteria": "时序假设（包起始时间分布、前导长度与抢占规则）",
+              "description": "需明确包起始时间偏移模型（同一时隙内均匀或离散偏移）、preamble 长度与前导先到优先或允许切换的小信号屏蔽规则。",
+              "score": 25,
+              "evaluation_focus": "时序假设",
+              "scoring_hint": "高分：量化时间分布与前导窗口并实现切换阈值；中分：描述行为但无参数；低分：忽略或自相矛盾。"
+            },
+            {
+              "sub_criteria": "信道独立丢包 Pe 与 ACK 成功假设的适用范围",
+              "description": "需说明 Pe 是单发情形的独立丢包概率或对所有成功事件的乘法因子，以及是否假定 ACK 始终成功或受相同干扰模型影响。",
+              "score": 25,
+              "evaluation_focus": "丢包/ACK 假设",
+              "scoring_hint": "高分：清晰说明 Pe 的应用点与 ACK 假设并给出数值；中分：说明一项但遗漏另一项；低分：未说明 Pe 或 ACK 假设。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "载波感知图 CS 的二值邻接矩阵实现",
+              "description": "评价 CS[a,b] 的判定实现：比较 RSSI_{a→b} 与 CCA_threshold，处理方向性（有向/无向）与对角/自发规则，并输出机器可读矩阵（JSON/CSV/NumPy）。",
+              "score": 25,
+              "evaluation_focus": "图构造",
+              "scoring_hint": "高分：实现有向/无向选项、单位检查并提供示例文件；中分：实现二值矩阵但方向性或格式项欠缺；低分：实现错误阈值比较或未输出规范格式。"
+            },
+            {
+              "sub_criteria": "Φ_i(T) 的完整判定逻辑实现（前导、SIR、capture、Pe）",
+              "description": "检验 Φ_i(T) 是否实现：先序前导抢占规则、SIR 计算（dBm→mW 求和）、与 SIR_threshold 或 capture_delta 比较、可选小信号屏蔽切换以及把 Pe 作为成功概率乘因子。",
+              "score": 35,
+              "evaluation_focus": "判据实现",
+              "scoring_hint": "高分：逐项实现并通过单元案例验证；中分：实现 SIR 但缺前导抢占或切换；低分：Φ 逻辑不完整或数值错误。"
+            },
+            {
+              "sub_criteria": "并发集合时长 T(U) 与概率化期望计算接口",
+              "description": "实现 T(U)=max_j T_event_j 的计算，并在 Φ 概率化时提供期望时长计算方法或数值积分/采样接口。",
+              "score": 20,
+              "evaluation_focus": "时长模型",
+              "scoring_hint": "高分：实现成功/失败时长并提供期望公式与示例；中分：只实现 max 规则但未实现概率化期望；低分：时长计算错误或未实现。"
+            },
+            {
+              "sub_criteria": "提供简化策略/替代模型接口（并发必败/必胜/基于阈值）",
+              "description": "提供可配置的简化策略接口以便按题设快速切换：并发必败、并发必胜或基于固定 SIR_threshold 的二值判定。",
+              "score": 20,
+              "evaluation_focus": "接口设计",
+              "scoring_hint": "高分：提供并验证多种策略切换；中分：实现一种策略并留有扩展点；低分：无简化策略接口。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "数值/解析方法用于求解 Φ 与期望时长（枚举/解析/Monte‑Carlo）",
+              "description": "考察是否提供对所有并发子集 T 的解析判定或枚举计算，并在概率化情形提供 Monte‑Carlo 或解析积分求期望的实现说明。",
+              "score": 40,
+              "evaluation_focus": "数值方法",
+              "scoring_hint": "高分：提供解析或高效枚举并带 Monte‑Carlo 实现与误差估计；中分：仅枚举小规模集合或提供 Monte‑Carlo 无误差说明；低分：无数值方法或仅手工示例。"
+            },
+            {
+              "sub_criteria": "刻画可扩展性与计算复杂度控制（剪枝/对称性利用）",
+              "description": "要求说明并实现对并发集合指数爆炸的处理策略，如只枚举 CS 相关集合、利用对称性或阈值剪枝，说明在 N 较大时的复杂度与近似方案。",
+              "score": 30,
+              "evaluation_focus": "复杂度控制",
+              "scoring_hint": "高分：提供剪枝策略并展示在 N 增加时的性能/误差曲线；中分：仅口头说明无实现；低分：忽视可扩展性问题。"
+            },
+            {
+              "sub_criteria": "数值稳定性与单位一致性验证",
+              "description": "考察对 dBm→mW 转换、浮点下溢/溢出、极小干扰功率处理及概率边界（0/1）稳健性的处理与测试。",
+              "score": 30,
+              "evaluation_focus": "数值健壮",
+              "scoring_hint": "高分：提供边界测试与修正（例如阈值容限）；中分：有基本转换但无边界测试；低分：数值不稳导致结果异常。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据接口与导出（JSON/CSV/NumPy）包含 CS、CS_neighbors、Φ 表/句柄、T(U)",
+              "description": "要求代码能导出机器可读文件（JSON/CSV/NumPy arrays）并按文档中规定字段与单位存放 CS 邻接矩阵、每节点 interferer set、Φ 的离散表或函数引用、T(U) 表。",
+              "score": 35,
+              "evaluation_focus": "接口实现",
+              "scoring_hint": "高分：完整导出且示例脚本能读回并复现；中分：导出部分项或格式不规范；低分：未实现机器可读导出。"
+            },
+            {
+              "sub_criteria": "包含示例输入样本、单元测试与复现说明文档",
+              "description": "代码仓库应含参数清单示例文件、至少若干单元测试验证 CS 判定、Φ 判定与 T(U) 计算，和一页复现说明文档。",
+              "score": 30,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：示例与测试覆盖核心功能且能一键复现；中分：提供示例但无自动化测试；低分：无示例或说明。"
+            },
+            {
+              "sub_criteria": "代码质量：参数检查、注释、错误处理与性能优化",
+              "description": "检查代码是否对输入单位/范围做检查，包含必要注释，处理异常输入并对并发集合枚举做性能优化（并行/矢量化）。",
+              "score": 35,
+              "evaluation_focus": "代码质量",
+              "scoring_hint": "High: 参数校验、注释齐全、并行或向量化实现；Mid: 有注释但缺健壮检查或优化；Low: 无注释、无检查且易出错。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "提供参数清单与示例输入文件并标注单位",
+              "description": "交付物应含完整参数清单（变量名、单位、典型值或范围）与至少一组示例输入文件，便于后续直接调用。",
+              "score": 25,
+              "evaluation_focus": "文档完整",
+              "scoring_hint": "高分：清单齐全并标注单位与来源；中分：清单存在但缺典型值；低分：缺少清单或单位说明。"
+            },
+            {
+              "sub_criteria": "用数值示例或仿真验证 Φ_i(T) 与 T(U) 的正确性",
+              "description": "要求用具有代表性的案例（包括并发、前导先到、capture 情形）展示 Φ 的输出结果并与期望/仿真结果对比，给出误差或一致性分析。",
+              "score": 40,
+              "evaluation_focus": "验证分析",
+              "scoring_hint": "高分：多个案例验证并给出误差/置信区间；中分：仅单一案例或无误差量化；低分：无验证示例或验证失败。"
+            },
+            {
+              "sub_criteria": "说明文档（1 页）明确每一项计算规则、假设与可替换策略",
+              "description": "提供一页说明总结：CS 与 Φ 的数学定义、时序处理、SIR/capture 规则、Pe 处理、随机化扩展、以及可替换简化策略与适用场景。",
+              "score": 35,
+              "evaluation_focus": "说明清晰",
+              "scoring_hint": "高分：一页覆盖所有要点并指明替代策略与适用范围；中分：说明存在但不精炼或缺替代策略；低分：无或含糊说明。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2的目标是把物理层并发成功判据 Φ_i(T) 与 Bianchi 风格的二维退避马尔可夫关系严格耦合，形成一组关于每个节点在任意虚拟时隙发送概率 τ_i 和条件失败概率 p_i 的闭合非线性方程，并给出基于该解的系统吞吐 S_total 的精确定义与计算公式；为实现这一目标须完成下列工作并明确所需输入/输出：首先明确符号和输入参数集——节点集合 N，载荷长度 payload（Bytes），PHY 头时长 t_phy，MAC 头长度 L_mac，物理层速率 rate（bps），时序常数 Slot、DIFS、SIFS、ACK 时长、ACKTimeout，CCA 门限与 RSSI 矩阵，SIR 或 capture 阈值/capture_delta，退避参数 W0 (CW_min)、W_max、最大阶 m、最大重传次数 r，以及可选的独立信道错误率 Pe；并假定外部已提供或可计算的并发成功函数 Φ_i(T)（对任意同时发送的其它节点集合 T，Φ_i(T) 返回在 i 的接收端该发送成功的指示 0/1 或成功概率 ∈[0,1]，若 Φ_i(T) 随机则在下述公式中用其数学期望值）。然后给出节点层的耦合方程：对每一节点 i，用 Bianchi 的稳态闭式关系把 τ_i 表示为 τ_i = f_Bianchi(p_i; W0, m, r)（即 τ_i = b_{0,0}(p_i)·(1−p_i^{r+1})/(1−p_i)，其中 b_{0,0} 采用 Bianchi 的闭式表达），将 p_i 用其它节点独立发送的近似写为 p_i = 1 − ∑_{T ⊆ N\\{i}} [ (∏_{j∈T} τ_j) (∏_{k∈N\\{i}\\T} (1−τ_k)) · Φ_i(T) ]，该式等价于 p_i = 1 − E_{T}[Φ_i(T)] 在其它节点以 τ_j 作为独立伯努利发送概率時的期望表达；同时定义单节点成功事件概率 P_i^succ = τ_i · ∑_{T ⊆ N\\{i}} (∏_{j∈T} τ_j ∏_{k∈N\\{i}\\T} (1−τ_k) · Φ_i(T) )。为计算时隙平均时长须定义并发集合 U 的概率 P(U) = ∏_{j∈U} τ_j ∏_{k∉U} (1−τ_k)（U=∅ 表示空闲时隙），并对每个 U 给出其事件持续时间 T(U) = E[T(U)] = 若 Φ 含随机性则按 Φ 的分布取期望，否则为 deterministic：T(U) = max_{j∈U} T_event_j，其中对任意节点 j 的事件时长 T_event_j = T_sj 当 j 在集合 U 中被判定成功（Φ_j(U\\{j})=1）否则为 T_cj；并且以题目所给物理时序计算 T_sj = t_phy + (L_mac + payload)/rate + SIFS + ACK + DIFS（或按题目精确定义的头部与时序和）与 T_cj = t_phy + (L_mac + payload)/rate + DIFS + ACKTimeout（或相应失败时长）作为成功/失败持续时间。在以上定义下系统总吞吐量以 renewal 观点精确定义为 S_total = (∑_{i∈N} P_i^succ · L_payload_bits) / E[slot_duration]，其中 L_payload_bits = payload·8，且 E[slot_duration] = P_idle·T_e + ∑_{U≠∅} P(U)·E[T(U)]，P_idle = ∏_{i∈N}(1−τ_i)。本子任务的交付物为：①以数学形式给出的 N 个 τ_i—p_i 耦合方程组（含对 Φ 的明确调用接口）；②关于每个并发集合 U 的概率 P(U) 与期望时隙时长 E[T(U)] 的公式与计算规则（含当 Φ 为概率函数时如何取期望）；③ 用于计算每节点成功概率 P_i^succ、空闲概率 P_idle 及最终吞吐 S_total 的封闭表达式；以及④一份清单列出计算这些量所需的全部输入参数与单位（RSSI 矩阵、CCA、SIR阈值、PHY/MAC 时序、退避参数等）并明确假定的“其他节点独立发送”（decoupling）前提和 Φ_i(T) 的接口规范，使得在给定外部的 Φ 函数与输入参数后，该方程组可直接用于数值求解或用于下一步的数值求解器调用。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建并求解耦合的 τ_i—p_i 非线性方程组，将物理层并发成功判据 Φ_i(T) 与 Bianchi 风格退避模型耦合以预测并评估系统吞吐 S_total",
+          "expected_output": "数学形式的 N 个 τ_i—p_i 耦合方程组（含 Φ_i(T) 调用接口）；并发集合概率 P(U) 与期望时隙时长 E[T(U)] 的公式；可用于数值求解的输入清单与机器可读接口规范（JSON/CSV/NumPy）；求解器代码片段或脚本与数值求解结果（τ_i、p_i、P_i^succ、S_total）",
+          "key_inputs_constraints": "1) RSSI 矩阵 RSSI_{a→b}（单位 dBm 或 mW，矩阵格式 JSON/CSV），CCA 门限（dBm）；2) 物理时序与尺寸：rate（bps）、t_phy（μs）、L_mac（Bytes）、payload（Bytes）、SIFS/DIFS/slot/ACK/ACKTimeout（μs）；3) 干扰判据与参数：Φ_i(T) 接口（函数或概率表），SIR/capture_delta（dB），独立信道错误率 Pe（可选）；4) 退避参数：W0 (CW_min)、W_max、m、r；5) 前置条件：已提供或可由子任务1计算出的载波感知图 CS 和 Φ_i(T)；所有输入须标明单位并以一致制式（建议 JSON）提供。",
+          "modeling_type": "混合（解析建模 + 数值求解/仿真验证）",
+          "role_in_pipeline": "作为连接物理层判据与 MAC 层性能评估的核心中间模块：依赖前序子任务（子任务1 输出的载波感知图 CS 与 Φ_i(T) 接口及 RSSI 矩阵），为后序数值求解器、吞吐评估与仿真验证提供耦合方程组与 P(U)/T(U) 接口；下游用于数值求解、敏感性分析与系统优化。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别 τ_i—p_i 耦合求解目标",
+              "description": "是否明确识别并表述了要求解的 N 个 τ_i（发送概率）与 p_i（条件失败概率）耦合方程，以便求得系统稳态并计算 S_total。",
+              "score": 40,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：明确写出需求解的 N 个 τ_i—p_i 方程并指出解的用途（计算 S_total）；中分：只给出单节点关系或只描述目标但未写出耦合结构；低分：未识别 τ_i 或 p_i，或误把 Φ_i(T) 当作 τ_i。"
+            },
+            {
+              "sub_criteria": "识别 Φ_i(T) 的接口与依赖",
+              "description": "是否识别 Φ_i(T) 为输入接口（可调用函数或概率表），并说明 p_i 表达式中以 E_{T}[Φ_i(T)] 出现的角色。",
+              "score": 30,
+              "evaluation_focus": "接口定义",
+              "scoring_hint": "高分：明确说明 p_i = 1 − E_T[Φ_i(T)] 并要求 Φ_i(T) 输入格式；中分：指出 Φ_i(T) 重要但接口细节不全；低分：忽视 Φ_i(T) 在 p_i 中的数学角色。"
+            },
+            {
+              "sub_criteria": "识别 P(U)/T(U) 对 S_total 的影响",
+              "description": "是否识别并发集合概率 P(U) 与时隙时长 T(U)（由 Φ 与 T_event 决定）为计算期望时隙长度 E[slot] 的关键量，影响 S_total 计算。",
+              "score": 30,
+              "evaluation_focus": "系统视角",
+              "scoring_hint": "高分：明确 P(U)=∏τ_j∏(1−τ_k) 与 T(U) 的定义并连接到 S_total；中分：提及但未与 S_total 公式严格关联；低分：遗漏 P(U) 或 T(U) 的任一项。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述 τ_i=f_Bianchi(p_i) 的解析关系",
+              "description": "是否准确复述 Bianchi 闭式关系将 τ_i 表示为 τ_i = f_Bianchi(p_i; W0,m,r)（含 b_{0,0} 与重传上限 r 的影响）。",
+              "score": 40,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：给出闭式表达并列出 b_{0,0} 的形式与 r 影响；中分：只给出函数形式未写出系数细节；低分：写错 Bianchi 关系或忽略 m/r。"
+            },
+            {
+              "sub_criteria": "复述 p_i = 1 − E_T[Φ_i(T)] 的期望表达",
+              "description": "是否精确复述 p_i 通过对其他节点独立伯努利发送（τ_j）下对 Φ_i(T) 的期望计算公式。",
+              "score": 30,
+              "evaluation_focus": "概率表达",
+              "scoring_hint": "高分：提供展开式 p_i = 1 − Σ_{T⊆N\\{i}} (∏_{j∈T}τ_j ∏_{k∉T}(1−τ_k) Φ_i(T))；中分：给出期望形式但无展开；低分：公式不正确或把 Φ 与概率乘积颠倒。"
+            },
+            {
+              "sub_criteria": "复述 S_total 的 renewal 形式",
+              "description": "是否把系统吞吐 S_total 表示为成功时隙载荷之和除以期望时隙长度，即 S_total = (Σ_i P_i^succ·L_payload_bits)/E[slot_duration]。",
+              "score": 30,
+              "evaluation_focus": "性能指标",
+              "scoring_hint": "高分：准确写出 P_i^succ、L_payload_bits 与 E[slot_duration] 的组成；中分：给出相似表达但缺少某项定义；低分：S_total 表达与 renewal 观点不符。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "声明并检验 decoupling（独立发送）假设",
+              "description": "是否明确声明并讨论把其他节点发送建模为独立伯努利过程（decoupling）的假设及其潜在影响与适用条件。",
+              "score": 40,
+              "evaluation_focus": "假设合理性",
+              "scoring_hint": "高分：明确声明 decoupling、给出适用范围与局限并说明验证方法；中分：声明但未讨论局限；低分：未声明或误用相关假设。"
+            },
+            {
+              "sub_criteria": "处理 Φ_i(T) 随机性与 Pe 假设",
+              "description": "是否规定当 Φ_i(T) 为概率/随机变量时在方程中以其数学期望代替，并说明 Pe（独立信道丢包）如何作用于 Φ_i(T)。",
+              "score": 30,
+              "evaluation_focus": "随机处理",
+              "scoring_hint": "高分：给出 E[Φ] 的替代规则并说明 Pe 的乘法因子用法；中分：提及但不够明确；低分：忽略随机性或 Pe 的作用。"
+            },
+            {
+              "sub_criteria": "时序与成功/失败时长的假设",
+              "description": "是否明确用题目给定时序计算 T_sj 与 T_cj（含 t_phy、L_mac、payload、SIFS、ACK、DIFS、ACKTimeout）并说明在并发时如何取 max_{j∈U} T_event_j。",
+              "score": 30,
+              "evaluation_focus": "时序一致性",
+              "scoring_hint": "高分：明确给出 T_sj、T_cj 公式并说明并发时长取法；中分：给出时序但未说明并发取 max；低分：时序定义错误或遗漏关键时钟项。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "给出完整的 τ_i—p_i 耦合方程组（含 Φ_i(T) 接口）",
+              "description": "是否以数学形式给出 N 个 τ_i=f_Bianchi(p_i) 与 p_i=1−E_T[Φ_i(T)] 的闭合非线性方程组，并指出 Φ_i(T) 的调用方式与输入参数。",
+              "score": 25,
+              "evaluation_focus": "方程构造",
+              "scoring_hint": "高分：方程完整、书写严谨并明确 Φ_i(T) 接口输入输出；中分：方程基本正确但接口不够明确；低分：方程不闭合或遗漏 Φ。"
+            },
+            {
+              "sub_criteria": "定义并发集合概率 P(U) 与事件时长 E[T(U)] 公式",
+              "description": "是否严格定义 P(U)=∏_{j∈U}τ_j ∏_{k∉U}(1−τ_k) 以及当 Φ 随机时如何用期望计算 E[T(U)]。",
+              "score": 20,
+              "evaluation_focus": "概率时长定义",
+              "scoring_hint": "高分：给出明确公式并解释随机 Φ 时的期望取法；中分：给出 P(U) 或 T(U) 任一项但未结合随机 Φ；低分：公式错误或矛盾。"
+            },
+            {
+              "sub_criteria": "给出 P_i^succ 与 S_total 的封闭表达式",
+              "description": "是否导出单节点成功概率 P_i^succ=τ_i·Σ_{T}(...·Φ_i(T)) 并把 S_total 写为 (Σ_i P_i^succ·L_bits)/E[slot_duration] 的可计算形式。",
+              "score": 20,
+              "evaluation_focus": "性能公式",
+              "scoring_hint": "高分：P_i^succ 与 S_total 表达式完整一致并能代入数值计算；中分：表达式部分正确但未给出 E[slot_duration] 展开；低分：缺少 P_i^succ 或 S_total 表达式不完整。"
+            },
+            {
+              "sub_criteria": "明确 Φ_i(T) 离散化与接口规范",
+              "description": "是否提供对任意子集 T 的 Φ 值表或可调用函数句柄规范（含输入格式、返回值类型与单位），以便直接数值替换。",
+              "score": 20,
+              "evaluation_focus": "接口规范",
+              "scoring_hint": "高分：提供 JSON/CSV 或函数签名示例并说明概率/二值返回；中分：描述接口但未给样例格式；低分：未规定可调用接口。"
+            },
+            {
+              "sub_criteria": "列出完整输入参数清单与单位",
+              "description": "是否枚举求解方程组所需的全部输入（RSSI 矩阵、CCA、SIR/capture_delta、PHY/MAC 时序、退避参数等）并标注单位与建议格式。",
+              "score": 15,
+              "evaluation_focus": "可重复性",
+              "scoring_hint": "高分：清单详尽且标注单位与文件示例；中分：列出大多数参数但缺少单位或格式；低分：参数不全或单位混乱。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "数值求解策略与收敛性分析（τ_i—p_i）",
+              "description": "是否提出具体求解方法（如不动点迭代、Newton、多变量求根）并讨论收敛性/初值选取与收敛准则以求解 τ_i—p_i 方程组。",
+              "score": 30,
+              "evaluation_focus": "数值方法",
+              "scoring_hint": "高分：提供两种以上求解方法、给出收敛准则与初值策略并示例参数；中分：提供单一方法且简单讨论收敛；低分：无具体求解方法或方法不可行。"
+            },
+            {
+              "sub_criteria": "处理 Φ_i(T) 随机性与 Monte‑Carlo 建议",
+              "description": "是否说明当 Φ_i(T) 随机时用数学期望替代或用 Monte‑Carlo 估计 E[Φ] 的方法与样本量选择及不确定度估计。",
+              "score": 25,
+              "evaluation_focus": "随机估计",
+              "scoring_hint": "高分：给出采样量建议、置信区间估计与误差控制策略；中分：提及 Monte‑Carlo 但无采样建议；低分：忽视随机性处理或建议不足。"
+            },
+            {
+              "sub_criteria": "复杂度与规模化处理（N 较大时）",
+              "description": "是否分析 2^N 子集穷举的计算复杂度并提供近似/剪枝（如独立干扰近似、稀疏 CS 利用）或重要子集采样策略。",
+              "score": 25,
+              "evaluation_focus": "可扩展性",
+              "scoring_hint": "高分：提供明确降维或近似算法并评估误差；中分：指出复杂度问题但无解决策略；低分：忽视规模问题。"
+            },
+            {
+              "sub_criteria": "数值稳定性与验证建议",
+              "description": "是否给出数值稳定性检查（残差、局部敏感度）与与蒙仿真比对的验证流程建议。",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：提供残差阈值、敏感度分析以及仿真对比步骤；中分：提到验证但细节不足；低分：无验证建议。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "提供机器可读输入/输出接口（含 Φ_i(T)、CS、RSSI）",
+              "description": "是否提供 JSON/CSV/NumPy 数组格式示例与函数签名，能直接载入 Φ_i(T) 和 RSSI 矩阵并返回 τ_i、p_i、P(U)、T(U)、S_total。",
+              "score": 30,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：提供可直接运行的接口示例和样例文件；中分：说明格式但无样例文件；低分：接口描述模糊不可执行。"
+            },
+            {
+              "sub_criteria": "实现 P(U) 枚举与高维近似策略",
+              "description": "代码是否实现对所有 U 的 P(U) 枚举并在 N 大时提供近似/采样实现（并附效率说明）。",
+              "score": 25,
+              "evaluation_focus": "性能/可扩展",
+              "scoring_hint": "高分：实现穷举并提供近似方案与复杂度评估；中分：实现穷举但无近似；低分：未实现或实现效率极差。"
+            },
+            {
+              "sub_criteria": "可复现的数值求解器与单元测试",
+              "description": "是否提供求解器实现（Python/MATLAB）与基本单元测试/回归测试用例以验证 τ_i—p_i 解与 S_total 计算。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：包含可运行脚本与单元测试并能复现论文/样例结果；中分：提供脚本但无测试；低分：无实现或无法复现。"
+            },
+            {
+              "sub_criteria": "文档化与参数单位一致性",
+              "description": "是否在代码仓库或文档中清晰标注所有输入参数、单位（dBm/mW/μs/Bytes）与调用示例，便于他人复现。",
+              "score": 20,
+              "evaluation_focus": "可重现性",
+              "scoring_hint": "高分：完整文档与示例，单位一致；中分：文档存在但不完整；低分：缺文档或单位混乱。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "给出 S_total 与单节点 P_i^succ 的数值结果与分解",
+              "description": "是否输出并解释最终 S_total 数值，同时给出每个节点的 P_i^succ、τ_i、p_i 分解以定位性能瓶颈。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：给出完整数值表与图表并解释原因；中分：给出数值但解释有限；低分：仅给 S_total 无分解。"
+            },
+            {
+              "sub_criteria": "敏感性分析（对 RSSI/CCA/SIR/Φ/CW 的影响）",
+              "description": "是否进行参数敏感性分析，展示 S_total 与 τ_i 对 RSSI、CCA 门限、capture_delta、Φ 以及退避参数的变化趋势。",
+              "score": 25,
+              "evaluation_focus": "敏感性",
+              "scoring_hint": "高分：给出多维敏感性图/表并定量说明阈值效应；中分：做单变量扫参；低分：无敏感性分析。"
+            },
+            {
+              "sub_criteria": "仿真验证与误差量化",
+              "description": "是否用仿真器（或 Monte‑Carlo）对解析解进行验证，并给出误差度量（如相对误差%或 RMSE）与解释。",
+              "score": 25,
+              "evaluation_focus": "验证",
+              "scoring_hint": "高分：提供仿真对比、误差表与原因分析；中分：提供仿真但误差分析表述不足；低分：无仿真验证或验证不匹配并无解释。"
+            },
+            {
+              "sub_criteria": "基于结果给出建模假设与工程建议",
+              "description": "是否基于 S_total 和敏感性结果对系统设计（如信道分配、AP 布局、退避参数调优）给出明确建议并指出模型局限。",
+              "score": 20,
+              "evaluation_focus": "工程价值",
+              "scoring_hint": "高分：给出具体可执行建议与局限说明；中分：给出一般性建议；低分：无建议或不切实际。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（数值求解、算法实现与计算策略）旨在把子任务2中得到的 N 个节点耦合非线性方程（τ_i = f_Bianchi(p_i)，p_i = 1 − E_T[Φ_i(T)]）可靠、可重复地数值求解并给出工程级实现细节与扩展策略：输入为节点数 N、每节点的退避参数（W0/CW_min、m、r、CW_max）、时序常数（slot、DIFS、SIFS、ACK、ACKTimeout、t_phy）、payload 与 rate、RSSI 矩阵、CCA 与 SIR/capture 阈值、以及可调用的并发成功判据函数 Φ_i(T)（对每个 i 和任意并发集合 T 返回成功指示或成功概率，若含随机量则按概率输出或供蒙特卡洛评估）；输出为收敛的 τ 向量、对应的 p 向量、每节点成功概率 P_i^succ、期望时隙时长 E[slot] 及系统吞吐 S_total。实现方法（小规模精确枚举）：当 N 可枚举（通常 N ≤ 10，题中 N = 2 或 3）采用不动点迭代：初始化 τ^(0)（例如 1/W0 或 Bianchi 同质解），对 k=0,1,... 重复两步直到收敛或达到最大迭代次数（例如 max_iter=1000）：A）用当前 τ^(k) 枚举所有子集 T（2^(N−1) 个对每个 i）计算 p_i^(k) = 1 − ∑_{T⊆N\\{i}} [Π_{j∈T} τ_j^(k) Π_{k∉T}(1−τ_k^(k)) · E[Φ_i(T)] ]（若 Φ deterministic 则直接取值，若随机则在该迭代内用数值积分或蒙特卡洛估计 E[Φ_i(T)]）；B）将 p_i^(k) 代入 Bianchi 节点闭式公式得到 τ_i_temp，并用松弛/阻尼更新 τ_i^(k+1) = α τ_i_temp + (1−α) τ_i^(k)（推荐 α 取 0.3–0.8，遇到震荡可减小 α 或采用 Anderson 加速或混合牛顿法；收敛判据建议 ∥τ^(k+1)−τ^(k)∥_∞ < 1e−6 或相对误差阈值）。数值细节与稳定性：在概率乘积计算中使用对数手法避免下溢，采用双精度浮点，针对极小或极大 τ 值做截断保护；若采用 Newton/准牛顿 加速，数值估计雅可比矩阵时优先用有限差分并限制步长以防发散。对于含随机 Φ 的情形，建议在每次迭代对每个需评估的子集复用相同的随机种子（共用随机数）以实现方差减少；单次蒙特卡洛样本量视目标精度而定，通常 1e4–1e6 次样本可在并行环境下把估计标准误缩至 ≲1%（可按 CLT 评估所需样本数），并行化 Monte‑Carlo（按子集或按样本分片）以缩短时延。计算复杂度与扩展策略：每次迭代精确枚举成本为 O(2^N · N)（N=3 极小，N>15 不可行），因此当 N 增大推荐两类近似：1) 局部邻居裁剪：对每个 i 仅枚举其 K 个最强干扰邻居（按 RSSI 截断，K 通常 4–10），把远端节点以平均活动率 aggregated τ_agg 近似合并（用泊松或伯努利近似）；2) 均值场/统计近似：用总体平均发送率 τ_bar 替代个体 τ_j，使 p_i 的计算从指数级降为 O(N) 或 O(K)；同时记录近似引入的误差界（通过对若干代表性小规模精确解对比评估）。实现与性能工程建议：优先用 Python + numpy/scipy 实现原型，关键瓶颈使用 numba/Cython 或 C++ 并行化，利用 multiprocessing 或 GPU 并行化子集枚举或 Monte‑Carlo 样本；对于逐子集并行，按节点或按子集分片分布任务并汇总结果；使用向量化概率表与位掩码表示子集以加速计算；记录中间诊断量（τ^k 序列、p^k、残差、每次迭代的 E[slot] 与吞吐）并保存以便追踪收敛行为。仿真验证接口（用于数值解校验）：同时提供可选的事件驱动仿真器（实现 DIFS/SLOT/SIFS/ACKTimeout、退避暂停/恢复、preamble 抢占与 capture 规则）作为基准，仿真配置应包含热身期（warm‑up）后采样期、多个随机种子（建议≥30 次独立跑以估计置信区间），记录的统计量包括估计 τ（回退为0概率）、碰撞率、每节点吞吐与丢包率及其置信区间；对含随机 Φ 的场景，数值解中的 Monte‑Carlo 误差与仿真结果应一致且在容忍范围内。最后，给出推荐默认参数（收敛阈值 1e−6、max_iter=1000、松弛 α=0.5、Monte‑Carlo 样本 1e5、并行 worker 数等），并要求实现应输出可复现的日志（随机种子、迭代轨迹、运行时间、并行配置）以便审计与调优。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "可靠数值求解并实现耦合非线性方程组（求解每节点发送概率 τ_i 与条件失败概率 p_i），并评估基于解的系统吞吐 S_total 与收敛/性能特性",
+          "expected_output": "收敛的 τ 向量与 p 向量（数值序列）、每节点成功概率 P_i^succ、期望时隙时长 E[slot]、系统吞吐 S_total（标量）、迭代轨迹日志、数值实现代码与可复现配置文件（JSON/py）",
+          "key_inputs_constraints": "RSSI 矩阵（dBm 或 mW，二维数组）、CCA 门限与 SIR/capture_delta（dB，标量）、时序常数（slot/DIFS/SIFS/ACK/ACKTimeout/t_phy，μs）、退避参数 W0/CW_min,CW_max,m,r（整数）、并发成功函数 Φ_i(T)（可调用接口或概率表）、是否含随机 Φ（需 Monte‑Carlo 参数如样本数和随机种子）；要求输入单位一致并以机器可读格式提供（JSON/CSV）。",
+          "modeling_type": "仿真+数值求解（预测/评价混合）",
+          "role_in_pipeline": "作为将物理层判据 Φ_i(T) 与 MAC 层 Bianchi 模型耦合的数值求解器与工程实现环节：依赖前序子任务（子任务1 提供 CS 邻接矩阵与 Φ 接口）；为后序性能分析/优化（吞吐评估、近似策略验证、仿真对比）提供数值结果与接口。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别 τ_i—p_i 耦合方程与 Bianchi 关系",
+              "description": "准确识别并书写 τ_i = f_Bianchi(p_i) 与 p_i = 1−E_T[Φ_i(T)] 的耦合结构，并指出 Φ_i(T) 的接口调用点。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：准确列出 τ 与 p 的闭合式并标明 Φ_i(T) 为期望值调用；中分：写出两式但未明确期望或 Φ 接口；低分：未识别耦合或公式错误。"
+            },
+            {
+              "sub_criteria": "识别并发集合枚举复杂度（2^N）及 N 可枚举阈值",
+              "description": "指出直接枚举所有并发集合的计算复杂度 O(2^N·N)，并给出可枚举的 N 上限（如 N≤10）或理由。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：明确给出 2^N 成本并建议 N 可枚举阈值及原因；中分：提到复杂度但无阈值；低分：未识别指数复杂度。"
+            },
+            {
+              "sub_criteria": "识别随机 Φ 情形需 Monte‑Carlo 并控制方差",
+              "description": "明确当 Φ_i(T) 含随机性时需要蒙特卡洛/解析积分估计 E[Φ]，并指出样本量、并行和方差缩减的重要性。",
+              "score": 20,
+              "evaluation_focus": "数值稳定",
+              "scoring_hint": "高分：给出样本数估算（如1e5）和方差缩减策略；中分：提到 Monte‑Carlo 但无样本建议；低分：忽略随机 Φ 的处理。"
+            },
+            {
+              "sub_criteria": "识别数值稳定与实现细节（对数技巧、阻尼、收敛判据）",
+              "description": "指出需用对数防下溢、松弛/阻尼更新（α 值建议）、收敛阈值与最大迭代数等工程细节以保证收敛与稳定。",
+              "score": 20,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：给出 α、阈值（1e−6）和对数技巧；中分：提到但未量化；低分：无任何数值稳定措施。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "输出陈述（τ,p,P_i^succ,E[slot],S_total）",
+              "description": "明确列出求解目标：收敛 τ 向量、p 向量、每节点 P_i^succ、期望时隙时长 E[slot] 与系统吞吐 S_total（含单位与位/时隙换算）。",
+              "score": 40,
+              "evaluation_focus": "表达准确性",
+              "scoring_hint": "高分：完整列出五项并标注单位与计算公式；中分：列出但缺单位或公式部分不全；低分：遗漏关键输出项。"
+            },
+            {
+              "sub_criteria": "输入与接口复述（RSSI,CCA,时序,退避,Φ）",
+              "description": "逐项列出所需输入：RSSI 矩阵、CCA 门限、时序常数、退避参数、Φ_i(T) 接口与 Monte‑Carlo 参数等，并注明机器可读格式要求。",
+              "score": 35,
+              "evaluation_focus": "接口规范",
+              "scoring_hint": "高分：所有输入名、类型与单位明确并给出 JSON/CSV 示例；中分：列出主要输入但缺单位或格式；低分：输入描述模糊或不完整。"
+            },
+            {
+              "sub_criteria": "求解器/验证需求复述（日志、仿真对比、随机种子）",
+              "description": "说明需输出迭代轨迹日志、随机种子、并与事件驱动仿真对比验证（多次试验估计置信区间）。",
+              "score": 25,
+              "evaluation_focus": "验证策略",
+              "scoring_hint": "高分：明确 warm‑up、独立跑≥30 次与 CI 报告；中分：提到仿真对比但无试验数；低分：未提验证或日志要求。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "独立发送（decoupling）假设与其适用性",
+              "description": "明确采用‘其它节点独立以 τ_j 伯努利发送’的 decoupling 假设，并讨论其适用条件与局限（密集度/互听情形）。",
+              "score": 30,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：清晰说明假设、适用范围与误差来源；中分：提及假设但无适用性讨论；低分：未明确该假设。"
+            },
+            {
+              "sub_criteria": "Φ_i(T) 期望与随机化假设",
+              "description": "对含随机 Φ 的情形假定使用 E[Φ_i(T)]，并说明是否在迭代内用解析期望或 Monte‑Carlo 估计与共用随机数以减方差。",
+              "score": 25,
+              "evaluation_focus": "概率处理",
+              "scoring_hint": "高分：指定 E[Φ] 计算法、样本复用与误差估计；中分：只说明 Monte‑Carlo；低分：忽略随机性处理。"
+            },
+            {
+              "sub_criteria": "时序离散化与前导(preamble)处理假设",
+              "description": "说明时隙/时序如何映射（slot 基元）、是否采用先到优先前导规则或小信号屏蔽以及相应时间窗假设。",
+              "score": 25,
+              "evaluation_focus": "物理映射",
+              "scoring_hint": "高分：给出前导窗口、切换阈值与时间偏移分布；中分：提到前导但无细节；低分：忽略前导影响。"
+            },
+            {
+              "sub_criteria": "数值截断與保护假设",
+              "description": "列出数值保护措施：概率截断范围、对数运算用法、τ 值上下界限及最大迭代等。",
+              "score": 20,
+              "evaluation_focus": "数值鲁棒",
+              "scoring_hint": "高分：给出具体截断值与理由；中分：提到需保护但无数值；低分：未考虑数值问题。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "τ_i = f_Bianchi(p_i) 闭式实现",
+              "description": "将 Bianchi 闭式表达写清楚（含 b_{0,0} 表达、重传 r 影响），并在模型中直接调用以得到 τ_i(p_i)。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：给出完整闭式公式并说明参数 m,r,W0 影响；中分：给出 τ 与 p 关系但公式不完整；低分：公式错误或缺失。"
+            },
+            {
+              "sub_criteria": "p_i = 1−E_T[Φ_i(T)] 的期望展开与 P(U) 定义",
+              "description": "按独立发送假设推导 p_i 的求和/期望形式，并明确定义 P(U)=∏τ_j∏(1−τ_k) 的计算方法。",
+              "score": 25,
+              "evaluation_focus": "概率建模",
+              "scoring_hint": "高分：准确给出子集求和并实现向量化计算；中分：表达正确但实现细节模糊；低分：公式错误或遗漏 P(U)。"
+            },
+            {
+              "sub_criteria": "并发时隙时长 T(U) 与 T_event_j 定义",
+              "description": "为每个并发集合 U 明确 T(U)=E[T(U)] 的计算，定义成功/失败时长 T_sj 与 T_cj 的构成（含 DIFS/SIFS/ACK 时间）。",
+              "score": 20,
+              "evaluation_focus": "时序建模",
+              "scoring_hint": "高分：完整给出 T_sj、T_cj 公式并含随机 Φ 的期望处理；中分：定义正确但遗漏期望处理；低分：时长公式不符题设。"
+            },
+            {
+              "sub_criteria": "Φ_i(T) 调用接口与时序/前导规则整合",
+              "description": "在模型中将 Φ_i(T) 作为可调用函数或查表方式集成，并说明如何考虑前导抢占与小信号屏蔽规则。",
+              "score": 20,
+              "evaluation_focus": "接口设计",
+              "scoring_hint": "高分：提供函数签名与示例并集成前导规则；中分：提供函数但无示例；低分：无可调用接口规范。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "不动点迭代与阻尼/收敛策略实现",
+              "description": "实现 τ 更新的迭代：计算 p^k，代入 Bianchi 得 τ_temp，使用松弛 τ^{k+1}=ατ_temp+(1−α)τ^k，给出 α、max_iter 与收敛阈值。",
+              "score": 30,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：实现且 α,阈值(如1e−6),max_iter(如1000)合理并记录残差；中分：实现迭代但无参数建议；低分：无收敛控制或易发散。"
+            },
+            {
+              "sub_criteria": "Monte‑Carlo 与方差控制实现",
+              "description": "对随机 Φ 的 E[Φ] 用 Monte‑Carlo 估计，说明样本数、共用随机种子、并行策略与误差估计方法。",
+              "score": 25,
+              "evaluation_focus": "数值统计",
+              "scoring_hint": "高分：样本数建议（如1e5）、并行化与方差估计实现；中分：实现 MC 但无样本/误差说明；低分：MC 实现缺乏稳定措施。"
+            },
+            {
+              "sub_criteria": "数值稳定性（对数技巧/下溢/边界保护）",
+              "description": "在概率乘积计算中采用对数和 exp 技巧、防止下溢，并为极端 τ 值设置截断保护。",
+              "score": 20,
+              "evaluation_focus": "数值鲁棒",
+              "scoring_hint": "高分：有对数实现与具体截断值；中分：提到防护但无细节；低分：未处理下溢/切换问题。"
+            },
+            {
+              "sub_criteria": "可扩展性与近似策略（邻居裁剪/均值场）",
+              "description": "提供当 N 增大时的近似方案：邻居裁剪（K 值说明）与均值场替代，并估计所引入误差或给出对比测试方案。",
+              "score": 25,
+              "evaluation_focus": "扩展能力",
+              "scoring_hint": "高分：给出 K 建议与误差评估方法；中分：提出近似但无误差估计；低分：无扩展策略。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "Φ_i(T) 可调用接口与输入/输出格式实现",
+              "description": "实现 Φ_i(T) 的编程接口（函数签名），并实现 JSON/CSV 的输入解析与机器可读输出（τ,p,S_total等）。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：提供示例调用、输入样例文件并能输出 JSON 结果；中分：实现函数但缺文档或样例；低分：接口不清或不可复现。"
+            },
+            {
+              "sub_criteria": "数值正确性与单元测试覆盖",
+              "description": "提供单元/回归测试（包括 N=2/3 的精确枚举对比），并验证 τ,p 与仿真/解析解一致性。",
+              "score": 25,
+              "evaluation_focus": "测试质量",
+              "scoring_hint": "高分：含多组测试用例与通过报告；中分：含基本测试但覆盖不足；低分：无测试。"
+            },
+            {
+              "sub_criteria": "性能与并行化实现（向量化/多进程/GPU 可选）",
+              "description": "关键路径进行向量化并可并行化 Monte‑Carlo 或子集计算，记录运行时间与并行配置参数。",
+              "score": 25,
+              "evaluation_focus": "工程性能",
+              "scoring_hint": "高分：提供并行实现并报告加速比；中分：部分向量化无并行；低分：实现串行且效率差。"
+            },
+            {
+              "sub_criteria": "复现性与日志（随机种子、迭代轨迹、配置保存）",
+              "description": "保存随机种子、迭代轨迹、收敛残差与完整配置文件，输出可复现的运行日志与运行时间统计。",
+              "score": 20,
+              "evaluation_focus": "复现性",
+              "scoring_hint": "高分：完整日志与可重放命令行；中分：保存部分日志；低分：无日志或无法复现。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "收敛诊断与迭代轨迹分析",
+              "description": "报告 τ^k 序列、p^k、残差曲线与最终收敛判据，分析是否陷入振荡并提出调整策略。",
+              "score": 25,
+              "evaluation_focus": "诊断分析",
+              "scoring_hint": "高分：提供残差图并解释收敛行为；中分：给出数值但无图表或解释；低分：无收敛诊断。"
+            },
+            {
+              "sub_criteria": "吞吐 S_total 与每节点 P_i^succ 报告（含单位）",
+              "description": "按公式给出 S_total（bps）与每节点吞吐/成功概率，并表明计算中用到的 payload(位)与时隙时长单位换算。",
+              "score": 25,
+              "evaluation_focus": "结果准确性",
+              "scoring_hint": "高分：数值准确且单位一致；中分：数值给出但单位或换算有小误差；低分：结果错误或单位混乱。"
+            },
+            {
+              "sub_criteria": "与事件驱动仿真对比与置信区间",
+              "description": "用事件驱动仿真验证数值解，给出多次仿真均值与置信区间并讨论数值解与仿真差距来源。",
+              "score": 30,
+              "evaluation_focus": "验证对比",
+              "scoring_hint": "高分：至少 30 次独立仿真并给出 CI，误差可解释且在 MC 估计误差范围内；中分：有仿真但样本少或未给 CI；低分：无仿真对比。"
+            },
+            {
+              "sub_criteria": "近似误差与灵敏度分析",
+              "description": "对邻居裁剪或均值场近似给出误差估计或灵敏度分析，说明近似对 S_total 的影响范围。",
+              "score": 20,
+              "evaluation_focus": "不确定性评估",
+              "scoring_hint": "高分：提供误差曲线/表并量化近似影响；中分：定性讨论；低分：忽略近似误差评估。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（验证、敏感性分析与场景化应用与扩展）的目标是将数值模型在题目给定的具体多BSS场景上进行系统性验证与校准，评价模型对关键输入不确定性的敏感性，并形成可重复的场景化分析和扩展建议；为此请按下列明确步骤执行并交付可复现结果与工件：首先准备标准化输入清单（每个场景的节点集合、RSSI矩阵、CCA阈值、SIR/capture阈值或 capture_delta、独立信道丢包率 Pe、PHY/MAC 时序常数：t_phy、L_mac、payload、rate、SIFS、DIFS、slot、ACK、ACKTimeout，以及退避参数 W0、CW_max、m、r），以机器可读配置文件（JSON/CSV）保存；第二步针对每个题目场景（例如题中四个场景）用数值求解器按给定 Φ_i(T) 接口解出稳态变量（τ 向量、p 向量）並记录理论输出量（每节点成功概率 P_i^succ、每节点与系统吞吐、空闲/碰撞/成功时隙概率与期望时隙长度），收敛判据建议采用 ∥τ^(k+1)−τ^(k)∥_∞<1e−6 或最多 1000 次迭代；第三步实现或配置事件驱动基准仿真器（可选工具：Python+simpy 或 ns‑3），精确模拟 DCF 时序、退避暂停/恢复、preamble 抢占与 capture 规则，仿真策略为每个场景做多次独立运行（建议种子数 ≥30）并在仿真中统计与解析模型相同的指标；第四步进行模型验证与校准：用仿真结果作为基准计算误差指标（如每节点吞吐与总体吞吐的相对误差、碰撞率误差），若差异显著，定义参数化的 Φ 或 capture 参数向量并以最小二乘或最大似然准则进行标定（优化器可用 Nelder‑Mead、BFGS 或全局搜索），记录标定前后误差与参数变化；第五步开展敏感性与不确定性分析：先用廉价筛选（Morris 法）识别最敏感参数，再对这些参数做细粒度扫描或方差贡献度分析（Sobol 或一维扫参）——建议扫描范围例如 RSSI ±10 dB、Pe ∈ [0,0.2]、capture_delta ∈ [0,15] dB、CW_min 在题目附近±50% 等；对每个参数点计算吞吐与公平性指标，并用弹性/梯度和临界阈值表述系統行為的“相变”边界（例如从互听到隐藏节点主导的转折）；第六步在统计上报告不确定性：对随机化 Φ 或含蒙特卡洛估计的量，确保样本量使估计的 95% 置信区间宽度低于目标相对误差（例如 ≤5%），常用样本量为 1e4 次 Monte‑Carlo 评估或按 CLT 动态调整样本数；第七步并行化与工程实践建议：并行化子集枚举/蒙特卡洛采样以缩短运行时间，保存全部随机种子与配置以保证复现，记录运行日志与收敛轨迹；最后交付物包括：每个场景的数值解与仿真结果表（τ、p、每节点与总吞吐、碰撞/丢包率、置信区间）、校准后参数与校准误差、敏感性分析图表与临界阈值报告、用于重现的配置文件和脚本（数值求解器与仿真器）、以及一页操作说明（如何复现实验、如何在新场景上运行校准与敏感性分析）；整个子任务只关注验证/校准/敏感性/场景化工作流的实现与交付，不包含对模型设计原理的重新推导或超出上述输入的额外假定。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在给定多BSS场景下，验证并校准基于 Φ_i(T) 与 Bianchi 方程的数值模型，评估吞吐与公平性并开展敏感性分析与不确定性量化。",
+          "expected_output": "标准化配置文件(JSON/CSV)、稳态解(τ 向量、p 向量)、每节点与总吞吐表、空闲/成功/碰撞时隙概率与期望时隙长度、基准仿真结果及95%置信区间、校准后参数与误差对比、敏感性与阈值图表、复现实验脚本与一页操作说明。",
+          "key_inputs_constraints": "输入包括：RSSI 矩阵、CCA 阈值、SIR/capture 阈值或 capture_delta、独立信道丢包率 Pe、PHY/MAC 时序常数(t_phy, L_mac, payload, rate, SIFS, DIFS, slot, ACK, ACKTimeout)、退避参数(W0, CW_max, m, r)、Φ_i(T) 接口；约束：单位一致(μs/dBm/bps/Bytes)、场景规模可枚举(N≤3)、收敛准则 ∥τ^(k+1)−τ^(k)∥_∞<1e−6 或迭代≤1000、仿真重复次数≥30。",
+          "modeling_type": "评价+仿真+拟合",
+          "role_in_pipeline": "作为最终验证/校准与敏感性分析环节；前序依赖子任务1的载波感知图与 Φ_i(T) 规范、子任务2的耦合方程定义、子任务3的数值求解器与仿真器；后序为场景扩展与工程部署报告。",
+          "assumptions": "缺失具体仿真器实现细节时，默认使用事件驱动SimPy实现DCF；若 Φ_i(T) 含随机性，默认以Monte-Carlo 1e5样本估计；公平性指标采用Jain指数。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "验证与校准目标聚焦：吞吐与Φ_i(T)+Bianchi模型的一致性评估",
+              "description": "是否明确将数值模型输出(τ、p、吞吐)与基准仿真结果逐指标对齐，并以误差(相对误差/置信区间)量化一致性与需要校准的参数。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：给出每节点与总吞吐、碰撞率的相对误差≤10%并含CI；中分：只给总体吞吐或缺CI；低分：未定义误差指标或未与仿真对比。"
+            },
+            {
+              "sub_criteria": "敏感性分析需求识别：RSSI、Pe、capture_delta、CW_min",
+              "description": "是否识别并列出对吞吐/公平性最敏感的关键输入，并计划扫描范围(如RSSI±10 dB、Pe∈[0,0.2])与方法(Morris/Sobol)。",
+              "score": 35,
+              "evaluation_focus": "问题分解",
+              "scoring_hint": "高分：列出参数、范围与方法并说明输出指标；中分：列出参数但无范围/方法；低分：未识别关键敏感参数。"
+            },
+            {
+              "sub_criteria": "复现性与标准化输入识别：JSON/CSV与单位一致",
+              "description": "是否要求并设计标准化配置文件(单位统一：μs/dBm/bps/Bytes)与随机种子记录以保证复现。",
+              "score": 30,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：提供字段清单与单位校验规则；中分：有文件但缺单位校验；低分：未定义标准化输入。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "场景化复述：2BSS互听/不互听与3BSS",
+              "description": "是否分别阐明四个题设场景及其Φ_i(T)特性(并发必败/必胜/SIR阈值，preamble/capture)。",
+              "score": 35,
+              "evaluation_focus": "需求对齐",
+              "scoring_hint": "高分：逐场景清晰列出Φ策略与输入差异；中分：部分场景不清；低分：混淆或未区分场景。"
+            },
+            {
+              "sub_criteria": "输出对齐：τ、p、吞吐、时隙概率与E[slot]",
+              "description": "是否重述需输出的稳态变量与统计量，并与子任务2定义一致。",
+              "score": 35,
+              "evaluation_focus": "精确表述",
+              "scoring_hint": "高分：完整且符号一致；中分：缺一两项；低分：符号混乱或遗漏关键量。"
+            },
+            {
+              "sub_criteria": "校准目标与准则：最小二乘/极大似然",
+              "description": "是否明确用最小二乘(吞吐/碰撞率)或MLE标定Φ/capture参数并定义停止准则。",
+              "score": 30,
+              "evaluation_focus": "目标设定",
+              "scoring_hint": "高分：写明目标函数、约束与停止条件；中分：仅口头描述；低分：未定义校准准则。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "独立发送(decoupling)与收敛阈值假设",
+              "description": "明确采用其它节点独立伯努利近似与∥τ^(k+1)−τ^(k)∥_∞<1e−6或迭代上限的收敛假设。",
+              "score": 25,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：陈述并讨论局限；中分：只陈述；低分：未说明。"
+            },
+            {
+              "sub_criteria": "Φ_i(T)随机化与Monte‑Carlo样本量",
+              "description": "若Φ含随机性，给出样本量(如1e5)、方差控制与共用随机数以减少方差的假设。",
+              "score": 25,
+              "evaluation_focus": "数理假设",
+              "scoring_hint": "高分：含CI目标(≤5%)与样本量计算依据；中分：给定固定样本量；低分：未涉及。"
+            },
+            {
+              "sub_criteria": "仿真器时序与preamble/capture规则一致性",
+              "description": "假设仿真严格实现DIFS/SIFS/ACKTimeout与先到优先/小信号屏蔽规则，确保与Φ一致。",
+              "score": 25,
+              "evaluation_focus": "一致性",
+              "scoring_hint": "高分：逐项对应并列测试用例；中分：口头声明；低分：无一致性说明。"
+            },
+            {
+              "sub_criteria": "单位与边界条件：μs/dBm/bps/Bytes与N≤10",
+              "description": "规定单位统一、N可枚举(≤10，题中≤3)、RSSI范围与capture_delta范围。",
+              "score": 25,
+              "evaluation_focus": "规范约定",
+              "scoring_hint": "高分：含自动校验规则；中分：仅文字说明；低分：未设置。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "验证指标体系：吞吐、Jain公平性、碰撞率",
+              "description": "构建包含每节点/系统吞吐、Jain指数、公/空/成时隙概率与E[slot]的评价体系。",
+              "score": 25,
+              "evaluation_focus": "指标设计",
+              "scoring_hint": "高分：定义公式与计算流程；中分：缺1项；低分：仅单一吞吐。"
+            },
+            {
+              "sub_criteria": "误差度量与CI：相对误差与95%CI",
+              "description": "定义与仿真对比的相对误差、RMSE，以及CI计算与报告格式。",
+              "score": 25,
+              "evaluation_focus": "统计设定",
+              "scoring_hint": "高分：含CI与多指标；中分：仅误差无CI；低分：无量化误差。"
+            },
+            {
+              "sub_criteria": "校准参数化Φ/捕获模型",
+              "description": "将capture_delta、SIR阈值、Pe等参数化进入Φ并可被优化器调用。",
+              "score": 25,
+              "evaluation_focus": "可校准性",
+              "scoring_hint": "高分：清晰参数向量与边界；中分：部分参数可调；低分：硬编码。"
+            },
+            {
+              "sub_criteria": "敏感性方法设计：Morris/Sobol与扫参网格",
+              "description": "规划全局/局部敏感性方法与扫描步长、范围、输出指标。",
+              "score": 25,
+              "evaluation_focus": "方法设计",
+              "scoring_hint": "高分：含试验设计与复现实验表；中分：仅方法名；低分：未设计。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "数值解配置：迭代、阻尼α与收敛日志",
+              "description": "设置α(0.3–0.8)、max_iter、阈值1e−6，并输出迭代轨迹与残差。",
+              "score": 25,
+              "evaluation_focus": "数值稳定",
+              "scoring_hint": "高分：稳定收敛并有日志；中分：偶发震荡；低分：未达收敛或无日志。"
+            },
+            {
+              "sub_criteria": "并发集合枚举与概率计算正确性",
+              "description": "对U/T子集概率P(U)与E[Φ_i(T)]计算正确，避免下溢(对数域)。",
+              "score": 25,
+              "evaluation_focus": "数值正确",
+              "scoring_hint": "高分：含数值保护与单元测试；中分：无保护；低分：概率不归一或错误。"
+            },
+            {
+              "sub_criteria": "校准优化求解：Nelder‑Mead/BFGS设置",
+              "description": "合理初始化、边界、停止条件与多起点以避免局部最优。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：多起点与收敛性报告；中分：单起点；低分：无明确设置。"
+            },
+            {
+              "sub_criteria": "Monte‑Carlo方差控制与共用随机数",
+              "description": "样本量自适应或固定1e5，并采用CRN降低比较方差。",
+              "score": 25,
+              "evaluation_focus": "统计计算",
+              "scoring_hint": "高分：报告标准误≤目标；中分：固定样本量无检验；低分：方差过大或结果不稳定。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "配置与数据管线：JSON/CSV读写与单位校验",
+              "description": "实现标准化I/O、字段校验、单位转换与错误提示。",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：自动校验+清晰错误信息；中分：基本读写；低分：手工硬编码。"
+            },
+            {
+              "sub_criteria": "数值求解器与仿真器一致性测试",
+              "description": "提供端到端测试，比较小规模场景(2/3BSS)的指标一致性。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：含单元/集成测试与CI；中分：少量手动测试；低分：无测试。"
+            },
+            {
+              "sub_criteria": "并行化与性能：子集枚举/Monte‑Carlo并行",
+              "description": "利用多进程/向量化/位掩码提升性能并记录运行时间。",
+              "score": 25,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：加速≥3x且有基准；中分：有限加速；低分：串行且缓慢。"
+            },
+            {
+              "sub_criteria": "可复现性：随机种子、日志与版本锁定",
+              "description": "固定随机种子、记录迭代轨迹与环境(依赖版本)。",
+              "score": 25,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：一键重现实验；中分：部分记录；低分：结果不可复现。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "验证对比：吞吐/碰撞率误差与95%CI",
+              "description": "报告每节点与系统吞吐、碰撞率的相对误差与CI，讨论偏差来源。",
+              "score": 25,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：误差≤10%且解释充分；中分：≤20%；低分：未量化或>20%无解释。"
+            },
+            {
+              "sub_criteria": "校准成效：前后误差与参数变化合理性",
+              "description": "展示校准前后误差对比，解释capture_delta/Pe等变化是否物理合理。",
+              "score": 25,
+              "evaluation_focus": "模型诊断",
+              "scoring_hint": "高分：显著降误且物理合理；中分：略降；低分：恶化或不合理。"
+            },
+            {
+              "sub_criteria": "敏感性与临界阈值：RSSI/Pe/capture_delta扫描",
+              "description": "给出相变边界(如互听→隐藏转折)、弹性/梯度，并对公平性(Jain)解读。",
+              "score": 25,
+              "evaluation_focus": "敏感性",
+              "scoring_hint": "高分：有图表与定量阈值；中分：定性描述；低分：缺失。"
+            },
+            {
+              "sub_criteria": "场景化建议与扩展",
+              "description": "基于分析给出配置/部署建议（如CW_min与速率选择）并说明如何迁移到新场景。",
+              "score": 25,
+              "evaluation_focus": "工程洞察",
+              "scoring_hint": "高分：可操作、与结果直接对应；中分：泛泛建议；低分：无建议。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

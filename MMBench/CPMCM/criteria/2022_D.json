@@ -1,0 +1,785 @@
+{
+  "task_id": "2022_D",
+  "problem": "由基本块定义可知基本块为源程序的片段，基本块中会执行指令来完成计算，指令执行时会读取指令源操作数（即读源操作数对应的变量）进行计算，再将计算结果赋值给目的操作数（即写目的操作数对应的变量）。对于划分好的基本块，每个基本块中的指令并行执行，执行时按照先读后写的顺序（由芯片底层实现所决定），即先同时读出所有的目的操作数，再并行执行所有指令的计算，最后同时将计算结果赋值给目的操作数。由于并行向同一个变量写多次时存在冲突，因此每个基本块只会写同一个变量一次（即基本块中不存在多条指令对相同变量赋值）。\n\n基本块可以被抽象成一个节点，抽象后基本块中执行的具体指令被屏蔽，只保留读写的变量信息。当基本块 A 执行完可以跳转到基本块 B 执行时，在 A 和 B 之间增加一条有向边，这样 P4 程序即可表示为一个有向无环图（P4 程序不存在循环），称作 P4 程序流程图，如图 2 左图所示。PISA 架构资源排布即是将 P4 程序流程图中的各节点（即各基本块）在满足约束条件下排布到流水线各级当中。约束条件来自于两方面，一方面来自于 P4 程序本身，P4 程序每个基本块均会写一部分变量（即对变量赋值）和读一部分变量，变量的读写使得基本块之间存在数据依赖，同时，基本块执行完后可能跳转到多个基本块执行，从而使得基本块之间也存在着控制依赖，数据依赖和控制依赖约束了基本块排布的流水线级数的大小关系，关于数据依赖和控制依赖的详细说明参见附录A；另一方面的约束条件来自于芯片的资源约束，芯片中的资源包括TCAM、HASH、ALU、QUALIFY四类（附录B中解释了四类资源的作用以供感兴趣的同学进一步了解，不了解并不影响问题作答）。流水线中针对于这四类资源有着严格的限制（具体的资源限制在赛题中进行说明），资源排布时不能违反芯片的资源限制。\n\n本问题中，输入数据给出了各基本块在P4程序流程图中的邻接关系，各基本块占用的四类资源的数量，以及各基本块读写的变量信息，本问题的赛题总共包括两个子问题，需要同学们在满足上述数据依赖、控制依赖、以及各具体子问题的资源约束条件下进行资源排布，并充分考虑各子问题的优化目标，以求最大化芯片资源利用率。\n\n图2  PISA架构资源排布示意图\n\n\\section{输入数据说明}\n\n输入数据包含三个附件，分别给出了各基本块资源使用情况、各基本块读写的变量信息，以及各基本块在流图中的邻接基本块。各附件格式如下：\n\n\\subsection{(1) attachment1.csv: 各基本块使用的资源信息}\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|c|c|}\n\\hline\nBLOCK & TCAM & HASH & ALU & QUALIFY \\\\\n\\hline\n0 & 0 & 0 & 2 & 0 \\\\\n1 & 0 & 0 & 0 & 0 \\\\\n2 & 0 & 0 & 0 & 0 \\\\\n3 & 0 & 0 & 0 & 0 \\\\\n4 & 0 & 0 & 10 & 3 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n表中第一列为基本块编号，第2列到第5列为各基本块使用的四种资源的数目。资源总共分为四种（TCAM, HASH, ALU, QUALIFY）。例如，0号基本块需要占用2个ALU资源，4号基本块需要占用10个ALU资源和3个Qualify资源。\n\n\\subsection{(2) attachment2.csv: 各基本块读写的变量信息}\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|c|c|}\n\\hline\nBLOCK & W/R & Var1 & Var2 & Var3 \\\\\n\\hline\n0 & W & X0 & X1 &  \\\\\n0 & R &  &  &  \\\\\n1 & W &  &  &  \\\\\n1 & R &  &  &  \\\\\n2 & W &  &  &  \\\\\n2 & R &  &  &  \\\\\n3 & W &  &  &  \\\\\n3 & R &  &  &  \\\\\n4 & W & X5 & X6 &  \\\\\n4 & R & X23 & X24 &  \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n表中第一列表示基本块编号，第二列中“W”表示写，“R”表示读，后续列表示基本块写或者读的变量。当某一行从第三列及以后没有任何元素时，说明此编号的基本块没有写（或读）任何变量（此时该基本块仅作为连接其他基本块的中间基本块，没有执行任何计算）。例如：0号基本块写了变量X0、X1，但没有读任何变量；1号基本块既没有写任何变量，也没有读任何变量。\\subsection{(3) attachment3.csv: 各基本块在流程图中的邻接基本块信息}\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|c|}\n\\hline\n0 & 1 & 2 & ... \\\\\n\\hline\n1 & 2 &   & ... \\\\\n\\hline\n2 &   &   & ... \\\\\n\\hline\n3 & 31 &   & ... \\\\\n\\hline\n4 & 0 & 586 & ... \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n表中第一列为基本块编号，后续列为与当前基本块在流程图中邻接的基本块编号，即在流程图中，本基本块到后续列中的基本块之间存在有向边连接。例如，由上表第一行可知，0号基本块到1号基本块和2号基本块之间存在有向边连接（即0号基本块执行结束后可以跳转到1号基本块或2号基本块执行）；由第三行可知从2号基本块出发没有边（即基本块2执行后程序结束，不会再跳转到其它基本块执行）。通过此文件可以确定基本块在源程序的执行顺序，确定每个基本块执行后跳转的目的基本块，进而构建起基本块的流程图。\\section{问题}\n\n本题需要建立资源排布问题的数学模型，并在此基础上处理如下两个问题：\n\n\\subsection{问题1} 给定资源约束条件如下：\n\n\\begin{enumerate}\n  \\item 流水线每级的 TCAM 资源最大为 1；\n  \\item 流水线每级的 HASH 资源最大为 2；\n  \\item 流水线每级的 ALU 资源最大为 56；\n  \\item 流水线每级的 QUALIFY 资源最大为 64；\n  \\item 约定流水线第 0 级与第 16 级，第 1 级与第 17 级，…，第 15 级与第 31 级为折叠级数，折叠的两级 TCAM 资源加起来最大为 1，HASH 资源加起来最大为 3。注：如果需要的流水线级数超过 32 级，则从第 32 开始的级数不考虑折叠资源限制；\n  \\item 有 TCAM 资源的偶数级数量不超过 5；\n  \\item 每个基本块只能排布到一级。\n\\end{enumerate}\n\n在上述资源约束条件下进行资源排布，并以占用的流水线级数尽量最少为优化目标。请给出资源排布算法，输出基本块排布结果，输出的结果格式如下：\n\n\\begin{table}[h]\n\\centering\n\\begin{tabular}{|c|c|c|c|c|}\n\\hline\n流水线级数 & 分配的基本块编号 &  &  &  \\\\\n\\hline\n0 & xxx & xxx & xxx & xxx \\\\\n1 & xxx & xxx & xxx & xxx \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\subsection{问题2} 考虑图 3 所示的流程图，基本块 2 和基本块 3 不在一条执行流程上（因为基本块 1 执行完后要么执行基本块 2，要么执行基本块 3，基本块 2 和基本块 3 不可能都执行）。准确来说，在 P4 程序流程图中，由一个基本块出发可以到达另一个基本块则说明两基本块在一条执行流程上，反之不在一条执行流程上。对于这种不在一条执行流程上的基本块，可以共享 HASH 资源和 ALU 资源，基本块 2 和 3 任意一个的 HASH 资源与 ALU 资源均不超过每级资源限制，基本块 2 和 3 即可排布到同一级。根据问题1中的约束条件 (2)、(3)、(5) 作如下更改：\n\n\\begin{enumerate}\n  \\item (2) 流水线每级中同一条执行流程上的基本块的 HASH 资源之和最大为 2；\n  \\item (3)流水线每级中同一条执行流程上的基本块的 ALU 资源之和最大为 56；\n  \\item (5)折叠的两级，对于 TCAM 资源约束不变，对于 HASH 资源，每级分别计算同一条执行流程上的基本块占用的 HASH 资源，再将两级的计算结果相加，结果不超过 3。\n\\end{enumerate}\n\n其它约束条件同问题 1。更改资源约束条件后重新考虑问题 1，给出排布算法，输出基本块排布结果。输出格式同问题 1。\n\n\\begin{figure}[h]\n\\centering\n\\includegraphics[width=0.4\\textwidth]{flow_example.png}\n\\caption{流程图示例}\n\\end{figure}",
+  "subtask": {
+    "1": {
+      "subtask": "子任务1 的目标是从提供的三份输入文件（attachment1.csv：每个基本块对 TCAM、HASH、ALU、QUALIFY 的整数资源占用；attachment2.csv：每个基本块的写/读变量列表；attachment3.csv：基本块的有向邻接/跳转关系）出发，构造一个可供混合整数线性规划（MILP）求解器直接使用的严格数学模型以最小化所需流水线最大级号 T_max，同时完备地表达所有语义依赖与硬件资源约束；为此任务需按如下步骤实施并产出明确交付物：1) 数据预处理——用脚本（例如 Python + pandas）读取三份 CSV，构建基本块集合 B、有向边集 E 与每块的资源向量 res_{b,r}，并为每块建立写集合 W_b 与读集合 R_b；2) 依赖分析——基于变量读写关系构造数据依赖集：若 b∈B 写变量 v 且 b' 读 v 则加入严格写后读依赖 (b ≺_{WR} b')，若两块均写同一变量则加入严格写后写依赖 (b ≺_{WW} b')，若 b 读而 b' 写则加入非严格读后写依赖 (b ≼_{RW} b')；再根据控制依赖定义利用标准的后支配（postdominator）分析（可用 Lengauer–Tarjan 算法实现或借助现成库，如 NetworkX 的 dominator 功能）识别控制依赖对并将其转为非严格依赖 P_nonstrict；最终合并得到两个偏序集合 P_strict（要求严格先行，即 t_i + 1 ≤ t_j）与 P_nonstrict（允许相等，即 t_i ≤ t_j）；3) 建模变量与线性化——为一个上界 S_max（建议取 min(n-1, 31 或者可配置上界；注意折叠规则仅在级号 < 32 时生效））定义二元分配变量 x_{b,s}∈{0,1}（b∈B, s=0..S_max），并为每基本块定义整数级号变量 t_b = Σ_s s·x_{b,s}（以线性约束实现）、全局目标变量 T_max 与级使用二元变量 y_s ∈{0,1}（用于对称性破除与输出解释）；强制每块恰有一级：Σ_s x_{b,s}=1，且对所有 b 约束 t_b ≤ T_max；4) 依赖与资源约束线性表达——依赖约束按 P_strict 与 P_nonstrict 分别加入 t_i + 1 ≤ t_j 与 t_i ≤ t_j；对每级 s 与每种资源 r∈{TCAM,HASH,ALU,QUALIFY}加入保守的级内资源约束 Σ_{b} res_{b,r}·x_{b,s} ≤ cap_r（cap 值按题设，例如 TCAM=1,HASH=2,ALU=56,QUALIFY=64）；5) 折叠与全局计数约束——对折叠对 (s, s+16)（s=0..15 且 s+16 ≤ S_max）线性加入 TCAM 折叠约束 Σ_b res_{b,TCAM}·x_{b,s} + Σ_b res_{b,TCAM}·x_{b,s+16} ≤ 1 与 HASH 折叠约束 Σ_b res_{b,HASH}·x_{b,s} + Σ_b res_{b,HASH}·x_{b,s+16} ≤ 3；为表达“偶数级上存在 TCAM 的级数 ≤ 5”引入指示变量 y^{TCAM}_s ∈{0,1} 并以大 M 线性化：Σ_b res_{b,TCAM}·x_{b,s} ≤ M·y^{TCAM}_s（M 可取为所有基本块 TCAM 占用之和）以及 Σ_{s even} y^{TCAM}_s ≤ 5；同时关联 y_s 与 x_{b,s}（y_s ≥ x_{b,s} ∀b, y_s ≤ Σ_b x_{b,s}）以便输出和对称性破除；6) 目标函数——主目标为 min T_max（最小化最大使用级别），可在模型中添加可选的对称性破除约束（例如要求 y_0 ≥ y_1 ≥ ...）或将次级目标作为加权项以求解器性能优化；7) 可实现细节与求解器接口——将所有变量和约束以标准 MILP 格式生成（例如通过 Python 的 PuLP、Pyomo 或 Gurobi/CPLEX 的 Python API），明确变量类型（x 与 y 二元，t_b 与 T_max 整数或连续并强制为整数域，依据求解器），并在模型构建脚本中包含选项以调整 S_max 与 M 的取值、启用/禁用折叠约束（以支持大于 32 级的情形）；8) 验证与交付物——脚本输出应包括：已解析的依赖对列表 P_strict/P_nonstrict、完整 MILP 模型文件（.lp/.mps 或 solver API 对象）、用于可视化的原始基本块到级的可行解样例接口 y_s 与 x_{b,s} 的映射表，以及基本的可行性检查（验证每条依赖和每级资源未被违反）；该子任务不包含求解优化结果本身或针对 Problem2 的路径敏感建模，完成后应能独立将产生的 MILP 模型交付给求解器以获得最优或近似排布。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建并优化一个可由MILP求解器直接使用的严格数学模型，以最小化PISA流水线最大级号T_max并满足P4程序的数据/控制依赖与硬件资源约束",
+          "expected_output": "可解析的MILP模型文件（.lp/.mps或求解器API对象）、P_strict与P_nonstrict依赖列表、变量映射表（x_{b,s}, t_b, y_s, y^{TCAM}_s）、基础可行性检查报告与可选可视化接口",
+          "key_inputs_constraints": "输入：attachment1.csv（BLOCK,TCAM,HASH,ALU,QUALIFY）、attachment2.csv（BLOCK,W/R,Var*）、attachment3.csv（邻接表）；约束：每块恰好分配到一级、级内资源上限（TCAM=1,HASH=2,ALU=56,QUALIFY=64）、折叠级(0~15与16~31)TCAM合计≤1且HASH合计≤3、偶数级含TCAM级数≤5、严格依赖t_i+1≤t_j与非严格依赖t_i≤t_j、T_max最小化；前置：CSV可读且无环、变量名一致、资源为非负整数",
+          "modeling_type": "优化",
+          "role_in_pipeline": "作为数据预处理与依赖分析后的MILP建模环节，输出模型供后续求解与结果可视化使用；前序任务：CSV读取与图构建；后序任务：MILP求解与方案评估",
+          "assumptions": "若S_max未知，默认min(n-1,31)并提供参数化；postdominator用NetworkX近似实现；未覆盖Problem2的路径共享，仅按问题1建模"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "最小化T_max的优化目标界定",
+              "description": "准确指出核心目标为最小化流水线最大级号T_max而非块数或资源总量，并说明与x_{b,s}, t_b, y_s的关系",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清晰写出min T_max并关联t_b≤T_max；中分：提到最小化层数但未形式化；低分：目标表述偏离或缺失"
+            },
+            {
+              "sub_criteria": "约束范围完整性（资源/折叠/偶数级TCAM）",
+              "description": "识别包含TCAM=1,HASH=2,ALU=56,QUALIFY=64、折叠(0~15与16~31)及偶数级TCAM≤5三类关键硬件约束",
+              "score": 35,
+              "evaluation_focus": "需求梳理",
+              "scoring_hint": "高分：三类均覆盖且量化正确；中分：缺少其一或数值含糊；低分：多数约束遗漏或误读"
+            },
+            {
+              "sub_criteria": "依赖类型区分与图无环性",
+              "description": "明确WR/WW严格依赖与RW非严格依赖区分，并确认流程图为DAG支撑拓扑可排布",
+              "score": 35,
+              "evaluation_focus": "问题抽象",
+              "scoring_hint": "高分：给出t_i+1≤t_j与t_i≤t_j映射；中分：仅口头区分未落到不等式；低分：依赖混淆或忽略DAG假设"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "输入三CSV到B,E,res,W_b,R_b的映射",
+              "description": "用任务术语复述数据预处理：从attachment1/2/3构建B、E、res_{b,r}、W_b、R_b",
+              "score": 30,
+              "evaluation_focus": "表达与抽象",
+              "scoring_hint": "高分：逐一对应并例示字段；中分：提到但未细化字段；低分：未建立清晰映射"
+            },
+            {
+              "sub_criteria": "P_strict与P_nonstrict定义与来源",
+              "description": "复述严格与非严格依赖如何由WR/WW、RW及控制依赖生成并合并",
+              "score": 35,
+              "evaluation_focus": "逻辑表达",
+              "scoring_hint": "高分：准确归类并说明合并规则；中分：分类不全；低分：未区分或表述错误"
+            },
+            {
+              "sub_criteria": "S_max与折叠适用范围",
+              "description": "说明S_max选取（min(n-1,31)可配）与折叠只对<32级有效的复述",
+              "score": 35,
+              "evaluation_focus": "约束语义",
+              "scoring_hint": "高分：给出条件s∈[0,15]且s+16≤S_max；中分：仅说小于32级；低分：无此复述或错误适用范围"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "S_max与大M取值合理性",
+              "description": "为S_max与M（如M=Σ_b TCAM_b）给出合理、可配置的假设并讨论影响",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：给出上界与安全M来源；中分：仅给经验值；低分：未设或设定不安全"
+            },
+            {
+              "sub_criteria": "控制依赖识别方法假设",
+              "description": "声明使用postdominator分析（如NetworkX）及DAG前提下的可行性",
+              "score": 35,
+              "evaluation_focus": "方法选择",
+              "scoring_hint": "高分：指明postdominator/后支配和实现路径；中分：泛称图算法；低分：未说明或用错方法"
+            },
+            {
+              "sub_criteria": "数据质量与无环性假设",
+              "description": "假设CSV无缺失、变量名一致且流程图无环；提出异常处理思路",
+              "score": 30,
+              "evaluation_focus": "工程意识",
+              "scoring_hint": "高分：列出校验与降级策略；中分：仅提假设；低分：未考虑"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "变量与域：x_{b,s}, t_b, y_s, y^{TCAM}_s",
+              "description": "准确定义二元/整数域并用线性约束表达t_b=Σ s·x_{b,s}与Σ_s x_{b,s}=1",
+              "score": 30,
+              "evaluation_focus": "数理建模",
+              "scoring_hint": "高分：写出所有变量及关键等式；中分：变量齐全但等式缺失；低分：变量或域错误"
+            },
+            {
+              "sub_criteria": "依赖线性化约束",
+              "description": "将P_strict映射为t_i+1≤t_j、P_nonstrict为t_i≤t_j并绑定T_max",
+              "score": 25,
+              "evaluation_focus": "约束设计",
+              "scoring_hint": "高分：两类都正确；中分：漏一类或边界不清；低分：未落地为不等式"
+            },
+            {
+              "sub_criteria": "级内与折叠资源约束",
+              "description": "级内四资源上限与折叠对上的TCAM≤1、HASH≤3的线性表达",
+              "score": 25,
+              "evaluation_focus": "约束设计",
+              "scoring_hint": "高分：四资源与折叠皆正确；中分：缺少某资源或折叠；低分：表达错误"
+            },
+            {
+              "sub_criteria": "偶数级TCAM计数与大M指示",
+              "description": "通过y^{TCAM}_s与Σ_even y^{TCAM}_s≤5并以M联动Σ_b TCAM·x_{b,s}",
+              "score": 20,
+              "evaluation_focus": "线性化技巧",
+              "scoring_hint": "高分：完整指示与安全M；中分：有指示无M绑定；低分：未实现计数"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "目标函数与对称性破除",
+              "description": "设置min T_max并可选加入y_s单调或t_b域界限以加速求解",
+              "score": 35,
+              "evaluation_focus": "优化技巧",
+              "scoring_hint": "高分：目标正确且含对称性破除；中分：仅目标；低分：目标缺失或错误"
+            },
+            {
+              "sub_criteria": "求解器接口与变量类型声明",
+              "description": "使用PuLP/Pyomo/Gurobi等正确声明二元/整数、导出.lp/.mps",
+              "score": 35,
+              "evaluation_focus": "实现规范",
+              "scoring_hint": "高分：类型齐全且能导出模型；中分：能运行但导出缺失；低分：类型混乱"
+            },
+            {
+              "sub_criteria": "可行性预检与S_max配置",
+              "description": "在求解前执行资源与依赖的快速可行性检查并允许S_max参数化",
+              "score": 30,
+              "evaluation_focus": "工程可靠性",
+              "scoring_hint": "高分：含检查与参数；中分：部分检查；低分：无检查且硬编码"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "CSV解析与数据结构构建",
+              "description": "用Python+pandas/NetworkX可靠读取三CSV并构建B,E,res,W_b,R_b",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：稳健解析含异常处理；中分：能解析但边界弱；低分：解析脆弱或错误"
+            },
+            {
+              "sub_criteria": "依赖分析实现（WR/WW/RW与postdominator）",
+              "description": "正确实现三类数据依赖与控制依赖生成P_strict/P_nonstrict",
+              "score": 35,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：单测覆盖示例；中分：实现但无验证；低分：实现错误或缺失"
+            },
+            {
+              "sub_criteria": "MILP模型生成与导出",
+              "description": "生成含x,t_b,y_s,y^{TCAM}_s及所有约束的模型并导出.lp/.mps",
+              "score": 35,
+              "evaluation_focus": "工程落地",
+              "scoring_hint": "高分：模型可被求解器读取；中分：模型生成但导出问题；低分：模型不完整"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "依赖与资源可行性检查报告",
+              "description": "输出验证每条t_i≤/t_i+1≤、级内与折叠约束未被违反的检查结果",
+              "score": 40,
+              "evaluation_focus": "结果验证",
+              "scoring_hint": "高分：自动化报告并指示违例定位；中分：手动描述；低分：无检查"
+            },
+            {
+              "sub_criteria": "变量映射与可视化接口",
+              "description": "提供x_{b,s}到级的映射表与y_s使用情况，便于后续展示",
+              "score": 30,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：清晰表格/导出JSON；中分：简略打印；低分：无映射输出"
+            },
+            {
+              "sub_criteria": "模型完整性与可移植性说明",
+              "description": "说明模型覆盖所有问题1约束，指明如何切换S_max与禁用折叠以适配>32级",
+              "score": 30,
+              "evaluation_focus": "文档与复现",
+              "scoring_hint": "高分：完整文档与参数示例；中分：简要说明；低分：无说明"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2（路径敏感共享建模与可解法）：本子任务的目标是把题目中Problem2的资源共享规则以可线性化、可求解的形式加入调度模型：在保证程序语义（由已有的CFG与数据/控制依赖约束确定）下，允许“不在同一执行流程上的基本块在同一级共享 HASH 与 ALU 资源”，即用级内“任一路径上资源和不超过上限”的判定替代简单的同级总和限制，从而提高资源复用率；为此输入为已解析的基本块集合 B、有向无环的流程图 E、每块在四类资源上的整数占用 res_{b,r}、以及资源上限与折叠规则（TCAM 折叠与偶数级 TCAM 限制保持不变，HASH/ALU 在本子任务中改为路径敏感约束）。具体要求和方法如下：以二元分配变量 x_{b,s}（表示基本块 b 分配到级 s）与整数级号 t_b（已由基础模型定义）为基础，针对每个流水线级 s 与面向资源 r∈{HASH,ALU} 引入连续非负辅助变量 z_{v,s,r}（对每个节点 v 表示以 v 为终点在级 s 上某条路径的累积资源和的下界）和 m_{s,r}（级 s 上所有路径的最大累积资源和）；用 DAG 的拓扑顺序线性刻画路径累积关系：对所有 v 保证 z_{v,s,r} ≥ res_{v,r} * x_{v,s}（自身贡献），并对每条边 u→v 加入递推不等式 z_{v,s,r} ≥ z_{u,s,r} + res_{v,r} * x_{v,s}，然后对所有 v 约束 m_{s,r} ≥ z_{v,s,r}，最终以 m_{s,r} ≤ cap_{r} 代替原来的 ∑_b res_{b,r}·x_{b,s} ≤ cap_{r}（仅对 HASH 与 ALU 使用此路径敏感上界）；折叠约束按题意修改为对 s=0..15 要求 m_{s,HASH} + m_{s+16,HASH} ≤ 3（TCAM 折叠仍按级内条目和约束实现），同时保留各级其他资源类型（TCAM、QUALIFY）和偶数级 TCAM 个数等原约束（以相同的二元指示变量线性化）。技术实现要点包括：利用拓扑排序在一次线性扫描内计算或增量更新某一级 s 上的所有 z_{·,s,r}（复杂度 O(|E|+|B|)），这使得在启发式调度中能够快速检查将某一块 b 放入级 s 会否违反 m_{s,r} 上界；在求解器层面，把 z 与 m 作为连续变量并将所有约束加入 MILP，可交由 Gurobi/CPLEX 或 OR-Tools CP‑SAT（具备线性约束支持的求解器）求解中小规模实例以求最优解；为加速和生成可行初解，同时实现可扩展性，应实现基于拓扑/关键路径权重的 earliest‑fit list scheduling：按优先级顺序遍历基本块，对每个候选级 s 用上述拓扑 DP 计算增量 z 并测试 m_{s,r}，如果可行则放置，否则尝试下一个级或新建级；最后可配合局部迁移（前移/后移）和级合并的简短局部搜索以压缩最大级号。交付物应包含：扩展模型的完整变量与线性约束清单（x、t、z、m 的域说明与等式/不等式），用于增量可行性检测的拓扑 DP 伪代码或实现说明，折叠规则在 m 变量层面的线性化表达，以及用于 MILP 求解和启发式调度的接口说明（输入格式、S_max 选择建议、数值稳定性注意事项），以便该子任务独立实现路径敏感的 HASH/ALU 共享建模与可解流程。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "题目要考什么——按题型拆解关键能力：构建并线性化一个可供 MILP 求解器使用的路径敏感HASH/ALU共享资源优化模型，优化目标为最小化流水线最大级号（minimize T_max），并能在启发式调度中快速判定级内可行性。",
+          "expected_output": "可直接交由求解器的完整 MILP 模型文件（.lp/.mps 或 solver API 脚本），变量与约束清单（含 x_{b,s}, t_b, z_{v,s,r}, m_{s,r} 的定义）、折叠（TCAM/HASH）线性化表达、拓扑 DP 的伪代码或实现说明、启发式 earliest-fit list scheduling 实现/伪码和用于增量可行性检测的接口说明。",
+          "key_inputs_constraints": "输入包括：1) 基本块集合 B（离散标识符列表）与有向无环边集 E（DAG，拓扑有序）；2) 每块整数资源占用 res_{b,r}（r∈{TCAM,HASH,ALU,QUALIFY}）；3) 硬件上限 cap_r 与折叠规则（TCAM 折叠对、偶数级 TCAM ≤5、HASH 折叠上限=3 在 s<32）；其它必要前置条件：已完成依赖分析并提供 P_strict/P_nonstrict 或等价 t 约束；S_max（分配级上界）与大M选取策略需可配置。",
+          "modeling_type": "优化",
+          "role_in_pipeline": "该子任务位于依赖分析之后、求解与调度之前：依赖前序为已解析的 CFG、数据/控制依赖（子任务1输出）；后序为 MILP 求解器调用与启发式调度生成初解、以及最终的排布验证与结果可视化。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别路径敏感共享HASH/ALU需求",
+              "description": "明确识别并描述题目要求允许‘不在同一执行流程’的基本块在同级共享 HASH 与 ALU 的语义意图及其对资源上界从级内总和到路径最大值的替换意义。",
+              "score": 40,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：准确陈述“路径敏感共享”并举例说明为什么 ∑_b→m_{s,r} 替代 ∑_b 限制可提升复用；中分：说明共享目标但未明确替换约束形式；低分：未识别路径敏感共享或错误理解为放宽所有同级总和。"
+            },
+            {
+              "sub_criteria": "识别 DAG/拓扑与依赖前置条件",
+              "description": "指出模型需基于无环 CFG(DAG) 的拓扑顺序以及已解析的 P_strict/P_nonstrict 依赖集合（t 约束），并说明这些前置条件对 z、m 递推的必要性。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：明确要求 DAG 且指出必须有 P_strict/P_nonstrict 输入；中分：提到 DAG 但未关联到 z 递推约束；低分：没有提及拓扑或误认为有循环可能。"
+            },
+            {
+              "sub_criteria": "识别折叠与 TCAM 特殊约束",
+              "description": "识别并重述题中 TCAM 折叠对 (s,s+16) 的限制、s<32 时生效、以及偶数级 TCAM 个数≤5 等硬件约束应保留且线性化。",
+              "score": 25,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：准确列出折叠规则与偶数级计数并建议二元指示变量线性化；中分：列出折叠但未提到 s<32 限制或偶数级计数；低分：遗漏 TCAM 折叠或误处理为路径敏感项。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述路径敏感建模目标",
+              "description": "把子任务表述为‘将HASH/ALU从级内总和替换为每路径最大累积 m_{s,r} 并约束 m_{s,r} ≤ cap_r’且说明与原 MILP 的差别。",
+              "score": 40,
+              "evaluation_focus": "表达清晰",
+              "scoring_hint": "高分：精确写出 m_{s,r} 定义与替代关系并示例；中分：描述目标但未明确 m_{s,r} 是“路径最大”下界替代；低分：表述模糊或与问题1无区别。"
+            },
+            {
+              "sub_criteria": "复述变量与线性化要求（x,t,z,m）",
+              "description": "明确列出必须引入的变量类型 x_{b,s}, t_b, z_{v,s,r}, m_{s,r}，并指出 z 递推、m 上界与线性化要求。",
+              "score": 35,
+              "evaluation_focus": "模型要素",
+              "scoring_hint": "高分：列出所有变量并说明域（x,y 二元，z,m 连续）且指出核心不等式；中分：列出变量但未给域或未说明递推方向；低分：缺少关键变量或混淆变量角色。"
+            },
+            {
+              "sub_criteria": "复述交付物与接口需求",
+              "description": "说明交付物需包含 MILP 模型文件、拓扑 DP 伪码、启发式调度接口与 S_max/M 的可配置项，用于求解与快速增量检测。",
+              "score": 25,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：列出文件格式、API、可配置参数及数值稳定性注意点；中分：列出部分交付物；低分：未说明接口或交付物。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "假设DAG与依赖完备性",
+              "description": "明确假设流程图为无环 DAG、已提供或可由子任务1生成的 P_strict/P_nonstrict，且路径定义基于可达性（reachability）。",
+              "score": 40,
+              "evaluation_focus": "合理性",
+              "scoring_hint": "高分：明确写出 DAG 假设并说明若有环需先展开或打断；中分：提到无环但未说明对 z 递推影响；低分：未声明确或允许循环存在。"
+            },
+            {
+              "sub_criteria": "假设资源占用为非负整数且有界",
+              "description": "假设所有 res_{b,r} 为非负整数且 cap_r 为正整数，且可取 M 为 res 总和以线性化二元指示变量。",
+              "score": 35,
+              "evaluation_focus": "数值前提",
+              "scoring_hint": "高分：给出 M 取值策略与数值稳定性说明；中分：说明整数有界但未给 M 取法；低分：无界或未说明整数假设。"
+            },
+            {
+              "sub_criteria": "假设折叠规则与级数上界S_max",
+              "description": "假设折叠规则仅在级号<32 生效，并建议设置可调 S_max（建议 ≥ 实际最小 T_max 且 ≤ n-1 或可扩展），以便 MILP 可有限建模。",
+              "score": 25,
+              "evaluation_focus": "建模边界",
+              "scoring_hint": "高分：提供 S_max 选择建议并说明折叠开/关策略；中分：提及 S_max 可配置但无建议；低分：忽略 S_max 或折叠范围。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "线性化 z_{v,s,r} 与 m_{s,r} 的拓扑递推",
+              "description": "构建对每级 s、每资源 r∈{HASH,ALU} 的不等式组：z_{v,s,r} ≥ res_{v,r}·x_{v,s}；对每边 u→v 加入 z_{v,s,r} ≥ z_{u,s,r} + res_{v,r}·x_{v,s}；m_{s,r} ≥ z_{v,s,r}，并以 m_{s,r} ≤ cap_r 约束替代级内总和。",
+              "score": 40,
+              "evaluation_focus": "数理建模",
+              "scoring_hint": "高分：完整写出上述不等式并说明为何线性且可解；中分：给出部分不等式但遗漏边递推或 m 约束；低分：表达错误或非线性化处理。"
+            },
+            {
+              "sub_criteria": "保留TCAM/QUALIFY与折叠的线性化",
+              "description": "为 TCAM/QUALIFY 保留逐级 ∑_b res_{b,r}·x_{b,s} ≤ cap_r，并为折叠对 (s,s+16) 加入 Σ_b res_{b,TCAM}·x_{b,s}+Σ_b res_{b,TCAM}·x_{b,s+16} ≤ 1 等线性约束与用于偶数级 TCAM 计数的二元指示化。",
+              "score": 35,
+              "evaluation_focus": "约束完整性",
+              "scoring_hint": "高分：完整给出折叠约束、偶数级计数 y^{TCAM}_s 的大M 线性化与 y_s 关联；中分：给出折叠或偶数级计数之一；低分：遗漏折叠或误线性化。"
+            },
+            {
+              "sub_criteria": "变量域与对称性破除设计",
+              "description": "明确 x 二元、z/m 连续非负、t_b 与 T_max 为整数/连续并受线性化定义，建议 y_s 指示及次级对称性破除（如 y_0≥y_1…）或次级目标项。",
+              "score": 25,
+              "evaluation_focus": "模型工程",
+              "scoring_hint": "高分：变量域齐全并给出对称性破除策略；中分：列出变量但未给对称性对策；低分：域不清或缺少关键变量。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "MILP 可解性与求解器接口说明",
+              "description": "说明将模型导出为 .lp/.mps 或通过 Gurobi/CPLEX/OR-Tools API 提交，并给出变量类型、规模估计与建议求解器设置以处理中小规模实例。",
+              "score": 40,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：提供具体 solver 建议（Gurobi/CPLEX），并给出 gap、time-limit、MIPStart 使用建议；中分：只列出可用求解器；低分：未给求解器或不切实际建议。"
+            },
+            {
+              "sub_criteria": "拓扑 DP 的增量可行性检测与复杂度分析",
+              "description": "给出基于拓扑排序的 O(|E|+|B|) 的 z 计算伪码或实现思路，用于判定将 b 放入 s 时增量 z 是否使 m_{s,r} 超限。",
+              "score": 35,
+              "evaluation_focus": "算法复杂度",
+              "scoring_hint": "高分：给出清晰伪码、复杂度计算与可复用数据结构；中分：给出思路但无复杂度分析；低分：无增量方法或错误复杂度。"
+            },
+            {
+              "sub_criteria": "启发式 earliest-fit 与本地搜索集成策略",
+              "description": "描述如何用 earliest-fit list scheduling 生成初解：按拓扑/关键路径权重排序、对每级用增量 DP 检查、失败则尝试下一级或新级，并建议简单前移/后移局部搜索以压缩 T_max。",
+              "score": 25,
+              "evaluation_focus": "启发法设计",
+              "scoring_hint": "高分：给出具体优先级计算、级遍历策略与局部迁移操作；中分：描述 earliest-fit 思路但无局部搜索细节；低分：仅笼统提及排序。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "MILP 模型化代码与导出（x,t,z,m）",
+              "description": "实现或伪代码应能用 Pyomo/PuLP/Gurobi API 将 x_{b,s}, t_b, z_{v,s,r}, m_{s,r} 及所有线性约束导出为可求解的模型文件。",
+              "score": 40,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：提供可执行脚本或清晰伪码且能导出 .lp/.mps；中分：伪码完整但无可运行实现；低分：无具体导出步骤或伪码缺失关键细节。"
+            },
+            {
+              "sub_criteria": "拓扑 DP 与增量可行性检测实现",
+              "description": "提供针对单级 s 的增量 z 计算实现（或可运行函数），能在 O(|E|+|B|) 内判定放置某块 b 是否可行并返回更新的 z/m。",
+              "score": 35,
+              "evaluation_focus": "实现效率",
+              "scoring_hint": "高分：有可运行函数且在中小图上测试通过；中分：伪码正确但无测试；低分：实现缺陷或复杂度过高。"
+            },
+            {
+              "sub_criteria": "接口与参数配置（S_max, M, 数值稳定性）",
+              "description": "代码应允许配置 S_max、M、折叠开关、solver 参数，并对大M 数值稳定性提供建议或预处理（如缩放）。",
+              "score": 25,
+              "evaluation_focus": "工程实践",
+              "scoring_hint": "高分：提供参数接口与数值稳定性处理；中分：提供参数但无稳定性建议；低分：硬编码参数且无配置说明。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "可行性验证与约束检查",
+              "description": "提供自动化可行性检查：对所得分配检验每条 P_strict/P_nonstrict 依赖、每级 TCAM/QUALIFY 与折叠约束、以及 m_{s,r} ≤ cap_r（HASH/ALU）均未被违反的验证脚本或输出表。",
+              "score": 40,
+              "evaluation_focus": "验证能力",
+              "scoring_hint": "高分：有自动化脚本检验所有约束并给出逐条结果；中分：给出检查步骤但无自动化脚本；低分：未提供验证或验证不完整。"
+            },
+            {
+              "sub_criteria": "初解与最优性评估（启发式 vs MILP）",
+              "description": "比较启发式 earliest-fit 初解与 MILP 求解所得解（若可得），报告 T_max、求解时间与相对 gap，并分析差异来源（如关键路径瓶颈）。",
+              "score": 35,
+              "evaluation_focus": "结果解读",
+              "scoring_hint": "高分：提供表格/数值对比并分析原因；中分：给出数值但无深入分析；低分：仅给单一解或缺少时间/Gap 信息。"
+            },
+            {
+              "sub_criteria": "敏感性与可扩展性分析",
+              "description": "进行简单敏感性实验：改变 S_max、cap_r 或打开/关闭折叠规则，报告 T_max 变化趋势并评估模型/启发式的可扩展性界限。",
+              "score": 25,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：提供至少两组参数敏感性结果并讨论可扩展性；中分：一组变化试验或定性讨论；低分：无敏感性或可扩展性评估。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（可扩展求解框架与工程实现）要求把前面构建的调度/映射模型工程化为可在中大规模实例上高效求解的模块化框架：输入为已解析的基本块集合 B、有向无环图 E（按邻接表存储）、每块的资源向量 res_{b,r}、依赖集合 P_strict/P_nonstrict、以及可配置的最大级数 S_max 与资源上限；输出为分配变量 x_{b,s}（或等价的级号 t_b）、全局最大级 T_max、每级资源汇总以及可用于下游验证的日志与回退映射。为实现可扩展性与工业可用性，本子任务需按以下步骤实现并交付：1) 基础数据结构与预处理——用稀疏邻接表和拓扑序列预计算每节点的前驱/后继列表、最长后续路径长度（关键路径权重）和每节点资源“重量”，并维护按级的资源计数表与节点集合，采用位集合或哈希表以支持快速增删与并行访问；2) 单级路径敏感可行性检测（核心子例程）——实现按拓扑序线性时间的动态规划来计算某一级 s 的 z_{v,s,r}（v∈B, r∈{HASH,ALU}）：初始化 z_v ← res_{v,r} if v 分配到 s else 0，然后按拓扑顺序对每条边 u→v 做 z_v ← max(z_v, z_u + res_{v,r})，最终 m_{s,r} = max_v z_v；该子例程用于在尝试向级 s 放入或移出某节点时做增量可行性检查，时间复杂度 O(|E|+|B|) 并应实现增量更新以避免全表重算；3) 启发式初解生成——实现 earliest‑fit list scheduling：按优先级（例如关键路径长度、资源重量或自定义评分）顺序遍历节点，对每个节点在最早满足依赖约束的已有级 s 调用单级可行性检测，若通过则分配，否则尝试下一级或新开级，记录时间限与失败回退策略；4) 局部优化与压缩操作——实现一组原子局部操作（将单节点向前/向后移动一级、在两个相邻级间合并/拆分节点集、交换两个节点的级分配），每次尝试仅用增量 z 更新检测可行性，并以启发式或局部搜索（例如禁忌/模拟退火）接受改善以减小 T_max 或资源碎片；5) 精化与精确求解接口——为中小规模实例或当启发式无法进一步改进时，构建与 MILP 求解器（Gurobi/CPLEX/OR‑Tools CP‑SAT）的双向接口：主流程将启发式得到的可行解作为初始解并可选地向 MILP 提交精化求解，或在 Benders 分解框架下令主问题仅决定粗粒度变量（如每节点的目标区间或分块级分配），子问题以单级 DP 验证并返回不可行割（具体地：子问题在固定 x 下对每级执行 z 计算以检查资源违例并将产生的违反约束线性化为 Benders 割回写主问题）；6) 分解、并行与分块策略——当 n 或 S_max 较大时，提供（a）按级区间或节点子图分块的分层求解（先对高影响子图求解并固定其分配，再迭代解决剩余部分），（b）并行化：利用 MILP 求解器的多线程能力并在并行工作线程上尝试多种启发式初解与不同优先级策略，最终选择最优或最稳定解，(c) 时间受限的渐进式求解：允许在给定时间窗内返回当前最优可行解与 GAP 报告；7) 实现细节与性能工程——推荐使用 Python 做胶水层（pandas/NetworkX 用于前处理），关键性能内核用 C/C++ 或 Cython 实现（尤其是单级 DP、增量更新与并行数据结构），并采用稀疏矩阵/压缩表示以减小内存；为避免重复计算，实现变更驱动的增量更新：当尝试把节点放入或移出级 s，仅在受影响的可达子集上更新 z 而非全图重算；8) 验证、日志与回退机制——每次分配或变动后自动记录依赖检查、每级资源使用快照及单级 z 最大值，提供快速仿真接口（用 DP 校验所有可能路径或用抽样路径验证）以证明当前映射满足最坏情形约束；若运行时或仿真检测到违例，框架应能自动回退到上一个通过验证的可行解或触发保守映射生成器；9) 可配置参数与交互API——提供配置项（时间限、S_max、优先级策略、并行线程数、分块大小、是否启用 Benders）和程序化 API，使上层系统能以批处理或在线方式调用（返回解、诊断信息与可视化输出）。交付物应包括可运行的软件包（源码与编译指令）、核心子例程（单级 DP 与增量更新）、若干典型实例的运行脚本、与至少一个工业级 MILP 求解器的接口示例、性能基准脚本（测量单次 DP 时间、增量更新代价、启发式收敛速度）及完整的使用说明与故障处理流程；复杂度提示：单次单级可行性检测 O(|E|+|B|)、每次局部变动的增量更新平均远小于全图规模，整体内存与变量数约 O(n·S_max)，当 n 或 S_max 非常大时应优先采用分块/并行或时间受限的近似策略。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建并工程化一个可扩展的调度优化求解框架，最小化流水线最大级号 T_max，并在路径敏感资源约束下高效求解 PISA 芯片资源排布。",
+          "expected_output": "可行映射解{x_{b,s}或t_b、T_max}、每级资源汇总与日志、回退映射、可运行软件包与脚本、与MILP求解器的接口示例、性能基准与使用说明。",
+          "key_inputs_constraints": "输入：基本块集合B、DAG边集E（邻接表）、资源向量res_{b,r}、依赖集P_strict/P_nonstrict、S_max与资源上限与折叠规则；约束：t_i+1≤t_j与t_i≤t_j、级内TCAM/HASH/ALU/QUALIFY限制、折叠(0-15与16-31)与偶数级TCAM≤5、路径敏感HASH/ALU上界、内存与时间限；必要条件：E为DAG、资源为非负整数、配置项有效。",
+          "modeling_type": "优化",
+          "role_in_pipeline": "作为求解执行与工程落地环节：承接前序的MILP/路径敏感模型定义与数据预处理（子任务1/2），产出可行/优解并向后续验证与可视化、下游编译部署提供映射与诊断。前序依赖：CSV解析、依赖与控制流分析、模型公式；后序：结果验证、可视化与交付。",
+          "assumptions": "允许使用启发式+局部搜索+MILP精化的混合策略；存在至少一个工业级求解器环境（如Gurobi/CPLEX或OR-Tools）；实例规模可达中大但保证DAG无环。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "最小化T_max的优化目标界定",
+              "description": "明确T_max为目标函数，连接到流水线最大级使用，并说明对折叠与资源约束的影响。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：解释T_max与级使用y_s或t_b关系并指出压缩级数动机；中分：仅提到最小化T_max未说明影响；低分：目标表述模糊或与任务不符。"
+            },
+            {
+              "sub_criteria": "路径敏感资源约束识别（HASH/ALU）",
+              "description": "识别并强调在同一级需对任一路径的HASH/ALU最大累积不超过上限，区别于简单求和。",
+              "score": 25,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：清楚对比总和约束与路径敏感上界并举例；中分：提及路径敏感但无清晰对比；低分：仍使用总和约束。"
+            },
+            {
+              "sub_criteria": "折叠与偶数级TCAM全局限制识别",
+              "description": "完整指出(0,16)...(15,31)折叠对以及偶数级TCAM级数≤5的全局约束并需在框架中支持。",
+              "score": 25,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：准确给出折叠配对与HASH折叠=3、TCAM折叠=1、偶数级计数≤5；中分：漏一处细节；低分：未识别或错误。"
+            },
+            {
+              "sub_criteria": "可扩展性与工程目标识别",
+              "description": "识别需要支持中大规模、并行、分块、时间限与回退机制的工程性要求。",
+              "score": 20,
+              "evaluation_focus": "系统意识",
+              "scoring_hint": "高分：列出分块/并行/时间限/回退；中分：仅提两项；低分：未涉及工程性需求。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "输入输出规范化（B,E,res,P_strict/P_nonstrict,S_max）",
+              "description": "精确复述输入数据结构（邻接表DAG、资源向量）与输出（x_{b,s}/t_b、T_max、每级资源汇总与日志）。",
+              "score": 35,
+              "evaluation_focus": "需求对齐",
+              "scoring_hint": "高分：字段齐全且类型/域清楚；中分：字段基本齐但类型不全；低分：遗漏关键IO。"
+            },
+            {
+              "sub_criteria": "依赖类型映射到调度约束（t_i+1≤t_j / t_i≤t_j）",
+              "description": "将P_strict映射为严格先行、P_nonstrict映射为非严格，并与最早可放置级结合。",
+              "score": 30,
+              "evaluation_focus": "约束翻译",
+              "scoring_hint": "高分：同时给出等式形式与使用场景；中分：仅口述；低分：混淆两类依赖。"
+            },
+            {
+              "sub_criteria": "问题范围界定（不含求最优MILP证明，仅生成与求解接口）",
+              "description": "复述本子任务聚焦可扩展求解框架与启发式/精化接口，而非重新定义模型。",
+              "score": 35,
+              "evaluation_focus": "边界控制",
+              "scoring_hint": "高分：清晰界定职责与与子任务1/2边界；中分：部分边界模糊；低分：偏离任务范围。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "DAG与拓扑序假设",
+              "description": "假设E为DAG并说明若检测到环则回退/报错策略与处理方式。",
+              "score": 30,
+              "evaluation_focus": "问题设定",
+              "scoring_hint": "高分：含环检测与应对流程；中分：只述DAG假设；低分：未提。"
+            },
+            {
+              "sub_criteria": "资源与上限取值假设（非负整数、折叠适用范围）",
+              "description": "阐明res_{b,r}为非负整数，折叠仅对级号<32生效且S_max可配置。",
+              "score": 25,
+              "evaluation_focus": "数值设定",
+              "scoring_hint": "高分：覆盖整数性与折叠范围；中分：只提其一；低分：遗漏或错误。"
+            },
+            {
+              "sub_criteria": "求解环境与时间限假设",
+              "description": "假设存在Gurobi/CPLEX/OR-Tools环境与可设定时间限、线程数，并描述降级策略。",
+              "score": 25,
+              "evaluation_focus": "工程假设",
+              "scoring_hint": "高分：列明替代与降级路径；中分：仅提求解器；低分：未提环境。"
+            },
+            {
+              "sub_criteria": "近似与启发式最优性假设",
+              "description": "说明启发式先行，MILP精化可选，允许近似解并报告GAP。",
+              "score": 20,
+              "evaluation_focus": "方法论",
+              "scoring_hint": "高分：包含GAP与停止准则；中分：仅述启发式；低分：无说明。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "单级路径敏感DP定义z_{v,s,r}与m_{s,r}",
+              "description": "给出按拓扑的递推z_v>=res_v*x_{v,s}, z_v>=z_u+res_v*x_{v,s}与m_{s,r}=max_v z_v的级内模型。",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：方程完整且解释资源最大路径；中分：缺少一条不等式；低分：未建立DP。"
+            },
+            {
+              "sub_criteria": "折叠与偶数级TCAM线性化",
+              "description": "构造m_{s,HASH}+m_{s+16,HASH}≤3、级内TCAM折叠≤1及偶数级y_s^{TCAM}计数≤5的线性约束。",
+              "score": 25,
+              "evaluation_focus": "约束设计",
+              "scoring_hint": "高分：三项均正确；中分：漏一项；低分：表述错误。"
+            },
+            {
+              "sub_criteria": "依赖与最早可放置级的结合",
+              "description": "将P_strict/P_nonstrict转化为t约束，并在构造初解时计算最早合法级s_min。",
+              "score": 20,
+              "evaluation_focus": "约束整合",
+              "scoring_hint": "高分：含t与s_min联动；中分：仅t约束；低分：缺失。"
+            },
+            {
+              "sub_criteria": "数据结构设计与复杂度",
+              "description": "采用稀疏邻接表、拓扑序、按级资源表与位集/哈希；分析单次DP为O(|E|+|B|)。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：数据结构与复杂度清晰；中分：部分说明；低分：无复杂度分析。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "earliest‑fit list scheduling 初解生成",
+              "description": "基于关键路径或资源重量的优先级，按最早可级尝试并用单级DP校验可行。",
+              "score": 30,
+              "evaluation_focus": "启发式",
+              "scoring_hint": "高分：含优先级度量与失败回退；中分：只述顺序；低分：无方法。"
+            },
+            {
+              "sub_criteria": "增量更新与局部优化",
+              "description": "实现前移/后移/交换/合并等操作，仅在受影响子图更新z，并度量改进T_max。",
+              "score": 30,
+              "evaluation_focus": "优化实现",
+              "scoring_hint": "高分：说明受影响子集定位与回退；中分：仅列操作；低分：无增量思路。"
+            },
+            {
+              "sub_criteria": "MILP精化与初解热启动",
+              "description": "向Gurobi/CPLEX/CP-SAT提供初解与模型，支持时间限与最佳界报告。",
+              "score": 25,
+              "evaluation_focus": "求解接口",
+              "scoring_hint": "高分：含初解、时间限、GAP；中分：仅能导出模型；低分：无接口。"
+            },
+            {
+              "sub_criteria": "分块与并行策略",
+              "description": "描述按区间/子图分块的层次求解与多线程多策略并行，择优合并解。",
+              "score": 15,
+              "evaluation_focus": "扩展性",
+              "scoring_hint": "高分：给出合并与一致性处理；中分：只述并行；低分：未提扩展。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "核心子例程：单级DP与增量更新实现",
+              "description": "提供可调用的z/m计算与增量更新API，O(|E|+|B|)并通过单元测试验证。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：含测试与基准时间；中分：实现但无测试；低分：不可用或超线性。"
+            },
+            {
+              "sub_criteria": "启发式与局部搜索模块化",
+              "description": "封装初解与局部操作，支持策略切换与参数化（时间限、线程数）。",
+              "score": 25,
+              "evaluation_focus": "工程结构",
+              "scoring_hint": "高分：清晰模块/接口；中分：耦合较高；低分：散乱不可配置。"
+            },
+            {
+              "sub_criteria": "MILP接口与模型导出",
+              "description": "导出.lp/.mps与读回解映射，支持热启动与求解状态处理。",
+              "score": 20,
+              "evaluation_focus": "接口完备",
+              "scoring_hint": "高分：双向接口与错误处理；中分：单向导出；低分：无用接口。"
+            },
+            {
+              "sub_criteria": "日志、验证与回退机制",
+              "description": "记录依赖检查、每级资源与m_{s,r}快照，违例自动回退至最近可行解。",
+              "score": 20,
+              "evaluation_focus": "健壮性",
+              "scoring_hint": "高分：含快照与自动回退；中分：仅日志；低分：无验证或回退。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "可行性校验（依赖与路径敏感约束）",
+              "description": "用DP或抽样路径验证所有级的m_{s,HASH/ALU}≤cap与t约束不被违反。",
+              "score": 35,
+              "evaluation_focus": "结果验证",
+              "scoring_hint": "高分：全量校验并报告最坏路径；中分：抽样验证；低分：无验证或存在违例。"
+            },
+            {
+              "sub_criteria": "性能基准与扩展性报告",
+              "description": "报告单次DP时间、增量更新代价、启发式收敛曲线与并行收益。",
+              "score": 30,
+              "evaluation_focus": "性能评估",
+              "scoring_hint": "高分：含多规模曲线与资源占用；中分：零散指标；低分：无量化。"
+            },
+            {
+              "sub_criteria": "T_max与资源利用率分析",
+              "description": "比较启发式与MILP精化下T_max、级内资源碎片与折叠约束活跃度。",
+              "score": 20,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：含折叠活跃约束统计；中分：仅T_max；低分：无分析。"
+            },
+            {
+              "sub_criteria": "失败回退与鲁棒性说明",
+              "description": "说明在时间限或求解失败时返回当前最佳解、GAP与诊断信息。",
+              "score": 15,
+              "evaluation_focus": "鲁棒性",
+              "scoring_hint": "高分：含明确GAP与诊断；中分：仅返回解；低分：崩溃或无回退。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（鲁棒性、灵敏度分析、扩展机制与工程部署策略）旨在为资源排布/调度算法构建系统化的验证、鲁棒化与运行维护流程：其范围包括（1）定义和量化输入不确定性来源（如基本块资源估计误差、分支概率/路径选择分布偏移、折叠约束或硬件容量实际波动、编译器优化带来的结构性变化）；（2）制定并执行敏感性与不确定性分析流程以识别对目标（主要为最低流水线深度 T_max、其次为资源超额风险与碎片化）最敏感的参数与结构决策；（3）提出和实现若干可操作的鲁棒化策略（如引入安全裕度/缩减因子 cap'=(1-ε)·cap、采用 Chance‑constraint 或 两阶段随机规划以控制违约概率、采用 min‑max 鲁棒优化以对抗最坏情形、以及预定义保守回退映射）；（4）定义离线验证与在线监控/触发重编译机制，包括仿真验证、蒙特卡洛或 Bootstrap 采样测试、基于路径抽样的最坏路径压力测试、以及在生产运行时采集关键指标并按规则触发再优化或回退。为实现以上目标需按如下可执行步骤操作：首先收集并整理用于不确定性建模的输入数据集（静态：attachment 系列文件与编译器变换日志；动态：流量样本、分支实际采样/频率、测得的每级资源峰值），并确定不确定性模型（确定性边界、概率分布或经验直方图）；其次进行分层敏感性分析：从单因子（one‑at‑a‑time）试验开始，扩展到全局方差分解或 Sobol 指数、以及情景式（what‑if）分析，以输出参数敏感度排序和建议的安全裕度；第三，在模型层实现鲁棒化选项并对比：（a）安全裕度策略（简单、低开销）；（b）概率约束/采样平均化策略（控制违约概率，需样本与更高计算成本）；（c）最坏情况鲁棒优化（严格但最保守）；对每种策略记录解的 T_max、资源剩余与失败概率；第四，建立验证管线：用仿真器/现场采样生成大量路径样本并验证每级资源峰值不超限，自动生成验证报告（包括违约样本、最大超额量和对应路径）；第五，设计在线监控与自动化运维流程：在部署时对映射版本进行灰度/金丝雀发布，生产环境通过指标采集（T_max 实时估计、每级 TCAM/HASH/ALU/QUALIFY 实际占用、路径违例计数、编译/下发延时）存入时序数据库（例如 Prometheus），并设定明确报警与重编译触发规则（例如当任一资源在多数样本中超过 cap 或违例次数超过阈值时触发即时回退到上一个通过验证的保守映射或启动周期性重编译）；第六，制定映射版本管理与回退策略：保存每次映射的元数据（版本号、输入快照、敏感性报告、仿真日志），并实现可自动回滚的下发流程与速率限制以避免频繁重配置；第七，产出一套可重复执行的交付物：敏感性分析报告（参数排序、推荐 ε 值 或概率阈值）、鲁棒化策略比较表、仿真验证脚本与测试用例集、在线监控与触发规则清单、映射版本管理规范与回退流程文档。建议使用的工具与技术包括：Python 生态（pandas/NumPy/NetworkX）用于数据预处理与不确定性建模；SALib 或自实现的 Sobol/方差分解工具用于全局敏感性分析；蒙特卡洛/Bootstrap 采样与定向最坏路径生成脚本用于仿真；成熟 MILP/优化求解器（Gurobi/CPLEX）或启发式调度模块用于求解不同鲁棒化模型；CI/CD 与监控工具链（Git、容器化部署、Prometheus/Grafana、日志系统）用于自动化验证、部署与回退；以及仿真/测试环境或 P4 程序模拟器用于端到端验证。最后，应规定量化验收准则（例如在给定测试集下违例率 < p_threshold，或在最大允许安全裕度 ε* 下 T_max 不超过目标上界），并在每次模型或编译器变更后强制重新运行敏感性/验证流程，以确保长期稳定性与可维护性。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构造并输出可直接供 MILP 求解器求解的优化模型以最小化流水线最大级号 T_max（优化 T_max，生成 MILP 模型）",
+          "expected_output": "Python 脚本（读取 attachment CSV 的预处理脚本）、P_strict/P_nonstrict 依赖列表、完整 MILP 模型文件(.lp 或 .mps 或 solver API 对象)、变量与约束清单（包括 x_{b,s}, t_b, T_max, y_s, y^{TCAM}_s）、样例映射表与基础可行性校验脚本",
+          "key_inputs_constraints": "1) 基本块集合 B（离散索引数组）、有向边集 E（邻接表）、每块整数资源向量 res_{b,r}（TCAM,HASH,ALU,QUALIFY）；2) 每块的写集合 W_b 与读集合 R_b（用于构造 P_strict/P_nonstrict）；3) 芯片资源上限 cap_{r} 与折叠规则（TCAM 折叠对、偶数级 TCAM ≤5、折叠仅在级号<32 生效）；4) 可配置上界 S_max 与大 M 值 M（用于线性化）；5) 先验假设：P4 程序为 DAG 且每基本块只写同一变量一次",
+          "modeling_type": "优化",
+          "role_in_pipeline": "作为模型构建与中间交付环节：依赖前序的数据预处理与控制/数据依赖分析（生成 P_strict/P_nonstrict），为后序 MILP 求解或启发式调度提供可直接求解的模型文件与可行性校验接口；下游任务包括 MILP 求解、路径敏感扩展和工程化求解模块。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别最小化目标 T_max 与 MILP 优化目标",
+              "description": "能否明确定义最小化流水线最大级号 T_max 为 MILP 的主目标，并关联决策变量 x_{b,s} 与 t_b。",
+              "score": 40,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：明确给出 min T_max 并展示 T_max ≥ t_b 约束；中分：声明目标为最小化级数但未关联具体变量；低分：未把 T_max 作为优化目标或目标与变量无对应关系。"
+            },
+            {
+              "sub_criteria": "识别并列举输入 B/E/res/W/R 的必要性",
+              "description": "是否识别并列出基本块集合 B、有向边集 E、每块资源 res_{b,r} 与读写集合 W_b/R_b 作为模型输入。",
+              "score": 30,
+              "evaluation_focus": "数据理解",
+              "scoring_hint": "高分：列出 B,E,res,W,R 并说明来源（attachment1/2/3）；中分：列出但未说明字段类型或用途；低分：缺少至少一项关键输入。"
+            },
+            {
+              "sub_criteria": "识别芯片约束与折叠规则（TCAM/HASH/偶数级限制）",
+              "description": "是否明确识别题中所有资源上限、折叠对(s,s+16)规则和“偶数级 TCAM≤5”计数限制等硬件约束。",
+              "score": 30,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：逐项列出 TCAM=1,HASH=2,ALU=56,QUALIFY=64、折叠与偶数级限制并说明折叠只在级号<32 生效；中分：列出部分约束；低分：遗漏折叠或偶数级限制。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "将题目复述为可求解的 MILP（含 x_{b,s}, t_b, y_s）",
+              "description": "是否将问题复述为含二元分配变量 x_{b,s}、整数级号 t_b、级指示 y_s 与目标 T_max 的 MILP 框架。",
+              "score": 40,
+              "evaluation_focus": "表述准确性",
+              "scoring_hint": "高分：文中出现 x_{b,s}, t_b, y_s 并说明 Σ_s x_{b,s}=1 及 t_b = Σ s·x_{b,s} 的线性化实现；中分：提到变量但未说明线性关系；低分：未给出这些关键变量。"
+            },
+            {
+              "sub_criteria": "明确 S_max 与折叠影响（级号上界与折叠仅适用 s<32）",
+              "description": "是否复述 S_max 的必要性与折叠规则对约束的影响，说明可配置上界与折叠禁用选项。",
+              "score": 30,
+              "evaluation_focus": "工程意识",
+              "scoring_hint": "高分：说明 S_max 取值策略（如 min(n-1,31 或可配置））并标注折叠只对级号<32 生效；中分：提及 S_max 或折叠但未说明交互；低分：忽略 S_max/折叠边界。"
+            },
+            {
+              "sub_criteria": "指明输出交付物（.lp/.mps、依赖列表、校验脚本）",
+              "description": "是否列明交付清单：MILP 文件、P_strict/P_nonstrict 列表、可视化映射表与基本可行性检查脚本。",
+              "score": 30,
+              "evaluation_focus": "交付要求",
+              "scoring_hint": "高分：明确列出并示例输出格式；中分：列出但未细化格式；低分：未列交付物或不切实际。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "对依赖分析的假设（P_strict/P_nonstrict 与后支配处理）",
+              "description": "是否明确假设控制依赖通过后支配(postdominator)分析转为非严格依赖 P_nonstrict，并指出可用算法/库（Lengauer–Tarjan 或 NetworkX）。",
+              "score": 30,
+              "evaluation_focus": "语义正确性",
+              "scoring_hint": "高分：说明用后支配识别控制依赖并给出可实现方法；中分：口头说明但无实现建议；低分：未明确控制依赖处理或与数据依赖混淆。"
+            },
+            {
+              "sub_criteria": "关于大 M 与 S_max 的数值假设",
+              "description": "是否给出大 M 的取法建议（如 M = Σ_b res_{b,TCAM}）与 S_max 的合理上界假设用于线性化与折叠规则应用。",
+              "score": 30,
+              "evaluation_focus": "数值稳定性",
+              "scoring_hint": "高分：给出具体 M、S_max 建议并讨论数值稳定风险；中分：给出建议但无讨论；低分：无 M/S_max 假设或取值不合理。"
+            },
+            {
+              "sub_criteria": "程序语义假设（DAG、单写性质与并行读写行为）",
+              "description": "是否声明 P4 程序为有向无环图、每基本块只写同一变量一次且基本块内部并行执行的先读后写语义作为建模前提。",
+              "score": 20,
+              "evaluation_focus": "语义约束",
+              "scoring_hint": "高分：明确列出这些语义假设并说明对约束的影响；中分：仅部分列出；低分：未陈述关键语义或与题设冲突。"
+            },
+            {
+              "sub_criteria": "关于变量域与整型/连续化决定的假设",
+              "description": "是否假设 t_b 与 T_max 可设为整数变量或连续并强制为整数域（并说明依据求解器灵活性）。",
+              "score": 20,
+              "evaluation_focus": "建模选择",
+              "scoring_hint": "高分：明确变量类型建议并说明对可解性的影响；中分：提到但无利弊阐述；低分：未说明变量类型或矛盾。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "变量与线性化实现（x_{b,s}, t_b = Σ s·x_{b,s}, y^{TCAM}_s）",
+              "description": "是否正式定义二元分配变量 x_{b,s}、级号 t_b 的线性化表达、级指示变量 y_s 与 TCAM 指示 y^{TCAM}_s 并给出关联约束。",
+              "score": 30,
+              "evaluation_focus": "公式化",
+              "scoring_hint": "高分：给出完整线性约束组（Σ_s x=1, t_b = Σ s·x, y_s ≥ x, Σ_b res·x ≤ cap 或大 M 关联）；中分：缺少部分线性化约束；低分：变量定义不完整或非线性未线性化。"
+            },
+            {
+              "sub_criteria": "依赖约束的线性表达（P_strict 为 t_i+1 ≤ t_j, P_nonstrict 为 t_i ≤ t_j）",
+              "description": "是否把 P_strict 与 P_nonstrict 明确转化为线性不等式并逐项列出约束模板。",
+              "score": 25,
+              "evaluation_focus": "逻辑约束",
+              "scoring_hint": "高分：逐类依赖均被线性化并举例；中分：仅给出一种依赖的处理；低分：依赖未被准确线性化或混淆。"
+            },
+            {
+              "sub_criteria": "资源与折叠约束线性化（级内 cap 与折叠对约束）",
+              "description": "是否把每级 cap_r 的约束、折叠对 (s,s+16) 的 TCAM/HASH 约束和偶数级 TCAM 计数的 M 线性化清晰给出。",
+              "score": 25,
+              "evaluation_focus": "约束完整性",
+              "scoring_hint": "高分：列出 Σ_b res·x ≤ cap_r、折叠 Σ_b res_{s}+Σ_b res_{s+16} ≤ limit、以及 y^{TCAM}_s 与 M 的关联约束；中分：折叠或偶数计数遗漏一项；低分：折叠或偶数级约束错误或缺失。"
+            },
+            {
+              "sub_criteria": "对称性破除与次级目标建议（如 y_0 ≥ y_1 ≥ …）",
+              "description": "是否提供可选的对称性破除约束或次级目标以提高求解效率并说明其线性形式。",
+              "score": 20,
+              "evaluation_focus": "求解工程",
+              "scoring_hint": "高分：给出具体对称性破除约束并解释预期效果；中分：提出但无具体形式；低分：未考虑对称性导致模型规模膨胀。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "生成可直接求解的 MILP 文件与变量类型声明",
+              "description": "是否提供将模型导出为 .lp/.mps 或用 Gurobi/CPLEX/Pyomo API 的明确实现细节并声明变量类型（x,y 二元，t_b,T_max 整数）。",
+              "score": 30,
+              "evaluation_focus": "可求解性",
+              "scoring_hint": "高分：提供可运行导出脚本并在小实例上能被求解器加载；中分：提供导出思路但无可运行示例；低分：模型仅理论描述无法导出。"
+            },
+            {
+              "sub_criteria": "可配置的 S_max、M 参数与折叠开关以支持规模调整",
+              "description": "是否在求解接口中实现 S_max、M 以及是否启用折叠约束的开关以适配大规模实例与调试。",
+              "score": 20,
+              "evaluation_focus": "可扩展性",
+              "scoring_hint": "高分：实现配置项并演示不同配置对模型规模的影响；中分：提及配置但未实现；低分：无可配置项。"
+            },
+            {
+              "sub_criteria": "基础可行性验证与输出映射的校验脚本",
+              "description": "是否提供解读 solver 输出到 x_{b,s}/t_b 的映射脚本并能验证所有依赖与资源约束未被违反。",
+              "score": 30,
+              "evaluation_focus": "验证能力",
+              "scoring_hint": "高分：包含自动化校验脚本，能针对每条依赖与每级资源进行逐项检查并产出报告；中分：仅人工说明验证流程；低分：缺乏校验手段。"
+            },
+            {
+              "sub_criteria": "数值稳定性建议（M 选择与整数松弛策略）",
+              "description": "是否讨论大 M 导致的数值问题并给出替代（较小 M、切削平移或分层求解）及对整数松弛的使用建议。",
+              "score": 20,
+              "evaluation_focus": "数值工程",
+              "scoring_hint": "高分：给出 M 的具体计算方法并实验性验证稳定性；中分：讨论风险但无定量建议；低分：未讨论数值问题。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据预处理实现（CSV 到 B,E,res,W,R 的脚本）",
+              "description": "是否提交或描述可运行的 Python 脚本（建议 pandas/NetworkX）完成 attachment1/2/3 的解析并生成 B,E,res,W,R。",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：提供可运行脚本并在示例数据上输出正确数据结构；中分：提供脚本但缺少部分边缘情况处理；低分：仅伪代码或不可运行脚本。"
+            },
+            {
+              "sub_criteria": "依赖分析实现（生成 P_strict/P_nonstrict，使用后支配）",
+              "description": "是否实现依赖分析并输出 P_strict/P_nonstrict 列表，可复现后支配(control-dep)分析结果（可用 NetworkX 或自实现 Lengauer–Tarjan）。",
+              "score": 25,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：实现并给出示例输出，节点对数与依赖对数校验一致；中分：功能实现但未验证正确性；低分：未实现或错误实现。"
+            },
+            {
+              "sub_criteria": "MILP 构建与导出代码（PuLP/Pyomo/Gurobi API 等）",
+              "description": "是否实现将变量、约束与目标通过主流库构造并能导出 .lp/.mps 或直接调用求解器求解的代码模块。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：提交可运行模块并包含命令行/函数接口；中分：代码结构完整但需调参或修正才能运行；低分：无法运行或缺少关键模块。"
+            },
+            {
+              "sub_criteria": "单元测试与示例输出（含可行性校验）",
+              "description": "是否包含针对小型示例的单元测试（解析、依赖生成、模型导出与可行性校验）。",
+              "score": 20,
+              "evaluation_focus": "工程质量",
+              "scoring_hint": "高分：有多组测试覆盖正常/边界情况并自动化；中分：仅有手动示例；低分：无测试用例。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "交付 P_strict/P_nonstrict 列表與解析统计",
+              "description": "是否输出并解释 P_strict/P_nonstrict 列表（例如依赖对数量、关键约束节点），并说明这些依赖如何影响可行级数。",
+              "score": 30,
+              "evaluation_focus": "解释能力",
+              "scoring_hint": "高分：提供依赖统计并用实例说明对 T_max 的影响；中分：提供列表无深入分析；低分：未输出或未解释列表。"
+            },
+            {
+              "sub_criteria": "校验报告：每级资源使用与依赖满足度",
+              "description": "是否提供自动化校验报告，逐级列出资源汇总、折叠对核查、偶数级 TCAM 计数及任何违例样本。",
+              "score": 40,
+              "evaluation_focus": "结果验证",
+              "scoring_hint": "高分：报告包含逐级表格、是否通过校验与违例定位样本；中分：仅提供汇总数值无逐项校验；低分：无校验或校验不完整。"
+            },
+            {
+              "sub_criteria": "基础诊断与调参建议（M、S_max、折叠开关的影响）",
+              "description": "是否分析模型对 M、S_max 与折叠约束开关的敏感性并给出工程上可行的调参建议。",
+              "score": 30,
+              "evaluation_focus": "诊断建议",
+              "scoring_hint": "高分：给出量化对比（例如 M 值变化对可行性/求解时间影响）与推荐默认值；中分：给出一般性建议；低分：无诊断或建议。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

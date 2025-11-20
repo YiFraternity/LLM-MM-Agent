@@ -1,0 +1,898 @@
+{
+  "task_id": "2013_B",
+  "problem": "在上述提供的背景材料以及自行查阅相关文献资料的基础上，请你们的团队研究下列问题。要求写出计算的过程、注明所用的优化方法、解释选择中间参数的理由、并附上所用的程序（C/C++/Java/Matlab等）。为保证所用模型的工程可实现性，请考虑选用适当复杂度的模型和算法。\n\n以下各题中的数学建模鼓励创新，不局限于背景介绍的模型方法。\n\n1. 无记忆功放\n\n数据文件1给出了某功放无记忆效应的复输入-输出测试数据，其输入-输出幅度图为：\n                    \n图2  功放输入/输出幅度散点图\n\n请根据提供的数据，完成以下任务。\n\nA．建立此功放的非线性特性的数学模型，然后用NMSE评价所建模型的准确度。\n\nB．根据线性化原则以及“输出幅度限制”和“功率最大化”约束，建立预失真模型。写出目标误差函数，计算线性化后最大可能的幅度放大倍数，运用评价指标参数NMSE/EVM评价预失真补偿的结果。\n\n2. 有记忆功放\n\n数据文件2给出了某功放的有记忆效应的复输入-输出数据，请完成以下任务。\n\nA．建立此功放的非线性特性的数学模型，然后用NMSE评价所建模型的准确度。\n\nB．根据线性化原则以及“输出幅度限制”和“功率最大化”约束，以框图的方式建立预失真处理的模型实现示意图（提示：可定义基本实现单元模块和确定其之间关系，组成整体图），然后计算预失真模型相关参数。运用评价指标参数NMSE/EVM评价预失真补偿的计算结果。\n\n3． 拓展研究\n\n相邻信道功率比（Adjacent Channel Power Ratio，ACPR）是表示信道的带外失真的参数，衡量由于非线性效应所产生的新频率分量对邻道信号的影响程度。其定义为：\n$$ACPR = 10 \\log_{10} \\frac{\\int_{f_2}^{f_3} s(f)\\,df}{\\int_{f_1}^{f_2} s(f)\\,df} \\tag{10}$$\n\n其中 $s(f)$ 为信号的功率谱密度函数，$[f_1,f_2]$ 为传输信道，$[f_2,f_3]$ 为相邻信道。功率谱密度的计算可通过对信号的自相关函数进行 Fourier 变换计算，也可以通过直接法等计算（假定本题涉及的信号为时间平稳信号）。\n\n如果题2所附的数据采样频率 $F_s = 30.72 \\times 12 \\,\\text{MHz}$，传输信道按照 20MHz 来算，邻信道也是 20MHz。根据给出的数据，请计算功放预失真补偿前后的功率谱密度，并用图形的方式表示三类信号的功率谱密度（输入信号、无预失真补偿的功率放大器输出信号、采用预失真补偿的功率放大器输出信号），最后用 ACPR 对结果进行分析评价。",
+  "subtask": {
+    "1": {
+      "subtask": "子任务1（数据准备、探索性分析与无记忆功放行为模型辨识）的目标是从给定的无记忆型 PA 输入/输出复基带样本集中，系统地读取并清洗数据，做充分的探索性统计以确定信号幅值范围（例如识别最大允许输入幅度 A_max）、将数据划分为训练/验证/测试子集，并在此基础上建立、估计并验证一个数值稳定且工程可实现的无记忆行为模型，最终输出明确的模型形式与参数、模型条件数及在训练/验证/测试集上的 NMSE（按式(8)）和可选的 EVM（按式(9)）评价。为完成该任务，请按如下步骤操作：1) 数据输入与预处理：用 MATLAB（loadmat）或 Python（numpy, scipy.io.loadmat）读取 pa_in_out_memoryless.mat 或相应文本文件，检查并去除 NaN/异常值，计算并报告样本数 N、输入/输出幅度最大值与分布、瞬时功率统计，以确定 A_max 与数据覆盖性；2) 划分数据集：把 N≈1000 样本按建议比例（例如 70% 训练、15% 验证、15% 测试，或交叉验证方案）划分，确保验证/测试集独立于训练集用于模型选择与泛化评估；3) 模型结构选择：为无记忆情形建议优先采用“幅度分离”复值基函数形式 z(n)=∑_{k=1}^K h_k x(n)|x(n)|^{k-1}（相比直接复多项式 x^k 有更好解释 AM‑AM/AM‑PM 且条件通常更好），并说明候选阶数 K 的搜索范围（建议从 1 到 7 或依据 N 控制 P=K ≤ N/5）；4) 设计矩阵构造与数值处理：为训练样本构造设计矩阵 Φ（每列为一个基函数在所有训练样本处的取值），对列进行标准化（零均值/单位方差或范数归一化）并用 QR 分解或经济 SVD（或 Gram–Schmidt）对列正交化以改善条件数；若实现环境不支持复线性解，可将复值问题等价转换为实矩阵形式（实部/虚部堆叠）；5) 参数估计与正则化：使用带 Tikhonov 正则化的复最小二乘（岭回归）求解 ĥ=(Φ^H Φ + λI)^{-1}Φ^H z，λ 的选择通过 k‑折交叉验证或广义交叉验证（GCV）在验证集上最小化 NMSE 或利用信息准则（AIC/BIC）确定；在 Φ^H Φ 条件数过大或参数维数接近样本数时，考虑降阶或采用稀疏化方法（LASSO/OMP）先选显著基再回归；6) 模型验证与诊断：在验证/测试集上计算并报告 NMSE（按式(8)）、可选 EVM（按式(9)）、残差幅度/相位分布与自相关，以检测系统性误差或模型欠拟合/过拟合，并记录模型的条件数与有效参数数目；7) 输出与交付物：提交最终模型形式与系数向量（数值）、所选 K 与 λ、训练/验证/测试 上的 NMSE（dB）、EVM（%，如计算）、设计矩阵的条件数和简要诊断说明（是否建议降低阶数或采用稀疏化），以及完整重现实验所需的脚本/代码（MATLAB 或 Python，包含数据读取、设计矩阵构造、正交化/QR、岭回归或 sklearn 的 Ridge/Lasso 调用及交叉验证流程）。在整个过程中应保持 P ≪ N 以保证稳定估计，且所有步骤应以可复现的脚本实现（推荐工具：MATLAB 或 Python + numpy/scipy/sklearn），不在本子任务中进行任何预失真器设计或频域分析。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "对无记忆型PA的复基带输入/输出样本进行数据清洗与探索分析，拟合并评估幅度分离型多项式行为模型 z(n)=∑_{k=1}^K h_k x(n)|x(n)|^{k-1} 的参数，报告训练/验证/测试集上的NMSE/EVM与条件数。",
+          "expected_output": "数据统计报表（N、A_max、幅度/功率分布）、训练/验证/测试划分说明、最终模型形式与系数向量ĥ、所选K与λ、设计矩阵Φ的条件数、训练/验证/测试NMSE(dB)与可选EVM(%)、残差诊断简述、可复现实验的MATLAB或Python脚本。",
+          "key_inputs_constraints": "输入：pa_in_out_memoryless.mat（或等价文本），包含复值x(n), z(n)；约束：P=K ≪ N（如K ≤ N/5）；输出幅度/功率统计需报告A_max；数据需去除NaN/异常值；训练/验证/测试需独立；设计矩阵需标准化/正交化；解法采用复最小二乘+Tikhonov正则；NMSE按式(8)，EVM按式(9)。",
+          "modeling_type": "拟合+评价",
+          "role_in_pipeline": "作为数据准备与无记忆PA模型辨识环节，位于预失真器设计之前；前序依赖：数据读取与清洗；后序输出供预失真器建模与系统联调评估（不在本子任务内）。",
+          "assumptions": "样本数N≈1000；候选阶数K∈{1,…,7}；采用70/15/15随机划分且保持可复现随机种子；必要时将复回归转为实堆叠求解。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别核心目标：无记忆PA行为模型拟合与评估(NMSE/EVM)",
+              "description": "是否准确指出需要用幅度分离型多项式 z(n)=∑ h_k x|x|^{k-1} 拟合无记忆PA，并以训练/验证/测试NMSE为主、EVM为辅进行评价。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：明确模型形式与NMSE/EVM双指标；中分：仅提拟合但指标含糊；低分：偏离拟合目标或给出频域/预失真设计等越界内容。"
+            },
+            {
+              "sub_criteria": "数据准备与A_max确定",
+              "description": "是否清楚需要读取pa_in_out_memoryless.mat，完成NaN/异常值处理，报告N、幅度/功率分布并识别最大允许输入幅度A_max。",
+              "score": 25,
+              "evaluation_focus": "数据理解",
+              "scoring_hint": "高分：列出N、A_max、直方图/分位数做覆盖性讨论；中分：仅报告N与最大值；低分：遗漏清洗与A_max。"
+            },
+            {
+              "sub_criteria": "训练/验证/测试划分与独立性",
+              "description": "是否识别到需70/15/15或k折，且验证/测试独立用于模型选择与泛化评估。",
+              "score": 20,
+              "evaluation_focus": "实验设计",
+              "scoring_hint": "高分：给出比例与固定随机种子；中分：仅给比例；低分：无划分或泄漏。"
+            },
+            {
+              "sub_criteria": "数值稳定性与条件数意识",
+              "description": "是否提出列标准化/QR/SVD以改善Φ条件数并在输出中报告条件数。",
+              "score": 20,
+              "evaluation_focus": "数值分析",
+              "scoring_hint": "高分：明确标准化+QR/SVD与cond(Φ)或cond(Φ^HΦ)；中分：泛指正交化；低分：无稳定性考虑。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述幅度分离基函数与K范围",
+              "description": "是否复述采用 z(n)=∑_{k=1}^K h_k x|x|^{k-1}，K∈[1,7]或K≤N/5。",
+              "score": 30,
+              "evaluation_focus": "需求理解",
+              "scoring_hint": "高分：模型与K约束同时准确；中分：仅模型或仅K；低分：用x^k而非幅度分离且无说明。"
+            },
+            {
+              "sub_criteria": "复线性问题求解与实等价",
+              "description": "是否说明用复最小二乘，环境不便时采用实部/虚部堆叠等价求解。",
+              "score": 25,
+              "evaluation_focus": "方法匹配",
+              "scoring_hint": "高分：清楚两种解法等价性；中分：只提复最小二乘；低分：忽略复值特性。"
+            },
+            {
+              "sub_criteria": "验证指标与报告格式",
+              "description": "是否复述需在训练/验证/测试集上报告NMSE(dB)及可选EVM(%)，并输出条件数与残差诊断。",
+              "score": 25,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：三集合NMSE(dB)+EVM(%)并含条件数；中分：仅测试集或仅NMSE；低分：缺少定量指标。"
+            },
+            {
+              "sub_criteria": "不越界到预失真或频域分析",
+              "description": "是否限定范围，不开展预失真器设计或ACPR/PSD绘制。",
+              "score": 20,
+              "evaluation_focus": "范围控制",
+              "scoring_hint": "高分：完全聚焦本子任务；中分：略提后续但不展开；低分：大量越界实现。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "样本量与阶数关系(P≪N)",
+              "description": "明确P=K≪N（如K≤N/5）以避免过拟合与病态拟合。",
+              "score": 30,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：给出定量界限并据此筛K；中分：仅口头说明；低分：未考虑P与N关系。"
+            },
+            {
+              "sub_criteria": "数据平稳性与无记忆假设",
+              "description": "合理声明信号为无记忆映射、时间平稳对统计估计有效。",
+              "score": 20,
+              "evaluation_focus": "问题假设",
+              "scoring_hint": "高分：解释为何幅度分离适配AM-AM/AM-PM；中分：仅声明无记忆；低分：自相矛盾假设。"
+            },
+            {
+              "sub_criteria": "噪声与异常值处理假设",
+              "description": "说明NaN/异常值剔除策略与对参数估计的影响（鲁棒性考虑）。",
+              "score": 25,
+              "evaluation_focus": "数据假设",
+              "scoring_hint": "高分：定义阈值/分位剔除或IQR方法；中分：笼统提去噪；低分：无处理。"
+            },
+            {
+              "sub_criteria": "验证独立性与随机种子",
+              "description": "假设并设置固定随机种子确保训练/验证/测试独立与可复现。",
+              "score": 25,
+              "evaluation_focus": "实验可复现",
+              "scoring_hint": "高分：指明seed值与划分比例；中分：仅称可复现；低分：无可复现措施。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "设计矩阵Φ构造与列标准化",
+              "description": "正确生成每列φ_k=x|x|^{k-1}并进行零均值单位方差或范数归一化。",
+              "score": 30,
+              "evaluation_focus": "特征工程",
+              "scoring_hint": "高分：给出具体标准化公式/实现；中分：仅口头说明；低分：未标准化。"
+            },
+            {
+              "sub_criteria": "正交化与条件数控制(QR/SVD)",
+              "description": "采用QR或经济SVD改善病态并报告cond(Φ)或cond(Φ^HΦ)。",
+              "score": 30,
+              "evaluation_focus": "数值稳定",
+              "scoring_hint": "高分：实现QR/SVD并报告数值；中分：仅引用方法；低分：无措施与无报告。"
+            },
+            {
+              "sub_criteria": "候选阶数K搜索策略",
+              "description": "设定K∈[1,7]或K≤N/5并以验证NMSE选择K。",
+              "score": 20,
+              "evaluation_focus": "模型选择",
+              "scoring_hint": "高分：网格搜索并画NMSE-K曲线/表；中分：尝试少量K；低分：固定K无理由。"
+            },
+            {
+              "sub_criteria": "复到实等价构造",
+              "description": "必要时构造[ReΦ -ImΦ; ImΦ ReΦ]与[Re z; Im z]进行实回归。",
+              "score": 20,
+              "evaluation_focus": "数学实现",
+              "scoring_hint": "高分：给出明确矩阵结构；中分：仅提可转化；低分：实现错误或缺失。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "Tikhonov正则(岭回归)求解",
+              "description": "实现 ĥ=(Φ^HΦ+λI)^{-1}Φ^H z 或等价求解器，避免直接求逆。",
+              "score": 30,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：用QR/SVD或cholesky/solve；中分：直接inv但正确；低分：公式或实现错误。"
+            },
+            {
+              "sub_criteria": "λ选择与交叉验证/GCV",
+              "description": "通过k折CV/GCV/验证集最小NMSE选择λ并报告范围与最佳值。",
+              "score": 25,
+              "evaluation_focus": "超参选择",
+              "scoring_hint": "高分：网格+曲线/表；中分：少量尝试；低分：固定λ无依据。"
+            },
+            {
+              "sub_criteria": "病态或高维时的降阶/稀疏化",
+              "description": "当cond大或P≈N时，说明并尝试降阶或LASSO/OMP筛选基函数。",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：触发条件与处理到位；中分：仅提出可能；低分：忽略导致不稳定。"
+            },
+            {
+              "sub_criteria": "数值诊断与残差检验",
+              "description": "在验证/测试上检查残差分布/自相关，判断欠拟合/过拟合。",
+              "score": 25,
+              "evaluation_focus": "结果校验",
+              "scoring_hint": "高分：提供ACF或统计描述并解读；中分：仅述定性；低分：无诊断。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据读取与清洗（MATLAB load/ Python loadmat）",
+              "description": "可运行脚本读取pa_in_out_memoryless.mat，NaN/异常处理与统计输出（N、A_max、幅度/功率分布）。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：一键运行并打印统计；中分：能跑但统计不全；低分：读取或清洗失败。"
+            },
+            {
+              "sub_criteria": "设计矩阵、标准化与QR/SVD实现",
+              "description": "构造Φ并标准化，调用numpy/scipy/sklearn或MATLAB实现QR/SVD并返回条件数。",
+              "score": 25,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：接口规范且数值稳定；中分：实现但未报告条件数；低分：实现错误或不稳定。"
+            },
+            {
+              "sub_criteria": "岭回归与交叉验证流程",
+              "description": "实现λ网格与K搜索，按验证NMSE选择(K,λ)，避免数据泄漏。",
+              "score": 30,
+              "evaluation_focus": "实验管线",
+              "scoring_hint": "高分：封装管线与固定随机种子；中分：分散代码可运行；低分：泄漏或无法复现。"
+            },
+            {
+              "sub_criteria": "指标计算与报告格式",
+              "description": "正确计算训练/验证/测试NMSE(dB)、可选EVM(%)，并输出最终ĥ、K、λ、条件数与残差摘要。",
+              "score": 20,
+              "evaluation_focus": "结果输出",
+              "scoring_hint": "高分：单位与格式规范；中分：缺少少量字段；低分：指标错误或缺失关键结果。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "NMSE对比与泛化能力",
+              "description": "比较训练/验证/测试NMSE，分析是否过拟合或欠拟合并给出K/λ调整建议。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：定量比较并提出具体调整；中分：定性描述；低分：无比较或结论错误。"
+            },
+            {
+              "sub_criteria": "EVM与AM-AM/AM-PM解释（可选）",
+              "description": "报告EVM(%)并联系幅度分离模型解释AM-AM/AM-PM拟合充分性。",
+              "score": 20,
+              "evaluation_focus": "物理理解",
+              "scoring_hint": "高分：EVM与物理含义对应；中分：仅给EVM数值；低分：未计算或误解含义。"
+            },
+            {
+              "sub_criteria": "条件数与稳定性讨论",
+              "description": "结合cond(Φ)或cond(Φ^HΦ)讨论数值稳定性与对ĥ可信度的影响。",
+              "score": 25,
+              "evaluation_focus": "数值诊断",
+              "scoring_hint": "高分：阈值与改进措施（降K/增λ/正交化）；中分：泛谈；低分：无讨论。"
+            },
+            {
+              "sub_criteria": "残差分布/自相关诊断",
+              "description": "给出残差幅度/相位分布与自相关，判断系统性误差或未建模效应。",
+              "score": 25,
+              "evaluation_focus": "诊断洞察",
+              "scoring_hint": "高分：指出具体偏差并建议后续（不越界到预失真设计）；中分：仅给图无结论；低分：无诊断。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2（预失真器参数化、目标函数与求解策略）应以“给定功放辨识结果或已采得的训练样本对 {(x(n),z(n))} 以及功放可接受的最大输入幅度 A_max 为前提，构造并求解一个工程可实现的预失真器 F(·) 的参数向量”为范围与目标：具体要求用明确的、可实现的参数化形式表示 F（推荐使用与功放模型同类的记忆多项式/广义记忆多项式结构以保持线性参数形式，即 y(n)=F_a[x](n)=∑_{p=1}^P ∑_{q=0}^Q a_{p,q} x(n-q)|x(n-q)|^{p-1}，系数 a_{p,q} 为复数，P 与 Q 由实现复杂度和训练样本数量共同决定），并以满足幅度硬约束 |y(n)| ≤ A_max 为必须条件同时尽量提高平均送入功放的功率 P_y=(1/N)∑|y(n)|^2 为次要目标，在此约束下使级联误差最小化；把数学目标明确为最小化 J(a,g)=∑_{n=1}^N |G(y(n)) - g x(n)|^2（g 可为固定目标增益或作为待估标量），并可将“功率最大化”通过加入负权项 -μ P_y 或通过在满足 NMSE≤ε 的前提下对整体放大因子 α（即 y←α·y）做线搜索来实现。关于求解策略，提供两条工程可行路径：间接学习架构（ILA）——在后向方向用相同结构线性回归拟合 H 使 H(z) ≈ x（可用岭回归/Ridge 或 LASSO 做正则化并对复值问题按实虚部进行堆叠），将 H 的参数直接作为前置预失真器的初值，随后对得到的 y(n) 做幅度投影（硬投影或软饱和如 tanh 近似）并通过一维线搜索或二分法寻找最大缩放因子 α 满足幅度约束且误差在容许范围内；直接约束最小化——以 J(a,g)（并带有幅度约束 |F_a(x(n))|≤A_max）为原问题，采用交替优化：固定 a 解 g（闭式最小二乘），固定 g 用非线性最小二乘求 a（采用 Gauss–Newton 或 Levenberg–Marquardt，或用带约束的 SQP/序列二次规划求解器如 MATLAB fmincon / Python scipy.optimize.minimize with trust-constr），每次迭代后对 y 做投影以维持可行性，并用 ILA 解作为初始化以提升收敛性和避免陷入差的局部最优；数值稳定性措施包括对设计矩阵列进行标准化/QR 正交化或 SVD，使用 Tikhonov 正则化（岭）或稀疏化（L1）以控制参数维度并通过 k 折交叉验证选择超参数 λ 与模型阶数 (P,Q)，复值参数的求解采用将复方程拆为实部/虚部等价实矩阵方法或直接支持复数的数值库；幅度约束可用硬投影（逐样本裁剪并比例缩放）或更平滑的软饱和函数来减少不连续性对收敛的影响；为实现功率最大化，可在 ILA 初值上做全样本整体幅度放大并在每步检测 NMSE/EVM，并在需要时将功率项以拉格朗日乘子方式并入目标以做权衡（调整 μ）。建议使用的工具与算法包括 MATLAB（lsqnonlin、fmincon、ridge、lsqr）、Python（numpy/scipy.linalg、scipy.optimize.least_squares、cvxpy用于凸子问题、sklearn 的 Ridge/Lasso）以及若需在线更新则采用 RLS/带遗忘因子的递归最小二乘或小步长 SGD；最终输出为预失真参数向量 a、（若估计）标量 g 或放大因子 α、满足幅度约束的预失真输出序列 y(n) 的生成函数与实现细节（复杂度 P=(P·(Q+1))、需要的乘加运算数），并应提供用于超参数选择（P,Q,λ,μ）与收敛判据（NMSE/EVM 阈值、最大迭代次数）的明确定义，以便独立复现与工程实现。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在给定 {(x(n), z(n))} 与功放模型/或黑箱 G(·) 及最大输入幅度 A_max 前提下，参数化并优化拟合预失真器 F(·) 使级联误差最小、满足 |y(n)|≤A_max 且尽量最大化输入功率。",
+          "expected_output": "预失真器参数向量 a（复数）、可选标量增益 g 或整体缩放因子 α、满足幅度约束的预失真输出序列 y(n)、训练脚本/代码（MATLAB/Python）、所选结构与超参数(P,Q,λ,μ)、收敛与约束检查日志、NMSE/EVM 指标。",
+          "key_inputs_constraints": "输入复序列 x(n) 与目标/观测 z(n)；已辨识或可调用的功放 G(·)；幅度硬约束 A_max；预失真结构阶数 P,Q（P·(Q+1)≪N）；正则化 λ 与功率项权重 μ；必须满足 |F_a(x(n))|≤A_max；以 NMSE 最小化为主、P_y 最大化为次；复值参数可按实/虚堆叠求解。",
+          "modeling_type": "优化+拟合",
+          "role_in_pipeline": "作为系统线性化核心模块设计与训练环节，前序依赖：子任务1的功放行为辨识与数据集；并与子任务3的数值稳定性/正则化与评价方法衔接。后续输出供系统级验证、频域评估与工程部署使用。",
+          "assumptions": "若 G(·)未显式给出，则可基于 {(x,z)} 通过间接学习架构 ILA 拟合反模型 H 并映射为 F 的初值；训练样本覆盖度足以支撑所选 P,Q。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别级联误差最小化 J(a,g)=∑|G(F_a(x))-g x|^2 的核心目标",
+              "description": "明确把子任务表述为在幅度约束下优化预失真器 F 的参数向量 a 与可选增益 g，使 G∘F 的NMSE最小。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：写出J(a,g)并点明NMSE最小化；中分：描述误差最小但未给出公式或g；低分：误将目标设为单纯P_y最大或仅拟合z≈F(x)。"
+            },
+            {
+              "sub_criteria": "识别并强调幅度硬约束 |y(n)|≤A_max",
+              "description": "把 A_max 作为必须满足的可行性约束，说明对 y=F_a(x) 的逐样本限制与投影策略需求。",
+              "score": 25,
+              "evaluation_focus": "约束理解",
+              "scoring_hint": "高分：提出硬投影/软饱和并说明一致实现；中分：仅口头提及A_max；低分：忽略或只在测试时检查不合格。"
+            },
+            {
+              "sub_criteria": "权衡功率最大化 P_y 与NMSE 的次主目标",
+              "description": "识别“功率最大化”为次要目标，提出与主目标的权衡（拉格朗日/线搜索 α）。",
+              "score": 20,
+              "evaluation_focus": "权衡设计",
+              "scoring_hint": "高分：给出-μP_y或α线搜索细节与停止准则；中分：提及功率提升但无实现细节；低分：未讨论或与约束冲突。"
+            },
+            {
+              "sub_criteria": "定位工程可实现性与复杂度限制",
+              "description": "指出 P·(Q+1)≪N、实时实现与数值稳定性需求（正则化/QR/SVD）。",
+              "score": 20,
+              "evaluation_focus": "工程意识",
+              "scoring_hint": "高分：量化P上限/N关系；中分：泛泛而谈复杂度；低分：无任何实现性考虑。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述预失真器参数化 y(n)=∑_{p,q} a_{p,q} x(n-q)|x(n-q)|^{p-1}",
+              "description": "使用记忆多项式/广义记忆多项式结构并强调复系数 a_{p,q}。",
+              "score": 30,
+              "evaluation_focus": "精确表述",
+              "scoring_hint": "高分：公式正确含p∈[1,P],q∈[0,Q]；中分：缺少幅度分离项；低分：用x^k而不区分幅度分离且无记忆。"
+            },
+            {
+              "sub_criteria": "复述优化变量与超参数 (a,g,α,P,Q,λ,μ)",
+              "description": "清楚区分可学习参数与超参数并指明其角色。",
+              "score": 25,
+              "evaluation_focus": "要素完整",
+              "scoring_hint": "高分：逐一列明并说明选择策略；中分：遗漏1–2项；低分：只提a或含糊不清。"
+            },
+            {
+              "sub_criteria": "复述约束与目标的组合策略",
+              "description": "说明硬约束+目标（NMSE最小）+次目标（P_y最大）的联合处理方式。",
+              "score": 25,
+              "evaluation_focus": "约束整合",
+              "scoring_hint": "高分：描述投影/惩罚或α线搜索；中分：仅单目标；低分：目标与约束混淆。"
+            },
+            {
+              "sub_criteria": "定位两条求解路径：ILA 与直接约束最小化",
+              "description": "准确复述两种工程路径及其适用性与初始化关系。",
+              "score": 20,
+              "evaluation_focus": "方法对齐",
+              "scoring_hint": "高分：点出ILA拟合H(z)≈x并映射到F；中分：只提一种路径；低分：与任务无关的方法。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "关于 G(·) 可用或可辨识的可用性假设",
+              "description": "阐明若 G 未显式给出则采用 ILA 反模型 H 的假设。",
+              "score": 35,
+              "evaluation_focus": "假设清晰",
+              "scoring_hint": "高分：说明何时选ILA并给出可验证条件；中分：模糊提及；低分：完全忽略来源。"
+            },
+            {
+              "sub_criteria": "样本覆盖与模型阶数 P,Q 的选择假设",
+              "description": "假设 P·(Q+1)≤N/5 或类似规则确保稳定估计。",
+              "score": 25,
+              "evaluation_focus": "数据与复杂度",
+              "scoring_hint": "高分：量化上限并与N挂钩；中分：只说“适当”；低分：无任何约束。"
+            },
+            {
+              "sub_criteria": "数值稳定性与正则化假设",
+              "description": "假设设计矩阵列可标准化并用岭回归/QR/SVD稳定求解。",
+              "score": 20,
+              "evaluation_focus": "数值稳健",
+              "scoring_hint": "高分：指明λ>0与列归一化；中分：仅提正则化；低分：不考虑数值问题。"
+            },
+            {
+              "sub_criteria": "幅度约束实现一致性的假设",
+              "description": "训练与推理阶段采用同一硬投影或软饱和函数，避免分布漂移。",
+              "score": 20,
+              "evaluation_focus": "实现一致",
+              "scoring_hint": "高分：明确函数与参数；中分：仅说“一致”；低分：两阶段不一致或未提。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "F(·) 的记忆多项式/广义记忆多项式构造与设计矩阵 Φ_F",
+              "description": "正确构造列为 x(n-q)|x(n-q)|^{p-1} 的 Φ_F，支持复系数。",
+              "score": 30,
+              "evaluation_focus": "结构设计",
+              "scoring_hint": "高分：给出索引与维度 P·(Q+1)；中分：结构不完整；低分：与无记忆或错误基函数。"
+            },
+            {
+              "sub_criteria": "目标函数与约束的数学表达与可微性处理",
+              "description": "给出 J(a,g) 与 |y|≤A_max，说明投影或软饱和以利优化。",
+              "score": 25,
+              "evaluation_focus": "数理表达",
+              "scoring_hint": "高分：含精确公式与处理细节；中分：只口述；低分：缺失或矛盾。"
+            },
+            {
+              "sub_criteria": "功率最大化机制：-μP_y 或 α 线搜索",
+              "description": "给出可执行的 μ 调参或 α 二分/黄金分割流程与停止准则。",
+              "score": 20,
+              "evaluation_focus": "目标权衡",
+              "scoring_hint": "高分：明确阈值/步长与容差；中分：无细节；低分：未实现。"
+            },
+            {
+              "sub_criteria": "数值稳定化：标准化、QR/SVD、岭正则",
+              "description": "在构造 Φ_F 后进行列归一化与条件数控制，并说明λ选择范围。",
+              "score": 25,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：报告条件数或策略；中分：仅提正则化；低分：完全缺失导致不稳定。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "ILA 实现：后向拟合 H(z)≈x 并映射到 F 初值",
+              "description": "用岭回归/LASSO 求 H 参数，描述从 H 到前向 F 的参数映射与初始化。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：含正则与复数求解细节；中分：只提ILA名词；低分：未实现或错误映射。"
+            },
+            {
+              "sub_criteria": "直接约束最小化的交替优化（a 与 g）",
+              "description": "固定 a 解 g 的闭式最小二乘；固定 g 用 GN/LM 或 trust-constr 解 a，并在每步投影 y 满足 |y|≤A_max。",
+              "score": 30,
+              "evaluation_focus": "优化实现",
+              "scoring_hint": "高分：给出迭代准则与收敛停止；中分：流程不全；低分：无可执行步骤。"
+            },
+            {
+              "sub_criteria": "正则化与超参数搜索（λ, P, Q, μ）",
+              "description": "采用k折/GCV选择λ与阶数，或基于验证集最小NMSE选择。",
+              "score": 20,
+              "evaluation_focus": "超参选择",
+              "scoring_hint": "高分：明确k与搜索范围；中分：手调无验证；低分：未说明。"
+            },
+            {
+              "sub_criteria": "幅度约束与功率放大因子 α 的线搜索",
+              "description": "实现满足 |α y|≤A_max 的最大 α 搜索并监控 NMSE/EVM 退化。",
+              "score": 20,
+              "evaluation_focus": "约束求解",
+              "scoring_hint": "高分：给出二分/解析上界与停止条件；中分：粗略调节；低分：不做或违反约束。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "MATLAB/Python 实现 Φ_F 构造与复值支持",
+              "description": "代码正确生成设计矩阵，支持复数或实/虚堆叠等价实现。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：含单元测试或维度检查；中分：可运行但健壮性不足；低分：维度或类型错误。"
+            },
+            {
+              "sub_criteria": "优化与正则化调用的可复现流程",
+              "description": "提供可运行脚本：ILA回归/LM优化、λ搜索、随机种子、日志与保存参数。",
+              "score": 30,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：一键运行得到 a,g/α；中分：多段手工步骤；低分：缺少关键脚本。"
+            },
+            {
+              "sub_criteria": "幅度投影/软饱和与 α 线搜索实现",
+              "description": "实现硬投影或tanh饱和，并在训练/推理阶段一致调用；提供 α 搜索函数。",
+              "score": 20,
+              "evaluation_focus": "实现细节",
+              "scoring_hint": "高分：封装良好并含断言；中分：零散代码；低分：未实现或与描述不符。"
+            },
+            {
+              "sub_criteria": "工程复杂度统计（P·(Q+1)、每样点乘加数）",
+              "description": "输出参数规模与每样点复乘/实乘估算，便于部署评估。",
+              "score": 20,
+              "evaluation_focus": "工程度量",
+              "scoring_hint": "高分：给出具体数值与公式；中分：只给口头描述；低分：无任何估算。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "NMSE/EVM 指标在训练/验证/测试上的报告",
+              "description": "在满足 |y|≤A_max 前提下报告并比较 J(a,g)→NMSE（dB）与EVM（%）。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：三分集齐全并解释泛化；中分：仅训练或验证；低分：无指标或违反约束。"
+            },
+            {
+              "sub_criteria": "功率最大化效果（P_y 与 α）的量化",
+              "description": "对比投影前后/优化前后 P_y 与 α 的提升与对 NMSE 的影响。",
+              "score": 25,
+              "evaluation_focus": "权衡评估",
+              "scoring_hint": "高分：给出数值与曲线或表格；中分：定性描述；低分：未分析。"
+            },
+            {
+              "sub_criteria": "稳定性与收敛诊断（条件数、迭代曲线、λ）",
+              "description": "报告Φ的条件数、正则化强度、迭代NMSE曲线与收敛判据达成情况。",
+              "score": 20,
+              "evaluation_focus": "稳健性评估",
+              "scoring_hint": "高分：提供数值/图；中分：零散说明；低分：无诊断。"
+            },
+            {
+              "sub_criteria": "实现可行性与复杂度讨论（P,Q选择与在线适配可行性）",
+              "description": "讨论所选 P,Q 在实时实现中的可行性与潜在在线更新策略建议。",
+              "score": 20,
+              "evaluation_focus": "工程洞察",
+              "scoring_hint": "高分：提出RLS/SGD可行性与上限；中分：简单提及；低分：无讨论。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（数值稳定性、正则化、在线自适应与实现复杂度估计；频域分析与评价方法）的目标是提供一套可操作的数值处理、正则化与在线更新策略以及频域评估流程，确保线性参数化设计矩阵 Φ 在求解与部署时数值稳定且适合实时实现，并为 NMSE、EVM 与 ACPR 的计算给出可重复的参数化方法与实现复杂度估算。具体要求与步骤如下：首先输入为已构造的设计矩阵 Φ（含所有训练样本对对应的基函数列，复数情形可按实/虚部堆叠成实矩阵）与输出向量 z；在构造后应立即计算 Φ^H Φ 的条件数并对列归一化（按列范数或零均值单位方差），若条件数较大则对 Φ 进行列正交化（推荐使用经济 QR 或 SVD，以得到正交基 Q 与上三角 R，保存变换以便参数回转），并将最终求解转化为在正交基上的最小二乘问题以改善数值稳定性。其次在求解参数时必须采用正则化：对线性问题使用岭回归（Tikhonov）形式 ĥ=(Φ^H Φ+λI)^{-1}Φ^H z，λ 的选择通过 k 折交叉验证或广义交叉验证（GCV）自动化搜索；当参数维数 P 接近样本数或存在强相关列时优先采用 SVD 截断或岭回归；若需稀疏化以降低实现复杂度，可先用正交匹配追踪（OMP）或 LASSO（通过 sklearn/ CVXPy）选择显著基项再做精炼最小二乘。第三，给出数值与复杂度估算：构造 Φ^H Φ 的成本约为 O(P^2 N)，求逆或 SVD 约为 O(P^3)，因此在实时/硬件场景应控制 P（推荐 P ≤ 200，且 N ≫ P）；在线递归算法选择带遗忘因子的 RLS（每步复杂度 O(P^2)）或小步长 SGD（每步 O(P)），并建议 RLS 遗忘因子在 0.98–0.999 之间、初始协方差用 δI（δ≈10^−3…10^−6）正则化以避免发散；在线更新需实现步长/增益上限、参数范数阈值与回滚策略（当 NMSE/EVM 突变或参数范数超阈值时回退到上一次稳态参数），并定期（或触发式）以批量最小二乘重校准以消除累积误差。第四，为避免因幅度投影引起的不连续性，建议采用平滑裁剪（例如饱和函数 tanh 或平滑分段线性）或先做全样本线性缩放再局部软裁剪，且任何投影应在训练与在线阶段一致实现以保持一致性。第五，频域评估的实现细节：采用 Welch 方法估计 PSD（选择窗函数如 Hanning、重叠 50%–75%、Nfft 可取为 2^nextpow2(样本段长度)），对给定采样率 Fs 和信道带宽 B（例如题目示例 Fs 已知、B=20 MHz）将频率区间映射到 PSD 索引，按 ACPR 定义数值积分邻频道与主频道能量并用 10·log10 表示；EVM 以样本形式计算 EVM = sqrt(mean(|e|^2))/sqrt(mean(|X|^2))·100%，NMSE 用题目公式实现并在报告中以 dB 给出；为降低 PSD 与 ACPR 的方差，建议多窗口/多次平均或延长 Nfft。最后给出实现工具与验证建议：线下/离线计算使用 MATLAB（qr、svd、ridge、lsqnonlin）、Python（numpy, scipy.linalg, sklearn.Ridge/Lasso, scipy.signal.welch, FFTW）与 CVXPy（凸子问题），在线实现需考虑将复乘分解为实运算、参数定点化/量化误差评估与乘加计数估算（给出估算公式：每个基项一复乘约为 4 实乘+2 实加，每个样点总复乘约为 P），并在交付文档中列出 P、每样点运算量、内存（参数数目）与推荐硬件实现上限以便工程权衡与部署决策。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在给定设计矩阵 Φ 与输出 z 上进行数值稳定的参数拟合与正则化，并提供可在线自适应更新与频域评价（NMSE/EVM/ACPR）的可复现实现与复杂度估算。",
+          "expected_output": "1) 条件数与列归一化/正交化报告；2) 岭回归(λ)或SVD截断参数与最终参数向量 ĥ；3) 在线RLS/SGD策略与超参数(遗忘因子、步长、δ)；4) NMSE(dB)/EVM(%)计算脚本；5) Welch PSD与ACPR数值及图表参数；6) 复杂度与内存估算表；7) 端到端可运行代码与复现实验脚本。",
+          "key_inputs_constraints": "输入：设计矩阵 Φ（可为复，需可转实堆叠）、输出向量 z、采样率 Fs、信道带宽 B、候选正则化 λ 网格或GCV配置。约束：P≪N（建议P≤200）、N≫P、条件数过大需QR/SVD、训练/在线阶段投影一致、ACPR需Welch参数明确（窗、重叠、Nfft）。前置：数据已清洗且Φ已按子任务1构造。",
+          "modeling_type": "拟合+评价+优化",
+          "role_in_pipeline": "作为建模与部署的数值稳健化与评价环节，位于行为模型结构已定且设计矩阵已构造之后；前序依赖：子任务1的设计矩阵与数据切分；后序供给：子任务2/预失真设计与系统级频谱评估、在线部署实现。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别数值稳定性与条件数问题（Φ^HΦ条件数）",
+              "description": "明确需要计算Φ^HΦ的条件数并判断是否需列归一化与QR/SVD正交化以稳定拟合。",
+              "score": 35,
+              "evaluation_focus": "建模思维/数值分析",
+              "scoring_hint": "高分：给出阈值（如cond>1e6）与对应处理；中分：仅口头说明需稳定化；低分：未提条件数或忽略稳定性风险。"
+            },
+            {
+              "sub_criteria": "正则化与模型复杂度控制（P≪N, P≤200）",
+              "description": "识别当P接近N或列强相关时需岭回归或SVD截断，并给出P控制建议。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：列出P阈值与O(P^2N)/O(P^3)成本；中分：泛述需正则化；低分：未提正则化或复杂度控制。"
+            },
+            {
+              "sub_criteria": "在线自适应需求（RLS/SGD）",
+              "description": "指出在线需要RLS(遗忘因子)或SGD(步长)及回滚与阈值保护。",
+              "score": 20,
+              "evaluation_focus": "系统观/工程性",
+              "scoring_hint": "高分：给出λ_f∈[0.98,0.999], δ范围与O(P^2)/O(P)；中分：仅提RLS/SGD；低分：忽略在线更新。"
+            },
+            {
+              "sub_criteria": "频域评价需求（Welch+ACPR）",
+              "description": "明确Welch参数、频带索引映射与ACPR数值积分及对NMSE/EVM一致实现。",
+              "score": 20,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：给窗(Hanning)、重叠、Nfft、Fs/B映射；中分：仅提Welch与ACPR；低分：未提频域实现细节。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "将拟合目标表述为岭回归 ĥ=(Φ^HΦ+λI)^{-1}Φ^Hz",
+              "description": "准确复述线性参数化拟合与正则化公式及复数到实堆叠等价转化。",
+              "score": 30,
+              "evaluation_focus": "数理表达",
+              "scoring_hint": "高分：给出实/虚部堆叠细节；中分：仅给出岭回归公式；低分：公式错误或缺失。"
+            },
+            {
+              "sub_criteria": "条件数、QR/SVD正交化与回转",
+              "description": "复述用经济QR/SVD获得Q,R或UΣV^H并说明参数回转到原基的步骤。",
+              "score": 25,
+              "evaluation_focus": "数值线代",
+              "scoring_hint": "高分：描述在Q基上解、再乘R^{-1}或VΣ^{-1}回转；中分：提到QR/SVD但不含回转；低分：无说明。"
+            },
+            {
+              "sub_criteria": "频域评估复述（Welch参数化与ACPR区间）",
+              "description": "重述Welch估计、频带[f1,f2],[f2,f3]映射索引及10·log10能量比。",
+              "score": 25,
+              "evaluation_focus": "评价流程",
+              "scoring_hint": "高分：明确窗、重叠、Nfft与索引计算；中分：仅概述；低分：遗漏关键参数。"
+            },
+            {
+              "sub_criteria": "在线RLS/SGD与保护机制",
+              "description": "复述RLS复杂度O(P^2)、遗忘因子、初始化δI、步长/参数范数阈值与回滚。",
+              "score": 20,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：参数范围具体；中分：仅提更新；低分：无在线策略。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "P、N与数值范围假设（P≤200，N≫P）",
+              "description": "明确维度与样本量关系以支撑稳定与复杂度估算。",
+              "score": 35,
+              "evaluation_focus": "假设合理性",
+              "scoring_hint": "高分：量化给出P、N关系；中分：原则性描述；低分：未提。"
+            },
+            {
+              "sub_criteria": "投影/裁剪一致性假设（训练=在线）",
+              "description": "提出平滑裁剪（tanh/软分段）并保证阶段一致以避免不连续误差。",
+              "score": 25,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：给出具体函数与阈值策略；中分：仅提一致性；低分：未考虑。"
+            },
+            {
+              "sub_criteria": "PSD平稳性与Welch平均假设",
+              "description": "假设平稳或近平稳，说明增加平均/增大Nfft降低方差。",
+              "score": 20,
+              "evaluation_focus": "统计意识",
+              "scoring_hint": "高分：提出多窗口/平均次数；中分：泛述；低分：未说明。"
+            },
+            {
+              "sub_criteria": "在线数值保护阈值假设",
+              "description": "设置NMSE/EVM突变阈值与参数范数上限作为回滚触发。",
+              "score": 20,
+              "evaluation_focus": "控制策略",
+              "scoring_hint": "高分：给出阈值示例（如NMSE上升>3 dB）；中分：口头提及；低分：无保护假设。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "列归一化与正交化（QR/SVD）流程设计",
+              "description": "实现按列范数标准化与经济QR或SVD，保存R或Σ,V用于参数回转。",
+              "score": 30,
+              "evaluation_focus": "算法设计",
+              "scoring_hint": "高分：给出具体矩阵形状与回转公式；中分：仅描述方法；低分：未实现或错误。"
+            },
+            {
+              "sub_criteria": "正则化选择与λ搜索（k折/GCV）",
+              "description": "设计k折或GCV，目标最小化验证NMSE(dB)并记录最优λ。",
+              "score": 30,
+              "evaluation_focus": "超参选择",
+              "scoring_hint": "高分：给网格范围与对数搜索策略；中分：固定λ；低分：无正则化。"
+            },
+            {
+              "sub_criteria": "稀疏化可选路径（OMP/LASSO）",
+              "description": "当P大或相关强时先选显著基再精炼最小二乘。",
+              "score": 20,
+              "evaluation_focus": "模型简化",
+              "scoring_hint": "高分：提供停止准则或α选择；中分：仅提可选；低分：不考虑。"
+            },
+            {
+              "sub_criteria": "频域评估模块（Welch+ACPR）结构",
+              "description": "模块化实现PSD估计、频带索引与积分、ACPR输出接口。",
+              "score": 20,
+              "evaluation_focus": "模块化设计",
+              "scoring_hint": "高分：参数化接口(Fs,B,Nfft,overlap,window)；中分：硬编码参数；低分：缺失或不完整。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "在正交基上的最小二乘与回转求解",
+              "description": "在Q或V基上解岭/截断SVD，再回转得到ĥ并报告条件数改善。",
+              "score": 30,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：展示cond降低或数值稳定证据；中分：仅给结果；低分：直接求逆不稳。"
+            },
+            {
+              "sub_criteria": "λ选择与验证NMSE/EVM",
+              "description": "通过k折/GCV选择λ并在验证集报告NMSE(dB)/EVM(%)。",
+              "score": 30,
+              "evaluation_focus": "模型选择",
+              "scoring_hint": "高分：曲线或表格对比；中分：单一λ；低分：无验证指标。"
+            },
+            {
+              "sub_criteria": "在线RLS/SGD递推与稳定性保护",
+              "description": "实现RLS或SGD更新，含遗忘因子/步长自适应、阈值与回滚。",
+              "score": 25,
+              "evaluation_focus": "递推算法",
+              "scoring_hint": "高分：提供伪码/复杂度与参数范围；中分：仅描述思路；低分：未实现。"
+            },
+            {
+              "sub_criteria": "复杂度与内存估算",
+              "description": "给出O(P^2N)、O(P^3)、每样点乘加数与参数内存规模。",
+              "score": 15,
+              "evaluation_focus": "复杂度分析",
+              "scoring_hint": "高分：量化至数字（如每样点≈P复乘）；中分：仅大O；低分：缺失。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数值线代实现（QR/SVD/岭回归）",
+              "description": "使用numpy/scipy/sklearn或MATLAB实现QR/SVD与Ridge，复到实堆叠正确。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：含单元测试或断言维度；中分：能跑；低分：维度/复实转换错误。"
+            },
+            {
+              "sub_criteria": "交叉验证与GCV自动化",
+              "description": "封装k折/GCV流程，输出最优λ与验证NMSE。",
+              "score": 25,
+              "evaluation_focus": "自动化工程",
+              "scoring_hint": "高分：可配置折数与网格；中分：固定折数；低分：手动挑λ。"
+            },
+            {
+              "sub_criteria": "Welch PSD与ACPR实现",
+              "description": "scipy.signal.welch或等价实现，参数化窗、重叠、Nfft并正确积分频带。",
+              "score": 25,
+              "evaluation_focus": "信号处理实现",
+              "scoring_hint": "高分：边界索引与单位校验；中分：能算；低分：频带映射错误。"
+            },
+            {
+              "sub_criteria": "在线RLS/SGD模块与保护机制",
+              "description": "可调用的RLS/SGD更新接口，含阈值触发与回滚逻辑。",
+              "score": 20,
+              "evaluation_focus": "系统工程",
+              "scoring_hint": "高分：提供示例与性能计数；中分：接口粗糙；低分：缺失。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "数值稳定性改进证据（条件数与残差）",
+              "description": "比较归一化/正交化前后条件数与残差统计，自相关或谱泄漏现象。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：量化cond改善与残差无自相关；中分：仅口头说明；低分：无证据。"
+            },
+            {
+              "sub_criteria": "NMSE(dB)/EVM(%)与基线对比",
+              "description": "报告训练/验证/测试的NMSE与EVM，并与无正则或不同λ比较。",
+              "score": 25,
+              "evaluation_focus": "评价严谨性",
+              "scoring_hint": "高分：三集合齐备并含误差条；中分：部分集合；低分：指标缺失。"
+            },
+            {
+              "sub_criteria": "ACPR分析与Welch参数敏感性",
+              "description": "展示PSD三类信号与ACPR，讨论窗/重叠/Nfft变化对ACPR的影响。",
+              "score": 25,
+              "evaluation_focus": "频域洞察",
+              "scoring_hint": "高分：至少两组参数对比；中分：单组参数；低分：仅口述结论。"
+            },
+            {
+              "sub_criteria": "实现复杂度与部署建议",
+              "description": "给出P、每样点运算量、内存与硬件上限建议（如P上限、定点化考虑）。",
+              "score": 20,
+              "evaluation_focus": "工程建议",
+              "scoring_hint": "高分：具体数字与上限；中分：定性；低分：无建议。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "在独立测试与部署验收阶段，子任务 4 的目标是以系统化、可重复的流程验证所设计预失真器在时域与频域的性能（NMSE、EVM、ACPR）、量化其对平均输出功率与可实现放大倍数的提升，并给出明确的迭代改进规则与在线部署/监控策略；为此该子任务需接受为输入的三类时域序列（原始输入 x(n)、未经预失真时的 PA 输出 z(n)、经预失真后 PA 的输出 z_pd(n)）及采样率 Fs 和信道带宽 B，并按以下单一、连贯流程执行： (1) 离线性能评估——在独立测试集上计算并报告 NMSE（按式(8)、以 dB 表示）、EVM（按式(9)、以%表示）与 ACPR（利用 Welch 方法估计 PSD，推荐参数：Hann 窗、50% 重叠、段长可取 1024 或根据样本量取下一 2 的幂、Nfft 选 4096 或更高以提高频率分辨率），明确主信道和邻道的频率索引映射（以 B=20 MHz 为例映射到 Fs 的对应频带），并绘制三类信号的 PSD 比较图和误差矢量图/星座图； (2) 功率与放大因子检验——通过对预失真器输出做逐步线性缩放（线搜索或二分法）直至触及幅度上限 A_max 或某项性能阈值被违反，确定实际可安全实现的最大放大倍数 g_max 及对应的平均送入功放功率增益，并记录导致约束触发的具体指标（峰值超限或 NMSE/EVM/ACPR 超阈）； (3) 判定准则与迭代改进策略——按事先定义的阈值（建议示例：NMSE 退化或未改善 ≥1 dB、EVM 超过目标如 3–5% 视调制格式而定、ACPR 超过许可掩码）判定是否需要改进；若需改进，按优先级迭代：先调整正则化强度与基函数稀疏化（λ、LASSO/OMP 篩选），再微调模型阶数/记忆深度（K、M），随后在离线用带频域惩罚项或多目标优化（将邻频道能量作为惩罚或约束）精化参数；每次改进后重复 (1)–(2) 验证性能并记录版本化参数与度量； (4) 部署与在线监控机制——部署时保留两套参数集（当前运行集与 last‑known‑good），在现场以滑动窗口方式（建议窗口长度 N_window 例如 2048 样本或代表约 10–100 ms 的时长，依系统而定）周期性计算 NMSE、EVM 与快速 ACPR 估算，当任一指标越限触发等级化响应：轻微越限触发 RLS/小步长自适应更新（遗忘因子 0.98–0.999、参数变化幅度限制与步长上限），严重越限回滚到 last‑known‑good 并上报；所有参数更新须满足最小样本量与渐进验证（更新后需在验证窗内恢复或改善指标），并对每次更新记录诊断数据以便离线回溯； (5) 安全与实现约束——在任何在线或离线步骤均强制执行样本级幅度投影/软饱和以保证 |y(n)| ≤ A_max，限制每次参数更新的范数增量以防参数发散，并评估计算与记忆成本（每样本复基项 P 导致约 P 复乘的开销，部署时须保证实时硬件/固件能承受）； (6) 报告与验收条目——最终交付一份版本化的验证报告包含：测试机上三信号的 NMSE/EVM/ACPR 数值表、PSD 与星座图、确定的 g_max 与平均功率提升百分比、触发改进的阈值与最近一次改进记录、在线监控策略细则（监控间隔、阈值、回滚策略、RLS 超参）及实现资源估算（参数个数 P、每样本运算量、建议窗口/FFT 参数和所需内存），并提供可执行的 MATLAB/Python 验证脚本（包含 Welch/FFT、NMSE/EVM/ACPR 计算、线搜索放大测试及自动化迭代流程）以便独立复现与工程接入。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在独立测试与部署验收阶段，评估与优化预失真器的性能并确定可实现的最大放大倍数：对三类信号进行NMSE/EVM/ACPR评估、线搜索放大因子以满足|y(n)|≤A_max与性能阈值，形成可复现的报告与在线监控策略。",
+          "expected_output": "数值报表（NMSE dB、EVM %、ACPR dB、g_max、平均功率提升%）、三类信号PSD与星座/误差矢量图、阈值与改进记录、在线监控与回滚/RLS策略说明、实现资源估算，以及可执行验证脚本（MATLAB/Python）。",
+          "key_inputs_constraints": "输入序列x(n)、z(n)、z_pd(n)；采样率Fs；信道带宽B（如20 MHz）；幅度上限A_max；性能阈值（NMSE/EVM/ACPR 掩码）；Welch参数（窗、重叠、Nfft）；线搜索策略（步长/二分）；必须执行|y(n)|≤A_max的硬/软投影；独立测试集不可与训练重叠。",
+          "modeling_type": "评价+优化",
+          "role_in_pipeline": "作为最终验证与部署前验收环节：依赖前序的功放辨识与预失真器训练（子任务1/2/3），向后输出部署参数、g_max与在线监控规则供上线运行与维护；包含离线评估与在线监控设计。",
+          "assumptions": "若未提供正式掩码，示例阈值采用：EVM≤5%，ACPR满足20 MHz相邻道掩码基线，NMSE较无补偿改善≥1 dB；Welch参数默认Hann窗、50%重叠、Nfft≥4096。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确三类信号评价目标（x(n)、z(n)、z_pd(n)的NMSE/EVM/ACPR）",
+              "description": "是否清楚界定需在独立测试集上分别计算并报告三类信号及其误差关系（z对x、z_pd对x）的NMSE(dB)、EVM(%)与ACPR(dB)。",
+              "score": 30,
+              "evaluation_focus": "任务边界",
+              "scoring_hint": "高分：三指标齐全且定义与式(8)(9)一致；中分：缺少其一或未区分参考信号；低分：未聚焦NMSE/EVM/ACPR或口径错误。"
+            },
+            {
+              "sub_criteria": "放大因子与幅度约束识别（g_max与|y(n)|≤A_max）",
+              "description": "是否识别并强调通过线搜索/二分寻找最大可实现放大倍数g_max，同时严格满足样本级幅度约束。",
+              "score": 25,
+              "evaluation_focus": "约束理解",
+              "scoring_hint": "高分：给出搜索策略与触发条件；中分：只给定放大概念无约束细则；低分：忽略A_max或无g_max确定方法。"
+            },
+            {
+              "sub_criteria": "频域评估需求（Welch参数与带宽映射）",
+              "description": "是否指出Welch法、窗型/重叠/Nfft及主/邻道频带索引映射与Fs、B的对应关系。",
+              "score": 25,
+              "evaluation_focus": "评价细节",
+              "scoring_hint": "高分：给出Hann、50%重叠、Nfft≥4096及20 MHz映射方法；中分：仅提Welch无参数；低分：未涉及频域或实现不可行。"
+            },
+            {
+              "sub_criteria": "在线监控与回滚需求",
+              "description": "是否识别上线后需滑动窗口监控NMSE/EVM/ACPR并设定回滚与RLS微调机制。",
+              "score": 20,
+              "evaluation_focus": "工程意识",
+              "scoring_hint": "高分：窗口长度、阈值、回滚与RLS遗忘因子明确；中分：仅泛述监控；低分：无在线监控策略。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "评价口径一致性（公式与单位）",
+              "description": "复述中是否明确NMSE以dB、EVM以%、ACPR以dB输出且与式(8)(9)一致。",
+              "score": 25,
+              "evaluation_focus": "规范统一",
+              "scoring_hint": "高分：单位口径齐全且无歧义；中分：单位缺失一项；低分：单位错误或与公式不符。"
+            },
+            {
+              "sub_criteria": "带宽映射与Fs的关系复述",
+              "description": "是否清楚将B=20 MHz映射到PSD频率索引区间，并说明对称带设置。",
+              "score": 25,
+              "evaluation_focus": "频域表述",
+              "scoring_hint": "高分：给出索引转换或频率轴标定；中分：仅口头描述；低分：未复述映射。"
+            },
+            {
+              "sub_criteria": "g_max线搜索与约束触发说明",
+              "description": "是否表述通过线性缩放直至触及A_max或性能阈值（NMSE/EVM/ACPR）并记录触发项。",
+              "score": 25,
+              "evaluation_focus": "流程复述",
+              "scoring_hint": "高分：明确二分/步长与停止准则；中分：仅说“调参到极限”；低分：无流程。"
+            },
+            {
+              "sub_criteria": "报告与验收条目完整性",
+              "description": "是否复述需提交PSD图/星座图、数值表、阈值与改进记录、脚本与资源估算。",
+              "score": 25,
+              "evaluation_focus": "交付意识",
+              "scoring_hint": "高分：逐项列明；中分：遗漏1-2项；低分：只给结论无交付物。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "阈值假设（EVM、ACPR掩码、NMSE改善）",
+              "description": "明确缺省阈值假设（如EVM≤5%、NMSE改善≥1 dB、ACPR满足20 MHz掩码）并可配置。",
+              "score": 30,
+              "evaluation_focus": "假设管理",
+              "scoring_hint": "高分：给出数值与可配置性；中分：给范围无数值；低分：无阈值。"
+            },
+            {
+              "sub_criteria": "Welch参数与Nfft假设",
+              "description": "设定Hann、50%重叠、段长/nextpow2、Nfft≥4096以保障频率分辨率。",
+              "score": 25,
+              "evaluation_focus": "信号处理",
+              "scoring_hint": "高分：参数齐全且解释分辨率；中分：仅给窗/重叠；低分：未设参数。"
+            },
+            {
+              "sub_criteria": "数据独立性与窗口长度假设",
+              "description": "假设测试集独立且在线监控窗口N_window（如2048或10–100 ms）足以统计稳定。",
+              "score": 25,
+              "evaluation_focus": "统计有效性",
+              "scoring_hint": "高分：给出数值与理由；中分：只说“独立”；低分：忽略独立性与窗口。"
+            },
+            {
+              "sub_criteria": "幅度投影方式假设（硬/软）",
+              "description": "说明裁剪或tanh软饱和用于|y(n)|≤A_max且离线/在线一致。",
+              "score": 20,
+              "evaluation_focus": "可实现性",
+              "scoring_hint": "高分：定义具体函数与一致性；中分：仅提裁剪；低分：未说明。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "评价与放大测试流程构建",
+              "description": "构建单一、连贯流程：离线NMSE/EVM/ACPR→线搜索g_max→判定与改进→部署监控。",
+              "score": 30,
+              "evaluation_focus": "流程设计",
+              "scoring_hint": "高分：流程可执行、可复现；中分：步骤不连贯；低分：缺关键环节。"
+            },
+            {
+              "sub_criteria": "PSD估计模型（Welch配置与频带划分）",
+              "description": "给出段长、窗、重叠、Nfft与主/邻道频带索引计算与积分方法。",
+              "score": 30,
+              "evaluation_focus": "频域建模",
+              "scoring_hint": "高分：含索引/Hz到bin映射与积分细节；中分：缺映射或积分；低分：无可实现细节。"
+            },
+            {
+              "sub_criteria": "在线监控与RLS/回滚框架",
+              "description": "定义滑动窗口指标、等级化响应、RLS遗忘因子(0.98–0.999)与回滚到last-known-good。",
+              "score": 25,
+              "evaluation_focus": "系统设计",
+              "scoring_hint": "高分：含触发与恢复判据；中分：仅述RLS；低分：无框架。"
+            },
+            {
+              "sub_criteria": "安全与资源约束模型",
+              "description": "样本级幅度投影、参数增量限幅、运算量与内存估算（基项P与每样本复乘）。",
+              "score": 15,
+              "evaluation_focus": "工程约束",
+              "scoring_hint": "高分：量化P与成本；中分：概述；低分：未考虑。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "NMSE/EVM/ACPR计算实现细节",
+              "description": "提供可计算的公式与步骤（含归一化、单位、频带积分法）。",
+              "score": 35,
+              "evaluation_focus": "算法细节",
+              "scoring_hint": "高分：边界与数值稳定性考虑；中分：缺一项细节；低分：不可执行。"
+            },
+            {
+              "sub_criteria": "g_max线搜索/二分实现与停止准则",
+              "description": "定义放大步进、二分容差、约束触发（A_max、NMSE/EVM/ACPR阈值）。",
+              "score": 35,
+              "evaluation_focus": "优化策略",
+              "scoring_hint": "高分：含容差与回退策略；中分：仅线性扫描；低分：无准则。"
+            },
+            {
+              "sub_criteria": "改进策略次序与多目标权衡",
+              "description": "按照λ/稀疏→阶数/记忆→频域惩罚迭代，并记录版本与指标。",
+              "score": 30,
+              "evaluation_focus": "策略设计",
+              "scoring_hint": "高分：可操作且记录完备；中分：顺序含糊；低分：无策略。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "Welch/FFT与频带索引代码可执行性",
+              "description": "MATLAB/Python脚本含Hann、重叠、Nfft、索引映射与积分，能复现ACPR。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：参数化与边界检查；中分：硬编码或缺检查；低分：不可运行。"
+            },
+            {
+              "sub_criteria": "NMSE/EVM/ACPR与线搜索自动化",
+              "description": "函数化实现三指标与g_max搜索，返回触发指标与功率提升。",
+              "score": 30,
+              "evaluation_focus": "自动化程度",
+              "scoring_hint": "高分：一键评估；中分：半手工；低分：手动计算。"
+            },
+            {
+              "sub_criteria": "在线监控原型（滑窗、RLS/回滚）",
+              "description": "提供示例监控循环、阈值、遗忘因子、回滚与日志记录。",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：可直接集成；中分：示意伪码；低分：无原型。"
+            },
+            {
+              "sub_criteria": "资源估算与参数化配置",
+              "description": "脚本输出P、每样本运算量、内存、窗口/Nfft配置并可通过配置文件修改。",
+              "score": 15,
+              "evaluation_focus": "可部署性",
+              "scoring_hint": "高分：配置化+报告；中分：文档说明；低分：无估算。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "离线性能对比与改进幅度",
+              "description": "对比z对x与z_pd对x的NMSE/EVM/ACPR，量化改善（≥1 dB等）并解释原因。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：量化改善与不确定性；中分：仅定性；低分：无对比。"
+            },
+            {
+              "sub_criteria": "g_max与功率提升分析",
+              "description": "报告g_max、平均功率提升%，指出限制因子（A_max或某指标阈值）。",
+              "score": 25,
+              "evaluation_focus": "性能边界",
+              "scoring_hint": "高分：含灵敏度/容差；中分：仅给数值；低分：未解释限制。"
+            },
+            {
+              "sub_criteria": "PSD/星座图解读与ACPR合规性",
+              "description": "解释三类PSD差异、邻道泄露变化与是否满足掩码；结合星座畸变讨论。",
+              "score": 25,
+              "evaluation_focus": "频域洞察",
+              "scoring_hint": "高分：定位旁瓣/失真来源；中分：表述笼统；低分：无图或不解读。"
+            },
+            {
+              "sub_criteria": "迭代改进与在线监控建议",
+              "description": "基于评估结果提出下一步λ/稀疏/阶数调整与在线监控阈值/窗口建议。",
+              "score": 20,
+              "evaluation_focus": "可行动性",
+              "scoring_hint": "高分：具体参数与预期影响；中分：泛泛建议；低分：无建议。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,848 @@
+{
+  "task_id": "2018_C",
+  "problem": "任务1 依据危害性对恐怖袭击事件分级\n对灾难性事件比如地震、交通事故、气象灾害等等进行分级是社会管理中的重要工作。通常的分级一般采用主观方法，由权威组织或部门选择若干个主要指标，强制规定分级标准，如我国《道路交通事故处理办法》第六条规定的交通事故等级划分标准，主要按照人员伤亡和经济损失程度划分。\n但恐怖袭击事件的危害性不仅取决于人员伤亡和经济损失这两个方面，还与发生的时机、地域、针对的对象等等诸多因素有关，因而采用上述分级方法难以形成统一标准。请你们依据附件1以及其它有关信息，结合现代信息处理技术，借助数学建模方法建立基于数据分析的量化分级模型，将附件1给出的事件按危害程度从高到低分为一至五级，列出近二十年来危害程度最高的十大恐怖袭击事件，并给出表1中事件的分级。\\begin{table}[h]\n\\centering\n\\caption{典型事件危害级别}\n\\begin{tabular}{|c|c|}\n\\hline\n事件编号 & 危害级别 \\\\\n\\hline\n200108110012 & \\\\\n\\hline\n20051180002 \\\\ \n200901170021 &\\\\ \n201402110051 & \\\\ \n201405010071 & \\\\ \n201410120003  & \\\\ \n201502280012 \\\\ \n201508100015 & \\\\ \n201705080012 & \\\\ \n \\hline \n \\end{tabular}\n\n任务2 依据事件特征发现恐怖袭击事件制造者\n\n附件1中有多起恐怖袭击事件尚未确定作案者。如果将可能是同一个恐怖组织或个人在不同时间、不同地点多次作案的若干案件串联起来统一组织侦查，有助于提高破案效率，有利于尽早发现新生或者隐藏的恐怖分子。请你们针对在2015、2016年度发生的、尚未有组织或个人宣称负责的恐怖袭击事件，运用数学建模方法寻找上述可能性，即将可能是同一个恐怖组织或个人在不同时间、不同地点多次作案的若干案件作为一类，对应的未知作案组织或个人标记不同的代号，并按该组织或个人的危险性从大到小选出其中的前5个，记为1号--5号。再对表2列出的恐袭事件，按嫌疑程度度对5个嫌疑人排序，并将结果填入下表（表中样例的意思是：对事件编号为XX的事件，3号的嫌疑度为次，其次是4号，最后是5号），如果认为某嫌疑人与关系不大，也可以保留空格。\n\\begin{table}[h]\n\\centering\n\\caption{典型事件危害级别}\n\\begin{tabular}{|c|c|}\n\\hline\n事件编号 & 危害级别 \\\\\n\\hline\n200108110012 & \\\\\n\\hline\n & 1号嫌疑人 & 2号嫌疑人 & 3号嫌疑人 & 4号嫌疑人 & 5号嫌疑人 \\\\\n\\hline\n样例XX & 4 & 3 & 1 & 2 & 5 \\\\\n\\hline\n201701090031 & & & & & \\\\\n\\hline\n201702210037 & & & & & \\\\\n\\hline\n201703120023 & & & & & \\\\\n\\hline\n201705050009 & & & & & \\\\\n\\hline\n201705050010 & & & & & \\\\\n\\hline\n201707010028 & & & & & \\\\\n\\hline\n201707020006 & & & & & \\\\\n\\hline\n201708110018 & & & & & \\\\\n\\hline\n201711010006 & & & & & \\\\\n\\hline\n201712010003 & & & & & \\\\\n\\hline\n\\end{tabular}\n\\caption{恐怖分子关于典型事件的嫌疑度}\n\\end{table}\n任务3 对未来反恐态势的分析\n对未来反恐态势的分析评估有助于提高反恐斗争的针对性和效率。请你们依据附件1并结合因特网上的有关信息，建立适当的数学模型，研究近三年来恐怖袭击事件发生的主要原因、时空特性、蔓延特性、级别分布等规律，进而分析研判下一年全球或某些重点地区的反恐态势，用图/表给出你们的研究结果，提出你们对反恐斗争的见解和建议。\n任务4 数据的进一步利用\n你们认为通过数学建模还可以发挥附件1数据的哪些作用？给出你们的模型和方法。",
+  "subtask": {
+    "1": {
+      "subtask": "子任务一（数据准备与特征工程）旨在把“附件1.xlsx”及可选外部表格（按国家/年份的社会经济与冲突协变量，如人口、GDP、媒体覆盖率、ACLED 等）清洗、补全并转化为后续建模可直接使用的、可追溯的结构化特征表与元数据，具体在一次端到端、可重现的数据管线中完成以下步骤：1) 读取与初筛——用 pandas/geopandas 或 Spark 读取原始表，校验 schema 与编码，统一字符编码与时间字段（优先采用 iyear/imonth/iday 如缺失使用 approxdate），去重（基于 eventid）并标注 extended/multiple/related 关系以保留复杂事件结构；2) 时间与地点标准化——构建标准日期（datetime）与时间特征（year, month, day, weekday, season）；验证并规范经纬度（latitude/longitude），对坐标缺失或不精确记录尝试基于 city/provstate/country 的地名解析或 gazetteer 填充（记录填充来源与精度），并生成地点精度标志 specificty/vicinity 的标准化字段与经度纬度校验标志；3) 原子变量清洗与派生——对数值计数类(nkill, nwound, nkillus, nwoundus, nperps, nperpcap, propvalue)进行一致性校验、异常值检测与 winsorize 或截断处理，构造派生量如 total_casualties = nkill + nwound、fatality_rate = nkill / max(1, total_casualties)、log_transform = log(x+1) 并保留原始计数；对二值/类别字段(success, suicide, ishotskid/ishostkid, claimed, doubtterr, crit1/2/3, INT_ANY 等)统一为 0/1 或枚举编码并补齐“未知”类别；基于 attacktype1-3、weaptype1-4、targtype1-3 等构建多热(one-hot/multi-hot)稀疏向量与 Jaccard/共现特征；为 targtype/targsubtype/weapsubtype 构建可解释的数值映射（例如基于领域知识赋予目标敏感度 targscore 与武器致死力 weap_lethality），并记录映射表与版本；4) 缺失值策略——对连续数值优先采用多重插补（MICE/IterativeImputer 或 miceforest）或基于分布的贝叶斯插补并记录不确定性指标；对类别缺失填充“unknown”并用独立缺失指示符列保留缺失信息；对地理或时间缺失在无法可靠填充时保留原记录但标注为低精度，所有插补过程保存随机种子和采样次数以便复现；5) 文本处理与嵌入——对 summary、addnotes、claim 与来源文本做语言检测(langdetect)、基础清洗（去 HTML、控制字符、统一空白）、可选机器翻译到统一语言（仅在必要且记录转换元数据），并用多语种句向量模型（如 XLM‑R 或 multilingual SBERT via sentence-transformers）生成固定维度语义嵌入；为规模受限情形提供基线 TF‑IDF + SVD 方案；6) 维度约简与标准化——对高维稀疏特征（攻击/武器/目标多热向量）与文本嵌入分别做 PCA/TruncatedSVD 或自动编码器降维至可控维度（例如保留≥95% 方差或降至 32–128 维），对连续特征做 Z‑score 标准化并保留原始未经变换的列以便溯源；7) 时空辅助特征与索引——计算事件间时差与同国/同区域历史事件计数（如过去30/90/365天内同国事件数）、距离最近大型城市/边界/交通枢纽的 haversine 距离、事件序列编号等，生成可用于近邻搜索与相似性度量的索引（如用 faiss 构建文本/嵌入近邻索引）；8) 外部数据集成（可选）——按 country + year 做关联并对齐协变量（人口/GDP/冲突强度/媒体覆盖率），在合并时记录匹配率与缺失率；9) 质量度量、日志与元数据——生成完整的数据质量报告（缺失矩阵、异常分布表、插补前后对比、经纬度精度汇总），对每条记录附加 provenance 字段（原始字段状态、是否插补、插补方法与版本），并用流水线工具（Airflow/Prefect/Dagster 或脚本化 notebooks + git）和数据版本控制（DVC 或 parquet 文件带版本）保存中间产物；10) 输出产物——一套标准化表格包括：原子标准化特征矩阵 z_ij（数值与归一化/对数变换列）、稀疏/降维后的攻击/武器/目标向量、文本嵌入向量及其低维表示、插补与缺失指示符、地点与时间精度标识、外部协变量列、数据质量报告与映射/配置文件（包含所有映射表、参数和随机种子）。建议工具栈：Python (pandas, numpy, scikit‑learn, geopandas, pyproj, shapely), sentence‑transformers 或 huggingface transformers (GPU 支持), langdetect, faiss (近邻), fancyimpute / miceforest / sklearn.impute, Dask/Spark（大规模），以及 Airflow/Prefect + git/DVC 做可重现的管线和版本控制。整个子任务须保证可审计性（记录每一步转换）、参数可复现（固定 seed、记录库版本）并输出用于下游建模的、质量可评估且带不确定性标注的结构化特征集。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建可重现的数据管线以清洗、标准化与特征工程附件1（GTD 1998–2017），并生成用于后续建模的结构化特征与元数据的评价与产出。",
+          "expected_output": "标准化特征矩阵（数值/归一化/对数列）、多热与降维后的攻击/武器/目标向量、文本嵌入及低维表示、插补与缺失指示符、地点与时间精度标识、外部协变量表、近邻索引、质量报告与映射/配置文件、可重现实验脚本或管线定义（如 Airflow/Prefect/DVC 配置）。",
+          "key_inputs_constraints": "输入：附件1.xlsx（必含 eventid, iyear, imonth, iday, country, provstate, city, latitude, longitude, attacktype1-3, weaptype1-4, targtype1-3, nkill, nwound, success, suicide, claimed, summary 等）；可选外部表（country-year 人口/GDP/ACLED）；约束：统一编码与日期，去重基于 eventid；地理坐标需校验与地名解析；数值计数需一致性校验与 winsorize；文本需语言检测与清洗；插补需记录种子与方法版本；全流程需日志与数据版本。",
+          "modeling_type": "评价+分类+拟合（数据清洗与特征构建/降维属于拟合，质量报告为评价，多热/映射为分类编码）",
+          "role_in_pipeline": "作为特征工程与数据准备阶段，位于下游模型训练/聚类/分级之前；前序依赖：原始数据收集与字段字典（附件2/3）；后序任务：危害分级模型训练、嫌疑人聚类与相似性检索、态势预测与可视化；该任务产出被所有后续模型直接消费。",
+          "assumptions": "外部数据以 country+year 可连接；无法可靠插补的时间/地理将保留并打低精度标志；文本嵌入优先使用 multilingual SBERT，如资源受限退化到 TF-IDF+SVD。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确‘构建可重现的数据管线’与GTD对象",
+              "description": "是否将核心目标表述为对附件1（GTD 1998–2017）进行可重现清洗与特征工程，而非直接建模预测/分类。",
+              "score": 30,
+              "evaluation_focus": "问题界定",
+              "scoring_hint": "高分：明确‘管线+可复现+元数据’三要素；中分：提到清洗与特征但忽略复现或元数据；低分：将任务误解为模型训练或结果预测。"
+            },
+            {
+              "sub_criteria": "识别关键动作词：读取与初筛/标准化/插补/嵌入/降维/质量报告",
+              "description": "是否完整覆盖读取校验、时间与地点标准化、数值清洗、文本嵌入、降维、质量度量环节。",
+              "score": 30,
+              "evaluation_focus": "范围覆盖",
+              "scoring_hint": "高分：覆盖6+环节并点名时间地点标准化与质量报告；中分：缺少1–2个关键环节；低分：仅提1–2步如简单清洗。"
+            },
+            {
+              "sub_criteria": "输入与约束识别（eventid去重、编码统一、seed记录）",
+              "description": "是否准确指出基于eventid去重、字符编码/日期统一与随机种子/版本记录的约束。",
+              "score": 40,
+              "evaluation_focus": "约束把握",
+              "scoring_hint": "高分：三项均被强调并给出执行方式；中分：仅提到去重或编码；低分：未提及关键约束。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "预期输出列举对齐（特征矩阵、稀疏/降维、嵌入、质量报告）",
+              "description": "是否将预期输出具体化为特征表、降维向量、文本嵌入、报告与配置映射。",
+              "score": 35,
+              "evaluation_focus": "目标细化",
+              "scoring_hint": "高分：列出≥4类输出并区分原始/变换/指示符；中分：列出2–3类；低分：泛化为‘清洗结果’。"
+            },
+            {
+              "sub_criteria": "关键字段与派生特征复述（total_casualties, fatality_rate, multi-hot）",
+              "description": "是否明确关键原子变量与派生如total_casualties、fatality_rate、multi-hot编码。",
+              "score": 35,
+              "evaluation_focus": "要素复述",
+              "scoring_hint": "高分：至少3个派生与编码被点名；中分：仅1个；低分：未提派生。"
+            },
+            {
+              "sub_criteria": "外部数据融合与对齐方式（country+year匹配率/缺失率）",
+              "description": "是否复述按country+year合并并需要报告匹配率与缺失率。",
+              "score": 30,
+              "evaluation_focus": "数据对齐",
+              "scoring_hint": "高分：明确键与评估指标；中分：仅说‘合并外部数据’；低分：忽略外部数据。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "缺失值策略与不确定性（MICE/贝叶斯+指示符+seed）",
+              "description": "对连续值采用MICE/贝叶斯插补，类别填‘unknown’并加缺失指示，记录随机种子与次数。",
+              "score": 35,
+              "evaluation_focus": "假设设计",
+              "scoring_hint": "高分：指明算法、指示符与seed；中分：仅说明插补不详；低分：用均值填充且无指示符。"
+            },
+            {
+              "sub_criteria": "地理与时间精度假设（低精度保留并标注specificity/vicinity）",
+              "description": "无法可靠填充时保留记录并打低精度标志，记录填充来源与精度等级。",
+              "score": 35,
+              "evaluation_focus": "不确定性",
+              "scoring_hint": "高分：提出精度等级与来源元数据；中分：仅说保留缺失；低分：删除样本。"
+            },
+            {
+              "sub_criteria": "文本处理假设（多语种嵌入优先，必要时翻译并记录元数据）",
+              "description": "选择mSBERT/XLM-R，翻译仅在必要且记录语言与工具版本。",
+              "score": 30,
+              "evaluation_focus": "方法选择",
+              "scoring_hint": "高分：明确模型与降级方案；中分：仅TF-IDF无理由；低分：忽视文本或无多语种考虑。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "变量清洗与派生构造（winsorize、log(x+1)、fatality_rate）",
+              "description": "制定一致性校验、异常值检测与winsorize/截断，生成对数与比率派生并保留原始列。",
+              "score": 30,
+              "evaluation_focus": "特征工程",
+              "scoring_hint": "高分：给出阈值/分位比例并保留追溯列；中分：有变换无阈值细节；低分：无异常处理。"
+            },
+            {
+              "sub_criteria": "多热与相似度特征（attack/weap/targ multi-hot + Jaccard/共现）",
+              "description": "构建多热稀疏向量与Jaccard或共现统计以度量事件相似性。",
+              "score": 25,
+              "evaluation_focus": "特征设计",
+              "scoring_hint": "高分：多热+相似度双实现；中分：仅多热；低分：未编码枚举字段。"
+            },
+            {
+              "sub_criteria": "文本嵌入与降维（mSBERT/TF-IDF+SVD、PCA/SVD≥95%方差或32–128维）",
+              "description": "选择嵌入方案并对高维稀疏与文本做PCA/TruncatedSVD或自编码器降维。",
+              "score": 25,
+              "evaluation_focus": "表示学习",
+              "scoring_hint": "高分：明确方差阈值或目标维度与随机种子；中分：有降维未给准则；低分：无降维导致维爆。"
+            },
+            {
+              "sub_criteria": "时空辅助特征与索引（滚动窗口计数、haversine、FAISS）",
+              "description": "实现过去30/90/365天同国事件数、最近城市/边界距离与FAISS近邻索引。",
+              "score": 20,
+              "evaluation_focus": "结构设计",
+              "scoring_hint": "高分：三类均实现；中分：1–2类；低分：未生成辅助特征或索引。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "地名解析与坐标校验流程（gazetteer解析、CRS校验、经纬度范围）",
+              "description": "给出地名到坐标解析、CRS一致性、经纬度有效范围与异常回退策略。",
+              "score": 35,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：含解析源、范围校验与失败标注；中分：仅范围校验；低分：未验证坐标。"
+            },
+            {
+              "sub_criteria": "插补求解参数化（IterativeImputer/miceforest参数、迭代次数、随机种子）",
+              "description": "明确插补模型、迭代/树数、收敛或停止准则、seed固定与不确定性输出。",
+              "score": 35,
+              "evaluation_focus": "参数设定",
+              "scoring_hint": "高分：参数齐全且复现实验可得相同结果；中分：部分参数；低分：默认黑箱无seed。"
+            },
+            {
+              "sub_criteria": "降维与标准化求解（fit/transform分离、训练集泄漏防控）",
+              "description": "确保仅在训练切片fit并persist变换器，transform于全量，避免数据泄漏。",
+              "score": 30,
+              "evaluation_focus": "数据严谨",
+              "scoring_hint": "高分：说明fit/transform与持久化；中分：未说明但操作正确迹象；低分：在全量fit导致泄漏。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可重现管线与版本控制（Airflow/Prefect或脚本+DVC、seed、库版本）",
+              "description": "提供可执行管线定义与DVC/parquet版本，固定随机种子并记录依赖版本与配置。",
+              "score": 30,
+              "evaluation_focus": "工程复现",
+              "scoring_hint": "高分：管线+DVC+requirements/lock文件齐全；中分：脚本可运行但缺版本记录；低分：一次性脚本不可复现。"
+            },
+            {
+              "sub_criteria": "数据质量报告与日志（缺失矩阵、异常分布、插补对比、经纬度精度汇总）",
+              "description": "自动生成报告与结构化日志，覆盖关键质量度量并落盘。",
+              "score": 25,
+              "evaluation_focus": "可观测性",
+              "scoring_hint": "高分：4类报告全；中分：2–3类；低分：无报告或仅打印。"
+            },
+            {
+              "sub_criteria": "健壮性与效率（大规模Dask/Spark或批处理、稀疏存储、内存控制）",
+              "description": "针对规模问题采用Dask/Spark/分块与稀疏矩阵，控制内存峰值。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：有并行/分块与稀疏；中分：单机可跑但低效；低分：OOM或无考虑。"
+            },
+            {
+              "sub_criteria": "可追溯性元数据（provenance字段、映射表与版本、插补方法记录）",
+              "description": "输出每条记录的来源、变换、插补方法、映射表版本与时间戳。",
+              "score": 20,
+              "evaluation_focus": "数据治理",
+              "scoring_hint": "高分：结构化元数据列齐全；中分：部分记录；低分：无元数据。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "质量度量解读（插补前后分布对比、方差保留率、匹配率/缺失率）",
+              "description": "对插补偏移、降维方差≥95%或目标维度、外部合并匹配/缺失率进行解释。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：量化报告与阈值满足性说明；中分：定性描述；低分：无解读。"
+            },
+            {
+              "sub_criteria": "不确定性与风险披露（地理低精度占比、文本语言覆盖、插补置信）",
+              "description": "报告低精度地理比例、语言分布与文本覆盖、插补区间或多重插补方差。",
+              "score": 35,
+              "evaluation_focus": "风险评估",
+              "scoring_hint": "高分：三类均量化；中分：提及1–2类；低分：未披露。"
+            },
+            {
+              "sub_criteria": "下游可用性验证（近邻索引抽检、特征泄漏自检、样例记录追溯）",
+              "description": "通过近邻检索样例、检查泄漏风险、随机抽样核对provenance以验证可用性。",
+              "score": 30,
+              "evaluation_focus": "可用性",
+              "scoring_hint": "高分：三项验证并通过；中分：1–2项；低分：未验证或暴露严重问题。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2（事件危害量化与分级）目标是以透明、可复现且带不确定性度量的方式，把每一条事件转化为一个可比较的“危害分数”S并将其映射到五个危害等级上，具体包含数据输入、特征处理、建模方法、阈值设定、不确定性量化、验证和交付物六部分；输入要求是子任务1输出的标准化原子特征集（至少包括经预处理并经Z‑score或对数变换的：nkill、nwound、propvalue及其合成指标total_casualties、fatality_rate；二值或指示变量：suicide、multiple、ishostkid/hostkid、claimed、INT_ANY；经领域映射得到的targscore与weap_lethality；事件时间/地点精度指示符及缺失指示列；以及文本嵌入或降维后的摘要特征），并要求在输入阶段记录所有插补方法与随机种子；特征预处理步骤应包括对极端值的稳健处理（如winsorize或截断）、对计数类采用log(x+1)后标准化、对类别采用one‑hot或分配数值敏感度映射、并可选以PCA/因子分析降维以避免多重共线性；核心评分模型建议采用可解释的线性加权模型S_i = sum_j w_j z_{ij}，权重w受约束为非负且归一化（sum w_j = 1），权重的初始值由专家先验提供并通过数据驱动校准：以已知被公认的高危与低危事件对构造成对排序样本，用平滑的对比损失（logistic 或 hinge）在约束下优化w（或以贝叶斯层次模型对w做后验估计以得到不确定性），可选地以主成分的首成分作为候选基线并对比线性加权结果以检验稳健性；五级划分需同时提供硬阈值与概率输出：对S的映射可用三种策略并行比较——等分位法、基于高斯混合模型的分量映射（按混合组件由高到低对应等级）和监督阈值法（以专家标注事件设定临界点）；对每一事件应输出點估計等級、向量化的P(level=k)（软分类概率）及S的置信区间；不确定性量化通过两种并行方法实现：一是bootstrap重采样以估计S和等级阈值的频率分布，二是若采用贝叶斯权重估计则直接输出权重后验与S后验分布；为便于可解释性与审计，每个事件还应输出分数分解（线性贡献表或SHAP样式的贡献度），并记录导致高危判定的关键原子指标；验证与稳健性分析包括：用Kendall τ和Spearman ρ衡量S排序与专家/历史认定重大事件的一致性，用Brier score与校准曲线评估P(level)概率校准，并通过敏感性实验（改变关键特征权重、替代映射表、不同缺失值插补策略、不同分级阈值方法）检验等级稳定性；实现与工具建议：数据与模型实现采用Python生态（pandas/numpy, scikit‑learn, cvxpy或cvxopt做有约束优化, scipy, statsmodels），若采用贝叶斯方案可用PyMC3/Stan，文本嵌入与降维用sentence‑transformers + faiss/SVD，结果可用Jupyter记录并用git/DVC版本控制所有数据变换与随机种子以保证可复现；最终交付物为：每条事件的S值与P(level=1..5)、点估计等级、分数分解表、五级阈值定义与替代方案、前十大危害事件清单（按期望S排序）以及针对表1中指定事件的等级与其不确定性区间，并附上完整的验证报告与敏感性分析结论。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "拟合并优化一个带不确定性度量的线性加权危害评分模型S用于恐怖袭击事件分级（五级映射与概率校准）。",
+          "expected_output": "每条事件的危害分数S、P(level=1..5)概率向量、点估计等级、S与等级阈值的置信区间/后验、分数分解表（特征贡献）、五级阈值定义（等分位/GMM/监督阈值对比）、前十大高危清单、针对指定事件的等级与区间、验证与敏感性分析报告、可复现代码与模型配置。",
+          "key_inputs_constraints": "输入为子任务1输出的标准化原子特征：nkill、nwound、propvalue、total_casualties、fatality_rate（经log或Z-score）；二值/指示：suicide、multiple、ishostkid/hostkid、claimed、INT_ANY；领域映射：targscore、weap_lethality；时间/地点精度与缺失指示；文本嵌入或其降维；需记录插补方法与随机种子；权重w非负且sum=1；稳健处理极端值（winsorize/截断）。",
+          "modeling_type": "拟合+分类+评价",
+          "role_in_pipeline": "作为特征工程后、结果应用前的核心评分与分级模块，直接依赖子任务1的数据准备与特征工程；其输出供后续事件排序、清单生成与任务3态势分析使用，并为任务1结果展示与任务2相似性/嫌疑排序提供可解释危害度量。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "危害评分S拟合与五级分级目标界定",
+              "description": "是否准确界定本子任务为线性加权危害评分S的拟合与分级映射（含点估计与概率P(level=1..5)）。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清晰提出S与等级映射并含概率输出；中分：仅给S或仅给等级；低分：目标混淆为预测发生率或聚类。"
+            },
+            {
+              "sub_criteria": "输入依赖与约束识别（Z-score/log与非负归一权重）",
+              "description": "是否识别子任务1输出为必要输入，计数经log或Z-score，权重w≥0且sum w=1。",
+              "score": 25,
+              "evaluation_focus": "要求理解",
+              "scoring_hint": "高分：明确列出特征与w约束；中分：只提部分特征或缺少约束；低分：忽略预处理与权重约束。"
+            },
+            {
+              "sub_criteria": "不确定性量化与阈值方法并行比较",
+              "description": "是否识别需bootstrap/贝叶斯两路线及等分位/GMM/监督阈值三法对比并报告稳定性。",
+              "score": 25,
+              "evaluation_focus": "风险意识",
+              "scoring_hint": "高分：两种不确定性+三阈值策略；中分：仅一种不确定性或一种阈值；低分：无不确定性且单一阈值。"
+            },
+            {
+              "sub_criteria": "验证指标选择（Kendall τ、Spearman ρ、Brier）",
+              "description": "是否将排序一致性与概率校准作为核心评估并规划敏感性实验。",
+              "score": 20,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：列出τ/ρ与Brier及敏感性；中分：仅一种指标；低分：未定义可验证指标。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "将S_i = sum_j w_j z_ij和w的先验+数据校准复述清楚",
+              "description": "复述线性加权、非负与归一、专家先验初始化、对比损失校准或贝叶斯后验。",
+              "score": 35,
+              "evaluation_focus": "精确表达",
+              "scoring_hint": "高分：含约束、先验与校准途径；中分：缺先验或约束；低分：与原要求不一致。"
+            },
+            {
+              "sub_criteria": "特征预处理复述（winsorize、log标准化、one-hot/映射）",
+              "description": "明确极端值稳健处理、计数log+标准化、类别one-hot或敏感度映射保留版本。",
+              "score": 25,
+              "evaluation_focus": "要点覆盖",
+              "scoring_hint": "高分：三项均覆盖；中分：漏1项；低分：预处理模糊或缺失。"
+            },
+            {
+              "sub_criteria": "五级阈值与概率输出复述（等分位/GMM/监督）",
+              "description": "清楚描述三种阈值策略、P(level=k)与点估计等级产出。",
+              "score": 25,
+              "evaluation_focus": "规范对齐",
+              "scoring_hint": "高分：三法+概率；中分：两法或无概率；低分：仅硬阈值。"
+            },
+            {
+              "sub_criteria": "可解释性与分数分解（SHAP样式或线性贡献）",
+              "description": "复述对每事件输出特征贡献与关键原子指标说明。",
+              "score": 15,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：明确方法与输出结构；中分：仅概念提及；低分：未覆盖。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "专家先验权重与非负性假设合理性",
+              "description": "说明为何w非负、sum=1并以专家先验初始化，防止符号反转。",
+              "score": 30,
+              "evaluation_focus": "假设合理性",
+              "scoring_hint": "高分：给出先验来源与约束动机；中分：仅陈述不解释；低分：无先验或允许负权重且无依据。"
+            },
+            {
+              "sub_criteria": "计数变量log(x+1)与winsorize假设",
+              "description": "阐明重尾与极端值处理对稳健性的必要性与阈值选择依据。",
+              "score": 25,
+              "evaluation_focus": "数据假设",
+              "scoring_hint": "高分：说明分位点或MAD阈值；中分：笼统说明；低分：不处理极端值。"
+            },
+            {
+              "sub_criteria": "阈值方法适用性假设（等分位/GMM/监督）",
+              "description": "给出GMM可分性、等分位公平性、监督阈值依赖标注的前提与局限。",
+              "score": 25,
+              "evaluation_focus": "方法适用",
+              "scoring_hint": "高分：三法均述优缺点；中分：只述1–2法；低分：无适用性讨论。"
+            },
+            {
+              "sub_criteria": "不确定性量化假设（bootstrap独立性/贝叶斯先验）",
+              "description": "说明重采样方案与收敛设置或先验选择（Dirichlet/半正态等）。",
+              "score": 20,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：具体样本数/种子与先验形式；中分：仅泛述；低分：未设定。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "线性加权模型与对比损失优化设计",
+              "description": "构造成对排序样本、采用logistic/hinge损失并在cvxpy下施加w≥0、sum=1约束。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：成对构造细节+约束实现；中分：缺成对或缺约束；低分：不用对比损失且无约束。"
+            },
+            {
+              "sub_criteria": "特征降维与多重共线性处理",
+              "description": "PCA/因子分析用于文本嵌入与多热特征，阈定≥95%方差或32–128维目标。",
+              "score": 20,
+              "evaluation_focus": "特征工程",
+              "scoring_hint": "高分：给出维度目标与保方差率；中分：仅提PCA；低分：未处理共线性。"
+            },
+            {
+              "sub_criteria": "三种分级阈值策略的并行实现方案",
+              "description": "等分位、GMM组件映射、监督阈值校准流程与一致接口输出P(level)。",
+              "score": 25,
+              "evaluation_focus": "设计完备",
+              "scoring_hint": "高分：三法齐备且可切换；中分：两法；低分：单一法。"
+            },
+            {
+              "sub_criteria": "可解释性与分数分解设计",
+              "description": "线性贡献表/SHAP样式分解，标注top-k特征与领域映射解释（targscore/weap_lethality）。",
+              "score": 20,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：明确输出列与top-k规则；中分：仅总体说明；低分：未提供。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "权重求解与约束优化实现（cvxpy/投影）",
+              "description": "在对比损失下求w，满足w≥0、sum=1；或贝叶斯后验采样获得w分布。",
+              "score": 35,
+              "evaluation_focus": "数值求解",
+              "scoring_hint": "高分：可复现实例与收敛描述；中分：只给思路；低分：无法满足约束或不收敛。"
+            },
+            {
+              "sub_criteria": "不确定性量化（bootstrap与贝叶斯）",
+              "description": "实现B次bootstrap估计S与阈值分布；或MCMC采样后验并给置信/可信区间。",
+              "score": 30,
+              "evaluation_focus": "统计实现",
+              "scoring_hint": "高分：B≥500或有效MCMC诊断Rhat≈1.1；中分：B<500或无诊断；低分：未实现。"
+            },
+            {
+              "sub_criteria": "阈值估计与概率校准（Brier/校准曲线）",
+              "description": "拟合GMM并映射组件，等分位切点稳定性评估，校准曲线与Brier得分计算。",
+              "score": 20,
+              "evaluation_focus": "校准能力",
+              "scoring_hint": "高分：报告Brier与校准图；中分：仅硬阈值准确率；低分：无校准评估。"
+            },
+            {
+              "sub_criteria": "敏感性与稳健性（替代映射/插补/阈值）",
+              "description": "改变targscore/weap_lethality、缺失策略、阈值方法，报告等级变更率。",
+              "score": 15,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：量化变更率≤10%为稳健；中分：定性说明；低分：未做。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据输入与预处理流水线（log/Z-score、winsorize、one-hot/映射）",
+              "description": "可复现代码读取子任务1产物并完成预处理，记录随机种子与版本。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：参数化+seed固定+日志；中分：脚本可运行但无日志；低分：手工步骤多且不可复现。"
+            },
+            {
+              "sub_criteria": "约束优化与GMM/阈值模块化实现",
+              "description": "cvxpy优化、GMM拟合、等分位与监督阈值实现为可切换组件。",
+              "score": 30,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：统一接口与配置驱动；中分：分散实现；低分：耦合严重难以替换。"
+            },
+            {
+              "sub_criteria": "不确定性与校准实现（bootstrap/MCMC、Brier）",
+              "description": "支持批处理输出S区间、阈值分布与Brier/校准曲线生成。",
+              "score": 25,
+              "evaluation_focus": "统计计算",
+              "scoring_hint": "高分：并行/缓存优化；中分：功能完整但慢；低分：功能缺失。"
+            },
+            {
+              "sub_criteria": "可解释性输出与交付物生成",
+              "description": "生成分数分解表、前十大清单、指定事件等级与区间、报告与配置快照。",
+              "score": 15,
+              "evaluation_focus": "产出完备",
+              "scoring_hint": "高分：一键产出所有制品；中分：需多步拼接；低分：缺关键制品。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "排序一致性（Kendall τ/Spearman ρ）与基线对比",
+              "description": "与专家/历史重大事件清单、PCA首成分基线对比τ/ρ并解释差异。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：τ或ρ显著高于基线且给因果解释；中分：相近无解释；低分：未报告或低于基线无说明。"
+            },
+            {
+              "sub_criteria": "概率校准与不确定性展示（Brier、校准图、区间覆盖率）",
+              "description": "报告Brier、可靠性图，检验S与等级区间的覆盖率是否接近名义水平。",
+              "score": 25,
+              "evaluation_focus": "统计评价",
+              "scoring_hint": "高分：覆盖率在±5%内；中分：±10%；低分：偏离严重或未检验。"
+            },
+            {
+              "sub_criteria": "敏感性分析与等级稳定性",
+              "description": "量化不同映射/插补/阈值下等级变更率并定位不稳定特征。",
+              "score": 25,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：整体变更率≤10%，并给出改进建议；中分：10–20%；低分：>20%或未量化。"
+            },
+            {
+              "sub_criteria": "可解释性案例与前十大事件合规性检查",
+              "description": "对前十大危害事件给出分数分解、关键原子指标与领域合理性核验。",
+              "score": 20,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：逐例解释且与常识一致；中分：部分覆盖；低分：无解释或明显不合常识。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（多模态相似性度量、嫌疑人簇发现与危险度排序）旨在针对2015–2016年度尚未有组织或个人宣称负责的恐袭记录，基于多模态事件特征自动识别可能属于同一实施者的案件簇并从中筛选出按危险性排序的前五个“嫌疑人”簇，同时为每一待判定事件给出对各嫌疑簇的隶属概率和排序证据；其范围限定为：输入为经过清洗与标准化的事件表（仅2015–2016年、claimed字段为否或未知、并且具备或可估算时间与地理坐标），每条事件必须包含（或经插补得到的）时间戳、经纬度、攻击类型/次类型向量、武器类型向量、目标类型向量、人员伤亡与其他关键二值指示（自杀标志、劫持/人质、是否多点）、文本摘要/宣称文本的语义嵌入、以及先前计算得出的单事件危害度S；方法步骤按执行顺序明确为：1) 特征构建——确认并标准化各模态向量（时间为秒/天尺度，空间为大圆距离，类别向量多热化并降维，文本用多语种Transformer嵌入并可降维），并为缺失地理/时间的数据记录低精度标志；2) 模态距离定义与归一化——分别定义时间距离 d_time(i,j)=1−exp(−|Δt|/τ_t)、空间距离 d_space(i,j)=min(haversine/τ_s,1)、类别/手段距离用 Jaccard 或 1−cosine、文本距离用 1−cosine(embedding_i,embedding_j)、组织/实体名用编辑距离或实体匹配得分，并将各模态距离归一化到 [0,1]；3) 加权组合与参数标定——构造总体距离 d(i,j)=∑_m α_m d_m(i,j) 并转换为相似度 A_ij=exp(−d(i,j))，权重 α_m 及尺度参数 τ_t, τ_s 通过监督校准：利用历史已知同一组织/已宣称事件子集做学习（例如最大化组内相似度与组间差异或用对比学习/排序损失），通过交叉验证选择参数以提高泛化性；4) 相似性矩阵构建与近邻加速——在规模较大时用近邻索引（faiss / annoy）近似构建稀疏相似矩阵以节省内存；5) 聚类与软隶属估计——在相似性图上并行应用两类方法以互补发现簇形态：密度/连通性方法（DBSCAN/HDBSCAN）用于发现局部密集簇，图社区发现方法（Louvain/Leiden 或谱聚类）用于发现网络式社区；为反映不确定性，对簇采用软隶属输出（如模糊C均值、混合高斯或基于随机游走的后验隶属概率），并用参数自助法（bootstrap）或稳定性分析（调整互信息/ARI跨参数扫描）评估簇的稳健性；6) 簇危险度量与排序——为每个簇计算综合危险分数 G_c = F( aggregated S (例如加权和或加权平均), frequency = |c|, spread = 地理半径或方差, persistence = 时间跨度, recency 权重 )，明确函数形式与权重并在校准阶段与历史重大簇对齐，然后按 G_c 排序并选取排名前五作为1–5号嫌疑人；7) 事件—嫌疑映射输出——对每一待判事件输出对五个嫌疑簇的隶属概率向量及按概率排序（可在概率低于阈值时标注为“未关联/可疑度低”），并附带导致该判定的主要相似性证据（贡献最大的模态与近邻示例）；8) 验证与风险控制——用已宣称事件集检验召回与纯度指标，报告参数敏感性、簇不确定性（置信区间或多次重抽样的一致性），对稀疏或孤立事件给出“不足以判定”的标记以避免过度归因；9) 工具与实现建议——推荐使用 Python 生态（pandas/numpy, scikit‑learn, hdbscan/dbscan, igraph/networkx/leidenalg 或 python‑igraph, faiss/annoy, sentence‑transformers），并记录所有超参数、随机种子与版本以保证可复现性；最终交付物为：带概率隶属的簇成员表、每簇的 G_c 与特征摘要、按危险度排序的1–5号嫌疑人定义、以及对题目所列事件的嫌疑人概率排序清单与参数/稳定性诊断报告。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "基于2015–2016年未宣称责任的恐袭事件，拟合并评估多模态相似性度量与聚类模型，以识别同一实施者嫌疑簇并按危险度排序前五名。",
+          "expected_output": "带软隶属概率的簇成员表；相似性矩阵/近邻索引文件；簇危险分数G_c与排名（1–5号嫌疑人）；每事件对1–5号的隶属概率与排序证据；参数与稳定性诊断报告；可复现代码与配置。",
+          "key_inputs_constraints": "输入为子任务1/2后的标准化事件表，仅含2015–2016年且claimed为否/未知；每条含时间戳、经纬度（或低精度标志）、攻击/武器/目标多热向量（可降维）、文本嵌入（Transformer或TF-IDF+SVD）、关键指示变量（suicide/hostkid/multiple等）、单事件危害度S；需记录插补方法与随机种子；相似性权重α_m与尺度参数τ_t/τ_s可由已宣称事件监督校准；输出需包含不确定性与稳定性度量。",
+          "modeling_type": "分类+聚类+评价",
+          "role_in_pipeline": "作为特征工程与危害分级之后、下游案件串联与侦查辅助之前的核心识别环节；前序依赖子任务1（数据准备与特征工程）和子任务2（事件危害量化S）；后续为任务2的嫌疑排序与案件指派、以及报告与可视化交付。",
+          "assumptions": "若文本嵌入缺失则用TF-IDF+SVD；若地理/时间缺失则标注低精度并降低对应相似性权重；监督校准使用2010–2014与2017年已宣称事件做交叉验证。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "锁定2015–2016年与claimed为否/未知的筛选",
+              "description": "是否准确限定样本到2015–2016且未宣称责任（claimed为否或未知），并剔除不满足时间/坐标最低要求的记录或做低精度标记。",
+              "score": 35,
+              "evaluation_focus": "需求约束",
+              "scoring_hint": "高分：严格筛选且出具样本数与缺失率统计；中分：筛选到位但无统计；低分：混入已宣称或年份越界样本。"
+            },
+            {
+              "sub_criteria": "多模态特征范围与必要性识别",
+              "description": "是否覆盖时间、空间、类别向量（攻击/武器/目标）、文本嵌入与S分数，并识别其在相似性度量中的作用。",
+              "score": 30,
+              "evaluation_focus": "特征理解",
+              "scoring_hint": "高分：列出各模态及其用途；中分：缺少1个模态；低分：仅用单一模态。"
+            },
+            {
+              "sub_criteria": "不确定性与稳健性目标识别",
+              "description": "是否明确需要软隶属概率、簇稳定性（bootstrap/ARI）与参数敏感性分析。",
+              "score": 35,
+              "evaluation_focus": "风险控制",
+              "scoring_hint": "高分：制定具体稳定性与概率校准输出；中分：仅口头说明；低分：无不确定性考虑。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "相似性度量与A_ij构建的准确复述",
+              "description": "清晰复述d(i,j)=∑α_m d_m并A_ij=exp(−d)的组合逻辑及各d_m定义范围[0,1]。",
+              "score": 35,
+              "evaluation_focus": "表达精准",
+              "scoring_hint": "高分：给出公式与边界；中分：仅文字描述；低分：混淆距离/相似度或未归一化。"
+            },
+            {
+              "sub_criteria": "监督校准目标与数据来源复述",
+              "description": "说明使用已宣称事件最大化组内相似与组间差异来标定α_m, τ_t, τ_s，并采用交叉验证。",
+              "score": 35,
+              "evaluation_focus": "方法契合",
+              "scoring_hint": "高分：点明对比损失或排序目标；中分：泛称‘调参’；低分：无监督生硬设参。"
+            },
+            {
+              "sub_criteria": "簇发现与危险度G_c排序复述",
+              "description": "准确阐明HDBSCAN/社区发现并行、软隶属输出，以及G_c基于S聚合、频次、空间扩散、时间持续与近期性加权排序取前五。",
+              "score": 30,
+              "evaluation_focus": "流程把握",
+              "scoring_hint": "高分：枚举G_c组成与取前五；中分：少1–2要素；低分：只给簇不排序。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "缺失与低精度处理假设（时间/空间/文本）",
+              "description": "明确对缺失坐标/时间用低精度标志并下调对应权重，对缺失文本用TF-IDF+SVD替代的假设与影响。",
+              "score": 35,
+              "evaluation_focus": "鲁棒性假设",
+              "scoring_hint": "高分：给出权重折减策略；中分：仅说明存在影响；低分：忽略缺失处理。"
+            },
+            {
+              "sub_criteria": "尺度参数τ_t/τ_s先验与可解释性",
+              "description": "提出时间与空间可比尺度（如天/公里）与τ选择的合理先验或数据驱动范围。",
+              "score": 30,
+              "evaluation_focus": "先验设定",
+              "scoring_hint": "高分：给出数量级与校准范围；中分：仅口述‘网格搜索’；低分：未说明尺度。"
+            },
+            {
+              "sub_criteria": "监督样本同质性与时间外推假设",
+              "description": "阐明用历史已宣称事件训练可泛化到2015–2016未宣称样本的前提与局限。",
+              "score": 35,
+              "evaluation_focus": "可迁移性",
+              "scoring_hint": "高分：讨论分布漂移与验证分层；中分：简述可泛化；低分：无说明。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "模态距离d_time/d_space/文本/类别的规范化定义",
+              "description": "给出d_time=1−exp(−|Δt|/τ_t)、d_space=min(haversine/τ_s,1)、文本与类别采用1−cosine或Jaccard并归一到[0,1]。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：含公式与边界处理；中分：缺1个模态细节；低分：未归一或公式错误。"
+            },
+            {
+              "sub_criteria": "加权组合与参数标定（α_m, τ）",
+              "description": "构造d=∑α_m d_m，α_m≥0且∑α_m=1；用对比/排序损失与交叉验证标定并防过拟合。",
+              "score": 30,
+              "evaluation_focus": "约束优化",
+              "scoring_hint": "高分：含非负与归一约束实现；中分：仅网格搜索；低分：自由权重无约束。"
+            },
+            {
+              "sub_criteria": "相似性矩阵与近邻索引（FAISS/Annoy）",
+              "description": "在规模较大时采用近邻近似构建稀疏A_ij，并阈值或kNN截断以控内存。",
+              "score": 20,
+              "evaluation_focus": "工程可行",
+              "scoring_hint": "高分：给k/阈值与内存估计；中分：仅说明使用近邻；低分：全量矩阵不可扩展。"
+            },
+            {
+              "sub_criteria": "簇方法并行与软隶属估计",
+              "description": "联合HDBSCAN与Louvain/Leiden或谱聚类，并输出软隶属概率（如基于随机游走/模糊C均值）。",
+              "score": 20,
+              "evaluation_focus": "模型设计",
+              "scoring_hint": "高分：两类方法与概率方案齐备；中分：单一方法或硬划分；低分：无软隶属输出。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "监督校准的训练与交叉验证",
+              "description": "基于已宣称事件最大化组内/最小化组间相似的训练流程，含CV与早停或正则。",
+              "score": 30,
+              "evaluation_focus": "训练策略",
+              "scoring_hint": "高分：明确损失、折数、评价指标；中分：仅有CV；低分：无监督拍参。"
+            },
+            {
+              "sub_criteria": "簇稳定性与不确定性评估",
+              "description": "使用bootstrap/参数扫描，报告ARI/NMI一致性与软隶属置信区间。",
+              "score": 30,
+              "evaluation_focus": "稳健评估",
+              "scoring_hint": "高分：提供数值稳定性指标；中分：有重复试验无指标；低分：无稳定性评估。"
+            },
+            {
+              "sub_criteria": "G_c计算与前五嫌疑排序",
+              "description": "实现G_c=F(S聚合, 频次, 地理扩散, 时间持续, 近期性)并给权重或标定方法，输出1–5号。",
+              "score": 25,
+              "evaluation_focus": "指标实现",
+              "scoring_hint": "高分：权重与敏感性；中分：仅简单和/均值；低分：未排序或缺G_c。"
+            },
+            {
+              "sub_criteria": "事件—嫌疑映射概率",
+              "description": "对每事件给出对1–5号簇的隶属概率与阈值下未关联标记。",
+              "score": 15,
+              "evaluation_focus": "概率计算",
+              "scoring_hint": "高分：提供概率归一与阈值规则；中分：仅排名无概率；低分：缺该输出。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现性与参数记录",
+              "description": "固定随机种子，记录α_m、τ_t、τ_s、聚类超参与库版本；保存配置与日志。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：配置文件+日志+版本锁定；中分：部分记录；低分：不可复现。"
+            },
+            {
+              "sub_criteria": "相似性与近邻加速实现",
+              "description": "高效计算多模态距离、构建稀疏A_ij与FAISS/Annoy索引，避免OOM。",
+              "score": 30,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：批处理/稀疏存储与内存曲线；中分：可运行但低效；低分：内存溢出。"
+            },
+            {
+              "sub_criteria": "聚类与软隶属管线化",
+              "description": "HDBSCAN与社区发现封装为流水线，输出软隶属与簇摘要。",
+              "score": 25,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：统一接口与可切换算法；中分：脚本堆砌；低分：结果不可复用。"
+            },
+            {
+              "sub_criteria": "输出产物与可追溯元数据",
+              "description": "导出簇成员表、G_c、概率向量、证据近邻与模态贡献；含provenance。",
+              "score": 15,
+              "evaluation_focus": "输出规范",
+              "scoring_hint": "高分：完整字段与示例；中分：缺少证据/元数据；低分：只给簇ID。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "召回/纯度与对照验证（已宣称事件）",
+              "description": "用已宣称事件评估聚类召回与纯度，报告数值并对比基线（单模态或仅空间时间）。",
+              "score": 35,
+              "evaluation_focus": "量化评价",
+              "scoring_hint": "高分：明确指标与提升幅度；中分：仅报告单一指标；低分：无定量对照。"
+            },
+            {
+              "sub_criteria": "稳定性与敏感性报告",
+              "description": "展示参数扫描/重抽样的ARI/NMI分布，讨论α_m/τ变动对簇与前五排名的影响。",
+              "score": 30,
+              "evaluation_focus": "稳健性解读",
+              "scoring_hint": "高分：含图表与关键结论；中分：口头描述；低分：无分析。"
+            },
+            {
+              "sub_criteria": "嫌疑人1–5的证据可解释性",
+              "description": "对每个前五簇给出主导模态贡献、近邻示例、时间空间轨迹与S聚合描述。",
+              "score": 20,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：多模态证据一致；中分：零散举例；低分：无证据。"
+            },
+            {
+              "sub_criteria": "事件级概率与“未关联”判定质量",
+              "description": "检查概率校准与阈值策略是否避免过度归因，并给出误判案例分析。",
+              "score": 15,
+              "evaluation_focus": "风险控制",
+              "scoring_hint": "高分：有校准曲线/示例；中分：仅阈值描述；低分：无校准与误判分析。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（时空自激-背景建模与下一年预测）负责在严格可复现的流程下，基于过去若干年尤其是近三年的事件记录与外生协变量，建立、估计、验证并部署一个可量化不确定性的时空点过程预测系统以评估下一年全球或分区反恐态势：范围包括数据准备（以事件时间戳、经纬度、事件影响度量如死亡/受伤/财产损失及事件精度标识为核心输入，辅以按时序对齐的区域协变量如人口密度、GDP/失业率、冲突强度/ACLED指标、难民/迁徙流、季节性与媒体覆盖率，并对时间或空间缺失值做明确插补或低精度标注）；模型建构（把事件强度分解为背景率 μ(x,t) 与自激项 ∑_{k:t_k<t} g(x−x_k,t−t_k)·h_k，其中 μ(x,t) 用带协变量和时间/季节基函数的可解释回归或广义可加模型表示，g 采用可选的时间核（指数或幂律）与空间核（指数、Gaussian 或幂律衰减／大圆距离依赖），h_k 为基于事件影响度量的放大因子以反映单事件对后续传播性的不同贡献）；参数估计与模型选择（用最大似然或带正则化的MLE、EM 算法或贝叶斯推断估计参数并选择核形式与协变量项，通过信息准则、交叉验证与后验预测检验比较候选模型，并在数据量大时采用分区估计、近似核加速或专用库如 tick/hawkeslib 以提高计算效率）；预测与不确定性量化（在给定协变量情景下通过蒙特卡洛模拟或逐步仿真生成未来一年事件样本路径，从样本中提取每个网格/行政区的期望事件数、超阈值重大事件概率与相应的置信区间；若采用贝叶斯方法则直接用后验预测分布给出不确定性区间；并通过参数自助/后验抽样估计预测敏感性）；情景分析与偏差校正（支持基线、冲突升级或边境封锁等情景，通过变动协变量输入评估情景下的风险差异，同时应用国别报道率校正或下采样/加权策略以缓解报告偏差对预测的影响）；验证与回测（以滚动窗口后验预测检验对过去若干年进行回测，使用指标包括区间覆盖率、CRPS、Brier score、AUC/ROC、空间对数似然和位置误差分布，并检验自激成分显著性和模型残差的时空独立性）；实施与部署（把预测结果导出为可视化产物：时空热力图、按区域的期望事件数与重大事件概率表、以及模型诊断报告；并设计自动化重训练与概念漂移检测流程以定期更新模型）；计算与工程要求（建议使用 Python 生态—numpy/pandas/geopandas、scikit‑learn、tick/hawkeslib、PyMC3/Stan 或 cmdstanpy、numba/parallelization 与 GIS 可视化工具；对大型并行模拟使用多核/集群资源并记录所有随机种子与版本以确保可复现性）；治理与交付物（最终交付包括已校准模型代码与参数、数据预处理脚本、预测与不确定性输出文件、回测与稳健性报告以及明确的模型假设与限制说明），所有步骤须严格记录以便审计与后续人工情报复核。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "基于近三年事件与外生协变量，拟合并评估时空Hawkes自激-背景模型以预测下一年全球或分区恐怖袭击事件强度与数量并量化不确定性",
+          "expected_output": "按网格/区域的下一年期望事件数与区间（置信区间/后验区间）、重大事件概率图表与热力图、滚动回测报表（CRPS/Brier/覆盖率/空间对数似然）、已校准模型参数与代码、情景分析结果（基线/升级/封锁）、模型诊断与残差独立性检验文档",
+          "key_inputs_constraints": "必需字段：时间戳(datetime)、经纬度(latitude/longitude)、事件影响度量(nkill/nwound/propvalue及h_k放大因子)、精度标识(specificity/vicinity)；外生协变量：人口密度、GDP/失业率、ACLED冲突强度、难民/迁徙、季节项；约束：时间对齐到日/周，坐标有效范围与大圆距离计算，缺失需插补或低精度标注，固定随机种子记录版本",
+          "modeling_type": "拟合+预测+仿真+评价",
+          "role_in_pipeline": "作为子任务1特征工程与子任务2危害分级后的时空风险预测核心模块；前序依赖：清洗与标准化数据、危害度h_k；后续对接：任务3簇发现的先验风险、总体反恐态势报告与可视化部署"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确自激-背景分解与下一年预测目标",
+              "description": "准确阐述强度λ(x,t)=μ(x,t)+∑g(x−x_k,t−t_k)·h_k的结构，并界定“下一年”在时间轴上的外推窗口与空间分辨率（全球/分区/网格）。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：给出λ分解、外推区间与网格大小；中分：提及自激与背景但无分辨率细化；低分：将问题当成纯计数回归或未说明预测窗口。"
+            },
+            {
+              "sub_criteria": "识别关键输入与协变量约束",
+              "description": "点明必需的时间戳、经纬度、h_k（由nkill/nwound/propvalue派生）与协变量（人口密度、ACLED等）的时间对齐要求与缺失处理策略。",
+              "score": 25,
+              "evaluation_focus": "需求解析",
+              "scoring_hint": "高分：列出字段并说明对齐频率与缺失标注；中分：仅罗列部分字段；低分：未区分必需与可选输入。"
+            },
+            {
+              "sub_criteria": "验证指标与风险识别",
+              "description": "指出需要CRPS、Brier、覆盖率、空间对数似然、残差独立性来评估预测与不确定性；识别报道偏差与概念漂移风险。",
+              "score": 25,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：列出≥3项指标并说明用途；中分：仅提供1–2项或笼统“准确率”；低分：无验证指标。"
+            },
+            {
+              "sub_criteria": "情景分析需求",
+              "description": "识别基线/冲突升级/边境封锁等情景并需通过改变协变量输入进行对比。",
+              "score": 20,
+              "evaluation_focus": "应用意识",
+              "scoring_hint": "高分：描述如何变更协变量并输出差异图表；中分：仅提到情景；低分：无情景概念。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "用数学表达λ(x,t)与核函数g的形式",
+              "description": "清晰复述时间核（指数/幂律）与空间核（Gaussian/指数/幂律）候选与h_k放大因子如何进入g。",
+              "score": 30,
+              "evaluation_focus": "数理表达",
+              "scoring_hint": "高分：给出具体核公式与参数含义；中分：只描述类型无公式；低分：未提核或表述错误。"
+            },
+            {
+              "sub_criteria": "背景率μ(x,t)建模复述",
+              "description": "说明μ(x,t)由协变量与季节基函数（如周期性傅里叶/样条）构成，并可用可加模型或广义回归表示。",
+              "score": 25,
+              "evaluation_focus": "模型表达",
+              "scoring_hint": "高分：写出μ=exp(β·X+季节项)或GAM结构；中分：泛述依赖协变量；低分：忽略μ或将其常数化。"
+            },
+            {
+              "sub_criteria": "预测对象与空间聚合层级",
+              "description": "复述输出为“下一年按网格/行政区期望事件数、重大事件概率与区间”。",
+              "score": 25,
+              "evaluation_focus": "目标澄清",
+              "scoring_hint": "高分：同时提到期望数、概率与区间；中分：仅期望数；低分：输出不匹配。"
+            },
+            {
+              "sub_criteria": "不确定性量化路径",
+              "description": "复述通过蒙特卡洛样本路径或贝叶斯后验预测给出区间，并提及参数自助或后验抽样。",
+              "score": 20,
+              "evaluation_focus": "不确定性",
+              "scoring_hint": "高分：点名MC或后验预测并说明区间类型；中分：笼统给区间；低分：无不确定性。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "平稳性与核形状假设",
+              "description": "阐明时间核（指数/幂律）与空间核（Gaussian/幂律）的选择理由与是否随空间异质（同质/异质Hawkes）。",
+              "score": 30,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：给出可检验理由和备选对比；中分：只声明不解释；低分：未说明核假设。"
+            },
+            {
+              "sub_criteria": "h_k放大因子构造与截断",
+              "description": "假设h_k由nkill、nwound、propvalue经log或分位截断组合，说明极值与缺失处理。",
+              "score": 25,
+              "evaluation_focus": "特征假设",
+              "scoring_hint": "高分：明确公式与winsorize；中分：口述组合；低分：未定义h_k或使用未处理的原值。"
+            },
+            {
+              "sub_criteria": "协变量时序对齐与缺失机制",
+              "description": "假设协变量为年/季频并线性/样条插值，MNAR用缺失指示与贝叶斯/多重插补处理。",
+              "score": 25,
+              "evaluation_focus": "数据假设",
+              "scoring_hint": "高分：说明频率与插补方法；中分：仅说插补；低分：忽略缺失。"
+            },
+            {
+              "sub_criteria": "报道率偏差与校正",
+              "description": "提出下采样/加权或分层μ(x,t)校正报道差异的假设并说明影响。",
+              "score": 20,
+              "evaluation_focus": "偏差控制",
+              "scoring_hint": "高分：明确权重来源与应用位置；中分：泛述存在偏差；低分：不处理。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "背景率μ(x,t)的可解释回归/GAM实现",
+              "description": "构建包含人口密度、ACLED、GDP、季节傅里叶/样条的μ(x,t)，链接函数与正则化明确。",
+              "score": 30,
+              "evaluation_focus": "模型设计",
+              "scoring_hint": "高分：给出公式与正则/选择；中分：列特征但无形式；低分：常数μ或缺失关键协变量。"
+            },
+            {
+              "sub_criteria": "自激核g的时间/空间组件与大圆距离",
+              "description": "定义g_t与g_s（指数/幂律、Gaussian），使用haversine并给出尺度参数τ_t、τ_s。",
+              "score": 25,
+              "evaluation_focus": "数理设计",
+              "scoring_hint": "高分：含参数解释与边界条件；中分：仅类型；低分：忽略空间或时间核。"
+            },
+            {
+              "sub_criteria": "参数估计方案与模型选择",
+              "description": "制定MLE/EM或贝叶斯推断流程，配置信息准则/交叉验证与后验预测检验。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：说明目标函数与比较准则；中分：仅说‘训练’；低分：无估计方案。"
+            },
+            {
+              "sub_criteria": "情景分析接口设计",
+              "description": "将协变量作为输入脚本参数，支持基线/升级/封锁切换并保证可复现。",
+              "score": 20,
+              "evaluation_focus": "工程设计",
+              "scoring_hint": "高分：描述参数化与seed记录；中分：只提到场景；低分：无实现思路。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "最大似然/EM或贝叶斯求解细节",
+              "description": "给出优化器、收敛准则、先验设定或后验抽样方法（如NUTS），并记录随机种子与版本。",
+              "score": 30,
+              "evaluation_focus": "数值求解",
+              "scoring_hint": "高分：具体到容差、步长/迭代；中分：泛述‘收敛’；低分：无细节或不收敛处理。"
+            },
+            {
+              "sub_criteria": "大规模计算加速与近似",
+              "description": "使用tick/hawkeslib、numba/并行、窗口截断或近邻加速构建自激项并分析复杂度。",
+              "score": 25,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：量化加速或内存占用；中分：只提工具名；低分：在大数据下不可运行。"
+            },
+            {
+              "sub_criteria": "滚动回测与预测仿真",
+              "description": "实现滚动窗口后验预测与蒙特卡洛样本路径生成，输出期望数与区间。",
+              "score": 25,
+              "evaluation_focus": "仿真实现",
+              "scoring_hint": "高分：明确窗口长度与仿真次数≥500；中分：仅一次切分或少量样本；低分：无回测/仿真。"
+            },
+            {
+              "sub_criteria": "不确定性量化与敏感性",
+              "description": "参数自助或后验抽样，报告区间覆盖率与对τ_t/τ_s、核选择的敏感性。",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：提供覆盖率与敏感性图；中分：给区间无校准；低分：未量化不确定性。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现性与版本控制",
+              "description": "固定随机种子，记录库版本，提供配置文件与脚本化管线（如Makefile/Prefect），输出含元数据。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：一键重现实验并含种子/版本；中分：部分记录；低分：结果不可复现。"
+            },
+            {
+              "sub_criteria": "数据预处理与输入校验",
+              "description": "对时间戳、经纬度、协变量对齐与缺失标注实现严格校验与日志记录。",
+              "score": 25,
+              "evaluation_focus": "数据工程",
+              "scoring_hint": "高分：校验失败有报错与统计；中分：基本处理；低分：静默失败或越界。"
+            },
+            {
+              "sub_criteria": "高效自激计算与数值稳定",
+              "description": "实现窗口/索引加速的g累计和数值稳健的对数似然计算（避免下溢/溢出）。",
+              "score": 25,
+              "evaluation_focus": "性能与稳定",
+              "scoring_hint": "高分：向量化/并行且基准优于朴素≥5x；中分：可运行但慢；低分：超时或数值异常。"
+            },
+            {
+              "sub_criteria": "可视化与导出",
+              "description": "生成时空热力图、区域表格、诊断图（残差、校准曲线）并导出标准格式（csv/parquet/png）。",
+              "score": 20,
+              "evaluation_focus": "可交付性",
+              "scoring_hint": "高分：图表清晰、含图例与单位；中分：少量图表；低分：缺少核心可视化或无法读取。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "预测性能与不确定性报告",
+              "description": "报告CRPS、Brier、区间覆盖率与空间对数似然，并解读校准优劣与误差来源。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：≥3项指标齐全且有解读；中分：指标不全或缺解读；低分：仅给点估计。"
+            },
+            {
+              "sub_criteria": "自激成分显著性与残差独立性",
+              "description": "检验自激项贡献（如对数似然提升/AIC差）并用残差空间K函数或时间自相关检验独立性。",
+              "score": 25,
+              "evaluation_focus": "统计检验",
+              "scoring_hint": "高分：给显著性度量与图表；中分：定性描述；低分：未检验。"
+            },
+            {
+              "sub_criteria": "情景分析与政策含义",
+              "description": "对基线/升级/封锁的区域风险变化进行量化对比，提出可操作的反恐资源配置建议。",
+              "score": 25,
+              "evaluation_focus": "决策支持",
+              "scoring_hint": "高分：给出相对变化百分比与重点区域；中分：定性结论；低分：无情景或无结论。"
+            },
+            {
+              "sub_criteria": "偏差校正与稳健性讨论",
+              "description": "展示报道率校正或权重策略对预测的影响，并给出敏感性结论与局限性说明。",
+              "score": 20,
+              "evaluation_focus": "稳健解读",
+              "scoring_hint": "高分：对比前后指标/地图；中分：仅提及可能影响；低分：忽略偏差。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

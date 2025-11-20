@@ -1,0 +1,897 @@
+{
+  "task_id": "2016_B",
+  "problem": "本题目针对某种遗传疾病(简称疾病A)提供1000个样本的信息，这些信息包括这1000个样本的疾病信息、样本的9445个位点编码信息，以及包含这些位点的基因信息。这些信息包含在附录中的2个文件(phenotype.txt , genotype.dat)和1个文件夹gene_info(包含300个文件)中。\n\nphenotype.txt文件中包含了样本具有遗传疾病A的信息，即一列0和1组成的数据，其中共有500个0，500个1，表示我们现在共有1000个样本，其中500个0就是500个没患有疾病A的人，500个1就是有500个患有遗传病A的人。如同表一中的第二列。\n\ngenotype.dat文件中包含了上述1000个样本在某条染色体片段上所有的位点信息。该文件总共有1001行，9445列。如同上表1中第三列到第六列的编码信息。具体来说，第一行表示9445个位点的名称，都是以字母rs开头的；接下来，有1000行，每一行表示一个样本在该条染色体片段上所有位点(9445个位点)的编码信息。例如，该文件中第2行，就表示1号样本在该条染色体片段上9445个位点的编码信息。\n\n文件夹gene_info中包含了300个dat文件，表示300个基因的信息；每个dat文件中包含了若干个位点的名称，表示该基因包含的位点信息，事实上，可以把基因理解为若干个位点组成的集合。注意到在genotype.dat文件中已包含所有位点的编码信息，所以我们可以得到每一个基因所包含位点的编码信息。例如gene_1.dat，表示基因gene_1包含了rs3094315, rs3131972,..., rs4040617，共7个位点。\n\n另外，人体的许多遗传疾病和性状是有关联的，如高血压，心脏病、脂肪肝和酒精依赖等。科研人员往往把相关的性状或疾病放在一起研究，这样能提高发现致病位点或基因的能力；\n\n附录中的multi_phenos.txt文件中提供了上述1000个样本的10种相关性状的信息。文件中的每一列表示一个性状，每一行对应一个样本。文件中的0和1信息同phenotype.txt文件。\n\n所有这些文件都可以利用Notepad++软件打开。装好notepad++后，当需要打开某个数据文件时，先点击该文件，然后点击右键，屏幕出现菜单，其中一栏是“edit with notepad++”,点击这一栏即可。许多软件也可以将文件中的数据直接读入内存。（如matlab可用importdata函数读入）\n\n本题包含以下问题：\n\n问题一、请用适当的方法，把genotype.dat中每个位点的碱基(A,T,C,G) 编码方式转化成数值编码方式，便于进行数据分析。\n\n问题二、根据附录中1000个样本在某条有可能致病的染色体片段上的9445个位点的编码信息(见genotype.dat)和样本患有遗传疾病A的信息（见phenotype.txt文件）。设计或采用一个方法，找出某种疾病最有可能的一个或几个致病位点，并给出相关的理论依据。\n\n问题三、同上题中的样本患有遗传疾病A的信息（phenotype.txt文件）。现有300个基因，每个基因所包含的位点名称见文件夹gene_info中的300个dat文件，每个dat文件列出了对应基因所包含的位点(位点信息见文件genotype.dat)。由于可以把基因理解为若干个位点组成的集合，遗传疾病与基因的关联性可以由基因中包含的位点的全集或其子集合表现出来请找出与疾病最有可能相关的一个或几个基因，并说明理由。\n\n问题四、在问题二中，已知9445个位点，其编码信息见genotype.dat文件。在实际的研究中，科研人员往往把相关的性状或疾病看成一个整体，然后来探寻与它们相关的位点或基因。试根据multi_phenos.txt文件给出的1000个样本的10个相关联性状的信息及其9445个位点的编码信息(见genotype.dat)，找出与multi_phenos.txt中10个性状有关联的位点。\n\n对你得到的结果都应该进行适当的统计分析和检验，从而从理论上说明你所发现的致病位点和基因的合理性。\n\n关键词：遗传统计学， 全基因组关联性分析(GWAS)，位点(SNPs)",
+  "subtask": {
+    "1": {
+      "subtask": "子任务1（数据预处理与碱基到数值编码）的目的在于将原始文本格式的基因型（如 \"TT\",\"TC\",\"CC\"）解析为可用于数值计算的加性剂量矩阵，并同时完成必要的质量控制（QC），以生成干净、可复现且有完整元数据记录的输入文件；该子任务的输入为原始的genotype.dat（第一行为9445个位点标识符，后续每行为一个样本在所有位点的两碱基基因型字符串）和可选的样本表型/元数据文件，输出为（1）n×p 的加性剂量矩阵G（缺失以NA表示，剂量为0/1/2，参照后述原则），（2）每个位点的QC表（缺失率、等位基因频率MAF、参考/次要等位基因、HWE p 值、是否为多等位或互补模糊位点等），（3）每个样本的QC表（样本缺失率、杂合率、亲缘度指标等），以及完整的QC日志；具体步骤与方法如下：首先解析文本并标准化基因型表示（将两字母顺序视为无序，统一大写，约定缺失标记如 \"NN\",\"00\" 转为 NA），对每个位点统计出现的核苷酸集合并剔除明确的多等位位点或对多等位位点标注为“multi-allelic”以供审查；若仅包含一种等位基因则标注为单型并可在默认QC阈值下剔除；若恰好两种等位基因，则通过计数染色体拷贝数（每个样本基因型按字符计数）计算等位基因频率并将次要等位基因（minor allele）定义为计数较小者，生成加性剂量编码 G_ij = count(minor allele) ∈ {0,1,2}（异质型不区分顺序）；接着计算并记录每个位点的缺失率和样本的缺失率，按默认阈值剔除缺失率过高的位点与样本（建议阈值位点缺失率 > 5%，样本缺失率 > 5%，可参数化调整）；计算每个位点的 MAF 并按阈值过滤低频位点（建议初始阈值 MAF < 0.01，可根据研究重点放宽或收紧）；在有对照样本信息时对对照组执行 Hardy–Weinberg 平衡检验并对 HWE p 值极小（建议 p < 1e-6）的位点作标注或剔除；对样本层面计算杂合率并用均值±3标准差识别异常个体，计算成对相关性/PI_HAT（或基于 GRM 的亲缘度），对高度相关或重复的样本（PI_HAT > 0.2）做标注并决定保留一方或记录成簇；对于缺失基因型的插补提供两种可选策略并在输出中注明所用方法：简单快速方法为按位点用期望剂量填补（E[G_ij] = 2·MAF_j）或用样本中最常见基因型填补；更稳健方法为基于 EM 的基因型概率插补或调用外部工具（如 BEAGLE/IMPUTE）做基于连锁信息的分相与隐马尔科夫填补，用户可根据计算资源与精度需求选择；在编码完成后为后续分析准备标准化矩阵（每列按 2·MAF 中心化并按 sqrt(2·MAF·(1−MAF)) 标准化以便 PCA/相关性分析），并可执行可选的位点筛选（例如按 LD 修剪保留代表SNP）以减少下游冗余；整个流程应利用可复现的工具和脚本（推荐使用 PLINK 或 plink2 执行缺失率、MAF、HWE、相关性、LD pruning；使用 Python（pandas, numpy）或 R（data.table, SNPRelate）做文本解析和额外计算），并以结构化文本/CSV保存所有输出和日志（包括参数和阈值），以便审计与后续分析严格复现。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "将genotype.dat中的碱基基因型解析并拟合为加性剂量矩阵，同时评价与筛除不合格位点/样本以完成可复现的QC流程与记录",
+          "expected_output": "n×p的加性剂量矩阵G(0/1/2/NA)、位点QC表(MAF、缺失率、参考/次要等位基因、HWE p值、多等位标记)、样本QC表(缺失率、杂合率、亲缘度)、可复现的QC日志与参数配置",
+          "key_inputs_constraints": "输入：genotype.dat(首行为9445个位点ID，后续1000行样本基因型字符串)、phenotype.txt或multi_phenos.txt(可选用于HWE分组与亲缘度辅助)、gene_info文件夹(可选不用于本子任务)。约束：等位基因须标准化(大写、无序同一)、缺失标记需转NA；默认阈值：位点/样本缺失率≤5%，MAF≥0.01，HWE p值≥1e-6(对照组)；需记录多等位与互补模糊位点；输出必须CSV/文本且含参数与版本信息。",
+          "modeling_type": "评价",
+          "role_in_pipeline": "作为特征工程与数据清洗阶段，位于下游关联分析/建模之前；前序依赖原始文本数据获取，后序任务为GWAS、基因聚合分析、PCA/相关性与多性状关联。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别加性剂量编码G(0/1/2/NA)的核心目标",
+              "description": "明确以次要等位基因为基准将每个位点基因型映射为G_ij=count(minor allele)并保留NA。",
+              "score": 30,
+              "evaluation_focus": "任务定位",
+              "scoring_hint": "高分：清楚定义minor allele与0/1/2/NA映射；中分：有0/1/2但未基于MAF定义；低分：未定义或错误编码(如TT=2固定)。"
+            },
+            {
+              "sub_criteria": "识别QC必需指标（缺失率、MAF、HWE、杂合率、亲缘度）",
+              "description": "列出并解释位点与样本层QC指标及其作用，覆盖缺失率、MAF、HWE、杂合率、PI_HAT。",
+              "score": 30,
+              "evaluation_focus": "指标完备",
+              "scoring_hint": "高分：五项齐全且区分位点/样本层；中分：缺1–2项或混淆层级；低分：仅笼统“清洗数据”。"
+            },
+            {
+              "sub_criteria": "识别多等位/互补模糊与单型位点处理",
+              "description": "说明多等位位点标注或剔除、单型位点标注与默认剔除策略。",
+              "score": 20,
+              "evaluation_focus": "边界情形",
+              "scoring_hint": "高分：分别给出多等位/单型/互补模糊定义与处理；中分：提及但不区分；低分：完全忽略。"
+            },
+            {
+              "sub_criteria": "识别可复现性与日志需求",
+              "description": "指出需输出参数阈值、版本、命令日志与种子以保证复现。",
+              "score": 20,
+              "evaluation_focus": "复现意识",
+              "scoring_hint": "高分：明确日志字段与配置文件；中分：仅提留痕不具体；低分：无任何复现说明。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "准确复述输入结构（genotype.dat首行ID+1000行样本）",
+              "description": "复述文件行列语义、两碱基无序与大小写规范化、缺失标记转NA。",
+              "score": 30,
+              "evaluation_focus": "需求把握",
+              "scoring_hint": "高分：精确到位点数与无序处理；中分：概述但有遗漏；低分：结构误解。"
+            },
+            {
+              "sub_criteria": "阐明输出制品三件套与日志",
+              "description": "清晰列出G矩阵、位点QC表、样本QC表及QC日志内容。",
+              "score": 30,
+              "evaluation_focus": "输出对齐",
+              "scoring_hint": "高分：四项全列且字段说明；中分：缺1项或字段不全；低分：只给G矩阵。"
+            },
+            {
+              "sub_criteria": "默认阈值与可参数化说明",
+              "description": "复述位点/样本缺失>5%、MAF<0.01、HWE p<1e-6并可配置。",
+              "score": 20,
+              "evaluation_focus": "参数意识",
+              "scoring_hint": "高分：给出默认与可调；中分：仅默认无可调；低分：无阈值。"
+            },
+            {
+              "sub_criteria": "对照组用于HWE的限定复述",
+              "description": "指出HWE应在对照样本中计算，若无对照则记录限制或替代方案。",
+              "score": 20,
+              "evaluation_focus": "方法边界",
+              "scoring_hint": "高分：区分病例对照并给替代；中分：提HWE不区分组；低分：未提或错误在全样本强制。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "次要等位基因定义与稳定性假设",
+              "description": "假设以样本总体计数定义minor allele，记录与表型相关性可能导致波动。",
+              "score": 25,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：说明病例-对照不均衡影响MAF与编码；中分：仅给定义；低分：无说明。"
+            },
+            {
+              "sub_criteria": "缺失机制与插补假设",
+              "description": "阐明MCAR/MAR假设并说明期望剂量或众数插补的适用性与偏倚风险。",
+              "score": 25,
+              "evaluation_focus": "因果与偏倚",
+              "scoring_hint": "高分：点明插补对方差与关联的影响；中分：仅列方法；低分：默认无影响。"
+            },
+            {
+              "sub_criteria": "HWE检验前提假设",
+              "description": "假设随机交配、无选择压力；异常p值源于分型错误或结构分层。",
+              "score": 25,
+              "evaluation_focus": "方法前提",
+              "scoring_hint": "高分：列出前提与例外；中分：只给p阈值；低分：未提前提。"
+            },
+            {
+              "sub_criteria": "亲缘度与重复样本假设",
+              "description": "假设样本独立；若PI_HAT>0.2标注潜在亲缘或重复并限定处理策略。",
+              "score": 25,
+              "evaluation_focus": "数据独立",
+              "scoring_hint": "高分：给阈值与处理选项；中分：仅提相关性；低分：忽略独立性。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "编码规则构建（大写标准化、无序、计数为G）",
+              "description": "设计从AA/AB/BB到0/1/2的映射流水线，含缺失识别与非法字符处理。",
+              "score": 30,
+              "evaluation_focus": "算法设计",
+              "scoring_hint": "高分：完整规则含边界；中分：规则不全；低分：映射含糊或错误。"
+            },
+            {
+              "sub_criteria": "QC指标计算模型（缺失率、MAF、HWE）",
+              "description": "给出逐位点与逐样本的统计量计算公式与分组策略。",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：提供明确计算与分母处理NA；中分：仅口头描述；低分：遗漏关键指标。"
+            },
+            {
+              "sub_criteria": "过滤与标注策略（阈值与标志位）",
+              "description": "定义标志列：fail_missing_snp、fail_maf、fail_hwe、multi_allelic等并生成留存集。",
+              "score": 20,
+              "evaluation_focus": "规则体系",
+              "scoring_hint": "高分：清晰布尔列与组合逻辑；中分：仅描述不落地字段；低分：无结构化标注。"
+            },
+            {
+              "sub_criteria": "可选标准化与LD修剪设计",
+              "description": "描述按2·MAF中心化与sqrt(2p(1-p))标准化以及LD pruning参数框架。",
+              "score": 20,
+              "evaluation_focus": "可扩展性",
+              "scoring_hint": "高分：参数化说明(r2阈值、窗口)；中分：只提到可做；低分：未涉及。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "HWE p值计算与数值稳定性",
+              "description": "选择精确检验或卡方法，说明小样本/极端MAF时的精确法与p<1e-6阈值。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：给出精确检验或可靠库；中分：仅卡方无适用范围；低分：未说明方法。"
+            },
+            {
+              "sub_criteria": "PI_HAT/GRM计算与阈值应用",
+              "description": "实现成对亲缘度计算，采用PI_HAT>0.2标注并输出簇。",
+              "score": 25,
+              "evaluation_focus": "实现细节",
+              "scoring_hint": "高分：说明过滤位点集与并行策略；中分：仅给阈值；低分：不计算。"
+            },
+            {
+              "sub_criteria": "缺失与插补求解路径",
+              "description": "实现期望剂量(2·MAF)或众数插补，标注所用策略；可指向外部工具。",
+              "score": 25,
+              "evaluation_focus": "工程权衡",
+              "scoring_hint": "高分：可切换策略与记录；中分：固定一种；低分：直接删除或静默填补。"
+            },
+            {
+              "sub_criteria": "效率与可扩展性（9445×1000规模）",
+              "description": "采用向量化/块处理/外存或PLINK以保证在内存与时间内完成。",
+              "score": 20,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：给出复杂度与实现策略；中分：一般实现；低分：显著低效或崩溃风险。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "解析与标准化实现（大小写、无序、非法核苷酸）",
+              "description": "代码能稳健识别ATCG、处理“NN/00/--”为NA，排序等位基因代表无序。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：单元测试覆盖边界；中分：基本可跑；低分：遇异常即失败。"
+            },
+            {
+              "sub_criteria": "QC表与日志落地（CSV字段齐全）",
+              "description": "输出位点QC与样本QC含关键字段与布尔标志，日志含参数与版本。",
+              "score": 30,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：字段完备且含时间戳/种子；中分：字段不全；低分：无日志或非结构化。"
+            },
+            {
+              "sub_criteria": "参数化与可配置（阈值、插补、HWE分组）",
+              "description": "命令行/配置文件可设置阈值、插补策略、HWE使用的对照索引。",
+              "score": 20,
+              "evaluation_focus": "可维护性",
+              "scoring_hint": "高分：参数校验与默认值；中分：部分可调；低分：硬编码。"
+            },
+            {
+              "sub_criteria": "与PLINK等工具集成",
+              "description": "合理调用plink/plink2完成缺失率、MAF、HWE、LD pruning并解析结果。",
+              "score": 20,
+              "evaluation_focus": "工具运用",
+              "scoring_hint": "高分：稳定管道与错误处理；中分：部分集成；低分：重复造轮子或错误调用。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "QC概要统计与可视化（缺失率/MAF分布）",
+              "description": "报告位点/样本缺失率直方图、MAF分布、HWE显著位点数。",
+              "score": 25,
+              "evaluation_focus": "结果呈现",
+              "scoring_hint": "高分：图表与表格齐全；中分：仅文本；低分：无任何总结。"
+            },
+            {
+              "sub_criteria": "异常样本与位点的识别与处置说明",
+              "description": "列出高缺失、极端杂合、亲缘度高的样本与处理决定及理由。",
+              "score": 25,
+              "evaluation_focus": "诊断决策",
+              "scoring_hint": "高分：名单+阈值+动作；中分：笼统描述；低分：未识别。"
+            },
+            {
+              "sub_criteria": "编码与插补影响的敏感性分析",
+              "description": "比较无插补/期望剂量/众数插补对MAF与缺失率的影响，必要时报告差异。",
+              "score": 25,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：量化差异或表格；中分：定性描述；低分：未分析。"
+            },
+            {
+              "sub_criteria": "复现性与审计轨迹核验",
+              "description": "提供能一键重跑的命令/脚本与固定随机种子，日志可追溯所有筛选决策。",
+              "score": 25,
+              "evaluation_focus": "流程保证",
+              "scoring_hint": "高分：附运行命令和版本锁定；中分：部分脚本；低分：手工步骤不可复现。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2（单位点关联分析）——目标是基于经编码和必要缺失处理后的基因型矩阵 G（n×p，n=1000，p≈9445）与二元表型向量 y（phenotype.txt），在严格控制潜在混杂（如群体结构、相关性、性别/年龄等协变量）下，对每个SNP独立检验其与疾病A的关联，输出每个SNP的效应估计、不确定性、显著性及独立信号集合以供后续细化；为实现该目标，需按以下步骤执行：一是准备输入——确认G中缺失值已按一致策略处理或可在模型中处理，构建协变量矩阵 X（包含截距项和若干主成分PCs以控制种群结构，以及可用的性别/年龄等混杂变量）；二是选择与实施主要检验模型——在假设个体独立且样本结构不复杂时对每个SNP j拟合带协变量的二元逻辑回归 logit(P(y=1)) = Xα + G_j β_j，使用最大似然估计获得 β̂_j、se(β̂_j)、Wald 统计并计算 OR 与95%置信区间与双侧p值；在存在样本相关或近亲、或观察到系统性通量（从QQ图或λGC）时改用线性/广义线性混合模型（LMM/GLMM）或基于遗传关系矩阵的方差分量方法以校正背景效应（推荐使用 GEMMA、BOLT-LMM、REGENIE 等实现）；为处理罕见等位基因或完全分离问题，应在必要时使用 Firth 校正或精确检验；三是多重比较与显著性判定——记录原始p值并计算 FDR（Benjamini–Hochberg）以及基于总测试数或有效独立测试数 Meff（通过LD矩阵特征值法估计）的Bonferroni阈值，必要时通过置换产生经验阈值；四是识别独立信号与条件分析——对达到筛选阈值的SNP做LD clumping（如PLINK clump）以汇总区域簇并在领先SNP作为协变量的条件回归模型中反复检验以鉴别独立信号；五是结果校验与优质输出——为每SNP生成标准化结果表（SNP ID、位置、参考/次要等位基因、MAF、β̂、se、OR、95%CI、原始p、FDR、是否通过Bonferroni阈值、所属clump与条件检验结果），并产生Manhattan与QQ图及基因组控制因子以评估整体校准；六是可选的后续精细化准备——对显著区域可计算Wakefield近似贝叶斯因子并估计 posterior inclusion probability (PIP) 为后续fine‑mapping作准备。实现细节建议并行化SNP循环以加速计算，常用软件/工具包括 PLINK/PLINK2（快速单位点检验、clumping、Firth 选项）、R 的 glm/logistf、Python 的 statsmodels、以及 GEMMA/BOLT‑LMM/REGENIE（LMM）。该子任务的输出应包括可复现的脚本/参数记录、每SNP的完整统计汇总表、独立信号列表与条件分析记录、以及用于判定显著性的阈值与方法说明。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在控制群体结构和协变量的前提下，拟合带协变量的单位点逻辑回归（或混合模型）以评估每个SNP对疾病A的关联效应并判定其显著性与独立信号。",
+          "expected_output": "每SNP统计表（SNP ID、次要等位基因、MAF、β̂、se、OR、95%CI、p值、FDR、Bonferroni是否通过、clump簇与条件分析结果）、独立信号列表、Manhattan与QQ图、λGC与阈值说明、可复现脚本与参数日志。",
+          "key_inputs_constraints": "G：n×p加性剂量矩阵（缺失一致处理）；y：二元表型向量（0/1）；X：协变量矩阵（截距+PCs+性别/年龄等）；GRM或亲缘度信息用于LMM/GLMM；QC后SNP与样本集合；LD矩阵或基因型用于clumping；多重比较方法（BH/FDR、Bonferroni、Meff）；计算资源支持并行与Firth校正。",
+          "modeling_type": "拟合+评价",
+          "role_in_pipeline": "作为GWAS的核心关联检验环节，位于数据预处理与编码（子任务1）之后、后续基因/区域聚合与精细定位之前；直接依赖子任务1的QC与编码结果，向精细定位与功能注释提供候选位点与独立信号。",
+          "assumptions": "样本量n=1000、p≈9445；如存在相关个体或群体分层，可由PCs与LMM校正；缺失已按一致策略处理或模型可接纳缺失剔除；表型为二元且编码一致。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别单位点逻辑回归/混合模型与疾病A关联评估目标",
+              "description": "明确本任务是对每个SNP独立拟合logit(P(y=1))=Xα+G_jβ_j或LMM/GLMM以评估疾病A关联，而非多SNP联合预测。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：准确点出逻辑回归与在相关性时用LMM/GLMM；中分：仅提及逻辑回归但未考虑相关性；低分：误将任务当作预测或聚类。"
+            },
+            {
+              "sub_criteria": "混杂控制与群体结构（PCs/协变量X）",
+              "description": "指出需在模型中加入PCs、性别/年龄等X以控制群体结构和混杂。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：列出截距+PCs+性别/年龄并说明来源；中分：笼统提协变量未具体；低分：完全忽略PCs/协变量。"
+            },
+            {
+              "sub_criteria": "多重比较与显著性阈值（FDR/Bonferroni/Meff）",
+              "description": "识别需要对每SNP p值做FDR与Bonferroni或Meff校正并给出阈值使用场景。",
+              "score": 25,
+              "evaluation_focus": "统计规范",
+              "scoring_hint": "高分：同时给出BH-FDR与Bonferroni/Meff并比较；中分：仅一种方法；低分：未考虑多重比较。"
+            },
+            {
+              "sub_criteria": "独立信号识别（LD clumping与条件分析）",
+              "description": "识别需通过LD clumping与条件回归提取独立关联信号。",
+              "score": 20,
+              "evaluation_focus": "GWAS知识",
+              "scoring_hint": "高分：同时提出clump参数与条件回归步骤；中分：只提clumping或条件分析其一；低分：未提独立信号。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "数据与维度复述（n=1000, p≈9445, G与y）",
+              "description": "准确复述输入G（加性剂量）、y（二元0/1）、X（PCs等），并指出缺失处理策略。",
+              "score": 30,
+              "evaluation_focus": "需求对齐",
+              "scoring_hint": "高分：明确n、p、剂量编码与缺失策略；中分：缺一两项；低分：描述模糊或错误。"
+            },
+            {
+              "sub_criteria": "模型与输出复述（β̂、se、OR、95%CI、FDR）",
+              "description": "复述每SNP需要输出β̂、se、OR、95%CI、p、FDR、Bonferroni、clump簇与条件结果。",
+              "score": 35,
+              "evaluation_focus": "结果规范",
+              "scoring_hint": "高分：覆盖全部关键字段；中分：缺少2-3项；低分：仅给p值或杂项不成体系。"
+            },
+            {
+              "sub_criteria": "质量与校准复述（QQ图、Manhattan、λGC）",
+              "description": "复述需产出QQ/Manhattan图与λGC评估校准并据此选择模型（如转LMM）。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：明确用QQ与λGC指导模型选择；中分：只提作图；低分：无任何校准描述。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "个体独立性与转向LMM条件",
+              "description": "说明默认独立；若QQ膨胀或存在亲缘（PI_HAT>0.2）则使用LMM/GLMM。",
+              "score": 30,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：给出λGC>1.05或亲缘阈值触发条件；中分：定性描述；低分：未提或误判。"
+            },
+            {
+              "sub_criteria": "缺失与罕见变异处理（Firth/完全分离）",
+              "description": "假设缺失为随机或在模型中剔除；对低MAF或完全分离采用Firth或精确检验。",
+              "score": 30,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：指出MAF阈值与启用Firth的判据；中分：仅提Firth无条件；低分：忽略完全分离问题。"
+            },
+            {
+              "sub_criteria": "线性可加剂量效应假设",
+              "description": "明确采用加性剂量G_j∈{0,1,2}的线性对数几率效应，必要时提不同遗传模型敏感性分析。",
+              "score": 20,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：说明加性模型并提显性/隐性敏感性；中分：只写加性；低分：模型与编码不一致。"
+            },
+            {
+              "sub_criteria": "多重比较控制目标（家族错误率或FDR）",
+              "description": "设定FDR控制水平（如5%）与Bonferroni家族错误率阈值，并说明Meff情形。",
+              "score": 20,
+              "evaluation_focus": "统计规范",
+              "scoring_hint": "高分：给出FDR=0.05与Bonferroni 0.05/p或0.05/Meff；中分：只定性；低分：未指定目标水平。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "逻辑回归与协变量设计（logit, Xα+G_jβ_j）",
+              "description": "正确构建包含截距、PCs、性别/年龄等X的单位点逻辑回归，并定义β_j与OR。",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：写出模型式与OR=exp(β̂)；中分：缺少部分协变量；低分：错误模型或遗漏截距。"
+            },
+            {
+              "sub_criteria": "混合模型/方差成分（GRM/REML或近似）",
+              "description": "在需要时构建LMM/GLMM框架，说明使用GRM与软件（GEMMA/BOLT/REGENIE）。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：匹配任务场景与工具；中分：只提名称不明用途；低分：与场景不匹配或遗漏。"
+            },
+            {
+              "sub_criteria": "多重比较策略（BH、Bonferroni、Meff/置换）",
+              "description": "明确对每SNP原始p值执行BH-FDR与Bonferroni；说明Meff或置换阈值估计。",
+              "score": 25,
+              "evaluation_focus": "统计设计",
+              "scoring_hint": "高分：包含方法与阈值公式；中分：仅列名；低分：未给出具体策略。"
+            },
+            {
+              "sub_criteria": "独立信号与条件回归设计",
+              "description": "定义clumping窗口、r^2阈值、索引SNP选择，及条件回归迭代以分离多信号。",
+              "score": 20,
+              "evaluation_focus": "GWAS方法",
+              "scoring_hint": "高分：给出示例参数如250kb,r^2=0.1；中分：仅提clump；低分：未设计条件分析。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "稳健估计与收敛（Firth/精确检验/数值稳定）",
+              "description": "处理完全分离或小样本的Firth校正与收敛监控，报告β̂与se获取方式。",
+              "score": 30,
+              "evaluation_focus": "数值稳定",
+              "scoring_hint": "高分：给出启用Firth条件与备选精确检验；中分：笼统提及；低分：无对策。"
+            },
+            {
+              "sub_criteria": "并行与效率（批处理/PLINK2快速检验）",
+              "description": "说明采用PLINK/PLINK2或并行化循环以加速p≈9445的全表计算。",
+              "score": 25,
+              "evaluation_focus": "工程能力",
+              "scoring_hint": "高分：给出线程/批大小策略；中分：仅说并行；低分：顺序慢实现无说明。"
+            },
+            {
+              "sub_criteria": "LD clumping与条件回归实现",
+              "description": "实际执行clump并在领先SNP为协变量的条件模型中迭代求解，输出独立信号。",
+              "score": 25,
+              "evaluation_focus": "算法落实",
+              "scoring_hint": "高分：有参数与迭代停止准则；中分：只做clump；低分：未执行。"
+            },
+            {
+              "sub_criteria": "阈值计算与λGC/QQ校准",
+              "description": "计算FDR与Bonferroni阈值；生成QQ并报告λGC，必要时切换到LMM。",
+              "score": 20,
+              "evaluation_focus": "统计执行",
+              "scoring_hint": "高分：数值可复核（如α/p）；中分：只口述；低分：缺失或错误。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现脚本与参数日志",
+              "description": "提供运行脚本（R/Python/PLINK命令）及所有参数（PC个数、clump阈值、FDR水平）日志化。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：一键可复现并含版本信息；中分：多步但参数齐全；低分：缺脚本或参数不全。"
+            },
+            {
+              "sub_criteria": "逻辑回归/LMM调用正确性",
+              "description": "使用glm/logistf/PLINK2或GEMMA/BOLT/REGENIE正确传入G_j、y、X并处理缺失。",
+              "score": 30,
+              "evaluation_focus": "实现正确",
+              "scoring_hint": "高分：含缺失与收敛处理；中分：基本可跑但边界弱；低分：接口或公式错误。"
+            },
+            {
+              "sub_criteria": "并行与内存管理",
+              "description": "实现多进程/多线程或基于PLINK的高效执行，并控制内存与中间文件。",
+              "score": 20,
+              "evaluation_focus": "工程效率",
+              "scoring_hint": "高分：显式并行参数与资源限制；中分：简单并行；低分：无并行且内存溢出风险。"
+            },
+            {
+              "sub_criteria": "输出规范化与可视化（Manhattan/QQ）",
+              "description": "导出标准列名的结果表，绘制Manhattan与QQ图，保存λGC与阈值说明。",
+              "score": 20,
+              "evaluation_focus": "结果产出",
+              "scoring_hint": "高分：列齐全且图符合规范；中分：少量缺失；低分：无图或列严重缺失。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "效应量解释（β̂、OR、95%CI）",
+              "description": "对领先SNP给出OR与95%CI并解释加性剂量对疾病A风险的方向与大小。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：方向一致、CI不跨1且解释清楚；中分：给数值无解释；低分：误解OR或方向。"
+            },
+            {
+              "sub_criteria": "显著性判断与多重比较控制",
+              "description": "基于FDR与Bonferroni阈值判定显著SNP，报告通过情况与数量。",
+              "score": 25,
+              "evaluation_focus": "统计结论",
+              "scoring_hint": "高分：两套阈值一致报告；中分：单一标准；低分：仅原始p值。"
+            },
+            {
+              "sub_criteria": "校准与系统性偏差评估（QQ、λGC）",
+              "description": "分析QQ图与λGC，说明是否存在膨胀与是否需要/已采用LMM校正。",
+              "score": 25,
+              "evaluation_focus": "模型诊断",
+              "scoring_hint": "高分：定量给出λGC并结论；中分：仅图示；低分：未评估或误判。"
+            },
+            {
+              "sub_criteria": "独立信号与区域解读（clump/条件分析）",
+              "description": "汇总独立信号数、代表SNP及所在区域，并解释条件分析后剩余信号。",
+              "score": 20,
+              "evaluation_focus": "GWAS解读",
+              "scoring_hint": "高分：清晰列出簇与条件后独立SNP；中分：仅列索引SNP；低分：未做或解读混乱。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3的目标是在给定已编码为剂量矩阵（G，元素为0/1/2，缺失已处理）和每个基因对应的位点列表（gene_info目录内每个dat文件）以及表型向量y和协变量矩阵X（含截距与若干主成分或其他混杂校正变量）的前提下，对每个基因进行统计聚合检验以检测基因层面的关联信号，并在显著基因内进行位点级细化以产出候选致病位点的优先级与功能注释；具体实施步骤为：首先对每个基因g读取其SNP子集并从G中抽取对应子矩阵G_g，记录每位点的MAF、缺失率和单点统计信息以便后续注释与敏感性分析；其次对基因级检验并行实施至少三类互补方法——（1）Burden测试：按权重w_j（建议使用MAF加权如Beta(1,25)或功能注释加权）构造样本基因负荷S_i=Σ_{j∈g} w_j G_ij，并在逻辑回归框架（logit(P(y=1))=Xα+γS）中检验γ=0，报告估计值与置信区间；（2）SKAT：在二元表型的广义线性核检验框架下构造核K_g = G_g W W' G_g'（W为位点权重对角矩阵），计算Q统计量并用Davies方法或精确置换估计p值；（3）SKAT‑O：采用SKAT‑O自动在Burden与SKAT之间权衡以兼顾效应方向一致与方向相反两种情形；在可用情况下使用SKAT R包或等效实现并确保在二元表型下以适当的拟合零模型（包含X）得到稳健p值；第三，对所有基因的原始p值进行多重检验校正（对300个基因可同时报告Bonferroni校正阈值与Benjamini–Hochberg FDR），并为校正基因长度和SNP数偏倚附加置换检验：对表型向量做B次置换（B≥1000，必要时更多）得到基于经验分布的p值或基因特异性阈值；第四，对显著或候选基因实施位点级细化：计算基因内每个SNP的单点统计量并采用贝叶斯细化方法（例如Wakefield ABF近似或使用susieR/FINEMAP）估计每个变异的posterior inclusion probability (PIP)，并基于PIP构建95% credible set以定位最可能的致病位点；第五，整合功能注释以辅助排序：对候选SNP输出其功能类别（编码改变/错义/无义/剪接/非编码）、保守性分数（PhyloP/GERP）、调控注释和已知eQTL信息（如GTEx）、以及SNP在单点与基因检验中的贡献权重；第六，进行敏感性分析：比较不同权重方案（MAF权重、等权、功能权重）、不同MAF截断（例如包含/排除MAF<0.01的稀有变异）、以及是否含或不含某些协变量（不同数量的PCs）对基因显著性的影响，并在输出中记录所有参数设置以保证可复现；第七，输出规范化结果文件集：每个基因的Burden/SKAT/SKAT‑O原始p、置换p、校正后p（FDR/Bonferroni）、基因内SNP列表及其MAF、单点统计、PIP与95% credible set、功能注释标签与综合优先级分数，并生成用于解释的图表（基因区域曼哈顿图、PIP热图、置换分布图）；实现工具建议以PLINK（提取SNP、计算MAF等基础QC）、SKAT R包（基因检验）、susieR或FINEMAP（贝叶斯细化）、ANNOVAR或Ensembl VEP（功能注释）为主，整个流程应并行化以提高效率，并保存所有中间结果、随机种子与运行参数以便审计与复现。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "对基因进行Burden/SKAT/SKAT‑O聚合检验并在显著基因内细化拟合PIP以评估与疾病A的关联并优先级排序候选位点",
+          "expected_output": "基因级结果表（Burden/SKAT/SKAT‑O原始p、置换p、FDR/Bonferroni）、独立显著基因清单、每基因SNP列表（MAF、单点统计）、细化结果（PIP、95% credible set）、功能注释与综合优先级分数、图表（基因区Manhattan、QQ/置换分布、PIP热图）、可复现脚本与参数日志",
+          "key_inputs_constraints": "输入：G（n×p加性剂量0/1/2，缺失已处理）、gene_info（每基因SNP集合）、y（二元表型）、X（协变量含截距与PCs）；约束：样本独立性或需混合模型纠偏；权重w_j可取Beta(1,25)或功能权重；置换次数B≥1000；多重校正需同时给出FDR与Bonferroni；记录随机种子以复现",
+          "modeling_type": "评价+拟合",
+          "role_in_pipeline": "作为关联分析中期的基因层面评价与细化环节，前序依赖子任务1（数据预处理与碱基到数值编码与QC）与子任务2（单位点关联与PC/协变量构建）；后序输出供功能注释整合、通路富集与候选区域精细定位",
+          "assumptions": "样本量n=1000，p≈9445；G已按次要等位基因编码且列对齐gene_info；二元表型采用逻辑回归框架拟合零模型；若无外部注释，默认权重使用Beta(1,25)"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别基因级聚合检验目标（Burden/SKAT/SKAT‑O评价）",
+              "description": "是否明确本任务为在G与gene_info上实施Burden、SKAT、SKAT‑O以评估基因与疾病A的关联，而非仅做单位点检验",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：三类检验均被点名且动机区分清晰；中分：仅两类或未说明差异；低分：混淆为单点或未提及聚合检验"
+            },
+            {
+              "sub_criteria": "混杂控制与协变量X角色",
+              "description": "是否识别需要在逻辑框架下包含X（PCs、性别/年龄）并在零模型中控制群体结构",
+              "score": 25,
+              "evaluation_focus": "方法意识",
+              "scoring_hint": "高分：明确零模型含X且用于SKAT; 中分：提到协变量但未落实到零模型; 低分：忽略协变量"
+            },
+            {
+              "sub_criteria": "置换与多重比较评价",
+              "description": "是否提出对300个基因进行FDR/Bonferroni与置换p值以校正长度/SNP数偏倚",
+              "score": 25,
+              "evaluation_focus": "统计控制",
+              "scoring_hint": "高分：同时FDR、Bonferroni与B≥1000置换；中分：仅一种校正；低分：未进行多重校正"
+            },
+            {
+              "sub_criteria": "细化与PIP评估目标",
+              "description": "识别显著基因内需估计PIP与95% credible set以定位候选位点",
+              "score": 15,
+              "evaluation_focus": "分析深度",
+              "scoring_hint": "高分：给出PIP与credible set；中分：仅排序未量化PIP；低分：无细化步骤"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "数据与对象边界（G、gene_info、y、X）",
+              "description": "是否准确复述输入矩阵/文件的作用与关系（G子矩阵G_g由gene_info抽取，对y二元，X含截距与PCs）",
+              "score": 30,
+              "evaluation_focus": "需求澄清",
+              "scoring_hint": "高分：四者关系与维度清楚；中分：漏1项或维度含混；低分：关系不清"
+            },
+            {
+              "sub_criteria": "检验与输出对齐（Burden/SKAT/SKAT‑O→p值与校正）",
+              "description": "是否将每个方法的统计量与输出字段（原始p、置换p、FDR/Bonferroni）逐项对应",
+              "score": 30,
+              "evaluation_focus": "结果规范",
+              "scoring_hint": "高分：逐项映射完整；中分：遗漏置换或校正一项；低分：无对应关系"
+            },
+            {
+              "sub_criteria": "细化与功能注释产出",
+              "description": "是否复述需输出PIP、95% credible set、功能注释与综合优先级分数",
+              "score": 25,
+              "evaluation_focus": "输出设计",
+              "scoring_hint": "高分：四项皆提及；中分：缺1–2项；低分：仅给p值"
+            },
+            {
+              "sub_criteria": "敏感性分析与参数记录",
+              "description": "是否提及权重方案、MAF阈值、PC数量变化并记录随机种子与参数",
+              "score": 15,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：列出≥2种方案并要求记录；中分：只提1项；低分：未提"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "逻辑回归零模型与样本独立性假设",
+              "description": "明确二元表型采用包含X的零模型；说明若存在相关性需稳健处理或混合模型",
+              "score": 35,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：零模型与潜在相关性处理都说明；中分：只述零模型；低分：未提"
+            },
+            {
+              "sub_criteria": "权重w_j设定（Beta(1,25)或功能权重）",
+              "description": "对Burden/SKAT的位点权重提出合理假设并可被替换比较",
+              "score": 25,
+              "evaluation_focus": "方法设定",
+              "scoring_hint": "高分：给出Beta(1,25)并提功能权重；中分：仅等权；低分：未定义权重"
+            },
+            {
+              "sub_criteria": "置换次数与随机性控制",
+              "description": "假设B≥1000并固定随机种子，说明计算与精度权衡",
+              "score": 20,
+              "evaluation_focus": "实验设计",
+              "scoring_hint": "高分：B≥1000且seed记录；中分：B不足或无seed；低分：无置换"
+            },
+            {
+              "sub_criteria": "MAF与变异纳入范围",
+              "description": "说明纳入MAF阈值（如含稀有变异<0.01）及对结果影响的预期",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：明确阈值并解释对Burden/SKAT影响；中分：仅给阈值；低分：未提"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "Burden统计构造（S_i=Σ w_j G_ij）与逻辑检验",
+              "description": "正确定义负荷S_i、在logit(P(y=1))=Xα+γS中检验γ=0并输出效应与CI",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：给出公式与CI；中分：仅p值；低分：定义错误或缺失"
+            },
+            {
+              "sub_criteria": "SKAT核与Q统计量",
+              "description": "构造K_g=G_g W W' G_g'，采用广义线性零模型并说明Davies或近似法",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：核、零模型与p值算法齐备；中分：缺p值算法说明；低分：未定义核"
+            },
+            {
+              "sub_criteria": "SKAT‑O权衡机制",
+              "description": "描述在Burden与SKAT间自适应组合并适配方向一致/相反效应",
+              "score": 20,
+              "evaluation_focus": "方法理解",
+              "scoring_hint": "高分：阐明组合权参数与动机；中分：仅称“折中”；低分：未涉及"
+            },
+            {
+              "sub_criteria": "细化模型（ABF/PIP与credible set）",
+              "description": "定义Wakefield近似或susieR/FINEMAP的PIP与95% credible set构建",
+              "score": 10,
+              "evaluation_focus": "模型细化",
+              "scoring_hint": "高分：给出ABF或SuSiE要点；中分：仅PIP名词；低分：无细化建模"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "零模型拟合与并行计算",
+              "description": "先拟合含X的零模型并复用到各基因；采用并行/批处理提升效率",
+              "score": 30,
+              "evaluation_focus": "计算实现",
+              "scoring_hint": "高分：零模型缓存+并行策略；中分：仅串行；低分：重复拟合或效率极低"
+            },
+            {
+              "sub_criteria": "p值计算稳定性（Davies/置换）",
+              "description": "对小p值使用Davies或精确法，补充表型置换得到经验p",
+              "score": 30,
+              "evaluation_focus": "数值稳定",
+              "scoring_hint": "高分：小p自动切换并报告置换p；中分：单一方法；低分：不稳定或未说明"
+            },
+            {
+              "sub_criteria": "多重校正与显著性门限",
+              "description": "计算FDR与Bonferroni阈值并据此筛选显著基因",
+              "score": 20,
+              "evaluation_focus": "统计控制",
+              "scoring_hint": "高分：两者兼顾并报告阈值；中分：仅FDR或Bonferroni；低分：未校正"
+            },
+            {
+              "sub_criteria": "PIP估计与credible set生成",
+              "description": "在显著基因内求解PIP并输出95% credible set",
+              "score": 20,
+              "evaluation_focus": "推断实现",
+              "scoring_hint": "高分：PIP与集合边界清晰；中分：仅PIP；低分：无结果"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据抽取与G_g构建可靠性",
+              "description": "基于gene_info从G正确抽取SNP子矩阵，处理缺失与对齐问题",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：索引稳健、缺失安全；中分：偶发未对齐警告；低分：错配或崩溃"
+            },
+            {
+              "sub_criteria": "SKAT/SKAT‑O与Burden调用正确性",
+              "description": "正确使用SKAT包或等效实现（零模型、权重、二元表型设置）",
+              "score": 30,
+              "evaluation_focus": "API掌握",
+              "scoring_hint": "高分：参数完整、重复性验证；中分：默认参数但可运行；低分：误用API"
+            },
+            {
+              "sub_criteria": "并行与随机性控制",
+              "description": "实现跨基因并行与置换seed固定，记录B与线程数",
+              "score": 20,
+              "evaluation_focus": "工程能力",
+              "scoring_hint": "高分：可配置并行+seed；中分：单线程或seed缺失；低分：结果不可复现"
+            },
+            {
+              "sub_criteria": "输出规范与日志",
+              "description": "生成标准CSV/图表与参数日志（阈值、权重、版本、命令）",
+              "score": 20,
+              "evaluation_focus": "可审计性",
+              "scoring_hint": "高分：字段齐全、可追溯；中分：缺少部分元数据；低分：输出零散"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "显著基因解释（Burden/SKAT/SKAT‑O一致性）",
+              "description": "比较三法在显著基因上的一致/互补性并解释效应方向",
+              "score": 25,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：对比并解释差异；中分：仅列结果；低分：无比较"
+            },
+            {
+              "sub_criteria": "置换与校正后的稳健性",
+              "description": "报告置换p与FDR/Bonferroni一致性，讨论长度/SNP数偏倚",
+              "score": 25,
+              "evaluation_focus": "稳健性评估",
+              "scoring_hint": "高分：指出一致或差异并给出原因；中分：仅报数值；低分：未讨论"
+            },
+            {
+              "sub_criteria": "细化与PIP解读（credible set）",
+              "description": "解读PIP排名、95% credible set覆盖与候选致病位点的优先级",
+              "score": 25,
+              "evaluation_focus": "推断解读",
+              "scoring_hint": "高分：量化PIP阈值与集合大小；中分：定性描述；低分：未解读"
+            },
+            {
+              "sub_criteria": "功能注释与生物学合理性",
+              "description": "结合功能类别、保守性与eQTL说明候选位点的生物学可解释性",
+              "score": 25,
+              "evaluation_focus": "跨域整合",
+              "scoring_hint": "高分：多源注释支撑结论；中分：单一注释；低分：无注释支撑"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（多性状联合分析、预测建模与候选位点/基因优先级排序的独立任务）要求以经预处理并数值化的基因型矩阵 G (n×p)、多性状矩阵 Y (n×t，t=10) 以及可选的协变量矩阵 X (n×k，例如PCs、年龄、性别) 为唯一输入，独立完成三类互补工作：A) 多性状关联检测——对每个位点 j 或每个基因集合，实施至少两种互补的联合检验策略以提高对具有微小或多效性效应变异的检出功效：一为基于多变量广义线性模型/ MANOVA 的联合检验（拟合 Y = X A + G_j B_j + E，检验 B_j = 0，采用 Wilks’ λ、Pillai 或齐次性-自由度校正的 χ^2/ F 统计量或等价的 Q = b̂'Σ̂^{-1}b̂ 的卡方型总体效应检验）；二为降维后检验（对 Y 做 PCA/CCA，取前 r 个表型主成分或典型相关向量作为综合表型，在这些主成分上对每个 SNP/基因做单变量检验以捕获共有信号）；在样本相关或存在群体结构时，优先采用多性状线性混合模型（mvLMM）将遗传相关矩阵 (GRM) 作为随机效应纳入以校正背景，所有检验须同时纳入协变量 X 并通过置换或估计的协方差矩阵来获得稳健的 p 值；对多重比较采用适当校正（FDR、基于有效独立测试数的Bonferroni或置换估计的经验阈值），并输出每位点/基因的多性状联合 p 值、效应向量估计与检验统计量； B) 预测建模与特征稳健性筛选——基于相同输入构建可评估泛化能力的分类/回归模型以衡量位点集合的预测信息并作为特征重要性来源：用于单一目标（例如疾病标签）或多输出目标的模型可包括正则化线性模型（LASSO/Elastic‑Net via glmnet）、树模型（随机森林、XGBoost）与稀疏多输出模型，所有模型应采用嵌套交叉验证（外层用于性能评估，内层用于超参数选择）并在训练集中使用稳定性选择（stability selection）或递归特征消除来识别稳定被选中的SNP/基因；评价指标包括AUC/ROC、精确率/召回率、F1、校准曲线与多输出的micro/macro平均指标，同时记录各特征的标准化重要性或回归系数分布以量化不确定性； C) 优先级综合评分与稳健性检验——对来自 A 和 B 的证据进行系统整合以生成位点/基因的综合优先级 S：设 S 为加权函数，合成项包括多性状联合检验显著性（-log10 p 标准化）、单点/基因效应量的一致性（跨表型或跨方法的β向量一致性）、预测模型中的特征稳定性分数（被选中频率或平均重要性）、等位基因频率加权（为稀有变异引入权重）、以及可选的功能注释分值；权重可通过预先定义或用一个小规模训练-校验集合优化以平衡发现和稳定性；对最终候选集逐项实施敏感性分析（改变协变量集、改变MAF阈值、不同缺失插补策略、不同多性状降维数 r、LMM 与非LMM 的比较），并用置换测试估计家族错误率（FWER）或使用Bootstrap评估评分的置信区间；输出包括按优先级排序的候选SNP/基因清单与每项证据的细目（联合 p 值、预测中重要性、稳定性频次、MAF、校正后的显著性），并提供可复现的实现说明（建议工具：R 的 mvtnorm/CCA/MASS、MultiPhen 或 GEMMA 的 mvLMM 实现用于多性状检验，glmnet/ randomForest/ xgboost 和 scikit‑learn 用于预测与稳定性选择，p.adjust/qvalue 与置换脚本用于多重检验校正），所有计算应以明确随机种子、并行化策略和输出日志记录以便独立复现；最终结果以支持后续实验验证和独立队列复制的候选优先级名单为目标。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在多性状场景下拟合与评估多变量关联模型与预测模型，并综合证据对SNP/基因进行优先级排序与稳健性检验。",
+          "expected_output": "每SNP/基因的多性状联合p值与效应向量、降维后检验结果、经多重校正的显著性表；嵌套交叉验证的预测性能报告（AUC/ROC、F1、校准）、特征稳定性分数；综合优先级评分S及排序清单（含- log10 p、重要性、被选频次、MAF、方法标记）；QQ/Manhattan/校准与置换/Bootstrap图；可复现脚本与日志。",
+          "key_inputs_constraints": "输入：G(n×p，剂量0/1/2，允许NA已一致处理)、Y(n×t，t=10二元性状)、X(n×k协变量，含截距与PCs)；约束：需控制群体结构与相关性（GRM或PCs），多重比较校正（FDR/Bonferroni/置换），设定随机种子与并行策略；样本独立性或在mvLMM中建模；缺失处理策略需一致记录。",
+          "modeling_type": "拟合+分类+评价",
+          "role_in_pipeline": "处于QC编码与单/基因层分析之后、功能注释与生物学解释之前的综合分析环节；前序依赖：子任务1（数据预处理与编码）、子任务2（单位点关联分析）、子任务3（基因聚合统计）；后序衔接：精细定位与外部独立队列复制验证。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别多性状联合检验目标（Y的10个性状与SNP/基因的关联检出）",
+              "description": "明确需要对每个位点或基因实施多变量检验（MANOVA/mvGLM或mvLMM）以提高微小效应与多效性变异的检出功效，并与单性状区分。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清楚阐述MANOVA/mvLMM动机与适用性；中分：只提联合检验但未说明为何优于单性状；低分：仍使用单性状逐SNP检验。"
+            },
+            {
+              "sub_criteria": "识别预测建模与稳定性选择的独立目标",
+              "description": "指出需用嵌套交叉验证的LASSO/Elastic‑Net/树模型评估泛化能力，并输出特征稳定性（被选中频率/重要性分布）。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：明确嵌套CV与稳定性选择；中分：有CV但非嵌套或无稳定性；低分：仅训练集性能或未评估泛化。"
+            },
+            {
+              "sub_criteria": "识别综合优先级评分S的多来源证据融合需求",
+              "description": "指出需要融合- log10 p、效应一致性、特征稳定性、MAF权重与可选功能注释，并进行敏感性与置换/Bootstrap检验。",
+              "score": 25,
+              "evaluation_focus": "方案设计",
+              "scoring_hint": "高分：列出各分量与权重或优化策略；中分：仅加权但缺少不确定性评估；低分：只依据单一p值排序。"
+            },
+            {
+              "sub_criteria": "识别群体结构/相关性校正与多重比较控制",
+              "description": "强调X中需含PCs/协变量，必要时采用GRM的mvLMM；对全基因组或全SNP开展FDR/Bonferroni/置换阈值控制。",
+              "score": 15,
+              "evaluation_focus": "误差控制",
+              "scoring_hint": "高分：给出λGC/QQ图与校正策略；中分：只提FDR未操作；低分：未校正或忽视结构。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "准确复述输入输出（G、Y、X与联合p值、AUC、S评分）",
+              "description": "用任务术语复述：以G(n×p)、Y(n×10)、X(n×k)为输入，输出联合p值、效应向量、CV性能与综合优先级S清单。",
+              "score": 25,
+              "evaluation_focus": "沟通表达",
+              "scoring_hint": "高分：变量维度与指标匹配；中分：缺少维度或部分指标；低分：与任务输出不符。"
+            },
+            {
+              "sub_criteria": "区分A/B/C三模块的目标与耦合关系",
+              "description": "清晰说明A=多性状检验，B=预测与稳定性选择，C=证据融合与稳健性检验的先后与互动。",
+              "score": 25,
+              "evaluation_focus": "结构化",
+              "scoring_hint": "高分：给出模块依赖与数据流；中分：只列模块无关系；低分：混淆或遗漏模块。"
+            },
+            {
+              "sub_criteria": "明确协变量与缺失处理在三模块中的一致性",
+              "description": "说明X纳入所有检验与模型；缺失值处理策略一致（或在模型中处理），并记录到日志与结果注释。",
+              "score": 25,
+              "evaluation_focus": "规范性",
+              "scoring_hint": "高分：统一策略并说明；中分：提到但未统一；低分：各模块策略冲突。"
+            },
+            {
+              "sub_criteria": "复述多重比较与经验阈值策略",
+              "description": "说明FDR/Bonferroni与置换阈值的并用与适用场景（有效独立测试数或区域置换）。",
+              "score": 25,
+              "evaluation_focus": "统计素养",
+              "scoring_hint": "高分：阐明何时用FDR/Bonferroni/置换；中分：仅单一方法；低分：未说明或不当。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "关于样本独立性或使用mvLMM校正的假设",
+              "description": "陈述：若样本相关或群体结构显著，则采用mvLMM与GRM；否则多变量GLM/MANOVA足够。",
+              "score": 30,
+              "evaluation_focus": "假设管理",
+              "scoring_hint": "高分：给出使用mvLMM判断依据（QQ/λGC/亲缘度）；中分：泛泛提及；低分：未考虑相关性。"
+            },
+            {
+              "sub_criteria": "关于多性状协方差结构与降维r的假设",
+              "description": "假设Y近似多元正态或通过GLM残差近似，PCA/CCA选前r主成分并说明r的选择准则（累计方差≥80%或CV）。",
+              "score": 25,
+              "evaluation_focus": "统计建模",
+              "scoring_hint": "高分：给出r选择规则与敏感性；中分：固定r无依据；低分：未说明协方差结构。"
+            },
+            {
+              "sub_criteria": "关于缺失与MAF权重对统计力的影响",
+              "description": "假设缺失随机或可通过插补/模型内处理，MAF加权提升稀有变异贡献并在评分S中体现。",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：比较不同插补与MAF权重敏感性；中分：仅描述不实验；低分：忽略缺失与MAF影响。"
+            },
+            {
+              "sub_criteria": "关于预测模型正则化与超参数分布的先验",
+              "description": "假设L1/L2比率在[0,1]网格、树模型深度/学习率范围，采用内层CV或贝叶斯优化选择。",
+              "score": 25,
+              "evaluation_focus": "算法设定",
+              "scoring_hint": "高分：给出搜索空间与种子；中分：默认超参；低分：无超参选择说明。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "多性状联合检验构建（MANOVA/mvGLM或mvLMM）",
+              "description": "构造Y = X A + G_j B_j + E并检验B_j=0，给出Wilks’λ/Pillai或Q=b̂'Σ̂^{-1}b̂统计，必要时mvLMM含GRM。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：明确统计量与协方差估计；中分：仅口述方法；低分：缺少联合框架。"
+            },
+            {
+              "sub_criteria": "降维后检验（PCA/CCA定义与r选择）",
+              "description": "对Y做PCA/CCA得到综合表型，对每SNP/基因在前r成分上单变量检验并合并p值（Fisher或minP置换）。",
+              "score": 25,
+              "evaluation_focus": "方法设计",
+              "scoring_hint": "高分：说明r与合并策略；中分：做PCA但未合并规范；低分：无降维或不当。"
+            },
+            {
+              "sub_criteria": "预测模型与稳定性选择框架",
+              "description": "定义嵌套CV（外K×内L）、LASSO/Elastic‑Net与树模型，稳定性选择（重复抽样选中频率阈值）。",
+              "score": 25,
+              "evaluation_focus": "算法结构",
+              "scoring_hint": "高分：完整K×L与频次阈值；中分：单层CV；低分：无CV或过拟合。"
+            },
+            {
+              "sub_criteria": "综合优先级评分S的加权设计",
+              "description": "S = w1·(-log10 p_mj) + w2·一致性分 + w3·稳定性频次 + w4·MAF权重(±功能注释)，权重定义或学习。",
+              "score": 15,
+              "evaluation_focus": "指标体系",
+              "scoring_hint": "高分：给出权重与标准化；中分：未标准化或固定权重无依据；低分：未定义S。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "统计量与p值计算（闭式/近似/置换）",
+              "description": "实现Wilks/Pillai或Q统计的p值；在分布偏离时采用置换或Satterthwaite近似，报告有效样本数。",
+              "score": 30,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：含置换/近似细节与收敛检查；中分：仅理论p值；低分：p值计算缺失或错误。"
+            },
+            {
+              "sub_criteria": "嵌套交叉验证与超参搜索",
+              "description": "外K≥5评估，内L≥3调参；记录AUC/ROC、F1、校准；随机种子固定，并行化可复现。",
+              "score": 30,
+              "evaluation_focus": "实验设计",
+              "scoring_hint": "高分：完整K×L与方差/置信区间；中分：K或L不足；低分：无嵌套CV。"
+            },
+            {
+              "sub_criteria": "多重比较校正与独立测试数估计",
+              "description": "执行BH-FDR与Bonferroni或Meff阈值；或以置换得经验阈值，记录方法与参数。",
+              "score": 20,
+              "evaluation_focus": "误差控制",
+              "scoring_hint": "高分：报告FDR和Bonferroni/Meff；中分：仅FDR；低分：无校正。"
+            },
+            {
+              "sub_criteria": "稳健性与敏感性分析",
+              "description": "比较不同r、协变量集、插补策略、LMM与非LMM；用Bootstrap/置换评估S的置信区间或FWER。",
+              "score": 20,
+              "evaluation_focus": "稳健评估",
+              "scoring_hint": "高分：至少两项敏感性与区间；中分：仅定性；低分：未做。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "多性状检验与mvLMM实现可靠性",
+              "description": "使用R(MASS, mvtnorm, GEMMA接口)或等价实现，数值稳定（正定性检查、正则化Σ̂），并行逐SNP/基因。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：含数值保护与单元测试；中分：可运行但缺检查；低分：数值崩溃或不可复现。"
+            },
+            {
+              "sub_criteria": "嵌套CV与稳定性选择的可复现管线",
+              "description": "glmnet/scikit‑learn实现外K内L、管道化标准化、特征选择泄漏防范、固定随机种子与日志记录。",
+              "score": 30,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：无信息泄漏且日志完备；中分：可能泄漏或日志缺失；低分：数据泄漏明显。"
+            },
+            {
+              "sub_criteria": "并行化与资源管理",
+              "description": "对SNP/基因循环与置换/Bootstrap并行，控制内存（分块）、设置线程、记录时间与内存消耗。",
+              "score": 20,
+              "evaluation_focus": "性能优化",
+              "scoring_hint": "高分：线性加速与资源监控；中分：有限并行；低分：不可扩展或崩溃。"
+            },
+            {
+              "sub_criteria": "结果输出规范与日志",
+              "description": "统一CSV/Parquet输出（联合p、效应、AUC、S等），保存随机种子、参数、版本与可重运行脚本。",
+              "score": 15,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：一键重跑；中分：部分缺失；低分：无法复现。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "多性状检验结果解释与校准评估",
+              "description": "解读联合p值、效应向量方向；提供QQ图、λGC、Manhattan，讨论校准与潜在通量。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：图表与λGC合理且讨论到位；中分：仅表格；低分：误读或无校准评估。"
+            },
+            {
+              "sub_criteria": "预测性能与不确定性报告",
+              "description": "报告外层CV AUC/ROC、F1、校准曲线与置信区间/Bootstrap方差，比较基线模型。",
+              "score": 25,
+              "evaluation_focus": "评价能力",
+              "scoring_hint": "高分：含区间与基线对比；中分：点估计；低分：训练集或无指标。"
+            },
+            {
+              "sub_criteria": "综合优先级S的证据分解与敏感性",
+              "description": "展示S的组成（-log10 p、稳定性频次、MAF权重等）及不同权重/协变量/插补对排名的影响。",
+              "score": 25,
+              "evaluation_focus": "敏感性",
+              "scoring_hint": "高分：多情景一致性分析；中分：定性说明；低分：无敏感性。"
+            },
+            {
+              "sub_criteria": "可复制性与生物学可解释性初步讨论",
+              "description": "标注与已知基因/通路的对应，提出复制验证与后续实验建议（但不越界于功能验证）。",
+              "score": 20,
+              "evaluation_focus": "综合判断",
+              "scoring_hint": "高分：联系文献并给出复制计划；中分：仅列名称；低分：无解释或不当推断。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

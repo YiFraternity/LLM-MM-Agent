@@ -1,0 +1,856 @@
+{
+  "task_id": "2018_B",
+  "problem": "本课题的内容包括：\n\n1）对光传送链路进行简单建模 \n\n2）制定光传送网的规划，并探讨网络的价值\n\n3）改进调制格式\n\n问题-1：光传送链路建模\n\n现代数字传输系统可认为是对0101二进制序列进行编码传输的系统，1个二进制的0或1称为1个比特（bit）。无论是语音、视频还是任何类型的消息，都可以数字化为一串串”0101…”的二进制比特序列，经编码并调制为某个“载体信号”后，再经过特定的“信道”（信息的通道）传输到目的地。图1中给出了简化的模型。在光纤通信中，光纤就是信道，光纤传输的光波就是信息的载体。信道中无法避免的噪声可能导致最终接收的二进制序列中比特出错，即产生误码。\n\n\n图1 简化后的数字传输模型\n\n二进制序列通常需要将K个比特作为一个“符号”进行传输，每个符号有$2^K$个不同状态。光传输利用光波的复振幅承载信号，因此可用复平面上不同的点来对应不同的符号状态，这种将符号状态画在复平面上的图称为“星座图”，图上的点称为“星座点”。如图2(a)所示的QPSK（Quadrature Phase Shift Keying）调制，经过信道叠加噪声和接收机处理后，接收端的星座图不再是理想的四个点，而是会出现扩散。当接收机收到1个符号时，就将发送的符号判定为离该符号最近的星座点。显然，如果噪声过大，接收到的符号可能被判错从而产生误码，如图2(b)中的蓝点。误码率（Bit Error Ratio, BER）定义为错误的比特数占总传输比特数的比例，例如传输了50个符号共100个比特，其中有1个符号被误判为相邻的符号，错误了1个bit，则误码率为0.01。BER是衡量通信系统性能的最根本指标，采用纠错编码，只要纠前BER小于某个门限值（BER容限点），纠错编码后就能实现纠后误码率为零的传输，本题中BER都是指纠错编码前的误码率（纠前BER）。\n\n\n图2 星座图与噪声导致误码的示意图\n\n\n图3中理想星座点用$\\mathbf{s}_k$表示，接收到的符号用$\\mathbf{r}_k$表示，则噪声为\n\\begin{equation}\n    \\mathbf{n}_k = \\mathbf{r}_k - \\mathbf{s}_k\n    \\tag{1}\n\\end{equation}\n噪声通常服从均值为0的正态分布。噪声的方差等于噪声的平均功率，定义为\n\\begin{equation}\n    P_n = \\frac{1}{N} \\sum_{k=1}^N |\\mathbf{n}_k|^2\n    \\tag{2}\n\\end{equation}\n其中N为总共传输的符号数。信号平均功率定义为发送符号绝对值平方的均值：\n\\begin{equation}\n    P_s = \\frac{1}{N} \\sum_{k=1}^N |\\mathbf{s}_k|^2\n    \\tag{3}\n\\end{equation}\n定义信号和噪声功率的比值为信噪比（Signal-to-Noise Ratio, SNR），\n\\begin{equation}\n    \\text{SNR} = \\frac{P_s}{P_n}\n    \\tag{4}\n\\end{equation}\n\n工程上通常用dB作为SNR的单位，定义为\n\\begin{equation}\n\\text{SNR(dB)} = 10 \\log_{10}(P_s / P_n)\n\\tag{5}\n\\end{equation}\n\n增大十倍为加 $10\\text{dB}$，减少 $0.5$ 倍为减去 $3\\text{dB}$。本题中功率单位统一为毫瓦（$mW$），星座图实部和虚部单位为 $\\sqrt{mW}$。\n\n光传输链路由多个相同跨段的级联而成。如图4所示，几十 km 的光纤和一个放大器构成了一个跨段。信号穿传输 $15km$，光功率衰减一半，经超过一定光纤传输后，需要用放大器对光功率进行补偿。在信号、噪声同步放大的同时，放大器还会引入自发辐射噪声，公式为\\n\\[ P_n = 2\\pi hfB(NF+1/Gain), \\]\\n其中 $h$ 是普朗克常数（$6.62606896 \\times 10^{-34} J\\cdot S$），$f$ 是波频率（可设为 $193.1THz$），$B$ 为带宽（设为 $50GHz$），$NF$ 为噪声指数（可设为 $4$），$Gain$ 为补偿光纤损耗对应的功率增益。另一方面，光纤作为一种传输介质，其本身的非线性效应也会等效为加性噪声，其等效噪声功率与入纤功率近似呈平方关系，光功率为 $1mW$ 时的非线性噪声约等于单个放大器噪声的 $2/3$。放大器的自发辐射噪声和光纤的非线性噪声都是加性噪声。非线性噪声在每跨开头叠加，放大器噪声在每跨末尾叠加；每跨中信噪比保持不变。每跨叠加的噪声间相互独立。\n\n子问题1）纠缠误码率与信噪比计算\n\n星座图的编码分布模式也应为调制格式，对于给定的调制格式，BER 和 SNR 呈一一对应的关系，纠缠 BER 门限对应的 SNR 记做“SNR 容限点”。给出图5中所示的三种调制格式及编码方式（相邻星座点距离相等等），每个符号等概率出现，分别称为 QPSK，8QAM（Quadrature·Amplitude·Modulation，QAM），16QAM。请给出 BER 与 SNR 的关系曲线，BER=0.02 时 SNR 容限点分别为多少？\n\n图5 三种调制格式的编码方案\n\n子问题-2）光链路性能计算\n\n当单跨传输距离为80km和100km两种情况，以纠前误码率0.02为门限，图5给出的传输格式最远的传输距离（每跨距离×跨段数量）是多少？\n\n传输格式最远的传输距离（每跨距离×跨段数量）是多少？}\n\n\\subsection*{3. 问题-2 光传送网规划}\n\n表1 给出进一步优化升级后的三种典型光传输设备参数。考虑到通信网络的目的是把更多的人更充分地连接到一起，我们按照如下方式定义网络的价值：\n\n1) 每条直接连接两个城市/区域的链路当做 1 个连接，每个连接的价值定义为传输的容量与连接区域人口数的乘积（取两区域人口数乘积的 0.5 次方）\n\n2) 网络的价值则是所有连接价值的加权和\n\n\\begin{equation}\n\\text{网络价值} = \\sum \\text{权重} \\times \\text{容量} \\times \\text{人口}\n\\tag{6}\n\\end{equation}\n\n以图5给出的北京、南京、上海三座城市为例，若相互之间均互有连接，根据城市的距离可得出能传输的容量。若每条链路的权重为 1，进而再由人口算出网络价值 (Network Value, NV) 为\n\n\\begin{equation}\nNV = \\sqrt{21 \\times 24} m \\times 16 \\, \\text{Tb/s} + \\sqrt{21 \\times 8} m \\times 16 \\, \\text{Tb/s} + \\sqrt{24 \\times 8} \\times 32 \\, \\text{Tb/s} \\approx 1010 \\, \\text{mTb/s}\n\\tag{7}\n\\end{equation}\n\n其中 \\( m \\) 代表百万人 (million)，\\( \\text{Tb/s} = 10^{12} \\, \\text{bit/s} \\)，该网络的连接数为 3。\n\n然而由于资源等因素制约，网络往往并不能让每对节点都直接连接，但可通过中间节点连接起来。以图5(b) 为例，网络连接数为 2，北京和南京之间需通过上海中转。若北京上海之间的传输仅保留一半容量 (100Gb/s)，而另一半容量用于南京到北京的信号传输 (100Gb/s)，相应地南京与上海之间的直接传输容量也会降低至 300Gb/s，此时网络的价值为\n\n\\begin{equation}\nNV = \\sqrt{21 \\times 24} m \\times 8 \\, \\text{Tb/s} + \\sqrt{21 \\times 8} m \\times 8 \\, \\text{Tb/s} + \\sqrt{24 \\times 8} \\times 24 \\, \\text{Tb/s} \\approx 616 \\, \\text{mTb/s}\n\\tag{8}\n\\end{equation}\n\n根据需要两个节点之间也可以有多个连接。\n\n\\begin{figure}[h]\n    \\centering\n    \\includegraphics[width=0.8\\textwidth]{network_diagram.png}\n    \\caption{三个节点网络示意图}\n    \\label{fig:network_diagram}\n\\end{figure}\n\n\\begin{table}[h]\n    \\centering\n    \\begin{tabular}{|c|c|c|}\n        \\hline\n        单波传输容量 & 最大传输距离 & 总容量 \\\\\n        \\hline\n        100Gb/s & 3000km & 8Tb/s \\\\\n        \\hline\n        200Gb/s & 1200km & 16Tb/s \\\\\n        \\hline\n        400Gb/s & 600km & 32Tb/s \\\\\n        \\hline\n    \\end{tabular}\n    \\caption{不同传输格式的传输距离}\n    \\label{tab:transmission_distance}\n\\end{table}\n\n请你们队考虑价值与需求为图6中的我国城市群制定光传送网规划，图中共有12个区域(其中北京/天津，深圳/广州均按1个区域对待)， \n\n子问题-1:如果连接数从16增加到33条时，不考虑中间节点，给出你们的两个网络规划及其价值。网络价值最多是多少？\n\n子问题-2：存在中间节点，且两个节点之间可以有多个连接的情况下，重新解决子问题-1并给出所有中间节点传输容量的分配，假定每条链路容量可任意分配，只要总容量不超过表1的规定。如果由市扩大为省（区）影响如何？（人口请从网上查找）\n\n子问题-3:光传送网络价值有多个侧面，例如从运营商的角度，连接经济发达的地区会带来更多的收入，从政府的角度保障发展相对滞后地区的通信是均衡发展的要求等。你队认为制定光传送网络规划的目标函数应该是什么？前面制定的规划有无变化？ \n\n\n图7 需要考虑的城市群\n\n问题-3 改善星座图\n\n由第一问可知，纠前BER不变时，降低SNR容限点可以提高系统容忍噪声的能力，从而延长链路的总长度。请尝试任意改变16QAM方案中星座点的位置、数量或每个点的概率，探索产生比图5中8QAM（相邻各星座点之间距离相等）具有更低SNR容限点的调制方案？调制格式的信息熵需保持为3bit。\n\n信息熵定义为：\n\\begin{equation}\n\\Omega = -\\sum_{1}^{N} p_k \\log_2(p_k)\n\\tag{9}\n\\end{equation}\n其中$p_k$为每个符号状态出现的概率，$N$为状态数。图5所示的等概率情况下，QPSK、8QAM和16QAM的信息熵分别为2bit，3bit和4bit。",
+  "subtask": {
+    "1": {
+      "subtask": "子任务1（物理链路与端到端SNR预算）的目标是建立一套可重复、参数化的光纤链路噪声与SNR预算流程和公式，精确规定输入量、假设、计算步骤与输出指标，以便在任意给定单跨长度和发射功率条件下计算端到端信噪比和最大可支持跨数/距离。范围与主要假设：考虑由若干相同跨段级联构成的链路，每跨长度为 L_span（km），跨数为 N_span，单符号平均光功率为 P_s（mW），噪声可近似为均值为0的复高斯加性噪声（每维方差为 P_n/2），放大器在每跨末尾按跨段损耗给予功率增益以保持跨间信号功率恒定，放大器自发辐射噪声（ASE）与光纤非线性噪声视为独立的加性噪声并在各跨线性叠加。所需输入参数（必需）：普朗克常数 h；载波频率 f（例如 193.1 THz）；单波带宽 B（例如 50 GHz）；放大器噪声指数 NF（线性或dB形式）；纤损 α_dB/km（用于计算每跨损耗 loss_dB = α_dB × L_span）；跨段增益 Gain_linear = 10^(loss_dB/10)（用于补偿损耗）；发射平均功率 P_s（mW）；以及用于标定非线性噪声的经验条件（题目给定：当 P_s=1 mW 时单跨非线性噪声约等于单放大器ASE的 2/3）。计算公式与步骤：1) 计算单跨ASE噪声功率 P_n,ASE = 2π h f B (NF + 1/Gain_linear)（单位 mW）；2) 依据标定条件确定非线性系数 α_nl，使得在 P_s=1 mW 时 P_n,NL = α_nl·(1 mW)^2 = (2/3) P_n,ASE，故 α_nl = (2/3) P_n,ASE（mW/ (mW)^2 单位，但在计算中可直接用数值）；3) 对任意给定 P_s 计算每跨非线性等效噪声 P_n,NL = α_nl · P_s^2；4) 近似端到端总噪声功率为 P_n,total = N_span · (P_n,ASE + P_n,NL)（各跨独立同分布，直接相加）；5) 计算端到端线性SNR 为 SNR_linear = P_s / P_n,total，并可转换为 dB： SNR_dB = 10·log10(SNR_linear)；6) 给定某一调制格式对应的纠前BER门限所需的最小SNR（记为 γ_th），可求允许的最大跨数 N_max = floor( P_s / (γ_th · (P_n,ASE + α_nl P_s^2)) )，并得到最大端到端距离 L_max = N_max × L_span；实现与交付物：提供上述公式的清晰实现顺序和单位说明、可替换参数清单及默认值范例（h,f,B,NF,α_dB/km,L_span,P_s）、一个可运行的脚本/函数模板（输入上述参数输出 P_n,ASE、α_nl、P_n,NL、P_n,total、SNR_linear、SNR_dB、N_max、L_max），并附带对关键假设（噪声独立性、信号功率恒定假设、非线性二次近似）与数值稳定性（单位一致性、Gain计算） 的明确声明，以便后续用不同调制门限或更精细非线性模型替换参数后直接复用该预算模块。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "建立并评估光纤物理链路端到端SNR预算与最大可支持跨数/距离的仿真与计算流程",
+          "expected_output": "参数化公式说明+数值计算步骤；关键变量的数值结果（P_n,ASE, α_nl, P_n,NL, P_n,total, SNR_linear, SNR_dB, N_max, L_max）；可运行脚本/函数模板；默认参数示例；假设与单位一致性说明",
+          "key_inputs_constraints": "必需输入：h(普朗克常数, 实数), f(THz→Hz, 实数), B(GHz→Hz, 实数), NF(线性或dB, 需注明并正确换算), α_dB_per_km(实数), L_span(km, 正), P_s(mW, 正), N_span(正整数)；约束：Gain_linear=10^(loss_dB/10), loss_dB=α_dB_per_km×L_span；非线性噪声标定：P_s=1 mW 时单跨 P_n,NL=(2/3)·P_n,ASE；噪声独立同分布可线性叠加",
+          "modeling_type": "仿真+评价",
+          "role_in_pipeline": "作为物理层链路预算模块，位于网络规划前，用于输出端到端SNR与可达距离上限；前序依赖：参数设定与单位规范；后序任务：调制门限映射(BER→SNR门限)与网络容量规划",
+          "assumptions": "各跨间信号功率由放大器完全补偿保持恒定；ASE与非线性噪声独立、跨间独立同分布；非线性噪声与入纤功率二次关系在工作点附近适用；每跨中SNR保持不变；频带等效带宽为B"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确端到端SNR预算对象与指标（SNR_linear/SNR_dB、N_max、L_max）",
+              "description": "是否准确锁定需评估的对象为光纤链路端到端SNR预算，并点名输出指标SNR_linear、SNR_dB、最大可支持跨数N_max与距离L_max。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：四项指标齐全且相互关系清晰；中分：缺1项或定义含糊；低分：未聚焦端到端SNR或遗漏关键指标≥2项"
+            },
+            {
+              "sub_criteria": "识别关键输入约束（NF形式、α_dB/km、Gain计算）",
+              "description": "能否指出NF需线性/分贝一致性处理、纤损α_dB/km与loss_dB=α·L_span、Gain_linear=10^(loss_dB/10)的约束。",
+              "score": 25,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：给出完整换算关系与单位；中分：有换算但缺单位或少一步；低分：未说明或计算关系错误"
+            },
+            {
+              "sub_criteria": "区分噪声来源与叠加机制（ASE与非线性）",
+              "description": "是否区分P_n,ASE与P_n,NL的生成位置与跨间线性叠加机制，并指出独立同分布假设。",
+              "score": 25,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清楚给出P_n,total=N_span·(P_n,ASE+P_n,NL)由独立性推得；中分：只口头说明叠加；低分：混淆或未提"
+            },
+            {
+              "sub_criteria": "识别BER门限到SNR阈值映射（γ_th）",
+              "description": "是否指出需由调制格式将纠前BER门限映射为SNR阈值γ_th以计算N_max。",
+              "score": 20,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：明确γ_th角色与来源；中分：提及门限但未连到N_max；低分：未提该映射"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "用公式复述P_n,ASE=2πhfB(NF+1/Gain_linear)",
+              "description": "准确重写并解释单跨ASE噪声公式及变量与单位，避免歧义。",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：公式正确、单位到mW说明；中分：公式对但单位缺失；低分：公式错误或变量缺漏"
+            },
+            {
+              "sub_criteria": "非线性标定与α_nl推导",
+              "description": "根据P_s=1 mW时P_n,NL=(2/3)P_n,ASE推得α_nl=(2/3)P_n,ASE并说明随P_s^2缩放。",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：推导清楚并指出P_n,NL=α_nl·P_s^2；中分：给出结论未解释；低分：未能正确标定"
+            },
+            {
+              "sub_criteria": "端到端SNR与N_max、L_max关系复述",
+              "description": "清晰给出SNR_linear=P_s/[N_span(P_n,ASE+α_nlP_s^2)]与N_max=floor(P_s/[γ_th(P_n,ASE+α_nlP_s^2)])、L_max=N_max·L_span。",
+              "score": 40,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：三式齐备且逻辑连贯；中分：缺1式或记号不清；低分：关系式不成立"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "噪声独立性与线性叠加假设",
+              "description": "明确各跨噪声独立同分布、ASE与非线性独立、端到端噪声线性相加的成立条件与局限。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：给出前提（无相关性、相同跨）与可能失效条件；中分：仅陈述不讨论局限；低分：未说明"
+            },
+            {
+              "sub_criteria": "信号功率恒定与增益补偿假设",
+              "description": "指出每跨末尾放大器完全补偿损耗使跨间P_s恒定，并讨论Gain误差影响。",
+              "score": 25,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：说明Gain=loss且误差影响SNR；中分：仅说恒定；低分：未提或与模型矛盾"
+            },
+            {
+              "sub_criteria": "非线性二次近似适用性",
+              "description": "声明P_n,NL∝P_s^2的近似范围与对高功率偏离的风险。",
+              "score": 20,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：界定工作点与可能高估/低估方向；中分：笼统说明；低分：未提"
+            },
+            {
+              "sub_criteria": "单位一致性与数值稳定性假设",
+              "description": "保证Hz/THz、W/mW、dB/线性间换算一致，并提示极端参数下的溢出/下溢。",
+              "score": 20,
+              "evaluation_focus": "数值规范",
+              "scoring_hint": "高分：列出关键换算并给出检查点；中分：部分提及；低分：无说明"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "参数化输入清单与默认值范例",
+              "description": "构建包含h,f,B,NF,α_dB/km,L_span,P_s,N_span等的清单，提供合理默认值和可替换性。",
+              "score": 25,
+              "evaluation_focus": "模型设计",
+              "scoring_hint": "高分：清单完整且默认值现实；中分：缺1-2项或默认值不当；低分：无清单"
+            },
+            {
+              "sub_criteria": "公式链条完整性（P_n,ASE→α_nl→P_n,NL→P_n,total→SNR→N_max→L_max）",
+              "description": "是否以可执行顺序组织公式，避免循环依赖，变量命名一致。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：顺序明确且可直接实现；中分：顺序不清或小不一致；低分：缺环节或自相矛盾"
+            },
+            {
+              "sub_criteria": "NF与Gain的正确建模（dB转线性）",
+              "description": "NF支持dB与线性输入并正确换算；Gain_linear基于loss_dB。",
+              "score": 20,
+              "evaluation_focus": "数值规范",
+              "scoring_hint": "高分：提供明确转换公式；中分：只支持一种形式；低分：误用导致量级错误"
+            },
+            {
+              "sub_criteria": "可扩展性（替换γ_th或非线性模型）",
+              "description": "模型接口允许替换调制门限γ_th或更复杂非线性模型而无需重写流程。",
+              "score": 20,
+              "evaluation_focus": "模型设计",
+              "scoring_hint": "高分：参数化接口与示例；中分：仅口头可换；低分：强耦合无法替换"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "数值求解与边界处理（floor与N_max≥1判定）",
+              "description": "正确使用floor求N_max并处理N_max<1时的不可达情况与L_max=0定义。",
+              "score": 30,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：考虑下限与报错/提示；中分：给出floor无异常处理；低分：未用floor或越界"
+            },
+            {
+              "sub_criteria": "单位换算正确性（THz/GHz→Hz，mW↔W）",
+              "description": "在数值计算前进行一致的单位归一，避免数量级错误。",
+              "score": 30,
+              "evaluation_focus": "数值规范",
+              "scoring_hint": "高分：显式换算并验证数量级；中分：部分换算；低分：遗漏换算"
+            },
+            {
+              "sub_criteria": "对γ_th的可配置求解",
+              "description": "允许输入不同调制格式门限γ_th进行N_max/L_max重计算，支持批量评估。",
+              "score": 20,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：参数+循环/向量化支持；中分：仅单值；低分：硬编码固定"
+            },
+            {
+              "sub_criteria": "数值稳定性检查（极大/极小Gain、NF）",
+              "description": "在极端loss_dB或NF下保持无NaN/Inf并给出警告或剪裁策略。",
+              "score": 20,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：实现并演示检查；中分：仅文字说明；低分：无处理"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "函数模板完整性与接口设计",
+              "description": "提供可运行脚本/函数，输入上述参数输出P_n,ASE、α_nl、P_n,NL、P_n,total、SNR_linear、SNR_dB、N_max、L_max。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：一键运行通过并返回所有指标；中分：能运行但缺部分输出；低分：无法运行或接口混乱"
+            },
+            {
+              "sub_criteria": "单位与格式校验（NF dB/线性自动识别）",
+              "description": "代码能识别并转换NF单位、频率/带宽单位，避免误用。",
+              "score": 25,
+              "evaluation_focus": "鲁棒性",
+              "scoring_hint": "高分：实现校验与错误信息；中分：部分校验；低分：无校验"
+            },
+            {
+              "sub_criteria": "可配置γ_th与批量运行",
+              "description": "支持输入γ_th或列表，自动计算对应N_max/L_max，便于不同调制格式评估。",
+              "score": 20,
+              "evaluation_focus": "可用性",
+              "scoring_hint": "高分：列表输入与结果汇总；中分：单值可配；低分：硬编码"
+            },
+            {
+              "sub_criteria": "注释与默认参数示例",
+              "description": "包含简洁注释与现实默认值（如f=193.1 THz,B=50 GHz,NF=4线性等）。",
+              "score": 20,
+              "evaluation_focus": "可维护性",
+              "scoring_hint": "高分：注释清楚且提供示例调用；中分：有注释无示例；低分：无注释示例"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "SNR_dB与参数敏感性（P_s、L_span、NF）",
+              "description": "分析端到端SNR_dB对P_s、L_span、NF的单调性与灵敏度，指出非线性项导致最佳功率存在性。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：给出方向性与原因；中分：定性不足；低分：未分析"
+            },
+            {
+              "sub_criteria": "N_max/L_max对γ_th的影响解释",
+              "description": "说明更严格BER门限（更高γ_th）如何收缩N_max/L_max，并给示例数值或曲线。",
+              "score": 25,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：给出定量或表格示例；中分：仅口头说明；低分：无说明"
+            },
+            {
+              "sub_criteria": "单位一致性与数量级自检",
+              "description": "核对关键中间量数量级（如P_n,ASE数量级、SNR_linear范围）并报告检查结果。",
+              "score": 20,
+              "evaluation_focus": "数值规范",
+              "scoring_hint": "高分：列出数值自检点；中分：少量检查；低分：无检查"
+            },
+            {
+              "sub_criteria": "假设有效性与改进方向",
+              "description": "评述噪声独立、P_s恒定、二次非线性近似的适用性与可能引入的偏差，提出可替换模型接口。",
+              "score": 20,
+              "evaluation_focus": "批判性思维",
+              "scoring_hint": "高分：结合结果指出偏差来源与替代方案；中分：泛泛而谈；低分：未讨论"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2（BER—SNR 曲线与阈值提取）目标是为给定的调制格局（至少包含 QPSK、8QAM、16QAM，星座点坐标与比特映射需作为输入）在复基带 AWGN 信道下精确计算每种调制的 BER( SNR ) 曲线并数值求出满足纠前 BER = 0.02 的最小 SNR（SNR 容限点）；本子任务的范围仅限于信号加性高斯噪声假设、最近点判决（硬判决）以及可选的软判决互信息/GMI 估计，不包含链路级噪声预算或网络层应用。必需输入：每种调制的星座点复坐标 s_k、每符号出现概率 p_k（若未指定默认等概率）、比特映射（建议 Gray 映射）、目标符号平均功率 P_s（mW，或规定将星座归一化后以 Ps=1 处理并标注单位）、以及欲输出的 SNR 表示方式（线性或 dB）；可选输入：期望的仿真精度（SNR 阈值的不确定度，以 dB 为单位）。方法与步骤严格规定如下：1) 归一化星座使得平均功率等于输入 P_s；2) 定义 SNR 为 P_s/P_n（线性），在初始粗网格（例如 SNR_dB 从 -5 到 25 dB、步长 0.5–1 dB）上计算每点 BER；对方形 M‑QAM（QPSK、16QAM）可同时用标准解析近似公式（QPSK: BER = Q(√(2γ_bit)；M‑QAM 符号错估近似 P_sym ≈ 4(1−1/√M) Q(√(3γ_sym/(M−1)))，BER ≈ P_sym/log2 M）作快速初值核验；3) 对于非方形或任意星座（如 8QAM 或自定义星座）以及在解析近似不可信时，使用 Monte Carlo 仿真：对每个 SNR 点按 p_k 随机抽取 N_sym 符号（初始 N_sym = 1e5 符号/点），对每个符号生成独立复高斯噪声 n ∼ CN(0, P_n/2 per dimension)（其中 P_n = P_s / SNR_lin），得到接收样本 r = s_k + n，实施最近点判决计数比特差错并计算点估计 BER 及其二项分布置信区间（使用正态近似或 Clopper–Pearson）；4) 自适应采样与精细化：在粗网格中找到 BER 曲线穿过 0.02 的相邻 SNR 区间后，对该区间采用细网格（步长 ≤0.1 dB）并将每点样本数加大（例如 N_sym = 1e6 或至少直到在该点的错误计数达到 1000 以保证相对误差 ≲√(1/err_count) ≈3%）；若需要更高精度可用二分法在该区间内针对 SNR 直接迭代仿真直至 SNR 阈值不确定度达到预定精度（例如 ±0.05 dB）；5) 若需要软判决性能指标，额外并行估计每个 SNR 点的互信息或 GMI：对每个接收样本计算位级 LLR 并用蒙特卡洛平均法估算 GMI（或用 Blahut–Arimoto 在固定离散输入下估计互信息），以便在采用软判决 FEC 的系统中使用；6) 结果输出要求：对每种调制给出表格（或 CSV）列出 SNR_dB、BER 估计、上下置信界、样本数以及是否为解析/仿真值；给出最终的 SNR 容限点值并附带其置信区间与用于确定该值的采样策略（粗/细网格样本数和仿真误差统计）；同时生成 BER–SNR 曲线图（对数或线性 BER 轴）和细节插值图用于阈值可视化。实现与工具建议：可用 MATLAB (Communications Toolbox) 或 Python (numpy/scipy + numba 或 cupy/GPU 并行) 实现矢量化噪声生成与判决以加速，务必固定随机种子以保证可复现并使用并行计算（多核或 GPU）在阈值附近加大采样。统计与数值注意事项：所有概率估计应提供二项置信区间，禁止用极低样本数点直接插值求阈值；当 BER 接近 0.02 时应确保误差计数足够以避免阈值定位偏差。交付物为：对三种标准调制的 BER(SNR) 数据文件、每种调制 BER=0.02 对应的 SNR 容限点及其置信区间、用于仿真的代码脚本（含参数说明）、以及说明如何用给定星座/概率输入重复该流程的操作手册。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "题目要考什么——按题型拆解关键能力：评估并计算给定星座（QPSK/8QAM/16QAM）在复基带 AWGN 信道下的 BER(SNR) 曲线并精确提取满足纠前 BER=0.02 的最小 SNR（SNR 容限点），包括解析核验与 Monte Carlo 仿真验证。",
+          "expected_output": "数值序列（每个 SNR 点的 BER 估计与二项置信区间）、每种调制的 SNR 容限点及置信区间（值与不确定度）、BER–SNR 曲线图（含细化阈值图）、可复现仿真代码脚本、参数化输入/输出说明文档与 CSV/数据文件。",
+          "key_inputs_constraints": "必需输入：1) 星座点复坐标 s_k（复数数组）；2) 每符号概率 p_k（实数组，和为1，默认等概率）；3) 比特映射映射表（符号→比特，建议 Gray）；4) 目标符号平均功率 P_s（mW 或 归一化 Ps=1，须声明单位）；5) AWGN 假设、最近点硬判决；6) 仿真精度参数（初始 N_sym、阈值精度 dB、随机种子）；约束：噪声为复高斯且各样本独立，结果需提供二项置信区间。",
+          "modeling_type": "仿真+评价",
+          "role_in_pipeline": "作为链路级 SNR 预算（子任务1）的输入验证与阈值提供模块：依赖提供的星座点/映射与功率参数（前序），产出 BER(SNR) 曲线与 SNR 容限点供后续端到端预算（后序）与网络规划使用。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别并量化BER(SNR)曲线与SNR容限点的目标",
+              "description": "明确指出任务是‘计算BER(SNR)曲线’并‘提取 BER=0.02 的最小 SNR（SNR 容限点）’，包括需给出置信区间与采样策略。",
+              "score": 40,
+              "evaluation_focus": "问题抽取",
+              "scoring_hint": "高分：明确给出 BER=0.02 阈值目标、需 CI 与样本策略；中分：识别目标但未要求置信区间或样本数；低分：目标模糊或漏报 BER=0.02。"
+            },
+            {
+              "sub_criteria": "识别必需输入与约束（星座、p_k、映射、Ps、AWGN）",
+              "description": "列出并界定星座点 s_k、符号概率 p_k、比特映射、平均功率 P_s、噪声模型（复高斯）与判决规则（最近点硬判决）等关键输入与约束。",
+              "score": 30,
+              "evaluation_focus": "输入约束",
+              "scoring_hint": "高分：列全要素并标明数据类型与单位；中分：缺少1项必要参数或单位不明确；低分：缺多项关键输入或误述噪声模型。"
+            },
+            {
+              "sub_criteria": "识别精度与统计要求（样本数、CI、阈值精度）",
+              "description": "明确需要二项置信区间、在阈值点增加样本直到错误计数足够（例如≥1000 错误）或达到指定 dB 精度。",
+              "score": 30,
+              "evaluation_focus": "统计判断",
+              "scoring_hint": "高分：给出具体数值（N_sym、错误计数阈值、dB 精度）；中分：提到需提升样本但无量化；低分：未考虑统计不确定性。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述仿真流程（归一化→噪声生成→判决→计数）",
+              "description": "按步骤重述：星座归一化至 P_s、在每 SNR 计算 P_n、生成复高斯噪声、r=s+n、最近点判决并计比特错误，计算 BER。",
+              "score": 40,
+              "evaluation_focus": "流程把握",
+              "scoring_hint": "高分：逐步且精确包含归一化与 P_n 计算公式；中分：流程正确但公式/单位有缺失；低分：流程错漏或与最近点判决不符。"
+            },
+            {
+              "sub_criteria": "复述解析核验与 Monte Carlo 的适用场景",
+              "description": "明确指出何时使用解析近似（方形 M‑QAM）及何时用 Monte Carlo（非方形或解析不可信），并说明两者比较目的。",
+              "score": 30,
+              "evaluation_focus": "方法选择",
+              "scoring_hint": "高分：给出适用条件并用解析结果做初值核验；中分：知道两种方法但未说明适用界限；低分：未区分或误用解析公式。"
+            },
+            {
+              "sub_criteria": "复述阈值提取与自适应精细化策略",
+              "description": "说明粗网格定位穿越区间、细网格步长（≤0.1 dB）、在区间内提升样本或用二分法迭代直到满足不确定度要求。",
+              "score": 30,
+              "evaluation_focus": "阈值提取",
+              "scoring_hint": "高分：给出步长、样本增长策略和停止准则（如±0.05 dB）；中分：给出部分参数；低分：无细化策略。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "列出并量化 AWGN 与独立样本 假设",
+              "description": "明确噪声假设为复均值0高斯（每维方差 P_n/2），样本独立且各符号噪声独立同分布，并说明适用范围。",
+              "score": 40,
+              "evaluation_focus": "物理假设",
+              "scoring_hint": "高分：表述精确含方差表达并说明限制；中分：表述为高斯但缺方差或独立性说明；低分：未明确噪声模型或误写方差。"
+            },
+            {
+              "sub_criteria": "归一化与单位一致性假设",
+              "description": "说明星座需归一化到输入 P_s（mW 或 Ps=1 并注明换算），并保证 SNR 定义为 P_s/P_n（线性）或 dB 转换公式。",
+              "score": 30,
+              "evaluation_focus": "单位一致性",
+              "scoring_hint": "高分：单位换算清楚，代码中有单元检验；中分：说明单位但实现处未检验；低分：单位混用或遗漏。"
+            },
+            {
+              "sub_criteria": "判决规则与比特映射假设",
+              "description": "明确硬判决采用最近点判决，默认 Gray 映射（若未给映射需说明映射假定）并说明概率 p_k 处理方式（等概率或按输入）。",
+              "score": 30,
+              "evaluation_focus": "映射假设",
+              "scoring_hint": "高分：映射与 p_k 处理明确并在报告中注明；中分：映射有说明但非 Gray 或未声明；低分：未说明映射或误用概率。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "准确构建 SNR 与噪声功率数学关系（P_n = P_s/SNR）",
+              "description": "提供 P_n 计算、噪声生成 CN(0,P_n/2 per dim) 的明确表达式，并在代码/文档中实现该公式。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：公式精确且在测试点与解析值一致；中分：公式有小偏差或实现细节有缺；低分：公式错误或实现与描述不一致。"
+            },
+            {
+              "sub_criteria": "正确实现最近点判决与比特差错统计（含 p_k 权重）",
+              "description": "实现符号抽样按 p_k、最近点判决、比特映射计错并统计 BER，考虑符号到比特的不等长映射（若存在）。",
+              "score": 35,
+              "evaluation_focus": "判决实现",
+              "scoring_hint": "高分：按 p_k 抽样且比特映射正确计错；中分：等概率抽样但未支持任意 p_k；低分：判决或计数错误。"
+            },
+            {
+              "sub_criteria": "可选软判决/GMI 估计模块（若实现）",
+              "description": "若提供软判决，需说明 LLR 计算方法并给出 GMI/互信息估计流程与数值结果供 FEC 性能参考。",
+              "score": 30,
+              "evaluation_focus": "软信息估计",
+              "scoring_hint": "高分：准确实现 LLR 与 GMI 蒙特卡洛估计；中分：提供 GMI 思路但欠实现；低分：未提供或实现错误。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "仿真采样策略与自适应细化（粗→细→二分）",
+              "description": "给出粗网格范围与步长、阈值区间定位方法、细网格步长（≤0.1 dB）与二分法迭代准则并实现自动化。",
+              "score": 35,
+              "evaluation_focus": "采样策略",
+              "scoring_hint": "高分：自动化实现并记录每步样本数与误差估计；中分：策略有写明但未实现自动化；低分：无自适应策略或步长不合理。"
+            },
+            {
+              "sub_criteria": "统计置信区间与误差控制（错误计数≥阈值）",
+              "description": "对每个 SNR 点给出二项置信区间（Clopper–Pearson 或正态近似），在阈值附近确保错误计数≥1000 或达到指定相对误差目标。",
+              "score": 35,
+              "evaluation_focus": "统计严谨",
+              "scoring_hint": "高分：提供 CI 方法并满足错误计数/相对误差准则；中分：有 CI 但阈值点样本不足；低分：无 CI 或统计方法不当。"
+            },
+            {
+              "sub_criteria": "计算效率与收敛性保障（并行/向量化/随机种子）",
+              "description": "采用向量化/并行或 GPU 加速保证阈值处可在限定时间内完成仿真，并固定随机种子保证可复现性。",
+              "score": 30,
+              "evaluation_focus": "计算效率",
+              "scoring_hint": "高分：有并行实现并在文档说明性能；中分：向量化但无并行或无性能说明；低分：串行且不可复现。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现的脚本/函数接口与参数化输入",
+              "description": "提供可运行脚本或函数（输入星座 s_k、p_k、映射、P_s、SNR 网格、N_sym、随机种子），并输出 CSV 与图形文件。",
+              "score": 40,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：一键复现且参数说明齐全；中分：代码可运行但参数说明不全；低分：代码不可运行或缺关键输入。"
+            },
+            {
+              "sub_criteria": "验证与单元测试（解析公式比对与回归测试）",
+              "description": "包含对 QPSK/方形 QAM 的解析近似核验单元测试，展示数值与解析结果的差异并解释偏差来源。",
+              "score": 30,
+              "evaluation_focus": "正确性测试",
+              "scoring_hint": "高分：提供测试脚本并通过验算；中分：提供核验但未自动化；低分：无验证。"
+            },
+            {
+              "sub_criteria": "代码性能与异常处理（向量化/并行/内存/错误检查）",
+              "description": "代码需向量化、支持多核/GPU（可选），有内存/输入检查、随机种子控制与运行日志，阈值点自动提升样本功能。",
+              "score": 20,
+              "evaluation_focus": "健壮性",
+              "scoring_hint": "高分：有并行实现与异常处理；中分：有部分性能优化；低分：单线程且无异常检查。"
+            },
+            {
+              "sub_criteria": "文档与使用说明（含复现步骤与输出说明）",
+              "description": "提供 README/手册说明如何用任意星座/概率重跑流程，列出默认参数与示例命令。",
+              "score": 10,
+              "evaluation_focus": "文档质量",
+              "scoring_hint": "高分：文档完整含示例与参数说明；中分：文档存在但不够详细；低分：无文档或难以复现。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "BER(SNR) 数据与置信区间报告完整性",
+              "description": "为每种调制输出表格/CSV 包含 SNR_dB、BER 点估计、上下置信界与样本数，并说明估计方法（Clopper–Pearson/正态近似）。",
+              "score": 40,
+              "evaluation_focus": "结果完备性",
+              "scoring_hint": "高分：CSV 含 CI 且方法说明；中分：有 BER 表但无 CI；低分：无结构化数据文件或缺样本信息。"
+            },
+            {
+              "sub_criteria": "SNR 容限点值、置信区间及采样策略说明",
+              "description": "给出 BER=0.02 对应的最小 SNR 值、置信区间（例如 ±0.05 dB）并附上用于定位的采样策略与样本数统计。",
+              "score": 30,
+              "evaluation_focus": "阈值报告",
+              "scoring_hint": "高分：阈值带 CI 且采样策略充分记录；中分：阈值给出但无 CI 或采样记录；低分：仅给出单点无说明。"
+            },
+            {
+              "sub_criteria": "可视化与阈值可视化（细节标注）",
+              "description": "提供 BER–SNR 对数图与线性图，阈值处放大图并标注置信区间、样本数与判定线（BER=0.02）。",
+              "score": 20,
+              "evaluation_focus": "可视化质量",
+              "scoring_hint": "高分：图形清晰含放大阈值图与注释；中分：图形基本但注释欠缺；低分：无图或图难以读取。"
+            },
+            {
+              "sub_criteria": "结果解释与局限性讨论",
+              "description": "对比解析与仿真结果，讨论误差来源（样本误差、星座非理想、映射影响）并说明 AWGN 假设的适用性。",
+              "score": 10,
+              "evaluation_focus": "解释与局限",
+              "scoring_hint": "高分：详尽解释并指出适用边界；中分：有基本讨论但不深入；低分：无讨论或误导性结论。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（网络层规划与优化）：在给定12个节点的城市群节点集、节点间地理距离矩阵和每个节点的人口数据，以及三类可选传输技术参数（每类技术的单波率 r_t、每条链路在技术 t 下的最大端到端可达距离 D_t 与对应的可用总容量 C_t），构建并求解两类严格定义的优化问题以最大化题目给定的网络价值 NV = Σ_{(i,j)∈E_used} sqrt(pop_i·pop_j) · Cap_{ij}（权重可预设为1或输入指定）：第一情形（无中继，固定连接数K）——决策变量为二进制 y_{e,t}（在候选边 e 上是否部署技术 t）；约束为总选边数 Σ_e I[Σ_t y_{e,t}>0] ≤ K（或直接 Σ_{e,t} y_{e,t} ≤ K 若每边仅能选一项）、以及可用性约束 y_{e,t}=0 当 d_e > D_t，边的可用容量 Cap_e = Σ_t y_{e,t}·C_t；目标为最大化 NV，问题为0–1 MILP，应以商业求解器（Gurobi/CPLEX）或开源 MILP（CBC）在Pyomo/PuLP环境中建模并求解，输出最优拓扑、每条被选边的技术配置与对应 NV 值；第二情形（允许中继且可多路径/多连接）——将拓扑选择与流量分配耦合：决策包含边选择二进制变量和/或整数波段数 n_{e,t}（若需整数波长），同时为每需对 (s,d) 定义连续流变量 f_{sd,e}（允许路径拆分）并加入链路容量约束 Σ_{(s,d)} f_{sd,e} ≤ Cap_e，边的 Cap_e 由所选技术或波段数决定，目标依然为最大化 NV = Σ_{s<d} sqrt(pop_s·pop_d)·F_{s,d}（F_{s,d} = Σ_e f_{sd,e}），此为混合整数（若波段整数）或线性（若拓扑固定且容量连续）规划；方法上建议：若规模允许直接用 MILP 求全局最优，否则采用两阶段或分解策略（阶段一：基于边价值启发式或贪心选择候选边集 → 阶段二：在固定拓扑上求解线性多商品流以最优分配流量），并可用 Benders 分解、列生成或局部搜索（模拟退火、遗传算法）处理整数/大规模情形。模型必须明确并强制执行的约束包括：每条被选边的物理距离不得超过所选技术的 D_t，单边或双向容量共享规则（明确 Cap_e 是双向共享还是独立方向分配），每技术的 C_t 不得被单边超用，以及允许多条平行连接时的总波道数/总带宽上限。必需的输入文件与格式应包括：节点清单与人口（CSV）、距离矩阵（CSV或邻接表）、技术参数表（r_t, D_t, C_t）、连接数 K 值或预算约束，以及求解器配置文件；输出应包含被选边列表、每边技术与容量分配、对端点间的流量分配矩阵、计算得到的 NV 值与求解器日志（可复现性所需的随机种子和版本信息）。实施工具建议为 Python + Pyomo（或 PuLP）配合 Gurobi/CPLEX（或 CBC），并使用 networkx 用于拓扑操作与可视化；对于解的可靠性要求提供可选的敏感性/可行性核验脚本（检查所有边的 d_e ≤ D_t 约束、容量守恒与流守恒）。该子任务的交付物为：可运行的模型代码、输入示例文件、求解结果（拓扑与流分配表格）及说明文档，保证第三方可在给定输入下重现实验并在需要时扩展到更大规模或不同约束设定。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在给定12节点、距离与人口数据及三类传输技术参数下，构建并优化两类网络规划模型以最大化网络价值NV，并输出最优拓扑、容量与流量分配。",
+          "expected_output": "两类情形的最优解与报表：1) 无中继、固定连接数K的最优边集与每边所选技术(y_{e,t})、Cap_e与NV值；2) 允许中继的拓扑与多商品流分配(f_{sd,e})、每边技术或波段数配置与NV值；附求解日志、可复现代码、输入示例CSV、约束核验报告与可视化。",
+          "key_inputs_constraints": "输入：节点清单与人口CSV、距离矩阵CSV、技术参数表(r_t,D_t,C_t)、连接数K或预算；约束：d_e ≤ D_t方可选y_{e,t}=1；无中继情形Σ_e I[Σ_t y_{e,t}>0] ≤ K（或Σ_{e,t} y_{e,t} ≤ K且每边至多一种技术）；允许中继情形需流守恒与容量约束Σ_{s,d} f_{sd,e} ≤ Cap_e，Cap_e由选定技术/波段数决定；Cap为双向共享或方向独立需明确并一致实现；多条平行连接与总容量上限不得超C_t总额；NV=Σ sqrt(pop_i·pop_j)·Cap_{ij}或F_{s,d}。",
+          "modeling_type": "优化",
+          "role_in_pipeline": "作为网络层规划与优化环节：前序依赖子任务1的SNR/距离可达性与子任务2的BER–SNR阈值以确定技术(D_t,C_t)；后序为方案评估与敏感性分析、以及子任务4的调制改进对技术参数的反馈更新。",
+          "assumptions": "容量按无向双向共享计；每边同一技术至多选1次（无中继情形）；允许中继情形容量可连续分配（不强制整数波长）；NV权重为1；距离为大圆或已给定直达距离。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确两类优化情形（无中继K约束 vs 允许中继多商品流）",
+              "description": "是否清晰区分并分别定义第一情形的0–1 MILP（y_{e,t}, K约束）与第二情形的拓扑+流量耦合模型（f_{sd,e}与容量约束）。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：两情形均有清晰变量/约束/目标；中分：仅完整描述其一；低分：混淆或未区分两情形。"
+            },
+            {
+              "sub_criteria": "抓取NV目标函数与权重sqrt(pop_i·pop_j)",
+              "description": "是否准确表述NV=Σ sqrt(pop_i·pop_j)·Cap_{ij}/F_{s,d}，并说明权重来源与单位一致性。",
+              "score": 25,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：正确使用sqrt(pop_i·pop_j)且单位一致；中分：目标正确但未检核单位；低分：目标函数错误或遗漏权重。"
+            },
+            {
+              "sub_criteria": "识别技术可达性与容量约束（D_t, C_t）",
+              "description": "是否明确d_e ≤ D_t的可行性约束与每边容量不超过选定技术C_t（或Σ_t y_{e,t}·C_t）。",
+              "score": 25,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：完整表达d_e≤D_t与容量上限；中分：缺少其一；低分：两者均未体现。"
+            },
+            {
+              "sub_criteria": "连接数K或预算限制的正确建模",
+              "description": "无中继情形是否将Σ_e I[Σ_t y_{e,t}>0] ≤ K（或等价线性化）建模正确。",
+              "score": 15,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：提供线性化或等价约束；中分：口头描述无可行表达；低分：忽略K限制。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述输入文件与字段(r_t, D_t, C_t; 距离矩阵; 人口)",
+              "description": "是否将CSV输入结构、字段名与类型逐项复述，确保与模型变量一致。",
+              "score": 30,
+              "evaluation_focus": "需求澄清",
+              "scoring_hint": "高分：逐字段说明与校验规则；中分：罗列不全；低分：泛化描述无细节。"
+            },
+            {
+              "sub_criteria": "NV计算口径（无中继Cap_{ij} vs 中继F_{s,d})",
+              "description": "是否明确第一情形用边容量，第二情形用端到端流量F_{s,d}计入NV。",
+              "score": 25,
+              "evaluation_focus": "规范对齐",
+              "scoring_hint": "高分：两口径均清楚；中分：只述其一；低分：混用或错误。"
+            },
+            {
+              "sub_criteria": "容量方向性与共享规则说明",
+              "description": "是否声明Cap_e为双向共享或方向独立，并全程一致使用。",
+              "score": 25,
+              "evaluation_focus": "一致性",
+              "scoring_hint": "高分：明确方向性并在约束实现一致；中分：说明但实现未体现；低分：未说明导致歧义。"
+            },
+            {
+              "sub_criteria": "可行性边界（d_e > D_t强制y_{e,t}=0）",
+              "description": "是否在复述中强调物理可达性过滤或强制约束。",
+              "score": 20,
+              "evaluation_focus": "可行域定义",
+              "scoring_hint": "高分：给出前置过滤或约束；中分：仅提到未实施；低分：未提及。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "关于多连接/平行边与波段数的假设",
+              "description": "是否明确每边是否允许多条平行连接或整数波长(n_{e,t})，以及对总容量C_t的叠加规则。",
+              "score": 30,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：给出可叠加/整数性并一致应用；中分：仅口述；低分：未说明或与实现矛盾。"
+            },
+            {
+              "sub_criteria": "容量连续性与流拆分假设（多商品流）",
+              "description": "是否说明容量可连续分配，允许路径拆分；若不允许应给出理由与约束。",
+              "score": 25,
+              "evaluation_focus": "可实现性",
+              "scoring_hint": "高分：清楚声明并与求解器模型一致；中分：含糊其辞；低分：实现与假设冲突。"
+            },
+            {
+              "sub_criteria": "NV权重与单位一致性假设",
+              "description": "是否处理sqrt(pop)单位与容量单位一致性，避免NV量纲歧义。",
+              "score": 20,
+              "evaluation_focus": "数理规范",
+              "scoring_hint": "高分：解释量纲并统一；中分：有提醒无校验；低分：忽视单位导致错误。"
+            },
+            {
+              "sub_criteria": "方向性与对称性假设",
+              "description": "是否假设无向对称容量或定义有向边并据此建模约束。",
+              "score": 25,
+              "evaluation_focus": "问题设定",
+              "scoring_hint": "高分：清晰、实现吻合；中分：说明不充分；低分：前后不一。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "无中继0–1 MILP的变量与约束形式化（y_{e,t}, K, d_e≤D_t, Cap_e）",
+              "description": "给出完整线性模型：目标NV、选择变量、连接数与容量、可达性约束，必要的线性化。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：可直接投入求解器；中分：缺少线性化或某约束；低分：非线性或不完整。"
+            },
+            {
+              "sub_criteria": "允许中继的拓扑+多商品流模型（f_{sd,e}与容量守恒）",
+              "description": "节点流守恒、边容量Σ_{s,d} f_{sd,e} ≤ Cap_e、目标Σ sqrt(pop)·F_{s,d}，变量清晰。",
+              "score": 35,
+              "evaluation_focus": "优化建模",
+              "scoring_hint": "高分：约束完备且线性；中分：遗漏流守恒或F_{s,d}定义；低分：模型不可解。"
+            },
+            {
+              "sub_criteria": "技术选择与容量联动（Σ_t y_{e,t}·C_t 或 n_{e,t}·C_t）",
+              "description": "准确表达技术到容量的映射，避免超用C_t，必要时设置互斥或预算。",
+              "score": 20,
+              "evaluation_focus": "约束设计",
+              "scoring_hint": "高分：清晰互斥/叠加规则；中分：规则含糊；低分：允许超容量。"
+            },
+            {
+              "sub_criteria": "可扩展性与求解器适配性（Pyomo/PuLP线性形式）",
+              "description": "确保模型为MILP/LP形式，适配Gurobi/CPLEX/CBC，无非线性项。",
+              "score": 10,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：全线性化；中分：局部需人工处理；低分：含非线性且无替代。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "求解策略选择（直接MILP或两阶段/分解）",
+              "description": "依据规模选择全局MILP或两阶段（候选边筛选+LP分配），或Benders/列生成。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：给出理由与复杂度考量；中分：仅给出单一策略；低分：无策略说明。"
+            },
+            {
+              "sub_criteria": "可行性与最优性证明材料（gap、日志）",
+              "description": "提供MIPGap、迭代日志、时间与节点数，或LP最优性证据。",
+              "score": 25,
+              "evaluation_focus": "结果可信度",
+              "scoring_hint": "高分：含gap≤1%与日志；中分：仅给出可行解无gap；低分：无任何求解证据。"
+            },
+            {
+              "sub_criteria": "约束核验脚本（d_e≤D_t, 容量/流守恒）",
+              "description": "提供自动检查：可达性、Σ_{s,d} f_{sd,e} ≤ Cap_e、节点流守恒、K约束。",
+              "score": 25,
+              "evaluation_focus": "可行性校验",
+              "scoring_hint": "高分：独立脚本全通过；中分：部分检查；低分：未提供或检验失败。"
+            },
+            {
+              "sub_criteria": "敏感性/鲁棒性小结（K变化或C_t变化）",
+              "description": "分析K或技术参数变动对NV与拓扑的影响，至少1个场景对比。",
+              "score": 15,
+              "evaluation_focus": "结果稳健",
+              "scoring_hint": "高分：量化对比与解释；中分：定性描述；低分：无分析。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "Pyomo/PuLP可运行模型与求解器配置",
+              "description": "代码能加载CSV输入，构建MILP/LP并调用Gurobi/CPLEX/CBC，含随机种子与版本信息。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：一键运行并成功求解；中分：需手工修复；低分：不可运行。"
+            },
+            {
+              "sub_criteria": "输入输出管道（CSV接口与结果表/可视化）",
+              "description": "实现节点/距离/技术CSV读入，输出被选边、y_{e,t}/n_{e,t}、Cap_e、f_{sd,e}、NV，含NetworkX可视化。",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：I/O规范完备；中分：仅部分输出；低分：手写常量无I/O。"
+            },
+            {
+              "sub_criteria": "约束与单位一致性检查（自动断言）",
+              "description": "运行时断言d_e≤D_t、容量不超、K限制、方向性一致性与单位校验。",
+              "score": 25,
+              "evaluation_focus": "健壮性",
+              "scoring_hint": "高分：全覆盖并通过；中分：部分检查；低分：未实现。"
+            },
+            {
+              "sub_criteria": "可扩展性与性能（中等规模12节点≤60边可在数分钟内求解）",
+              "description": "提供合理默认求解参数（MIPGap、时间限制）与性能报告。",
+              "score": 20,
+              "evaluation_focus": "效率",
+              "scoring_hint": "高分：按时限收敛且gap小；中分：勉强完成；低分：长时间无解或崩溃。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "NV提升对比（无中继K vs 允许中继）",
+              "description": "量化比较两情形的NV与连接数利用率，并解释差异来源（多路径增益、瓶颈）。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：表格/图+定量解释；中分：仅口头；低分：无比较。"
+            },
+            {
+              "sub_criteria": "边与技术选择的合理性（D_t约束与人口权重影响）",
+              "description": "分析高权重节点对拓扑的影响、技术t选择与距离D_t匹配性。",
+              "score": 25,
+              "evaluation_focus": "洞察力",
+              "scoring_hint": "高分：结合具体边与参数说明；中分：笼统描述；低分：与参数矛盾。"
+            },
+            {
+              "sub_criteria": "可视化与流量热力/路径展示",
+              "description": "提供拓扑图、容量标注与主要(s,d)流路径或热力图，辅助验证与沟通。",
+              "score": 25,
+              "evaluation_focus": "沟通表达",
+              "scoring_hint": "高分：清晰可读、与结果一致；中分：简单图；低分：无可视化。"
+            },
+            {
+              "sub_criteria": "局限性与改进方向（整数波长、Benders、预算）",
+              "description": "指出当前连续容量/求解规模的局限，并提出可行改进与扩展。",
+              "score": 20,
+              "evaluation_focus": "反思改进",
+              "scoring_hint": "高分：具体可执行建议；中分：泛泛而谈；低分：无讨论。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（星座/调制优化、验证与敏感性分析）——范围与目标：在复基带 AWGN 信道假设下，针对保持信息熵为 3 bit 的约束（H(p)=−Σ p_k log2 p_k = 3）和给定平均功率约束（Σ p_k |s_k|^2 = P_s），设计离散输入星座（点位 s_k ∈ C 和对应概率 p_k≥0，总点数 N 可大于或等于 8）以最小化系统在软判决接收（采用位级 LLR 与软 FEC 时的广义互信息 GMI）或硬判决情形下达到目标信息率所需的最小信噪比 SNR_th；在此过程中同时输出满足工程可用性的设计（例如受限峰均比、最小点间距或概率下限）。方法与步骤（精确可复现）：（1）明确输入与约束：输入为初始星座与映射（推荐以 8QAM/格形 QAM 或均匀初值启动）、目标平均功率 P_s、熵目标 3 bit、噪声模型 CN(0,σ^2)（SNR=P_s/σ^2）；对概率 p_k 加入下界 ε>0 和正则化以避免退化；若需工程约束同时加入峰功率上限或最小欧氏距离约束作为软罚项；（2）性能度量：采用 Monte Carlo 估计互信息 I(X;Y)=E[log2 p(y|x)/p(y)] 与位级 GMI（基于接收样本与所选位映射计算 LLR 并按标准公式估计 GMI），并并行计算硬判决 BER（用于与题目硬判决门限比较）；使用大量样本（建议在阈值附近每 SNR 点 ≥1e6 符号或直到错误计数≥1000 以保证置信度）并用并行/GPU 加速；（3）优化框架：采用交替/分块优化——固定星座几何 s，利用 Blahut–Arimoto 或凸优化在 p 空间内最大化 GMI 或满足熵约束并最小化所需 SNR；随后固定 p，针对 s 采用连续优化（若可导则用自适应梯度/Adam，若不可导或多模态则用无梯度全局搜索如 CMA‑ES、差分进化或贝叶斯优化）以提高 GMI/降低 SNR_th；在每次迭代评估时通过快速蒙特卡洛估算 GMI 并在局部收敛后用更大样本量精确化估计；（4）数值细节与收敛标准：采用二分/目标函数搜索确定最小可达 SNR_th（在给定设计下求解最小 σ^2 使得 GMI ≥ 3），优化停止条件为连续若干代（或若干迭代）GMI 改进 < 指定阈值（例如 1e−4 bit）且 SNR_th 估计置信区间收敛到所需精度（例如 ±0.05 dB）；（5）验证与输出：对最终候选设计在更细的 SNR 网格上用高精度 Monte Carlo 生成 GMI vs SNR 和 BER vs SNR 曲线，报告 SNR_th（GMI ≥3）及在硬判决 BER=0.02 下的 SNR 值与置信区间；同时导出星座点坐标、概率分布、位映射、峰均比与最小点距等工程指标，以及用于软解码的 LLR 计算公式/表；（6）敏感性与鲁棒性分析：针对关键系统参数（平均功率 P_s、噪声方差替换为等效噪声以反映 ASE/非线性不确定性、概率下界 ε、峰功率约束）做局部扰动（例如 ±20%）并评估 SNR_th 的变化，必要时采用鲁棒优化目标（最大化在参数不确定集合上的最小 GMI 或最小化最坏情形下的 SNR_th）；（7）实现与工具：建议使用 Python（numpy/scipy、PyTorch 或 JAX 便于自动微分与 GPU 并行）、Blahut–Arimoto 的数值实现、以及无梯度优化库（CMA‑ES、nevergrad 或 scikit‑optimize）；Monte Carlo 用 numba/cupy 并行化或在 GPU 上实现以缩短阈值搜索时间；（8）交付物与可复现性：提交可运行代码（包含参数化接口），最终设计文件（s_k, p_k, 映射）、高精度 GMI/BER 曲线数据与图、SNR_th 值与置信区间、敏感性分析报告，以及使用说明与随机种子/软件环境说明，确保其他工程人员在给定相同输入条件下可直接复现并部署所设计星座。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在复基带 AWGN 信道与3 bit 信息熵约束下优化离散星座与概率分布以最小化达到目标信息率（GMI≥3 或硬判决 BER=0.02）所需的最小 SNR_th，并验证鲁棒性",
+          "expected_output": "最优或候选星座点位 s_k 与概率 p_k、比特映射；最小 SNR_th 数值及置信区间；GMI(SNR) 与 BER(SNR) 曲线图与数据；敏感性分析报告；可复现代码与参数文件",
+          "key_inputs_constraints": "输入：初始星座/映射（如8QAM）、目标平均功率 P_s、熵目标 H=3 bit、噪声模型 CN(0,σ^2)（SNR=P_s/σ^2）；约束：Σ p_k=1、p_k≥ε>0、Σ p_k|s_k|^2=P_s、可选峰功率上限与最小点距；评估指标：GMI≥3 的 SNR_th（二分搜索精度≤±0.05 dB），硬判决 BER=0.02 的 SNR 对照",
+          "modeling_type": "优化+仿真+评价",
+          "role_in_pipeline": "位于物理层调制设计阶段；前序依赖：子任务2的 BER—SNR 曲线与仿真框架、子任务1的 SNR 定义与单位规范；后序输出：供链路预算与网络规划选型使用，并用于问题-3方案对比",
+          "assumptions": "默认使用软判决以 GMI≥3 定义 SNR_th，并并行报告硬判决 BER=0.02 的 SNR；若未提供映射，采用Gray或近似Gray；优化以二分 SNR 外环+交替优化 p 与 s 的内环执行，随机种子固定"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确优化目标：最小化 SNR_th 以达成 GMI≥3 bit",
+              "description": "是否把核心目标界定为在熵=3 bit 与平均功率约束下，通过设计 s_k、p_k 使达到 GMI≥3 所需 SNR 最小（并区分软判决与硬判决门限）",
+              "score": 30,
+              "evaluation_focus": "目标界定",
+              "scoring_hint": "高分：同时给出GMI阈值与硬判决BER=0.02对照；中分：只提GMI或只提BER；低分：未清晰指向最小化SNR_th"
+            },
+            {
+              "sub_criteria": "关键约束识别：熵 H=3、功率 Σp_k|s_k|^2=P_s、p_k≥ε",
+              "description": "是否完整识别并量化三大约束（信息熵、平均功率、概率下界），并说明Σp_k=1与可选峰功率/最小点距",
+              "score": 25,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：给出ε建议值与峰功率/点距说明；中分：缺少ε或功率细节；低分：遗漏熵或功率约束"
+            },
+            {
+              "sub_criteria": "度量选择：GMI估计与BER曲线并行输出",
+              "description": "是否选用GMI作为软判决性能度量并计划生成BER(SNR)用于对比与工程验证",
+              "score": 20,
+              "evaluation_focus": "指标设定",
+              "scoring_hint": "高分：明确GMI计算与BER硬判决共存；中分：只实现其一；低分：无度量或度量不当"
+            },
+            {
+              "sub_criteria": "SNR定义与单位一致性（SNR=P_s/σ^2）",
+              "description": "是否清晰采用SNR=P_s/σ^2（线性）并标注dB换算，确保与子任务2/1一致",
+              "score": 25,
+              "evaluation_focus": "规范一致",
+              "scoring_hint": "高分：线性与dB转换、单位检查；中分：仅口头说明；低分：混淆或未给出"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "将“设计 s_k 与 p_k 的联合优化”准确复述",
+              "description": "是否将问题表述为联合优化几何与概率，允许 N≥8，并指出映射参与GMI/BER计算",
+              "score": 35,
+              "evaluation_focus": "精确复述",
+              "scoring_hint": "高分：强调N可变与映射作用；中分：仅提s或p之一；低分：复述偏离"
+            },
+            {
+              "sub_criteria": "外层二分 SNR_th + 内层交替优化框架",
+              "description": "是否复述搜索SNR_th（外层二分/网格）与内层优化（先p后s或反之）的流程",
+              "score": 35,
+              "evaluation_focus": "流程设计",
+              "scoring_hint": "高分：清楚外/内环与收敛准则；中分：仅提单层搜索；低分：无可执行流程"
+            },
+            {
+              "sub_criteria": "验证与鲁棒性（敏感性±20%）",
+              "description": "是否复述需对P_s、ε、峰功率等做±20%扰动评估SNR_th变化",
+              "score": 30,
+              "evaluation_focus": "验证意识",
+              "scoring_hint": "高分：列出参数与幅度；中分：泛泛提敏感性；低分：未提"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "AWGN 与软判决接收（LLR/GMI）假设",
+              "description": "明确采用AWGN，软判决通过位级LLR估计GMI，并说明样本独立性",
+              "score": 30,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：给出LLR计算依据与独立同分布；中分：仅称AWGN；低分：误用信道模型"
+            },
+            {
+              "sub_criteria": "熵与功率约束可行性与正则化",
+              "description": "说明H=3 bit的实现方式（调概率/点数）与p_k≥ε正则避免退化、峰功率/最小距作软罚",
+              "score": 30,
+              "evaluation_focus": "约束可行",
+              "scoring_hint": "高分：阐明拉格朗日或罚项；中分：只口头提；低分：无可行性讨论"
+            },
+            {
+              "sub_criteria": "统计精度假设与置信区间",
+              "description": "规定阈值附近样本量（≥1e6或错误≥1000）与置信区间方法（Clopper–Pearson/正态近似）",
+              "score": 25,
+              "evaluation_focus": "统计严谨",
+              "scoring_hint": "高分：量化样本与CI；中分：仅提“大样本”；低分：无精度控制"
+            },
+            {
+              "sub_criteria": "收敛与停止准则",
+              "description": "设定GMI改进<1e−4 bit与SNR不确定度≤±0.05 dB为停止条件",
+              "score": 15,
+              "evaluation_focus": "停止规则",
+              "scoring_hint": "高分：双准则给出；中分：单一准则；低分：无停止标准"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "GMI与I(X;Y)的Monte Carlo估计实现方案",
+              "description": "给出log-sum-exp稳定实现，p(y|x)与p(y)估计流程，LLR位级GMI公式",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：数值稳定性处理明确；中分：仅公式；低分：错误或缺失"
+            },
+            {
+              "sub_criteria": "Blahut–Arimoto或凸子问题求解 p_k",
+              "description": "固定 s_k 下的 p 空间优化方法与熵约束处理（拉格朗日/投影）",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：可复现步骤；中分：方向正确但不具体；低分：不适当方法"
+            },
+            {
+              "sub_criteria": "连续优化 s_k（梯度/无导混合）",
+              "description": "固定 p_k 时对 s_k 用Adam/梯度或CMA-ES等无梯度法，并含几何约束罚项",
+              "score": 25,
+              "evaluation_focus": "优化设计",
+              "scoring_hint": "高分：给出梯度来源或近似；中分：只提工具；低分：无方法"
+            },
+            {
+              "sub_criteria": "外层 SNR_th 搜索机制（二分/细网格）",
+              "description": "定义目标GMI≥3，设计二分或细网格+插值的阈值搜索与收敛准则",
+              "score": 20,
+              "evaluation_focus": "搜索策略",
+              "scoring_hint": "高分：二分容差明确；中分：网格粗略；低分：无搜索或不稳定"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "交替优化收敛性与初始化（8QAM/格形）",
+              "description": "给出初始化方案、重启策略与收敛监控（GMI曲线单调性/早停）",
+              "score": 25,
+              "evaluation_focus": "求解稳健",
+              "scoring_hint": "高分：多初值+最优选；中分：单初值；低分：无收敛监控"
+            },
+            {
+              "sub_criteria": "数值稳定与复杂度控制（GPU/向量化）",
+              "description": "说明批量计算、GPU/numba加速、log域稳定化、内存与时间估计",
+              "score": 25,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：有具体批量与复杂度评估；中分：泛化描述；低分：可能溢出/过慢"
+            },
+            {
+              "sub_criteria": "阈值精化与置信区间计算",
+              "description": "在阈值附近加密SNR步长≤0.1 dB、样本≥1e6，并输出SNR_th±CI",
+              "score": 25,
+              "evaluation_focus": "精度控制",
+              "scoring_hint": "高分：CI方法与数值给出；中分：仅点估计；低分：粗略或无统计量"
+            },
+            {
+              "sub_criteria": "对比基线（等概率8QAM/16QAM）",
+              "description": "提供基线SNR_th与改进幅度（dB）并验证一致性",
+              "score": 25,
+              "evaluation_focus": "基准对比",
+              "scoring_hint": "高分：量化提升≥可检测；中分：仅定性；低分：无对比"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "参数化接口与可复现性（随机种子/配置）",
+              "description": "提供可配置输入（s_k,p_k,P_s,ε,约束等）与固定随机种子、环境说明",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：配置文件+CLI；中分：硬编码部分参数；低分：不可复现"
+            },
+            {
+              "sub_criteria": "GMI/BER仿真模块的矢量化与LLR实现",
+              "description": "高效实现LLR与错误计数，支持GPU/并行，避免循环瓶颈",
+              "score": 30,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：GPU或numba/cupy；中分：部分矢量化；低分：慢或不稳定"
+            },
+            {
+              "sub_criteria": "优化器封装（BA、Adam、CMA-ES）与外层二分",
+              "description": "清晰封装内外层优化API，支持回调与早停",
+              "score": 25,
+              "evaluation_focus": "工程结构",
+              "scoring_hint": "高分：模块化良好；中分：耦合但可用；低分：难以维护"
+            },
+            {
+              "sub_criteria": "结果导出（CSV/图表）与日志",
+              "description": "输出SNR_dB、GMI、BER、CI、样本数、曲线图与中间设计版本",
+              "score": 15,
+              "evaluation_focus": "可用性",
+              "scoring_hint": "高分：齐全且格式一致；中分：部分缺失；低分：无导出"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "SNR_th 与置信区间报告与解释",
+              "description": "报告最终SNR_th（GMI≥3）与±CI，解释不确定度来源与是否达成±0.05 dB目标",
+              "score": 30,
+              "evaluation_focus": "结果准确",
+              "scoring_hint": "高分：数值+CI充分；中分：仅点估计；低分：模糊或缺失"
+            },
+            {
+              "sub_criteria": "与等概率8QAM/16QAM基线对比改进幅度",
+              "description": "量化改进（dB）并讨论原因（概率整形、几何增益、峰均比影响）",
+              "score": 25,
+              "evaluation_focus": "对比洞察",
+              "scoring_hint": "高分：有机理分析；中分：仅给数值；低分：无对比"
+            },
+            {
+              "sub_criteria": "工程可用性：峰均比、最小点距、p_k下限",
+              "description": "评估并报告PAPR、d_min与p_k分布，讨论实现可行性与硬件约束",
+              "score": 25,
+              "evaluation_focus": "工程判断",
+              "scoring_hint": "高分：指标量化与权衡；中分：定性评述；低分：未考虑"
+            },
+            {
+              "sub_criteria": "敏感性与鲁棒性（±20% 扰动）",
+              "description": "呈现对P_s、ε、峰功率约束等扰动下SNR_th变化与最坏情形表现",
+              "score": 20,
+              "evaluation_focus": "鲁棒性",
+              "scoring_hint": "高分：图表与量化变化；中分：文字说明；低分：缺失分析"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,807 @@
+{
+  "task_id": "2023_B",
+  "problem": "本题在不同约束条件下，研究DFT的低复杂度计算方案，目的是对目前芯片中利用FFT计算DFT的方法进行替代，以降低硬件复杂度。给定已知的$N$维DFT矩阵$\\mathbf{F}_N$，设计$K$个矩阵$\\mathcal{A}=\\{\\mathbf{A}_1, \\mathbf{A}_2, \\ldots, \\mathbf{A}_K\\}$，使得矩阵$\\beta\\mathbf{F}_N$和$\\mathbf{A}_1\\mathbf{A}_2\\cdots\\mathbf{A}_K$在Frobenius范数意义下尽可能接近，即：\n\\begin{equation}\n\\min_{\\mathcal{A}, \\beta} \\text{RMSE}(\\mathcal{A}, \\beta) = \\frac{1}{N} \\sqrt{\\|\\beta\\mathbf{F}_N - \\mathbf{A}_1\\mathbf{A}_2\\cdots\\mathbf{A}_K\\|_F^2}\n\\tag{6}\n\\end{equation}\n其中$\\beta$为实值矩阵缩放因子，可根据约束条件不同来设计。\n\n相比于乘法，加法的硬件复杂度小得多，因此本题中只考虑乘法器的硬件复杂度：\n\\begin{equation}\nC = q \\times L\n\\end{equation}\n其中，$q$指示分解后的矩阵$\\mathbf{A}_k$中元素的取值范围。在以下的问题2~5中，我们限制$\\mathbf{A}_k$中元素实部和虚部的取值范围为$\\mathcal{P} = \\{0, \\pm 1, \\pm 2, \\ldots, \\pm 2^{q-1}\\}$。以$\\mathcal{P} = \\{0, \\pm 1, \\pm 2, \\pm 4\\}$为例，此时$q = 3$。$L$表示复数乘法的次数，其中与$0$、$\\pm 1$、$\\pm j$或$(\\pm 1 \\pm j)$相乘时不计入复数乘法次数。例如：若$\\mathcal{P} = \\{0, \\pm 1, \\pm 2, \\pm 4\\}$，则下列矩阵乘法的硬件复杂度$C = 6$（$q = 3$，$L = 2$）：\n\\begin{equation}\n\\begin{bmatrix}\n1 & 2 + 4j \\\\n1 + 2j & 0\n\\end{bmatrix}\n\\times\n\\begin{bmatrix}\n0 & 1 \\\\n2 + 4j & 2 - 4j\n\\end{bmatrix}\n\\end{equation}\n\n考虑以下两种约束条件：\n- 约束1：限定$\\mathcal{A}$中每个矩阵$\\mathbf{A}_k$的每行至多只有2个非零元素。\n- 约束2：限定$\\mathcal{A}$中每个矩阵$\\mathbf{A}_k$满足以下要求：\n\\begin{equation}\n\\mathbf{A}_k[l, m] \\in \\{x + jy \\mid x, y \\in \\mathcal{P}\\}, \\mathcal{P} = \\{0, \\pm 1, \\pm 2, \\ldots, \\pm 2^{q-1}\\}, k = 1, 2, \\ldots, K; \\, l, m = 1, 2, \\ldots, N\n\\end{equation}\n其中，$\\mathbf{A}_k[l, m]$表示矩阵$\\mathbf{A}_k$第$l$行第$m$列的元素。在问题2, 3, 4中，固定$q = 3$；在问题5中，需要寻找合适的$q$以满足精度要求，并且使得硬件复杂度$C$尽量低。\n\n目前使用FFT进行DFT计算的方案硬件复杂度较高，因为我们希望研究一种替代方案来降低DFT计算的硬件复杂度，但同时我们对精度也有一定要求。请针对以下问题分别设计分解方法，既能最小化RMSE，同时又使得乘法器的数量尽量少。\n\n$\\mathcal{A}$中矩阵的个数$K$的取值并没有限制，也是优化的变量之一。但需要注意，一般情况下，$K$越小，硬件复杂度越低，但是如果增加矩阵的个数可以使得矩阵中包含更多的简单元素（$0$、$\\pm 1$、$\\pm j$或$(\\pm 1 \\pm j)$），硬件复杂度也可能会降低，因此，需要根据硬件复杂度$C$的定义合理的设计$K$。\n\n\\textbf{问题1}：首先通过减少乘法器个数来降低硬件复杂度。由于仅在非零元素相乘时需要使用乘法器，若$\\mathbf{A}_k$矩阵中大部分元素均为$0$，则可减少乘法器的个数，因此希望$\\mathbf{A}_k$为稀疏矩阵。对于$N = 2^t, t = 1, 2, 3, \\ldots$的DFT矩阵$\\mathbf{F}_N$，请在满足约束1的条件下，对最优化问题(6)中的变量$\\mathcal{A}$和$\\beta$进行优化，并计算最小误差（即(6)的目标函数，下同）和方案的硬件复杂度$C$（由于本题中没有限定$\\mathbf{A}_k$元素的取值范围，因此在计算硬件复杂度时可默认$q = 16$）。\\textbf{问题2}：讨论通过限制 $\\mathbf{A}_k$ 中元素实部和虚部取值范围的方式来减少硬件复杂度的方案。对于 $N=2^t, t=1,2,3,4,5$ 的 DFT 矩阵 $\\mathbf{F}_N$，请在满足约束2的条件下，对 $\\mathcal{A}$ 和 $\\beta$ 进行优化，并计算最小误差和方案的硬件复杂度 $C$。\n\n\\textbf{问题3}：同时限制 $\\mathbf{A}_k$ 的稀疏性和取值范围。对于 $N=2^t, t=1,2,3,4,5$ 的 DFT 矩阵 $\\mathbf{F}_N$，请在同时满足约束1和2的条件下，对 $\\mathcal{A}$ 和 $\\beta$ 进行优化，并计算最小误差和方案的硬件复杂度 $C$。\n\n\\textbf{问题4}：进一步研究对其他矩阵的分解方案。考虑矩阵 $\\mathbf{F}_N = \\mathbf{F}_{N_1} \\otimes \\mathbf{F}_{N_2}$，其中 $\\mathbf{F}_{N_1}$ 和 $\\mathbf{F}_{N_2}$ 分别是 $N_1$ 和 $N_2$ 维的 DFT 矩阵，$\\otimes$ 表示 Kronecker 积（注意 $\\mathbf{F}_N$ 非 DFT 矩阵）。当 $N_1=4, N_2=8$ 时，请在同时满足约束1和2的条件下，对 $\\mathcal{A}$ 和 $\\beta$ 进行优化，并计算最小误差和方案的硬件复杂度 $C$。\n\n\\textbf{问题5}：在问题3的基础上加上精度的限制来研究矩阵分解方案。要求将精度限制在 0.1 以内，即 RMSE $\\leq 0.1$。对于 $N=2^t, t=1,2,3\\ldots$ 的 DFT 矩阵 $\\mathbf{F}_N$，请在同时满足约束1和2的条件下，对 $\\mathcal{A}$ 和 $\\beta, \\mathcal{P}$ 进行优化，并计算方案的硬件复杂度 $C$。",
+  "subtask": {
+    "1": {
+      "subtask": "子任务 1（建模与符号定义）目标是在数学上精确定义用于后续优化的问题变量、度量、约束与硬件成本评价，并给出可直接用于数值实现的解析表达式和输入/输出数据接口；其范围仅限于符号、假设与公式定义以及必要的计算步骤（不包括求解算法或实验结果）。 具体要求如下：给定归一化的 N×N DFT 矩阵 F_N（按题意包含 1/√N 归一化因子）和变换层数上界 K（K 可作为变量），引入 K 个常数复矩阵 A_k ∈ C^{N×N}（k=1..K），并定义连乘结果 A_total := A_1 A_2 ··· A_K；引入全局实缩放因子 β ∈ R，并以矩阵 Frobenius 范数度量近似误差，定义 RMSE(A_set,β) := (1/N) * sqrt( || β F_N − A_total ||_F^2 )，其中 ||·||_F 表示 Frobenius 范数（元素平方和的平方根）。 明确问题的等价数学目标形式：可表述为最小化 RMSE over {A_k,β} 或作为带约束的形式（例如在给定精度阈值下最小化硬件代价），并指出对任意固定 A_total 最优实数缩放因子有解析解 β* = Re( trace( F_N^H A_total ) ) / ||F_N||_F^2（利用 ||F_N||_F^2 = N 可直接计算），因此在数值优化中可将 β 明确消去以降低变量维度。 对元素域与稀疏性给出精确定义：每个矩阵 A_k 需满足每行最多 r 个非零元素（题中 r=2）；元素取值受限于集合 P_complex := { x + j y | x,y ∈ P }，其中 P := { 0, ±1, ±2, …, ±2^{q−1} }，并明确定义参数 q（表示元素幅值位宽/取值范围）；在需要对硬件成本建模时，定义单个复数乘法复杂度与 q 的关系。 对硬件复杂度给出清晰计量：硬件复杂度 C := q × L，其中 L 表示需要执行的复数乘法次数（复乘次数），并给出两种在建模阶段可用的 L 计数方式以适应不同精度/可计算性需求——保守计数 L_up := Σ_k count_noncheap_nonzero(A_k)（把所有不属于“低成本常数”集合的非零条目计为一次复乘；低成本常数示例可列为 CheapSet = {0, ±1, ±j, ±1±j, ±2^n}，但 CheapSet 的确切定义作为模型输入参数明确），以及更精确的运行时计数 L_exact，通过符号/稀疏模式传播或仿真跟踪中间向量在每层与非 CheapSet 常数相乘的真实次数；在建模阶段须明确使用哪一种计数用于搜索与评价。 明确输入与输出接口：输入包括 F_N (复矩阵), N (维度), 可选的上界 K 或层数搜索范围, 稀疏度 r, 元素集合参数 q（及由其派生的 P 和 P_complex）、CheapSet 的精确定义；输出为用于优化器的数学对象和值：目标函数 RMSE(·) 的可评估函数句柄、β 的闭式更新式、稀疏性约束的可执行谓词（每行非零计数 ≤ r）、以及硬件成本计算函数 C(A_set,q)（依照所选的 L_up 或 L_exact 规则）。 最后列出为保证可实现性应完成的必要小步骤：验证 F_N 的归一化常数（||F_N||_F^2 = N）、实现高效的 Frobenius 与 trace 计算例程、实现对每 A_k 的行稀疏性检测例程、实现 P_complex 的投影/最近邻映射子程序（用于后续离散化阶段）、以及实现 L_up 和一个可扩展的 L_exact 计数器（基于布尔稀疏传播或逐层仿真）；这些函数/例程与明确的输入输出契约构成子任务 1 的全部交付物，且足以被后续算法模块直接调用以开展离散化或优化工作。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在约束1与约束2设定下，对 A_k 与 β 进行优化/拟合与评估，给出 RMSE(A_set, β) 的解析表达、最优 β* 的闭式解并定义硬件成本 C=q×L 的可计算计量。",
+          "expected_output": "可直接用于数值实现的公式与接口：RMSE(A_set,β) 明确表达；β* = Re(trace(F_N^H A_total))/||F_N||_F^2 的闭式更新式；稀疏性与取值集合的形式化约束谓词；硬件复杂度 C(A_set,q) 的 L_up/L_exact 计数规则；输入/输出参数清单与函数签名建议。",
+          "key_inputs_constraints": "输入：F_N∈C^{N×N}（含1/√N归一化，且 ||F_N||_F^2=N）、N、K或其搜索上界、稀疏度 r（默认 r=2）、q 与由其定义的 P 与 P_complex、CheapSet 定义、精度阈值 ε（可选）。约束：每行非零≤r；元素域 A_k[l,m]∈P_complex；β∈R；RMSE=(1/N)*||βF_N−A_total||_F。前置：F_N 一致归一化与尺寸匹配。",
+          "modeling_type": "优化+评价",
+          "role_in_pipeline": "作为求解算法前的建模规范与接口定义层：前序依赖 F_N 构造与归一化校验；后序依赖离散化/搜索/优化器调用这些函数进行变量更新与方案评价。",
+          "assumptions": "CheapSet 默认包含 {0, ±1, ±j, ±1±j} 与可选幂次 ±2^n；若未给出运行时数据流，则默认采用 L_up 作为搜索期主计量，L_exact 作为离线验证计量。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "锁定优化对象：RMSE(A_set,β) 与硬件成本 C=q×L",
+              "description": "是否准确指出需同时形式化“拟合/优化”RMSE与“评价/计量”硬件成本，并明确两者的权衡与用途（搜索目标或约束）。",
+              "score": 40,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清楚区分目标函数RMSE与成本C的角色，能给出双目标或约束化两种等价表述；中分：只提RMSE或C之一；低分：未识别任何优化对象。"
+            },
+            {
+              "sub_criteria": "识别关键变量：A_k、A_total、β 与 K、q、r",
+              "description": "是否完整点名并精确定义 A_k、A_total、β、K、q、r 及其相互关系与域。",
+              "score": 30,
+              "evaluation_focus": "要素完备",
+              "scoring_hint": "高分：变量与域完整且无歧义；中分：缺少1–2个变量或域不清；低分：变量大幅缺失或混淆。"
+            },
+            {
+              "sub_criteria": "归一化前提：||F_N||_F^2=N 的使用",
+              "description": "是否强调 F_N 包含 1/√N 归一化并用于后续 β* 推导与误差尺度的一致性。",
+              "score": 30,
+              "evaluation_focus": "数理严谨",
+              "scoring_hint": "高分：显式写出 ||F_N||_F^2=N 并用于β*；中分：提到归一化但未用于推导；低分：无归一化说明或错误。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "等价目标表述：最小化RMSE或给定阈值下最小化C",
+              "description": "是否给出两种等价数学形式（min RMSE 或 s.t. RMSE≤ε 最小化 C），并说明适用场景。",
+              "score": 35,
+              "evaluation_focus": "表达清晰",
+              "scoring_hint": "高分：两种表述均清晰且一致；中分：仅给出一种；低分：表述含混或与题意不符。"
+            },
+            {
+              "sub_criteria": "约束1与约束2的精确定义（r 稀疏与 P_complex）",
+              "description": "是否将每行非零≤r 与 A_k[l,m]∈P_complex 明确为可检验谓词，适配 N×N 维度。",
+              "score": 35,
+              "evaluation_focus": "约束刻画",
+              "scoring_hint": "高分：形式化谓词且指明检查方法；中分：文字描述无形式化；低分：完全忽略或错误。"
+            },
+            {
+              "sub_criteria": "硬件计量 L_up 与 L_exact 的角色",
+              "description": "是否区分保守计数与运行时精确计数，并指定默认用于搜索与验证的策略。",
+              "score": 30,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：清晰定义两者并选定默认；中分：只提一种；低分：未定义或混淆。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "β 为实数且 β* 闭式可用的前提",
+              "description": "是否说明 β∈R 的假设与利用内积 Re(trace(F_N^H A_total)) 的合理性。",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：给出β*来源与实数性理由；中分：仅给出公式无理由；低分：β域错误或未提。"
+            },
+            {
+              "sub_criteria": "CheapSet 明确与可配置性",
+              "description": "是否假设并声明 CheapSet 的默认构成（如 {0, ±1, ±j, ±1±j, ±2^n}）与可配置输入。",
+              "score": 35,
+              "evaluation_focus": "可实现性",
+              "scoring_hint": "高分：给默认+可覆盖机制；中分：仅列举不支持配置；低分：未提或与题意冲突。"
+            },
+            {
+              "sub_criteria": "采用 L_up 作为搜索阶段主计量",
+              "description": "是否明确在缺乏运行时数据时以 L_up 近似真实复乘次数，并说明误差来源。",
+              "score": 35,
+              "evaluation_focus": "工程权衡",
+              "scoring_hint": "高分：清楚给出默认并说明原因；中分：提到但无理由；低分：未指定或选择不合理。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "RMSE(A_set,β) 与 Frobenius 范数的可计算表达",
+              "description": "是否提供 (1/N)*sqrt(||βF_N−A_total||_F^2) 的实现级表达与数值稳定性关注。",
+              "score": 25,
+              "evaluation_focus": "公式到实现",
+              "scoring_hint": "高分：给出可直接编码的表达；中分：仅数学式；低分：表达错误或缺失。"
+            },
+            {
+              "sub_criteria": "β* 闭式解与消元后的目标",
+              "description": "是否写出 β* = Re(trace(F_N^H A_total))/||F_N||_F^2 并给出消元后仅关于 {A_k} 的目标函数。",
+              "score": 25,
+              "evaluation_focus": "降维建模",
+              "scoring_hint": "高分：给出消元后目标或等价形式；中分：仅给β*；低分：未给或错误。"
+            },
+            {
+              "sub_criteria": "稀疏性与元素域的形式化约束函数",
+              "description": "是否定义行稀疏谓词（每行非零≤r）与元素投影到 P_complex 的操作接口。",
+              "score": 25,
+              "evaluation_focus": "约束编码",
+              "scoring_hint": "高分：谓词与投影接口清晰；中分：只文字说明；低分：未提供。"
+            },
+            {
+              "sub_criteria": "硬件成本 C(A_set,q) 的 L_up/L_exact 计数法",
+              "description": "是否定义 C=q×L，给出两种 L 计数的可实现公式与 CheapSet 例外规则。",
+              "score": 25,
+              "evaluation_focus": "评价函数",
+              "scoring_hint": "高分：两种计数与例外清楚；中分：一种计数；低分：缺失或错误。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "β 消元策略在数值优化中的应用",
+              "description": "是否明确在任意固定 A_total 下用 β* 闭式更新以减少变量维度。",
+              "score": 35,
+              "evaluation_focus": "优化策略",
+              "scoring_hint": "高分：清楚写出“外层优化 A_k，内层闭式 β*”；中分：提及但未成体系；低分：未利用。"
+            },
+            {
+              "sub_criteria": "等价问题形式（最小化RMSE vs. 约束最小化C）",
+              "description": "是否为不同目标（精度优先/成本优先）给出可切换的求解目标定义。",
+              "score": 35,
+              "evaluation_focus": "问题设定",
+              "scoring_hint": "高分：两种目标可切换且一致；中分：仅一种；低分：不一致或缺失。"
+            },
+            {
+              "sub_criteria": "K、r、q 作为可调超参的声明",
+              "description": "是否在求解设定中指出 K、r、q 的可搜索范围与对 C、RMSE 的影响方向。",
+              "score": 30,
+              "evaluation_focus": "超参设计",
+              "scoring_hint": "高分：明确搜索或调参逻辑；中分：仅文字；低分：未说明。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "函数接口：RMSE、beta_star、constraint predicates",
+              "description": "是否定义可调用接口与输入输出契约（含 F_N、A_set、q、CheapSet、r、返回标量/布尔）。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：参数与返回值完整且类型清晰；中分：缺少部分参数；低分：无接口或含混。"
+            },
+            {
+              "sub_criteria": "高效计算：Frobenius、trace 与稀疏计数",
+              "description": "是否提出数值稳定与效率点（避免多次构造密集矩阵、用逐层乘法或符号传播）。",
+              "score": 35,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：给出具体效率建议；中分：泛泛而谈；低分：未涉及。"
+            },
+            {
+              "sub_criteria": "L_up 与 L_exact 的实现策略",
+              "description": "是否给出 L_up 基于矩阵元素检查、L_exact 基于逐层仿真/布尔传播的实现要点。",
+              "score": 30,
+              "evaluation_focus": "计量实现",
+              "scoring_hint": "高分：两者皆可实现且可扩展；中分：仅一种；低分：未给实现思路。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "RMSE 评估与尺度一致性检查",
+              "description": "是否指出应校验 ||F_N||_F^2=N 与 (1/N) 因子，确保不同 N 下 RMSE 可比。",
+              "score": 35,
+              "evaluation_focus": "结果校验",
+              "scoring_hint": "高分：明确列检验步骤；中分：提及无步骤；低分：未提。"
+            },
+            {
+              "sub_criteria": "硬件成本报告：C=q×L 与 CheapSet 影响",
+              "description": "是否要求输出 C、q、L 及 CheapSet 选择对 L 的敏感性分析建议。",
+              "score": 35,
+              "evaluation_focus": "评价解读",
+              "scoring_hint": "高分：清晰给出报告项与敏感性点；中分：只报数值；低分：不报或不一致。"
+            },
+            {
+              "sub_criteria": "约束满足性与可行性判定",
+              "description": "是否要求对每个 A_k 报告行稀疏计数与元素域违规项的数量或位置。",
+              "score": 30,
+              "evaluation_focus": "合规检查",
+              "scoring_hint": "高分：提供可判定指标；中分：口头说明；低分：未涉及。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务 2（结构化参数化与稀疏拓扑设计）的目标是把“每行至多两个非零”这一稀疏性约束系统化地转化为可参数化、可存储、可搜索且硬件友好的矩阵层结构，使得后续数值优化或离散搜索仅需在 O(NK) 的参数空间内进行；为此，本子任务需完成以下工作并交付明确的接口与数据结构：输入为归一化的目标维度 N、层数上界或候选层集合 K（可为空以供后续选择）、每层每行非零上限 r（题中为 2）、元素位宽参数 q 及由其定义的实/虚取值集合 P={0,±1,±2,…,±2^{q−1}} 与复值集合 P_complex={x+jy | x,y∈P}，以及用于低成本乘法的 CheapSet（例如 {0,±1,±j,±2^n,±1±j}）；输出为每层 A_k 的结构化参数化描述：置换矩阵对 P_k（行置换）和 Q_k（列置换）的索引形式，以及不重叠的配对集合 {(i_p, j_p)}_{p=1..m_k}（m_k ≤ ⌊N/2⌋）和对应的 2×2 块模板 M_{k,p}（或者對於孤立未配對行的 1×1 值），满足 A_k = P_k · diag_block(M_{k,1},…,M_{k,m_k},可能的1×1块) · Q_k 且每行最多两个非零条目；具体技术步骤包括：明确并实现置换与配对的数据表示（例如以长度-N 的索引数组表示 P_k、Q_k，以 m_k×2 的索引对数组表示配对），实现配对合法性检测例程（检查配对互不重叠、每行非零计数 ≤ r、奇数 N 情况下 1×1 块的安排），实现块值域约束校验（保证每个 M_{k,p} 的 4 个元素落在 P_complex 中或留作占位以供后续离散化），并提供用于将该结构展开为稀疏矩阵 A_k 的转换函数（返回稀疏矩阵格式或行压缩存储）。在配对/置换生成策略上，需要实现并暴露若干可选算法以供上层优化器调用： (a) 标准 FFT 蝶形生成器（按 radix-2 radix-4 等生成经典层间置换与配对），(b) 贪心配对器（基于目标行/列重要性或先验误差指标对高影响行优先配对），(c) 最大匹配或二分图匹配方法（将行与列视为二分图节点、按权重匹配以生成最优配对拓扑），(d) 随机/多起点配对生成以支持并行多起点搜索；每种策略应输出 P_k、Q_k、配对列表及 m_k。对于存在 Kronecker 结构的情形（目标矩阵为 F_{N1} ⊗ F_{N2} 或已知可分解为子块直积），必须提供专门的构造规则：允许在较小维度 N1、N2 上设计配对/2×2 块模板并通过 Kronecker 展开规则生成大维度层（例如将每层 A_k 表示为相应子层的 Kronecker 或块对角拼接，从而复用子矩阵设计以减少搜索空间），并给出如何将子层置换 P_k^{(1)},P_k^{(2)} 合成到全局置换 P_k 的映射函数。为支持后续的离散化与成本估计，要求该子任务同时实现：块到乘法代价的映射函数（基于 P_complex 与 CheapSet 判断每个块元素是否需要复乘并统计保守上界 L_up）、以及用于并行枚举/局部搜索的块级接口（能够提取单个 M_{k,p} 的当前连续值、尝试候选离散值集合并快速评估由此对 A_total 结构影响的增量函数）。为便于集成与实验，建议使用标准数值/组合工具：线性代数与稀疏矩阵表示用 NumPy/SciPy（或等效的数值库），配对与匹配算法可用 NetworkX 或二分图最大匹配实现，组合枚举与并行可采用 itertools 与多线程/并行计算框架；所有函数应定义清晰的 API（输入：N,K,r,q,P_complex,CheapSet,生成策略参数；输出：每层的 P_k、Q_k、配对列表、m_k、块模板占位与展开稀疏矩阵），并附带验证例程以确保结构满足“每行至多两个非零”的硬性约束及与 Kronecker 结构的一致性；该子任务不包含块系数的数值优化或量化求解，仅负责产生、存储并验证满足稀疏性与硬件友好性约束的层结构与配对拓扑，供后续优化模块使用。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "将“每行至多两个非零”的稀疏约束结构化并参数化，优化并生成可搜索的 A_k 层拓扑（置换+配对+2×2 块模板），以支持低复杂度 DFT 近似的后续优化与评估。",
+          "expected_output": "包含每层 A_k 的参数化描述与API：P_k/Q_k 置换索引、配对列表 {(i_p,j_p)}、2×2 块模板 M_{k,p} 与可选 1×1 值、结构合法性校验结果、展开为稀疏矩阵的转换函数、块级代价映射与增量评估接口；并提供多种配对生成策略的可调用实现。",
+          "key_inputs_constraints": "输入：N(int)、K(int 或集合)、r(int, 每行非零上限=2)、q(int)、P={0,±1,±2,…,±2^{q−1}}、P_complex={x+jy|x,y∈P}、CheapSet(如{0,±1,±j,±1±j,±2^n})、策略参数。约束：配对互不重叠；奇数N允许1×1块；A_k 行非零≤r；块元素∈P_complex（或留占位）；支持 Kronecker 结构合成。",
+          "modeling_type": "优化+评价",
+          "role_in_pipeline": "位于总体优化前的结构设计层：在子任务1定义的指标/约束基础上，输出可搜索的层拓扑与接口；前序依赖子任务1的度量与成本函数；后序由数值优化/量化模块在该结构上求解与评估。",
+          "assumptions": "采用保守代价计数 L_up 作为默认硬件成本映射；代码接口以 NumPy/SciPy 稀疏与可选 NetworkX 匹配实现；Kronecker 规则已提供子层设计。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "稀疏约束“每行至多两个非零”的准确界定",
+              "description": "是否明确r=2为硬性约束，覆盖奇偶N、未配对1×1块以及配对互斥要求。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：逐行非零≤2且含1×1规则与互斥性；中分：提及≤2但缺少1×1或互斥；低分：未清晰限定行稀疏。"
+            },
+            {
+              "sub_criteria": "参数化目标对象A_k与可搜索空间O(NK)",
+              "description": "是否将A_k分解为P_k/Q_k置换+配对列表+2×2块模板，并说明参数规模为O(NK)。",
+              "score": 30,
+              "evaluation_focus": "抽象能力",
+              "scoring_hint": "高分：给出索引化结构与复杂度量级；中分：部分结构明确；低分：仍停留在稠密矩阵层面。"
+            },
+            {
+              "sub_criteria": "硬件友好性与CheapSet角色识别",
+              "description": "是否识别CheapSet对复乘计数的影响，并在结构层输出代价映射接口。",
+              "score": 35,
+              "evaluation_focus": "成本意识",
+              "scoring_hint": "高分：列出CheapSet示例并关联L_up；中分：提到便宜常数但无映射接口；低分：忽略成本建模。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "输出接口的精确复述（P_k/Q_k/配对/M_{k,p}）",
+              "description": "是否以索引与块模板的形式复述A_k输出内容及其用途。",
+              "score": 35,
+              "evaluation_focus": "表达清晰",
+              "scoring_hint": "高分：给出索引数组与块模板定义；中分：只描述口头结构；低分：混淆或缺失要素。"
+            },
+            {
+              "sub_criteria": "输入与约束的映射关系",
+              "description": "是否把N,K,r,q,P,P_complex,CheapSet与合法性校验一一对应到生成与验证流程。",
+              "score": 35,
+              "evaluation_focus": "需求对齐",
+              "scoring_hint": "高分：逐项映射且覆盖校验；中分：部分映射；低分：未建立映射。"
+            },
+            {
+              "sub_criteria": "策略输出一致性",
+              "description": "标准FFT/贪心/匹配/随机四类策略是否统一输出同一参数化接口。",
+              "score": 30,
+              "evaluation_focus": "接口设计",
+              "scoring_hint": "高分：四类策略统一API；中分：大多统一；低分：各自为政、难以集成。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "代价计数选择（L_up vs L_exact）",
+              "description": "是否明确默认采用L_up并说明适用场景与限制，预留L_exact接口。",
+              "score": 30,
+              "evaluation_focus": "数理假设",
+              "scoring_hint": "高分：阐明两者差异与选择理由；中分：提及但不区分；低分：未说明。"
+            },
+            {
+              "sub_criteria": "元素域P_complex与量化占位",
+              "description": "是否假设块元素可为连续占位后续量化，或直接限制于P_complex并说明校验。",
+              "score": 35,
+              "evaluation_focus": "约束建模",
+              "scoring_hint": "高分：两种模式清晰并含校验/投影；中分：只提一种；低分：元素域未定义。"
+            },
+            {
+              "sub_criteria": "Kronecker结构可复用性假设",
+              "description": "若存在F_{N1}⊗F_{N2}，是否假设可由子层配对/置换合成并给出合成规则前提。",
+              "score": 35,
+              "evaluation_focus": "结构假设",
+              "scoring_hint": "高分：说明子层到全局置换/块拼接映射；中分：仅口头提及；低分：忽略该情形。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "A_k= P_k · diag_block(… ) · Q_k 形式化定义",
+              "description": "是否给出严格的分块对角构造与不重叠配对集合定义，并覆盖1×1块。",
+              "score": 25,
+              "evaluation_focus": "形式化表达",
+              "scoring_hint": "高分：数学形式完备；中分：公式不全；低分：无正式定义。"
+            },
+            {
+              "sub_criteria": "合法性检测例程设计",
+              "description": "是否定义配对互斥、行非零计数≤r、元素域检查的判定流程与返回码。",
+              "score": 25,
+              "evaluation_focus": "约束验证",
+              "scoring_hint": "高分：多条件检测与错误定位；中分：只做数量检查；低分：缺少校验。"
+            },
+            {
+              "sub_criteria": "策略生成器的模型接口",
+              "description": "FFT蝶形/贪心/最大匹配/随机的输入参数、输出结构、可复现实验性。",
+              "score": 25,
+              "evaluation_focus": "算法设计",
+              "scoring_hint": "高分：四类策略均有清晰接口；中分：2–3类；低分：未成体系。"
+            },
+            {
+              "sub_criteria": "块到代价映射函数",
+              "description": "是否定义基于P_complex与CheapSet的L_up计数与层/全网合成C=q×L。",
+              "score": 25,
+              "evaluation_focus": "成本建模",
+              "scoring_hint": "高分：块/层/全局三级统计；中分：仅层级；低分：无可计算映射。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "可搜索空间与O(NK)参数性的证明或说明",
+              "description": "是否说明通过置换索引与m_k≤⌊N/2⌋的配对使参数量线性于N,K。",
+              "score": 35,
+              "evaluation_focus": "复杂度分析",
+              "scoring_hint": "高分：明确量级与边界；中分：模糊量级；低分：无分析。"
+            },
+            {
+              "sub_criteria": "增量评估接口（局部块变动影响）",
+              "description": "是否提供对单个M_{k,p}试探赋值的快速代价/结构更新评估方法接口。",
+              "score": 35,
+              "evaluation_focus": "优化支撑",
+              "scoring_hint": "高分：定义输入候选集与返回增量代价；中分：仅全量评估；低分：无评估接口。"
+            },
+            {
+              "sub_criteria": "Kronecker情形的合成与搜索缩减",
+              "description": "是否给出子层到全局层的合成求解思路，减少大N搜索维度。",
+              "score": 30,
+              "evaluation_focus": "结构利用",
+              "scoring_hint": "高分：可复用子层并说明复杂度收益；中分：仅描述性；低分：未涉及。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据结构与API设计（NumPy/SciPy/NetworkX）",
+              "description": "是否定义P_k/Q_k索引、配对数组、块模板张量与展开/校验/计数的函数签名。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：函数原型清晰且参数含类型/返回；中分：部分给出；低分：无明确API。"
+            },
+            {
+              "sub_criteria": "合法性校验与错误处理",
+              "description": "是否实现或规划可测试的校验例程，提供异常与诊断消息。",
+              "score": 30,
+              "evaluation_focus": "健壮性",
+              "scoring_hint": "高分：覆盖配对冲突/越界/元素域错误；中分：仅基本检查；低分：缺失。"
+            },
+            {
+              "sub_criteria": "策略实现与可扩展性",
+              "description": "是否提供FFT/贪心/匹配/随机的可替换策略模块与参数化接口。",
+              "score": 35,
+              "evaluation_focus": "工程设计",
+              "scoring_hint": "高分：模块化可插拔；中分：部分策略硬编码；低分：单一实现。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "结构正确性验证用例",
+              "description": "是否提供小N示例（如N=8）验证行非零≤2、配对互斥、1×1处理正确。",
+              "score": 40,
+              "evaluation_focus": "验证能力",
+              "scoring_hint": "高分：含自动化检查与报告；中分：手动示例；低分：无用例。"
+            },
+            {
+              "sub_criteria": "成本映射一致性检查",
+              "description": "是否对L_up计数进行块/层/全局一致性核对与边界案例（CheapSet全覆盖/全不覆盖）。",
+              "score": 30,
+              "evaluation_focus": "结果核对",
+              "scoring_hint": "高分：含边界测试；中分：一般测试；低分：缺少检查。"
+            },
+            {
+              "sub_criteria": "策略输出的可比性与统计",
+              "description": "是否比较不同策略在同N,K下的配对规模m_k与估计代价C的分布摘要。",
+              "score": 30,
+              "evaluation_focus": "对比分析",
+              "scoring_hint": "高分：给出统计摘要与观察；中分：定性描述；低分：未比较。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务 3（数值求解流程与离散化策略）应独立承担把给定的结构化层描述（每层的置换/配对模式与各 2×2/1×1 块位置）和目标矩阵 F_N 映射为满足元素取值集合 P_complex 的具体矩阵因子 A_k 的数值求解工作，其目标是以最小化 RMSE( A_set, β ) 为主指标并同时可选地引入乘法代价惩罚项以控制 L_up：输入为 F_N、已确定的层结构（每层块索引与拓扑）、允许的取值集合 P_complex、CheapSet、稀疏度上限 r、初始层数 K（或可变 K 的范围）、以及算法超参数（正则化 λ_reg、成本权重 λ_cost、最大迭代次数、收敛阈值等）；输出为离散化后的 A_k（元素 ∈ P_complex）、对应全局缩放 β（用解析式闭式更新）、最终 RMSE 及成本估计（L_up，并可计算或返回用于后续精确跟踪的稀疏模式以便测得 L_exact）。方法按三阶段组织并明确实现细节：第一阶段（连续松弛与交替最小二乘 ALS）：固定层拓扑与其他块参数，逐块将待求块的 4 个复系数视作连续变量，用 vec/Kronecker 展开并解线性最小二乘问题（可加入 Tikhonov 正则化以保障数值稳定）来最小化 ||β F_N − A_total||_F^2，更新时同步用解析式 β = Re(trace(F_N^H A_total)) / N 以消去 β 的影响；以相对目标下降或参数范数变化小于阈值或达到最大迭代次数作为停止准则，并支持多起点初始化以缓解局部极小值。第二阶段（块级最近邻量化与局部枚举）：对每个 2×2 块先对其实部与虚部分别做最近邻投影到 P（产生初始离散解），然后对仍有显著误差的块执行受限的局部组合搜索/分支限界：为每块限定候选值集合（例如连续解四周的若干值或 CheapSet 优先值），枚举这些候选组合并用增量更新（缓存左/右乘积以 O(N^2) 或更低代价快速评估目标变化）评估全局目标，采用错误下界剪枝与对称性合并以裁剪搜索树，枚举深度由用户设置或按误差收益递减原则自适应缩减。第三阶段（量化感知微调 / 全局启发式搜索）：在无法通过局部枚举获得满意解时，启动基于梯度的量化感知训练（将每层视为可训练线性层、在前向传播中使用离散化投影而在反向传播时用 straight-through estimator 近似梯度）或基于模拟退火/遗传算法的全局启发式搜索以在离散域内进一步降低 RMSE 与/或成本；量化感知训练以小学习率在 GPU 上运行时应固定拓扑、不放开原子块结构，并在损失函数中同时包括 RMSE^2 与 λ_cost×L_up 的近似惩罚项以引导系数落在 CheapSet。实现细节与加速手段：所有阶段应实现增量目标评估（缓存并更新 A_prefix·block·A_suffix 以避免每次完全重乘）、并行化块级候选评估（多线程或分布式任务池）、数值稳定措施（每层归一化/缩放限制、正则化参数调整）、以及枚举复杂度控制（束宽/候选集大小/最大枚举节点数）；提供精确计数接口以在完成离散化后基于布尔稀疏传播或实际向量仿真计算 L_exact。交付的软件接口至少应包括：continuous_optimize(structured_layers, F_N, params) → continuous_blocks; block_quantize(continuous_blocks, P_complex) → discrete_blocks_init; block_enumerate(discrete_blocks_init, F_N, budget, λ_cost) → discrete_blocks_refined; quant_aware_train(discrete_blocks_refined, F_N, training_params) → discrete_blocks_final; evaluate_solution(discrete_blocks_final, F_N) → {β, RMSE, L_up, L_exact, diagnostics}；并应记录中间日志（每次迭代 RMSE、β、估计 L_up）以便调参和多起点比较。该子任务只负责数值优化与离散化流程的实现与接口契约，不涉及拓扑生成或最终硬件综合的其他步骤。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "优化并离散化结构化矩阵层（A_k）以拟合并最小化 RMSE( A_set, β )，在满足每行至多两个非零与元素属于 P_complex 的约束下输出离散化因子、β 与硬件代价估计",
+          "expected_output": "离散化后的矩阵因子集合 {A_k}（元素∈P_complex）、全局缩放因子 β、最终 RMSE 数值、硬件代价估计 L_up 与 L_exact、并暴露数值求解与离散化函数接口（continuous_optimize、block_quantize、block_enumerate、quant_aware_train、evaluate_solution）及中间诊断日志文件",
+          "key_inputs_constraints": "1) F_N: 归一化 N×N 复矩阵（复数，||F_N||_F^2 = N）; 2) structured_layers: 每层置换/配对/2×2或1×1块的拓扑描述（数据结构）；3) P_complex 与 q: 离散取值集合定义（P={0,±1,…,±2^{q-1}}，P_complex={x+jy}); 4) r=2（每行至多2个非零）与 CheapSet（低成本常数集合）；5) 算法超参数：λ_reg, λ_cost, 迭代上限, 枚举预算。",
+          "modeling_type": "优化 + 拟合（离散化）",
+          "role_in_pipeline": "作为将结构化层拓扑（子任务2输出）映射为满足 P_complex 的具体矩阵因子并最小化 RMSE 的数值求解模块；依赖子任务1提供的目标/成本度量、依赖子任务2提供层结构，输出供后续硬件评估或子任务5精化使用"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别并量化 RMSE 目标与 β 的解析消去",
+              "description": "检查是否明确识别 RMSE( A_set,β ) 为主要优化目标，并正确指出 β* = Re(trace(F_N^H A_total))/N 可解析消去以降维。",
+              "score": 40,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：明确给出 β 闭式并在优化流程中使用；中分：提到 β 可优化但未给解析式；低分：未涉及 β 或给出错误公式。"
+            },
+            {
+              "sub_criteria": "识别每行至多两个非零的稀疏性约束（r=2）",
+              "description": "检查是否明确将每层 A_k 的每行非零条目上限 r=2 纳入可实现的拓扑与约束检测中。",
+              "score": 30,
+              "evaluation_focus": "约束表述",
+              "scoring_hint": "高分：明确把 r=2 转成行计数谓词并设计检测例程；中分：描述稀疏性但无可执行检测方法；低分：未体现 r=2 或错误理解为列约束。"
+            },
+            {
+              "sub_criteria": "识别硬件成本 C = q×L 以及 L_up/L_exact 计数选项",
+              "description": "检查是否明确把硬件复杂度建模为 C=q×L，并提出 L_up（保守计数）与 L_exact（传播/仿真计数）两种计数方案及其在搜索中的用途。",
+              "score": 30,
+              "evaluation_focus": "成本建模",
+              "scoring_hint": "高分：给出 L_up/L_exact 定义并说明哪种用于优化/评价；中分：只给出 C=q×L 或只提到一种 L；低分：未建模硬件成本或混淆计数规则。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述连续松弛+ALS 的三阶段数值流程（continuous_optimize）",
+              "description": "要求准确复述第一阶段连续松弛与交替最小二乘（ALS）流程、用 β 闭式更新并可加入 Tikhonov 正则化以保障数值稳定。",
+              "score": 40,
+              "evaluation_focus": "算法理解",
+              "scoring_hint": "高分：逐步列出 ALS 子步骤、β 更新式与正则化用途；中分：描述 ALS 思路但缺细节或 β 更新未同步；低分：无法复述 ALS 流程或与任务不符。"
+            },
+            {
+              "sub_criteria": "复述块级最近邻量化与局部枚举（block_quantize/block_enumerate）",
+              "description": "要求能复述对 2×2 块先做实/虚最近邻投影再对关键块做受限枚举、用增量更新与剪枝加速评估的思路。",
+              "score": 30,
+              "evaluation_focus": "离散化策略",
+              "scoring_hint": "高分：说明候选集限制、增量评估与剪枝准则；中分：只描述最近邻或只描述枚举；低分：未提出可执行的离散化步骤。"
+            },
+            {
+              "sub_criteria": "复述量化感知微调或全局启发式搜素（quant_aware_train）",
+              "description": "要求说明第三阶段可选的量化感知训练或模拟退火/遗传算法在离散域进一步优化 RMSE 与成本的用途和约束（固定拓扑）。",
+              "score": 30,
+              "evaluation_focus": "全局优化",
+              "scoring_hint": "高分：说明 STE 梯度近似与损失含 RMSE^2+λ_cost L_up；中分：提到量化训练但无损失函数细节；低分：忽略第三阶段或给出不可行方案。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "假定 F_N 已归一化并利用 ||F_N||_F^2 = N",
+              "description": "检查是否明确假定输入 F_N 为题中归一化 DFT 矩阵，并利用该性质简化 β 的解析计算。",
+              "score": 30,
+              "evaluation_focus": "数学假设",
+              "scoring_hint": "高分：书面证明 ||F_N||_F^2 = N 并在 β 公式中使用；中分：提到归一化但未证明；低分：未说明归一化或使用错误范数值。"
+            },
+            {
+              "sub_criteria": "假定 CheapSet 与 q 为外部可配置参数",
+              "description": "检查是否明确把 CheapSet（如 {0,±1,±j,±1±j,±2^n}）与 q 作为输入参数，并说明在 L_up 计数中的作用。",
+              "score": 25,
+              "evaluation_focus": "参数设定",
+              "scoring_hint": "高分：明确 CheapSet 可配置并举例；中分：提到 CheapSet 但未说明如何影响计数；低分：未提 CheapSet 或硬编码不可调整集合。"
+            },
+            {
+              "sub_criteria": "假定拓扑固定、仅优化块系数（分层求解策略）",
+              "description": "检查是否假定 structured_layers 输入固定（由子任务2给出），数值求解仅在该拓扑下寻找块级系数与离散值。",
+              "score": 25,
+              "evaluation_focus": "问题分解",
+              "scoring_hint": "高分：明确拓扑固定并据此设计逐块优化接口；中分：把拓扑作为可变但未说明如何搜索；低分：混淆拓扑生成与系数优化职责。"
+            },
+            {
+              "sub_criteria": "假定增量评估与并行化可用于控制枚举复杂度",
+              "description": "检查是否假定可以缓存前缀/后缀乘积并并行评估块候选以降低枚举成本，并给出复杂度控制参数。",
+              "score": 20,
+              "evaluation_focus": "工程假设",
+              "scoring_hint": "高分：给出缓存策略与并行任务模型及预算参数；中分：提及并行或缓存但无实现细节；低分：未考虑枚举复杂度或不可行方案。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "构建连续松弛的线性最小二乘子问题并实现 β 同步更新",
+              "description": "要求给出每块 vec/Kronecker 展开形式的线性方程、Tikhonov 正则化项 λ_reg 的加入方式，并提供闭式解或求解器接口。",
+              "score": 30,
+              "evaluation_focus": "数学推导",
+              "scoring_hint": "高分：提供明显的 vec 表达式、正常方程及正则化并实现数值求解；中分：描述思路但无展开公式；低分：未给出可实现的线性子问题。"
+            },
+            {
+              "sub_criteria": "设计块级最近邻量化与受限枚举的候选生成规则",
+              "description": "要求明确定义对 2×2 块的实/虚最近邻映射到 P 的方法与受限枚举的候选集生成策略（围绕连续解的若干邻域或 CheapSet 优先）。",
+              "score": 25,
+              "evaluation_focus": "离散化设计",
+              "scoring_hint": "高分：给出候选集大小、优先级与剪枝下界计算方法；中分：仅给出最近邻或枚举但无优先规则；低分：候选生成不明确或不可执行。"
+            },
+            {
+              "sub_criteria": "构建增量目标评估与缓存机制以快速评估块变更影响",
+              "description": "要求提供如何缓存 A_prefix·block·A_suffix 并用其实现 O(增量) 的目标更新公式以避免全矩阵重乘的说明与接口。",
+              "score": 25,
+              "evaluation_focus": "算法工程",
+              "scoring_hint": "高分：给出缓存数据结构与更新规则并实现增量评估；中分：提到缓存但未给出更新公式；低分：未考虑增量评估导致复杂度高。"
+            },
+            {
+              "sub_criteria": "将成本惩罚 λ_cost 引入目标并明确评价指标 RMSE 与 L_up",
+              "description": "要求在构建损失时同时包含 RMSE^2 与 λ_cost×L_up 的项，并说明如何在连续阶段或枚举评分中估计 L_up。",
+              "score": 20,
+              "evaluation_focus": "目标设计",
+              "scoring_hint": "高分：明确复合损失并在优化中使用 λ_cost 可调；中分：提到惩罚但不在优化中实用；低分：忽略成本惩罚或无法估计 L_up。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "实现 continuous_optimize 接口并支持多起点 ALS 收敛判据",
+              "description": "评估 continuous_optimize 是否实现多起点初始化、β 同步更新、正则化与收敛判据（相对目标下降或参数变化阈值）。",
+              "score": 30,
+              "evaluation_focus": "数值稳定",
+              "scoring_hint": "高分：接口可调用，多起点可比，收敛阈值自动调整；中分：单起点或固定阈值；低分：无收敛判据或易发散。"
+            },
+            {
+              "sub_criteria": "实现高效的 block_enumerate（受限枚举+剪枝+增量评估）",
+              "description": "检查是否实现块级受限枚举、误差下界剪枝、对称性合并与增量目标评估以在限定预算内提纯离散解。",
+              "score": 25,
+              "evaluation_focus": "组合搜索",
+              "scoring_hint": "高分：给出剪枝准则并在有限预算内显著降误差；中分：枚举可用但剪枝粗糙；低分：暴力枚举导致超时或未实现剪枝。"
+            },
+            {
+              "sub_criteria": "实现 quant_aware_train 或全局启发式搜素以优化离散解",
+              "description": "评价是否提供基于 STE 的量化感知训练或遗传/退火算法在离散域的实现，并能在固定拓扑下继续降低 RMSE 与/或成本。",
+              "score": 25,
+              "evaluation_focus": "全局优化",
+              "scoring_hint": "高分：训练可运行并显著改进 RMSE 或 L_up；中分：实现算法但收敛或改进有限；低分：未实现或对离散域无效。"
+            },
+            {
+              "sub_criteria": "并行化与资源控制以保证枚举与训练在预算内完成",
+              "description": "检查是否实现多线程/任务池并提供枚举/训练的预算控制（节点数上限、时间限额、候选宽度）。",
+              "score": 20,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：并行化明显降低总时延并尊重预算；中分：支持并行但无细粒度预算控制；低分：单线程且易超时。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "实现并暴露规定的函数接口（continuous_optimize、block_quantize、block_enumerate、quant_aware_train、evaluate_solution）",
+              "description": "检查五个核心函数是否按说明签名实现并有清晰输入输出契约（structured_layers, F_N, params → blocks 等）。",
+              "score": 30,
+              "evaluation_focus": "接口可靠性",
+              "scoring_hint": "高分：所有接口按约定存在且文档化，返回值完整；中分：部分函数实现或文档不全；低分：主要接口缺失或调用失败。"
+            },
+            {
+              "sub_criteria": "实现数值稳定性与正则化（Tikhonov、归一化、极值截断）",
+              "description": "检查代码是否在求解线性子问题时使用正则化、避免奇异矩阵及在浮点边界上有防护措施。",
+              "score": 25,
+              "evaluation_focus": "数值健壮",
+              "scoring_hint": "高分：默认启用正则化并对异常解有处理；中分：提供参数但默认不启用；低分：易出现数值不稳定或溢出。"
+            },
+            {
+              "sub_criteria": "实现增量评估、缓存及稀疏矩阵数据结构以加速计算",
+              "description": "检查是否用稀疏格式（CSR/CSC）表示 A_k、实现前缀/后缀缓存并用其进行增量目标更新。",
+              "score": 20,
+              "evaluation_focus": "实现效率",
+              "scoring_hint": "高分：稀疏表示与缓存正确并大幅提升速度；中分：稀疏或缓存实现但不完善；低分：全部密集重算导致性能瓶颈。"
+            },
+            {
+              "sub_criteria": "提供日志、诊断与可复现实验记录（包括每次迭代的 RMSE、β、L_up）",
+              "description": "检查是否记录每次迭代 RMSE/β/L_up、种子可复现性、并能导出中间解与诊断信息。",
+              "score": 25,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：完整日志且支持重现；中分：有部分日志但缺关键字段；低分：无日志或不可复现。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "提供最终 β、RMSE、L_up 与 L_exact 的定量报告",
+              "description": "要求输出并解释最终解的 β、RMSE 值及保守计数 L_up 和基于稀疏传播/仿真的 L_exact，并说明二者差异来源。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：数值齐全并解释差异来源；中分：提供数值但解释不足；低分：缺少关键指标或数值错误。"
+            },
+            {
+              "sub_criteria": "给出离散化对 RMSE 的分块影响与收敛曲线可视化",
+              "description": "要求展示连续解→离散解→枚举/训练各阶段 RMSE/成本的演进曲线与按块贡献的误差分解图。",
+              "score": 25,
+              "evaluation_focus": "可视化",
+              "scoring_hint": "High: 提供清晰曲线与块误差热图；中: 提供收敛曲线但无块分解；低: 无可视化或图表无法解释。"
+            },
+            {
+              "sub_criteria": "给出硬件-精度权衡的定量分析（不同 q 或 CheapSet 下的 C vs RMSE 曲线）",
+              "description": "要求对不同 q、CheapSet 或不同 K 值下计算 C = q×L_up 与 RMSE 的折衷曲线并提出设计建议。",
+              "score": 25,
+              "evaluation_focus": "权衡分析",
+              "scoring_hint": "高分：提供多配置定量曲线并给出可操作建议；中分：只做单点比较或定性讨论；低分：未提供任何权衡分析。"
+            },
+            {
+              "sub_criteria": "多起点与鲁棒性分析（不同初始化或噪声下结果稳定性）",
+              "description": "要求报告多起点实验结果、解的方差、对扰动（F_N 噪声或拓扑微变）的敏感性与恢复情况。",
+              "score": 20,
+              "evaluation_focus": "鲁棒性",
+              "scoring_hint": "高分：提供多起点统计与扰动试验并显示稳健性；中分：只给少量起点或无扰动试验；低分：无鲁棒性分析或结果高度不稳定。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务 4 的目标是为给定的一组常数矩阵因子（A_1,…,A_K）及其元素取值集合（由位宽参数 q 和 CheapSet 定义）精确且可重复地计算并最小化与实现关联的“复数乘法”硬件复杂度 C，并将该计数结果映射为可用于后续硬件合成与决策的规范化度量；其工作范围包括（1）定义并实现两级乘法计数接口：快速保守估计函数 compute_L_up(A_set, CheapSet)（逐层扫描矩阵元素，凡非零且系数不在 CheapSet 的条目即计为一次复乘）与精确运行时计数函数 compute_L_exact(A_set, CheapSet, InputModel, ReuseOptions)，其中 InputModel 可选为“最坏情形”（例如所有可能非零符号/单位基向量集合）、“平均/统计样本”（随机或典型输入集合）或用户提供的代表性向量集合，以支持不同的设计决策；（2）实现符号/稀疏传播算法以高效计算 L_exact：以布尔稀疏模式与系数成本标注为基础逐层传播“可能为非零的输入项”并记录在每层与非 CheapSet 常数相乘的次数，支持两种模式——静态可达模式（基于稀疏模式推断所有可能非零路径以得到上界或最坏情形计数）和动态仿真模式（对若干输入向量实际数值计算并统计真实乘法事件以得平均/分布）；（3）提供乘法复用与实现层优化工具链接口 optimize_multiplier_sharing(A_set, CheapSet)，其通过构建“常数—输入”乘法图（将相同常数/相同常数比例的多个乘法识别为可复用子表达式）、执行公共子表达式消除（CSE）、合并相同因子乘法并重用乘法结果以减少实际复乘次数，并能够识别并折算可用移位-加替代（当系数为 ±2^n）或无需乘法的交换/符号操作（当系数 ∈ {±1, ±j, ±1±j}）以在 L_exact 中反映实现优化；（4）定义并实现从乘法次数到硬件复杂度的映射 compute_C(L, q, Weights)，其中默认映射为 C = q × L，但允许更细粒度权重函数 w(c)（根据系数是否为移位友好或位宽不同给出不同权重）以支持更真实的面积/功耗估计；（5）提供用于决策的报告与验证输出，包括按层/按块的乘法事件分布、不同 InputModel 下的最坏/平均/样本 L_exact、通过乘法复用后可节省的乘法数、对应的 C 值以及建议的实现替代（如将某些常数替换为邻近的移位友好值以换取显著 C 降低）；（6）实现可插拔的软件模块接口与建议的技术栈：稀疏矩阵与布尔传播采用 SciPy/NumPy 或等效库，图分析与 CSE 用 NetworkX 或自定义哈希表，动态仿真与样本输入分布可用向量化 BLAS/GPU 加速，模块应暴露 compute_L_up、compute_L_exact、optimize_multiplier_sharing、compute_C 与导出详细诊断的 evaluate_mapping 接口；（7）规定运行策略与使用建议：在早期设计迭代中优先使用 compute_L_up 做快速筛选与剪枝，在候选方案进入实现评估时用 compute_L_exact（选择最坏情形与若干典型输入）并执行 optimize_multiplier_sharing 得到可实现的复乘下限并用于最终 C 报告。该子任务不涉及系数优化或 RMSE 计算，其唯一交付物是以上定义完备、可运行的计数与映射工具、对应 API 规格、示例输入/输出格式说明及一组验证用例（包含静态稀疏模式示例与动态仿真样本）以保证计数结果在设计流程中可复用与可追溯。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "评估与优化给定因子集(A_1,…,A_K)的复数乘法硬件复杂度C并输出可复现的计数结果与映射报告",
+          "expected_output": "可调用接口与报表：compute_L_up/compute_L_exact/optimize_multiplier_sharing/compute_C/evaluate_mapping 的定义与示例输出；按层与按块的乘法计数(L_up、L_exact)、不同 InputModel 的最坏/平均值、复用前后对比、最终硬件复杂度C及建议替代项",
+          "key_inputs_constraints": "输入：A_set={A_k∈C^{N×N}}, CheapSet(如{0,±1,±j,±1±j,±2^n}), q(位宽), InputModel(最坏/统计/样本向量集), ReuseOptions；约束：计数口径一致、L_up为保守上界、L_exact需支持静态可达与动态仿真两种模式、C=q×L或权重映射；前置：A_k与CheapSet给定且元素集符合P_complex",
+          "modeling_type": "评价+优化",
+          "role_in_pipeline": "作为硬件成本评价与决策环节：在子任务1–3给出结构与离散系数后，使用本子任务评估并优化复乘次数与C；其结果反馈给拓扑与离散化以指导权衡。前序依赖：子任务1(定义)、子任务2(结构)、子任务3(离散化)；后续：硬件综合与方案筛选",
+          "assumptions": "若未提供InputModel，默认最坏情形与100个随机复高斯样本；CheapSet可配置，默认包含{0,±1,±j,±1±j,±2^n}; L_exact统计以层内相同常数可共享乘法，按ReuseOptions执行CSE"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别核心目标：复数乘法硬件复杂度C评估与优化",
+              "description": "是否明确本子任务不涉及RMSE优化，而是围绕compute_L_up、compute_L_exact与compute_C对A_set的复乘次数与C进行评价与最小化建议。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清晰界定C=q×L与两级计数作用域；中分：能提到计数但混淆误差目标；低分：将重点放在RMSE或忽略C定义。"
+            },
+            {
+              "sub_criteria": "输入边界与CheapSet作用",
+              "description": "是否指出CheapSet元素无需复乘并直接影响L_up/L_exact计数口径。",
+              "score": 25,
+              "evaluation_focus": "需求解析",
+              "scoring_hint": "高分：列举{±1,±j,±1±j,±2^n}并说明可移位加；中分：仅笼统提到无需乘法；低分：未提CheapSet或误计。"
+            },
+            {
+              "sub_criteria": "InputModel与两种精度模式",
+              "description": "是否区分最坏情形静态可达与动态仿真样本两种L_exact模式与适用场景。",
+              "score": 20,
+              "evaluation_focus": "场景匹配",
+              "scoring_hint": "高分：阐明上界/平均/样本三类输出；中分：只提一种模式；低分：忽略InputModel。"
+            },
+            {
+              "sub_criteria": "复用与CSE的必要性",
+              "description": "是否识别optimize_multiplier_sharing在计数到实现映射中的作用。",
+              "score": 20,
+              "evaluation_focus": "实现意识",
+              "scoring_hint": "高分：说明相同常数共享与比例复用；中分：仅提复用但无细节；低分：未提复用。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "两级计数接口复述（compute_L_up/compute_L_exact）",
+              "description": "能否准确复述快速保守估计与精确运行时计数的输入输出及差异。",
+              "score": 30,
+              "evaluation_focus": "表达准确",
+              "scoring_hint": "高分：给出输入A_set/CheapSet/InputModel与输出L值；中分：缺少部分参数；低分：混淆或错误复述。"
+            },
+            {
+              "sub_criteria": "硬件复杂度映射compute_C",
+              "description": "是否清楚表达默认C=q×L与可选权重Weights的扩展。",
+              "score": 25,
+              "evaluation_focus": "规范复述",
+              "scoring_hint": "高分：描述权重函数w(c)与位宽影响；中分：只写q×L；低分：未提C或写错公式。"
+            },
+            {
+              "sub_criteria": "optimize_multiplier_sharing目标",
+              "description": "是否将CSE、常数合并、移位加替代准确纳入复述。",
+              "score": 25,
+              "evaluation_focus": "要点覆盖",
+              "scoring_hint": "高分：列出相同常数合并与±2^n替代；中分：仅提CSE；低分：无。"
+            },
+            {
+              "sub_criteria": "报告输出内容",
+              "description": "是否复述按层/按块分布、最坏/平均L_exact、复用节省量、最终C与建议替代项。",
+              "score": 20,
+              "evaluation_focus": "文档能力",
+              "scoring_hint": "高分：覆盖全部项；中分：缺2项以内；低分：笼统或缺大部分。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "InputModel假设与默认分布",
+              "description": "是否给出当未提供输入时的默认最坏情形与随机样本设置（数量、分布）。",
+              "score": 30,
+              "evaluation_focus": "假设明确",
+              "scoring_hint": "高分：说明样本数如100与复高斯分布；中分：仅说随机；低分：无默认假设。"
+            },
+            {
+              "sub_criteria": "CheapSet与权重Weights可配置假设",
+              "description": "是否声明CheapSet/Weights为可插拔输入并影响L与C。",
+              "score": 25,
+              "evaluation_focus": "可配置性",
+              "scoring_hint": "高分：清楚说明接口化；中分：仅文字提及；低分：固定死或忽略影响。"
+            },
+            {
+              "sub_criteria": "乘法复用边界与重用粒度",
+              "description": "是否设定相同常数、相同比例、跨层可否共享的边界条件。",
+              "score": 25,
+              "evaluation_focus": "规则设定",
+              "scoring_hint": "高分：明确默认仅层内共享、可选跨层；中分：模糊；低分：无定义。"
+            },
+            {
+              "sub_criteria": "计数口径一致性",
+              "description": "是否假设L_up≥L_exact且两者统计口径（排除CheapSet）一致。",
+              "score": 20,
+              "evaluation_focus": "一致性",
+              "scoring_hint": "高分：清楚声明并给出理由；中分：提到不严谨；低分：相互矛盾。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "静态可达传播模型",
+              "description": "构建布尔稀疏传播以获得最坏情形L_exact：逐层传播可能非零并计入非CheapSet常数的复乘次数。",
+              "score": 30,
+              "evaluation_focus": "数理建模",
+              "scoring_hint": "高分：给出逐层布尔运算与计数规则；中分：仅概述；低分：缺失此模型。"
+            },
+            {
+              "sub_criteria": "动态仿真计数模型",
+              "description": "定义对样本输入进行前向计算并记录与非CheapSet系数相乘的事件，统计平均/分布。",
+              "score": 25,
+              "evaluation_focus": "仿真设计",
+              "scoring_hint": "高分：说明事件定义与去重规则；中分：只说仿真；低分：不成型。"
+            },
+            {
+              "sub_criteria": "乘法复用图与CSE建模",
+              "description": "建立常数—输入乘法图，识别相同常数/比例，共享结果，调整计数。",
+              "score": 25,
+              "evaluation_focus": "图建模",
+              "scoring_hint": "高分：说明节点/边定义与折算策略；中分：笼统提CSE；低分：无。"
+            },
+            {
+              "sub_criteria": "复杂度映射模型compute_C",
+              "description": "从L到C的映射含q与权重w(c)的形式化定义及可扩展性。",
+              "score": 20,
+              "evaluation_focus": "指标设计",
+              "scoring_hint": "高分：给出默认与加权两种；中分：仅默认；低分：未定义。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "compute_L_up正确性与高效性",
+              "description": "是否提供O(非零数)的逐层扫描方案并正确排除CheapSet。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：线性复杂度与单遍实现；中分：多遍或低效；低分：错误计数。"
+            },
+            {
+              "sub_criteria": "compute_L_exact两模式实现策略",
+              "description": "给出静态可达与动态仿真的具体计算步骤与停止条件。",
+              "score": 30,
+              "evaluation_focus": "求解流程",
+              "scoring_hint": "高分：含并行/缓存优化；中分：基本流程；低分：缺任一模式。"
+            },
+            {
+              "sub_criteria": "optimize_multiplier_sharing执行",
+              "description": "是否给出CSE与共享后的L_exact更新与可验证的节省量。",
+              "score": 20,
+              "evaluation_focus": "优化实现",
+              "scoring_hint": "高分：量化节省并更新报告；中分：仅描述；低分：无可验证输出。"
+            },
+            {
+              "sub_criteria": "compute_C与权重映射的落地",
+              "description": "是否能根据q与Weights输出最终C并支持分层统计。",
+              "score": 15,
+              "evaluation_focus": "实现落地",
+              "scoring_hint": "高分：层级/块级C；中分：仅全局C；低分：未输出C。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "接口完备性（compute_L_up/L_exact/optimize_multiplier_sharing/compute_C）",
+              "description": "是否提供四大核心函数签名、参数含义与返回值，支持A_set、CheapSet、InputModel、ReuseOptions。",
+              "score": 30,
+              "evaluation_focus": "API设计",
+              "scoring_hint": "高分：签名清晰并含类型；中分：缺参数/文档；低分：接口不全。"
+            },
+            {
+              "sub_criteria": "性能与可扩展性",
+              "description": "是否采用稀疏表示、向量化/并行，支持大N与多K的高效计数。",
+              "score": 25,
+              "evaluation_focus": "代码效率",
+              "scoring_hint": "高分：用稀疏/并行；中分：纯密集实现；低分：明显低效。"
+            },
+            {
+              "sub_criteria": "正确性与一致性校验",
+              "description": "包含单元测试/验证用例，确保L_up≥L_exact并在CheapSet变化下结果可复现。",
+              "score": 25,
+              "evaluation_focus": "可靠性",
+              "scoring_hint": "高分：自动测试覆盖两模式与多CheapSet；中分：少量用例；低分：无测试。"
+            },
+            {
+              "sub_criteria": "诊断与报告生成",
+              "description": "是否输出按层/按块分布、最坏/平均/样本比较、复用节省、最终C与建议替代。",
+              "score": 20,
+              "evaluation_focus": "工程能力",
+              "scoring_hint": "高分：结构化报表与导出；中分：部分信息；低分：仅原始数。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "L_up与L_exact一致性与差距解读",
+              "description": "分析两者差距来源（静态上界、复用效果）并给出改进建议。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：定量比较并指出主因；中分：定性描述；低分：无分析。"
+            },
+            {
+              "sub_criteria": "InputModel敏感性",
+              "description": "比较最坏/统计样本下L_exact与C的差异，讨论对设计决策影响。",
+              "score": 25,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：给出多模型对比；中分：单模型；低分：忽略。"
+            },
+            {
+              "sub_criteria": "乘法复用收益评估",
+              "description": "量化optimize_multiplier_sharing前后节省比例，并识别高价值共享点。",
+              "score": 25,
+              "evaluation_focus": "定量评估",
+              "scoring_hint": "高分：给出具体百分比与热点层；中分：粗略描述；低分：未评估。"
+            },
+            {
+              "sub_criteria": "复杂度C映射与权重敏感性",
+              "description": "讨论不同q/Weights对C的变化，提出移位友好化等替代建议。",
+              "score": 15,
+              "evaluation_focus": "决策支持",
+              "scoring_hint": "高分：给出q变动曲线或表；中分：只口述；低分：未涉及。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

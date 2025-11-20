@@ -1,0 +1,826 @@
+{
+  "task_id": "2019_A",
+  "problem": "\\section*{问题一}\n\n请根据 Cost 231-Hata 模型以及下述数据集信息设计合适的特征，并阐述原因。\n\n\\begin{table}[H]\n\\centering\n\\caption{数据信息}\n\\begin{tabular}{|c|c|c|c|c|c|c|c|}\n\\hline\n\\multicolumn{8}{|c|}{工程参数数据} \\\\\n\\hline\nCell Index & Cell X & Cell Y & Height & Azimuth & Electrical Downtilt & Mechanical Downtilt & Frequency Band & RS Power \\\\\n\\hline\n2 & 100 & 100 & 49m & 45$^\\circ$ & 2$^\\circ$ & 2$^\\circ$ & 1800MHz & 18.2 dBm \\\\\n\\hline\n\\multicolumn{8}{|c|}{地图数据} \\\\\n\\hline\nCell Altitude & Cell Building Height & Cell Clutter Index & X & Y & Altitude & Building Height & Clutter Index \\\\\n\\hline\n47m & 9m & 11 & 500 & 500 & 9m & 0m & 1 \\\\\n\\hline\n\\multicolumn{8}{|c|}{RSRP 标签数据} \\\\\n\\hline\nRSRP \\\\\n\\hline\n-100 dBm \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\subsection*{4.2 特征工程中的特征选择}\n\n完成特征设计后，通常需要选择有意义的特征输入机器学习模型进行训练。对于不同方法构造出来的特征，需要从多个层面来判断这个特征是否合理。通常来说，可以从以下两个方面来选择特征：\n\n\\begin{itemize}\n\\item 特征是否发散：如果一个特征不发散，例如方差接近于 0，也就是说样本在这个特征上基本上没有差异，这个特征在对样本的区分并没有什么作用。\n\\item 特征与目标的相关性：总体来说显见，与目标相关性高的特征，应当优先选择。\n\\end{itemize}\n\n\\section*{问题二}\n\n基于提供的小区数据集，设计多个合适的特征，计算这些特征与目标的相关性，并将结果量化、排序，形成如下的表格，并阐明设计这些特征的原因和用于排序的量化数值的计算方法。\n\n\\begin{table}[H]\n\\centering\n\\caption{特征名称及其与目标的相关性}\n\\begin{tabular}{|c|c|c|}\n\\hline\n排序 & 特征名称 & 该特征与目标的相关性 \\\\\n\\hline\n1 & & \\\\\n2 & & \\\\\n\\vdots & & \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\subsection*{4.3 RSRP 预测}\n\n\\section*{问题三}\n\n在设计和选择了有效的特征之后，就可以通过建立预测模型来进行 RSRP 的预测了。请各个参赛队根据自己建立的特征集以及赛题提供的训练数据集，建立基于 AI 的无线传播模型来对不同地理位置的 RSRP 进行预测。为研究生更明白本问题的目标，下面将分别介绍评审数据集、提交内容和线上代码评分方法。\\subsection*{4.3.1 评审数据集简介}\n\n线上代码评分系统将使用对参赛队保密的评审数据集来对模型进行评分，以便公平地测试各参赛队提交模型的实际泛化能力。评审数据集与训练数据集一样，共包括了多个文件，每个文件代表一个小区内的数据。文件的命名方式为 test_id.csv，其中 id 为小区的唯一标识，例如 test_1003501.csv 表示唯一标识为 1003501 的小区数据。\n\n评审数据集的文件中会除了 RSRP 之外的前 17 个字段，与该 17 个字段对应的 RSRP 字段需要由研究生提交的模型代码程序来预测生成。\n\n\\subsection*{4.3.2 提交内容}\n\n论文提交文字形式详细描述输入 AI 模型的建模过程，包括模型的建立方法、参数的设置和训练的结果，特别是第二问问题的相关性消楚。\n\n第二问需要提交完整的模型。针对每一个评审数据集的输入文件，模型输出要求也是一个文件，命名方式与输入文件保持一致，但文件名后加 _result，例如输入文件名为 test_123456.csv，那么输出文件名必须为 test_123456.csv_result。每个输出文件中的结果与输入文件必须一一对应，否则会自动产生全零的 test_123456.csv_result 文件进行评分。每个输出文件内容的样例如下所示：\n\n\\begin{verbatim}\n{\"RSRP\": [[-54.505], [-73.416], [-76.123], [-74.261], [-98.143]]}\n\\end{verbatim}\n\n其中括号内的数字表示输入文件的每一行数据所对应的 RSRP 预测值，预测值的数量与输入文件的行数（表头除外）对应，例如上述的输出文件对应的输入文件应为 5 行（表头除外）。如果输出文件的预测值少于输入文件的行数，则会以 0 的形式将输出文件填满后进行评分；如果输出文件的预测值多余输入文件的行数，则会取输出文件的前 N 个预测值进行评分，其中 N 为输入文件的行数。\n\n\\subsection*{4.3.3 线上代码评分方法}\n\n对于提交的预测 RSRP 值，将根据以下条件进行排序：\n\\begin{itemize}\n\\item 模型在评审数据集的评估下，弱覆盖识别率 (PCRR: Poor coverage recognition rate) 必须大于等于 20\\%。\n\\end{itemize}\n\n在 PCRR 精度达标后，再根据预测均方根误差 (RMSE: Root mean squared error) 大小进行各参赛组的名次排序（RMSE 小者排名靠前）。\n\nPCRR 和 RMSE 的介绍如下所示：\n\n\\textbf{弱覆盖识别率 (PCRR: Poor coverage recognition rate)}\n\n在进行预测的过程中如果可以有效识别弱覆盖区域，能够更好地帮助运营商精准规划和优化网络从而提升客户体验。因此，除 RMSE 为有效测试目标之外，弱覆盖识别准确率也是作为一项非常有价值的评估指标。\n\n在本次建模比赛中，弱覆盖设立门限p，p 的值定义为 -103 dBm。若 RSRP 预测值或实测值小于p, 则为弱覆盖并标记为 1，若大于等于p 则为非弱覆盖并标记为 0。根据比较预测值和实测值得到的弱覆盖点以及非弱覆盖点的类别，可以以下参数进行统计：\n\n\\begin{itemize}\n\\item True Positive (TP)：真实信号为弱覆盖，预测值也为弱覆盖；\n\\item False Positive (FP)：真实信号非弱覆盖，预测值为弱覆盖；\n\\item False Negative (FN)：真实信号为弱覆盖，预测值为非弱覆盖；\n\\item True Negative (TN)：真实信号非弱覆盖，预测值也为非弱覆盖。\n\\end{itemize}\\begin{table}[H]\n\\centering\n\\caption{TP, FP, FN 和 TN 的定义}\n\\begin{tabular}{|c|c|c|}\n\\hline\n & \\textbf{True (弱覆盖)} & \\textbf{False (非弱覆盖)} \\ \\hline\n\\textbf{预测结果 True (弱覆盖)} & TP & FP \\ \\hline\n\\textbf{预测结果 False (非弱覆盖)} & FN & TN \\ \\hline\n\\end{tabular}\n\\end{table}\n\nPCRR 综合考虑 Precision (准确率) 和 Recall (召回率) 的目标，其计算公式如下：\n\n\\begin{equation}\nPCRR = 2 \\times \\frac{Precision \\times Recall}{Precision + Recall}\n\\end{equation}\n\n其中 Precision 可以理解为预测结果为弱覆盖的栅格实际也是弱覆盖的概率，其定义如下：\n\n\\begin{equation}\nPrecision = \\frac{TP}{TP + FP}\n\\end{equation}\n\nRecall 可以理解为真实结果为弱覆盖的栅格有多少被预测成了弱覆盖的概率，其定义如下：\n\n\\begin{equation}\nRecall = \\frac{TP}{TP + FN}\n\\end{equation}\n\nPCRR 的计算代码可以参考以下程序：\n\n\\begin{table}[H]\n\\centering\n\\caption{PCRR 方法参考}\n\\begin{verbatim}\ndef CaculatePcrr(y_true,y_pred):\n    t = -103\n    tp = len(y_true[(y_true < t) & (y_pred < t)])\n    fp = len(y_true[(y_true >= t) & (y_pred < t)])\n    fn = len(y_true[(y_true < t) & (y_pred >= t)])\n\n    precision = tp / (tp + fp)\n    recall = tp / (tp + fn)\n    pcrr = 2 * (precision * recall) / (precision + recall)\n    return pcrr\n\\end{verbatim}\n\\end{table}\n\n其中 $y_{true}$ 为真实的 RSRP 标签列，$y_{pred}$ 为预测的 RSRP 标签列。\n\n\\subsection*{均方根误差 (RMSE: Root mean squared error)}\n\nRMSE 是评估预测值和实测值整体偏差的指标，其大小直观表现了仿真准确性。直接计算评估数据的 RMSE，计算公式如下：\n\n\\begin{equation}\nRMSE = \\sqrt{\\frac{1}{N} \\sum_{i=1}^{N} (P^{(i)} - \\hat{P}^{(i)})^2}\n\\end{equation}\n\n其中 $P^{(i)}$ 为参赛队机器学习模型对于第 $i$ 组评审数据集的 RSRP 实测值，$\\hat{P}^{(i)}$ 为第 $i$ 组评审数据集的 RSRP 预测量值。",
+  "subtask": {
+    "1": {
+      "subtask": "子任务一（数据预处理与物理基线及特征构造）的目标是把每个小区的原始 CSV 栅格化数据转换为可直接输入后续机器学习流程的干净、结构化特征表，并同时计算基于 Cost231‑Hata 的物理基线 RSRP 估计（RSRP_phys）以作为后续残差建模的元特征；该任务的范围仅限于数据清洗、几何量与天线量的确定、沿射线路径阻挡/地物统计量的计算、以及对所有候选特征进行必要的数值变换与标准化并输出最终特征文件。具体步骤和方法如下：1) 数据加载与坐标转换：读取每个 train_*.csv 文件（或 test 文件），将给定的格网左上角坐标(Cell X, Cell Y 和 X, Y)换算为格点中心坐标（建议加 2.5 m 偏移以表示 5m×5m 网格中心），并统一单位（m、MHz、dBm）；2) 缺失值与异常处理：对建筑高度、海拔等缺失值采用邻域中位数或直接以 0（无建筑）填补，使用 IQR 或 Z‑score 检测 RSRP 或几何异常点并记录（可选择剔除或标记供后续处理），对分类变量（Clutter Index）检查非法编码并修正；3) 基本几何与天线特征计算：逐样本计算平面距离 d（m）、d_km、对数距离 log10(d_km+ε)、发射-接收相对高度 Δh = (Height + Cell Altitude) - (Altitude + Building Height)、仰角 elev = atan2(Δh, d)（弧度与度两种形式保存）、目标方位 phi = atan2(y_target - y_cell, x_target - x_cell)（deg）及方位差 δphi = wrap(Az - phi)；用 sin/cos 编码角度周期性特征以避免跳变；合成下倾角 theta_eff = Mechanical Downtilt + Electrical Downtilt；4) 物理基线计算：按 Cost231‑Hata 标准公式计算 PL_base（使用 f、h_b、h_ue（缺省取 1.5 m 或用目标格建筑高度校正）、d_km、场景常数 c_m 可按 Clutter Index 初值表映射），并通过天线方向性修正将天线增益近似加入：垂直面增益 G_v(elev) ≈ -min(12*((elev_deg - theta_eff)/theta_3dB)^2, A_m)（dB，默认 theta_3dB=6°、A_m=20 dB 可配置），水平面增益 G_h(δphi) ≈ -min(12*(δphi/phi_3dB)^2, A_h)（dB，默认 phi_3dB=65°、A_h=20 dB），将 L_antenna = - (G_v + G_h) 作为损耗修正项，形成初始 PL_phys = PL_base + L_antenna + L_clutter_init（其中 L_clutter_init 可通过 Clutter Index 查表或用固定偏移量估计），并计算 RSRP_phys = P_t - PL_phys；5) 沿射线阻挡/地物统计特征：对每个基站—目标栅格对使用栅格线遍历算法（Bresenham 或 DDA，步长以格子分辨率 5m 为单位）采样路径上的栅格，收集沿线 Building Height、Altitude 与 Clutter Index 并计算 B_max = max(building_height)、B_frac = fraction(building_height > line_of_sight_height)、N_int = number of building intersections（离散计数）、CL_mean = mean(clutter_index)、LOS_flag（简单几何判定有无直视），并可附加沿线高度剖面统计量（mean, std, percentile）；6) 类别与数值特征编码与变换：对 Clutter Index 做一维数值编码并同时保留 one‑hot（或 embedding 协议，若后续模型支持）；对数值特征做必要的对数变换（如 log d）、均值方差标准化或 RobustScaler（对异常鲁棒），对比例特征（B_frac）和计数特征（N_int）做归一/分箱处理；7) 性能与并行化实现细节：建议用 Python 生态（pandas/numpy/scipy）实现数据流水线，沿线采样与大规模几何计算使用 numba 加速或 Cython，或并行化到多进程/分布式任务以处理每个小区文件；若可用，借助 shapely 用于角度与几何校验；8) 输出与约定：为每个输入文件生成对应的特征 CSV，列包括原始输入索引、RSRP（训练集保留）、计算的几何特征（d, log d, Δh, elev, sin/cos phi, δphi sin/cos）、天线特征（theta_eff, P_t, f）、沿线统计（B_max, B_frac, N_int, CL_mean, LOS_flag）、物理元特征（PL_base, L_antenna, L_clutter_init, RSRP_phys）、标准化版本及缺失/异常标记；并输出一份特征字典（字段名、单位、计算公式与默认参数）以保证可复现性。该子任务不涉及模型训练或结果评估，其成功交付为下游残差建模提供完整、可解释且计算可重复的特征表与物理基线列。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "将每个小区的原始CSV栅格数据清洗与标准化并构建几何/天线/路径阻挡等特征，拟合并计算基于Cost231‑Hata的物理基线RSRP估计以供后续预测残差建模与评估",
+          "expected_output": "每个输入文件对应的特征CSV（含原始索引、RSRP_phys、PL_base、L_antenna、几何/路径统计/类别编码及其标准化列、缺失/异常标记）、特征字典文档（字段名/单位/公式/默认参数）、处理日志（缺失与异常处理摘要）",
+          "key_inputs_constraints": "输入：train_*.csv或test_*.csv；字段：Cell X,Y, Height, Azimuth, Electrical/Mechanical Downtilt, Frequency Band, RS Power；地图字段：Cell Altitude/Building Height/Clutter Index 与 X,Y, Altitude, Building Height, Clutter Index；标签：RSRP(训练集)。约束：5m×5m格；中心坐标偏移+2.5m；单位统一(m/MHz/dBm)；角度度制；f>0，d_km>0需加ε；Clutter Index需在定义域1–20；默认h_ue=1.5m。",
+          "modeling_type": "拟合+评价",
+          "role_in_pipeline": "作为特征工程与物理基线构建环节，位于数据读取后、模型训练前；前序依赖：原始CSV与地图字典；后序任务：特征选择、残差模型训练、线上推理与评估",
+          "assumptions": "若建筑高度缺失视为0；c_m与L_clutter_init由Clutter Index映射初值表或固定偏移；天线图参数theta_3dB=6°、phi_3dB=65°、A_m=A_h=20dB可配置；LOS判定采用几何直线与高度剖面简单穿越规则；标准化采用RobustScaler或z-score按列拟合（训练集）并一致应用"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别核心目标：Cost231‑Hata物理基线RSRP_phys构建",
+              "description": "是否明确本子任务不是预测最终RSRP，而是计算PL_base、L_antenna与RSRP_phys作为残差建模的元特征，并输出结构化特征表",
+              "score": 40,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清晰区分基线与后续残差预测并给出RSRP_phys；中分：提到Cost231‑Hata但未形成可用RSRP_phys；低分：把任务当作直接预测或遗漏物理基线"
+            },
+            {
+              "sub_criteria": "输入边界与约束：5m网格与坐标中心偏移",
+              "description": "是否正确识别5m×5m栅格、中心坐标+2.5m偏移、单位统一及Clutter Index合法域等关键约束",
+              "score": 30,
+              "evaluation_focus": "约束理解",
+              "scoring_hint": "高分：明确+2.5m、m/MHz/dBm统一、CI∈[1,20]校验；中分：处理单位但漏偏移或CI校验；低分：无单位统一与坐标误用"
+            },
+            {
+              "sub_criteria": "子任务边界：仅数据清洗与特征构造",
+              "description": "是否界定范围仅限清洗、几何与天线量、路径阻挡与标准化，不包含训练与评估",
+              "score": 30,
+              "evaluation_focus": "范围控制",
+              "scoring_hint": "高分：文档和实现均不含训练；中分：出现少量训练尝试但不影响交付；低分：大篇幅模型训练替代本任务"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "数据加载与坐标转换（d,d_km,log10(d_km+ε)）",
+              "description": "是否准确复述并实现从Cell X,Y与X,Y计算目标与基站的中心坐标及距离与对数距离",
+              "score": 35,
+              "evaluation_focus": "表述精度",
+              "scoring_hint": "高分：含ε>0避免log(0)，说明度量单位；中分：给出d但漏log或ε；低分：坐标或单位混乱"
+            },
+            {
+              "sub_criteria": "天线角度与周期性编码",
+              "description": "是否复述elev、phi、δphi与sin/cos编码及theta_eff合成",
+              "score": 35,
+              "evaluation_focus": "要点覆盖",
+              "scoring_hint": "高分：给出wrap与sin/cos；中分：仅给角度未周期化；低分：未提角度或误用弧度/度"
+            },
+            {
+              "sub_criteria": "路径阻挡与地物统计量",
+              "description": "是否复述沿射线Bresenham/DDA采样与B_max、B_frac、N_int、CL_mean、LOS_flag等统计",
+              "score": 30,
+              "evaluation_focus": "细节完整",
+              "scoring_hint": "高分：列出主要统计与采样步长=5m；中分：仅描述有阻挡未具体统计；低分：未涉及路径采样"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "h_ue与c_m/L_clutter_init假设",
+              "description": "是否明确h_ue默认1.5m或由建筑高度校正，c_m与L_clutter_init按Clutter Index映射或固定偏移并给出数值来源",
+              "score": 35,
+              "evaluation_focus": "假设合理性",
+              "scoring_hint": "高分：列参数值与来源/可配置；中分：给默认但无依据；低分：未声明导致公式不可复现"
+            },
+            {
+              "sub_criteria": "缺失值与异常处理策略（IQR/Z‑score/邻域中位）",
+              "description": "是否给出建筑/海拔缺失填补规则与RSRP/几何异常检测标准并记录标记列",
+              "score": 35,
+              "evaluation_focus": "数据治理",
+              "scoring_hint": "高分：规则+阈值+标记；中分：有填补无异常记录；低分：忽略缺失异常"
+            },
+            {
+              "sub_criteria": "天线方向性参数与LOS判定简化",
+              "description": "是否说明theta_3dB、phi_3dB、A_m/A_h默认值与LOS几何规则及其局限",
+              "score": 30,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：参数给定且说明影响；中分：仅列默认值；低分：无参数假设"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "Cost231‑Hata PL_base与RSRP_phys推导",
+              "description": "基于f、h_b、h_ue、d_km、c_m正确实现PL_base与RSRP_phys=P_t−(PL_base+L_antenna+L_clutter_init)",
+              "score": 45,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：公式完整、单位一致、边界ε处理；中分：少量项遗漏（如c_m）；低分：公式错误或无法计算"
+            },
+            {
+              "sub_criteria": "天线增益修正L_antenna构造",
+              "description": "按G_v(elev)与G_h(δphi)抛物近似与截断，合成为损耗项并注意度制与上限",
+              "score": 30,
+              "evaluation_focus": "物理建模",
+              "scoring_hint": "高分：实现min截断与度制正确；中分：仅单面增益；低分：未做方向性修正"
+            },
+            {
+              "sub_criteria": "特征全集与编码变换",
+              "description": "几何（d,log d,Δh,elev,phi/δphi sincos）、路径统计（B_max,B_frac,N_int,CL_mean,LOS）、类别（one‑hot）、标准化/RobustScaler全覆盖",
+              "score": 25,
+              "evaluation_focus": "特征工程",
+              "scoring_hint": "高分：全覆盖并输出标准化列；中分：缺少部分统计或编码；低分：仅原始列无变换"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "沿线栅格遍历算法正确性与复杂度",
+              "description": "Bresenham或DDA实现步长5m，能跨小区大样本稳定运行并有最坏情况复杂度说明",
+              "score": 40,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：清晰算法与复杂度、边界处理；中分：实现但无复杂度与边界说明；低分：路径采样错误或遗漏"
+            },
+            {
+              "sub_criteria": "并行化/向量化与数值稳定",
+              "description": "使用numpy/numba/多进程进行加速，处理log(0)/除零/角度wrap的数值稳定策略",
+              "score": 35,
+              "evaluation_focus": "数值计算",
+              "scoring_hint": "高分：有加速与稳定措施；中分：部分向量化；低分：循环低效且数值溢出"
+            },
+            {
+              "sub_criteria": "标准化拟合/应用分离",
+              "description": "训练集拟合标准化参数，统一应用到验证/测试并固化到特征字典或配置",
+              "score": 25,
+              "evaluation_focus": "流程规范",
+              "scoring_hint": "高分：明确fit/train与transform/test分离；中分：说明但未固化参数；低分：数据泄漏"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据管道与模块化（pandas/numpy）",
+              "description": "分层实现：加载→清洗→几何→路径→物理基线→编码→标准化→导出，函数化与可复用",
+              "score": 35,
+              "evaluation_focus": "代码结构",
+              "scoring_hint": "高分：清晰模块与接口；中分：脚本式但可运行；低分：混乱难以维护"
+            },
+            {
+              "sub_criteria": "参数化与可配置性",
+              "description": "支持theta_3dB,phi_3dB,A_m/A_h,c_m映射、ε、h_ue等配置与随机种子控制",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：配置文件或CLI参数；中分：硬编码但注释清楚；低分：不可调参"
+            },
+            {
+              "sub_criteria": "数据校验与日志",
+              "description": "Clutter Index合法性、单位校验、缺失/异常统计日志与异常标记列输出",
+              "score": 20,
+              "evaluation_focus": "可靠性",
+              "scoring_hint": "高分：系统化校验与日志；中分：部分校验；低分：无校验"
+            },
+            {
+              "sub_criteria": "输出一致性与特征字典",
+              "description": "每个输入生成对齐的特征CSV，包含RSRP_phys与标准化列；提供字段名/单位/公式的字典",
+              "score": 20,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：文件对齐且字典完备；中分：文件正确但字典不全；低分：列缺失或错位"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "物理基线自检（RSRP与RSRP_phys差分）",
+              "description": "在训练集上统计RSRP−RSRP_phys的分布、均值/中位数与异常尾部，验证量纲与方向正确",
+              "score": 40,
+              "evaluation_focus": "结果验证",
+              "scoring_hint": "高分：给出分布图或描述与合理范围；中分：仅给均值；低分：未检验或方向错误"
+            },
+            {
+              "sub_criteria": "特征数值检查与相关性快照",
+              "description": "检查关键特征（log d, Δh, elev, B_frac, N_int, CL_mean）的范围与与RSRP的皮尔逊/斯皮尔曼相关性概览",
+              "score": 35,
+              "evaluation_focus": "诊断能力",
+              "scoring_hint": "高分：列出相关系数并解释符号；中分：仅范围检查；低分：无检查"
+            },
+            {
+              "sub_criteria": "鲁棒性与异常影响评述",
+              "description": "评述IQR/Z-score剔除/标记对特征与RSRP_phys分布的影响，说明是否使用RobustScaler的原因",
+              "score": 25,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：比较前后指标或样本占比；中分：定性描述；低分：无评述"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务二的目标是用机器学习对物理基线预测与真实RSRP之间的残差进行建模，从而输出残差估计r̂并形成最终预测RSRP_pred = RSRP_phys + r̂，以及为工程决策提供不确定度与弱覆盖概率输出；其范围仅限于模型选择、训练目标、训练流程、超参数调优、欠/过拟合控制、类别不平衡处理与不确定度估计，并以已经由前处理得到的特征表（每个样本包含几何特征如d、log d、Δh、仰角/方位的sin/cos编码；天线/发射特征如P_t、f、theta_eff；沿射线阻挡统计如B_max、B_frac、N_int、CL_mean、LOS_flag；以及物理元特征PL_base、L_antenna、L_clutter_init等）和训练集的真实RSRP作为输入；方法上优先选择基于梯度提升树的回归器（LightGBM或XGBoost）作为主模型，理由是对异质特征与缺失值鲁棒且训练高效，备选方案包括多层感知器或卷积/图神经网络用于在样本量与空间结构充足时捕捉复杂空间相关性；训练目标采用复合损失，主损失为MSE或Huber loss以最小化残差平方和，辅以针对弱覆盖（阈值p=-103 dBm）加权项以提升PCRR：对真实样本RSRP<p的样本在损失中放大权重w = 1 + α或追加二分类焦点损失，α通过按小区分层的交叉验证（建议使用leave-one-cell-out或按小区分层K折）在验证集上网格或贝叶斯优化调参以在满足PCRR≥20%与控制RMSE之间取得平衡；为应对类别不平衡可采用样本重加权、过采样或合成少数样本技术，但优先使用基于损失权重的方法以避免生成合成空间结构错误样本；训练细节包括使用早停（early stopping）、L2正则与树模型的树深/叶子数/最小样本分裂数等正则化参数来防止过拟合，超参数搜索使用贝叶斯优化工具（如Optuna）或交叉验证网格搜索，并固定随机种子与记录训练日志以确保可复现性；对缺失值与异常值利用树模型天然处理能力或在预处理阶段用标志位记录并填充，中位数/常数填充亦可；不确定度估计采用模型集合（多次不同随机初始化/子样本训练取预测分布）、分位回归（训练不同分位点的模型）或在神经网络情形下使用MC Dropout，必要时对回归输出进行校准（例如使用回归校准或基于残差的置信区间估计）；若需弱覆盖概率输出，可并行训练二分类器（逻辑回归/LightGBM classifier）或以多任务方式同时输出残差和弱覆盖概率，并对分类器概率做Platt或Isotonic校准以提高准确率；模型评估与选择以跨小区验证集的RMSE和PCRR为主要准则，同时监控Precision/Recall/F1在弱覆盖类上的表现与预测置信区间覆盖率（calibration）；为便于后续分析，保存模型特征重要性与基于SHAP的局部/全局解释结果以发现潜在的数据偏差或错误特征，并将最终模型输出包括r̂、RSRP_pred、置信区间上下界及弱覆盖概率，所有训练脚本应支持批量训练、可配置的超参数输入与日志/模型版本管理以保证可重复性。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "基于已构造的特征对RSRP_phys与真实RSRP的残差进行拟合与预测，优化RMSE并提升弱覆盖PCRR以得到最终RSRP_pred = RSRP_phys + r̂及不确定度/弱覆盖概率。",
+          "expected_output": "残差预测r̂数值序列；最终RSRP_pred数值序列；弱覆盖概率序列或标签；不确定度区间（如P5/P50/P95或均值±σ）；训练好的模型文件（LightGBM/XGBoost等）及配置；交叉验证评估报表（RMSE、PCRR、Precision、Recall、覆盖率）。",
+          "key_inputs_constraints": "输入为子任务一输出的特征表（含d、log d、Δh、sin/cos方位、theta_eff、P_t、f、B_max、B_frac、N_int、CL_mean、LOS_flag、PL_base、L_antenna、L_clutter_init、RSRP_phys等）；训练目标为真实RSRP，用于构造残差r=RSRP-RSRP_phys；需按小区分层交叉验证（例如leave-one-cell-out）评估；弱覆盖阈值p=-103 dBm，PCRR≥20%为硬约束；优先使用梯度提升树（LightGBM/XGBoost），允许缺失值；随机种子与日志需固定以保证可复现；禁止使用测试泄漏（按小区划分）。",
+          "modeling_type": "拟合+预测+评价",
+          "role_in_pipeline": "位于特征工程之后、提交预测之前的核心建模环节；直接依赖前序子任务一的特征与RSRP_phys；其输出（RSRP_pred、概率与不确定度）供后序模型集成/线上评分与工程决策使用。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "残差建模目标与对象（r̂与RSRP_pred预测）",
+              "description": "是否明确以残差r = RSRP - RSRP_phys为拟合对象，并输出RSRP_pred = RSRP_phys + r̂而非直接拟合RSRP。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清晰给出r与RSRP_pred关系并在流程中贯彻；中分：口头提及残差但实现混用直接RSRP；低分：完全直接拟合RSRP未利用RSRP_phys。"
+            },
+            {
+              "sub_criteria": "评价指标识别（RMSE与PCRR≥20%）",
+              "description": "是否将RMSE作为主回归指标并将PCRR纳入硬约束或次目标，明确弱覆盖阈值p=-103 dBm。",
+              "score": 25,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：实现RMSE与PCRR双指标并设定p=-103；中分：仅报告RMSE或未固定阈值；低分：缺少PCRR或阈值错误。"
+            },
+            {
+              "sub_criteria": "数据切分粒度（按小区分层CV）",
+              "description": "是否识别到需使用leave-one-cell-out或分层K折以防信息泄漏并评估泛化。",
+              "score": 25,
+              "evaluation_focus": "实验设计",
+              "scoring_hint": "高分：实现LOCO或分层K折并报告跨小区结果；中分：普通K折无分层；低分：随机划分导致泄漏。"
+            },
+            {
+              "sub_criteria": "弱覆盖类别不平衡识别",
+              "description": "是否识别弱覆盖样本比例偏低并提出权重或重采样策略。",
+              "score": 15,
+              "evaluation_focus": "问题洞察",
+              "scoring_hint": "高分：量化类比并设计损失权重/阈值策略；中分：仅口头说明不平衡；低分：未提及不平衡。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "RSRP_phys利用方式复述",
+              "description": "准确复述RSRP_phys作为物理基线与元特征，在训练时构造残差目标并作为输入特征之一。",
+              "score": 30,
+              "evaluation_focus": "需求理解",
+              "scoring_hint": "高分：明确残差目标与RSRP_phys双重用途；中分：仅作为特征使用；低分：误用或忽略。"
+            },
+            {
+              "sub_criteria": "损失函数复述（MSE/Huber+弱覆盖加权）",
+              "description": "阐明主损失MSE或Huber并对RSRP<p样本加权或加入焦点损失。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：给出具体权重α或焦点参数并说明调参；中分：仅提及未落实；低分：无加权策略。"
+            },
+            {
+              "sub_criteria": "验证协议与选择准则复述",
+              "description": "清晰陈述以跨小区RMSE与PCRR选择模型，满足PCRR≥20%后最小化RMSE。",
+              "score": 25,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：给出阈值门槛与排序规则；中分：仅报告指标；低分：未给准则。"
+            },
+            {
+              "sub_criteria": "不确定度与弱覆盖概率输出复述",
+              "description": "说明以集合/分位回归/分类器方式输出区间与弱覆盖概率并可校准。",
+              "score": 15,
+              "evaluation_focus": "结果设计",
+              "scoring_hint": "高分：列出方法并指定分位点或校准法；中分：泛泛而谈；低分：不提供。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "用户高度与RSRP_phys误差可由学习残差捕获",
+              "description": "假设Cost231‑Hata及天线修正的系统偏差可通过残差模型近似学习到。",
+              "score": 25,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：阐明偏差来源与可学习性；中分：笼统表述；低分：无假设。"
+            },
+            {
+              "sub_criteria": "小区独立同分布近似与分层CV合理性",
+              "description": "假设按小区分层CV能近似未知小区泛化分布。",
+              "score": 25,
+              "evaluation_focus": "实验假设",
+              "scoring_hint": "高分：论证数据分布与泄漏风险；中分：简单说明；低分：不合理切分。"
+            },
+            {
+              "sub_criteria": "弱覆盖阈值与权重α设定假设",
+              "description": "明确p=-103 dBm固定且α通过验证集调参以兼顾PCRR与RMSE。",
+              "score": 25,
+              "evaluation_focus": "参数设定",
+              "scoring_hint": "高分：说明α搜索范围与选择标准；中分：给出单值无依据；低分：未设定。"
+            },
+            {
+              "sub_criteria": "不确定度方法假设（分位回归/集合有效性）",
+              "description": "假设模型集合方差或分位回归能近似残差分布并可校准。",
+              "score": 25,
+              "evaluation_focus": "不确定度",
+              "scoring_hint": "高分：提出覆盖率检验；中分：仅列方法；低分：无假设与验证。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "主模型选择（LightGBM/XGBoost残差回归）",
+              "description": "采用梯度提升树回归器拟合r，并利用其对异质特征与缺失的鲁棒性。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：合理超参初值与解释；中分：使用但配置欠缺；低分：与任务不匹配模型。"
+            },
+            {
+              "sub_criteria": "损失设计（MSE/Huber+加权/焦点）",
+              "description": "实现Huber或MSE并对RSRP<p样本加权或焦点损失提升PCRR。",
+              "score": 25,
+              "evaluation_focus": "目标设计",
+              "scoring_hint": "高分：可复现实现与权重策略；中分：概念性描述；低分：未实现。"
+            },
+            {
+              "sub_criteria": "不确定度与概率模块（分位/集合/分类器）",
+              "description": "构建分位回归或模型集合估计置信区间；并行弱覆盖概率分类器与校准。",
+              "score": 25,
+              "evaluation_focus": "不确定度",
+              "scoring_hint": "高分：给出分位点或集合大小与校准法；中分：单一方法无校准；低分：缺失。"
+            },
+            {
+              "sub_criteria": "特征使用与泄漏防控",
+              "description": "使用子任务一特征含RSRP_phys与物理项，避免引入测试信息或目标编码泄漏。",
+              "score": 20,
+              "evaluation_focus": "特征工程",
+              "scoring_hint": "高分：列出用到的特征与剔除规则；中分：未详细说明；低分：发生泄漏。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "超参数调优（贝叶斯/网格+早停）",
+              "description": "在分层或LOCO CV上进行Optuna/网格调参，并使用early stopping与L2/树深正则。",
+              "score": 30,
+              "evaluation_focus": "调参能力",
+              "scoring_hint": "高分：报告搜索空间、轮次与早停配置；中分：少量手调；低分：无调参。"
+            },
+            {
+              "sub_criteria": "欠/过拟合控制",
+              "description": "控制树深、叶子数、min_data_in_leaf/子采样，监控训练-验证差距。",
+              "score": 25,
+              "evaluation_focus": "泛化控制",
+              "scoring_hint": "高分：展示学习曲线或差距分析；中分：口头说明；低分：明显过拟合未处理。"
+            },
+            {
+              "sub_criteria": "类别不平衡处理（损失权重优先）",
+              "description": "采用损失权重或阈值策略，避免生成不合理空间样本的过采样。",
+              "score": 25,
+              "evaluation_focus": "数据策略",
+              "scoring_hint": "高分：给出权重计算或验证提升PCRR；中分：泛述；低分：未处理或错误过采样。"
+            },
+            {
+              "sub_criteria": "交叉验证与模型选择准则",
+              "description": "以PCRR≥20%门槛筛选，再按RMSE最小选择；报告均值±方差。",
+              "score": 20,
+              "evaluation_focus": "实验规范",
+              "scoring_hint": "高分：完整报告并符合门槛；中分：缺少方差或门槛；低分：未按准则。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现性（随机种子/日志/配置）",
+              "description": "固定随机种子，保存训练配置、模型版本与日志，确保结果可重复。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：提供config与seed、日志；中分：部分固定；低分：不可复现。"
+            },
+            {
+              "sub_criteria": "数据管线对接子任务一",
+              "description": "正确加载特征表，构造残差目标，保持列名一致并支持批量按小区训练/验证。",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：模块化数据Loader与校验；中分：脚本可跑但脆弱；低分：列错或崩溃。"
+            },
+            {
+              "sub_criteria": "训练与评估脚本（早停/权重/CV）",
+              "description": "实现带权重训练、早停与分层CV评估；导出r̂、RSRP_pred、概率与区间。",
+              "score": 25,
+              "evaluation_focus": "实现完整性",
+              "scoring_hint": "高分：脚本一键运行并生成全套输出；中分：缺少部分输出；低分：功能缺失。"
+            },
+            {
+              "sub_criteria": "解释性与特征重要性（SHAP/增益）",
+              "description": "导出LightGBM/XGBoost特征重要性和SHAP解释，发现潜在偏差。",
+              "score": 20,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：提供图表或表格并分析；中分：仅数值；低分：未提供。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "跨小区RMSE与PCRR报告与对比",
+              "description": "报告按小区的RMSE、PCRR、Precision、Recall，比较与RSRP_phys基线提升幅度。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：量化提升（如RMSE↓x%、PCRR≥20%）；中分：仅整体均值；低分：指标缺失或劣于基线。"
+            },
+            {
+              "sub_criteria": "弱覆盖性能分析与阈值敏感性",
+              "description": "分析p=-103 dBm附近的决策稳定性与权重α对PCRR/RMSE权衡的影响。",
+              "score": 25,
+              "evaluation_focus": "敏感性分析",
+              "scoring_hint": "高分：给出曲线或表格；中分：定性讨论；低分：未分析。"
+            },
+            {
+              "sub_criteria": "不确定度校准与覆盖率检验",
+              "description": "检验分位区间的实际覆盖率（如P90≈90%），或集合方差与残差方差一致性。",
+              "score": 25,
+              "evaluation_focus": "校准评估",
+              "scoring_hint": "高分：报告覆盖率误差≤±5%；中分：仅提供区间未验证；低分：无区间或严重失配。"
+            },
+            {
+              "sub_criteria": "失效案例与误差分布",
+              "description": "展示高误差样本（如极端B_max、LOS_flag=0）并关联特征解释原因与改进方向。",
+              "score": 15,
+              "evaluation_focus": "诊断能力",
+              "scoring_hint": "高分：给出案例并量化特征影响；中分：泛述；低分：无案例。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3聚焦于对已训练模型的严格验证、通过调整使弱覆盖识别（PCRR）达标、以及对模型输出进行灵敏度与不确定性量化；其输入为经子任务1/2生成的特征表与对应真实 RSRP（用于验证集）及模型预测接口，目标是在跨小区条件下评估并保证模型泛化性、满足 PCRR≥20% 的工程门槛并提供可操作的不确定度与敏感性分析结果。具体工作包括：1）验证方案与度量：采用按小区分层的留一小区（leave-one-cell-out）或分层 K 折交叉验证（fold 划分以小区为单位）来模拟域外小区的泛化表现；对每一折/每个被留出小区计算 RMSE 和弱覆盖相关指标（按阈值 p = -103 dBm 统计 TP/FP/FN/TN，进而计算 Precision、Recall 和 PCRR），并输出按小区与总体的平均与方差；2）PCRR 校准：在训练或验证阶段引入加权损失（对真实 RSRP < p 的样本以权重 w = 1+α 放大）或并行训练二分类弱覆盖预测器，通过网格搜索或贝叶斯优化（如 Optuna）在验证集合上寻优 α 或损失比例 λ，以在不显著恶化总体 RMSE 的前提下达到 PCRR≥20%；记录并绘制 RMSE 与 PCRR 的权衡曲线以便工程决策；3）不确定度估计与校准：为回归输出构建置信区间，采用模型集成（多模型随机初始化/子样本训练取预测分布）、分位回归或自举（bootstrap）生成预测区间，并用保真度检验（coverage）在验证集上校准区间宽度；若并行训练分类器则对概率进行 Platt 或 isotonic 校准以改善弱覆盖概率的可靠性；4）局部与全局灵敏度分析：对关键输入（如发射功率、合成下倾角、目标/沿线建筑高度、距离、频率）进行局部扰动（±若干百分比或固定物理量）与蒙特卡洛采样，量化输出均值与方差的变化；并用方差分解方法（如 Sobol 指数，通过 SALib 等工具实现）评估各特征对预测方差的全局贡献，从而识别高影响因子；5）不确定度驱动的采样策略（主动学习触发标准）：基于预测不确定度大小、距离阈值 p 的临界性（靠近阈值点）以及潜在影响量（高 Sobol 值或空间覆盖关键区域），定义优先测量点选择规则（例如 top‑k 不确定点或信息增益最大点）以指导后续实测；6）域适应策略验证：模拟少量标注下的快速微调（如仅重训练残差模型的最后一层或用 few‑shot 样本做增量训练），评估在获取 n 个新点后 RMSE 与 PCRR 的改进速度并记录最小样本量需求；7）可视化与报告产出：为每次验证生成标准化报告，包含按小区与总体的 RMSE/PCRR/Precision/Recall、混淆矩阵、置信区间覆盖率、校准曲线、特征敏感度排名与 Sobol 指数、以及主动采样建议列表；8）实现与工具建议：推荐使用 Python 生态（pandas/numpy/scikit‑learn、LightGBM/XGBoost、Optuna、SHAP、SALib、matplotlib/seaborn），保存可复现的随机种子、模型版本与训练日志，并输出可机器读取的验证结果文件（JSON/CSV）与可视化图表。该子任务仅涵盖验证、校准、灵敏度及不确定度分析与相应决策规则的制定与产出，不涉及特征构造或模型训练以外的其它开发工作。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在跨小区条件下评估与校准残差模型的预测，优化弱覆盖识别（PCRR）并量化不确定度与灵敏度。",
+          "expected_output": "- 分层留一小区/分层K折的每折与总体RMSE、Precision、Recall、PCRR统计表与方差\n- PCRR≥20% 的校准结果与RMSE-PCRR权衡曲线\n- 不确定度估计：预测区间、覆盖率（coverage）与校准曲线\n- 灵敏度分析：局部扰动结果、Sobol指数与特征影响排名\n- 主动采样建议列表（基于不确定度与阈值邻域）\n- 域适应微调增益曲线（样本量→RMSE/PCRR改进）\n- 机器可读报告（JSON/CSV）与图表",
+          "key_inputs_constraints": "- 特征表：含d、log d、Δh、仰角/方位sin-cos、P_t、f、theta_eff、B_max、B_frac、N_int、CL_mean、LOS_flag、PL_base、L_antenna、L_clutter_init、RSRP_phys\n- 真实RSRP（验证集）与模型预测接口（可批量推断）\n- 小区ID用于按小区划分fold；弱覆盖阈值p=-103 dBm固定\n- 需可复现的随机种子、版本与日志；禁止使用评审集信息泄漏\n- 资源约束：允许Optuna/网格搜索；分类器需概率校准（Platt/Isotonic）",
+          "modeling_type": "评价+校准+不确定度",
+          "role_in_pipeline": "作为最终验证与校准环节，位于子任务2（残差建模）之后、线上部署之前；前序依赖子任务1/2的特征表与已训练模型；后序为部署与提交预测文件；本环节不做特征构造或重新训练主模型，仅做校准、验证与分析。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "跨小区评估目标与PCRR≥20%门槛识别",
+              "description": "明确本任务需在leave-one-cell-out/分层K折下评估RMSE与PCRR，并保证弱覆盖识别率PCRR≥20%。",
+              "score": 35,
+              "evaluation_focus": "目标界定/评价",
+              "scoring_hint": "高分：清楚写明LOCO/K折按小区划分与PCRR≥20%；中分：提PCRR但未强调按小区分层；低分：未提PCRR或仅随机划分样本级CV。"
+            },
+            {
+              "sub_criteria": "不确定度与灵敏度分析需求识别",
+              "description": "指出需输出预测区间、coverage与Sobol/局部扰动敏感度，支撑工程决策与主动采样。",
+              "score": 25,
+              "evaluation_focus": "需求覆盖",
+              "scoring_hint": "高分：同时覆盖区间+coverage+Sobol/局部扰动；中分：仅有区间或仅有敏感度；低分：无不确定度/敏感度内容。"
+            },
+            {
+              "sub_criteria": "校准与权衡曲线需求",
+              "description": "识别需通过加权损失/并行分类器校准PCRR，并输出RMSE-PCRR权衡曲线。",
+              "score": 25,
+              "evaluation_focus": "校准意识",
+              "scoring_hint": "高分：给出α/λ调参与权衡曲线；中分：有权重思路无曲线；低分：无校准与权衡分析。"
+            },
+            {
+              "sub_criteria": "数据泄漏与复现约束",
+              "description": "指出按小区分层避免泄漏、固定随机种子、记录版本与日志。",
+              "score": 15,
+              "evaluation_focus": "可靠性/规范",
+              "scoring_hint": "高分：明确泄漏风险与复现措施；中分：提复现未提泄漏；低分：未提任一约束。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "RMSE/PCRR/Precision/Recall度量定义的准确复述",
+              "description": "完整给出p=-103 dBm下TP/FP/FN/TN与PCRR公式，并说明逐小区与总体统计方式。",
+              "score": 40,
+              "evaluation_focus": "指标定义",
+              "scoring_hint": "高分：公式与阈值正确且含按小区统计；中分：公式正确但缺按小区/总体描述；低分：定义错误或缺失。"
+            },
+            {
+              "sub_criteria": "验证方案复述（LOCO或分层K折）",
+              "description": "清晰描述fold按小区划分流程、折内训练/验证数据边界与重复次数。",
+              "score": 30,
+              "evaluation_focus": "实验设计",
+              "scoring_hint": "高分：提供按小区划分与重复策略；中分：仅提方法不述细节；低分：样本级随机K折。"
+            },
+            {
+              "sub_criteria": "校准与不确定度方法复述",
+              "description": "复述加权损失α/λ搜索、模型集成/分位回归/自举的区间生成与coverage校准。",
+              "score": 30,
+              "evaluation_focus": "方法选择",
+              "scoring_hint": "高分：含参数范围与校准准则；中分：方法点名无参数与准则；低分：未复述。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "弱覆盖阈值与成本权衡假设",
+              "description": "明确p=-103 dBm固定；提出PCRR提升对RMSE影响的上限或容忍区间假设。",
+              "score": 30,
+              "evaluation_focus": "指标权衡",
+              "scoring_hint": "高分：量化RMSE容忍度或ΔRMSE≤阈；中分：定性权衡；低分：无假设。"
+            },
+            {
+              "sub_criteria": "独立同分布与小区间偏移假设",
+              "description": "说明跨小区分布漂移存在，验证采用LOCO近似域外泛化，区间覆盖按小区独立评估。",
+              "score": 25,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：明确分布漂移与评估方案；中分：提漂移未落到评估；低分：默认IID不合理。"
+            },
+            {
+              "sub_criteria": "不确定度方法适用性假设",
+              "description": "假设模型集成/自举能近似捕获模型不确定度，数据噪声近似对称，分位点选择如[0.1,0.5,0.9]。",
+              "score": 25,
+              "evaluation_focus": "方法前提",
+              "scoring_hint": "高分：阐述选择与局限；中分：只给方法不述前提；低分：无说明。"
+            },
+            {
+              "sub_criteria": "灵敏度扰动范围选择假设",
+              "description": "设定P_t、theta_eff、建筑高度、频率、距离等±5–20%或物理量固定步长的扰动范围。",
+              "score": 20,
+              "evaluation_focus": "实验设定",
+              "scoring_hint": "高分：给出变量与具体范围；中分：有变量无量化范围；低分：未设定。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "验证方案构建（LOCO/分层K折）",
+              "description": "实现按小区分层的CV管线，统计每折与总体RMSE、PCRR、Precision、Recall与方差。",
+              "score": 30,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：可复现实施细节与汇总；中分：实现不完整统计；低分：未按小区。"
+            },
+            {
+              "sub_criteria": "PCRR校准机制（加权损失/并行分类器）",
+              "description": "构建α或λ的搜索空间与目标函数（满足PCRR≥20%且RMSE最小），输出权衡曲线。",
+              "score": 30,
+              "evaluation_focus": "校准建模",
+              "scoring_hint": "高分：含目标函数与曲线；中分：仅加权无搜索；低分：无校准。"
+            },
+            {
+              "sub_criteria": "不确定度模型与校准",
+              "description": "建立模型集成/分位回归/自举生成预测区间，计算coverage并做区间宽度校准。",
+              "score": 25,
+              "evaluation_focus": "不确定度建模",
+              "scoring_hint": "高分：区间、coverage与校准齐全；中分：仅区间无coverage；低分：无不确定度。"
+            },
+            {
+              "sub_criteria": "灵敏度分析设计（局部+Sobol）",
+              "description": "设置局部扰动与SALib Sobol全局分析，输出特征影响排名。",
+              "score": 15,
+              "evaluation_focus": "敏感度设计",
+              "scoring_hint": "高分：两者兼备并量化；中分：单一方法；低分：缺失。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "交叉验证执行与统计稳健性",
+              "description": "完成全部fold训练/验证，报告均值±标准差，控制随机种子与重复次数。",
+              "score": 30,
+              "evaluation_focus": "实验执行",
+              "scoring_hint": "高分：≥5折或LOCO全覆盖且复现设置；中分：折数不足或未给方差；低分：单次结果。"
+            },
+            {
+              "sub_criteria": "α/λ调参与RMSE-PCRR前沿曲线",
+              "description": "用Optuna/网格搜索求得满足PCRR≥20%的最小RMSE点，并绘制前沿曲线。",
+              "score": 30,
+              "evaluation_focus": "优化求解",
+              "scoring_hint": "高分：给出最优参数与曲线；中分：给出参数无曲线；低分：未搜索或不达标。"
+            },
+            {
+              "sub_criteria": "不确定度覆盖率校准",
+              "description": "报告90%或95%区间的理论vs实测coverage差，并调节至|Δcoverage|≤5%。",
+              "score": 25,
+              "evaluation_focus": "统计校准",
+              "scoring_hint": "高分：|Δ|≤5%；中分：5–10%；低分：>10%或未给。"
+            },
+            {
+              "sub_criteria": "Sobol指数收敛与显著性",
+              "description": "报告一阶/总效应指数与置信区间或重复自举，验证收敛性。",
+              "score": 15,
+              "evaluation_focus": "数值稳定性",
+              "scoring_hint": "高分：含置信区间/重复验证；中分：仅点估计；低分：无结果或不可信。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "按小区分层CV与指标计算的代码可靠性",
+              "description": "代码正确实现按小区划分、TP/FP/FN/TN与RMSE/PCRR计算，避免数据泄漏。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：含单元测试或断言检测泄漏；中分：实现正确无测试；低分：存在泄漏/计算错误."
+            },
+            {
+              "sub_criteria": "调参与复现（Optuna/网格、随机种子、日志）",
+              "description": "实现α/λ搜索与结果记录，固定随机种子，输出JSON/CSV日志与最佳参数。",
+              "score": 25,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：可一键复现实验与日志；中分：可复现但日志简陋；低分：不可复现。"
+            },
+            {
+              "sub_criteria": "不确定度与灵敏度工具链集成",
+              "description": "集成集成学习/分位回归/自举与SALib，接口清晰、批量运行稳定。",
+              "score": 25,
+              "evaluation_focus": "工具集成",
+              "scoring_hint": "高分：API清晰并含错误处理；中分：可运行偶有边界错误；低分：运行不稳。"
+            },
+            {
+              "sub_criteria": "可视化与报告导出",
+              "description": "自动生成RMSE-PCRR曲线、校准曲线、混淆矩阵、Sobol条形图与机器可读报告。",
+              "score": 15,
+              "evaluation_focus": "可视化/导出",
+              "scoring_hint": "高分：图表规范、文件齐全；中分：部分缺失；低分：无可视化/报告。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "跨小区RMSE/PCRR解释与失败案例分析",
+              "description": "解释各小区差异与误差来源，展示混淆矩阵并分析弱覆盖错判原因。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：含具体小区案例与原因；中分：宏观描述；低分：仅罗列数字。"
+            },
+            {
+              "sub_criteria": "RMSE-PCRR权衡与工程选择建议",
+              "description": "基于前沿曲线给出满足PCRR≥20%且RMSE最小的运行点与备选方案。",
+              "score": 25,
+              "evaluation_focus": "决策建议",
+              "scoring_hint": "高分：清晰推荐点与备选；中分：仅推荐点；低分：无建议。"
+            },
+            {
+              "sub_criteria": "不确定度覆盖率与区间合理性讨论",
+              "description": "比较理论/实测coverage，说明过宽/过窄成因与调整策略。",
+              "score": 25,
+              "evaluation_focus": "不确定度解读",
+              "scoring_hint": "高分：量化Δcoverage并提出改进；中分：定性描述；低分：不讨论。"
+            },
+            {
+              "sub_criteria": "灵敏度与主动采样建议",
+              "description": "依据Sobol指数与局部扰动，产出top-k不确定/临界点的采样清单与预期收益。",
+              "score": 20,
+              "evaluation_focus": "策略制定",
+              "scoring_hint": "高分：列出清单与收益估计；中分：仅给排名；低分：未给建议。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务 4（部署、推理性能、在线适应与运维）旨在把已训练好的模型稳定、可扩展且可审计地投入生产环境，以便对每个输入文件 test_id.csv（每行包含前17个字段的栅格样本）生成符合竞赛要求的输出文件 test_id.csv_result（JSON 格式、RSRP 列表，必要时包含每行的置信区间和弱覆盖概率），并保证高可用性、可监控性与可回滚的模型生命周期管理；其工作范围包括：1) 输入/输出约束与错误处理：实现严格的 I/O 接口，读取每个 test_id.csv，校验列格式与行数，缺失或异常样本按预定义策略处理（填充/标记），若输出预测值少于输入行则按规范填零补齐，若超出则截断，所有 I/O 操作记录元数据（文件名、行数、处理时戳、版本号、失败原因）；2) 特征计算与加速策略：在推理端实现与训练时一致的特征流水线（格点中心坐标转换、平面距离与对数距离、相对高度与仰角、方位 sin/cos 编码、沿射线路径采样统计如 B_max、B_frac、N_int 等、天线增益近似计算），对计算量大的沿线采样采用可复用缓存（按基站—格对缓存路径索引）、并行化（多进程/线程或分片批处理）与矢量化实现（numpy/numba）；3) 模型部署与运行时：将模型制品（LightGBM/XGBoost pickle 或导出为 ONNX、TorchScript）与特征流水线打包为容器镜像（Docker），并通过容器编排（Kubernetes）或无服务器函数部署，提供批量与实时两种推理模式；推荐使用轻量 API（FastAPI/uvicorn）或 gRPC 作为服务入口，支持批处理队列（Kafka/RabbitMQ）与并发工作者，资源建议为 CPU 优先（示例：8–16 核、16–64 GB 内存）并为可选深度模型提供 GPU 节点；4) 性能与可扩展性：制定可配置的 SLA（例如每个含 10k 行的文件在并行环境中处理时间上限），通过批次大小调优、模型量化/ONNX 加速、异步 I/O 与并行任务调度来满足延迟与吞吐要求；5) 日志、监控与告警：对每次推理产生日志（输入摘要、输出摘要、延迟、异常），并在监控平台（Prometheus + Grafana）上上报关键指标（每文件处理时延、吞吐、模型版本、失败率、在线 RMSE 与弱覆盖混淆矩阵的近实时估计、PCRR 近似），当性能或数据分布显著偏离基线阈值时触发告警；6) 模型版本管理与 CI/CD：使用模型注册与版本控制工具（MLflow、DVC 或 S3 + Git 标签）管理模型与特征流水线代码，建立自动化部署流水线（代码检测、单元/集成测试、端到端回归测试、灰度/金丝雀发布与回滚策略），并在部署前在预生产环境执行一致性校验（输出格式、统计特征分布对比）；7) 可靠性与安全：确保环境可复现（固定随机种子、依赖清单、容器化环境）、对敏感存储使用访问控制/加密、并对外部输入进行严格边界校验与速率限制以防滥用；8) 在线适应与重训练策略：定义性能退化与漂移检测触发条件（例如在线 RMSE 或 PCRR 超过阈值、特征分布漂移检测），当触发时自动或半自动启动收集标注数据流程（记录高不确定度或靠近阈值的样本），支持小批量微调（residual 模型或最后几层）在隔离环境验证后上线；9) 主动学习与数据回流：实现不确定度驱动采样接口（按预测置信区间宽度、靠近阈值点或地理代表性选择候测点），并把新标注数据纳入版本化训练数据集以供定期重训练；10) 可观测性与可解释性输出：在推理结果中同时保存用于审计的特征快照、模型版本与 SHAP/特征重要性摘要（可选的每批或按需生成）以支持后续人工诊断；11) 运营手册与恢复流程：提供清单化运维手册（部署步骤、回滚指令、常见故障诊断、数据合规检查、隐私与保密处理流程），并定期执行灾备演练与性能回归测试。该子任务交付物为：可执行的容器镜像与部署清单、推理服务 API 文档、I/O 约定与错误处理规范、监控仪表板配置、CI/CD 管线定义、版本化模型与数据存储位置、自动化触发的重训练策略与主动采样接口，以及运维手册和回滚流程，确保在不依赖外部说明的情况下即可独立部署、运行、监控与维护整个推理与在线适应系统。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "部署并运行RSRP预测服务，对test_id.csv进行批量推理与输出test_id.csv_result，保证预测、性能优化、在线适应与可回滚运维。",
+          "expected_output": "可执行容器镜像与部署清单；批量/实时推理API；对每个test_id.csv生成JSON结果文件（{\"RSRP\": [[v1],...]}），可选置信区间与弱覆盖概率；日志与监控仪表；CI/CD与回滚脚本；版本化模型与特征流水线；主动学习与重训练触发策略文档与代码。",
+          "key_inputs_constraints": "输入：test_id.csv（17列）与模型制品（LightGBM/XGBoost/ONNX）；约束：I/O严格校验、缺失值策略、输出行数与输入对齐（不足补零、超出截断）、延迟SLA（如10k行/文件在时限内完成）、PCRR≥20%在线监控门槛；环境：容器化部署（Docker/K8s）、资源配额与并行策略；安全：访问控制、加密与速率限制。",
+          "modeling_type": "预测+评价",
+          "role_in_pipeline": "作为最终部署与在线推理环节，承接子任务1/2/3的特征与模型成果，向评审系统产出规范结果并提供监控、回滚与在线适应能力；前序依赖：子任务1（特征流水线定义）、子任务2（已训练残差模型与RSRP_pred）、子任务3（阈值与校准）；后序：数据回流与周期性重训练。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "预测与输出对齐（test_id.csv到test_id.csv_result）",
+              "description": "准确识别需对每行栅格样本进行RSRP预测并保证输出数量与输入行数一致（不足补零、超出截断）。",
+              "score": 30,
+              "evaluation_focus": "需求界定",
+              "scoring_hint": "高分：阐明对齐、补零/截断规则并在异常场景示例化；中分：仅口头说明无实例或边界不全；低分：未提或实现与规范不符。"
+            },
+            {
+              "sub_criteria": "在线SLA与PCRR门槛识别",
+              "description": "明确处理延迟/吞吐SLA与PCRR≥20%在线监控与告警目标及其必要性。",
+              "score": 30,
+              "evaluation_focus": "指标意识",
+              "scoring_hint": "高分：给出可量化SLA、PCRR阈值与告警条件；中分：提到但无量化或无告警触发；低分：未提或混淆指标。"
+            },
+            {
+              "sub_criteria": "一致性需求（训练-推理特征流水线）",
+              "description": "识别推理端需与训练端一致的特征计算（距离、对数距离、仰角、方位sin/cos、沿线统计、天线增益）。",
+              "score": 40,
+              "evaluation_focus": "一致性控制",
+              "scoring_hint": "高分：枚举关键特征并说明版本锁定；中分：只列部分要点；低分：忽略或仅泛泛提及特征。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "I/O接口与错误处理复述",
+              "description": "清晰复述列校验、缺失值策略、非法编码修正、异常记录与回退策略。",
+              "score": 35,
+              "evaluation_focus": "规范理解",
+              "scoring_hint": "高分：覆盖校验、填充、截断、日志化；中分：缺少其中1–2项；低分：未形成完整链路。"
+            },
+            {
+              "sub_criteria": "部署与并行加速复述",
+              "description": "阐明容器化（Docker/K8s）、并行/向量化/缓存策略（沿射线采样缓存、批处理）。",
+              "score": 35,
+              "evaluation_focus": "系统化表达",
+              "scoring_hint": "高分：提及缓存键、批大小与资源配置；中分：仅提并行无细节；低分：未涉及。"
+            },
+            {
+              "sub_criteria": "监控、告警与回滚复述",
+              "description": "说明Prometheus/Grafana指标、失败率/延迟/PCRR监控、金丝雀发布与回滚路径。",
+              "score": 30,
+              "evaluation_focus": "运维思维",
+              "scoring_hint": "高分：指标+阈值+回滚步骤清楚；中分：部分覆盖；低分：缺失关键环节。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "SLA与资源假设（CPU/GPU、批量）",
+              "description": "对资源配额、并发工作者数与批大小作可检验假设以满足10k行文件时延。",
+              "score": 30,
+              "evaluation_focus": "工程假设",
+              "scoring_hint": "高分：量化线程/核数与预计时延；中分：定性描述；低分：无假设或不合理。"
+            },
+            {
+              "sub_criteria": "不确定度与弱覆盖概率输出假设",
+              "description": "假设使用模型集成/分位回归/并行分类器输出置信区间与弱覆盖概率及其计算频率。",
+              "score": 35,
+              "evaluation_focus": "方法选择",
+              "scoring_hint": "高分：说明方法与开销控制策略；中分：仅提方法名；低分：忽略。"
+            },
+            {
+              "sub_criteria": "数据漂移与重训练触发条件",
+              "description": "建立PCRR/RMSE阈值、特征分布漂移（KS/PSI）触发与冷/热启动微调策略假设。",
+              "score": 35,
+              "evaluation_focus": "风险控制",
+              "scoring_hint": "高分：量化阈值与触发流程；中分：非量化叙述；低分：无触发定义。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "推理特征流水线一致实现（预测）",
+              "description": "构建与训练一致的特征计算模块（d、log d、Δh、elev、sin/cos方位、B_max/B_frac/N_int、G_v/G_h）。",
+              "score": 30,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：逐项列公式与单位；中分：缺少2项以上细节；低分：大幅缺漏。"
+            },
+            {
+              "sub_criteria": "模型封装与版本管理",
+              "description": "将LightGBM/XGBoost/ONNX等以可复现工件封装，记录模型/特征版本并校验签名与哈希。",
+              "score": 25,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：有版本、校验与回滚标签；中分：仅版本号；低分：未管理。"
+            },
+            {
+              "sub_criteria": "性能优化设计（缓存/并行/矢量化）",
+              "description": "设计沿射线采样缓存键（cellId,x,y）、多进程/线程池、NumPy/Numba矢量化与批处理。",
+              "score": 25,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：说明命中率预估与批策略；中分：仅单一优化；低分：无优化。"
+            },
+            {
+              "sub_criteria": "监控埋点与指标设计（评价）",
+              "description": "在代码中埋点收集延迟、吞吐、失败率、在线PCRR近似与分布漂移统计。",
+              "score": 20,
+              "evaluation_focus": "可观测性",
+              "scoring_hint": "高分：指标、聚合与上报周期明确；中分：指标不全；低分：无埋点。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "批量推理调度与资源利用",
+              "description": "实现文件分片、并行工作者、背压控制与重试机制，确保SLA达标。",
+              "score": 35,
+              "evaluation_focus": "系统调度",
+              "scoring_hint": "高分：含重试/超时与度量；中分：部分实现；低分：串行或无控制。"
+            },
+            {
+              "sub_criteria": "数值稳定与边界处理",
+              "description": "处理对数距离ε、角度wrap、缺失值默认、异常样本降级路径，保证预测稳定。",
+              "score": 35,
+              "evaluation_focus": "数值稳健",
+              "scoring_hint": "高分：列出全部边界与单测；中分：遗漏个别；低分：易崩溃。"
+            },
+            {
+              "sub_criteria": "在线近实时PCRR/RMSE估计",
+              "description": "在有标签回流或延迟标签条件下实现滑动窗口的在线指标估计与阈值告警。",
+              "score": 30,
+              "evaluation_focus": "在线评估",
+              "scoring_hint": "高分：阈值、窗口与告警清晰；中分：仅粗略估计；低分：未实现。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "I/O与格式校验代码健壮性",
+              "description": "严格校验17列schema、类型转换、缺失/非法编码修正、输出补零/截断逻辑可测试。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：单元/集成测试覆盖关键分支；中分：基本可用；低分：易出错。"
+            },
+            {
+              "sub_criteria": "性能优化实现（缓存/并行/矢量化）",
+              "description": "实现Bresenham/DDA路径缓存、NumPy/Numba矢量化、线程/进程池与批处理。",
+              "score": 30,
+              "evaluation_focus": "高性能实现",
+              "scoring_hint": "高分：有基准测试与参数可配；中分：部分优化；低分：纯Python慢实现。"
+            },
+            {
+              "sub_criteria": "容器化与CI/CD流水线",
+              "description": "Dockerfile最小镜像、依赖锁定、预生产回归测试、金丝雀发布与回滚脚本。",
+              "score": 25,
+              "evaluation_focus": "DevOps实践",
+              "scoring_hint": "高分：自动化全链路；中分：半自动；低分：手工部署。"
+            },
+            {
+              "sub_criteria": "日志与监控接入",
+              "description": "结构化日志、trace id、Prometheus指标导出、Grafana仪表配置。",
+              "score": 15,
+              "evaluation_focus": "可观测性实现",
+              "scoring_hint": "高分：关联请求到预测批；中分：仅日志或仅指标；低分：缺失。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "SLA与吞吐评测报告",
+              "description": "提供10k行/文件在目标资源下的延迟/吞吐实测与对比基线的改进幅度。",
+              "score": 30,
+              "evaluation_focus": "性能评估",
+              "scoring_hint": "高分：有多配置曲线与最优点；中分：单点结果；低分：无报告。"
+            },
+            {
+              "sub_criteria": "在线指标与漂移监控示例",
+              "description": "展示PCRR/失败率/延迟时间序列与特征分布漂移（KS/PSI）告警案例。",
+              "score": 30,
+              "evaluation_focus": "运行分析",
+              "scoring_hint": "高分：含阈值触发与处置记录；中分：仅图无结论；低分：缺失。"
+            },
+            {
+              "sub_criteria": "回滚与故障演练记录",
+              "description": "提供一次金丝雀失败后回滚耗时与成功率、根因与改进项复盘。",
+              "score": 25,
+              "evaluation_focus": "可靠性验证",
+              "scoring_hint": "高分：量化指标与步骤清晰；中分：文字描述；低分：无演练。"
+            },
+            {
+              "sub_criteria": "可解释性与审计产出",
+              "description": "按批次保存特征快照、模型版本、SHAP摘要或特征重要性用于审计与诊断。",
+              "score": 15,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：示例含特征影响排序；中分：仅保存元数据；低分：未提供。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

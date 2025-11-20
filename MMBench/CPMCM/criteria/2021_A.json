@@ -1,0 +1,850 @@
+{
+  "task_id": "2021_A",
+  "problem": "给定一组复数矩阵 $H = \\{H_{j,k}\\}$，$H_{j,k} \\in \\mathbb{C}^{M \\times N}, j = 1, \\ldots, J, k = 1, \\ldots, K$。其中，矩阵之间以及同一矩阵的元素之间有一定的相关性，包括：相同 $j$ 下标、不同 $k$ 下标的矩阵间存在一定的关联，即 $\\{H_{j,1}, H_{j,2}, H_{j,3}, \\ldots, H_{j,K}\\}$ 间存在关联\\footnote{在本问题中，仅考虑同一行块内部的 $K$ 个矩阵间的相关性，不考虑矩阵组 $H$ 中属于不同行块的矩阵（即，不同 $j$ 下标的矩阵）间的相关性。}；且矩阵\n\n\\[\nH_{j,k} = \\begin{bmatrix}\n h_{1,1}^{(j,k)} & h_{1,2}^{(j,k)} & h_{1,3}^{(j,k)} & \\cdots & h_{1,N}^{(j,k)} \\\n h_{2,1}^{(j,k)} & h_{2,2}^{(j,k)} & h_{2,3}^{(j,k)} & \\cdots & h_{2,N}^{(j,k)} \\\n \\vdots & \\vdots & \\vdots & \\ddots & \\vdots \\\n h_{M,1}^{(j,k)} & h_{M,2}^{(j,k)} & h_{M,3}^{(j,k)} & \\cdots & h_{M,N}^{(j,k)}\n\\end{bmatrix}\n\\]\n\n的各个元素间 $\\{h_{m,n}^{(j,k)}\\}, m = 1, \\ldots, M, n = 1, \\ldots, N$，也存在关联。\n\n定义矩阵组 $H = \\{H_{j,k}\\}$ 上的一组数学运算，其中间结果 $V = \\{V_{j,k}\\}$ 由如下的公式给出：\n\n\\[\nV_{j,k} = svd\\big(H_{j,k}\\big), \\text{or } H_{j,k} = U_{j,k} S_{j,k} \\widetilde{V}_{j,k}^H, V_{j,k} = \\widetilde{V}_{j,k}^H(:,1:L)\n\\]\n\n\\[\nj = 1, \\ldots, J; \\, k = 1, \\ldots, K\n\\]其中，\\(svd(\\cdot)\\)为矩阵的奇异值分解（即，SVD 分解）中求解右奇异向量的过程，其简要说明可参考附录一；\\(V_{j,k}\\)是由\\(H_{j,k}\\)的前\\(L\\)个右奇异向量构成的矩阵，\\(L\\)个之后的右奇异向量可以忽略，维度为\\(N \\times L\\)。\n\n进一步，为得到最终输出结果\\(W = \\{W_{j,k}\\}\\)，先将不同\\(j\\)下标、相同\\(k\\)下标的\\(V_{j,k}\\)进行横向的拼接，得到维度为\\(N \\times LJ\\)的\\(V_k = [V_{1,k} \\quad \\cdots \\quad V_{j,k} \\quad \\cdots \\quad V_{J,k}]\\)，然后根据如下公式获取\\(W_k\\)：\n\\[\nW_k = V_k (V_k^H V_k + \\sigma^2 I)^{-1}\n\\]\n其中，\\(\\sigma^2\\)为固定常数；\\(W_k\\)维度同\\(V_k\\)；\\(I\\)为单位矩阵，维度为\\(LJ \\times LJ\\)。\n\n最后，将各\\(W_k\\)按如下的公式进行拆解：\n\\[\nW_k = [W_{1,k}, \\ldots, W_{j,k}, \\ldots, W_{J,k}]\n\\]\n其中，\\(W_{j,k}\\)是\\(W_k\\)中顺序排列的子矩阵，维度为\\(N \\times L\\)。上述各流程亦可参考附录二中的图示说明。\n\n为了降低计算和储存的复杂度，分析相关矩阵组的关联性，通过数学建模对输出结果\\(W\\)进行估计，建模过程表示为：\n\\[\n\\widehat{W} = f(H)\n\\]\n其中\\(\\widehat{W}\\)即为对输出结果\\(W\\)的建模估计。这一建模过程又可以拆分为2个步骤：\n\\[\n\\widehat{V} = f_1(H), \\quad \\widehat{W} = f_2(\\widehat{V})\n\\]\n其中\\(f_1(\\cdot)\\)表示从输入矩阵组\\(H\\)到中间结果\\(V\\)的建模过程，\\(\\widehat{V}\\)表示中间结果\\(V\\)的建模估计，\\(f_2(\\cdot)\\)表示从中间结果\\(V\\)到最终结果\\(W\\)的建模过程，\\(\\widehat{W}\\)表示最终结果\\(W\\)的建模估计。定义\\(W\\)的建模估计精度为：\n\\[\n\\rho_{l,j,k}(W) = \\frac{\\|\\widehat{W}_{l,j,k}^H W_{l,j,k}\\|_2}{\\|\\widehat{W}_{l,j,k}\\|_2 \\|W_{l,j,k}\\|_2}, l = 1, \\ldots, L\n\\]\n其中，\\(\\|\\cdot\\|_2\\)表示矢量的欧几里得范数（也即2范数，对于列矢量\\(a\\)，\\(\\|a\\|_2 = \\sqrt{a^H a}\\)）；\\(W_{l,j,k}\\)表示\\(W_{j,k}\\)的第\\(l\\)列。上式中，\\(\\widehat{W}_{l,j,k}^H W_{l,j,k}\\)为复数标量，此处取其欧几里得范数即获取其模值。\n\n为描述方便，额外定义 $W$ 的最低建模精度 $\\rho_{\\min}(W)$ 为：\n\\[\n\\rho_{\\min}(W) \\triangleq \\min_{l \\in \\{1,2,\\ldots,L\\}} \\min_{j \\in \\{1,2,\\ldots,n\\}} \\min_{k \\in \\{1,2,\\ldots,K\\}} \\rho_{l,j,k}(W)\n\\]\n其中，$\\min(\\cdot)$ 表示在 $l,j,k$ 三个维度上取最小值。另外，中间结果 $V$ 的建模估计精度 $\\rho_{l,j,k}(V)$ 的定义及最低建模精度 $\\rho_{\\min}(V)$ 的定义与此相同。\n\n下面对建模过程中涉及的 **计算复杂度、存储复杂度** 的定义进行说明：\n\n**计算复杂度** 定义为由矩阵组 $H$ 计算得到结果矩阵组 $W$ 所需要的总计算复杂度。复杂矩阵运算可拆解为基本的复杂运算，而基本的复杂运算又可进一步拆解为基本的实数运算。例如，复数乘法按照\n\\[\n(a+bj)(c+dj)=(ac-bd)+(ad+bc)j\n\\]\n计算的复杂度为 4 次实数乘法和 2 次实数加(减)法。实数基本运算的复杂度按照下表计算，其中，实数的加(减)法运算与乘法运算的计算复杂度对比如参考文献[1]。\n\n\\begin{table}[H]\n\\centering\n\\caption{实数基本运算的计算复杂度}\n\\begin{tabular}{|c|c|}\n\\hline\n运算类型 & 计算复杂度 \\\\\\ \n\\hline\n加(减)法 & $1^*$ \\\\\\ \n乘法 & $3^*$ \\\\\\ \n倒数 & $25^*$ \\\\\\ \n平方根 & $25^*$ \\\\\\ \n自然指数 & $25^*$ \\\\\\ \n自然对数 & $25^*$ \\\\\\ \n正弦 & $25^*$ \\\\\\ \n余弦 & $25^*$ \\\\\\ \n其它 & $100^*$ \\\\\\ \n\\hline\n\\end{tabular}\n\\end{table}\n\n如果使用常规的算法完成本问题中的运算流程，获取输出结果 $W=\\{W_{j,k}\\}$ 的计算复杂度由如下几个部分构成：\n\n- 求解右奇异向量过程中的计算复杂度。当使用文献[2]中使用的方法时，基于双对角化(bi-diagonalization)结合QR分解的操作，对于SVD分解本身可以达到近似 $O(NM^2+M^3)$ 的复杂度，其主要流程可参考附录三。\n\n- 获取逆矩阵 $(V_k^H V_k + \\sigma^2 I)^{-1}$ 过程中 的计算复杂度。当使用高斯消元法时，求解维度 $L \\times L$ 的矩阵的逆矩阵的复杂度近似为 $O((L l)^3)$；当矩阵求逆过程中使用的矩阵乘法使用文献[3]中的 Strassen’s 方法时，可以将上述复杂度降低到 $O((L l)^{2.807})$；进一步地，当求逆过程结合了文献[4]中提出的 Coppersmith–Winograd 方法时，理论上可以将上述复杂度降低到 $O((L l)^{2.376})$，对此部分的说明可参考附录四；\n\n- 求解各个 $W_k$ 过程中 的矩阵乘法的计算复杂度。请注意，将 $W_k$ 拆解为若干子矩阵的过程中并不涉及计算复杂度，一般认为可以通过 $W_k$ 直接获取 $W_{j,k}$。\n\n如果使用以上方法，当矩阵组 \\(H = \\{H_{j,k}\\}\\) 的维度，或者，矩阵组内各个矩阵 \\(H_{j,k}\\) 的维度继续提升时，整个系统将承受愈发巨大的计算负担。为此，需要通过恰当的建模方法，使得在近似获得输出结果的同时明显地降低计算复杂度。\n\n在本题目中，利用相关矩阵组的关联性降低计算复杂度可以从如下基础方向（或你认为其他更合适的方向）中的一个或者多个方向切入完成建模题目：\n\n1) 利用矩阵组 \\(H\\) 内部各个矩阵间的关联性，减少前述一组数学运算的整体计算复杂度。例如，矩阵组 \\(H\\) 中包括存在关联性的 5 个矩阵 \\(\\{H_{j,1}, H_{j,2}, H_{j,3}, H_{j,4}, H_{j,5}\\}\\)，部分情况下可以仅针对 \\(H_{j,1}, H_{j,3}, H_{j,5}\\) 进行相应的运算过程并获取 \\(\\widehat{W}_{j,1}, \\widehat{W}_{j,3}, \\widehat{W}_{j,5}\\)，然后通过恰当的插值操作获取 \\(\\widehat{W}_{j,2}\\) 和 \\(\\widehat{W}_{j,4}\\)，使得 \\(\\rho_{l,j,k}(W)\\) 均满足前述建模估计精度的需求。\n\n2) 利用矩阵 \\(H_{j,k}\\) 内部各个矩阵元素间的关联性，降低奇异值分解过程、矩阵求逆过程的计算复杂度。关于奇异值分解的低计算复杂度实现，方法不做限定。例如，可以参考文献 [5] 中提出的随机奇异值分解 (Randomized SVD) 方法，其简要实现过程可以参考网页 [6]，部分摘录于附录五。\n\n3) 针对计算流程进行合理的构造和转化，避免执行相对复杂的矩阵运算步骤。例如，矩阵求逆的计算复杂度较高，而本问题的最终需求为 \\(W_k = V_k (V_k^H V_k + \\sigma^2 I)^{-1}\\)，如果将该步骤转化为 \\((V_k^H V_k + \\sigma^2 I) W_k^H = V_k^H\\) 形式来求解 \\(W_k\\)，则潜在地可以降低整体计算流程的计算复杂度。4) 请注意，在完成本问题时，推荐根据上述表格给出更细化的计算复杂度评估。例如，统计建模过程中复数乘法的使用次数、复数加法的使用次数等，然后分别与复数乘法的计算复杂度（可以为 14）及复数加法的计算复杂度（可以为 2）相乘，累加后得到总体计算复杂度。\n\n存储复杂度定义为矩阵组 \\(\\boldsymbol{H}\\) 和 \\(\\boldsymbol{W}\\) 占用的存储空间的大小，以比特为单位计算。对于复数矩阵中单个复数元素，其实部和虚部均采用 32 比特单精度浮点表示。因此，整个矩阵组 \\(\\boldsymbol{H}\\) 和 \\(\\boldsymbol{W}\\) 占用的存储空间分别为 \\(64MNJK\\) 比特和 \\(64NLJK\\) 比特。\n\n为了节省存储开销，考虑对 \\(\\boldsymbol{H}\\) 和 \\(\\boldsymbol{W}\\) 分别进行压缩。独立设计 \\(\\boldsymbol{H}\\) 和 \\(\\boldsymbol{W}\\) 的压缩函数 \\(P_1(\\cdot)\\) 和 \\(P_2(\\cdot)\\)，对压缩后的数据 \\(P_1(\\boldsymbol{H})\\) 和 \\(P_2(\\boldsymbol{W})\\) 进行存储。压缩函数的设计请主要考虑挖掘并利用矩阵内部或矩阵间的关联性，或者，矩阵表达的稀疏性；思路可参考但不限于图像的变换域压缩算法或视频的帧间压缩算法。压缩后的每个元素仍然以 32bit 单精度浮点数存储，不考虑位宽的压缩。\n\n\\(\\boldsymbol{H}\\) 和 \\(\\boldsymbol{W}\\) 以压缩的形式存储在存储器中。在进行处理之前，需要从存储器中读出 \\(P_1(\\boldsymbol{H})\\) 和 \\(P_2(\\boldsymbol{W})\\) 进行解压缩处理：\n\\[\n\\widehat{\\boldsymbol{H}} = G_1\\big(P_1(\\boldsymbol{H})\\big), \\ \\widehat{\\boldsymbol{W}} = G_2\\big(P_2(\\boldsymbol{W})\\big)\n\\]\n其中，\\(G_1(\\cdot)\\) 和 \\(G_2(\\cdot)\\) 分别表示矩阵组 \\(\\boldsymbol{H}\\) 和 \\(\\boldsymbol{W}\\) 的解压缩函数。经过压缩和解压缩之后得到的 \\(\\widehat{\\boldsymbol{H}}\\) 和 \\(\\widehat{\\boldsymbol{W}}\\) 与原始的 \\(\\boldsymbol{H}\\) 和 \\(\\boldsymbol{W}\\) 存在误差，定义为\n\\[\nerr_H = 10 * \\log_{10} \\frac{E\\left\\{\\|\\widehat{\\boldsymbol{H}}_{j,k} - \\boldsymbol{H}_{j,k}\\|_F^2\\right\\}}{E\\left\\{\\|\\boldsymbol{H}_{j,k}\\|_F^2\\right\\}}, \\ err_W = 10 * \\log_{10} \\frac{E\\left\\{\\|\\widehat{\\boldsymbol{W}}_{j,k} - \\boldsymbol{W}_{j,k}\\|_F^2\\right\\}}{E\\left\\{\\|\\boldsymbol{W}_{j,k}\\|_F^2\\right\\}}\n\\]\n其中，\\(\\|\\cdot\\|_F\\) 表示矩阵的 Frobenius 范数；\\(E\\{\\cdot\\}\\) 表示求期望运算，即在所提供矩阵组的所有矩阵求平均。注意：标准输出矩阵组 \\(\\boldsymbol{W}\\) 是 0 相位，即其中矩阵 \\(\\boldsymbol{W}_{j,k}\\) 的每个列向量的首个元素是 0 相位复数（实数）。若建模得到的 \\(\\widehat{\\boldsymbol{W}}_{j,k}\\) 带有随机初始相位，可增加一步相位拉齐处理，将 \\(\\widehat{\\boldsymbol{W}}_{j,k}\\) 拉齐到与 \\(\\boldsymbol{W}_{j,k}\\) 相同的 0 相位，然后再计算误差。\n\n综上所述，相关矩阵组的整体处理流程如下图所示。\n\n\\begin{tikzpicture}[node distance=2cm, auto, thick, main/.style = {draw, rectangle, minimum size=2cm}]\n    \\node[main] (input) {$\\boldsymbol{H} = \\{\\boldsymbol{H}_{j,k}\\}$};\n    \\node[main, right of=input] (compress1) {存储单元};\n    \\node[main, right of=compress1] (decompress1) {计算单元};\n    \\node[main, right of=decompress1] (compress2) {存储单元};\n    \\node[main, right of=compress2] (decompress2) {$\\widehat{\\boldsymbol{W}} = \\{\\widehat{\\boldsymbol{W}}_{j,k}\\}$};\n    \n    \\draw[->] (input) -- node[above] {$P_1(\\cdot)$} (compress1);\n    \\draw[->] (compress1) -- node[above] {$G_1(\\cdot)$} (decompress1);\n    \\draw[->] (decompress1) -- node[above] {$P_2(\\cdot)$} (compress2);\n    \\draw[->] (compress2) -- node[above] {$G_2(\\cdot)$} (decompress2);\n    \n    \\node[above of=compress1, node distance=1cm] {压缩};\n    \\node[above of=decompress1, node distance=1cm] {解压缩};\n    \\node[above of=compress2, node distance=1cm] {压缩};\n    \\node[above of=decompress2, node distance=1cm] {解压缩};\n    \n    \\node[below of=decompress1, node distance=1cm] {$\\widehat{\\boldsymbol{W}} = f(\\boldsymbol{H})$};\n\\end{tikzpicture}\n\n三、建模问题\n\n输入矩阵组 $\\mathbf{H}$、标准中间矩阵组 $\\mathbf{V}$ 和标准输出矩阵组 $\\mathbf{W}$ 的数据及其维度如下，数据采用十进制格式：\n\n\\begin{itemize}\n    \\item 第一组：$M = 4, N = 64, L = 2, J = 4, K = 384, \\sigma^2 = 0.01$，详细数据见附件；\n    \\item 第二组：$M = 4, N = 64, L = 2, J = 4, K = 384, \\sigma^2 = 0.01$，详细数据见附件；\n    \\item 第三组：$M = 4, N = 64, L = 2, J = 4, K = 384, \\sigma^2 = 0.01$，详细数据见附件；\n    \\item 第四组：$M = 4, N = 64, L = 2, J = 4, K = 384, \\sigma^2 = 0.01$，详细数据见附件；\n    \\item 第五组：$M = 4, N = 64, L = 2, J = 4, K = 384, \\sigma^2 = 0.01$，详细数据见附件；\n    \\item 第六组：$M = 4, N = 64, L = 2, J = 4, K = 384, \\sigma^2 = 0.01$，详细数据见附件；\n\\end{itemize}\n\n附件中提供 .mat 及 .csv 文件格式的数据，按需使用其中的一种文件格式即可。\n\n请基于以上提供的数据，采用适当的方法，解决以下相关矩阵组的低复杂度计算和存储建模问题。注意，提交结果及论文需要完成以下问题 1、问题 2 中的至少一题，同时完成两题将适当加分。问题 3 为开放式问题，不作为必选，但鼓励尝试，有新意的算法模型设计将得到加分。\n\n在完成以下问题时，仅需考虑各个问题本身申明的建模需求，不需要考虑其他问题产生的建模需求。例如，在完成问题 3 时，不需要额外考虑问题 1 中 $\\rho_{\\min}(V)$ 的建模估计精度需求。\\section*{问题1：相关矩阵组的低复杂度计算}\n\n1) 基于给定的所有矩阵数据 $H$，分析其数据间的关联性，设计相应的近似分析模型 $\\bar{V} = f_1(H)$，在满足 $\\rho_{\\min}(\\bar{V}) \\geq \\rho_{th} = 0.99$ 的情况下，使得根据表格计算的总计算复杂度最低。\n\\begin{itemize}\n\\item 注1：在本问题中，暂不考虑矩阵数据 $H$ 的压缩与解压缩。\n\\item 注2：参考下述 2)，当采用直接设计分析模型 $W = f(H)$ 的方式时，1) 可以跳过不做。\n\\end{itemize}\n\n2) 基于给定的所有矩阵数据 $H$，分析其数据间的关联性，综合设计相应的近似分析模型 $W = f(H)$，在满足 $\\rho_{\\min}(W) \\geq \\rho_{th} = 0.99$ 的情况下，使得根据表格计算的总计算复杂度最低。\n\\begin{itemize}\n\\item 注1：在本问题中，暂不考虑矩阵数据 $H$ 的压缩与解压缩。\n\\item 注2：在本问题中，可以：\n  \\begin{itemize}\n  \\item 在 1) 的基础上考虑 $W = f_2(\\bar{V})$，因此 $W = f(H) = f_2(f_1(H))$；或者，\n  \\item 不需考虑中间结果 $\\bar{V}$，直接设计分析模型 $W = f(H)$，此时 1) 可以跳过不做。\n  \\end{itemize}\n\\item 注3：如果使用常规数学方法，则考虑矩阵所有运算过程涉及的计算复杂度；如果使用人工智能方法，则优先考虑推理阶段的计算复杂度，但需要充分考虑泛化性。\n\\end{itemize}\n\n\\section*{问题2：相关矩阵组的低复杂度存储}\n\n基于给定的所有矩阵数据 $H$ 和 $W$，分析各自数据间的关联性，分别设计相应的压缩 $P_1(\\cdot)$, $P_2(\\cdot)$ 和解压缩 $G_1(\\cdot)$, $G_2(\\cdot)$ 模型，在满足误差 $err_W \\leq E_{th1} = -30 \\,\\text{dB}$, $err_H \\leq E_{th2} = -30 \\,\\text{dB}$ 的情况下，使得存储复杂度和压缩与解压缩的计算复杂度最低，复杂度计算同问题1。\n\\begin{itemize}\n\\item 注1：压缩与解压缩函数的设计方法不做限定。\n\\item 注2：计算复杂度考虑压缩和解压缩函数的所有运算过程。\n\\item 注3：在本问题中，暂不考虑分析模型 $W = f(H)$ 对输出矩阵组 $W$ 的影响。\n\\item 注4：两个建模优化目标（存储复杂度，压缩与解压缩的计算复杂度）的优先级相同。\n\\end{itemize}\n\n\\section*{问题3：相关矩阵组的低复杂度计算和存储}\n\n基于给定的所有矩阵数据 $H$，分析其数据间的关联性，在满足 $\\rho_{\\min}(W) \\geq \\rho_{th} = 0.99$ 的情况下，设计低复杂度计算和存储的整体方案，完成从矩阵输入信号 $H$ 到近似矩阵输出信号 $W$ 的端到端流程。\n\\begin{itemize}\n\\item 注1：在本问题中，可以考虑从矩阵输入信号 $H$ 到近似矩阵输出信号 $W$ 为一个整体流程，而非依次经过“压缩/解压缩、计算单元、压缩/解压缩”的过程。\n\\item 注2：如果使用人工智能方法，需要考虑人工智能模型的存储复杂度以及推理阶段的计算复杂度。\n\\end{itemize}",
+  "subtask": {
+    "1": {
+      "subtask": "子任务一（数据探索与结构性假设验证）目标是以数据驱动的、可复现的流程检验并量化“每个行块 j 内序列 H_{j,k} 在右奇异向量空间上具有低有效秩且随 k 平滑可压缩”的假设，并基于此产出用于后续建模的确定性超参数建议（代表采样数 S、R 展开基数 T、随机化 SVD 参数 p 和 q）、相位规范化规则、异常/跳变检测阈值及一组代表性样本索引；本子任务的输入为提供的数据文件（Data*_H.mat 或 .csv，按 M×N×J×K 重构张量），建议使用 MATLAB 或 Python（numpy/scipy、scipy.fftpack.dct、sklearn.utils.extmath.randomized_svd 或自实现的 Halko 随机化 SVD）完成所有计算，并固定随机种子以保证可重复性。具体步骤：1) 采样策略：对每个 j 在 k 轴上按均匀间隔或基于能量分层选择初始样本集合 {k_s}_{s=1..S0}（建议 S0=32~64，必要时以多轮增量方式扩展）；2) 对每个采样索引 k_s 计算 H_{j,k_s} 的精确或随机化 SVD，记录其前 L 个右奇异向量 V_{j,k_s} 和对应奇异值 σ_i；随机化 SVD 可选参数默认 oversampling p∈{5,10}，power iterations q∈{0,1,2}，并记录重建误差以评估 p,q 的充分性；3) 低秩能量检验：计算每个样本的能量占比 η_{j,k_s} = (Σ_{i=1..L} σ_i^2)/(Σ_{i} σ_i^2) 并汇总为分布，判定 L 对应的能量截留率（建议阈值例如 ≥0.99）；4) 子空间平滑与子空间相似性检验：对样本间两两计算主角角/投影残差（例如通过奇异值分解 V1^H V2 或计算投影矩阵差 ∥P_{V1}-P_{V2}∥_F），并以随 k 的自相关或经 DCT 频谱分析来评估子空间随 k 的平滑性；5) 相位/符号不确定性评估与规范化策略：为消除复右奇异向量的相位模糊，对每列施行标准化（例如将每列第一个元素乘以 e^{-j arg(v[0])}，或强制第一个元素为实非负），并统计规范化前后元素相位跳变频率以验证该策略的稳定性；6) R 元素可压缩性检验：对于每个 j 和样本序列，计算旋转矩阵序列 R_{j,k_s} = V̄_j^H V_{j,k_s}（先用样本拼接的 QR/SVD 得到 V̄_j），对每个标量序列 r_{p,q}(k_s) 做 DCT 或 PCA，绘制累计能量谱并据此确定保留基数 T 使得累积能量达到设定阈值（例如 ≥0.99），并给出 T 的最小值建议；7) 异常/跳变检测规则：基于投影残差或主角角的统计分布设定阈值（例如超过均值+α·std 或绝对残差 > ε），并输出用于在线触发的检测阈值与建议的响应动作（例如局部重采样）；8) 输出与报告：为每个 j 生成一份诊断报告（表格或 JSON）包含样本索引列表、每个样本的能量占比分布、子空间相似性统计、DCT 能量集中度曲线及建议的 S、T、p、q、相位规范化规则和异常检测阈值；同时保存用于后续重复实验的所有中间数据（V_{j,k_s}、σ、R 序列、DCT 系数）以及可复现的脚本或命令。该子任务严格仅做假设验证与超参数建议，不进行后续重构或在线重建步骤，其交付物应足够详细以支持后续模块按推荐参数直接运行并在必要时调整。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "评估并量化每个行块 j 内序列 H_{j,k} 在右奇异向量空间的低有效秩与随 k 的平滑可压缩性，产出可复现的超参数与规则建议。",
+          "expected_output": "每个 j 的诊断报告（表/JSON），包含样本索引 {k_s}、η_{j,k_s} 分布、主角角/投影残差统计、DCT/PCA 累积能量曲线、建议 S/T/p/q、相位规范化规则、异常检测阈值；并保存中间数据 V_{j,k_s}、σ、R 序列、DCT 系数及可复现实验脚本。",
+          "key_inputs_constraints": "输入：Data*_H.(mat/csv)，需重构为复数张量 H∈C^{M×N×J×K}；固定随机种子；L、M、N、J、K、σ^2 已知；使用 MATLAB 或 Python（numpy/scipy、随机化SVD）；默认 S0∈[32,64]；记录 randomized_svd 参数 p∈{5,10}, q∈{0,1,2}；相位规范化需强制列首元素实非负；输出指标需达到能量截留≥0.99 的建议；所有统计需跨样本聚合。",
+          "modeling_type": "评价+拟合",
+          "role_in_pipeline": "作为数据探索与结构性假设验证环节，位于建模前；前序依赖：数据装载与清洗、维度重构；后续衔接：低复杂度重建/在线重构算法的参数设定（S、T、p、q）、相位规范化与异常检测模块。",
+          "assumptions": "若提供多组数据，需分别对每组执行同流程并汇总区间建议；若 .csv 缺失复数格式，默认以列对形式拼接实部/虚部或提供的规范解析。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别低有效秩与平滑可压缩性评估目标",
+              "description": "明确本子任务核心在于评估 H_{j,k} 的右奇异向量 V_{j,k} 的低秩（能量截留）与随 k 的平滑性（子空间相似性/DCT 能量集中）。",
+              "score": 35,
+              "evaluation_focus": "问题界定",
+              "scoring_hint": "高分：同时提出能量截留≥0.99与主角角/投影残差随k平滑度评估；中分：仅覆盖其一；低分：偏离到重构或压缩实现。"
+            },
+            {
+              "sub_criteria": "明确输出为可复现参数与阈值建议",
+              "description": "指出需产出 S、T、p、q、相位规范化规则、异常检测阈值及代表性样本索引。",
+              "score": 25,
+              "evaluation_focus": "目标产出",
+              "scoring_hint": "高分：列全参数并解释用途；中分：缺1–2项；低分：未形成参数建议。"
+            },
+            {
+              "sub_criteria": "识别数据与工具约束（MATLAB/Python、随机种子）",
+              "description": "说明数据格式（M×N×J×K复张量）、固定随机种子、随机化SVD库选择与备选参数范围。",
+              "score": 20,
+              "evaluation_focus": "约束把握",
+              "scoring_hint": "高分：同时覆盖数据重构与随机性控制；中分：仅述其一；低分：忽略实现环境与随机性。"
+            },
+            {
+              "sub_criteria": "界定非目标范围",
+              "description": "强调本阶段不进行 W 重构或在线部署，仅做假设验证与统计诊断。",
+              "score": 20,
+              "evaluation_focus": "范围管理",
+              "scoring_hint": "高分：清晰划界并避免越界实现；中分：偶有越界描述；低分：大量展开到后续重构。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述采样策略与 S0 设计",
+              "description": "准确复述在 k 轴上每个 j 进行均匀或能量分层采样，S0≈32–64，并可增量扩展。",
+              "score": 25,
+              "evaluation_focus": "任务理解",
+              "scoring_hint": "高分：含增量扩展触发条件；中分：仅报数值范围；低分：无采样细节。"
+            },
+            {
+              "sub_criteria": "复述低秩能量检验 η_{j,k_s}",
+              "description": "给出 η=(Σ_{i=1..L}σ_i^2)/(Σσ_i^2) 指标与阈值≥0.99 的判定逻辑。",
+              "score": 25,
+              "evaluation_focus": "指标理解",
+              "scoring_hint": "高分：给出计算式与聚合统计；中分：仅口述概念；低分：错误或缺失。"
+            },
+            {
+              "sub_criteria": "复述子空间相似性指标",
+              "description": "阐明使用主角角（V1^H V2 SVD）或投影残差 ∥P_{V1}-P_{V2}∥_F 及其随 k 的分析。",
+              "score": 25,
+              "evaluation_focus": "方法准确",
+              "scoring_hint": "高分：含P_V=V V^H定义与计算路径；中分：只提名称；低分：混淆度量或错误。"
+            },
+            {
+              "sub_criteria": "复述 R 序列与DCT/PCA 压缩性检验",
+              "description": "说明构造 V̄_j（QR/SVD）、R_{j,k_s}=V̄_j^H V_{j,k_s} 并对 r_{p,q}(k_s) 做DCT/PCA确定 T。",
+              "score": 25,
+              "evaluation_focus": "流程串联",
+              "scoring_hint": "高分：连接到T的能量阈值；中分：缺少能量准则；低分：未提R或基变换。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "低有效秩假设的可检验表述",
+              "description": "将“低有效秩”具体化为 η_{j,k_s}≥0.99 对大多数样本成立的统计假设。",
+              "score": 35,
+              "evaluation_focus": "可证性",
+              "scoring_hint": "高分：设定比例门槛如≥90%样本满足；中分：无比例阈；低分：未量化。"
+            },
+            {
+              "sub_criteria": "随 k 平滑假设的度量化",
+              "description": "以主角角最大值/均值或投影残差的自相关/DCT低频能量占比作为平滑性指标。",
+              "score": 25,
+              "evaluation_focus": "指标设计",
+              "scoring_hint": "高分：提出明确阈值或置信区间；中分：仅趋势性描述；低分：未定义度量。"
+            },
+            {
+              "sub_criteria": "相位不确定性与规范化假设",
+              "description": "假设每列右奇异向量可通过首元素相位归一化实现稳定对齐并量化跳变率。",
+              "score": 20,
+              "evaluation_focus": "假设合理性",
+              "scoring_hint": "高分：提供跳变频率或方差降低量；中分：仅提出规则；低分：忽视相位问题。"
+            },
+            {
+              "sub_criteria": "异常/跳变稀有性假设",
+              "description": "假设异常点为少量离群，阈值基于均值+α·std 或绝对残差>ε。",
+              "score": 20,
+              "evaluation_focus": "统计设定",
+              "scoring_hint": "高分：指定 α/ε 并说明来源；中分：模糊阈值；低分：无异常假设。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "采样与增量策略构建（S 与 {k_s}）",
+              "description": "给出均匀/分层采样细节、S0、增量扩展触发（如η不足或相似性恶化）。",
+              "score": 30,
+              "evaluation_focus": "算法设计",
+              "scoring_hint": "高分：包含触发公式与最大S限制；中分：仅固定S；低分：未设计可扩展策略。"
+            },
+            {
+              "sub_criteria": "随机化 SVD 配置（p,q）与误差记录",
+              "description": "构建 randomized_svd/Halko 流程，设 p∈{5,10}, q∈{0,1,2}，记录重建误差评估充分性。",
+              "score": 25,
+              "evaluation_focus": "参数化建模",
+              "scoring_hint": "高分：比较多组(p,q)并择优；中分：仅单组；低分：未验证误差。"
+            },
+            {
+              "sub_criteria": "子空间相似性与R序列框架",
+              "description": "定义 V̄_j 的估计方法（样本拼接QR/SVD），构造 R_{j,k_s} 并指定统计对象。",
+              "score": 25,
+              "evaluation_focus": "结构搭建",
+              "scoring_hint": "高分：解释 V̄_j 更新或稳健估计；中分：仅一次性估计；低分：缺V̄_j或R定义。"
+            },
+            {
+              "sub_criteria": "DCT/PCA 基数 T 选择准则",
+              "description": "给出累计能量达到≥0.99 的 T 选择，并考虑跨 j 的最小/分位数建议。",
+              "score": 20,
+              "evaluation_focus": "准则制定",
+              "scoring_hint": "高分：报告分位曲线与最终 T 建议；中分：仅样本内 T；低分：无选择准则。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "主角角或投影残差的数值实现",
+              "description": "实现 V1^H V2 的SVD求 cos θ_i 或计算 ∥P_{V1}-P_{V2}∥_F，并随 k 统计。",
+              "score": 30,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：数值稳定（正交化、截断）与批量计算；中分：逐对计算无优化；低分：实现错误或缺失。"
+            },
+            {
+              "sub_criteria": "相位规范化与跳变度量",
+              "description": "实现列首相位对齐 v←v·e^{-j arg(v1)} 并统计相位跳变频率/方差变化。",
+              "score": 25,
+              "evaluation_focus": "稳健实现",
+              "scoring_hint": "高分：含异常值保护（近零首元素处理）；中分：无保护；低分：未实现或影响后续统计。"
+            },
+            {
+              "sub_criteria": "R 序列的DCT/PCA与能量累计",
+              "description": "对 r_{p,q}(k_s) 进行DCT或PCA，计算累积能量并输出 T-能量曲线与最小 T。",
+              "score": 25,
+              "evaluation_focus": "谱分析",
+              "scoring_hint": "高分：矢量化实现并缓存；中分：循环慢实现；低分：未给累积能量或错误。"
+            },
+            {
+              "sub_criteria": "异常/跳变阈值与触发规则求解",
+              "description": "根据相似性指标的分布，计算均值、std、分位数并设定 α、ε 与响应动作。",
+              "score": 20,
+              "evaluation_focus": "统计求解",
+              "scoring_hint": "高分：报告具体阈值与命中率估计；中分：仅经验阈；低分：无阈或不可执行。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据装载与复张量重构（M×N×J×K）",
+              "description": "稳定解析 .mat/.csv，正确重构复数与维度并校验 M,N,J,K。",
+              "score": 25,
+              "evaluation_focus": "数据工程",
+              "scoring_hint": "高分：含一致性断言与单元校验；中分：基本能跑；低分：维度/复数误处理。"
+            },
+            {
+              "sub_criteria": "可复现性（随机种子与环境说明）",
+              "description": "固定 numpy/sklearn/MATLAB 随机种子，记录版本与命令行脚本。",
+              "score": 25,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：脚本一键复现实验；中分：仅设种子；低分：无法复现。"
+            },
+            {
+              "sub_criteria": "计算效率与数值稳定",
+              "description": "批量/向量化实现 SVD、DCT、相似性统计，避免重复分解并加入容错。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：缓存/并行与异常处理完整；中分：可运行但低效；低分：频繁崩溃或数值发散。"
+            },
+            {
+              "sub_criteria": "结果导出与中间数据保存",
+              "description": "序列化保存 V_{j,k_s}、σ、R、DCT 系数及 JSON 报告，含元数据。",
+              "score": 20,
+              "evaluation_focus": "可追溯性",
+              "scoring_hint": "高分：结构化命名与校验；中分：零散保存；低分：缺关键产物。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "能量截留 η 分布与合格率报告",
+              "description": "给出 η_{j,k_s} 的分布、均值/分位数及≥0.99 的样本占比，并讨论不足情况。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：跨 j 汇总并定位薄弱 j；中分：仅总体；低分：缺定量结论。"
+            },
+            {
+              "sub_criteria": "子空间平滑性证据",
+              "description": "报告主角角/投影残差的平均、最大、自相关或DCT低频占比，证明随 k 平滑。",
+              "score": 25,
+              "evaluation_focus": "证据呈现",
+              "scoring_hint": "高分：提供曲线与数值阈对比；中分：仅曲线或仅数值；低分：无关联证据。"
+            },
+            {
+              "sub_criteria": "T、S、p、q 建议的可解释性",
+              "description": "将 T 对应的累积能量≥0.99、S 的覆盖度、(p,q) 的误差-成本权衡给出理由。",
+              "score": 25,
+              "evaluation_focus": "参数决策",
+              "scoring_hint": "高分：含灵敏度或备选区间；中分：仅单点建议；低分：拍脑袋参数。"
+            },
+            {
+              "sub_criteria": "相位规范化与异常阈值的稳定性分析",
+              "description": "比较规范化前后相位跳变率/方差，报告异常阈值命中率与误报控制。",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：量化改进与阈值性能；中分：定性描述；低分：无分析或不一致结论。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务 2（离线共享子空间学习与压缩参数构建）旨在从给定的矩阵组 H（按张量格式 M×N×J×K 输入，例如 Data*_H 文件）构建每个行块 j 的共享右奇异向量基 V̄_j 与可压缩的旋转/投影系数表示，并输出用于在线重构的结构化压缩参数集；其范围仅限离线计算与参数存储，不包含在线重构或精度验证步骤。具体任务包括以下严格步骤与实现细节：1) 代表样本选择——为每个 j 在 k 轴选取 S 个代表索引 {k_s}_{s=1..S}（建议 S 范围 16–64，可采用均匀采样或基于能量/变异率的启发式采样），并记录所选索引作为元数据；2) 单样本 SVD 计算——对每个被选的 H_{j,k_s} 求其前 L 个右奇异向量 V_{j,k_s}（N×L），优先使用 randomized SVD 实现以降低离线成本（推荐参数 oversampling p=5–10，power iterations q=0–2），实现可选的精确 SVD 以做对照；为保证可重复性在实现中固定随机种子；3) 共享基提取——将样本 V_{j,k_s} 在列方向拼接并对拼接矩阵做 QR 或小尺度 SVD，取前 L 个左奇异向量作为共享基 V̄_j（N×L），并正则化使 V̄_j^H V̄_j = I_L；4) 相位与列对齐——对每个样本 V_{j,k_s} 与共享基进行列相位规范（例如将每列首元素乘以 e^{-j arg(v[0])} 并强制首元为实非负），然后计算每个样本相对于共享基的最优 unitary 近似 R_{j,k_s}，采用 Procrustes 解（对 V̄_j^H V_{j,k_s} 的 SVD，令 R = U V^H）以保证 R 为近似单元矩阵；5) 旋转矩阵序列压缩——将每个 j 的序列 {R_{j,k_s}(p,q)}（对每个标量条目 p,q ∈ [1..L]）视为随 k 的实/复数序列，用离散余弦变换（DCT）或时序 PCA 在 k 轴上展开并保留前 T 系数（T 通过能量截断阈值，如保留 ≥99% 能量确定），对复数序列可分别对实部与虚部进行变换或采用复数 DCT；6) 计算并存储基间 Gram 矩阵——对所有 i,j 计算并保存小矩阵 G_{i,j} = V̄_i^H V̄_j（共 J^2 个 L×L 的复数小矩阵），以便在线构造 Gram 近似 A_k；7) 元数据与压缩包构造——将最终输出以结构化格式保存：每个 V̄_j（以 complex64 存储，尺寸 N×L）、每个 j 的 DCT/PCA 系数集合 c_{j,p,q,t}（complex64，尺寸 J·L^2·T）、所有 G_{i,j}（complex64，J^2·L^2）、所用样本索引列表、随机化 SVD 参数 p,q、相位规范规则、能量阈值与版本信息；建议保存为 .mat 或 NumPy npz 文件并明确标注数据类型与字节顺序。实现工具建议为 Python（numpy, scipy.linalg, scipy.fftpack.dct, sklearn.utils.extmath.randomized_svd 或 scipy.sparse.linalg）或 MATLAB（含 randomized SVD 实现），并在代码中记录运行日志与中间数据（V_{j,k_s}, singular values, R 样本, DCT 系数）以便溯源。输出必须包含足够信息以在不重访原始 H 的情况下重构任意 k 对应的近似旋转矩阵 R̂_{j,k}（通过基系数线性组合）和共享基 V̄_j，以支持后续在线阶段的低复杂度重构；此外应提供简单的验算接口（仅返回重构系数与 Gram 小矩阵）供后续流程快速调用。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "对给定矩阵组H进行拟合与压缩建模，离线学习每个行块j的共享右奇异向量基V̄_j并压缩旋转系数R_{j,k}的DCT/PCA参数，以优化在线重构所需的结构化参数集构建与存储。",
+          "expected_output": "结构化压缩参数包（.mat或.npz）：包含每个j的共享基V̄_j(N×L, complex64)、代表样本索引{k_s}、随机化SVD参数(p,q)与随机种子、相位规范化规则、每个j的旋转矩阵序列R_{j,k_s}的DCT/PCA系数c_{j,p,q,t}及能量阈值和保留阶T、基间Gram矩阵G_{i,j}=V̄_i^H V̄_j、版本与日志元数据；另附验算接口（重构系数与Gram矩阵返回）。",
+          "key_inputs_constraints": "输入：Data*_H（.mat或.csv）并按M×N×J×K重构；参数：L、S(16–64)、DCT/PCA能量阈值(≥99%)、randomized SVD oversampling p∈[5,10]、power迭代q∈[0,2]；约束：固定随机种子，V̄_j满足V̄_j^H V̄_j=I_L；相位规范化（列首元素实非负）；输出需无需重访H即可重构R̂_{j,k}；保存complex64与字节序。",
+          "modeling_type": "拟合+优化",
+          "role_in_pipeline": "作为离线共享子空间学习与压缩参数构建阶段，位于子任务一（数据探索与结构性假设验证）之后、在线重构与精度验证之前；前序依赖代表采样策略与阈值建议，后续被在线阶段用来按k重建R̂_{j,k}与使用G_{i,j}快速构造Gram近似。",
+          "assumptions": "若未提供子任务一输出，则本任务自行选择均匀采样S与默认阈值(能量99%)；若无复数DCT实现，则对实部与虚部分别做DCT-II。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确离线学习V̄_j与压缩R_{j,k}系数的拟合+优化目标",
+              "description": "是否准确指出核心是拟合共享右奇异向量基V̄_j并优化旋转矩阵序列R_{j,k}的DCT/PCA压缩以便在线重构，无在线精度验证。",
+              "score": 35,
+              "evaluation_focus": "任务界定",
+              "scoring_hint": "高分：精确描述V̄_j、R_{j,k}与DCT/PCA压缩及离线性质；中分：提到基与压缩但混淆在线/离线；低分：泛化表述或把任务当成在线重建/评估。"
+            },
+            {
+              "sub_criteria": "输入输出边界与约束识别（M×N×J×K、complex64、无需重访H）",
+              "description": "是否识别H张量格式、数据类型、V̄_j正交性、固定随机种子、输出需自包含(可重构R̂_{j,k})。",
+              "score": 25,
+              "evaluation_focus": "需求约束",
+              "scoring_hint": "高分：完整覆盖张量形状、类型、正交、随机性、可独立重构；中分：缺少1-2项；低分：多数约束遗漏。"
+            },
+            {
+              "sub_criteria": "关键超参数与元数据（S,p,q,T,阈值,索引,规则）",
+              "description": "是否将S、p、q、能量阈值、T、采样索引、相位规范化、版本信息视为必存元数据。",
+              "score": 20,
+              "evaluation_focus": "参数意识",
+              "scoring_hint": "高分：列全参数并解释用途；中分：列出但无用途说明；低分：遗漏多项。"
+            },
+            {
+              "sub_criteria": "风险点识别（相位/列对齐、数值稳定、存储字节序）",
+              "description": "是否识别相位模糊、列匹配、Procrustes稳定性、complex64与字节序一致性等风险。",
+              "score": 20,
+              "evaluation_focus": "风险把控",
+              "scoring_hint": "高分：提出并给出规避策略；中分：提出但无对策；低分：未提风险。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述共享基提取流程（拼接V_{j,k_s}→QR/SVD→V̄_j）",
+              "description": "能否以任务术语完整复述从样本V到V̄_j的构造与V̄_j^H V̄_j=I_L正则化。",
+              "score": 30,
+              "evaluation_focus": "流程把握",
+              "scoring_hint": "高分：逐步且包含正交化；中分：缺少正则化或拼接细节；低分：流程错误。"
+            },
+            {
+              "sub_criteria": "复述R_{j,k_s}计算（相位规范→Procrustes：SVD(UΣV^H)→UV^H）",
+              "description": "是否准确描述V̄_j^H V_{j,k_s}的SVD并取R=UV^H且先做列相位规范化。",
+              "score": 30,
+              "evaluation_focus": "数理准确",
+              "scoring_hint": "高分：顺序正确且提到相位；中分：缺相位或错记R表达；低分：未提Procrustes或公式错误。"
+            },
+            {
+              "sub_criteria": "复述压缩策略（DCT/PCA沿k轴，能量阈值确定T）",
+              "description": "能否明确对每个r_{p,q}(k)做DCT/PCA保留前T使累计能量≥阈值。",
+              "score": 25,
+              "evaluation_focus": "方法清晰",
+              "scoring_hint": "高分：含能量累积与T确定；中分：只提DCT/PCA无阈值；低分：压缩方式模糊。"
+            },
+            {
+              "sub_criteria": "复述输出包与Gram矩阵G_{i,j}用途",
+              "description": "说明压缩包内容及G_{i,j}=V̄_i^H V̄_j对后续在线Gram近似的作用。",
+              "score": 15,
+              "evaluation_focus": "接口理解",
+              "scoring_hint": "高分：内容齐全且说明用途；中分：列出但未说明用途；低分：遗漏G或用途。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "低秩与平滑性假设的延用（L有效、R_{j,k}可压缩）",
+              "description": "是否明确继承“右奇异向量低秩且随k平滑”的假设并用于DCT/PCA压缩设计。",
+              "score": 30,
+              "evaluation_focus": "假设契合",
+              "scoring_hint": "高分：清晰关联到T与能量阈值；中分：笼统提及；低分：未提或矛盾。"
+            },
+            {
+              "sub_criteria": "相位/列对齐假设（列可一一匹配且相位可规范）",
+              "description": "提出列对应稳定或通过对齐可稳定估计R的假设，并配套规范化规则。",
+              "score": 25,
+              "evaluation_focus": "可辨识性",
+              "scoring_hint": "高分：有规则与异常应对；中分：有规则无应对；低分：未提。"
+            },
+            {
+              "sub_criteria": "randomized SVD充分性假设（p,q选择与误差控制）",
+              "description": "假设p∈[5,10], q∈[0,2]足以近似前L右奇异向量，并提出误差记录用于验证。",
+              "score": 20,
+              "evaluation_focus": "算法假设",
+              "scoring_hint": "高分：含误差度量与回退精确SVD；中分：仅给默认p,q；低分：未说明。"
+            },
+            {
+              "sub_criteria": "DCT/PCA能量截断合理性（≥99%）",
+              "description": "假设沿k的r_{p,q}能量高度集中，能以≥99%阈值保真，影响T。",
+              "score": 25,
+              "evaluation_focus": "阈值设定",
+              "scoring_hint": "高分：阈值与T关联清晰；中分：给阈值无依据；低分：无阈值。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "代表样本选择策略（S与{k_s}记录）",
+              "description": "给出均匀或能量/变异启发式采样，S∈[16,64]，并存元数据。",
+              "score": 25,
+              "evaluation_focus": "数据子集",
+              "scoring_hint": "高分：策略+边界+记录；中分：有策略无记录；低分：随意选择。"
+            },
+            {
+              "sub_criteria": "共享基V̄_j构建（拼接→QR/SVD→正交化）",
+              "description": "详细说明拼接V_{j,k_s}并通过小SVD/QR取前L向量且归一化。",
+              "score": 30,
+              "evaluation_focus": "子空间建模",
+              "scoring_hint": "高分：含数值稳定策略；中分：流程不完整；低分：未保证正交。"
+            },
+            {
+              "sub_criteria": "Procrustes旋转R_{j,k_s}的构造与相位规范",
+              "description": "先相位对齐后对V̄_j^H V_{j,k_s}做SVD并取R=UV^H，保证近单位性。",
+              "score": 25,
+              "evaluation_focus": "几何拟合",
+              "scoring_hint": "高分：含列匹配/异常处理；中分：仅给公式；低分：错用R求法。"
+            },
+            {
+              "sub_criteria": "DCT/PCA系数设计与T选择规则",
+              "description": "定义r_{p,q}(k)的变换、能量累计与T的确定，支持复数分量分离。",
+              "score": 20,
+              "evaluation_focus": "压缩设计",
+              "scoring_hint": "高分：含复数处理细节；中分：仅实值说明；低分：未定义T。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "randomized SVD实现细节（p,q、随机种子、误差记录）",
+              "description": "明确使用Halko流程或库函数，固定随机种子，保存奇异值与误差。",
+              "score": 30,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：列出p,q与误差标准；中分：缺误差；低分：未固定种子。"
+            },
+            {
+              "sub_criteria": "正交化与数值稳定（V̄_j^H V̄_j=I_L，条件数检查）",
+              "description": "对共享基执行正交检验/再正交，给出数值阈值或容差。",
+              "score": 25,
+              "evaluation_focus": "数值稳健",
+              "scoring_hint": "高分：有容差与修正；中分：仅检查不修正；低分：未检验。"
+            },
+            {
+              "sub_criteria": "Procrustes与相位对齐的鲁棒求解",
+              "description": "实现列相位规范、SVD(UΣV^H)→UV^H，并处理退化（奇异值并列）。",
+              "score": 25,
+              "evaluation_focus": "稳健估计",
+              "scoring_hint": "高分：退化应对与断言；中分：基本实现；低分：无相位或错误R。"
+            },
+            {
+              "sub_criteria": "DCT/PCA能量累计与T的自动化确定",
+              "description": "实现累计能量曲线与阈值≥99%判定，记录每对(p,q)的T或全局T。",
+              "score": 20,
+              "evaluation_focus": "阈值计算",
+              "scoring_hint": "高分：自动化且可复现；中分：手动T；低分：未给T计算。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现性（固定随机种子、版本/字节序/complex64一致）",
+              "description": "代码强制固定随机种子，保存dtype、endianness、依赖版本，日志含参数。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：脚本内置set_seed与元数据；中分：仅口头说明；低分：无任何记录。"
+            },
+            {
+              "sub_criteria": "接口与数据结构（.mat/.npz参数包结构清晰）",
+              "description": "输出npz/mat包含V̄_j、c_{j,p,q,t}、G_{i,j}、{k_s}、p,q、T、规则、版本。",
+              "score": 25,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：键名清晰且含shape与dtype；中分：缺少部分键；低分：结构混乱。"
+            },
+            {
+              "sub_criteria": "算法实现覆盖（SVD、QR/SVD、Procrustes、DCT/PCA）",
+              "description": "提供核心流程函数化实现并含单元或烟囱测试样例。",
+              "score": 25,
+              "evaluation_focus": "实现完整",
+              "scoring_hint": "高分：全流程脚本可运行；中分：缺1步实现；低分：伪代码。"
+            },
+            {
+              "sub_criteria": "性能与日志（批处理、并行/向量化、关键计时）",
+              "description": "合理利用numpy/scipy向量化，记录每阶段耗时与内存峰值（可选）。",
+              "score": 25,
+              "evaluation_focus": "效率监控",
+              "scoring_hint": "高分：有计时与优化；中分：基本可运行；低分：低效无日志。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "参数包自洽性检查（V̄_j正交、G_{i,j}一致性）",
+              "description": "离线验证V̄_j^H V̄_j≈I、随机抽样检查G_{i,j}对称/共轭关系与数值范围。",
+              "score": 35,
+              "evaluation_focus": "一致性检验",
+              "scoring_hint": "高分：提供指标与阈值；中分：仅示例检查；低分：未检查。"
+            },
+            {
+              "sub_criteria": "压缩有效性指标（DCT能量保留、T分布、存储占用）",
+              "description": "报告每j与(p,q)的累计能量≥阈值比例、T直方图与参数包字节数。",
+              "score": 30,
+              "evaluation_focus": "量化报告",
+              "scoring_hint": "高分：量化全面；中分：部分指标；低分：无量化。"
+            },
+            {
+              "sub_criteria": "鲁棒性与边界案例（异常/跳变k_s处理记录）",
+              "description": "标注异常样本、退化SVD、列交换等并给出替换或再采样策略记录。",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：明确案例与处理；中分：仅提存在；低分：未记录。"
+            },
+            {
+              "sub_criteria": "验算接口输出正确性（仅系数与G返回）",
+              "description": "提供可调用接口演示返回c_{j,p,q,t}与G_{i,j}，不依赖原始H。",
+              "score": 15,
+              "evaluation_focus": "接口可用",
+              "scoring_hint": "高分：示例调用成功；中分：接口定义但无演示；低分：缺失接口。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（在线重构与低复杂度计算实现说明）：本子任务限定为在线阶段的端到端实现：输入为已预先生成并存储的压缩参数包（每个行块 j 的共享右奇异向量基 V̄_j ∈ C^{N×L}，以 complex64 存储；每个 j 的旋转/投影系数在 k 轴上的基展开系数 c_{j,p,q,t}（complex64），用于在任意 k 上重构 R̂_{j,k} ∈ C^{L×L}；以及所有基间 Gram 矩阵 G_{i,j} = V̄_i^H V̄_j ∈ C^{L×L}，并含常数 σ^2 和维度参数 N,L,J,T），目标是在每个时间/频率索引 k 高效、稳定地计算近似输出 Ŵ_k = [Ŵ_{1,k},…,Ŵ_{J,k}]（每个 Ŵ_{j,k} ∈ C^{N×L}），同时精确报告并计数所用复数乘/加次数并保证数值稳定性；实现步骤如下：对于给定 k，先按预定线性组合（例如用 DCT 基或 PCA 基）以成本 O(J·L^2·T) 的复数乘加恢复每个 j 的旋转矩阵元素 R̂_{j,k}(p,q)（对复数序列可分别对实/虚部处理或直接用复数基），随后对每列施行相位规范化（将每列首元素乘以 e^{-j arg(首元)} 并强制为实非负，以避免相位跳变对插值的影响）；然后构造小尺度 Gram 近似矩阵 A_k ∈ C^{(LJ)×(LJ)}，其块元素为 A_k[(i),(j)] = R̂_{i,k}^H G_{i,j} R̂_{j,k}，此步代价约 O(J^2·L^3) 复数乘加；接着形成正规化矩阵 B_k = A_k + σ^2 I 并对其进行数值解法：若 cond(B_k) 小于预设条件阈值（例如 1e6），采用 Cholesky 分解（或 LAPACK zpotrf/zpotrs）直接求逆或解线性系统以得到 S_k = (A_k + σ^2 I)^{-1} 的有效乘子，复杂度约 O((LJ)^3)；如 B_k 条件数过大或 Cholesky 失败，则降级为带预条件器的迭代解法（复数 CG/GMRES，使用对角或近似因子预条件器）并限制迭代次数以控制延迟，同时返回数值诊断标志。得到 S_k 后，以代价 O(N·J·L^2) 的复数乘加将小尺度权重映射回大维空间：Ŵ_k = [V̄_1,...,V̄_J] · S_k，然后按块拆解得到各 Ŵ_{j,k} 并对每列再做相位修正以满足系统的 0 相位约定；在线全过程应计算并记录关键诊断量（cond(B_k)、相对残差 r_k = ‖(A_k+σ^2I)S_k − I‖_F / ‖I‖_F、以及可选的子空间一致性指标 e_k = max_j ‖V̄_j R̂_{j,k}^H V̄_j^H − projected‖_F 的代理），并在若干条件触发下（例如 cond(B_k) > cond_th 或 r_k > resid_th，对应经验阈值可初设为 1e6 与 1e-3）触发本地精确计算/重采样或回退到完整 SVD；为满足题目对复杂度精细计数，在线每个 k 的复数乘加近似总量可表示为 C_k ≈ J·L^2·T + J^2·L^3 + (LJ)^3 + N·J·L^2（复数乘与加按题目给定权重映射为实数代价，且实现时应分别统计乘法与加法次数）；实现细节建议使用高度优化的线性代数库（NumPy/SciPy + MKL/BLAS/LAPACK 或等效 GPU 库），复数运算严格采用 complex64 类型以匹配存储规格，并并行化 k 维的重构以提高吞吐；输出为按 k 的 Ŵ_{j,k}（complex64）、每个 k 的诊断标志与误差代理、以及精确的复数乘/加计数和在退化情形下采取的补救动作记录，以便后续离线校准或自适应策略使用。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在线阶段拟合与求解近似输出 Ŵ_k，以最小计算复杂度稳定计算 Ŵ_k = [Ŵ_{1,k},…,Ŵ_{J,k}] 并精确计数复数乘/加，评估数值稳定性与条件数以决定求解策略。",
+          "expected_output": "按每个 k 输出的 Ŵ_{j,k}（complex64 矩阵文件/内存对象）、每个 k 的诊断报表（cond(B_k)、r_k、触发标志）、精确的复数乘法与加法次数、退化回退动作记录与日志。",
+          "key_inputs_constraints": "输入压缩参数包：V̄_j ∈ C^{N×L}（complex64，正交性要求 V̄_j^H V̄_j=I）、系数 c_{j,p,q,t}（complex64，基类型标注如DCT/PCA，长度T）、Gram 矩阵 G_{i,j} ∈ C^{L×L}、常数 σ^2>0、维度 N,L,J,T、k 索引集合；必须固定 complex64 精度；相位规范化需强制列首元素为实非负；需实现两种线性求解路径：Cholesky优先、CG/GMRES回退；必须精确统计复乘/复加次数并按题目映射到实数计算代价。",
+          "modeling_type": "拟合+评价+优化",
+          "role_in_pipeline": "作为在线重构与低复杂度计算环节，直接依赖子任务2（离线共享子空间与系数包）输出，向后续精度验证/系统输出模块提供 Ŵ_k 与诊断；不访问原始 H，仅使用压缩参数包与 σ^2。",
+          "assumptions": "系数基展开为正交基（DCT或PCA前已正交化）；R̂_{j,k} 重构对实部/虚部分别线性组合；(LJ) 不大（如 ≤ 128），以便 Cholesky 常用；阈值默认 cond_th=1e6，resid_th=1e-3。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别在线拟合 Ŵ_k 与低复杂度目标的双重约束",
+              "description": "明确本子任务需在在线阶段用压缩参数包重构 Ŵ_k，并同时最小化复数乘/加成本而非离线训练成本。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清楚区分在线与离线职责，量化C_k≈J·L^2·T+J^2·L^3+(LJ)^3+N·J·L^2；中分：提到节省计算但未给出分项；低分：混淆离线/在线或忽略复杂度。"
+            },
+            {
+              "sub_criteria": "识别数值稳定性与条件数评估（cond(B_k), r_k）",
+              "description": "说明需计算 B_k 的条件数与相对残差以选择Cholesky或CG/GMRES，并设置阈值。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：给出cond阈值与残差阈值并关联回退策略；中分：仅提到条件数或残差之一；低分：未考虑稳定性。"
+            },
+            {
+              "sub_criteria": "识别相位规范化与0相位约定",
+              "description": "强调对 R̂_{j,k} 列或 Ŵ_{j,k} 列首元素施行 e^{-jarg(首元)} 规范以满足0相位输出。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：在R̂与Ŵ两处说明且避免相位跳变；中分：只在终端Ŵ处理；低分：不处理相位。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述 Ŵ_k 形成流程（R̂重构→A_k→B_k→S_k→映射）",
+              "description": "准确串联：用 c_{j,p,q,t} 恢复 R̂_{j,k}；构造 A_k=R̂_i^H G_{i,j} R̂_j；B_k=A_k+σ^2I；解得 S_k；Ŵ_k=[V̄_1,...,V̄_J]·S_k 并分块。",
+              "score": 40,
+              "evaluation_focus": "沟通表达",
+              "scoring_hint": "高分：逐步且含维度(LJ)×(LJ)、N×L；中分：步骤基本对但缺少维度；低分：顺序或公式错误。"
+            },
+            {
+              "sub_criteria": "复述计算复杂度与计数要求（复乘/复加）",
+              "description": "说明需精确统计每步复数乘法与加法次数并可映射为实数代价表。",
+              "score": 30,
+              "evaluation_focus": "评价设计",
+              "scoring_hint": "高分：分别列出R̂重构、A_k构造、求解、映射四段计数；中分：只给总计；低分：未计数或不区分乘/加。"
+            },
+            {
+              "sub_criteria": "复述回退与诊断输出",
+              "description": "清楚要求输出cond(B_k)、r_k、触发标志及回退记录（CG/GMRES、迭代次数）。",
+              "score": 30,
+              "evaluation_focus": "系统化",
+              "scoring_hint": "高分：含阈值与动作描述；中分：仅报cond或残差；低分：无诊断。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "关于基正交性与Gram矩阵使用假设",
+              "description": "陈述并利用 V̄_j^H V̄_j=I 和预存 G_{i,j}=V̄_i^H V̄_j 以避免大矩阵乘法。",
+              "score": 30,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：用该假设推导A_k块结构和复杂度下降；中分：只口头提；低分：未使用G导致不必要乘法。"
+            },
+            {
+              "sub_criteria": "关于系数基展开与R̂_{j,k} 重构线性性",
+              "description": "明确 R̂_{j,k}(p,q)=∑_t c_{j,p,q,t}·ϕ_t(k)（DCT/PCA），并说明复数序列处理策略。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：给出O(L^2T)每j计数与复数/实部拆分可选；中分：未给计数；低分：不清楚线性组合形式。"
+            },
+            {
+              "sub_criteria": "数值稳定假设与阈值设定",
+              "description": "给出cond_th与resid_th的设定依据（经验1e6与1e-3）及其对回退策略的影响。",
+              "score": 40,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：阈值清晰并描述边界处理；中分：只给单一阈值；低分：无阈值。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "A_k 与 B_k 的块结构构造正确性",
+              "description": "正确实现 A_k[(i),(j)]=R̂_{i,k}^H G_{i,j} R̂_{j,k}；B_k=A_k+σ^2I_(LJ)。",
+              "score": 25,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：含维度检查与Hermitian性质；中分：公式对但缺维度/性质；低分：块定义错误。"
+            },
+            {
+              "sub_criteria": "相位规范化策略在模型中的嵌入",
+              "description": "在R̂_{j,k}重构后与Ŵ_{j,k}输出前两处执行列相位对齐并说明原因。",
+              "score": 25,
+              "evaluation_focus": "算法设计",
+              "scoring_hint": "高分：两处均实现并讨论跳变；中分：仅一处；低分：未实现。"
+            },
+            {
+              "sub_criteria": "复杂度模型 C_k 分解与参数依赖",
+              "description": "给出 C_k 的四项分解及其对 J,L,N,T 的规模律并用于设计选择（如T的上限）。",
+              "score": 25,
+              "evaluation_focus": "复杂度分析",
+              "scoring_hint": "高分：含主导项分析与阈值对吞吐影响；中分：仅罗列；低分：无分析。"
+            },
+            {
+              "sub_criteria": "诊断与触发机制设计",
+              "description": "定义cond(B_k)、r_k、迭代上限、触发重采样/完整SVD的条件与标志记录格式。",
+              "score": 25,
+              "evaluation_focus": "系统设计",
+              "scoring_hint": "高分：参数齐全且可实现；中分：缺少上限或标志；低分：无机制。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "Cholesky 求解路径与失败检测",
+              "description": "对B_k进行Cholesky（zpotrf/zpotrs或等价）并在失败或非正定时可靠回退。",
+              "score": 35,
+              "evaluation_focus": "数值计算",
+              "scoring_hint": "高分：含正定性检查/异常捕获；中分：只调用不检查；低分：崩溃或误用。"
+            },
+            {
+              "sub_criteria": "迭代法回退（CG/GMRES）与预条件器",
+              "description": "实现带对角或近似因子预条件的CG/GMRES，限制迭代与残差阈值，记录迭代数。",
+              "score": 35,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：可配置阈值与稳定收敛；中分：无预条件或无上限；低分：无回退或发散。"
+            },
+            {
+              "sub_criteria": "精确乘加计数与映射回大维空间",
+              "description": "正确计算 Ŵ_k=[V̄_1,...,V̄_J]·S_k 的乘/加次数并与实现一致。",
+              "score": 30,
+              "evaluation_focus": "复杂度分析",
+              "scoring_hint": "高分：代码计数与理论一致；中分：仅粗略估计；低分：不计数或错误。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "complex64 全流程与BLAS/LAPACK 使用",
+              "description": "确保复数类型为complex64并调用高效库（NumPy/SciPy+MKL/BLAS/LAPACK或等效）。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：类型与库调用一致；中分：混用类型；低分：纯Python慢实现。"
+            },
+            {
+              "sub_criteria": "R̂_{j,k} 重构与基（DCT/PCA）线性组合实现",
+              "description": "实现 O(J·L^2·T) 的矢量化重构，支持复数基或实部/虚部分离。",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：矢量化且可并行k；中分：循环但正确；低分：错误或过慢。"
+            },
+            {
+              "sub_criteria": "乘/加硬计数器与日志",
+              "description": "提供精确复乘/复加计数API，随k输出JSON/表格日志含cond、r_k、回退标志。",
+              "score": 25,
+              "evaluation_focus": "可观测性",
+              "scoring_hint": "高分：与单元测试对齐；中分：仅总计；低分：缺失或不可信。"
+            },
+            {
+              "sub_criteria": "异常处理与回退路径可测试性",
+              "description": "可触发Cholesky失败与迭代回退的单元测试或开关，保证稳定退出与记录。",
+              "score": 20,
+              "evaluation_focus": "健壮性",
+              "scoring_hint": "高分：提供测试与开关；中分：仅try/except；低分：无处理。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "数值稳定诊断与阈值适配",
+              "description": "分析不同k的cond(B_k)、r_k分布，评估阈值合理性并给出调整建议。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：含分布/百分位与建议；中分：仅均值；低分：不分析。"
+            },
+            {
+              "sub_criteria": "复杂度与吞吐评估（C_k与实际计数对比）",
+              "description": "对比理论C_k与实际计数，指出主导项与潜在优化（如减少T或并行J）。",
+              "score": 35,
+              "evaluation_focus": "性能分析",
+              "scoring_hint": "高分：量化偏差<10%并定位瓶颈；中分：定性描述；低分：缺失或偏差大且无解释。"
+            },
+            {
+              "sub_criteria": "相位规范化效果与输出一致性",
+              "description": "验证Ŵ_{j,k}列首元素0相位满足率与规范化前后跳变减少比例。",
+              "score": 30,
+              "evaluation_focus": "验证设计",
+              "scoring_hint": "高分：报告满足率≥99%或跳变显著下降；中分：部分统计；低分：无验证。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（存储压缩设计、验证与自适应控制）的目标是以独立、可重复且可工程实施的方式，设计并验证对输入矩阵组 H 和输出矩阵组 W 的压缩函数 P1, P2 与解压缩函数 G1, G2，使得在解压后满足 err_H ≤ −30 dB 和 err_W ≤ −30 dB（按题目给定的 Frobenius‑norm 与期望定义计算，并在比较 W 时先对输出列向量做相位拉齐以满足 0 相位约定），同时把压缩后存储位数与压缩/解压算力（按复数乘法、复数加法分别计数并以给定代价权重折算成实数代价）最小化；本任务独立完成、只需以 H 和 W 原始数据为输入并输出压缩包与相应的验证报告。具体要求与方法如下：一是压缩策略候选（至少实现并比较两类）：A. 变换域+局部空间分解——对每个 j 将 H_{j,:,:,:} 视为 M×N×K 张量，在 k 维上做 DCT（或时序 PCA）保留前 P_k 系数，在空间 M×N 上对每帧或若干帧做二维 DCT 或局部 PCA（块级 2D‑DCT）并保留前 P_spatial 分量，从而以少量实系数表示 H 的时空行为；B. 张量分解/Tucker（或高阶 SVD）——对每个 j 对 H_j 做低秩 Tucker 分解 H_j ≈ Core_j ×_1 U_m ×_2 U_n ×_3 U_k，分别保存核张量与因子矩阵；对 W 的压缩优先采用结构感知方案：若 W 显示随 k 的平滑性或可由共享子空间表示（例如存在小组基 V̄_j 与随 k 变化的低维系数），则用基矩阵 + 时间系数（对系数在 k 维再做 DCT/PCA 并保留前 T 系数）来表示；若无明显结构则对 W 做逐元素 DCT/PCA 压缩。二是压缩与解压缩的具体实现与输出格式要求：压缩包须包含所有用于重构的矩阵与系数、尺寸元数据、数据类型说明（所有复数以 complex64 存储即每个复数两项32‑bit 浮点；若系数为实数则以 float32 存储）、以及一个解压缩 API（G1/G2）说明文件；给出存储位数的精确公式（例如若存储 complex64 矩阵 A 大小 a×b，则占用位数 = 64·a·b），并对每种候选方案列出压缩后各组成部分的元素数与比特总和。三是计算复杂度计量与约束：在设计阶段按题目要求精确统计压缩（P）与解压（G）过程中的复数乘法次数与复数加法次数，再以题中建议的复数运算成本权重（例如复数乘法代价=14、复数加法代价=2）或按给定实数基本运算表折算成总实数代价，分别给出压缩与解压的单次矩阵/块操作计数公式（例如 DCT 的成本、基矩阵乘回的成本、张量核展开的成本等），并把这些成本列入优化目标。四是参数选择与验证流程：对每种候选压缩算法以网格搜索/交叉验证自动选择关键超参数（时域系数数 P_k、空间系数数 P_spatial、Tucker 秩、W 的基数与时间基数 T 等），目标函数为在满足 err_H 和 err_W 阈值的前提下最小化“存储位数 + λ·（压缩+解压平均计算代价）”（λ 用于权衡存储与计算，可由使用场景设定）；验证过程中须在全部提供数据组上报告最终 err_H、err_W 的数值、每组压缩包大小、压缩与解压的平均复数乘/加计数及折算后实数代价、以及重构误差在 k、j、l 维度的分布（最小、最大、均值、方差）。五是自适应控制与退化处理规则：定义在线或离线监测的代理指标（例如解压后样本的局部重构 SNR/err、W 的列向量相位一致性检测、或对部分 k 计算的 ρ 估计），并给出阈值与触发动作的明确定义：当代理指标越过阈值时，按优先级依次（i）增加保留系数数目（P_k、P_spatial 或 Tucker 秩），（ii）对受影响的 j 在 k 轴上执行局部完整 SVD 重采样并更新压缩系数，或（iii）回退到不压缩的原始或低压缩级别；同时规定最大允许重训练频率与触发日志格式以便统计长期成本。六是比较与决策：对所有候选方法输出一张对比表（或机器可读 JSON）列出在相同误差约束下的最优压缩包大小、压缩/解压每次的平均复数运算计数及折算代价，以及每种方法在不同数据组上的稳健性指标（误差方差、触发重训练频率）。最后，工具与实现细节：明确推荐使用 Python（numpy, scipy, scipy.fftpack.dct, sklearn.decomposition/PCA, tensorly 或 MATLAB）实现原型；压缩包建议以 .npz 或 .mat 保存 complex64/float32 数据；实现时固定随机种子以保证结果可重复；交付物包括压缩与解压缩代码、参数选择脚本、详细验证报告（含 err/ρ 计算脚本）、以及用于自适应触发的配置文件和日志说明。该子任务要求交付可直接运行的压缩包生成与恢复工具、精确的复杂度与存储统计，以及一套可操作的在线自适应策略与阈值，以便在实际部署中保证误差约束同时最小化存储与计算成本。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "设计与评估压缩与解压缩模型 P1/P2 与 G1/G2，对矩阵组 H 与 W 进行压缩以在满足 err_H ≤ −30 dB、err_W ≤ −30 dB 的约束下最小化存储位数与压缩/解压算力（按复数乘法与加法计数并折算成本）。",
+          "expected_output": "可运行的压缩包生成与恢复工具（代码与API）、压缩参数文件（.npz/.mat：P1/P2系数、元数据）、验证报告（各数据组 err_H/err_W、压缩比、复数乘/加计数与折算代价、误差分布）、自适应控制配置与阈值、方法对比表/JSON。",
+          "key_inputs_constraints": "输入：Data*_H 与 Data*_W（.mat/.csv），重构为 M×N×J×K 与 N×L×J×K；复数以 complex64 存储；误差约束：err_H ≤ −30 dB、err_W ≤ −30 dB；比较 W 前需列向量0相位拉齐；需精确统计复数乘/加次数并按代价（乘=14、加=2）折算；固定随机种子确保可复现；输出包含尺寸与dtype元数据。",
+          "modeling_type": "优化+评价",
+          "role_in_pipeline": "作为独立的存储压缩设计与验证环节，输入为原始 H/W，输出为压缩包与解压API及报告；后续在线重构与计算模块可直接消费压缩参数。直接依赖：数据加载与相位规范准则；后续：在线解压与重构、系统集成与监控。",
+          "assumptions": "若未给出复数运算成本表，按题中建议复数乘=14、复数加=2 折算；DCT/PCA/Tucker等候选至少实现两类：A. 变换域+局部空间分解，B. Tucker/HOSVD；W 优先基+时间系数压缩。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "误差约束识别：err_H/err_W ≤ −30 dB 的评价与计算",
+              "description": "明确采用 Frobenius 范数与期望定义计算 err_H 与 err_W，并在 W 比较前实施列向量0相位拉齐。",
+              "score": 35,
+              "evaluation_focus": "评价指标",
+              "scoring_hint": "高分：给出公式、实现细节与相位拉齐流程；中分：给出公式但无相位拉齐或实现含糊；低分：未按定义计算或遗漏某一误差。"
+            },
+            {
+              "sub_criteria": "优化目标识别：最小化存储位数+λ·算力",
+              "description": "将目标明确表述为在误差约束下最小化“存储位数+λ·（压缩+解压代价）”，含λ可配与两目标同优先级说明。",
+              "score": 25,
+              "evaluation_focus": "优化建模",
+              "scoring_hint": "高分：写出目标函数、变量与约束；中分：目标口头描述但无公式；低分：只关注单一目标（仅存储或仅算力）。"
+            },
+            {
+              "sub_criteria": "复数运算计量与折算成本识别",
+              "description": "明确需精确统计复数乘法与加法次数，并按乘=14、加=2 折算为实数代价。",
+              "score": 20,
+              "evaluation_focus": "复杂度度量",
+              "scoring_hint": "高分：列出统计口径与折算规则；中分：仅给总复杂度量级；低分：无计量或忽略复数与折算。"
+            },
+            {
+              "sub_criteria": "数据与类型约束识别：complex64/float32 与尺寸元数据",
+              "description": "说明 H/W 为 complex64，实系数为 float32；压缩包需包含尺寸、dtype、字节顺序等元数据。",
+              "score": 20,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：完整列出并在输出格式中实现；中分：部分说明；低分：未提或类型不一致。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "子任务目标重述：P1/P2 与 G1/G2 设计与验证",
+              "description": "用任务术语复述需设计压缩与解压函数并在全部数据组上验证 err 与复杂度与存储。",
+              "score": 30,
+              "evaluation_focus": "沟通表达",
+              "scoring_hint": "高分：覆盖P/G、err、复杂度、存储、数据组；中分：缺1–2项；低分：泛化或偏离任务。"
+            },
+            {
+              "sub_criteria": "候选方法范围与比较要求",
+              "description": "明确至少实现两类方案：A 变换域+局部空间分解，B Tucker/HOSVD，并提供并列比较接口与指标。",
+              "score": 35,
+              "evaluation_focus": "方案边界",
+              "scoring_hint": "高分：点名A/B并给比较表头；中分：仅提一种或未给比较维度；低分：无比较规划。"
+            },
+            {
+              "sub_criteria": "验证与报告内容复述",
+              "description": "列出需输出 err_H/err_W、压缩包大小、复数乘/加计数及折算代价、误差分布统计（min/max/mean/var）。",
+              "score": 35,
+              "evaluation_focus": "结果定义",
+              "scoring_hint": "高分：逐项对应并可追溯；中分：缺少分布或计数；低分：只给单一误差或无统计。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "结构性假设：H 的时空可压缩性（DCT/PCA/Tucker）",
+              "description": "阐明在 k 维与空间维能量集中或低秩，支撑选择 DCT/PCA 或 Tucker 的合理性并给能量阈值（如≥99%）。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：给能量谱/截断率证据；中分：定性说明；低分：无假设或不一致。"
+            },
+            {
+              "sub_criteria": "W 的基+时间系数表示假设与相位拉齐",
+              "description": "说明 W 随 k 平滑或共享子空间，采用基矩阵+时间系数压缩，并在比较前列向量0相位拉齐。",
+              "score": 30,
+              "evaluation_focus": "领域约束",
+              "scoring_hint": "高分：给相位规范规则与其稳定性理由；中分：仅提相位处理；低分：忽略相位影响。"
+            },
+            {
+              "sub_criteria": "复杂度计量假设与DCT/PCA/Tucker成本模型",
+              "description": "制定DCT、PCA(SVD)、Tucker(HOSVD)的复数乘/加计数模型与折算方式，注明 FFT-DCT 实现假设。",
+              "score": 40,
+              "evaluation_focus": "复杂度建模",
+              "scoring_hint": "高分：给封闭公式与尺寸依赖；中分：仅量级；低分：未给可计数模型。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "方案A：变换域+局部空间分解的 P/G 设计",
+              "description": "定义 k 维DCT系数数 P_k、空间块2D‑DCT或局部PCA的 P_spatial，给出 P1/P2 与 G1/G2 算法与数据布局。",
+              "score": 30,
+              "evaluation_focus": "算法设计",
+              "scoring_hint": "高分：含块划分、边界处理、重叠/窗口说明；中分：仅总体描述；低分：不成体系。"
+            },
+            {
+              "sub_criteria": "方案B：Tucker/HOSVD 压缩模型",
+              "description": "定义秩(r_m,r_n,r_k)、核与因子矩阵存储格式，给出分解与重构公式及正交化规范。",
+              "score": 30,
+              "evaluation_focus": "分解建模",
+              "scoring_hint": "高分：完整张量记号与大小；中分：缺少某维秩或存储细节；低分：未成型。"
+            },
+            {
+              "sub_criteria": "W 的结构感知压缩构造",
+              "description": "给出 W 的共享基与时间系数（DCT/PCA）存储方案、T 选择与相位规范在解压顺序中的位置。",
+              "score": 25,
+              "evaluation_focus": "结构利用",
+              "scoring_hint": "高分：清晰接口与元数据；中分：只有口头描述；低分：退化为逐元素压缩。"
+            },
+            {
+              "sub_criteria": "存储位数精确计算与元数据设计",
+              "description": "为每组件给出位数公式（complex64:64ab, float32:32ab），并设计统一元数据头。",
+              "score": 15,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：逐项可核对；中分：部分缺失；低分：无公式或不一致。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "超参数搜索（P_k、P_spatial、秩、T、λ）",
+              "description": "实现网格/交叉验证，在 err_H/err_W ≤ −30 dB 约束下最小化存储+λ·算力并输出最优参数。",
+              "score": 35,
+              "evaluation_focus": "优化求解",
+              "scoring_hint": "高分：清晰搜索空间、停止准则与可重复性；中分：手工调参；低分：无系统搜索。"
+            },
+            {
+              "sub_criteria": "复杂度精算与折算代价输出",
+              "description": "对P/G各步骤精确统计复数乘/加次数并输出折算代价，覆盖DCT/PCA/Tucker与基回放。",
+              "score": 35,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：逐模块计数可核验；中分：仅总体计数；低分：缺失或不一致。"
+            },
+            {
+              "sub_criteria": "自适应控制与退化策略参数化",
+              "description": "给出代理指标阈值、动作序列（增系数、重采样、回退）、最大重训练频率与日志格式。",
+              "score": 30,
+              "evaluation_focus": "系统设计",
+              "scoring_hint": "高分：阈值数值与触发条件明确；中分：原则性描述；低分：无策略。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现性：固定随机种子与dtype一致性（complex64/float32）",
+              "description": "在PCA/随机过程处固定随机种子；所有复数与实数运算严格使用指定dtype并在I/O中保持。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：代码与报告均标注seed与dtype检查；中分：部分固定；低分：未控制。"
+            },
+            {
+              "sub_criteria": "API 完整性：P1/P2 与 G1/G2 接口与压缩包格式",
+              "description": "提供清晰函数签名、错误处理、元数据读写、版本信息与字节序说明。",
+              "score": 30,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：含单元测试或示例脚本；中分：接口可用但文档欠缺；低分：松散脚本。"
+            },
+            {
+              "sub_criteria": "复杂度计数器与性能日志",
+              "description": "实现复数乘/加自动计数与折算，输出每组平均与方差，并记录运行时间与内存峰值。",
+              "score": 25,
+              "evaluation_focus": "性能度量",
+              "scoring_hint": "高分：计数与日志可复查；中分：仅总体数字；低分：无计数器。"
+            },
+            {
+              "sub_criteria": "参数搜索与并行化/缓存",
+              "description": "实现网格搜索的批处理与可能的k维并行、DCT缓存等以降低成本。",
+              "score": 15,
+              "evaluation_focus": "效率优化",
+              "scoring_hint": "高分：显著加速措施与复用；中分：基本实现；低分：低效重复计算。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "误差达标性：err_H/err_W 数值与分布",
+              "description": "在全部数据组上报告 err_H、err_W（dB）及在 k、j、l 维的 min/max/mean/var 分布。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：全部达标且分布详尽；中分：多数达标或分布不全；低分：不达标或未报分布。"
+            },
+            {
+              "sub_criteria": "存储与算力对比（A vs B）",
+              "description": "提供两类方案在相同误差约束下的压缩包大小、复数乘/加计数与折算代价对比表/JSON。",
+              "score": 30,
+              "evaluation_focus": "比较分析",
+              "scoring_hint": "高分：同尺度、同阈值可公平比较；中分：尺度不一致或缺一项；低分：无对比。"
+            },
+            {
+              "sub_criteria": "稳健性与自适应触发统计",
+              "description": "报告各数据组误差方差、触发重训练频率与触发原因分布，分析失败案例。",
+              "score": 20,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：含案例与改进建议；中分：仅给频率；低分：未统计。"
+            },
+            {
+              "sub_criteria": "可复现实验包与复查脚本",
+              "description": "提供一键运行脚本复现压缩与验证，并能重现计数与报告。",
+              "score": 15,
+              "evaluation_focus": "复现性",
+              "scoring_hint": "高分：多平台可复现；中分：依赖繁琐；低分：无法跑通。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

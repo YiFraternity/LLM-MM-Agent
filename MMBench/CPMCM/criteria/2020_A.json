@@ -1,0 +1,821 @@
+{
+  "task_id": "2020_A",
+  "problem": "问题1：考虑波特率为150Gbaud的标准16QAM信号，令线宽为100kHz，色散值为2万ps/nm，算法的并行度固定为128，不考虑定点量化。请以基本的加法、乘法、查表和缓存为基础，并以RSNR代价<0.3dB为目标，设计一套CR算法，使得Pilot开销最小？\n\n问题2：考虑线宽从10kHz~10MHz，色散Dz从0~10,000 ps/nm变化场景，以RSNR代价<0.3dB为目标，定量挖掘色散、线宽与Pilot开销的关系。\n\n问题3：在问题2的场景上，进一步将芯片实现的资源纳入考察，此时需考虑定点量化对性能和资源的影响，且导频开销可任意变化（但必须确保净荷的流量为>145Gbaud），如何设计资源最低的CR算法？\n\n问题4：现实中性能和资源的权衡与具体场景有关。例如长距干线传输对性能要求往往比短距离要求更高，长距传输可付出更多的资源以降低RSNR代价。并选出问题3中你队认为有代表性的1种场景，给出统筹性的“性能-资源”综合考虑下的算法设计思路，构造性能和资源的综合代价函数，尝试给出一套自动优化位宽和实现性设计的方案，并给出定量结果，用以指导算法开发。\n\n注：本题中均不考虑色散补偿和误码率计算的复杂度和资源，只需考虑CR算法（计算相噪+补偿相噪）相关的资源即可。",
+  "subtask": {
+    "1": {
+      "subtask": "子任务 1（物理与性能基线建模与相位误差预算）：本子任务的目标是建立一套清晰、可计算的物理与性能基线模型，将给定的RSNR代价阈值（以ΔdB表示）精确映射为接收端允许的残余相位方差上限，并给出用于后续设计的封闭式约束关系与求解公式；其范围仅限于：定义相位噪声的统计模型、AWGN下相位观测噪声的近似公式、以及将小角近似下的残余相位误差转换为等效RSNR增量的关系。具体要求与步骤为：一、明确输入参数：符号率 f_b (Hz)、激光线宽 LW (Hz)、目标RSNR代价 ΔdB、无相噪基准SNR（线性量 SNR_ref，即在无PN时达到判决门限所需的SNR）、Pilot端点平均数 M（符号个数，用于建模测量噪声）、（如需）相位数值表示的位宽 b 以供量化误差项建模；二、建立物理模型：采用Wiener相位噪声模型并计算逐符号相位增量方差 v = 2π·LW / f_b；假定AWGN使单符号相位观测在高SNR下近似有方差 Var(arg(z)) ≈ 1/(2·SNR_pilot)，其中SNR_pilot为用于Pilot符号的有效SNR（可先取等于SNR_ref）；三、把性能目标转为相位方差预算：将RSNR代价ΔdB换算为线性增益因子 η = 10^{ΔdB/10} − 1，利用小角近似把允许的残余相位方差上限写为 σ_phi,max^2 ≈ η / SNR_ref；四、分解残留相位方差并给出解析近似：将残留相位方差分为三项 σ_phi^2 = σ_proc^2 + σ_meas^2 + σ_q^2，其中过程插值误差取Brownian‑bridge/线性内插近似 σ_proc^2 ≈ v·L/4（L为Pilot间隔的净荷符号数），测量噪声插值贡献近似为 σ_meas^2 ≈ 1/(4·SNR_pilot·M)（端点各平均M个连续Pilot），定点/算法量化误差以一般形式 σ_q^2 ≈ κ·2^{-2b} 表示（κ为算法路径灵敏度常数，可后验标定）；五、给出用于设计与灵敏度分析的封闭式不等式与显式解：建立约束 v·L/4 + 1/(4·SNR_pilot·M) + σ_q^2 ≤ σ_phi,max^2，并从中解析得到 L_max = (4/v)·(σ_phi,max^2 − 1/(4·SNR_pilot·M) − σ_q^2)（用于求可行的最大Pilot间隔及相应的Pilot开销 p = M/(L+M)），同时明确当右侧为负表示在给定M、SNR_pilot及量化误差下无可行L；六、工具与交付物：建议使用符号/数值工具（Python + NumPy/SciPy/ SymPy 或 MATLAB）完成代数推导與數值評估，輸出包括公式化的约束、不等式解的函数实现（可对LW、f_b、SNR_ref、M、b做参数扫描），以及用于后续标定的建议（用Monte‑Carlo仿真验证v·L/4与测量噪声近似的系数并标定κ）；七、关键假设与适用范围须明确写出：小角近似成立（残余相位方差小）、AWGN高SNR近似可用、色散已在前端以已知方式补偿且不会改变Wiener模型的基本行为。该子任务的产出为一组参数化、可复用的闭式表达式和数值计算例程，能够把物理参数（f_b、LW、SNR_ref）、Pilot设计变量（L、M）和量化位宽 b 映射到可直接用于约束与设计决策的相位方差预算表达式。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "将RSNR代价ΔdB精确映射为允许的残余相位方差上限并建立Wiener相位噪声与Pilot插值、AWGN观测、量化误差的闭式约束关系与显式求解公式用于评估与设计",
+          "expected_output": "参数化闭式表达式、约束不等式、L_max与Pilot开销p的显式解、数值计算例程（函数/脚本）、参数扫描与可复用代码接口",
+          "key_inputs_constraints": "输入：f_b(Hz)、LW(Hz)、ΔdB、SNR_ref(线性)、M(端点平均数)、b(位宽，可选)。约束：小角近似；AWGN高SNR近似；Wiener增量方差v=2π·LW/f_b；σ_phi,max^2≈η/SNR_ref且η=10^{ΔdB/10}−1；L为非负整数；若右端为负则无可行解。",
+          "modeling_type": "评价+仿真+优化",
+          "role_in_pipeline": "作为CR算法设计的物理与性能基线建模环节，位于系统物理建模与资源优化前端；前序依赖：调制与SNR门限设定；后序输出：用于Pilot间隔与位宽的优化与实现性评估",
+          "assumptions": "SNR_pilot≈SNR_ref；色散已补偿且不改变Wiener模型；量化误差项σ_q^2=κ·2^{-2b}且κ后验标定；端点线性插值过程误差σ_proc^2≈v·L/4；测量噪声插值贡献σ_meas^2≈1/(4·SNR_pilot·M)。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别RSNR代价ΔdB到σ_phi,max^2映射",
+              "description": "是否明确提出η=10^{ΔdB/10}−1并给出σ_phi,max^2≈η/SNR_ref的映射目标与约束用途",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：给出η和σ_phi,max^2公式且解释小角近似边界；中分：仅给出公式无边界说明；低分：未建立映射或公式错误"
+            },
+            {
+              "sub_criteria": "识别Wiener相位噪声与v=2π·LW/f_b",
+              "description": "是否正确识别Wiener模型并写出逐符号相位增量方差v及其物理含义",
+              "score": 25,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：正确给出v并说明单位与依赖；中分：给出近似但遗漏单位/因子；低分：未提或错误"
+            },
+            {
+              "sub_criteria": "识别三项方差分解σ_proc^2/σ_meas^2/σ_q^2",
+              "description": "是否完整识别残余相位方差分解并指明各项来源和近似形式",
+              "score": 25,
+              "evaluation_focus": "结构化思维",
+              "scoring_hint": "高分：三项齐全且来源清晰；中分：缺一项或无来源说明；低分：未分解或混淆"
+            },
+            {
+              "sub_criteria": "识别可行性条件与无解判定",
+              "description": "是否指出当σ_phi,max^2−1/(4·SNR_pilot·M)−σ_q^2≤0时无可行L",
+              "score": 15,
+              "evaluation_focus": "约束意识",
+              "scoring_hint": "高分：清楚给出不等式与无解条件；中分：含糊描述；低分：未提"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "复述输入参数与单位(f_b, LW, SNR_ref, ΔdB, M, b)",
+              "description": "是否逐项重述变量及单位/线性或dB属性与可选项",
+              "score": 30,
+              "evaluation_focus": "规范表达",
+              "scoring_hint": "高分：单位与属性齐全；中分：缺单位或混用dB/线性；低分：遗漏关键输入"
+            },
+            {
+              "sub_criteria": "复述AWGN相位观测噪声近似",
+              "description": "是否明确Var(arg(z))≈1/(2·SNR_pilot)及对M平均后对插值的影响",
+              "score": 25,
+              "evaluation_focus": "数理准确",
+              "scoring_hint": "高分：正确公式并说明平均影响；中分：仅给出公式；低分：错误或缺失"
+            },
+            {
+              "sub_criteria": "复述闭式约束与L_max显式解",
+              "description": "是否清晰复述v·L/4+1/(4·SNR_pilot·M)+σ_q^2≤σ_phi,max^2及L_max公式",
+              "score": 30,
+              "evaluation_focus": "逻辑表达",
+              "scoring_hint": "高分：两式都正确；中分：只给约束无解；低分：不等式错误"
+            },
+            {
+              "sub_criteria": "复述适用范围与小角假设",
+              "description": "是否说明小角近似与高SNR条件、色散补偿不改变Wiener行为",
+              "score": 15,
+              "evaluation_focus": "边界说明",
+              "scoring_hint": "高分：三点均到位；中分：提到其一；低分：未提"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "小角近似与ΔdB→σ_phi,max^2成立条件",
+              "description": "明确残余相位方差小的范围并对偏离时的误差风险进行说明",
+              "score": 30,
+              "evaluation_focus": "假设合理性",
+              "scoring_hint": "高分：定性边界与影响；中分：仅声明；低分：无说明"
+            },
+            {
+              "sub_criteria": "AWGN高SNR下Var(arg)≈1/(2·SNR_pilot)",
+              "description": "阐述适用SNR范围与若SNR_pilot≠SNR_ref时的处理",
+              "score": 25,
+              "evaluation_focus": "数理假设",
+              "scoring_hint": "高分：给出SNR范围与替代方案；中分：仅等式；低分：错误等式"
+            },
+            {
+              "sub_criteria": "Wiener与Brownian-bridge线性插值误差σ_proc^2≈v·L/4",
+              "description": "说明来源、插值模型假设与L依赖线性近似的适用性",
+              "score": 25,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：来源清楚；中分：仅给结论；低分：系数或量纲错误"
+            },
+            {
+              "sub_criteria": "量化误差σ_q^2≈κ·2^{-2b}假设",
+              "description": "给出κ语义（路径灵敏度）与标定方法（仿真/线性化）",
+              "score": 20,
+              "evaluation_focus": "工程假设",
+              "scoring_hint": "高分：含标定建议；中分：仅形式；低分：未提或混淆位宽关系"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "完整方差预算σ_phi^2=σ_proc^2+σ_meas^2+σ_q^2",
+              "description": "是否给出三项并用统一单位与线性域组合",
+              "score": 30,
+              "evaluation_focus": "模型完备",
+              "scoring_hint": "高分：单位一致且解释清晰；中分：有小缺失；低分：遗漏或单位混乱"
+            },
+            {
+              "sub_criteria": "测量噪声插值贡献σ_meas^2≈1/(4·SNR_pilot·M)",
+              "description": "推导或给出简明依据，说明端点平均与线性插值系数来源",
+              "score": 25,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：解释系数1/4来源；中分：仅给公式；低分：数值或依赖错"
+            },
+            {
+              "sub_criteria": "闭式不等式与可行域",
+              "description": "构建v·L/4+1/(4·SNR_pilot·M)+σ_q^2≤σ_phi,max^2并说明L的整数与非负约束",
+              "score": 25,
+              "evaluation_focus": "约束建模",
+              "scoring_hint": "高分：含整数/非负性；中分：缺离散性；低分：约束缺失"
+            },
+            {
+              "sub_criteria": "Pilot开销p表达",
+              "description": "给出p=M/(L+M)并关联到L_max的设计变量映射",
+              "score": 20,
+              "evaluation_focus": "工程映射",
+              "scoring_hint": "高分：正确且解释；中分：仅公式；低分：错误或未提"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "显式解L_max=(4/v)(σ_phi,max^2−1/(4·SNR_pilot·M)−σ_q^2)",
+              "description": "推导并明确边界条件（右端≤0无解），以及取整策略floor/max{0,·}",
+              "score": 40,
+              "evaluation_focus": "求解技巧",
+              "scoring_hint": "高分：含无解判定与取整；中分：仅连续解；低分：解错"
+            },
+            {
+              "sub_criteria": "η与σ_phi,max^2计算链路",
+              "description": "正确计算η=10^{ΔdB/10}−1并代入σ_phi,max^2≈η/SNR_ref",
+              "score": 25,
+              "evaluation_focus": "数值正确性",
+              "scoring_hint": "高分：链路无误；中分：仅口述；低分：计算错误"
+            },
+            {
+              "sub_criteria": "可行域扫描与敏感性",
+              "description": "能提出对LW、f_b、M、b扫描的求解流程查看L_max与p变化",
+              "score": 20,
+              "evaluation_focus": "灵敏度分析",
+              "scoring_hint": "高分：给出参数扫描计划；中分：泛述；低分：未提"
+            },
+            {
+              "sub_criteria": "边界与极端情况处理",
+              "description": "处理高LW/低f_b导致v大、低M/小b导致无解的判定与报告",
+              "score": 15,
+              "evaluation_focus": "鲁棒性",
+              "scoring_hint": "高分：明确报错或返回空解策略；中分：仅提示；低分：未处理"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "函数接口设计与参数校验",
+              "description": "实现compute_L_max(f_b,LW,ΔdB,SNR_ref,M,b,κ,SNR_pilot=None)并含单位/域值校验",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：健壮校验与默认SNR_pilot=SNR_ref；中分：基本可用；低分：缺校验或参数错"
+            },
+            {
+              "sub_criteria": "闭式公式数值稳定性",
+              "description": "正确实现η、v、σ_phi,max^2、L_max与p，处理右端≤0返回无解",
+              "score": 30,
+              "evaluation_focus": "数值实现",
+              "scoring_hint": "高分：边界稳定；中分：少量边界缺失；低分：溢出/域错"
+            },
+            {
+              "sub_criteria": "参数扫描与可视化钩子",
+              "description": "提供LW、f_b、M、b扫描API或示例，输出L_max与p序列",
+              "score": 25,
+              "evaluation_focus": "工程可用性",
+              "scoring_hint": "高分：完整示例/返回结构化数据；中分：片段；低分：无扫描能力"
+            },
+            {
+              "sub_criteria": "Monte-Carlo标定建议实现接口",
+              "description": "预留κ标定与验证σ_proc^2、σ_meas^2系数的仿真占位/说明",
+              "score": 15,
+              "evaluation_focus": "可扩展性",
+              "scoring_hint": "高分：占位函数或伪代码；中分：文字说明；低分：未提"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "可行/不可行判定与解释",
+              "description": "对给定参数组合能明确报告无解并解释由哪项（v、M、b）导致",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：定量定位瓶颈；中分：泛化解释；低分：无判定"
+            },
+            {
+              "sub_criteria": "灵敏度与权衡解读",
+              "description": "分析L_max与p对LW、f_b、M、b、SNR_pilot的敏感性与工程权衡",
+              "score": 30,
+              "evaluation_focus": "洞察力",
+              "scoring_hint": "高分：指出主导项与阈值效应；中分：一般描述；低分：未分析"
+            },
+            {
+              "sub_criteria": "小角与高SNR近似的适用性评述",
+              "description": "说明当ΔdB较大或SNR_pilot较低时近似偏差方向与风险",
+              "score": 20,
+              "evaluation_focus": "假设检验",
+              "scoring_hint": "高分：清楚偏差方向；中分：笼统；低分：未提"
+            },
+            {
+              "sub_criteria": "对后续设计的可操作建议",
+              "description": "提出调整M、b或提升SNR_pilot以恢复可行域的量化建议",
+              "score": 15,
+              "evaluation_focus": "决策支持",
+              "scoring_hint": "高分：给出定量或次序建议；中分：模糊建议；低分：无建议"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2的目标是把子任务1中给出的相位误差预算公式转化为可直接用于工程决策的、关于Pilot间隔L与Pilot块长度M的参数化规律和灵敏度结论，明确在不同激光线宽LW和色散Dz条件下应选择何种估计器（线性插值/加权插值、端点平均、卡尔曼滤波/平滑、decision‑directed辅助等）以满足给定RSNR代价约束，并给出可供实现的数值表面和判据边界；为此请按以下步骤执行并产出指定交付物：首先以Wiener相位模型和子任务1中σ_phi^2分解为理论起点，推导并给出闭式近似关系L_max(LW,SNR_pilot,M,estimator)（即在测量噪声项与过程插值误差项下使σ_proc^2+σ_meas^2≤σ_phi,max^2的显式解），同时把估计器类型通过一个经验缩放因子c_est引入（例如线性内插对应c_est≈1/4，卡尔曼平滑对应更小常数），并明确过程项σ_proc^2≈c_est·v·L（或更精确的Brownian‑bridge形式）；其次把色散Dz的影响模块化为对Pilot测量SNR的等效削弱（即定义并拟合一个SNR_eff(Dz)模型，例如SNR_eff = SNR/(1 + α·(Dz/D_ref)^β)或其它单调函数），说明拟合所需的数据和方法：用端到端蒙特卡洛仿真（输入参数：波特率f_b、LW范围10kHz–10MHz、Dz范围0–10000 ps/nm、候选SNR值、候选M值、给定Pilot结构与估计算法实现细节、Wiener PN与AWGN、已完成的色散补偿模块）生成在每组参数下的相位估计方差和BER/RSNR代价统计，利用最小二乘或非线性最小二乘拟合得到α、β以及估计器缩放因子c_est和测量噪声常数；第三步在解析公式与标定参数基础上构造参数化的输出（对每个估计器类型输出L_max、对应Pilot开销p=M/(L+M)、以及在给定SNR下的安全裕度），并生成可视化结果：三维表面或等高线图 p(LW,Dz) 及边界曲线（如过程噪声主导/测量噪声主导的分界线）、以及基于不同估计器的选择区域图；第四步开展灵敏度分析，计算并报告局部灵敏度指标例如∂L_max/∂LW、∂L_max/∂Dz（通过解析导数和数值差分），并识别在参数不确定性下最脆弱的设计点（例如当SNR低于某阈值时测量噪声主导，或当LW超出某值时需要切换估计器）；最后给出工程交付物：一套可运行的脚本（Python或MATLAB）用于生成L_max与p的参数化曲面、标定数据与拟合结果文件、估计器选择建议表以及灵敏度报告。所需输入数据包括：f_b、目标RSNR代价ΔdB→σ_phi,max^2、参考SNR范围、LW和Dz扫描范围、候选M列表及估计算法实现配置；所用工具与方法包括：解析推导（Brownian‑bridge与高SNR相位观测近似）、蒙特卡洛仿真（端到端链路含色散补偿）、非线性曲面拟合、数值微分与可视化。该子任务不涉及硬件资源或定点量化的细节，仅标定估计器对过程误差常数和色散引起的等效SNR衰减，并输出可直接用于Pilot密度与估计器选择的工程准则和数值表格。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "推导并拟合参数化规则，将子任务1的相位误差预算映射为关于Pilot间隔L与块长度M的显式关系L_max(LW, SNR_pilot, M, estimator)，并评估估计器选择与色散Dz对有效SNR的影响以供工程决策",
+          "expected_output": "闭式近似表达式 L_max(LW,SNR_pilot,M,estimator)；拟合参数 α,β,c_est；SNR_eff(Dz) 拟合模型文件；可运行的 Python/MATLAB 脚本；蒙特卡洛标定数据；三维/等高线图（p(LW,Dz)）与估计器选择边界表；灵敏度报告（∂L_max/∂LW、∂L_max/∂Dz）",
+          "key_inputs_constraints": "输入变量与约束：1) 波特率 f_b（标量，Hz）；2) 激光线宽 LW（标量或扫描向量，10kHz–10MHz）；3) 色散 Dz（标量或扫描向量，0–10000 ps/nm）；4) 参考无相噪SNR_ref 或 SNR_pilot 扫描范围；5) 候选端点平均 M 列表；6) 目标RSNR代价 ΔdB→σ_phi,max^2（由子任务1提供）；前置条件：已补偿色散前端模块存在；可调用端到端蒙特卡洛仿真",
+          "modeling_type": "拟合+仿真+评估",
+          "role_in_pipeline": "本子任务位于物理基线建模（子任务1）之后，作为参数化规则生成与估计器选择模块，输出可直接供后续CR算法设计（问题3/4）与硬件资源规划使用。直接依赖：子任务1的σ_phi,max^2表达与Wiener模型、端到端仿真框架；后续产物被问题3的定点/资源优化与问题4的性能-资源权衡使用。",
+          "assumptions": "假设色散在前端做了频域补偿且不会改变Wiener PN统计；相位残差在小角近似范围内；AWGN高SNR相位观测近似成立；SNR_eff(Dz)可用单调参数化函数拟合；蒙特卡洛样本量足以收敛统计量。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别L_max目标与Pilot变量映射",
+              "description": "是否明确提出把σ_phi,max^2约束映射为显式L_max(LW,SNR_pilot,M,estimator)并用以计算Pilot开销p=M/(L+M)",
+              "score": 25,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：明确给出L_max目标表达并列出p公式；中分：只给出约束但未写出p表达；低分：未把σ_phi,max^2 映射到 L_max 或未涉及 p。"
+            },
+            {
+              "sub_criteria": "识别LW与Dz对测量噪声的作用（SNR_eff）",
+              "description": "是否识别色散Dz通过SNR_eff(Dz)降低Pilot测量有效SNR，并提出拟合模型形式（如 SNR/(1+α(Dz/D_ref)^β)）",
+              "score": 25,
+              "evaluation_focus": "问题分解",
+              "scoring_hint": "高分：明确提出 SNR_eff 模型并给出拟合策略；中分：描述影响但无模型形式；低分：未识别 Dz 对 SNR 的影响。"
+            },
+            {
+              "sub_criteria": "识别估计器类别与过程误差缩放因子c_est",
+              "description": "是否列出候选估计器（线性插值/加权/卡尔曼/平滑/DD）并引入c_est描述σ_proc^2≈c_est·v·L或更精确Brownian‑bridge形式",
+              "score": 25,
+              "evaluation_focus": "建模选择",
+              "scoring_hint": "高分：列出估计器并给出合理 c_est 先验范围；中分：列出估计器但未给 c_est；低分：未考虑估计器差异。"
+            },
+            {
+              "sub_criteria": "识别蒙特卡洛标定与输出需求",
+              "description": "是否识别需要端到端蒙特卡洛仿真来标定α,β,c_est并给出所需输出（相位方差、RSNR代价、置信区间）",
+              "score": 25,
+              "evaluation_focus": "仿真规划",
+              "scoring_hint": "高分：明确仿真输入/输出与样本量建议；中分：仅笼统提仿真；低分：未提仿真或输出指标。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "数学化复述L_max求解任务",
+              "description": "是否将任务复述为求解 v·c_est·L + 1/(4·SNR_eff·M) ≤ σ_phi,max^2 并导出显式 L_max 解式",
+              "score": 40,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：书写并推导出显式 L_max 公式；中分：给出不完整或符号不一致的公式；低分：未给出显式不等式解。"
+            },
+            {
+              "sub_criteria": "复述色散模块化为SNR_eff并说明拟合目标",
+              "description": "是否明确将 Dz 的影响模块化到 SNR_eff(Dz) 并说明需拟合的参数 α,β 及拟合误差度量（RMSE或R^2）",
+              "score": 30,
+              "evaluation_focus": "拟合目标",
+              "scoring_hint": "高分：明确拟合形式与误差准则；中分：有模型但无拟合准则；低分：未模块化 Dz 或拟合目标不明确。"
+            },
+            {
+              "sub_criteria": "复述估计器选择准则与边界输出",
+              "description": "是否将估计器选择表述为基于 c_est 与安全裕度的边界决定并要求输出选择区域图",
+              "score": 30,
+              "evaluation_focus": "工程输出",
+              "scoring_hint": "高分：清楚写出选择准则（例如当LW>LW_thr用卡尔曼）并要求边界图；中分：定性建议；低分：无判据或边界输出。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "声明Wiener相噪与小角近似适用性",
+              "description": "是否明确假设Wiener相位模型且说明小角近似适用条件（σ_phi^2 ≪ 1）及其数值范围",
+              "score": 25,
+              "evaluation_focus": "假设合理性",
+              "scoring_hint": "高分：列出数值阈值（如σ_phi^2<0.1）并讨论适用性；中分：声明假设无阈值；低分：未声明或矛盾。"
+            },
+            {
+              "sub_criteria": "声明AWGN高SNR相位观测近似",
+              "description": "是否假定 Var(arg(z))≈1/(2·SNR_pilot) 并指出该近似的SNR下限（例如SNR>10dB）",
+              "score": 25,
+              "evaluation_focus": "近似说明",
+              "scoring_hint": "高分：给出数值边界并讨论误差；中分：声明近似但无边界；低分：无近似说明。"
+            },
+            {
+              "sub_criteria": "色散等效SNR模型假设",
+              "description": "是否说明将色散Dz的影响等效为SNR_eff模型并列出可接受的模型类型与拟合数据需求",
+              "score": 25,
+              "evaluation_focus": "模型假设",
+              "scoring_hint": "高分：给出模型形式候选并列出拟合数据格局；中分：仅提出等效思想；低分：未涉及。"
+            },
+            {
+              "sub_criteria": "蒙特卡洛标定与样本独立性假设",
+              "description": "是否假设蒙特卡洛样本独立且足够多以估计方差/置信区间，并给出建议样本数或收敛判据",
+              "score": 25,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：给出样本数建议或置信区间目标（如95%误差<5%）；中分：有模糊建议；低分：无说明。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "导出σ_proc与σ_meas的解析形式并引入c_est",
+              "description": "是否给出σ_proc^2≈c_est·v·L（或Brownian‑bridge更精确形式）和σ_meas^2≈1/(4·SNR_eff·M)的表达式并说明c_est来源",
+              "score": 25,
+              "evaluation_focus": "表达式构建",
+              "scoring_hint": "高分：提供两项明确表达并解释c_est含义；中分：表达但未解释来源；低分：表达不完整或错误。"
+            },
+            {
+              "sub_criteria": "构造SNR_eff(Dz)可拟合模型并定义拟合残差指标",
+              "description": "是否提出具体的SNR_eff函数形式（例如 SNR/(1+α·(Dz/D_ref)^β)）并定义拟合指标（RMSE,R^2）",
+              "score": 25,
+              "evaluation_focus": "函数拟合",
+              "scoring_hint": "高分：给出候选形式并说明拟合误差度量；中分：提出形式但无误差度量；低分：无模型形式。"
+            },
+            {
+              "sub_criteria": "仿真设计以产出用于拟合的标定量",
+              "description": "是否设定端到端蒙特卡洛仿真流程（输入f_b,LW,Dz,SNR,M,估计器），并明确输出相位方差/RSNR代价用于拟合",
+              "score": 25,
+              "evaluation_focus": "仿真设计",
+              "scoring_hint": "高分：给出完整仿真输入/输出及采样格点；中分：仿真流程不完整；低分：无仿真设计。"
+            },
+            {
+              "sub_criteria": "定义估计器映射与选择准则",
+              "description": "是否构建估计器类别到 c_est 值的映射并给出切换准则（基于LW、Dz或SNR阈值）",
+              "score": 25,
+              "evaluation_focus": "估计器映射",
+              "scoring_hint": "高分：提供数值 c_est 或估计范围和清晰切换边界；中分：给定定性映射；低分：无映射或无切换准则。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "闭式 L_max 求解与数值实现一致性",
+              "description": "是否解析得到 L_max=(4/(v·c_est))·(σ_phi,max^2−1/(4·SNR_eff·M)) 并在数值例子中验证一致性",
+              "score": 25,
+              "evaluation_focus": "解析验证",
+              "scoring_hint": "高分：给出公式并用数值样例验证；中分：公式正确但无数值验证；低分：公式错误或未给出。"
+            },
+            {
+              "sub_criteria": "SNR_eff与c_est的拟合质量与稳健性检验",
+              "description": "是否用拟合误差（如RMSE或R^2）量化α,β,c_est并做残差分析与交叉验证",
+              "score": 25,
+              "evaluation_focus": "拟合质量",
+              "scoring_hint": "高分：R^2>0.9或RMSE相对误差<10%并给残差图；中分：R^2在0.7–0.9；低分：R^2<0.7或无度量。"
+            },
+            {
+              "sub_criteria": "生成参数化面与等高线并验证边界",
+              "description": "是否生成 p(LW,Dz) 面、等高线并用仿真点验证关键边界（过程噪声主导/测量噪声主导分界）",
+              "score": 25,
+              "evaluation_focus": "可视化验证",
+              "scoring_hint": "高分：图中关键边界由仿真点验证且误差小；中分：图形存在但无验证；低分：无或图形错误。"
+            },
+            {
+              "sub_criteria": "灵敏度分析与脆弱点识别",
+              "description": "是否计算∂L_max/∂LW、∂L_max/∂Dz（解析或数值）并指出在参数不确定性下的脆弱设计点",
+              "score": 25,
+              "evaluation_focus": "灵敏度",
+              "scoring_hint": "高分：提供导数数值并标注脆弱区；中分：仅数值差分无解释；低分：无灵敏度分析。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可运行的标定与拟合脚本（Python/MATLAB）",
+              "description": "是否提供可运行脚本实现蒙特卡洛仿真、拟合 α,β,c_est，并能输出拟合结果文件与图表",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：脚本在给定环境可运行并生成结果；中分：代码需少量修改；低分：不可运行或无脚本。"
+            },
+            {
+              "sub_criteria": "模块化与参数化接口",
+              "description": "代码是否模块化（仿真/拟合/可视化分离），并能接受 f_b,LW_range,Dz_range,SNR_range,M_list 等参数化输入",
+              "score": 25,
+              "evaluation_focus": "代码工程性",
+              "scoring_hint": "高分：功能划分清晰并带示例配置；中分：函数化但接口不全；低分：单体脚本或难以配置。"
+            },
+            {
+              "sub_criteria": "计算效率与并行化实践",
+              "description": "是否对蒙特卡洛仿真做并行化/向量化以加速参数扫描并给出运行时间估计",
+              "score": 25,
+              "evaluation_focus": "性能优化",
+              "scoring_hint": "高分：提供并行实现并给出时间/样本率；中分：有向量化但无时间估计；低分：未考虑效率。"
+            },
+            {
+              "sub_criteria": "结果保存与可复现性说明",
+              "description": "是否保存标定数据、拟合参数与图表（可复现），并提供运行说明（README或脚本注释）",
+              "score": 25,
+              "evaluation_focus": "复现性",
+              "scoring_hint": "高分：提供README与数据文件可复现；中分：有注释但无完整说明；低分：无文档或数据保存。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "估计器选择图与边界解释",
+              "description": "是否给出基于L_max/p的估计器选择区域图并解释为何在某些LW/Dz区间选择卡尔曼或线性插值",
+              "score": 25,
+              "evaluation_focus": "决策支持",
+              "scoring_hint": "高分：图与解释一致并用仿真点支持切换阈值；中分：图存在但解释浅显；低分：无选择图或解释不充分。"
+            },
+            {
+              "sub_criteria": "p(LW,Dz)面与工程安全裕度给出",
+              "description": "是否提供Pilot开销表/等高线并为实际部署给出安全裕度（margin）建议，例如将L_max取安全系数γ<1",
+              "score": 25,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：提供数值表及安全系数并说明取值依据；中分：给出表格但无安全裕度；低分：无工程建议。"
+            },
+            {
+              "sub_criteria": "灵敏度结果与脆弱点的工程建议",
+              "description": "是否基于∂L_max/∂LW与∂L_max/∂Dz识别脆弱设计点并给出应对策略（增加M、改用平滑或增加裕度）",
+              "score": 25,
+              "evaluation_focus": "风险管理",
+              "scoring_hint": "高分：给出明确对策并量化改进效果；中分：提出对策但无量化；低分：无对策。"
+            },
+            {
+              "sub_criteria": "验证与局限性说明",
+              "description": "是否用未参与拟合的仿真点或交叉验证检验预测并说明模型适用范围与主要假设限制",
+              "score": 25,
+              "evaluation_focus": "验证说明",
+              "scoring_hint": "高分：提供交叉验证结果并列出适用范围；中分：提供少量验证；低分：无验证或未说明局限。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（面向问题3：将ASIC资源与定点化纳入的实现级建模与资源最小化优化）描述：本子任务的目标是在给定系统约束——净荷速率下限（净荷≥145 Gbaud，即Pilot开销 p ≤ 1 − 145/150）与性能上限（残余相位方差 σ_phi^2 ≤ σ_phi,max^2，σ_phi,max^2由目标RSNR代价给定）——下，构建一个可执行的、以硬件资源最小化为目标的实现级优化框架，输出具体的实现配置（Pilot结构 L、M；每条数据/相位路径的定点位宽向量 b_i；关键算子实现选择如 CORDIC vs 查表 vs 分段线性插值；缓冲深度与算子复用/复制策略）并证明约束满足。为此必须精确定义资源与误差模型、变量与约束、以及求解方法：资源模型应至少包括（并行度因子 P_deg 考虑在内）加法资源 R_add = c_a · Σ_i b_i · rep_i，乘法资源 R_mul = c_m · Σ_ij (b_i·b_j · rep_ij)，查表资源 R_LUT = c_l · 2^{M_addr} · b_out · rep_lut，缓存资源 R_buf = c_b · depth · Σ_i b_i · rep_buf，其中 c_* 为工艺/库标定系数，rep_* 为并行或复用复制因子，且时序约束以“每时钟周期最多可完成 1 乘、4 加、1 查表”形式显式加入以限制算子共享与复制方案。定点化噪声用可加方差模型映射到相位误差：σ_q^2 ≈ Σ_i κ_i · 2^{-2 b_i}（κ_i 为各运算路径的灵敏度常数，经仿真或经验标定），因此性能约束写成 σ_proc^2(L,estimator) + σ_meas^2(M,SNR_eff) + Σ_i κ_i 2^{-2 b_i} ≤ σ_phi,max^2，其中 σ_proc^2 可用 Brownian‑bridge/Kalman 常数形式 c_est·v·L 表示，σ_meas^2 ≈ 1/(4·SNR_eff·M) 为端点平均量测项，SNR_eff 可作为输入参数或来自色散诱导的等效SNR衰减模型。优化决策变量为整型或二元变量 {L∈Z+, M∈Z+, b_i∈Z+, choose_op ∈ {CORDIC,LUT,poly}, reuse_scheme}，目标函数为最小化总资源 R_total = R_add + R_mul + R_LUT + R_buf（可加权以反映面积/功耗优先），并受净荷、性能、时序、以及位宽下界/上界（例如 b_i ∈ [b_min,b_max]）与实现可行性约束。求解方法建议采用两阶段流程以兼顾效率与全局性：第一阶段用解析不等式快速筛除不可行 (L,M)（用 σ_proc^2+σ_meas^2 ≤ σ_phi,max^2 − σ_q_min 作保守筛选，σ_q_min 为最小可实现量化误差估计），生成一组候选 Pilot 结构；第二阶段针对每个候选在离散位宽与实现选择空间上求解混合整数优化问题，可采用混合整数非线性规划（MINLP）或组合启发式（贪心位宽分配、Lagrange-relaxation、遗传算法、贝叶斯优化）并结合局部精细搜索；在搜索中使用代理函数快速估计 σ_q^2(b) 与资源 R(b) 以加速评估，并对最优候选用更精确评估（端到端蒙特卡洛仿真输出残余相位方差与RSNR代价，以及工具合成/估算获得实际资源与时序）进行验证与必要的回圈调整。为实现该子任务需要明确的输入数据与工具：输入包括 f_b、目标 σ_phi,max^2（来自RSNR代价）、逐符号方差 v（或LW与f_b）、SNR_eff(Dz) 或 SNR 基线、工艺/库系数 c_a,c_m,c_l,c_b、每类算子随位宽的延时/资源/功耗曲线、并行度 P_deg 与时钟预算、算子实现候选的资源/误差模型（e.g., CORDIC 迭代数 vs 位宽对 κ_i 的影响；查表地址位宽对误差与资源的 trade‑off）、以及 κ_i 标定数据；必备工具链建议包括数值与优化库（Python + NumPy/SciPy、CVXPY、Pyomo）、商业或开源混合整数求解器（Gurobi/CPLEX/SCIP/OR‑Tools）、贝叶斯/遗传优化包、端到端蒙特卡洛仿真模块用于 σ_q 与RSNR验证，以及可选的RTL 合成或高精度资源估算工具以换算代理资源参数。交付物应包括：最优或 Pareto‑前沿的实现配置集合（每个包含 L,M、b_i、算子实现方案、资源明细与复制因子）、对每配置的性能验证报告（σ_phi^2、估计的RSNR代价或仿真统计）、时序可行性证明（满足 1 乘/4 加/1 LUT 每周期限制或给出复用方案）以及用于重复优化的脚本与模型文档，所有输出要能直接用于后续的RTL 实现与硅前验证。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在净荷≥145 Gbaud与RSNR代价约束下，最小化ASIC资源（加法/乘法/查表/缓存）并优化Pilot结构与定点位宽配置，实现载波恢复实现级优化",
+          "expected_output": "可行最优/帕累托配置集（L,M,b_i,算子选择与复用方案）、资源明细与总资源R_total、性能验证报告（σ_phi^2与等效RSNR代价）、时序可行性证明、可运行优化脚本与模型文档",
+          "key_inputs_constraints": "输入：f_b、LW或v=2π·LW/f_b、目标σ_phi,max^2（由ΔdB与SNR_ref给定）、SNR_eff或SNR_ref、并行度P_deg、时序上限（每拍≤1乘/4加/1查表）、工艺系数c_a,c_m,c_l,c_b、κ_i与算子误差模型、位宽上下界b_min,b_max；约束：p≤1−145/150，σ_proc^2(L)+σ_meas^2(M,SNR_eff)+Σκ_i2^{-2b_i}≤σ_phi,max^2，整型决策变量与时序共享/复制一致性",
+          "modeling_type": "优化+仿真+评价",
+          "role_in_pipeline": "作为实现级优化环节：前序依赖子任务1/2给出的σ_phi,max^2与SNR_eff(Dz)模型与c_est标定；后续输出用于RTL实现与硅前验证与资源见积化评估",
+          "assumptions": "若未提供κ_i与c_*，允许以基线经验值占位并在验证阶段以蒙特卡洛与综合估算回标定；SNR_eff已考虑色散补偿残差影响；小角近似有效"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "约束识别：净荷≥145 Gbaud与RSNR代价→σ_phi,max^2",
+              "description": "是否准确将Pilot开销p≤1−145/150转化为L,M约束，并把ΔdB映射为σ_phi,max^2用于性能上限。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：给出p、L,M显式关系和σ_phi,max^2=η/SNR_ref推导；中分：口头说明但无显式式子；低分：忽略净荷或未从ΔdB得到σ上限"
+            },
+            {
+              "sub_criteria": "资源目标与分解：R_add/R_mul/R_LUT/R_buf最小化",
+              "description": "是否把总资源R_total明确拆解并与位宽b_i、复制rep_*和c_*建立定量关系。",
+              "score": 35,
+              "evaluation_focus": "目标定义",
+              "scoring_hint": "高分：列出四项资源的函数与参数；中分：缺1项或缺rep_*；低分：仅口头“最小资源”"
+            },
+            {
+              "sub_criteria": "时序与并行度约束嵌入（每拍1乘/4加/1查表、P_deg）",
+              "description": "是否将算子共享/复制受时序限制的约束写成可检验条件。",
+              "score": 30,
+              "evaluation_focus": "约束刻画",
+              "scoring_hint": "高分：形式化约束并与复用策略关联；中分：只文字描述；低分：完全缺失"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "性能模型复述：σ_proc^2+σ_meas^2+σ_q^2≤σ_phi,max^2",
+              "description": "是否用c_est·v·L与1/(4·SNR_eff·M)以及Σκ_i2^{-2b_i}完整表述残余相位方差。",
+              "score": 35,
+              "evaluation_focus": "数理推导",
+              "scoring_hint": "高分：三项齐全且符号定义清晰；中分：缺一项或符号混乱；低分：未给出闭式表达"
+            },
+            {
+              "sub_criteria": "Pilot结构与开销关系：p=M/(L+M)",
+              "description": "是否明确p、L、M的一致关系并用于净荷约束推导。",
+              "score": 30,
+              "evaluation_focus": "一致性",
+              "scoring_hint": "高分：写出p与净荷上界联立；中分：只给p公式；低分：错误或缺失"
+            },
+            {
+              "sub_criteria": "算子选择影响：CORDIC/LUT/poly对κ_i与资源的影响",
+              "description": "是否阐明不同实现对σ_q^2与R_total的双重影响。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：列出至少两种实现的资源/误差趋势；中分：只定性；低分：未涉及"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "小角近似与高SNR观测近似有效性",
+              "description": "明确小角近似和1/(2·SNR)型相位观测方差适用域与风险。",
+              "score": 30,
+              "evaluation_focus": "假设意识",
+              "scoring_hint": "高分：说明σ_phi^2≪1与SNR门限；中分：只提小角；低分：未说明"
+            },
+            {
+              "sub_criteria": "κ_i与c_*标定假设与占位",
+              "description": "给出未提供数据时的占位与后验标定计划（蒙特卡洛/综合）。",
+              "score": 35,
+              "evaluation_focus": "实验计划",
+              "scoring_hint": "高分：拟定标定流程与数据需求；中分：仅口头说明；低分：忽略κ_i/c_*"
+            },
+            {
+              "sub_criteria": "SNR_eff输入与色散影响范围",
+              "description": "声明SNR_eff的来源（子任务2模型）与使用边界。",
+              "score": 35,
+              "evaluation_focus": "边界条件",
+              "scoring_hint": "高分：指明Dz范围与失配处理；中分：只称外部给定；低分：缺失或自相矛盾"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "两阶段筛选+离散优化框架",
+              "description": "是否构建阶段1可行(L,M)筛选与阶段2位宽/算子混合整数优化结构。",
+              "score": 30,
+              "evaluation_focus": "框架设计",
+              "scoring_hint": "高分：清晰列出两个阶段与接口；中分：有两阶段但不连贯；低分：单步或无筛选"
+            },
+            {
+              "sub_criteria": "资源模型函数化：R_add/R_mul/R_LUT/R_buf(b_i,rep_*)",
+              "description": "以c_a,c_m,c_l,c_b与b_i、rep_*、M_addr等给出可计算表达。",
+              "score": 30,
+              "evaluation_focus": "公式能力",
+              "scoring_hint": "高分：四式齐全含地址宽与输出宽；中分：缺少系数或复制项；低分：口头描述"
+            },
+            {
+              "sub_criteria": "时序约束形式化与复用决策变量",
+              "description": "把“每拍1乘/4加/1查表”转化为容量约束并关联复用/复制决策。",
+              "score": 20,
+              "evaluation_focus": "约束建模",
+              "scoring_hint": "高分：列出整型变量与线性/非线性约束；中分：半形式化；低分：未落地"
+            },
+            {
+              "sub_criteria": "σ_q^2代理与b_i向量化",
+              "description": "建立Σκ_i2^{-2b_i}的可微或可评估代理用于快速搜索与精评切换。",
+              "score": 20,
+              "evaluation_focus": "近似建模",
+              "scoring_hint": "高分：说明代理精度与触发精评条件；中分：仅给和式；低分：忽略"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "解析筛选解：L_max与p边界",
+              "description": "使用σ_proc^2+σ_meas^2≤σ_phi,max^2−σ_q_min解析得到L_max与可行域。",
+              "score": 30,
+              "evaluation_focus": "解析推导",
+              "scoring_hint": "高分：给出L_max显式式并判负不可行；中分：仅数值搜索；低分：未筛选"
+            },
+            {
+              "sub_criteria": "混合整数优化求解策略（MINLP/启发式）",
+              "description": "提出可执行的求解器/启发式（贪心位宽、拉格朗日、遗传/贝叶斯）与停止准则。",
+              "score": 30,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：列出变量、约束与求解器配置；中分：只给名称；低分：无策略"
+            },
+            {
+              "sub_criteria": "时序与并行度可行性检验",
+              "description": "对候选解验证每拍容量与流水对齐（缓冲深度计算）。",
+              "score": 20,
+              "evaluation_focus": "可行性验证",
+              "scoring_hint": "高分：提供检查算法或表；中分：文字说明；低分：未检验"
+            },
+            {
+              "sub_criteria": "精细验证：蒙特卡洛σ_phi^2与资源再估",
+              "description": "对最优解进行端到端仿真与资源工具估算闭环回标定κ_i/c_*。",
+              "score": 20,
+              "evaluation_focus": "验证闭环",
+              "scoring_hint": "高分：包含回标定并更新解；中分：只单次验证；低分：无验证"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "参数化脚本与接口（f_b,LW,ΔdB,SNR_eff,P_deg, c_*, κ_i）",
+              "description": "是否提供可复用的参数入口与配置管理，支持扫描与批量评估。",
+              "score": 25,
+              "evaluation_focus": "代码结构",
+              "scoring_hint": "高分：配置文件+CLI/API；中分：硬编码少量参数；低分：不可复用"
+            },
+            {
+              "sub_criteria": "优化器集成（CVXPY/Pyomo/OR-Tools/遗传/贝叶斯）",
+              "description": "正确调用求解器，处理整型变量与非线性项，含超参数设置与容错。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：可运行示例与日志；中分：伪代码；低分：无实现"
+            },
+            {
+              "sub_criteria": "时序/资源估算与流水仿真模块",
+              "description": "实现每拍容量检查、缓冲深度计算、R_total分项统计与报告生成功能。",
+              "score": 25,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：自动报告与可视化；中分：仅打印数值；低分：缺失或错误"
+            },
+            {
+              "sub_criteria": "蒙特卡洛验证与RSNR代价换算",
+              "description": "提供σ_phi^2仿真、ΔdB估算函数并与解析预算对比。",
+              "score": 20,
+              "evaluation_focus": "仿真实现",
+              "scoring_hint": "高分：含随机种子控制与置信区间；中分：仅均值；低分：无仿真"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "约束满足性与可行域解释（p、σ_phi^2、时序）",
+              "description": "逐项证明净荷、性能与时序满足并解释边界点与失败原因。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：列出数值余量与敏感项；中分：仅口头合格；低分：无证明或矛盾"
+            },
+            {
+              "sub_criteria": "资源-性能帕累托与算子选择对比",
+              "description": "展示CORDIC/LUT/poly的R_total与σ_q^2权衡曲线并给出选择准则。",
+              "score": 35,
+              "evaluation_focus": "权衡分析",
+              "scoring_hint": "高分：多点对比与明确推荐区间；中分：单点对比；低分：未比较"
+            },
+            {
+              "sub_criteria": "灵敏度与鲁棒性（∂R/∂b_i, ∂σ/∂L, ∂σ/∂M）",
+              "description": "报告关键导数/差分指标，识别脆弱参数并给出缓解策略（如增M或切换估计器）。",
+              "score": 30,
+              "evaluation_focus": "敏感性",
+              "scoring_hint": "高分：定量表或图；中分：定性描述；低分：未分析"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务 4（性能—资源综合代价构造与代表性场景下的自动化优化与验证闭环）：本子任务的目标是在给定代表性运行场景下（例如长距离干线）构建并求解一个端到端的自动化优化流程，该流程以明确的“性能—资源”综合代价 J 为目标函数，在满足吞吐/净荷和实时时序约束的前提下输出可直接用于硬件实现的若干 Pareto 最优设计点及其验证证据。具体范围与目标：1) 定义综合代价函数 J 将性能（RSNR 代价 ΔRSNR 或等效残余相位方差 σ_phi^2）、实现资源（总体算力/查表/缓存资源 R_total）与吞吐违约惩罚统一标度化并加权组合；2) 在给定场景参数集合（必须的输入：波特率 f_b、目标净荷下限、目标 RSNR 代价阈值、激光线宽 LW、色散 Dz、基准或测量 SNR、ASIC 工艺/库系数 c_a,c_m,c_l,c_b、并行度和时钟预算、算子时序限制如“每周期最多1乘、4加、1查表”）上自动搜索与优化设计空间，输出满足约束的位宽分配、Pilot 结构(L,M)、估计算法选择（例如线性插值、Kalman/平滑、decision‑directed）、关键算子实现方案（CORDIC/小查表/分段近似）、算子复用/复制策略与缓冲深度等实现细节；3) 对候选解提供三类验证：快速代理评估（解析近似或代理模型估计 σ_phi^2 与 R_total）、高保真端到端蒙特卡洛仿真（包含色散补偿、Wiener 相位噪声、AWGN 与接收机流程）用于测得真实 ΔRSNR 分布，以及 RTL 合成/技术库估算以确认面积/功耗/时序（timing slack）满足要求。方法步骤与自动化流程：A) 构造代价与约束：明确 J 的表达式与权重 w_p,w_r,w_t，规定硬约束（净荷≥阈值、ΔRSNR≤阈值、时序约束、位宽上下界）；B) 初始候选生成：外层枚举或用启发式采样(L,M,算法类别)以覆盖可行 Pilot/算法空间；C) 快速评估与代理模型：对每个候选用解析近似计算 σ_proc^2 与 σ_meas^2，并用资源模型（加法/乘法/查表/缓存按位宽与复制因子累加）估算 R_total；用代理函数估计量化误差与其对 σ_phi 的增幅，合成快速 J 值并筛选若干最优候选；D) 局部连续/离散优化：对筛选候选在位宽 b_i、算子实现选择与复用策略上运行离散优化（混合整数启发式、Bayesian optimization 或遗传算法），以最小化 J 并保证硬约束；E) 高保真验证回路：对优化得到的前 N 候选运行端到端蒙特卡洛仿真核验 ΔRSNR 与 σ_phi^2，同时用 RTL 合成或技术库估算真实资源与时序；若高保真结果偏离代理评估则用这些数据更新代理模型参数（例如 κ、查表误差系数、SNR_eff(Dz) 参数），回到步骤 C–D 迭代直至收敛或满足停止条件（例如 J 改进小于阈值或预算耗尽）；F) 敏感性与稳健性分析：对最终候选做参数扰动测试（LW、SNR、Dz、位宽量化误差）并报告性能/资源的置信区间及最差情形下的裕度要求。必备工具与模型：用于代理/优化和数据处理的环境（Python + NumPy/SciPy，优化库如 Pyomo/Gurobi 或開源替代），端到端仿真环境（MATLAB 或 Python 仿真套件，能模拟色散补偿、Wiener PN、AWGN 与接收流程）、蒙特卡洛框架、RTL 合成与资源估算工具（商用或开源综合器及ASIC库或等效参考系数），以及一套可参数化的资源模型（c_a,c_m,c_l,c_b、查表规模与误差模型、CORDIC 迭代-误差关系、时序限制模型）。交付物（必须清晰交付以便工程后续执行）：一份包含若干 Pareto 可行设计点的清单（每点列出 L,M、位宽向量 b_i、实现方案、R_total 分解、预测 σ_phi^2 与 ΔRSNR、净荷、时序 Slack）、用于复现优化的脚本和代理模型、高保真仿真与 RTL 验证报告（含统计置信区间）、以及敏感性分析报告与实施建议（包含运行时自适应策略触发条件：何时增加 Pilot 密度或切换估计器）。停止准则与质量门：仅当候选满足所有硬约束且高保真仿真与 RTL 验证一致且 J 在若干迭代中不再明显改善时，才输出最终推荐合集；若无可行解则需给出可行性失败的原因（如净荷/RSNR/资源冲突）并建议放宽的最小改动（例如位宽增加或净荷目标放宽）以达成可行设计。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建并求解一个端到端自动化优化与验证闭环，最小化综合代价 J（联合优化 RSNR 代价/残余相位方差与硬件资源），并输出满足吞吐与时序约束的 Pareto 设计点",
+          "expected_output": "可计算的代价函数J定义与权重; 约束清单与可行性判定器; 候选生成与筛选脚本; 若干Pareto最优设计点列表（含L,M,估计算法类型,位宽向量b_i,算子实现与复用策略,R_total分解,预测σ_phi^2与ΔRSNR,净荷与时序slack）; 高保真蒙特卡洛验证报告与RTL/库资源估算; 代理模型参数与收敛/停止准则日志",
+          "key_inputs_constraints": "输入：f_b(Hz), 净荷下限(≥145 Gbaud), RSNR代价阈值ΔRSNR→σ_phi,max^2, LW(Hz), Dz(ps/nm), 基准SNR或SNR_eff, 工艺/库系数c_a,c_m,c_l,c_b, 并行度与时钟预算, 时序限制(每周期≤1乘/4加/1查表), 候选估计算法集合与实现模型(CORDIC/LUT/poly)。约束：净荷≥阈值、ΔRSNR≤阈值、时序可行、位宽上下界、资源非负与整型变量。",
+          "modeling_type": "优化+仿真+评价+拟合",
+          "role_in_pipeline": "作为最终综合优化与验证环节：在子任务1–3提供的相位误差预算、估计器/色散SNR_eff模型与资源/量化模型基础上，进行综合权衡与闭环校正；其输出用于指导RTL实现与硅前验证，前序依赖子任务1(误差预算)、子任务2(估计器与SNR_eff标定)、子任务3(资源与定点模型)。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别综合代价J的目标与组成（ΔRSNR/σ_phi^2与R_total、吞吐惩罚）",
+              "description": "明确J= w_p·f(ΔRSNR或σ_phi^2) + w_r·g(R_total) + w_t·h(吞吐违约)的结构，并指出为何需要统一标度化与权重选择。",
+              "score": 35,
+              "evaluation_focus": "问题界定/目标分解",
+              "scoring_hint": "高分：给出J的显式公式与每项量纲/归一化方法；中分：口头描述J但无可计算表达；低分：仅提到单一目标或遗漏吞吐惩罚。"
+            },
+            {
+              "sub_criteria": "约束全面性（净荷、时序、ΔRSNR阈值、位宽界）",
+              "description": "列出并量化硬约束：净荷≥145Gbaud、每周期1乘/4加/1查表、ΔRSNR≤阈值→σ_phi,max^2、b_i范围。",
+              "score": 35,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：四类约束均量化并可检验；中分：缺少其一或未量化；低分：只笼统提到约束或与任务不符。"
+            },
+            {
+              "sub_criteria": "代表性场景与输入集的界定（f_b,LW,Dz,SNR, c_*）",
+              "description": "点名需要的场景参数与工艺系数，并说明对搜索空间与验证的影响。",
+              "score": 30,
+              "evaluation_focus": "需求覆盖",
+              "scoring_hint": "高分：参数列表完整且与优化变量关联清晰；中分：缺少工艺或SNR项；低分：未给出场景输入集合。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "将‘自动化优化与验证闭环’转述为可执行流程A–F",
+              "description": "准确复述步骤A–F（构造代价/初始候选/代理评估/离散优化/高保真验证/敏感性分析）的目的与产物。",
+              "score": 35,
+              "evaluation_focus": "流程理解",
+              "scoring_hint": "高分：覆盖A–F并说明数据在环更新；中分：缺少1–2步或缺少产物说明；低分：流程顺序或内容错误。"
+            },
+            {
+              "sub_criteria": "变量层级与决策边界（L,M,算法选择,b_i,复用策略）",
+              "description": "清晰区分外层(L,M,算法)与内层(b_i,算子实现,复用)变量及其依赖关系。",
+              "score": 35,
+              "evaluation_focus": "变量结构",
+              "scoring_hint": "高分：给出层级与依赖（如σ_proc^2依赖L, c_est）；中分：罗列变量但未分层；低分：变量混淆或遗漏关键变量。"
+            },
+            {
+              "sub_criteria": "输出交付一致性（Pareto点、报告、脚本）",
+              "description": "复述所需交付物并与目标J和约束一一对应。",
+              "score": 30,
+              "evaluation_focus": "需求映射",
+              "scoring_hint": "高分：交付物清单与评估/验证环节对齐；中分：缺少其一（如RTL或蒙特卡洛）；低分：交付物不匹配任务。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "小角近似与代理模型有效区间",
+              "description": "说明小角近似在ΔRSNR阈值下的适用范围与何时需高保真替代。",
+              "score": 30,
+              "evaluation_focus": "数理假设",
+              "scoring_hint": "高分：界定σ_phi^2阈值并提出切换判据；中分：仅口述近似适用；低分：未提适用区间。"
+            },
+            {
+              "sub_criteria": "SNR_eff(Dz)与κ等参数可标定性",
+              "description": "假设色散等效SNR模型与量化灵敏度κ可由仿真/拟合更新，并声明初值来源。",
+              "score": 35,
+              "evaluation_focus": "可标定性",
+              "scoring_hint": "高分：给出初值与更新机制；中分：只有口头可标定；低分：忽略标定假设。"
+            },
+            {
+              "sub_criteria": "时序与资源线性/分段线性可加假设",
+              "description": "阐明R_add/R_mul/R_LUT/R_buf按位宽与复制因子可加，指出可能的非线性与保守处理。",
+              "score": 35,
+              "evaluation_focus": "工程假设",
+              "scoring_hint": "高分：指出饱和/门槛并给出保守边界；中分：只给线性加和；低分：无资源模型假设。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "代价函数J的可计算定义与权重归一化",
+              "description": "提供J的显式公式、各项归一化（如R_total/R_ref、σ_phi^2/σ_phi,max^2）与权重选择依据。",
+              "score": 35,
+              "evaluation_focus": "目标建模",
+              "scoring_hint": "高分：公式+归一化+权重敏感性计划；中分：有公式无归一化；低分：无法计算或含糊。"
+            },
+            {
+              "sub_criteria": "约束数学化（净荷、ΔRSNR、时序、位宽域）",
+              "description": "给出不等式/等式形式与可行性检查器设计（含每周期1乘/4加/1查表）。",
+              "score": 30,
+              "evaluation_focus": "约束建模",
+              "scoring_hint": "高分：形式化且可实现；中分：部分量化；低分：不成体系或缺关键约束。"
+            },
+            {
+              "sub_criteria": "代理误差模型与资源模型",
+              "description": "构建σ_phi^2≈σ_proc^2(L)+σ_meas^2(M)+Σκ_i2^{-2b_i}+ε_proxy与R_total分解模型。",
+              "score": 35,
+              "evaluation_focus": "代理建模",
+              "scoring_hint": "高分：给出各项函数形态与参数表；中分：只口述分解；低分：缺少任一主项。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "候选生成与快速筛选（解析上界与不可行剔除）",
+              "description": "基于σ_proc^2+σ_meas^2≤σ_phi,max^2−σ_q,min筛出(L,M,算法)集合。",
+              "score": 30,
+              "evaluation_focus": "搜索设计",
+              "scoring_hint": "高分：给出显式筛选不等式与复杂度评估；中分：有筛选但不严密；低分：全量暴力或无筛选。"
+            },
+            {
+              "sub_criteria": "离散优化策略（b_i/实现/复用的MINLP或启发式）",
+              "description": "说明采用的MINLP/遗传/贝叶斯等，并处理时序/复制因子的可行性。",
+              "score": 40,
+              "evaluation_focus": "优化方法",
+              "scoring_hint": "高分：明确变量编码、邻域与收敛/停止规则；中分：方法提及但无细节；低分：未说明求解策略。"
+            },
+            {
+              "sub_criteria": "闭环更新与收敛判据",
+              "description": "高保真结果用于更新κ、SNR_eff等代理参数，设定J改进阈值与最大迭代。",
+              "score": 30,
+              "evaluation_focus": "迭代与收敛",
+              "scoring_hint": "高分：有具体阈值与更新频率；中分：仅口述迭代；低分：无闭环或无停止条件。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可运行的优化与评估脚本（Python/Pyomo/NumPy）",
+              "description": "提供脚本入口、参数化配置、随机种子与复现实验说明。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：脚本一键运行产出候选与日志；中分：需手工改动或缺依赖说明；低分：无可运行代码。"
+            },
+            {
+              "sub_criteria": "代理评估与资源模型实现",
+              "description": "实现σ_phi^2与R_total快速评估函数，含时序可行性检查器。",
+              "score": 35,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：函数接口清晰、单元测试或示例覆盖；中分：函数可用但缺校验；低分：未实现或与描述不符。"
+            },
+            {
+              "sub_criteria": "高保真仿真与RTL/库估算自动化",
+              "description": "批量蒙特卡洛调用与资源估算脚本，产出ΔRSNR分布与slack。",
+              "score": 30,
+              "evaluation_focus": "集成与自动化",
+              "scoring_hint": "高分：批处理+结果持久化；中分：半自动流程；低分：仅手工或无验证脚本。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "Pareto前沿与候选解释（L,M,b_i,算法选择）",
+              "description": "给出Pareto图与对关键权衡（性能vs资源vs吞吐）的解释与选择建议。",
+              "score": 35,
+              "evaluation_focus": "可视化/解释",
+              "scoring_hint": "高分：清晰边界与代表点剖析；中分：仅列表无洞见；低分：无Pareto或解释失当。"
+            },
+            {
+              "sub_criteria": "高保真校核一致性与误差归因",
+              "description": "比较代理与仿真/RTL差异，量化偏差并追因（κ、SNR_eff、查表误差）。",
+              "score": 35,
+              "evaluation_focus": "验证分析",
+              "scoring_hint": "高分：给出数值偏差与修正；中分：只定性描述；低分：无对比或结论不支持。"
+            },
+            {
+              "sub_criteria": "稳健性与敏感性（LW,SNR,Dz,位宽扰动）",
+              "description": "报告敏感度与置信区间，指出最脆弱参数与运行时自适应触发条件。",
+              "score": 30,
+              "evaluation_focus": "稳健评估",
+              "scoring_hint": "高分：含阈值/触发策略；中分：仅给趋势；低分：无敏感性结果。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

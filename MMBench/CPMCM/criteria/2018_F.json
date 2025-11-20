@@ -1,0 +1,779 @@
+{
+  "task_id": "2018_F",
+  "problem": "1. 机场布局：航站楼T和卫星厅S的布局设计如下图所示。T具有完整的国际机场航站功能，包括出发、到达、出入境和候机。卫星厅S是航站楼T的延伸，可以候机，没有出入境功能。为叙述方便起见，我们统称航站楼T和卫星厅S为终端厅。\n\nT和S之间有捷运线相通，可以快速往来运送国内、国际旅客。假定旅客无需等待，随时可以发车，单程一次需要8分钟。\n\n航站楼T有28个登机口，卫星厅S有41个登机口。其配置见数据部分。\n\n2．登机口分配：登机口属于固定机位，配置有相应的设备，方便飞机停靠时的各种技术操作。航班-登机口的分配需要考虑如下规则：\nT和S的所有登机口统筹规划分配；\n每个登机口的国内/国际、到达/出发、宽体机/ 窄体机等功能属性事先给定，不能改变，具体配置详见数据部分。飞机转场计划（见数据部分）里的航班只能分配到与之属性相吻合的登机口；\n每架飞机转场的到达和出发两个航班必须分配在同一登机口进行，其间不能挪移别处；\n分配在同一登机口的两飞机之间的空挡间隔时间必须大于等于45分钟；\n机场另有简易临时机位，供分配不到固定登机口的飞机停靠。假定临时机位数量无限制。\n注：本题数据中使用到的宽窄飞机型号分别有：\n宽体机（Wide-body）：332, 333, 33E, 33H, 33L, 773\n窄体机（Narrow-body）：319, 320, 321, 323, 325, 738, 73A, 73E, 73H, 73L。\n3．旅客流程：旅客流程可以按始发旅客、终到旅客和中转旅客分类规范。但由于新建卫星厅对始发旅客和终到旅客影响甚微，故不在本赛题研究范围内。中转旅客从前一航班的到达至后一航班的出发之间的流程，按国内（D）和国际（I）、航站楼（T）和卫星厅（S）组合成16种不同的场景。这些场景的最短流程时间和捷运乘坐次数由下表给出，其中每一格的第一个数是最短流程时间（分钟），第二个数是捷运乘坐次数。捷运时间和旅客行走时间不计入最短流程时间。\n例：某旅客乘坐国际航班到达卫星厅S，然后换乘国内航班从卫星厅S登机，其最短流程时间是45分钟，需乘坐捷运2次（因为需要去航站楼T办理入境手续）。\n\n\\begin{table}\n\\centering\n\\begin{tabular}{c|c|c|c|c|c}\n\\multicolumn{2}{c|}{出发} & \\multicolumn{2}{c|}{国内出发(D)} & \\multicolumn{2}{c}{国际出发(I)} \\\\\n\\cline{3-6}\n\\multicolumn{2}{c|}{到达} & 航站楼T & 卫星厅S & 航站楼T & 卫星厅S \\\\\n\\hline\n国内到达 (D) & 航站楼T & 15/0 & 20/1 & 35/0 & 40/1 \\\\\n\\cline{2-6}\n & 卫星厅S & 20/1 & 15/0 & 40/1 & 35/0 \\\\\n\\hline\n国际到达 (I) & 航站楼T & 35/0 & 40/1 & 20/0 & 30/1 \\\\\n\\cline{2-6}\n & 卫星厅S & 40/1 & 45/2 & 30/1 & 20/0 \\\\\n\\end{tabular}\n\\end{table}\n\n\n三．赛题\n评估一个系统必须首先掌握该系统如何运行。真实的航班-登机口分配调度方案可能受到各种制约因素的影响，但作为评估，我们可以不妨假设其是在一定约束条件下的优化方案。也就是说，本赛题要求就以下三种情形对航班-登机口分配问题建立数学优化模型，并通过求解这些模型，进行数据评估分析。由于比赛时间有限，本赛题的所有建模和数据分析都是针对航站楼T和卫星厅S同时使用的情形。\n问题一：本题只考虑航班-登机口分配。作为分析新建卫星厅对航班影响问题的第一步，首先要建立数学优化模型，尽可能多地分配航班到合适的登机口，并且在此基础上最小化被使用登机口的数量。本问题不需要考虑中转旅客的换乘，但要求把建立的数学模型进行编程，求最优解。\n\n问题二：考虑中转旅客最短流程时间。本问题是在问题一的基础上加入旅客换乘因素，要求最小化中转旅客的总体最短流程时间，并且在此基础上最小化被使用登机口的数量。本题不考虑旅客乘坐捷运和步行时间，但也要求编程并求最优解。\n\n问题三：考虑中转旅客的换乘时间。如前所述，新建卫星厅对航班的最大影响是中转旅客换乘时间的可能延长。因此，数学模型最终需要考虑换乘旅客总体紧张度的最小化，并且在此基础上最小化被使用登机口的数量。本问题可以在问题二的基础上细化，引入旅客换乘连接变量，并把中转旅客的换乘紧张度作为目标函数的首要因素。和前面两个问题一样，本问题也要求把建立的数学模型进行编程，并求最优解。换乘紧张度定义：\\[\\text{换乘紧张度} \\;=\\; \\frac{\\text{旅客换乘时间}}{\\text{航班连接时间}}\\]\\n\\n\\[\\text{旅客换乘时间} \\;=\\; \\text{最短流程时间} + \\text{捷运时间} + \\text{行走时间}\\]\\n\\n\\[\\text{航班连接时间} \\;=\\; \\text{后一航班出发时间} - \\text{前一航班到达时间}\\]\n\n其中，行走时间由下列表格查找（单位：分钟。捷运乘坐时间需另行计算） \n\\begin{table}\n\\centering\n\\begin{tabular}{|c|c|c|c|c|c|c|c|}\n\\hline\n登机口区域 & T-North & T-Center & T-South & S-North & S-Center & S-South & S-East \\\\\n\\hline\nT-North & 10 & 15 & 20 & 25 & 20 & 25 & 25 \\\\\n\\hline\nT-Center & & 10 & 15 & 20 & 15 & 20 & 20 \\\\\n\\hline\nT-South & & & 10 & 25 & 20 & 25 & 25 \\\\\n\\hline\nS-North & & & & 10 & 15 & 20 & 20 \\\\\n\\hline\nS-Center & & & & & 10 & 15 & 15 \\\\\n\\hline\nS-South & & & & & & 10 & 20 \\\\\n\\hline\nS-East & & & & & & & 10 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n四．提交结果要求：\n参赛选手必须按比赛规则提交规定格式的论文报告。此外，本赛题还有如下要求：\n要求建立完整的数学模型\n如采用离散模型，离散时间步长 =可设定为5分钟；\n模型所用变量和参数都需要解释清楚。变量一般用单个小写英文字母表示；参数可以是希腊字母，也可以是第一个字母大写的英文字符串，但需要尽可能简洁；下标尽可能只用单个小写的英文字母表示；\n为简洁易读易懂起见，变量可以有上撇（），上横（ ）等辅助记号；\n所有变量、参数和记号都必须通篇前后一致。\n根据模型设计一种求解算法\n给出算法之前，必须先对上述数学模型的特点进行一番分析，包括模型的规模和结构，求解的难易，等等；\n算法必须针对数学模型的特点设计。论文需要解释算法的合理性，包括算法实现的难易，复杂度估计和运行时间分析。如果采用实用性算法，必须解释算法的思路；\n模型算法描述必须逻辑严谨，条理清晰，同时简单易懂。\n编写程序算法，并使用给定数据进行实验\n程序编写可以按自己的专长选用高级语言或脚本语言，或多种方法的组合；\n程序必须模块化，结构要面向目标，注释清晰；\n参赛选手需要在附录中大体介绍程序和数据结构。\n对实验结果进行数据分析。要求图表设计简单易懂，线条清晰，色彩分明，重点突出，标注恰到好处\n给出成功分配到登机口的航班数量和比例，按宽、窄体机分别画线状图。\n给出T和S登机口的使用数目和被使用登机口的平均使用率（登机口占用时间比率），要求画线状图。\n仅限问题二、三：给出换乘失败旅客数量和比率。\n仅限问题二、三：总体旅客换乘时间分布图：换乘时间在5分钟以内的中转旅客比率，10分钟以内的中转旅客比率，15分钟以内的中转旅客比率，……\n仅限问题二、三：总体旅客换乘紧张度分布图：紧张度在0.1以内的中转旅客比率，0.2以内的中转旅客比率，0.3以内的中转旅客比率，……\n参赛选手还需提交三个问题的计算结果。可以在给定的飞机转场计划（Excel表格）里增加三列，分别为“问题一登机口”，“问题二登机口”和“问题三登机口”，对应于三个子问题的分配。提交结果必须是从Excel导出的CSV格式。\n\n五．输入数据说明\n飞机转场计划和中转旅客信息包含2018年1月19、20、21三天，但本次竞赛只需要对20日到达或20日出发的航班和旅客进行分析。例如，某飞机19日到达20日出发，该飞机必须被考虑。另外，飞机转场数据还包含了一些航班和机场为‘*’的记录，只要它们的到达或出发时间发生在20日，所建立的数学模型必须考虑它们的登机口分配。\n1. 飞机转场计划及示例 （Pucks）\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}\n\\hline 转场 & 到达 & 到达 & 到达 & 到达 & 出发 & 出发 & 出发 & 出发 & 飞机 \\\\\n记录号 & 日期 & 时刻 & 航班 & 类型 & 航班 & 日期 & 时刻 & 类型 & 型号 \\\\\n\\hline PK001 & 19-Jan-18 & 10:00 & NV6294 & D & NV3118 & 19-Jan-18 & 12:40 & 1 & 321 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{D: Domestic, 国内航班; I: International, 国际航班。}\n\n\\textbf{2. 中转旅客信息及示例 (Tickets):}\n\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline 旅客记录号 & 乘客数 & 到达航班 & 到达日期 & 出发航班 & 出发日期 \\\\\n\\hline T0001 & 2 & NV677 & 19-Jan-18 & NV3446 & 19-Jan-18 \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{每个旅客记录号代表一组同行旅客。}\n\n\\textbf{3. 登机口数据及示例 (Gates):}\n\n\\begin{table}\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline 登机口 & 终端厅 & 区域 & 到达类型 & 出发类型 & 机体类别 \\\\\n\\hline T5 & T & North & 1 & D, I & W \\\\\n\\hline\n\\end{tabular}\n\\end{table}\n\n\\textbf{D: Domestic, 可停靠国内航班; I: International, 可停靠国际航班}\n\n\\textbf{W: Wide-body, 宽体机; N: Narrow-body, 窄体机}",
+  "subtask": {
+    "1": {
+      "subtask": "子任务1（数据准备、预处理与参数化）要求把原始Excel文件里三类表（Pucks/转场记录、Tickets/中转旅客、Gates/登机口）清洗、标准化并导出为一组可直接供建模模块使用的结构化数据与参数文件。具体工作步骤与交付项如下：用可靠的数据处理工具（例如Python+pandas、openpyxl、datetime、numpy，并启用日志记录）读取原始表格，逐字段解析并规范化：将到达/出发的“日期”和“时刻”合并为带时区的标准datetime（以本地时区为准，单位分钟精确），确保跨日/隔夜转场正确表示；统一航班号、机型与机场编码的格式（去除多余空格、大小写一致）；为每条转场记录 p 生成唯一ID并提取关键字段 ta_p（到达时点）、td_p（出发时点）、ArrType_p/DepType_p（D/I）、Size_p（W/N）；为每条中转旅客记录 t 生成唯一ID并映射到对应的到达转场 p(t) 与出发转场 q(t)（匹配规则优先精确匹配航班号+日期+时刻，若有歧义记录则按最接近时间或人工审查规则决策并记录决策日志）；对登机口表读取 GateID、Terminal、Region（七区域之一）、可停靠到达/出发类型集合、机体类别兼容信息。进行数据完整性与一致性检查：去重、检测与报告缺失时刻或异常（如负停场时长、连接时间不合逻辑），对缺失/异常记录按预定义策略处理（优先人工修正；不可修正者在清单中标注并可选择性剔除或单独输出用于后续人工确认），并在日志中输出异常率（若异常记录占比超出阈值，如5%则提示人工核查）。构造并输出关键参数矩阵与索引：生成二值兼容矩阵 Compat_{p,g}（仅为满足到达/出发类型与机体类别两端均兼容的(p,g)创建True项；以稀疏格式或按候选门列表导出以节省空间）；计算并导出候选门集合 Candidates(p)= {g | Compat_{p,g}=1}；基于Gate→Region映射构建每个转场可能落入的区域集合 RegionsPossible(p)= {Region(g) | g∈Candidates(p)}。按题中45分钟最小空档规则预计算冲突对集合 ConflictPairs = {(p,q) | not (td_p + 45min ≤ ta_q or td_q + 45min ≤ ta_p)}，并以门级互斥约束的形式准备冲突索引（仅对存在共同兼容门的(p,q)对保存）；计算并导出每个转场在时间轴上的占用区间（用于后续甘特图与占用率计算）。在中转旅客层面，对每条记录 t 计算并保存连接时间 Conn_t = td_{q(t)} − ta_{p(t)}（以分钟为单位），若 Conn_t ≤ 0 则在输出中显式标记为“必失败/不可行连接”；保存同行旅客数 n_t。为后续区域层建模，生成可行的区域对列表 FeasibleRegionPairs(t) = {(ra,rb) | ra∈RegionsPossible(p(t)), rb∈RegionsPossible(q(t))}，并导出以供构建z变量的候选集合；同时依据给定的最短流程时间表与捷运次数表、步行时间矩阵把相关常数参数以机器可读格式（JSON/CSV）导出并与Region与Terminal映射对齐（包括 ShuttleTime=8min 常数）。所有输出文件应至少包含：P_clean.csv（标准化转场记录含ta_p/td_p/Size/ArrType/DepType等）、Tickets_clean.csv（含映射p(t),q(t),n_t,Conn_t及FeasibleRegionPairs标注）、Gates_clean.csv（含GateID,Terminal,Region,兼容属性）、Compat_sparse.csv（或字典格式的(p→候选g)）、ConflictPairs.csv、RegionsPerP.csv、RegionPairCandidates_perTicket.csv、以及参数文件（WALK矩阵、最短流程表、Shuttles表、ShuttleTime）。同时输出一份预处理摘要报告（JSON或文本），列出记录总数、被剔除或标注异常的记录数与比例、每类异常示例、每个转场的候选门数量分布、以及若干统计量（宽/窄体航班数、T/S门的可用门数分布），并保留可重现的处理代码和日志，以便后续模型调用与人工审计；整个过程应严格使用分钟为时间单位并确保时区一致性，所有生成的数据结构以便程序化读取（pandas DataFrame、稀疏列表与字典）并保存为CSV/JSON供后续建模模块直接使用。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建与执行数据清洗与参数化流程，规范化Pucks/Tickets/Gates并生成可直接用于后续登机口优化建模的结构化参数与索引",
+          "expected_output": "标准化数据文件与参数集：P_clean.csv、Tickets_clean.csv、Gates_clean.csv、Compat_sparse.csv或候选门字典、ConflictPairs.csv、RegionsPerP.csv、RegionPairCandidates_perTicket.csv、参数JSON/CSV（WALK矩阵、最短流程表、Shuttles表、ShuttleTime）、预处理摘要报告（JSON/文本）与可复现代码和日志",
+          "key_inputs_constraints": "输入：原始Excel含三表Pucks/转场、Tickets/中转旅客、Gates/登机口；约束：1) 到达/出发日期+时刻需合并为统一时区的分钟级datetime；2) 机型宽窄体映射与到达/出发D/I属性一致；3) 同一转场到达与出发共用登机口；4) 45分钟空挡用于ConflictPairs生成；5) 兼容矩阵Compat_{p,g}需满足到达/出发类型与机体类别双端兼容；6) 仅考虑20日到达或出发相关转场与旅客；7) 异常率阈值5%需在报告中警示。",
+          "modeling_type": "评价+数据工程",
+          "role_in_pipeline": "作为数据准备与参数化环节，位于优化建模（问题一/二/三）之前，直接产出候选集合、冲突索引与常数参数供求解器使用；前序依赖原始Excel；后序依赖本环节输出进行模型构建与求解"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "识别分钟级datetime与本地时区统一要求",
+              "description": "是否明确需要将到达/出发“日期+时刻”合并为本地时区的分钟精度datetime，覆盖跨日/隔夜场景并保持时区一致。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：说明分钟单位与本地TZ、跨日正确性校验；中分：仅合并日期时刻但未强调时区或跨日；低分：仍以字符串或小时粒度处理。"
+            },
+            {
+              "sub_criteria": "识别Compat_{p,g}与Candidates(p)的核心作用",
+              "description": "是否准确界定到达/出发类型和宽/窄体兼容形成的二值兼容矩阵与候选门集合，用于后续优化的指派域约束。",
+              "score": 30,
+              "evaluation_focus": "约束抽取",
+              "scoring_hint": "高分：清楚双端兼容与稀疏存储；中分：只提到兼容未提稀疏或双端；低分：未形成Candidates或含不兼容门。"
+            },
+            {
+              "sub_criteria": "识别45分钟空挡与ConflictPairs生成",
+              "description": "是否将45分钟最小空挡转化为时间轴冲突对集合，并仅保留有共同候选门的(p,q)。",
+              "score": 35,
+              "evaluation_focus": "约束抽取",
+              "scoring_hint": "高分：给出区间条件td_p+45<=ta_q或反向且门交集过滤；中分：有冲突对但未门交集过滤；低分：忽略45分钟或生成错误逻辑。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "输出清单完整性（CSV/JSON命名与字段）",
+              "description": "是否准确复述并覆盖P_clean、Tickets_clean、Gates_clean、Compat_sparse、ConflictPairs、RegionsPerP、RegionPairCandidates_perTicket、参数表与摘要报告。",
+              "score": 35,
+              "evaluation_focus": "需求映射",
+              "scoring_hint": "高分：逐一列出并含关键字段；中分：缺少1-2个文件或字段不全；低分：仅笼统说导出清洗数据。"
+            },
+            {
+              "sub_criteria": "Tickets映射与Conn_t定义的清晰性",
+              "description": "是否准确阐述p(t)、q(t)映射与Conn_t=td_{q(t)}−ta_{p(t)}，以及Conn_t≤0标注“必失败/不可行”。",
+              "score": 35,
+              "evaluation_focus": "定义严谨",
+              "scoring_hint": "高分：写明优先精确匹配规则与歧义处理日志；中分：有公式但无歧义处理；低分：未定义或方向错误。"
+            },
+            {
+              "sub_criteria": "区域与最短流程/捷运/步行参数对齐",
+              "description": "是否说明Gate→Region、Terminal映射，与最短流程时间表、捷运次数、WALK矩阵、ShuttleTime=8min的一致导出与命名。",
+              "score": 30,
+              "evaluation_focus": "数据对齐",
+              "scoring_hint": "高分：明确Region枚举与参数键；中分：参数提及但未说明对齐机制；低分：未导出或混用命名导致不可读。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "时区与日期边界假设",
+              "description": "对本地时区选择、跨日到达/出发的处理（含19/20/21日过滤规则）是否明确并记录。",
+              "score": 30,
+              "evaluation_focus": "可审计性",
+              "scoring_hint": "高分：清晰列出TZ、过滤含20日相关规则；中分：仅说本地时区未定义边界；低分：未提及或处理不一致。"
+            },
+            {
+              "sub_criteria": "模糊匹配与人工审查策略",
+              "description": "Tickets到Pucks存在歧义时是否给出“最近时刻/人工审查”的规则、优先级与日志记录要求。",
+              "score": 35,
+              "evaluation_focus": "规则设计",
+              "scoring_hint": "高分：规则优先级清晰且产生日志；中分：给出大致策略无记录要求；低分：任意选择或忽略歧义。"
+            },
+            {
+              "sub_criteria": "缺失与异常策略及5%阈值",
+              "description": "是否设定缺失时刻、负停场、非逻辑连接的处理（修复/剔除/单列）并在异常率>5%报警。",
+              "score": 35,
+              "evaluation_focus": "数据治理",
+              "scoring_hint": "高分：分类处理+异常报告；中分：有处理无比例报警；低分：静默丢弃或无记录。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "索引与主键设计（p、g、t）",
+              "description": "是否为转场p、登机口g、旅客记录t生成稳定唯一ID，并保持跨文件可连接性。",
+              "score": 25,
+              "evaluation_focus": "数据建模",
+              "scoring_hint": "高分：统一ID规范与外键关系；中分：ID存在但跨表不一致；低分：无稳定ID。"
+            },
+            {
+              "sub_criteria": "Compat_{p,g}与Candidates(p)的稀疏结构",
+              "description": "是否采用稀疏列表/映射，避免全矩阵膨胀，并验证兼容性构造逻辑。",
+              "score": 25,
+              "evaluation_focus": "结构设计",
+              "scoring_hint": "高分：提供(p->候选g)与校验统计；中分：全矩阵但正确；低分：错误兼容或无结构说明。"
+            },
+            {
+              "sub_criteria": "ConflictPairs与占用区间",
+              "description": "是否以区间碰撞规则生成冲突对（门交集过滤）并导出每个转场的占用区间用于甘特与利用率。",
+              "score": 25,
+              "evaluation_focus": "约束构建",
+              "scoring_hint": "高分：精确定义与过滤；中分：有冲突无过滤或无区间导出；低分：逻辑错误。"
+            },
+            {
+              "sub_criteria": "RegionsPossible与Region对候选",
+              "description": "是否基于Candidates映射到RegionsPossible(p)，并为每个t生成FeasibleRegionPairs(t)。",
+              "score": 25,
+              "evaluation_focus": "特征派生",
+              "scoring_hint": "高分：两者均正确且覆盖；中分：仅其一；低分：未生成或错配。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "分钟单位一致性校验",
+              "description": "对所有时间运算（ta_p、td_p、Conn_t、45分钟）是否进行单位一致性检查与断言。",
+              "score": 50,
+              "evaluation_focus": "正确性校验",
+              "scoring_hint": "高分：实现断言/单测示例；中分：口头声明无校验；低分：出现混用单位。"
+            },
+            {
+              "sub_criteria": "规模与稀疏性考虑",
+              "description": "是否评估Compat与ConflictPairs规模，采用稀疏存储与过滤以控制内存/时间。",
+              "score": 50,
+              "evaluation_focus": "性能意识",
+              "scoring_hint": "高分：给出候选数分布与过滤比；中分：提到稀疏无统计；低分：全展开导致不可扩展。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "读取与解析（pandas/openpyxl/datetime日志）",
+              "description": "是否用pandas等可靠工具读取三表，解析日期+时刻到timezone-aware分钟级datetime，并启用日志。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：tz-aware与日志级别可配置；中分：tz-naive或无日志；低分：自写解析易错。"
+            },
+            {
+              "sub_criteria": "标准化与映射（航班号/机型/机场）",
+              "description": "是否实现航班号去空格大小写统一、机型到W/N映射、D/I属性清洗与字段校验。",
+              "score": 25,
+              "evaluation_focus": "数据处理",
+              "scoring_hint": "高分：提供映射表与异常捕获；中分：部分清洗；低分：未统一格式。"
+            },
+            {
+              "sub_criteria": "异常检测与报告生成",
+              "description": "是否检测重复、缺失、负停场、非逻辑连接并生成摘要报告（异常率、示例、处置清单）。",
+              "score": 25,
+              "evaluation_focus": "可审计性",
+              "scoring_hint": "高分：报告含比例、示例与文件路径；中分：有日志无汇总；低分：无检测或无报告。"
+            },
+            {
+              "sub_criteria": "导出文件正确性与可读性",
+              "description": "是否按要求输出所有CSV/JSON，字段命名一致、类型正确（ID、枚举、列表/稀疏格式可解析）。",
+              "score": 25,
+              "evaluation_focus": "接口契约",
+              "scoring_hint": "高分：下游可直接读取且含样例加载脚本；中分：轻微命名/类型偏差；低分：丢字段或格式不可解析。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "预处理摘要报告的完整性",
+              "description": "报告是否包含记录总数、剔除/标注异常数量与比例、每类异常示例、候选门数量分布、宽/窄体与T/S门可用性统计。",
+              "score": 40,
+              "evaluation_focus": "结果呈现",
+              "scoring_hint": "高分：包含全部项且图表/表格清晰；中分：缺少1-2项；低分：仅粗略描述。"
+            },
+            {
+              "sub_criteria": "Consistency checks（样例交叉验证）",
+              "description": "随机抽样验证p(t), q(t)映射正确、Conn_t方向正确、ConflictPairs与候选门交集非空。",
+              "score": 30,
+              "evaluation_focus": "质量验证",
+              "scoring_hint": "高分：提供样例与断言结果；中分：口头说明；低分：未验证或存在明显错误。"
+            },
+            {
+              "sub_criteria": "风险与改进建议",
+              "description": "指出异常率>5%时的影响与后续人工复核建议；评估稀疏度对求解规模的影响并提出优化方向。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：量化影响与具体建议；中分：泛化建议；低分：不讨论风险。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务 2（问题一：精确整数规划建模与求解——航班转场到固定登机口的分配与被使用登机口数的最小化）要求构建并实现一个门级的0‑1整数线性规划模型，其输入为经预处理的转场记录表（每条记录 p 含到达时点 ta_p、出发时点 td_p、到/出发航班类型、机体类别等），登机口表（每门 g 的终端/区域、可停靠到达/出发类型及机体兼容信息），以及预先计算的兼容候选集合 Candidates(p) = {g | 门 g 同时兼容 p 的到达与出发类型和机体} 与冲突对集合 ConflictPairs = {(p,q) | 在同一门占用将违反“相邻飞机间至少45分钟空档”规则}；模型不做时间步离散，时间冲突通过冲突对互斥约束精确表达。决策变量：x_{p,g}∈{0,1} 表示转场 p 是否被分配到固定登机口 g（仅为 g∈Candidates(p) 建变量以节约规模），y_g∈{0,1} 表示门 g 是否被使用；约束包括（1）每个转场至多分配一个固定登机口：Σ_{g∈Candidates(p)} x_{p,g} ≤ 1；（2）兼容性已在候选集合中体现，仍可明确写 x_{p,g} ≤ 1 时只对候选 g 定义变量；（3）对每一冲突对(p,q)及每一门 g 加入互斥约束 x_{p,g} + x_{q,g} ≤ 1，确保同一门上任意两转场的占用满足45分钟最小间隔；（4）门使用逻辑关联 Σ_{p} x_{p,g} ≤ |P|·y_g 与 ∀p,g x_{p,g} ≤ y_g，保证 y_g 当且仅当门上有分配；所有变量为二进制。目标采用词典序（lexicographic）优先级：第一阶段最大化被分配到固定登机口的转场总数 maximize Σ_{p,g} x_{p,g}，得到最大可分配量 A*；第二阶段在约束 Σ_{p,g} x_{p,g} = A* 下最小化被使用登机口数量 minimize Σ_g y_g，从而在保证尽可能多分配的前提下实现门数最小化；也可作为可选方案给出单步加权目标（大权重保证优先级）但推荐两阶段求解以严格实现词典序。实现细节包括：只为候选(p,g)生成变量以降低模型规模；在预处理阶段需处理跨日/隔夜转场以正确构造占用区间并据此生成冲突对；建立可重复的建模脚本（建议使用 Python + gurobipy 或 CPLEX/PuLP/OR‑Tools 进行建模）并记录求解器参数（时间限制、MIP gap、随机种子）；求解器第一阶段返回 A* 后，应保存中间结果并在第二阶段以 A* 为额外约束重求最小化 Σ_g y_g，若规模或时间受限可设置合理的时间上限和 MIP gap 并输出当前最优可行解；最终输出为对每条转场的固定门分配（如无分配则标注为临时机位）、每门的 y_g 值及未分配转场清单，结果以可机器读取的 CSV 格式导出（例如在原转场表新增“问题一登机口”列），并同时保存求解日志、模型文件与随机种子以保证结果可复现。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建并求解0-1整数规划以优化航班转场到固定登机口的分配，并在保证最大可分配量下最小化被使用登机口数量",
+          "expected_output": "两阶段优化最优解（A* 与对应Σg y_g最小值）、x_{p,g}与y_g取值表、未分配转场清单、问题一登机口列的CSV、求解日志与可复现模型文件/随机种子",
+          "key_inputs_constraints": "输入：P_clean.csv(含ta_p, td_p, ArrType_p, DepType_p, Size_p, p_id)、Gates_clean.csv(含g_id, Terminal, Region,到/出发兼容,机体兼容)、Compat_sparse.csv(候选(p→g))、ConflictPairs.csv((p,q)冲突对)。关键约束：Σ_{g∈Candidates(p)} x_{p,g} ≤ 1；∀(p,q),∀g: x_{p,g}+x_{q,g} ≤ 1；Σ_p x_{p,g} ≤ |P|·y_g 且 x_{p,g} ≤ y_g；仅对候选(p,g)定义变量；时间冲突基于ta/td与45分钟空档精确判定。前置：时间单位为分钟且时区一致，跨日已处理，Candidates与ConflictPairs已正确生成。",
+          "modeling_type": "优化",
+          "role_in_pipeline": "作为数据预处理（子任务1）之后的核心优化建模与求解环节；前序依赖：清洗后的P/Tickets/Gates及Compat/Conflict索引；后序输出供问题二/三的旅客目标与区域层建模、报表与可视化使用。",
+          "assumptions": "采用两阶段词典序：阶段1最大化Σx得到A*；阶段2在Σx=A*下最小化Σy；求解器使用Gurobi/CPLEX等MILP，候选与冲突由子任务1保证正确。若时间受限，允许设置MIP gap并输出当前最优可行解。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "最大化固定登机口分配量 A* 的识别",
+              "description": "是否明确第一阶段目标为maximize Σ_{p,g} x_{p,g}，将“尽可能多地分配到固定登机口”与临时机位区分，并以A*量化。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清晰写出Σx目标与A*定义；中分：描述最大化分配但未形式化A*；低分：未体现最大化分配或目标含混。"
+            },
+            {
+              "sub_criteria": "最小化被使用登机口数量的识别",
+              "description": "是否识别第二阶段目标为minimize Σ_g y_g，并与第一阶段词典序优先级正确关联。",
+              "score": 30,
+              "evaluation_focus": "目标层次",
+              "scoring_hint": "高分：明示词典序或等价大M加权且权重合理；中分：提出双目标但优先级不清；低分：只给单一目标或方向错误。"
+            },
+            {
+              "sub_criteria": "时间冲突与45分钟空档的精确定义",
+              "description": "是否基于ta_p、td_p正确定义冲突对ConflictPairs并理解x_{p,g}+x_{q,g}≤1的门级互斥意义。",
+              "score": 35,
+              "evaluation_focus": "约束理解",
+              "scoring_hint": "高分：给出准确冲突逻辑not(td_p+45≤ta_q or td_q+45≤ta_p)；中分：提到空档但边界含糊；低分：未提空档或实现错误。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "输入与Candidates/ConflictPairs边界清晰",
+              "description": "是否复述仅对g∈Candidates(p)建x变量、仅对存在共同兼容门的(p,q)存冲突索引以控规模。",
+              "score": 35,
+              "evaluation_focus": "需求还原",
+              "scoring_hint": "高分：明确稀疏建模策略与规模影响；中分：提到候选但未关联冲突稀疏；低分：对所有(p,g)建模或忽略稀疏。"
+            },
+            {
+              "sub_criteria": "门使用逻辑 y_g 的复述",
+              "description": "是否复述Σ_p x_{p,g} ≤ |P|·y_g 与 x_{p,g} ≤ y_g 的作用，保证y_g当且仅当门被使用。",
+              "score": 30,
+              "evaluation_focus": "逻辑表达",
+              "scoring_hint": "高分：两条约束均出现并解释；中分：只给一条且可行；低分：缺失导致y_g与x脱节。"
+            },
+            {
+              "sub_criteria": "跨日与分钟时标的复述",
+              "description": "是否强调时间以分钟与统一时区、跨日转场已在输入中正确展开并影响冲突判断。",
+              "score": 35,
+              "evaluation_focus": "边界条件",
+              "scoring_hint": "高分：指出跨日/隔夜对占用与冲突的重要性；中分：泛提时间统一；低分：完全忽略导致潜在冲突漏判。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "词典序实现假设（两阶段或大权重）",
+              "description": "是否明确采用两阶段（推荐）或单阶段大权重并说明权重足够大以保证优先级。",
+              "score": 35,
+              "evaluation_focus": "求解设定",
+              "scoring_hint": "高分：两阶段并阐述A*约束；中分：单权重但未论证权重足值；低分：混合目标可能破坏优先级。"
+            },
+            {
+              "sub_criteria": "变量稀疏性与可扩展性假设",
+              "description": "仅为候选(p,g)与必要(p,q,g)建立约束的规模假设，说明内存/时间可控。",
+              "score": 30,
+              "evaluation_focus": "规模控制",
+              "scoring_hint": "高分：量化变量/约束数量级或给出上界估计；中分：笼统提可扩展；低分：无提及导致潜在爆炸。"
+            },
+            {
+              "sub_criteria": "临时机位处理假设",
+              "description": "未分配x的转场自动落至临时机位且不进入Σx；不引入临时机位变量影响目标。",
+              "score": 35,
+              "evaluation_focus": "业务一致性",
+              "scoring_hint": "高分：清楚区分固定门与临时机位对目标的影响；中分：提到临时机位但不清；低分：错误计入Σx或误建变量。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "决策变量 x_{p,g}, y_g 的正确定义与域",
+              "description": "二进制定义、仅候选(p,g)建x，并写出变量域与索引集合。",
+              "score": 25,
+              "evaluation_focus": "数理规范",
+              "scoring_hint": "高分：完整符号与索引清晰；中分：缺变量域或索引含混；低分：错误类型或全量建x。"
+            },
+            {
+              "sub_criteria": "冲突对互斥约束的正确性",
+              "description": "∀(p,q)∈ConflictPairs, ∀g: x_{p,g}+x_{q,g}≤1，且仅对共同兼容门生成。",
+              "score": 25,
+              "evaluation_focus": "约束正确",
+              "scoring_hint": "高分：门级互斥且稀疏生成；中分：对所有g加约束但正确；低分：用排序替代或约束缺失。"
+            },
+            {
+              "sub_criteria": "任务分配与门使用逻辑完整性",
+              "description": "Σ_{g∈Cand(p)} x_{p,g} ≤ 1，x_{p,g} ≤ y_g，Σ_p x_{p,g} ≤ |P|·y_g 全部覆盖。",
+              "score": 25,
+              "evaluation_focus": "完整性",
+              "scoring_hint": "高分：三者齐备；中分：缺其一但仍可行；低分：多处缺失致模型不正确。"
+            },
+            {
+              "sub_criteria": "目标函数词典序/等价加权实现",
+              "description": "阶段1 maximize Σx 得A*；阶段2 minimize Σy s.t. Σx=A*，或权重大M正确设置。",
+              "score": 25,
+              "evaluation_focus": "目标实现",
+              "scoring_hint": "高分：两阶段且约束实现清楚；中分：单阶段但给出权重依据；低分：目标实现与描述不一致。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "两阶段求解流程与A*传递",
+              "description": "阶段1记录A*，阶段2加入Σx=A*重新求解并保存可重现设置（随机种子）。",
+              "score": 35,
+              "evaluation_focus": "算法流程",
+              "scoring_hint": "高分：明确A*数值流转与模型热启动/固定；中分：提到两阶段但未说明实现细节；低分：未做两阶段。"
+            },
+            {
+              "sub_criteria": "求解器参数与收敛控制",
+              "description": "设置时间上限、MIP gap、线程、种子；在受限时输出最优界与可行解。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：参数成体系且解释取值；中分：设置部分参数；低分：无参数控制与可复现性。"
+            },
+            {
+              "sub_criteria": "规模与内存优化",
+              "description": "仅候选建变量、仅必要互斥、使用稀疏结构；报告变量与约束数量级。",
+              "score": 30,
+              "evaluation_focus": "工程优化",
+              "scoring_hint": "高分：定量给出规模并采用稀疏技巧；中分：口头说明；低分：全量建模导致不可扩展。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据读取与索引一致性",
+              "description": "从P_clean/Gates_clean/Compat_sparse/ConflictPairs构建索引，确保p,g主键一致且时间为分钟整数。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：含校验与断言；中分：基本读取；低分：键不一致或单位混乱。"
+            },
+            {
+              "sub_criteria": "稀疏变量与约束生成",
+              "description": "仅对g∈Candidates(p)建x，冲突约束仅对共享候选门(p,q,g)生成，避免三重全遍历爆炸。",
+              "score": 30,
+              "evaluation_focus": "性能工程",
+              "scoring_hint": "高分：使用映射/反向索引；中分：简单过滤；低分：O(|P|·|G|·|P|)生成。"
+            },
+            {
+              "sub_criteria": "两阶段模型与日志/种子",
+              "description": "实现阶段1/2分离、A*约束注入、日志记录（时间、gap、最佳值）、固定随机种子保存模型文件。",
+              "score": 40,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：输出模型LP/MPS与日志；中分：仅有控制台日志；低分：无日志无种子。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "A*与Σ_g y_g报告与解释",
+              "description": "报告最大可分配量A*、使用登机口数、使用率概览，并解释二者关系与改进空间。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：数值齐全并有简要解读；中分：仅给数值；低分：缺关键指标。"
+            },
+            {
+              "sub_criteria": "未分配转场与候选不足诊断",
+              "description": "列出未分配清单及原因（无候选、冲突过多等），量化比例并提出数据或规则层改进建议。",
+              "score": 35,
+              "evaluation_focus": "诊断能力",
+              "scoring_hint": "高分：分类归因并量化；中分：给清单但无归因；低分：未提供。"
+            },
+            {
+              "sub_criteria": "可复现性与输出一致性检查",
+              "description": "CSV含问题一登机口列，x_{p,g}, y_g与日志一致；多次运行在同一种子下结果一致。",
+              "score": 30,
+              "evaluation_focus": "一致性验证",
+              "scoring_hint": "高分：提供一致性校验脚本或说明；中分：口头声明；低分：结果不一致或缺列。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3（乘客流耦合建模、区域聚合与线性化）的目标是在门级时间冲突约束保持不变的前提下，构造一个可直接嵌入整数线性规划（0-1 ILP）的乘客连接子模型，用以在区域或终端层面精确计算每一条中转记录的“最短流程时间”与“换乘紧张度”并使之可线性化求解；为此，子任务3 的输入为经预处理后的转场记录集 P（每条含到/离时间、到/出航班类型、机型等）、中转旅客记录集 T（每条含到达转场 p(t)、出发转场 q(t)、同行旅客数 n_t、连接时间 Conn_t）、登机口集 G（含 Gate→Region、Gate→Terminal 映射与兼容性信息）、兼容候选集合 Candidates(p)（或 Compat_{p,g} 稀疏表示）、最短流程时间表与捷运乘次数表（按到达/出发类别及终端取值）、区域间行走时间矩阵 WALK 以及捷运单程时间常数 ShuttleTime；输出为一组二元决策变量与线性约束，具体包括：保留门级分配变量 x_{p,g}（若在总体模型中为决策变量则直接使用，否则本子任务可把 x_{p,g} 视作输入占位），并在区域/终端层引入聚合变量 u_{p,r} = Σ_{g:Region(g)=r} x_{p,g}（或 u_{p,term} = Σ_{g:Terminal(g)=term} x_{p,g}），对每个中转记录 t 在区域对（或终端对）上建立联立二元变量 z_{t,ra,rb}（若到达端分配到区域 ra 且出发端分配到区域 rb 则为1），以及失败指示变量 f_t（当任一端未分配到固定门或连接显然不可能时取1）；必须为所有 z 添加线性化约束 z_{t,ra,rb} ≤ u_{p(t),ra}、z_{t,ra,rb} ≤ u_{q(t),rb}，并强制 Σ_{ra,rb∈FeasiblePairs(t)} z_{t,ra,rb} + f_t = 1（其中 FeasiblePairs(t) 由 Candidates(p(t)) 与 Candidates(q(t)) 映射得到，仅为那些两端至少存在兼容门的区域对生成 z 以大幅减少变量量）；对 Conn_t ≤ 0 的记录直接强制 f_t = 1；利用题目给定的常数表为每个可能的区域对计算常数 Time_{t,ra,rb} = Sshort_{...} + ShuttleTime * Shuttles_{...} + WALK_{ra,rb}，并据此定义紧张度常数 Tau_{t,ra,rb} = Time_{t,ra,rb} / Conn_t（Conn_t 为常数，若 Conn_t 非正则已被判定失败），因此问题二的乘客相关目标可线性写为 Minimize Σ_{t} n_t * ( Σ_{termA,termB} Sshort_{...} * z_{t,termA,termB} + M_fail * f_t )（在问题二可用终端T/S聚合以减少 z 维度），问题三的首要目标为 Minimize Σ_{t} n_t * ( Σ_{ra,rb} Tau_{t,ra,rb} * z_{t,ra,rb} + M_fail2 * f_t )，其中 M_fail、M_fail2 为足够大的常数惩罚以优先避免将可行连接标记为失败；所有上述目标均为线性函数且与门级时间互斥约束（冲突对约束）通过 x_{p,g} 保持耦合；为可行建模应在预处理阶段严格筛选 FeasibleRegions(p) 与 FeasiblePairs(t)（仅为这些候选生成 u 与 z），并为 z 的生成和 u 的定义保留稀疏表示以控制规模（变量数约为 |T|·|R|^2 或更小），最后将该子模型以标准 ILP 形式导出（变量表、稀疏约束矩阵、参数常数如 Time_{t,ra,rb} 与 Tau_{t,ra,rb}、以及 M_fail 值），便于以商用求解器（例如 Gurobi/CPLEX 的 Python 接口）或启发式方法求解、并保证模型在词典序目标的上层框架中可直接嵌入和联立求解。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "构建并线性化乘客连接子模型，优化最短流程时间与换乘紧张度并与门级x_{p,g}耦合，可嵌入0-1 ILP联解。",
+          "expected_output": "可嵌入ILP的变量与约束定义（x_{p,g}, u_{p,r}, z_{t,ra,rb}, f_t）、线性目标（问题二最短流程时间/问题三换乘紧张度）、常数参数表(Time_{t,ra,rb}, Tau_{t,ra,rb}, M_fail)、稀疏候选集合（FeasiblePairs(t), RegionsPossible(p)）、以及可导出的模型文件/JSON参数与求解日志。",
+          "key_inputs_constraints": "输入：P（含ta_p, td_p, ArrType_p, DepType_p, Size_p）、T（p(t), q(t), n_t, Conn_t）、G（Gate→Region/Terminal）、Candidates(p)、ConflictPairs、最短流程时间与捷运次数表、WALK矩阵、ShuttleTime=8。约束：z_{t,ra,rb} ≤ u_{p(t),ra}, z_{t,ra,rb} ≤ u_{q(t),rb}；Σ z + f_t = 1（限于FeasiblePairs(t)）；u_{p,r} = Σ_{g:Region(g)=r} x_{p,g}；Conn_t ≤ 0 ⇒ f_t=1；仅为候选对生成变量（稀疏）。输出需与门级互斥约束通过x_{p,g}一致。",
+          "modeling_type": "优化",
+          "role_in_pipeline": "作为问题二/三的乘客流耦合层，位于数据清洗与门级ILP建模之后，目标函数之前；前序依赖子任务1（预处理与参数化）和子任务2（门级冲突与x变量框架）；后续与整体ILP联立求解并输出可视化与报表。",
+          "assumptions": "若终端层聚合用于问题二，则z在{T,S}×{T,S}；问题三采用区域层z（7区域）；M_fail/M_fail2足够大以词典序近似但不致数值不稳定（如10^4–10^6范围并随Conn_t尺度校准）。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "优化目标区分：最短流程时间 vs 换乘紧张度",
+              "description": "是否清晰识别问题二最小化Σ n_t·最短流程时间与问题三最小化Σ n_t·换乘紧张度（Tau_{t,ra,rb})的差异，并指出词典序或大M惩罚对f_t的处理。",
+              "score": 30,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：分别给出两类目标的线性表达与权重/阶段化；中分：只描述其一或混淆但仍可线性；低分：目标表述含糊或非线性未线性化。"
+            },
+            {
+              "sub_criteria": "耦合关系：门级x_{p,g}与区域变量u、联立z",
+              "description": "是否准确识别x_{p,g}→u_{p,r}→z_{t,ra,rb}的层级耦合与约束链条。",
+              "score": 35,
+              "evaluation_focus": "系统抽象",
+              "scoring_hint": "高分：写明u=Σ区域内x且z受两端u上界；中分：提及u或z但缺一端约束；低分：忽略耦合或将z与x脱节。"
+            },
+            {
+              "sub_criteria": "可行性与失败判定（Conn_t≤0与f_t）",
+              "description": "能否识别并处理必失败连接（Conn_t≤0）并在质量准则中体现f_t的使用与惩罚。",
+              "score": 35,
+              "evaluation_focus": "约束识别",
+              "scoring_hint": "高分：明确Conn_t≤0⇒f_t=1且Σz+f_t=1；中分：只口头提及失败未给出约束；低分：未考虑失败连接。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "变量与集合复述（x,u,z,f与FeasiblePairs）",
+              "description": "准确复述x_{p,g}、u_{p,r}、z_{t,ra,rb}、f_t及FeasiblePairs(t)/RegionsPossible(p)的定义与作用。",
+              "score": 40,
+              "evaluation_focus": "精确定义",
+              "scoring_hint": "高分：给出符号、索引集及稀疏生成原则；中分：变量齐全但索引/稀疏性不清；低分：变量缺失或误定义。"
+            },
+            {
+              "sub_criteria": "时间参数复述（Time与Tau计算）",
+              "description": "复述Time_{t,ra,rb}=Sshort+ShuttleTime*Shuttles+WALK与Tau=Time/Conn的来源与单位一致性。",
+              "score": 35,
+              "evaluation_focus": "数理清晰",
+              "scoring_hint": "高分：单位分钟、表格映射与常数对齐；中分：公式正确但单位未说明；低分：遗漏WALK或Shuttles。"
+            },
+            {
+              "sub_criteria": "词典序或两阶段目标描述",
+              "description": "说明如何将乘客目标与上层“最大分配量/最少门数”词典序整合（阶段化或大权重）。",
+              "score": 25,
+              "evaluation_focus": "目标层次",
+              "scoring_hint": "高分：描述两阶段或分层权重；中分：仅提联合最小化；低分：忽略优先级。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "FeasiblePairs稀疏性与候选筛选假设",
+              "description": "合理假设仅为存在共同兼容门的区域对生成z以控规模，并说明边界影响。",
+              "score": 35,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：给出筛选准则与复杂度影响；中分：仅笼统称稀疏；低分：无筛选导致爆炸或不说明。"
+            },
+            {
+              "sub_criteria": "大M惩罚M_fail/M_fail2设定",
+              "description": "提出数值稳定的M范围与相对尺度，确保不破坏词典序同时避免数值病态。",
+              "score": 35,
+              "evaluation_focus": "数值稳健",
+              "scoring_hint": "高分：给出量级与理由（相对Conn_t/Time范围）；中分：给出固定值无依据；低分：未设或过大/过小。"
+            },
+            {
+              "sub_criteria": "聚合层级选择（终端T/S vs 区域7区）",
+              "description": "阐明问题二用终端聚合、问题三用区域聚合的假设及对变量规模与精度的影响。",
+              "score": 30,
+              "evaluation_focus": "层级取舍",
+              "scoring_hint": "高分：清楚对比|R|^2影响与精度收益；中分：只陈述选择不解释；低分：层级混乱。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "u与z线性化约束完备性",
+              "description": "包含u_{p,r}=Σ_{g∈r}x_{p,g}及z≤u的两端上界，并给出Σ z + f = 1。",
+              "score": 35,
+              "evaluation_focus": "线性化",
+              "scoring_hint": "高分：三类约束齐全且索引正确；中分：缺其一但可补；低分：非线性或错误索引。"
+            },
+            {
+              "sub_criteria": "Time/Tau参数注入与单位一致",
+              "description": "将Sshort、Shuttles、WALK、ShuttleTime组合为Time并生成Tau，确保分钟与无量纲一致。",
+              "score": 25,
+              "evaluation_focus": "参数化",
+              "scoring_hint": "高分：明示表对齐与单位；中分：计算正确但未说明单位；低分：遗漏项或单位混乱。"
+            },
+            {
+              "sub_criteria": "目标函数线性形式（问题二与三）",
+              "description": "问题二：Min Σ n_t·Σ Sshort·z + M_fail·f；问题三：Min Σ n_t·Σ Tau·z + M_fail2·f。",
+              "score": 25,
+              "evaluation_focus": "目标建模",
+              "scoring_hint": "高分：两式清楚且索引/权重正确；中分：只实现其一；低分：目标非线性或错误。"
+            },
+            {
+              "sub_criteria": "稀疏索引与变量规模控制",
+              "description": "仅为FeasiblePairs(t)与RegionsPossible(p)生成z与u，避免全|R|^2膨胀。",
+              "score": 15,
+              "evaluation_focus": "规模控制",
+              "scoring_hint": "高分：明确稀疏生成与复杂度估计；中分：提及但不系统；低分：全量生成导致不可扩展。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "与门级冲突约束的联立可解性",
+              "description": "确保乘客子模型与x_{p,g}的冲突对约束可联立求解，未破坏可行域。",
+              "score": 30,
+              "evaluation_focus": "可行性",
+              "scoring_hint": "高分：说明x与u、z耦合且不引入矛盾；中分：仅声称可联立；低分：遗漏导致不一致。"
+            },
+            {
+              "sub_criteria": "词典序/阶段化求解策略",
+              "description": "描述最大分配→最少门→乘客目标的阶段化或权重分层，含种子、MIP gap与时限。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：给出参数与重求流程；中分：仅描述阶段化；低分：无策略或混合冲突。"
+            },
+            {
+              "sub_criteria": "数值稳定与可扩展性",
+              "description": "讨论大M、Tau尺度、稀疏性对性能的影响，并提出预求Time/Tau与裁剪FeasiblePairs的手段。",
+              "score": 35,
+              "evaluation_focus": "数值分析",
+              "scoring_hint": "高分：提出具体阈值/裁剪规则；中分：笼统讨论；低分：未提。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "参数与稀疏数据读写（JSON/CSV）",
+              "description": "正确加载Candidates、FeasiblePairs、Time/Tau、WALK、Sshort、Shuttles，采用稀疏结构。",
+              "score": 35,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：统一键索引与类型校验；中分：能读取但无校验；低分：键错或读写失败。"
+            },
+            {
+              "sub_criteria": "求解器建模（Gurobi/CPLEX/OR-Tools）",
+              "description": "仅为候选生成x/u/z/f变量，添加线性约束与两个目标版本，记录日志与随机种子。",
+              "score": 35,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：变量数/约束数可打印，日志完整；中分：能运行但缺日志；低分：变量膨胀或约束缺失。"
+            },
+            {
+              "sub_criteria": "单元测试与一致性检查",
+              "description": "测试Σ z + f = 1、Conn_t≤0⇒f=1、u与x聚合一致、Time/Tau重算一致。",
+              "score": 30,
+              "evaluation_focus": "测试保障",
+              "scoring_hint": "高分：含自动断言与样例；中分：手动检查说明；低分：无测试。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "可行性与失败连接报告（f_t统计）",
+              "description": "报告f_t=1数量与占比，并区分Conn_t≤0的必失败与因门分配导致的失败。",
+              "score": 35,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：两类失败分别统计；中分：只总数；低分：未报告。"
+            },
+            {
+              "sub_criteria": "乘客目标分布与敏感性",
+              "description": "输出Σ n_t·Time与Σ n_t·Tau的分布（均值/分位数），分析对M_fail与候选裁剪的敏感性。",
+              "score": 35,
+              "evaluation_focus": "数据洞察",
+              "scoring_hint": "高分：含分位/图表与对比；中分：仅均值；低分：无分布。"
+            },
+            {
+              "sub_criteria": "规模与性能指标",
+              "description": "报告变量/约束规模、求解时间、MIP gap，比较终端层与区域层的规模差异。",
+              "score": 30,
+              "evaluation_focus": "性能评估",
+              "scoring_hint": "高分：提供两层级对比与量化；中分：只报告一次；低分：无性能数据。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（求解算法实现、工程化部署、结果输出与敏感性分析）的目标是把已建好的整数线性规划模型与必要的输入文件转化为可重复、可配置、可验证的求解管线并产出规定格式的结果与分析图表；其范围包括（1）工程化实现：用 Python（推荐）或 MATLAB 实现模块化程序，主要模块为：数据加载（读取标准化的 CSV/JSON 输入）、模型构建（按稀疏结构生成变量与约束）、求解器接口（Gurobi 或 CPLEX 优先，通过 gurobipy/cplex Python API 调用）、结果后处理与导出、可视化与日志管理；代码需模块化、注释清晰并支持命令行参数与配置文件（YAML/JSON）以控制求解模式与超参数；（2）求解流程与求解策略：实现词典序（lexicographic）求解的多阶段流程——第一阶段求解第一优先目标并保存最优值，第二阶段将第一阶段值作为约束求解第二优先目标，必要时第三阶段继续固定前两阶段最优值求解第三优先目标；在调用商用求解器时暴露并记录配置项（timeLimit，建议默认3600s，可按实例规模调整；MIPGap，默认0.01；Threads，默认与机器 CPU 核数一致但上限8；Presolve开/关；RandomSeed固定以保证可复现性；Logging输出到可保存的 solver log 文件）；为保证在资源受限时仍能产出可用解，提供启发式回退策略实现（至少应包含：按时间/兼容性贪心分配、基于局部搜索的门交换与2-opt、禁忌搜索或模拟退火的改进阶段、以及基于拉格朗日松弛的松弛-修复框架），并把启发式结果作为初始解注入求解器以加速优化；（3）可验证性与鲁棒性：实现求解后自动可行性检查脚本（验证每条分配满足兼容性、时间冲突约束、门使用指示等），并输出违反约束的详细条目以便调试；对解的关键指标（已分配航班数、被使用门数、门占用时间总和、换乘失败旅客数）进行一致性校验；保存完整的模型文件（LP/MPS）、求解日志、以及随机种子与环境依赖清单（Python 包版本、solver 版本）；推荐封装为可运行的 Docker 镜像以保证可复现性；（4）输出与格式：按要求在原始转场表中新增并导出 CSV 的三列（“问题一登机口”，“问题二登机口”，“问题三登机口”，未分配填“临时机位”或空值），同时生成汇总报告文件（JSON/CSV）包含按宽/窄体分类的分配数与比例、T/S 每区被使用登机口数与每门平均占用率、换乘失败旅客数/比例，以及求解器运行摘要（时长、MIP gap、最佳下界/上界）；生成可视化图表（PNG/SVG）：按时序的甘特图、按机型的分配折线图、门使用率折线图、换乘时间和紧张度的累积分布/阈值统计图（例如≤5/10/15分钟和紧张度≤0.1/0.2/0.3 的比率曲线）；（5）性能与运行约束：对典型单日实例（数十到数百条转场、数千中转记录）在带有 8–16 CPU cores 与 16–32 GB RAM 的机器上预期精确 ILP 完整求解时间为数分钟到数小时，若超出资源限制则自动退回启发式流程并记录时间点与解质量；实现可配置的时间预算与解质量阈值策略（例如在达到时间上限时导出当前最优可行解并记录 MIPGap）；（6）敏感性与情景分析：实现参数扫描脚本以系统化改变关键参数并记录结果（至少包括：最小间隔45分钟的变体如30/40/50/60、捷运单程时间、WALK 矩阵缩放、失败惩罚 M_large 的大小、求解器 MIPGap 与 timeLimit）；实现基于随机延误的蒙特卡洛情景模拟（建议默认 N=100~1000 个场景，延误分布可为可配置的偏态或正态），对每个情景在固定分配或允许快速重调度两种策略下计算关键指标（分配成功率、换乘失败率、平均/分位紧张度），并输出敏感性表格与图形以评估方案稳健性；（7）交付物与文档：提交可直接运行的代码仓库（含 README、环境与运行示例）、Dockerfile、配置范例、生成的 CSV 结果文件与图表、solver 日志及一页式运行说明（包含如何复现主实验、如何调整 timeLimit/MIPGap、及如何运行敏感性分析）；（8）质量控制与测试：提供单元测试与集成测试样例（至少覆盖数据加载、约束生成、求解调用、结果导出与可行性检查），并记录运行时间与资源使用以便评估与调优。总体要求是：实现一套可重复、可配置、可回溯的工程化求解管线，优先使用商用求解器以求解精确 ILP 并在必要时启用可靠的启发式备选方法，所有输出按比赛格式导出并附带充分的日志、可视化与敏感性分析结果以支持后续报告撰写与决策审核。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "实现整数线性规划求解管线，对航班转场-登机口优化分配与乘客紧张度目标进行词典序优化并产出可复现结果与敏感性评估。",
+          "expected_output": "最优解与当前最优可行解（CSV列：问题一登机口/问题二登机口/问题三登机口）；汇总报表（JSON/CSV，含分配数、被使用门数、占用率、换乘失败数、MIPGap、Time）；模型文件（LP/MPS）；求解日志；图表（甘特图、分配折线、门使用率、换乘时间与紧张度CDF/阈值曲线）；Docker与README；单元与集成测试记录。",
+          "key_inputs_constraints": "输入文件：P_clean.csv、Tickets_clean.csv、Gates_clean.csv、Compat_sparse.csv、ConflictPairs.csv、RegionsPerP.csv、RegionPairCandidates_perTicket.csv、参数JSON（WALK、最短流程、Shuttles、ShuttleTime）；约束：x_{p,g}, y_g 二进制；冲突对互斥；Σ_{g∈Candidates(p)}x_{p,g}≤1；词典序目标分阶段；资源限制（timeLimit、MIPGap、Threads≤8）；可回退启发式并作为初始解注入；日志与随机种子固定；时区与时间单位为分钟一致。",
+          "modeling_type": "优化+评价+仿真",
+          "role_in_pipeline": "作为工程化求解与产出阶段，依赖前序：子任务1（数据准备）、子任务2（问题一ILP）、子任务3（乘客耦合ILP）；向后输出：结果分析与论文图表。包含敏感性与蒙特卡洛情景分析；为报告与决策提供可复现实验与图形。",
+          "assumptions": "默认使用 Gurobi（gurobipy），若不可用可回退 OR-Tools；默认timeLimit=3600s、MIPGap=0.01、Threads=8、RandomSeed固定；典型规模数百转场与数千tickets。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "词典序优化目标分解（最大分配数→最少被使用登机口→乘客紧张度）",
+              "description": "是否准确识别多阶段词典序目标，先最大化Σx_{p,g}，再在Σx固定下最小化Σy_g，并在问题二/三加入乘客最短流程或紧张度目标的阶段化处理。",
+              "score": 35,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：清晰三阶段或两阶段串联，约束中固定上阶段最优值；中分：只描述但未固定数值或混合加权；低分：未区分优先级或目标顺序错误。"
+            },
+            {
+              "sub_criteria": "输入依赖与约束来源（Compat、ConflictPairs、Candidates）",
+              "description": "能否指出模型关键输入来自子任务1预处理（Compat/Candidates、ConflictPairs、FeasibleRegionPairs），并说明其在约束中的具体用途。",
+              "score": 25,
+              "evaluation_focus": "问题抽象",
+              "scoring_hint": "高分：逐一对应到x范围与互斥约束；中分：只笼统提及兼容与冲突；低分：忽略或误用这些集合。"
+            },
+            {
+              "sub_criteria": "资源与鲁棒性约束识别（timeLimit/MIPGap/Threads/RandomSeed）",
+              "description": "识别求解器资源限制及可复现性要求（日志、种子、版本记录）与回退启发式机制。",
+              "score": 20,
+              "evaluation_focus": "工程意识",
+              "scoring_hint": "高分：列出并合理默认值与记录位置；中分：部分参数或无记录策略；低分：完全缺失或不合理。"
+            },
+            {
+              "sub_criteria": "输出合规性（CSV列、图表、报表、LP/MPS）",
+              "description": "识别必须输出的CSV三列、图表种类、汇总报表与模型/日志文件，保证比赛格式。",
+              "score": 20,
+              "evaluation_focus": "规范对齐",
+              "scoring_hint": "高分：完整清单与格式说明；中分：缺少1–2项；低分：无法满足提交格式。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "非离散时间的门级互斥表达（ConflictPairs互斥）",
+              "description": "准确复述时间不离散，使用冲突对x_{p,g}+x_{q,g}≤1表达45分钟空档约束并仅对共同候选门生效。",
+              "score": 30,
+              "evaluation_focus": "形式化表达",
+              "scoring_hint": "高分：说明仅对共享候选门生成约束；中分：写出互斥但无稀疏说明；低分：采用错误离散时间或缺失互斥。"
+            },
+            {
+              "sub_criteria": "区域/终端聚合与z变量联立（问题二/三）",
+              "description": "复述u_{p,r}聚合与z_{t,ra,rb}、f_t关系：z≤u，Σz+f=1，Conn_t≤0→f_t=1。",
+              "score": 25,
+              "evaluation_focus": "模型理解",
+              "scoring_hint": "高分：完整包含u、z、f与FeasiblePairs；中分：缺一项或未提失败逻辑；低分：未提或混淆含义。"
+            },
+            {
+              "sub_criteria": "词典序求解流程与固定A*机制",
+              "description": "准确复述A*=max Σx后，二阶段添加Σx=A*，三阶段固定前两阶段值。",
+              "score": 25,
+              "evaluation_focus": "算法流程",
+              "scoring_hint": "高分：明确A*保存与重建模型或热启动；中分：只口头描述；低分：未固定或顺序错误。"
+            },
+            {
+              "sub_criteria": "启发式回退与初始解注入",
+              "description": "复述贪心/局部搜索/禁忌或SA/拉格朗日松弛，并将其作为初始解注入求解器加速。",
+              "score": 20,
+              "evaluation_focus": "求解策略",
+              "scoring_hint": "高分：至少两种启发式与注入方式；中分：一种启发式无注入；低分：无回退策略。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "求解器与资源假设（Gurobi/CPLEX可用、Threads≤8）",
+              "description": "明确采用商用求解器与默认资源配置，可回退到开源库；说明可复现种子与日志。",
+              "score": 30,
+              "evaluation_focus": "工程假设",
+              "scoring_hint": "高分：给出默认值与替代方案；中分：仅给默认值；低分：无说明或与硬件不符。"
+            },
+            {
+              "sub_criteria": "数据完备性假设（预处理已输出Candidates/ConflictPairs）",
+              "description": "假设子任务1输出完整稀疏集合与参数表，若缺失需失败处理或跳过并记录。",
+              "score": 25,
+              "evaluation_focus": "数据依赖",
+              "scoring_hint": "高分：定义缺失处理与日志；中分：只声明依赖；低分：忽略依赖。"
+            },
+            {
+              "sub_criteria": "惩罚参数与失败逻辑（M_fail、M_fail2设定）",
+              "description": "假设合理大M保证词典序优先，不致数值不稳定，说明标定方法或范围。",
+              "score": 25,
+              "evaluation_focus": "参数设定",
+              "scoring_hint": "高分：给范围或与上界量级对比；中分：仅口头“大M足够大”；低分：未设或过小/过大引发数值问题。"
+            },
+            {
+              "sub_criteria": "时间与时区一致性（分钟单位、跨日处理）",
+              "description": "假设输入已统一为本地时区与分钟精度，跨日已处理；若检测异常需中止或剔除。",
+              "score": 20,
+              "evaluation_focus": "一致性",
+              "scoring_hint": "高分：实现前置校验与报错策略；中分：仅说明需要；低分：忽略导致模型错误。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "变量与约束稀疏生成（仅对g∈Candidates(p)建x）",
+              "description": "依据Compat/Candidates稀疏化变量与互斥约束，仅对存在共同兼容门的冲突对建约束，控制规模。",
+              "score": 30,
+              "evaluation_focus": "模型规模",
+              "scoring_hint": "高分：显式过滤策略与复杂度估计；中分：部分稀疏化；低分：全矩阵暴力建模。"
+            },
+            {
+              "sub_criteria": "门使用逻辑关联与绑定约束（Σx≤|P|y, x≤y）",
+              "description": "正确构建y_g与x_{p,g}关系，避免虚用或未用门。",
+              "score": 20,
+              "evaluation_focus": "约束正确性",
+              "scoring_hint": "高分：两类约束皆有；中分：仅一类；低分：缺失导致不可行或错误。"
+            },
+            {
+              "sub_criteria": "乘客侧线性化与常数表对齐（u/z/f与Time/Tau）",
+              "description": "构造u与z的线性化约束，并将Sshort、Shuttles、WALK、ShuttleTime映射为Time与Tau常数。",
+              "score": 25,
+              "evaluation_focus": "线性化",
+              "scoring_hint": "高分：常数生成流程与单位校验；中分：有z但常数未说明；低分：非线性或错配。"
+            },
+            {
+              "sub_criteria": "目标函数实现（两/三阶段或大权重单步）",
+              "description": "优先两/三阶段词典序；若单步加权需证明权重支配性与数值稳定。",
+              "score": 25,
+              "evaluation_focus": "目标设计",
+              "scoring_hint": "高分：阶段化且固定上阶段最优；中分：单步加权且给足够大权重；低分：混乱或冲突。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "词典序多阶段控制（A*保存与再求）",
+              "description": "第一阶段输出A*、固定Σx=A*重求第二阶段，必要第三阶段固定前两阶段值。",
+              "score": 30,
+              "evaluation_focus": "求解流程",
+              "scoring_hint": "高分：代码/伪码体现A*约束注入；中分：仅描述；低分：未固定导致偏离。"
+            },
+            {
+              "sub_criteria": "求解器参数与日志（timeLimit/MIPGap/Threads/Seed/Presolve）",
+              "description": "合理设置与记录，输出solver日志与best bound/obj、gap。",
+              "score": 25,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：参数可配置并落盘；中分：部分参数；低分：默认且无记录。"
+            },
+            {
+              "sub_criteria": "启发式初始解与回退触发条件",
+              "description": "实现贪心、局部交换、禁忌/SA或拉格朗日松弛；定义触发条件（超时或gap大于阈值）。",
+              "score": 25,
+              "evaluation_focus": "鲁棒性",
+              "scoring_hint": "高分：≥2启发式+注入+触发阈值；中分：1启发式或无触发；低分：无回退。"
+            },
+            {
+              "sub_criteria": "可行性自检与冲突报告",
+              "description": "求解后验证兼容性、冲突对、Σx≤1、x≤y等，输出违规明细。",
+              "score": 20,
+              "evaluation_focus": "验证能力",
+              "scoring_hint": "高分：完整校验与定位；中分：部分校验；低分：无校验。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "模块化与配置化（数据加载/建模/求解/后处理/可视化/日志）",
+              "description": "Python模块划分清晰，命令行与配置文件（YAML/JSON）控制求解模式和超参数。",
+              "score": 25,
+              "evaluation_focus": "代码结构",
+              "scoring_hint": "高分：清晰包结构+CLI+配置；中分：脚本化但可运行；低分：糅杂难以维护。"
+            },
+            {
+              "sub_criteria": "可复现性与环境（随机种子、版本、Docker）",
+              "description": "固定seed，记录包与solver版本，提供Dockerfile与运行脚本。",
+              "score": 25,
+              "evaluation_focus": "工程实践",
+              "scoring_hint": "高分：提供Docker与锁定环境；中分：仅README与requirements；低分：缺失导致不可复现。"
+            },
+            {
+              "sub_criteria": "初始解注入与模型导出（LP/MPS）",
+              "description": "实现启发式初始解注入求解器；导出LP/MPS与solver日志。",
+              "score": 25,
+              "evaluation_focus": "接口实现",
+              "scoring_hint": "高分：两项俱全；中分：仅日志或仅模型文件；低分：均无。"
+            },
+            {
+              "sub_criteria": "测试覆盖（单元+集成，约束生成与可行性检查）",
+              "description": "提供覆盖数据加载、约束生成、求解、导出与可行性检验的测试样例与CI脚本。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：≥70%覆盖并含集成测试；中分：部分单元测试；低分：无测试。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "输出合规CSV与报表（问题一/二/三登机口、未分配标注）",
+              "description": "正确填充三列与“临时机位/空值”，汇总表含分配数、比例、被使用门数、平均占用率、失败旅客数/比例、求解摘要。",
+              "score": 30,
+              "evaluation_focus": "结果完整性",
+              "scoring_hint": "高分：完全吻合格式且一致性校验通过；中分：轻微缺漏；低分：格式不符或不一致。"
+            },
+            {
+              "sub_criteria": "图表质量（甘特、分配折线、门使用率、换乘时间/紧张度CDF与阈值曲线）",
+              "description": "生成指定PNG/SVG图，轴标清晰、图例与单位正确，能支持报告复现。",
+              "score": 25,
+              "evaluation_focus": "可视化",
+              "scoring_hint": "高分：全部图表清晰无歧义；中分：缺少1–2张或标注欠佳；低分：图表缺失或误导。"
+            },
+            {
+              "sub_criteria": "敏感性与情景分析（间隔/捷运/WALK/大M/MIPGap/timeLimit扫描与蒙特卡洛）",
+              "description": "系统化参数扫描与N≥100蒙特卡洛延误模拟，报告关键指标变化与稳健性结论。",
+              "score": 25,
+              "evaluation_focus": "稳健性评价",
+              "scoring_hint": "高分：完整扫描+蒙特卡洛并有图表；中分：仅扫描或仅模拟；低分：无分析。"
+            },
+            {
+              "sub_criteria": "一致性与基准对比（启发式vsILP、阶段间KPI一致）",
+              "description": "对比启发式与ILP的分配数与门数、失败率，检查阶段目标未被破坏，报告差距与原因。",
+              "score": 20,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：量化差距与解释；中分：定性描述；低分：无对比或结论含混。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

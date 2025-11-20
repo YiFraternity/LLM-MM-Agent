@@ -1,0 +1,820 @@
+{
+  "task_id": "2021_D",
+  "problem": " 二、数据集介绍及建模目标\n\n本试题针对乳腺癌治疗靶标 ER$\\alpha$，首先提供了 1974 个化合物对 ER$\\alpha$ 的生物活性数据。这些数据包含在文件 “ER$\\alpha$_activity.xlsx” 的 training 表（训练集）中。training 表包含 3 列，第一列提供了 1974 个化合物的结构式，用一维线性表达式 SMILES （Simplified Molecular Input-Line Entry System）表示；第二列是化合物对 ER$\\alpha$ 的生物活性值（用 IC$_{50}$ 表示，为实验测定值，单位是 nM，值越小代表生物活性越大，对抑制 ER$\\alpha$ 活性越有效）；第三列是将第二列 IC$_{50}$ 值转化而得的 pIC$_{50}$（即 IC$_{50}$ 值的负对数，该值通常与生物活性具有正相关性，即 pIC$_{50}$ 值越大表明生物活性越高；实际 QSAR 建模中，一般采用 pIC$_{50}$ 来表示生物活性值）。该文件中另有一个 test 表（测试集），里面提供有 50 个化合物的 SMILES 式。\n\n其次，在文件 “Molecular_Descriptor.xlsx” 的 training 表（训练集）中，给出了上述 1974 个化合物的 729 个分子描述符信息（即自变量）。其中第一列也是化合物的 SMILES 式（编码顺序与上表一样），其后共有 729 列，每列代表化合物的一个分子描述符（即一个自变量）。化合物的分子描述符是一系列用于描述化合物的结构和性质特征的参数，包括物理化学性质（如分子量，LogP 等）、拓扑结构特征（如氢键供体数量、氢键受体数量等），等等。关于每个分子描述符的具体含义，请参见文件 “分子描述符含义解释.xlsx”。同样地，该文件也有一个 test 表，里面给出了上述 50 个测试集化合物的 729 个分子描述符。\n\n最后，在关注化合物生物活性的同时，还需要考虑其 ADMET 性质。因此，在文件 “ADMET.xlsx” 的 training 表（训练集）中，提供了上述 1974 个化合物的 5 种 ADMET 性质的数据。其中第一列也是表示化合物结构的 SMILES 式（编码顺序同上），其后 5 列分别对应每个化合物的 ADMET 性质，采用二分类法提供相应的取值。Caco-2：‘1’ 代表该化合物的小肠上皮细胞渗透性较好，‘0’ 代表该化合物的小肠上皮细胞渗透性较差；CYP3A4：‘1’ 代表该化合物能够被 CYP3A4 代谢，‘0’ 代表该化合物不能被 CYP3A4 代谢；hERG：‘1’ 代表该化合物具有心脏毒性，‘0’ 代表该化合物不具有心脏毒性；HOB：‘1’ 代表该化合物的口服生物利用度较高，‘0’ 代表该化合物的口服生物利用度较低；MN：‘1’ 代表该化合物具有遗传毒性，‘0’ 代表该化合物不具有遗传毒性。同样地，该文件也有一个 test 表，里面提供了上述 50 个化合物的 SMILES 式（编码顺序同上）。\n\n建模目标：根据提供的ER$\\alpha$拮抗剂信息（1974个化合物样本，每个样本都有729个分子描述符变量，1个生物活性数据，5个ADMET性质数据），构建化合物生物活性的定量预测模型和ADMET性质的分类预测模型，从而为同时优化化合物的生物活性和ADMET性质提供指导。\n\n\\textbf{问题1.} 根据文件“Molecular_Descriptor.xlsx”和“ER$\\alpha$_activity.xlsx”提供的数据，针对1974个化合物的729个分子描述符进行变量选择，根据变量对生物活性影响的重要性进行排序，并给出前20个对生物活性最具有显著影响的分子描述符（即变量），并请详细说明分子描述符筛选过程及其合理性。\n\n\\textbf{问题2.} 请结合问题1，选择不超过20个分子描述符变量，构建化合物对ER$\\alpha$生物活性的定量预测模型，请叙述建模过程。然后使用构建的预测模型，对文件“ER$\\alpha$_activity.xlsx”的test表中的50个化合物进行IC${}_{50}$值和对应的pIC${}_{50}$值预测，并将结果分别填入“ER$\\alpha$_activity.xlsx”的test表中的IC50_nM列及对应的pIC50列。\n\n\\textbf{问题3.} 请利用文件“Molecular_Descriptor.xlsx”提供的729个分子描述符，针对文件“ADMET.xlsx”中提供的1974个化合物的ADMET数据，分别构建化合物的Caco-2、CYP3A4、hERG、HOB、MN的分类预测模型，并简要叙述建模过程。然后使用所构建的5个分类预测模型，对文件“ADMET.xlsx”的test表中的50个化合物进行相应的预测，并将结果填入“ADMET.xlsx”的test表中对应的Caco-2、CYP3A4、hERG、HOB、MN列。\n\n\\textbf{问题4.} 寻找并阐述化合物的哪些分子描述符，以及这些分子描述符在什么取值或者处于什么取值范围时，能够使化合物对抑制ER$\\alpha$具有更好的生物活性，同时具有更好的ADMET性质（给定的五个ADMET性质中，至少三个性质较好）。",
+  "subtask": {
+    "1": {
+      "subtask": "子任务1（特征筛选与重要性排序）旨在从“Molecular_Descriptor.xlsx”训练表中对齐“ERα_activity.xlsx”训练表的1974个样本（以SMILES对应）与729个数值分子描述符，系统化地筛除无信息或冗余的描述符并输出对pIC50影响最显著且稳定的前20个描述符及其可信度指标；该子任务的范围仅限数据清洗、单变量与多变量过滤、冗余削减、稳健的重要性评估与排序，不涉及后续回归或分类建模。具体步骤和方法如下：1) 数据准备与对齐：读取两表，用训练集的1974条记录（SMILES）做主键对齐描述符与pIC50标签；记录并保存描述符含义文档以便最终报告。2) 缺失值与异常值处理：剔除缺失率超过预置阈值（例如20%）的描述符；对剩余缺失值采用按描述符中位数插补或基于k‑NN插补（k≈5）；对极端异常值可采用winsorization（例如1st/99th分位截断）或对数变换以降低影响，所有处理步骤须记录并固定随机种子以保证可复现性。3) 去除低方差与非数值特征：删除恒定或近似恒定（VarianceThreshold，如<1e‑5或经验阈值）的列，确保剩余特征为可用于统计/机器学习的数值变量。4) 初步冗余过滤（过滤器/分簇法）：计算描述符间的两类相关性矩阵（Pearson与Spearman），基于层次聚类对高度相关组（|r|>0.95，可调整）进行合并，在每一高度相关簇中保留与pIC50单变量关联度（|corr|最大）或方差最大的代表项；此步显著降低共线性并控制后续计算规模。5) 单变量筛选：对每个剩余描述符计算与pIC50的Pearson与Spearman相关系数及对应p值，并可计算单变量解释度（R^2），保留一定数量的候选（例如前200按绝对相关度排序）以进入多变量评估，明确该阈值应通过内层交叉验证确定以避免过度剪裁。6) 多方法稳定性与重要性评估（嵌套/自助抽样保证非泄露）：在候选子集上并行使用（A）正则化线性模型稳定选择（Stability Selection）：多次子抽样或自助采样（例如B=100次，每次抽取50%样本），在每次内以交叉验证选取LASSO/Elastic Net的正则化参数并记录被选变量的频次；（B）基于树的模型（随机森林与XGBoost）：用分层k折交叉验证训练并计算每折的置换重要性（变量置换后性能下降的均值）與基于分裂的原生重要度；（C）模型解释方法SHAP：在训练好的XGBoost或RF上计算每个变量的平均绝对SHAP值以反映非线性交互下的全局贡献。所有方法都应在交叉验证或自助重抽样框架内重复以评估稳定性并输出平均重要性与标准差。7) 重要性指标归一化与合并排序：将上述多种重要性衡量（LASSO选择频次、树模型置换重要性、平均绝对SHAP）归一化为可比分值或秩，并采用加权平均或秩和法生成综合重要性分数；优先保留在多种度量中均表现良好的描述符以降低单一方法偏差。8) 稳健性检验与阈定输出：通过在若干随机种子/重抽样下计算变量排名的一致性指标（例如Kendall’s tau或选中频率），并设定最終入选规则（例如综合排名前20且稳定性频次>50%），输出最终前20变量名单。9) 交付物与记录：生成并保存（CSV/表格）排序结果包含：描述符名、描述符语义（来自“分子描述符含义解释.xlsx”）、单变量相关系数、LASSO选择频次、树置换重要性均值与标准差、SHAP均值、综合排序分数与稳定性指标；同时记录所有预处理参数、相关性阈值、重抽样次数、随机种子和所用软件库（建议工具：Python 的 pandas/numpy/scipy/scikit‑learn/xgboost/shap 或 R 的 data.table/glmnet/randomForest/xgboost/SHAPforxgboost）以保证方法可复现与审计。该子任务的成功判定标准是能提供一份可复现、经稳健性检验的、含可信度指标的前20重要描述符排序表，且每一步预处理与选择策略均有明确记录供审查。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "对1974个样本的729个分子描述符进行筛选、评估与排序，拟合与评估其对pIC50的影响重要性并输出稳健的前20特征及可信度指标。",
+          "expected_output": "1) 前20描述符排名表（CSV/表）：含名称、含义、Pearson/Spearman相关、单变量R2、LASSO选择频次、置换重要性均值±SD、SHAP均值、综合分数、稳定性指标；2) 预处理与参数记录（阈值、随机种子、折数、B次重采样）；3) 相关性热图/簇信息（可选图表）；4) 过程日志与复现说明。",
+          "key_inputs_constraints": "输入：Molecular_Descriptor.xlsx(training, 729数值描述符+SMILES)、ERα_activity.xlsx(training, pIC50+SMILES)、分子描述符含义解释.xlsx。约束：按SMILES精确对齐；缺失率阈值≤20%；低方差阈值≈1e-5；高相关阈值|r|>0.95；重采样B≥100、子样本比例≈50%；k折≥5；固定随机种子；仅使用训练集，禁止信息泄露。",
+          "modeling_type": "评价+筛选+拟合",
+          "role_in_pipeline": "作为特征工程与建模之间的变量选择与重要性评价环节；前序依赖数据读取与清洗；后序为回归建模与ADMET分类提供紧凑特征集与解释依据。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "锚定pIC50影响评估而非预测",
+              "description": "明确子任务仅评估与排序分子描述符对pIC50的重要性，不进行IC50/pIC50预测或分类建模。",
+              "score": 30,
+              "evaluation_focus": "任务边界",
+              "scoring_hint": "高分：明确声明不训练预测模型；中分：偶有预测措辞但主体为重要性评估；低分：开展回归/提交预测结果。"
+            },
+            {
+              "sub_criteria": "数据对齐与输入范围界定（SMILES主键）",
+              "description": "指出以SMILES在Molecular_Descriptor.xlsx与ERα_activity.xlsx的training表进行1974条严格对齐，剔除未对齐样本。",
+              "score": 25,
+              "evaluation_focus": "数据理解",
+              "scoring_hint": "高分：说明去重/对齐规则与异常处理；中分：仅提到按SMILES连接；低分：未提对齐或对齐到test数据。"
+            },
+            {
+              "sub_criteria": "重要性与稳定性双目标",
+              "description": "识别需给出前20描述符及可信度/稳定性指标（频次、方差、秩一致性等）。",
+              "score": 25,
+              "evaluation_focus": "目标细化",
+              "scoring_hint": "高分：列出≥2个稳定性度量；中分：仅1个（如选择频次）；低分：无稳定性度量。"
+            },
+            {
+              "sub_criteria": "防信息泄露与交叉验证范围",
+              "description": "强调所有相关性、LASSO、树模型与SHAP评估基于训练集的交叉验证/重采样，不使用test表信息。",
+              "score": 20,
+              "evaluation_focus": "数据规范",
+              "scoring_hint": "高分：明确CV/自助采样细节并禁用test；中分：口头说明避免泄露；低分：混用test或未提泄露风险。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "预处理序列复述（缺失→低方差→异常→相关簇）",
+              "description": "按既定顺序复述并量化阈值：缺失率≤20%、中位数/kNN插补、Winsorization(1/99分位)、VarianceThreshold≈1e-5、|r|>0.95聚类保留代表。",
+              "score": 30,
+              "evaluation_focus": "流程把握",
+              "scoring_hint": "高分：完整列阈值与先后；中分：少数阈值缺失；低分：顺序混乱或无阈值。"
+            },
+            {
+              "sub_criteria": "单变量筛选与候选规模控制",
+              "description": "说明Pearson/Spearman与R2排名，候选≈前200，候选阈值由内层CV确定以避免过度剪裁。",
+              "score": 25,
+              "evaluation_focus": "方案细化",
+              "scoring_hint": "高分：含CV选择候选规模；中分：固定前N无理由；低分：跳过单变量筛选。"
+            },
+            {
+              "sub_criteria": "多方法重要性与融合策略",
+              "description": "复述LASSO/EN稳定选择、RF/XGBoost置换重要性、SHAP的获得方式与加权/秩和融合。",
+              "score": 25,
+              "evaluation_focus": "方法整合",
+              "scoring_hint": "高分：三法齐全并阐述融合；中分：两法；低分：单一方法。"
+            },
+            {
+              "sub_criteria": "稳健性检验与最终入选规则",
+              "description": "给出Kendall’s tau或频次阈值（如>50%）与综合排名前20的入选条件。",
+              "score": 20,
+              "evaluation_focus": "准则明确",
+              "scoring_hint": "高分：具体阈值与统计量；中分：仅提一致性；低分：无检验。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "缺失机制与插补合理性假设",
+              "description": "陈述缺失近似MAR/MCAR，采用中位数或kNN(k≈5)插补并记录随机种子确保可复现。",
+              "score": 30,
+              "evaluation_focus": "方法假设",
+              "scoring_hint": "高分：说明为何中位数/kNN适配且设种子；中分：仅给方法；低分：无假设与可复现性。"
+            },
+            {
+              "sub_criteria": "相关性阈值与共线性控制假设",
+              "description": "假定|r|>0.95代表冗余，层次聚类选代表可保留信息并降低方差膨胀。",
+              "score": 25,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：联系VIF/方差稳定性；中分：仅给阈值；低分：无共线性假设。"
+            },
+            {
+              "sub_criteria": "稳定选择与置换重要性的适用性",
+              "description": "假设pIC50–描述符关系可能非线性且稀疏，采用LASSO稳定选择+树模型置换重要性+SHAP以覆盖线性与非线性贡献。",
+              "score": 25,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：指出互补性与偏差-方差权衡；中分：笼统描述；低分：无适用性说明。"
+            },
+            {
+              "sub_criteria": "候选规模控制的过拟合假设",
+              "description": "假定直接用全部特征会放大泄露与过拟合风险，因此用内层CV确定前200规模或相近阈值。",
+              "score": 20,
+              "evaluation_focus": "风险控制",
+              "scoring_hint": "高分：给出内层CV方案；中分：仅说为避免过拟合；低分：无说明或用全量。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "单变量度量（Pearson/Spearman/R2）实现细节",
+              "description": "说明对pIC50计算Pearson与Spearman及p值、单变量R2并按绝对值排序。",
+              "score": 25,
+              "evaluation_focus": "统计实现",
+              "scoring_hint": "高分：含p值与多重比较控制或说明；中分：仅相关系数；低分：无单变量度量。"
+            },
+            {
+              "sub_criteria": "稳定选择（LASSO/Elastic Net）设计",
+              "description": "B≥100次子样本(≈50%)，每次内CV选择λ/α，记录变量被选频次并归一化。",
+              "score": 25,
+              "evaluation_focus": "正则化设计",
+              "scoring_hint": "高分：给B、子样本比例、CV折数；中分：缺1项参数；低分：只跑一次LASSO无重采样。"
+            },
+            {
+              "sub_criteria": "树模型与置换重要性/SHAP方案",
+              "description": "分层k折CV训练RF/XGBoost；报告置换重要性均值±SD与平均绝对SHAP值。",
+              "score": 25,
+              "evaluation_focus": "非线性方法",
+              "scoring_hint": "高分：置换与SHAP同时提供且跨折聚合；中分：其一；低分：仅原生Gini重要性。"
+            },
+            {
+              "sub_criteria": "重要性融合与排序规则",
+              "description": "将选择频次、置换重要性、SHAP进行z-score或秩归一，采用加权平均/秩和生成综合分数。",
+              "score": 25,
+              "evaluation_focus": "融合策略",
+              "scoring_hint": "高分：有权重/秩和说明与敏感性；中分：简单平均；低分：未融合或凭主观挑选。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "可复现性与随机性控制",
+              "description": "固定随机种子、记录软件版本与参数（阈值、B、k折），保证每次运行一致。",
+              "score": 25,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：明确seed与版本；中分：仅seed；低分：未控随机性。"
+            },
+            {
+              "sub_criteria": "计算与内存效率（冗余削减）",
+              "description": "通过去低方差、相关簇合并与候选缩减显著降低计算成本，避免全量SHAP计算爆炸。",
+              "score": 25,
+              "evaluation_focus": "效率意识",
+              "scoring_hint": "高分：定量说明规模从729→~200；中分：描述但无数量；低分：全量运行导致不可行。"
+            },
+            {
+              "sub_criteria": "交叉验证/自助抽样流程正确性",
+              "description": "严格在训练数据上进行k折与B次重采样，计算每折/每次的重要性并聚合均值与方差。",
+              "score": 25,
+              "evaluation_focus": "流程正确",
+              "scoring_hint": "高分：报告跨折聚合方式；中分：仅单次聚合；低分：无CV或错误聚合。"
+            },
+            {
+              "sub_criteria": "稳健性一致性指标计算",
+              "description": "计算Kendall’s tau或Top-k重叠率/选择频次直方图，并据此设定最终阈值（如>50%）。",
+              "score": 25,
+              "evaluation_focus": "稳健评估",
+              "scoring_hint": "高分：≥1个秩一致性指标+阈值；中分：仅频次表；低分：无一致性评估。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "数据读取与SMILES对齐实现",
+              "description": "正确读取两xlsx训练表，基于SMILES内连接，校验1974行并报告对齐缺失与重复处理。",
+              "score": 25,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：有断言/日志；中分：能运行但无校验；低分：对齐错误或静默丢失。"
+            },
+            {
+              "sub_criteria": "预处理可配置与日志化",
+              "description": "缺失阈值、VarianceThreshold、相关阈值、winsor化分位、k折、B次等均参数化并记录到配置/日志。",
+              "score": 25,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：集中配置+产出配置快照；中分：分散硬编码；低分：无参数记录。"
+            },
+            {
+              "sub_criteria": "重要性计算与融合管线化",
+              "description": "实现单变量、LASSO稳定选择、RF/XGB置换、SHAP、归一与融合为流水线函数/模块。",
+              "score": 25,
+              "evaluation_focus": "模块化",
+              "scoring_hint": "高分：可复用函数与单测/断言；中分：脚本式实现；低分：混杂且难以重现。"
+            },
+            {
+              "sub_criteria": "结果导出与复现包",
+              "description": "导出前20表与全量评分表，保存随机种子、库版本、图表（可选）与运行说明。",
+              "score": 25,
+              "evaluation_focus": "可复现",
+              "scoring_hint": "高分：含环境/版本清单；中分：仅CSV；低分：无导出或列缺失。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "前20描述符稳定性与一致性解读",
+              "description": "报告选择频次、置换重要性SD、秩一致性（Kendall’s tau/Top-k重叠）并讨论稳定或不稳定项。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：定量指标齐全且对不稳定项给出原因；中分：部分指标；低分：仅给名单无分析。"
+            },
+            {
+              "sub_criteria": "线性与非线性重要性一致性核对",
+              "description": "比较LASSO频次与SHAP/置换重要性的一致或差异，并解释潜在非线性/交互导致的排序差异。",
+              "score": 25,
+              "evaluation_focus": "方法对照",
+              "scoring_hint": "高分：举2–3例差异并解释；中分：泛泛而谈；低分：未对照。"
+            },
+            {
+              "sub_criteria": "预处理影响敏感性讨论",
+              "description": "讨论|r|阈值、候选规模（如前200）与winsor化设置变动对Top20的影响（方向或案例）。",
+              "score": 25,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：提供变更后重叠率或排名漂移；中分：定性讨论；低分：无讨论。"
+            },
+            {
+              "sub_criteria": "可审计性与可复现性结论",
+              "description": "给出最终可复现声明：参数、随机种子、B与k折设置、库版本、文件名/表名明确对应。",
+              "score": 20,
+              "evaluation_focus": "合规性",
+              "scoring_hint": "高分：清单完整；中分：缺1–2项；低分：缺失关键信息。"
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "subtask": "子任务2（pIC50 回归建模与对 50 个测试样本的预测）旨在以不超过 20 个分子描述符为输入，建立一个稳健、可复现且可解释的定量 QSAR 回归模型来预测化合物对 ERα 的 pIC50，并将预测结果转换为 IC50（nM）后填入 test 表；该子任务的输入为：已对齐且清洗后的训练集特征矩阵 X_train (n=1974 行 × 729 初始列) 与目标向量 y_train (pIC50)，以及经过相同预处理的 X_test (50 行)；输出为：最终模型文件、选定的 ≤20 个描述符名与含义、训练与验证性能指标（外层 CV 的 RMSE、MAE、R^2 与 Q^2）、对 50 个测试分子的 pIC50 预测值、对应的 IC50_nM（IC50_nM = 10^{−pIC50} × 1e9）、每个预测的预测区间/置信度以及适用域（AD）标识与不确定性说明。执行步骤与方法须包括：1) 明确预处理链并固定随机种子——删除缺失率 >20% 的描述符，对剩余缺失值用描述符中位数或 k‑NN（k≈5）插补；删除方差接近零的列；对数或 Box‑Cox 变换严重偏态特征（如有），并对所有候选特征应用标准化（z‑score）或鲁棒缩放以保证可比尺度；2) 初筛与降维：计算描述符间相关矩阵并对高度共线（|r|>0.95）簇内只保留与 pIC50 单变量相关性最大的代表，进而用单变量过滤（按绝对相关系数或单变量 R^2）将特征数缩减到若干百以便后续计算；3) 嵌套交叉验证框架保证性能估计不泄露——采用外层 5 折（可重复）用于泛化误差估计，内层 5 折用于特征选择与超参数优化；所有特征选择步骤必须置于内层循环内；4) 特征选择策略：在内层结合稳定选择（Stability Selection，B≈100 次子抽样记录 LASSO/ElasticNet 被选频次）、递归特征消除（RFE）以及基于树模型（RF/XGBoost）的置换重要性或平均绝对 SHAP 值，按稳定性与性能折衷最终确定不超过 20 个描述符；5) 模型候选与超参数调优：比较可解释线性模型（OLS、LASSO、ElasticNet、PLS）与非线性模型（SVR、随机森林、XGBoost），如有必要构建模型集合/堆叠（stacking）；在内层对各模型做网格或贝叶斯超参数搜索并以 RMSE/MAE 为优化目标，同时优先选择在外层 CV 上表现稳定且较易解释的模型；6) 不确定性与预测区间：为最终模型提供预测区间，线性模型可基于残差估计与 t 分布构建，非线性模型可使用分位回归森林、蒙特卡洛子模型集合或 conformal prediction 来生成可靠的区间估计，并报告区间覆盖率；7) 适用域评估：对每个测试样本计算杠杆值（h = x_new^T (X^T X)^{-1} x_new）并以阈值 h* = 3(p+1)/n 或基于训练集协方差的马氏距离与 χ^2( p ) 95% 分位数比较，超出阈值需标注“外推/高不确定性”；8) 诊断与稳健性检验：对最终模型执行残差分析（包括偏差、异方差性检验如 Breusch‑Pagan）、y‑随机化（例如 30–50 次打乱 y 的重训练）以验证非偶然性，以及绘制学习曲线判断是否存在欠拟合或过拟合并记录结果；9) 可解释性与报告：提供最终 20 个描述符的回归系数或相对重要性、部分依赖图或 SHAP 影响方向以便化学可操作解释；10) 可复现性交付物：保存用于训练的预处理脚本、特征选择逻辑与参数、最终模型对象、用于生成 test 预测的脚本及一个 CSV 表（或直接填回 ERα_activity.xlsx）包含 test SMILES、选定描述符值、pIC50_pred、IC50_nM_pred、预测区间下限/上限、AD 标志与不确定性注记；建议实现工具链为 Python（pandas/numpy/scikit‑learn/xgboost/lightgbm/shap/ mapie 或 conformalPrediction 库）或等效 R 包，并在运行说明中固定随机种子与软件版本以保证完全可复现。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "以不超过20个分子描述符为输入，构建并评估可复现的QSAR回归模型来预测ERα的pIC50，并据此计算IC50（nM）、给出预测区间与适用域标识。",
+          "expected_output": "外层CV的RMSE/MAE/R^2/Q^2；最终≤20个描述符名及含义与系数/重要性；对50个test样本的pIC50预测与IC50_nM=10^(−pIC50)×1e9；每条预测的预测区间与AD标识；最终模型文件与预处理/特征选择脚本与参数；可复现的运行说明。",
+          "key_inputs_constraints": "X_train(1974×729，已对齐SMILES且清洗一致)、y_train(pIC50)、X_test(50×≤729，同步预处理)；缺失率>20%特征已删，余下用中位数或kNN(k≈5)插补；高共线(|r|>0.95)簇内保留代表；标准化(z-score/鲁棒缩放)；所有选择在内层CV进行，随机种子固定；最终特征数≤20。",
+          "modeling_type": "预测+拟合+评价",
+          "role_in_pipeline": "位于特征筛选之后、ADMET分类建模之前的核心回归训练环节；前序依赖子任务1的清洗与候选变量集；后序将使用本模型的pIC50预测与不确定性用于多目标权衡与报告。",
+          "assumptions": "若描述符含义文件缺失则仅输出变量名；若分布严重偏态则允许Box-Cox/对数变换；不提供外部数据，所有选择与调参仅基于训练集的嵌套CV。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确pIC50预测与IC50_nM转换",
+              "description": "是否将核心目标表述为“预测pIC50并转换IC50_nM=10^(−pIC50)×1e9”，且强调≤20特征限制与ERα对象。",
+              "score": 35,
+              "evaluation_focus": "问题界定",
+              "scoring_hint": "高分：精确写出公式与单位并注明≤20特征；中分：提到pIC50预测但未明确转换或单位；低分：未区分pIC50与IC50或忽略特征上限。"
+            },
+            {
+              "sub_criteria": "预处理与数据泄露风险识别",
+              "description": "是否识别并提出嵌套交叉验证避免特征选择与标准化信息泄露到外层。",
+              "score": 25,
+              "evaluation_focus": "建模思维",
+              "scoring_hint": "高分：明确外5折/内5折，声明所有预处理在内层；中分：提到CV但未说明内外层；低分：单次留出或将全数据预处理后CV。"
+            },
+            {
+              "sub_criteria": "适用域与不确定性需求",
+              "description": "是否明确需要预测区间与AD标识（杠杆值/马氏距离或共形预测）。",
+              "score": 20,
+              "evaluation_focus": "风险意识",
+              "scoring_hint": "高分：同时提出区间构建方法与AD阈值；中分：仅提到不确定性或AD其一；低分：未提出。"
+            },
+            {
+              "sub_criteria": "评价指标与报告范围",
+              "description": "是否要求外层CV输出RMSE、MAE、R^2、Q^2并固定随机种子与版本以复现。",
+              "score": 20,
+              "evaluation_focus": "评价规范",
+              "scoring_hint": "高分：四项指标齐全且外层CV；中分：指标不全或未说明外层；低分：仅训练分数或无指标。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "数据形状与来源复述",
+              "description": "准确复述X_train 1974×729、X_test 50行、目标为pIC50且与SMILES对齐。",
+              "score": 30,
+              "evaluation_focus": "信息整合",
+              "scoring_hint": "高分：规模、目标、对齐均正确；中分：规模或目标漏一项；低分：关键尺寸或目标错误。"
+            },
+            {
+              "sub_criteria": "流程边界与依赖说明",
+              "description": "清楚界定本任务仅做回归预测与填报测试集，不涉及ADMET分类；依赖前序清洗与特征筛选。",
+              "score": 30,
+              "evaluation_focus": "范围控制",
+              "scoring_hint": "高分：明确本子任务边界与依赖；中分：边界模糊；低分：混入ADMET或特征筛选细节评估结果。"
+            },
+            {
+              "sub_criteria": "关键约束重申",
+              "description": "重申≤20特征、嵌套CV、标准化、去共线(|r|>0.95)及缺失处理要求。",
+              "score": 40,
+              "evaluation_focus": "约束理解",
+              "scoring_hint": "高分：全部约束均被复述；中分：遗漏1-2条；低分：多数约束未提。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "数据分布与变换假设（对数/Box-Cox）",
+              "description": "对严重偏态特征提出变换假设并限定仅在内层CV中拟合变换参数。",
+              "score": 30,
+              "evaluation_focus": "建模假设",
+              "scoring_hint": "高分：指明检测偏度阈值与变换流程；中分：泛泛提变换；低分：未考虑或在全数据上拟合变换。"
+            },
+            {
+              "sub_criteria": "误差分布与区间构建假设",
+              "description": "线性模型残差近似正态（t区间）或采用分布无关的共形预测假设并说明覆盖率目标(如90/95%)。",
+              "score": 30,
+              "evaluation_focus": "不确定性",
+              "scoring_hint": "高分：明确方法与覆盖率；中分：仅提到区间；低分：无区间或假设不当。"
+            },
+            {
+              "sub_criteria": "适用域判定假设",
+              "description": "提出杠杆值阈h*=3(p+1)/n或马氏距离与χ^2阈的假设与标注策略。",
+              "score": 40,
+              "evaluation_focus": "外推控制",
+              "scoring_hint": "高分：给出公式与参数p、n来源；中分：仅口头说明AD；低分：未设AD。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "嵌套交叉验证设计（外5折+内5折）",
+              "description": "完整描述外层泛化估计、内层特征选择与调参流程，固定随机种子并避免信息泄露。",
+              "score": 30,
+              "evaluation_focus": "算法设计",
+              "scoring_hint": "高分：外/内折数与数据泄露防护明确；中分：仅给CV但未区分内外；低分：无嵌套。"
+            },
+            {
+              "sub_criteria": "特征选择至≤20的策略",
+              "description": "结合稳定选择(LASSO/ElasticNet)、RFE、树模型重要性/SHAP并以性能与稳定性折衷确定≤20特征。",
+              "score": 30,
+              "evaluation_focus": "特征工程",
+              "scoring_hint": "高分：多方法融合与稳定性阈；中分：单一方法；低分：超过20或无理由选择。"
+            },
+            {
+              "sub_criteria": "模型候选与可解释性权衡",
+              "description": "比较线性(OLS/LASSO/ElasticNet/PLS)与非线性(SVR/RF/XGBoost)，优先外层CV稳定与可解释模型或合理集成。",
+              "score": 25,
+              "evaluation_focus": "模型选择",
+              "scoring_hint": "高分：多模型对比与选择依据；中分：单模型无对比；低分：选择与目标不符或无依据。"
+            },
+            {
+              "sub_criteria": "预处理流水线化与内层拟合",
+              "description": "标准化、缺失插补、去共线、变换均封装进Pipeline并仅在训练折拟合，同步作用于验证/测试。",
+              "score": 15,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：使用Pipeline/ColumnTransformer；中分：手动但无泄露；低分：拟合于全数据。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "超参数搜索与度量（RMSE/MAE优化）",
+              "description": "在内层用网格/贝叶斯搜索，以RMSE/MAE为主度量并报告最佳参数及方差。",
+              "score": 35,
+              "evaluation_focus": "算法实现",
+              "scoring_hint": "高分：搜索空间合理且报告最佳分数与方差；中分：简略搜索；低分：无调参或以训练分数选型。"
+            },
+            {
+              "sub_criteria": "预测区间生成与覆盖率检验",
+              "description": "基于t区间/分位森林/MC集合/共形预测生成区间，并在外层CV估计覆盖率。",
+              "score": 35,
+              "evaluation_focus": "不确定性",
+              "scoring_hint": "高分：报告目标与实际覆盖率；中分：给区间无检验；低分：无区间。"
+            },
+            {
+              "sub_criteria": "适用域计算与标注",
+              "description": "计算杠杆值或马氏距离，给出超阈值样本标注并影响不确定性说明。",
+              "score": 30,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：阈值、比例、样本清单；中分：仅计算不标注；低分：未实施。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现性（随机种子/版本/脚本）",
+              "description": "固定随机种子、记录库版本，提供一键运行脚本产出预测与报表。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：seed与requirements列出且可复现；中分：部分记录；低分：多次运行结果漂移明显。"
+            },
+            {
+              "sub_criteria": "Pipeline与嵌套CV正确实现",
+              "description": "scikit-learn Pipeline/Mapie/SHAP等正确串联，内外层划分清晰，避免数据泄露。",
+              "score": 35,
+              "evaluation_focus": "工程实现",
+              "scoring_hint": "高分：代码审查可见内层拟合与变换；中分：手写流程但正确；低分：泄露。"
+            },
+            {
+              "sub_criteria": "预测结果写回与格式校验",
+              "description": "将pIC50_pred与IC50_nM_pred、区间、AD写入ERα_activity.xlsx test表或CSV，校验单位与小数位。",
+              "score": 35,
+              "evaluation_focus": "数据落地",
+              "scoring_hint": "高分：字段完整且校验通过；中分：部分字段缺失；低分：未能导出或格式错误。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "外层CV性能与Q^2报告",
+              "description": "完整报告外层CV的RMSE、MAE、R^2、Q^2及其均值±标准差，比较简单基线。",
+              "score": 30,
+              "evaluation_focus": "结果严谨",
+              "scoring_hint": "高分：四指标齐全且有方差与基线对比；中分：指标不全；低分：仅训练分或无CV。"
+            },
+            {
+              "sub_criteria": "诊断分析（残差/异方差/BP检验与y-随机化）",
+              "description": "提供残差图、异方差检验结果、y-随机化多次实验拒绝偶然性。",
+              "score": 30,
+              "evaluation_focus": "稳健性检验",
+              "scoring_hint": "高分：图+检验统计量+y-随机化显著低性能；中分：仅残差图；低分：未验证。"
+            },
+            {
+              "sub_criteria": "可解释性（系数/SHAP/部分依赖）",
+              "description": "输出≤20描述符的系数或SHAP方向与强度，并解读其对pIC50的影响方向。",
+              "score": 25,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：定量贡献与化学意义连贯；中分：仅排名；低分：无解释。"
+            },
+            {
+              "sub_criteria": "不确定性与AD对单条预测的影响说明",
+              "description": "对测试样本给出区间宽度、AD外样本的风险提示与使用注意。",
+              "score": 15,
+              "evaluation_focus": "风险沟通",
+              "scoring_hint": "高分：标注AD外并扩大不确定性说明；中分：有区间无AD说明；低分：未说明。"
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "subtask": "子任务3 的目标是利用提供的 1974 个样本的 729 个分子描述符（来自 Molecular_Descriptor.xlsx 的 training）和对应的五项二分类 ADMET 标签（来自 ADMET.xlsx 的 training），为每一个端点（Caco-2、CYP3A4、hERG、HOB、MN）独立构建、验证并选出最优的二分类预测模型，最终对给定的 50 个测试分子（Molecular_Descriptor.xlsx / ADMET.xlsx 的 test）输出每端点的预测类别与预测概率并写回 ADMET.xlsx 的相应列；该子任务的范围仅限于数据预处理、端点逐一的特征工程、模型训练与选择、概率校准、性能评估、模型解释与对测试集的批量预测与存档，不涉及回归建模或多目标优化。具体步骤和方法包括：1) 数据准备与一致性预处理——以 SMILES 键对齐训练/测试样本，统一缺失值处理策略（如训练集中位数或基于 k‑NN 的插补，并将同样规则应用于测试集），删除恒定/近零方差特征并记录所做变换；2) 特征降维与候选集合构建——先用过滤器方法（如方差阈值、与标签的单变量互信息或排序的相关性）去掉明显无关特征，再在每个端点上用嵌入式方法（L1 正则化逻辑回归 / Elastic Net 的稳定选择）或基于树的置换重要性筛选出一个较小的候选特征子集（可为几十至百个），所有特征选择步骤必须置于交叉验证的内层以避免信息泄露；3) 不平衡样本处理——若某端点标签不平衡，采用分层交叉验证、类权重调整或受控过采样（如 SMOTE）/欠采样策略（在内层 CV 中执行），并优先使用对不平衡稳健的评估指标；4) 模型候选与超参数优化——针对每个端点并行训练多种模型候选（可解释基线：带 L1/L2 的逻辑回归；性能导向：随机森林、XGBoost/LightGBM；必要时浅层神经网络 MLP 或多输出/多任务架构作为备选），在内层进行网格或贝叶斯超参搜索并用嵌套（nested）分层 CV 的外层估计泛化性能；5) 性能度量与模型选择准则——综合使用 ROC‑AUC、PR‑AUC（对不平衡尤重）、灵敏度/召回、特异度、F1 分数与校准误差（Brier score），并根据端点的项目偏好（例如对 hERG 更重视召回）调整决策阈值；6) 概率校准与不确定性——对最终模型做概率校准（Platt/Isotonic）以便输出可解释的预测概率，并对测试样本提供置信/不确定性度量（例如基于交叉验证的概率置信区间或模型集合投票概率）；7) 适用域检测——对每个测试样本计算描述符空间的适用域指标（如基于训练集的马氏距离或 leverage），当样本超出阈值时在输出中标注“外推/高不确定性”；8) 解释性分析——对最终每端点模型使用全局与局部解释工具（如基于置换的重要性、平均绝对 SHAP 值与必要时部分依赖图）识别关键描述符及其效应方向，结果用于输出可读的变量重要性表；9) 输出与可复现性交付物——为每一端点保存最终模型文件、预处理流水线、超参、校准器、选择的特征列表、交叉验证性能报告及稳定性指标，并用该模型批量对 50 个测试分子预测类别与概率（并在 ADMET.xlsx 的 test 表中填入对应列，同时附上每条预测的概率、校准后的概率、是否超出适用域的标注及随机种子/软件版本信息以保证可复现）。建议实现工具链：Python（pandas、scikit‑learn、xgboost/lightgbm、imbalanced‑learn、shap、calibration/Mapie 或等效库），或等效 R 包；并要求所有模型训练与选择均采用分层嵌套 CV、记录随机种子以避免信息泄露并保证结果可审计。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "基于1974条训练样本的729个分子描述符，对5个ADMET端点（Caco-2、CYP3A4、hERG、HOB、MN）分别进行二分类预测模型的训练、校准与评估，并对50个测试分子输出预测概率与类别并写回ADMET.xlsx。",
+          "expected_output": "每端点的已校准二分类模型文件与预处理流水线；嵌套分层CV性能报告（ROC-AUC、PR-AUC、F1、Brier等）；每端点的特征列表与重要性表（置换/SHAP）；50个测试分子在ADMET.xlsx test表中各端点的预测概率、预测类别与适用域标注；随机种子与软件版本记录。",
+          "key_inputs_constraints": "输入：Molecular_Descriptor.xlsx(training/test)的729维特征，ADMET.xlsx(training/test)的5个端点标签与SMILES；约束：以SMILES对齐训练/测试；缺失值统一按训练规则插补；特征选择置于CV内防信息泄露；不平衡处理（分层CV/类权重/SMOTE）在内层执行；输出需概率校准与适用域检测；记录随机种子与超参。",
+          "modeling_type": "分类+预测+评价",
+          "role_in_pipeline": "作为ADMET预测环节：在分子描述符预处理之后、综合优化与决策前。前序依赖：数据对齐与清洗；后序对接：多目标权衡与报告生成、与活性模型联合筛选。",
+          "assumptions": "特征均为数值型；测试集仅用于最终预测不参与训练；允许使用scikit-learn/xgboost/imbalanced-learn/shap；概率写回新列不覆盖原始数据；端点偏好：hERG更重召回，Caco-2/HOB强调PR-AUC。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "明确5个端点的二分类预测目标与输出至ADMET.xlsx",
+              "description": "是否准确指出Caco-2、CYP3A4、hERG、HOB、MN需独立建模，输出校准概率+类别并写回test表对应列。",
+              "score": 30,
+              "evaluation_focus": "任务界定",
+              "scoring_hint": "高分：逐端点列出输出列名与概率/类别；中分：提到多端点但未细化输出形式；低分：未区分端点或遗漏写回。"
+            },
+            {
+              "sub_criteria": "识别数据对齐与信息泄露风险（SMILES主键+CV内特征选择）",
+              "description": "是否强调以SMILES对齐训练/测试并将特征筛选置于交叉验证内层避免泄露。",
+              "score": 35,
+              "evaluation_focus": "风险识别",
+              "scoring_hint": "高分：清晰说明内外层CV职责；中分：只提到CV未提泄露；低分：在全数据上先选特征后CV。"
+            },
+            {
+              "sub_criteria": "不平衡处理与指标选择（ROC-AUC/PR-AUC/Brier）",
+              "description": "是否识别端点潜在类不平衡并选用PR-AUC、ROC-AUC、Brier等合适指标。",
+              "score": 35,
+              "evaluation_focus": "指标选择",
+              "scoring_hint": "高分：针对hERG强调召回/PR-AUC；中分：仅给ROC-AUC；低分：只报准确率。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "重述数据流程（对齐→插补→方差筛→CV内特征→建模→校准→适用域→写回）",
+              "description": "是否按顺序复述端到端流水线并与子任务3一致。",
+              "score": 40,
+              "evaluation_focus": "流程把握",
+              "scoring_hint": "高分：顺序完整且无多余步骤；中分：少1–2步；低分：顺序混乱或缺关键环节。"
+            },
+            {
+              "sub_criteria": "输出形态与复用性（模型文件+报告+版本/随机种子）",
+              "description": "是否明确保存模型、预处理器、性能报告、随机种子与软件版本。",
+              "score": 30,
+              "evaluation_focus": "可复现性",
+              "scoring_hint": "高分：列出文件清单与种子；中分：提到保存模型未含元数据；低分：无保存策略。"
+            },
+            {
+              "sub_criteria": "端点差异化偏好（如hERG召回、Caco-2/HOB强调PR-AUC）",
+              "description": "是否根据端点风险制定差异化阈值与评估重点。",
+              "score": 30,
+              "evaluation_focus": "需求匹配",
+              "scoring_hint": "高分：给出端点特定阈值策略；中分：只泛谈阈值；低分：一刀切默认0.5阈值。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "缺失值与插补假设（训练拟合、测试同规则）",
+              "description": "明确采用中位数或kNN(k≈5)插补，训练拟合参数应用到测试。",
+              "score": 35,
+              "evaluation_focus": "数据假设",
+              "scoring_hint": "高分：说明插补选择与鲁棒性；中分：给出方法无细节；低分：训练测试混合拟合。"
+            },
+            {
+              "sub_criteria": "不平衡与采样假设（分层CV内执行SMOTE/类权重）",
+              "description": "声明仅在内层CV执行SMOTE/欠采样，外层仅评估。",
+              "score": 35,
+              "evaluation_focus": "实验设计",
+              "scoring_hint": "高分：指出管道封装避免泄露；中分：只提SMOTE；低分：在全数据先SMOTE再CV。"
+            },
+            {
+              "sub_criteria": "适用域阈值设定（马氏距离/hat leverage）",
+              "description": "给出基于训练分布的阈值设定与外推标注策略。",
+              "score": 30,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：给出定量阈值如95%分位；中分：只说计算不设阈；低分：未考虑适用域。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "预处理与特征工程管道化（方差阈值、互信息/相关、CV内L1/Elastic Net）",
+              "description": "是否使用Pipeline与ColumnTransformer并在内层CV完成筛选。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：多级过滤+嵌入式选择；中分：仅单变量过滤；低分：无特征工程。"
+            },
+            {
+              "sub_criteria": "候选模型集与正则化（LR L1/L2、RF、XGBoost/LightGBM、MLP可选）",
+              "description": "端点并行多模型，含可解释基线与性能导向模型。",
+              "score": 30,
+              "evaluation_focus": "模型设计",
+              "scoring_hint": "高分：至少LR+树模型+Boosting；中分：单一模型；低分：模型与任务不匹配。"
+            },
+            {
+              "sub_criteria": "嵌套分层CV与超参搜索（网格/贝叶斯）",
+              "description": "外层估计泛化性能，内层优化超参，分层保持类比例。",
+              "score": 35,
+              "evaluation_focus": "验证设计",
+              "scoring_hint": "高分：明确k折(k≥5)与搜索空间；中分：仅单层CV；低分：用测试集调参。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "不平衡稳健训练（class_weight/SMOTE+阈值调优）",
+              "description": "训练时启用类权重或SMOTE，并基于PR-AUC/Youden/Fβ调阈。",
+              "score": 30,
+              "evaluation_focus": "训练策略",
+              "scoring_hint": "高分：报告阈值选择依据；中分：默认0.5；低分：忽视不平衡。"
+            },
+            {
+              "sub_criteria": "概率校准（Platt/Isotonic）与Brier评估",
+              "description": "对最终模型做校准并报告Brier/NLL改进。",
+              "score": 40,
+              "evaluation_focus": "校准能力",
+              "scoring_hint": "高分：给出前后Brier或ECE对比；中分：仅提校准；低分：未校准仍输出概率。"
+            },
+            {
+              "sub_criteria": "适用域判定与不确定性（CV集成/置信区间）",
+              "description": "基于训练分布与CV概率分散度给出外推标注或置信区间。",
+              "score": 30,
+              "evaluation_focus": "不确定性",
+              "scoring_hint": "高分：提供定量阈与标注；中分：文字说明；低分：完全缺失。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现Pipeline与随机种子控制",
+              "description": "使用sklearn Pipeline、set_config与random_state全局控制并固化版本。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：所有随机过程均设种子；中分：部分设定；低分：无控制。"
+            },
+            {
+              "sub_criteria": "避免信息泄露（CV内插补/缩放/特征选择/SMOTE）",
+              "description": "所有数据变换封装在Pipeline并仅在训练折拟合。",
+              "score": 40,
+              "evaluation_focus": "工程规范",
+              "scoring_hint": "高分：使用Pipeline+CV；中分：手工分步可能泄露；低分：全量拟合变换。"
+            },
+            {
+              "sub_criteria": "结果落盘与写回ADMET.xlsx（预测概率/类别/适用域）",
+              "description": "实现批量预测并写回test表指定列，确保列名与顺序正确。",
+              "score": 30,
+              "evaluation_focus": "数据落地",
+              "scoring_hint": "高分：原子写入并校验数量对齐；中分：生成CSV未写回；低分：无可用输出。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "性能报告（ROC-AUC、PR-AUC、F1、灵敏度/特异度、Brier）",
+              "description": "逐端点报告外层CV均值±方差与混淆矩阵。",
+              "score": 35,
+              "evaluation_focus": "结果呈现",
+              "scoring_hint": "高分：多指标完整且含方差；中分：仅AUC；低分：仅口述好坏。"
+            },
+            {
+              "sub_criteria": "阈值与业务偏好解释（如hERG高召回权衡）",
+              "description": "解释阈值如何基于PR曲线/Youden/Fβ选取及对误报/漏报影响。",
+              "score": 30,
+              "evaluation_focus": "决策解释",
+              "scoring_hint": "高分：定量展示阈值-指标曲线；中分：文字说明；低分：无解释。"
+            },
+            {
+              "sub_criteria": "模型解释（置换/SHAP全局与局部）与关键描述符",
+              "description": "输出各端点Top特征及方向性，必要时给出PDP/ICE示例。",
+              "score": 35,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：提供SHAP值分布与一致性检查；中分：仅列重要性；低分：无解释。"
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "subtask": "子任务4（多目标优化与可操作描述符区间提取、敏感性分析与模型维护流程）的目标是：基于已有的每个分子的一组数值分子描述符及其对应的预测输出（回归模型给出的pIC50预测值与其不确定度估计，以及五个ADMET端点的预测概率及其不确定度），系统化地识别在同时提高ERα抑制活性与至少三个ADMET端点良好（由用户设定概率阈值）的条件下可操作的描述符改造方向和具体取值区间，并给出可复现的优化与维护流程；其输入为：待优化候选集（由训练集、测试集或虚拟库中每个分子的描述符向量）、对应的pIC50_pred与其预测区间、五个ADMET概率预测P_k及其不确定度估计，以及原始训练数据用于适用域判断与统计检验；输出为：一组遵循可解释准则的“候选分子优先级列表/帕累托前沿”、对优良候选的具体描述符取值区间（以统计置信区间和分位数表示）、全局与局部敏感性排序、可执行的合成导向建议、适用域与不确定性标注、以及模型维护/更新触发规则。执行步骤和方法（按顺序实施）：(1) 定义多目标准则——明确活性与ADMET的目标函数或约束（例如目标为最大化pIC50_pred，约束为至少三项ADMET P_k ≥ τ_admet，或定义综合分数 S(m)=w_act·norm(pIC50_pred)+Σ_k w_k·norm(P_k) 并明确归一化函数与权重w）；(2) 初步筛选候选集——在候选分子集合上应用适用域检测（基于训练集的马氏距离或leverage）剔除高外推风险分子并记录其不确定性标记；(3) 多目标优化与帕累托分析——在离散候选集合上计算S(m)并识别帕累托不可支配解集；对于需要在连续描述符空间搜索的新结构，使用多目标优化算法（推荐使用 NSGA‑II 或基于 pymoo/DEAP 的进化算法进行无约束/有约束多目标搜索，或用贝叶斯优化框架（如多目标 GP 或基于 TPE 的采集函数）在高不确定性区域进行样本高效探索）；(4) 可解释性与取值区间提取——对被选为优良（满足阈值或位于帕累托前沿）的分子集合，利用全局解释方法（SHAP 平均绝对值、变量重要性、Sobol 全局灵敏度分析）识别关键描述符，并用部分依赖图（PDP）、单变量/双变量 SHAP 依赖图、条件 PDP（或 ALE）分析每一关键描述符对 pIC50 与各 ADMET 概率的方向性与非线性效应；(5) 统计确定操作区间——对优良集合与非优良集合在每个关键描述符上的分布做统计比较（采用 t 检验或 Mann‑Whitney U 检验，根据分布选择无母数检验），并以优良集合的中位数±IQR 或 5%–95% 分位区间作为建议的“可操作取值区间”，同时计算该区间内样本的成功率与置信区间以量化建议的可靠性；(6) 局部敏感性与稳健性检验——对候选代表分子做一阶一元扰动（单变量±Δ）和局部多变量扰动模拟，观察模型输出的变化并计算局部弹性系数，识别对结果敏感且易于合成调整的描述符；(7) 验证与回溯模拟——在训练或独立验证集中用所提取的阈值筛选分子并计算正/负预测值（PPV/NPV）、召回率等指标以评估规则的上下文适用性；(8) 可执行建议与输出格式——生成易读报告与机器可读文件：帕累托前沿分子清单（含S(m)、pIC50_pred、每项ADMET概率、适用域标志）、关键描述符清单及其“推荐区间+置信度”、局部合成建议（哪些原子团/理化属性需增减以移动描述符至目标区间）、以及示例合成优先级序列；(9) 不确定性管理与决策阈定——为每一条建议提供不确定性标注（基于预测区间或模型集合方差），并建议决策策略（例如高置信度优先合成，高不确定性但帕累托优解可先做小规模验证实验）；(10) 维护与重训练触发规则——定义明确的监控指标与触发条件（例如当新增实验标注数超过 N_new 或模型在新验证样本上的性能下降超过预设阈值 Δ性能时触发重训练/增量学习），要求版本控制（模型与数据版本）、日志记录与可重复的重现脚本；(11) 推荐工具与实现细节——建议使用 Python 工具链（pandas/numpy/scikit‑learn/xgboost/lightgbm/pymoo 或 DEAP、GP 或 scikit‑optimize / gpflow、SHAP、SALib 用于 Sobol 分析、statsmodels/scipy 用于统计检验、Mapie/ConformalPrediction 用于不确定度区间），并保证所有分析在固定随机种子、记录软件版本的条件下可复现。该子任务限定不进行新的实验测定或引入额外的外部描述符集，所有结论应建立在给定的描述符与预测输出之上，并以可复现的脚本、明确阈值与置信度指标交付，便于化学家据此制定合成与验证优先级。",
+      "criteria": {
+        "task_understanding": {
+          "core_goal": "在给定 pIC50 预测及不确定度和五项 ADMET 概率的基础上，进行多目标优化与评估，提取可操作的分子描述符取值区间与敏感性排序，并生成帕累托前沿与维护流程。",
+          "expected_output": "帕累托前沿与候选优先级清单；综合分数 S(m) 与各目标达标标记；关键描述符及推荐取值区间（含置信度、成功率）；全局/局部敏感性排序与PDP/SHAP图；适用域与不确定性标注；模型维护与重训练触发规则文档；可复现脚本与版本记录。",
+          "key_inputs_constraints": "输入：分子描述符矩阵X、pIC50_pred及预测区间、ADMET 概率 P_k 及不确定度、训练集用于适用域/统计检验；约束：至少3项 ADMET P_k ≥ τ_admet（用户阈值），活性目标为最大化 pIC50_pred；需记录随机种子与软件版本；不得引入外部描述符；采用适用域筛查（leverage/马氏距离）。",
+          "modeling_type": "优化+评价",
+          "role_in_pipeline": "作为特征选择与回归/分类预测之后的下游决策与推荐环节；前序依赖：子任务1特征筛选、子任务2 pIC50 回归、子任务3 ADMET 分类；后序衔接：化学合成设计与实验验证、数据回流触发模型维护。"
+        },
+        "evaluation_criteria": {
+          "问题识别": [
+            {
+              "sub_criteria": "多目标优化与约束识别（pIC50 与 ADMET 概率）",
+              "description": "是否明确最大化 pIC50_pred 且同时满足至少三项 ADMET 概率 P_k ≥ τ_admet 的约束或等价综合分数 S(m) 定义。",
+              "score": 35,
+              "evaluation_focus": "问题界定",
+              "scoring_hint": "高分：清晰给出目标与约束或S(m)的数学式并指明τ_admet；中分：只口头描述目标/约束，缺少可计算定义；低分：混淆目标与约束或忽略ADMET条件。"
+            },
+            {
+              "sub_criteria": "不确定度与适用域处理",
+              "description": "是否将预测区间与马氏距离/杠杆值用于筛除外推高风险样本并加权评分或标注风险。",
+              "score": 25,
+              "evaluation_focus": "风险管理",
+              "scoring_hint": "高分：给出具体阈值（如χ²分位数或h*）与不确定度加权策略；中分：仅标注高不确定但无阈值；低分：未考虑适用域/不确定度。"
+            },
+            {
+              "sub_criteria": "帕累托前沿与离散/连续情形区分",
+              "description": "是否识别不可支配解集，并区分离散候选筛选与连续描述符空间搜索的策略。",
+              "score": 20,
+              "evaluation_focus": "优化理解",
+              "scoring_hint": "高分：正确定义帕累托支配并提出NSGA‑II/贝叶斯多目标方案；中分：只给排名无帕累托解释；低分：将单目标排序误作多目标最优。"
+            },
+            {
+              "sub_criteria": "可操作描述符与化学可行性",
+              "description": "是否将‘可操作’限定为可通过结构改造改变的描述符并指出不可直接操作的聚合指标需间接映射。",
+              "score": 20,
+              "evaluation_focus": "可实施性",
+              "scoring_hint": "高分：给出可操作示例（如LogP、HBD）与不可操作示例并提出映射；中分：笼统声称可调；低分：忽略可操作性限制。"
+            }
+          ],
+          "问题复述": [
+            {
+              "sub_criteria": "S(m) 综合分数或显式约束的正式化复述",
+              "description": "将多目标（pIC50_pred与P_k）转化为可实现的打分或约束集合，并指明归一化与权重。",
+              "score": 30,
+              "evaluation_focus": "形式化",
+              "scoring_hint": "高分：提供norm函数、权重w、阈值τ；中分：仅文本描述无公式；低分：未复述或复述错误。"
+            },
+            {
+              "sub_criteria": "数据流与依赖关系复述",
+              "description": "清晰复述输入来自子任务2/3的预测与不确定度，训练集用于适用域与统计检验。",
+              "score": 30,
+              "evaluation_focus": "流程认知",
+              "scoring_hint": "高分：列明来源与用途；中分：提到来源但用途含糊；低分：来源不明或错用。"
+            },
+            {
+              "sub_criteria": "产出物清单复述",
+              "description": "复述需交付帕累托清单、描述符区间+置信度、敏感性排序、维护规则与可复现脚本。",
+              "score": 40,
+              "evaluation_focus": "输出把握",
+              "scoring_hint": "高分：逐项覆盖并可检核；中分：缺少2项以内；低分：遗漏关键产出如区间或帕累托。"
+            }
+          ],
+          "假设建立": [
+            {
+              "sub_criteria": "阈值设定假设（τ_admet 与成功率口径）",
+              "description": "明确ADMET概率阈值、覆盖率目标或成功率口径（如≥3端点且P_k≥0.7）。",
+              "score": 30,
+              "evaluation_focus": "参数假设",
+              "scoring_hint": "高分：给定数值并说明可配置；中分：给范围无默认；低分：未设定阈值。"
+            },
+            {
+              "sub_criteria": "稳定性与独立性假设",
+              "description": "阐明描述符间相关性对区间与敏感性分析的影响及控制（如聚类后选代表）。",
+              "score": 25,
+              "evaluation_focus": "统计假设",
+              "scoring_hint": "高分：提出相关性阈值与控制策略；中分：仅口头提相关；低分：忽略共线性。"
+            },
+            {
+              "sub_criteria": "不确定度传播假设",
+              "description": "说明如何将pIC50预测区间与P_k不确定度传递到S(m)与规则置信度。",
+              "score": 25,
+              "evaluation_focus": "误差传播",
+              "scoring_hint": "高分：给出蒙特卡洛/保守下界或conformal区间用法；中分：提到但无方法；低分：未考虑。"
+            },
+            {
+              "sub_criteria": "适用域边界假设",
+              "description": "设定马氏距离/杠杆阈值与外推标注策略。",
+              "score": 20,
+              "evaluation_focus": "AD定义",
+              "scoring_hint": "高分：给定χ²分位或h*=3(p+1)/n；中分：笼统提AD；低分：无AD假设。"
+            }
+          ],
+          "模型构建": [
+            {
+              "sub_criteria": "多目标优化框架（帕累托/NSGA‑II/贝叶斯）",
+              "description": "针对离散集计算帕累托，连续空间提出NSGA‑II或多目标GP/TPE搜索方案与约束处理。",
+              "score": 35,
+              "evaluation_focus": "算法选择",
+              "scoring_hint": "高分：说明决策变量、适应度、约束惩罚/可行性优先；中分：仅提算法名；低分：无框架或不当。"
+            },
+            {
+              "sub_criteria": "综合分数S(m)构造与归一化",
+              "description": "定义norm、权重、活性与ADMET方向一致化，含不确定度惩罚或置信加权。",
+              "score": 25,
+              "evaluation_focus": "目标设计",
+              "scoring_hint": "高分：公式+权重选择理由；中分：口头描述；低分：缺失或不一致化错误。"
+            },
+            {
+              "sub_criteria": "可解释性与区间提取方法",
+              "description": "使用SHAP/PDP/ALE与统计检验（U检验/t检验）提取‘优良’ vs ‘非优良’的描述符推荐区间与成功率。",
+              "score": 25,
+              "evaluation_focus": "可解释性",
+              "scoring_hint": "高分：给出区间定义（如5%–95%）与置信区间；中分：仅给趋势；低分：无方法或仅经验阈值。"
+            },
+            {
+              "sub_criteria": "适用域与加权策略集成",
+              "description": "在构建阶段纳入AD过滤或权重，避免外推样本主导优化。",
+              "score": 15,
+              "evaluation_focus": "稳健性",
+              "scoring_hint": "高分：明确加权或剔除规则；中分：后处理标注；低分：完全忽略。"
+            }
+          ],
+          "模型求解": [
+            {
+              "sub_criteria": "帕累托集合与排序实现",
+              "description": "正确计算不可支配解与拥挤距离/多样性保持，输出优先级列表。",
+              "score": 30,
+              "evaluation_focus": "求解质量",
+              "scoring_hint": "高分：提供支配判定与多样性机制；中分：仅给集合无细节；低分：错误支配或单目标排序替代。"
+            },
+            {
+              "sub_criteria": "区间与统计检验计算",
+              "description": "对关键描述符计算分位区间、成功率与置信区间，并执行适当的统计检验与多重比较控制。",
+              "score": 30,
+              "evaluation_focus": "统计实现",
+              "scoring_hint": "高分：报告区间、p值与校正；中分：仅区间无检验；低分：无量化。"
+            },
+            {
+              "sub_criteria": "局部敏感性分析与扰动模拟",
+              "description": "进行单变量±Δ及多变量小扰动，量化pIC50与P_k弹性并识别高敏参数。",
+              "score": 25,
+              "evaluation_focus": "灵敏度",
+              "scoring_hint": "高分：给出弹性系数或梯度近似；中分：仅定性描述；低分：未做。"
+            },
+            {
+              "sub_criteria": "不确定度传播与保守估计",
+              "description": "通过蒙特卡洛/下界法将预测不确定度反映到S(m)、区间与优先级。",
+              "score": 15,
+              "evaluation_focus": "鲁棒性",
+              "scoring_hint": "高分：明确采样次数或下界策略；中分：泛述；低分：忽略。"
+            }
+          ],
+          "代码实现": [
+            {
+              "sub_criteria": "可复现性（随机种子与版本记录）",
+              "description": "固定随机种子，记录软件版本，输出运行日志与配置文件。",
+              "score": 30,
+              "evaluation_focus": "代码可靠性",
+              "scoring_hint": "高分：种子与requirements明确；中分：部分记录；低分：无记录导致不可复现。"
+            },
+            {
+              "sub_criteria": "工具链与库使用（pymoo/DEAP、SHAP、SALib、scipy）",
+              "description": "正确调用多目标优化与解释/统计库，避免信息泄露与错误API用法。",
+              "score": 25,
+              "evaluation_focus": "实现能力",
+              "scoring_hint": "高分：模块化流水线、正确API；中分：能跑但耦合高；低分：误用库或结果不稳定。"
+            },
+            {
+              "sub_criteria": "数据管线与适用域计算",
+              "description": "实现马氏距离/杠杆计算、外推标注与加权筛选的可重复函数。",
+              "score": 25,
+              "evaluation_focus": "工程化",
+              "scoring_hint": "高分：函数化与单元测试；中分：脚本化但可用；低分：手工计算易错。"
+            },
+            {
+              "sub_criteria": "输出与存档格式",
+              "description": "生成机器可读CSV/JSON与图表（PDP/SHAP/帕累托散点），并含置信度与AD标识。",
+              "score": 20,
+              "evaluation_focus": "结果产物",
+              "scoring_hint": "高分：字段齐全、命名一致；中分：缺少部分字段；低分：仅图片无数据或相反。"
+            }
+          ],
+          "结果分析": [
+            {
+              "sub_criteria": "帕累托结果解读与权衡分析",
+              "description": "解释不同解在pIC50与ADMET间的权衡与选择理由，给出示例候选优先级。",
+              "score": 30,
+              "evaluation_focus": "结果解释",
+              "scoring_hint": "高分：具体对比并说明取舍；中分：泛述最优；低分：无解释。"
+            },
+            {
+              "sub_criteria": "描述符区间的化学可操作建议",
+              "description": "将区间映射到可合成的结构/理化改造方向（如增疏水基团提升LogP至目标区间）。",
+              "score": 25,
+              "evaluation_focus": "可实施性",
+              "scoring_hint": "高分：给出具体基团/策略；中分：给大方向；低分：未给可操作建议。"
+            },
+            {
+              "sub_criteria": "规则验证与回溯模拟",
+              "description": "在训练/验证集上用区间规则评估PPV/NPV/召回并报告覆盖率。",
+              "score": 25,
+              "evaluation_focus": "实证验证",
+              "scoring_hint": "高分：提供指标与阈值；中分：仅案例；低分：无验证。"
+            },
+            {
+              "sub_criteria": "维护与重训练触发条件",
+              "description": "提出当新增标注或性能下降超阈值时的重训练规则与版本化流程。",
+              "score": 20,
+              "evaluation_focus": "运营维护",
+              "scoring_hint": "高分：量化阈值（如ΔAUC/RMSE）与流程；中分：概述；低分：无维护策略。"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
