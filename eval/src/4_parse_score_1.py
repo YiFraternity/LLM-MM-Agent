@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from eval_utils import (
+    find_task_id_from_path,
     load_json,
 )
 
@@ -16,31 +17,35 @@ def _process_file(json_path: Path | str, output_excel: Path | str | None = None)
     sections = ["问题识别", "问题复述", "假设建立", "模型构建", "模型求解", "代码实现", "结果分析"]
 
     results = {}
-    for sub_id, content in data.items():
-        results[sub_id] = {}
-        for section in sections:
-            entries = content.get(section, [])
-            total_score = sum(entry.get("score", 0) for entry in entries)
-            results[sub_id][section] = total_score
+    try:
+        for sub_id, content in data.items():
+            results[sub_id] = {}
+            for section in sections:
+                entries = content.get(section, [])
+                total_score = sum(entry.get("score", 0) for entry in entries)
+                results[sub_id][section] = total_score
 
-    df = pd.DataFrame(results).T
-    df.index.name = "子问题"
+        df = pd.DataFrame(results).T
+        df.index.name = "子问题"
 
-    if output_excel is None:
-        output_excel = Path(json_path).with_suffix(".xlsx")
-    else:
-        output_excel = Path(output_excel)
+        if output_excel is None:
+            output_excel = Path(json_path).with_suffix(".xlsx")
+        else:
+            output_excel = Path(output_excel)
 
-    output_excel.parent.mkdir(parents=True, exist_ok=True)
-    df.to_excel(output_excel, sheet_name="scores")
+        output_excel.parent.mkdir(parents=True, exist_ok=True)
+        df.to_excel(output_excel, sheet_name="scores")
 
-    for sub_id, section_scores in results.items():
-        print(f"子问题{sub_id}:")
-        for section, score in section_scores.items():
-            print(f"  {section}: {score}")
-        print()
+        for sub_id, section_scores in results.items():
+            print(f"子问题{sub_id}:")
+            for section, score in section_scores.items():
+                print(f"  {section}: {score}")
+            print()
 
-    print(f"评分结果已写入 Excel 文件: {output_excel}")
+        print(f"评分结果已写入 Excel 文件: {output_excel}")
+    except:
+        task_id = find_task_id_from_path(json_path)
+        return task_id
 
 
 def main(input_path: Path | str | None = None, output_path: Path | str | None = None):
@@ -49,6 +54,7 @@ def main(input_path: Path | str | None = None, output_path: Path | str | None = 
 
     input_path = Path(input_path)
 
+    errors = []
     if input_path.is_dir():
         if output_path is None:
             raise ValueError("处理目录时必须提供输出目录 output_path。")
@@ -57,10 +63,12 @@ def main(input_path: Path | str | None = None, output_path: Path | str | None = 
         for task_id in input_path.iterdir():
             for json_file in sorted(task_id.glob("*.json")):
                 target_excel = output_dir / task_id.name / f"{json_file.stem}.xlsx"
-                _process_file(json_file, target_excel)
+                error = _process_file(json_file, target_excel)
+                errors.append(error)
     else:
         _process_file(input_path, output_path)
-
+    errors = [_ for _ in errors if _]
+    print(f'⚠️  errors task ids: {errors}')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="汇总评分并导出为 Excel。")
