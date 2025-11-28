@@ -68,8 +68,6 @@ class LLM:
                 {'role': 'user', 'content': prompt}
             ],
             timeout=timeout,
-            prompt_cache_key="cache-demo-key",
-            prompt_cache_retention='24h',
             **kwargs,
         )
 
