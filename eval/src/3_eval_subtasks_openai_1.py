@@ -10,8 +10,8 @@ import re
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
+from llm.llm import LLM
 from eval_utils import (
-    call_openai_api,
     clean_json_txt,
     find_task_id_from_path,
     load_tex_content,
@@ -95,6 +95,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--ai-model-name', default='deepseek-chat-v3.1:free', help='AI 模型名称，例如 deepseek-chat-v3.1:free')
 
     parser.add_argument('--openai-model', default='gpt-5-mini', help='OpenAI 模型名称，例如 gpt-4o-mini')
+    parser.add_argument('--openai-log-dir', default='eval/logs/openai', type=Path,
+                        help='OpenAI API 日志目录')
 
     args = parser.parse_args()
     return args
@@ -114,6 +116,8 @@ def main(args):
             task_paths.append(task_dir/'latex'/'solution.tex')
 
     task_paths = sorted(task_paths)
+    llm = LLM(model_name=args.openai_model)
+
     for task in task_paths:
         task_id = find_task_id_from_path(task)
         criteria_path = args.criteria_dir / f'{task_id}.json'
@@ -164,7 +168,7 @@ def main(args):
                     'report_criteria': subtask_info.get('criteria', ''),
                 }
                 user_prompt = populate_template(user_prompt_template, prompt_info)
-                response = call_openai_api(user_prompt, system_prompt, model=args.openai_model)
+                response = llm.generate(prompt=user_prompt, system=system_prompt)
                 response = clean_json_txt(response)
                 # response = '模拟的评估结果'
                 eval_results[str(subtask_id)] = response
@@ -179,6 +183,10 @@ def main(args):
 
         write_json(eval_results_sorted, output_path)
         write_json(tmp_results_sorted, tmp_path)
+
+        total_usage = llm.get_total_usage()
+        write_json(total_usage, args.openai_log_dir / f'{task_id}.json')
+        llm.clear_usage()
 
 if __name__ == '__main__':
     args = parse_args()

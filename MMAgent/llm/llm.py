@@ -49,7 +49,8 @@ class LLM:
         if usage:
             self.usages.append(usage)
             self.logger.info(
-                f"[LLM] UserID: {self.user_id}, Model: {self.model_name}, Usage: {usage}"
+                f"[LLM] UserID: {self.user_id}, Model: {self.model_name}, "
+                f"Usage: {usage} (cached={usage.get('cached_tokens',0)})"
             )
 
     @retry(
@@ -58,7 +59,7 @@ class LLM:
         stop=stop_after_attempt(5),
         before_sleep=before_sleep_log(logging.getLogger(__name__), logging.WARNING)
     )
-    def _safe_completion(self, system: str, prompt: str, temperature: float = 0.7, timeout: int = 60):
+    def _safe_completion(self, system: str, prompt: str, timeout: int = 60, **kwargs):
         """Wrapper with tenacity-based retry"""
         return self.client.chat.completions.create(
             model=self.model_name,
@@ -66,22 +67,33 @@ class LLM:
                 {'role': 'system', 'content': system},
                 {'role': 'user', 'content': prompt}
             ],
-            temperature=temperature,
-            top_p=0.95,
             timeout=timeout,
+            prompt_cache_key="cache-demo-key",
+            prompt_cache_retention='24h',
+            **kwargs,
         )
 
-    def generate(self, prompt: str, system: str = '', usage: bool = True, temperature: float = 0.7, timeout: int = 180):
+    def generate(self, prompt: str, system: str = '', usage: bool = True, timeout: int = 180, **kwargs):
         """Generate response with automatic retry (tenacity)"""
-        self.logger.info(f"🚀  Calling OpenAI API | model={self.model_name}, temp={temperature}")
+        self.logger.info(f"🚀  Calling OpenAI API | api-base={self.api_base} model={self.model_name}")
         try:
-            response = self._safe_completion(system, prompt, temperature, timeout)
+            response = self._safe_completion(system, prompt, timeout, **kwargs)
             answer = response.choices[0].message.content
             usage_data = {
                 'completion_tokens': response.usage.completion_tokens,
                 'prompt_tokens': response.usage.prompt_tokens,
                 'total_tokens': response.usage.total_tokens,
             }
+            if hasattr(response.usage, "prompt_tokens_details"):
+                details = response.usage.prompt_tokens_details
+                usage_data.update({
+                    "cached_tokens": getattr(details, "cached_tokens", 0),
+                })
+            if hasattr(response.usage, "completion_tokens_details"):
+                details = response.usage.completion_tokens_details
+                usage_data.update({
+                    "reasoning_tokens": getattr(details, "reasoning_tokens", 0),
+                })
             if usage:
                 self._log_usage(usage_data)
             return answer
@@ -95,11 +107,16 @@ class LLM:
         total_usage = {
             'completion_tokens': 0,
             'prompt_tokens': 0,
-            'total_tokens': 0
+            'total_tokens': 0,
+            'cached_tokens': 0,
+            'reasoning_tokens': 0,
         }
         for usage in self.usages:
             for key, value in usage.items():
-                total_usage[key] += value
+                if key in total_usage:
+                    total_usage[key] += value
+                else:
+                    total_usage[key] = value
         return total_usage
 
     def clear_usage(self):
