@@ -71,7 +71,7 @@ class LLM:
             **kwargs,
         )
 
-    def generate(self, prompt: str, system: str = '', usage: bool = True, timeout: int = 180, **kwargs):
+    def generate(self, prompt: str, system: str = '', usage: bool = True, timeout: int = 600, **kwargs):
         """Generate response with automatic retry (tenacity)"""
         self.logger.info(f"🚀  Calling OpenAI API | api-base={self.api_base} model={self.model_name}")
         try:
@@ -99,7 +99,7 @@ class LLM:
         except Exception as e:
             err_msg = f"[LLM:{self.model_name}] generation failed for user {self.user_id}: {e}"
             self.logger.error(err_msg)
-            return err_msg
+            raise type(e)(err_msg) from e
 
     def get_total_usage(self):
         total_usage = {
