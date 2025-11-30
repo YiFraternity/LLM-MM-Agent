@@ -3,6 +3,7 @@ import time
 import logging
 from functools import wraps
 from typing import Callable, Optional
+from requests.exceptions import ConnectionError, Timeout as RequestsTimeout
 from tenacity import (
     retry,
     retry_if_exception_type,
@@ -11,8 +12,12 @@ from tenacity import (
     wait_fixed,
     before_sleep_log,
 )
-from openai import OpenAIError, RateLimitError, APIError
-from requests.exceptions import ConnectionError, Timeout as RequestsTimeout
+from openai import (
+    APIConnectionError,
+    APIStatusError,
+    RateLimitError,
+    APITimeoutError,
+)
 
 
 # ------------------------------
@@ -51,15 +56,16 @@ def retry_on_api_error(max_attempts=5, min_wait=2, max_wait=20, multiplier=2, wa
         def wrapper(*args, **kwargs):
             wait_strategy = (
                 wait_exponential(multiplier=multiplier, min=min_wait, max=max_wait)
-                if wait_time is None else
-                wait_fixed(wait_time)
+                if wait_time is None
+                else wait_fixed(wait_time)
             )
 
             retry_decorator = retry(
                 retry=retry_if_exception_type((
-                    OpenAIError,
+                    APIConnectionError,
+                    APIStatusError,
                     RateLimitError,
-                    APIError,
+                    APITimeoutError,
                     ConnectionError,
                     RequestsTimeout,
                     TimeoutError,
