@@ -2,7 +2,6 @@ import os
 import logging
 from dotenv import load_dotenv
 from openai import OpenAI
-import anthropic
 from utils.retry_utils import (
     retry_on_api_error,
 )
@@ -29,6 +28,7 @@ class LLM:
 
         # ---- Select provider based on model name ----
         if self.is_claude(self.model_name):
+            import anthropic
             self.provider = "anthropic"
             self.api_key = os.getenv("ANTHROPIC_API_KEY")
             self.api_base = os.getenv("ANTHROPIC_API_BASE") or "https://api.anthropic.com/v1"
@@ -42,11 +42,7 @@ class LLM:
             if not self.api_key:
                 raise ValueError("OPENAI_API_KEY not found")
 
-            self.api_base = (
-                os.getenv("DEEPSEEK_API_BASE")
-                if self.is_deepseek(self.model_name)
-                else os.getenv("OPENAI_API_BASE") or "https://api.openai.com/v1"
-            )
+            self.api_base = os.getenv("DEEPSEEK_API_BASE") or os.getenv("OPENAI_API_BASE") or "https://api.openai.com/v1"
 
             self.client = OpenAI(
                 api_key=self.api_key,
