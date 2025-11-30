@@ -131,7 +131,7 @@ class ContentGenerator:
 
         return text.strip()
 
-    @retry_on_api_error(max_attempts=3, wait_time=3)
+    @retry_on_api_error(max_attempts=3,  min_wait=5)
     def generate_chapter_content(self, prompt: str) -> str:
         """Generate chapter content using the language model"""
         response = self.llm.generate(prompt)
@@ -715,7 +715,7 @@ class PaperGenerator:
             return generated_title
         return ''
 
-    @retry_on_api_error(max_attempts=3, wait_time=3)
+    @retry_on_api_error(max_attempts=3,  min_wait=5)
     @reflective_retry_on_logic_error(
         max_attempts=3,
         wait_time=3,

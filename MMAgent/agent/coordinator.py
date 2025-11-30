@@ -82,7 +82,7 @@ class Coordinator:
 
         return order
 
-    @retry_on_api_error(max_attempts=3, wait_time=3)
+    @retry_on_api_error(max_attempts=3,  min_wait=5)
     def analyze(self, tasknum: int, modeling_problem: str, task_descriptions: List[str], with_code: bool):
         problem_str = modeling_problem[:5000]
         if with_code:
@@ -99,7 +99,7 @@ class Coordinator:
             ).strip()
         return self.llm.generate(prompt)
 
-    @retry_on_api_error(max_attempts=3, wait_time=3)
+    @retry_on_api_error(max_attempts=3,  min_wait=5)
     @reflective_retry_on_logic_error(max_attempts=5, wait_time=2)
     @ensure_parsed_json_output
     def dag_construction(self, tasknum: int, modeling_problem: str, task_descriptions: str, task_dependency_analysis: str) -> dict:
