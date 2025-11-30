@@ -60,7 +60,7 @@ def retry_on_api_error(max_attempts=5, min_wait=2, max_wait=20, multiplier=2, wa
                 else wait_fixed(wait_time)
             )
 
-            retry_decorator = retry(
+            retry_wrapper = retry(
                 retry=retry_if_exception_type((
                     APIConnectionError,
                     APIStatusError,
@@ -74,9 +74,9 @@ def retry_on_api_error(max_attempts=5, min_wait=2, max_wait=20, multiplier=2, wa
                 stop=stop_after_attempt(max_attempts),
                 before_sleep=before_sleep_log(logger, logging.WARNING),
                 reraise=True,
-            )
+            )(func)
 
-            return retry_decorator(func)(*args, **kwargs)
+            return retry_wrapper(*args, **kwargs)
 
         return wrapper
     return decorator
@@ -130,7 +130,9 @@ def ensure_parsed_json_output(func):
 
         try:
             json_str = raw_text.split("```json", 1)[1].split("```", 1)[0].strip()
+            logger.info(f"raw JSON string extracted: {raw_text}")
             parsed = json.loads(json_str)
+            logger.info(f"[{func.__name__}] Successfully parsed JSON output.")
         except Exception as e:
             raise LogicError(f"[{func.__name__}] Failed to parse JSON: {e}")
 
@@ -158,39 +160,48 @@ def reflective_retry_on_logic_error(
     def decorator(func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            last_error: Optional[Exception] = None
+
+            args_list = list(args)
+            last_error = None
+
+            # ---- 识别 prompt 参数 ----
+            def append_to_prompt(text: str):
+                """始终在 prompt 末尾添加反思语句"""
+                # 优先在 kwargs["prompt"] 加
+                if "prompt" in kwargs and isinstance(kwargs["prompt"], str):
+                    kwargs["prompt"] += text
+                    return
+
+                # 否则可能 prompt 在 args 的第二个位置 (self, prompt, ...)
+                if len(args_list) > 1 and isinstance(args_list[1], str):
+                    args_list[1] = args_list[1] + text
+                    return
+
+                # 找不到 prompt → 不追加
+                logger.warning("⚠️ No valid prompt parameter found to append reflection text.")
 
             for attempt in range(1, max_attempts + 1):
                 try:
-                    return func(*args, **kwargs)
+                    return func(*args_list, **kwargs)
+
                 except error_types as e:
                     last_error = e
                     logger.warning(f"⚠️ [{func.__name__}] Attempt {attempt}/{max_attempts} failed: {e}")
 
                     if attempt == max_attempts:
-                        logger.error(f"❌ [{func.__name__}] All {max_attempts} attempts failed.")
+                        logger.error(f"❌ [{func.__name__}] All retry attempts failed.")
                         raise
 
                     # 生成反思性提示
                     reflective_instruction = (
                         reflection_template.format(error=str(e))
                         if reflection_template
-                        else f"\n\n⚠️ Previous attempt failed due to: {e}. "
-                             "Please carefully reflect on this issue and regenerate a valid, complete output."
+                        else f"\n\n⚠️ Previous attempt failed: {e}. Please correct and regenerate valid output."
                     )
 
-                    # 修改 prompt 或文本参数
-                    modified = False
-                    for key in ["prompt", "code", "text", "query"]:
-                        if key in kwargs and isinstance(kwargs[key], str):
-                            kwargs[key] += reflective_instruction
-                            modified = True
-                            break
-                    if not modified and args and isinstance(args[0], str):
-                        args = (args[0] + reflective_instruction, *args[1:])
+                    append_to_prompt(reflective_instruction)
 
-                    # 等待固定时间再重试
-                    logger.info(f"⏳ Waiting {wait_time:.2f}s before next attempt...")
+                    logger.info(f"⏳ Waiting {wait_time}s before retry...")
                     time.sleep(wait_time)
 
             # 最后仍失败，抛出异常
