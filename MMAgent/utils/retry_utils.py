@@ -130,9 +130,7 @@ def ensure_parsed_json_output(func):
 
         try:
             json_str = raw_text.split("```json", 1)[1].split("```", 1)[0].strip()
-            logger.info(f"raw JSON string extracted: {raw_text}")
             parsed = json.loads(json_str)
-            logger.info(f"[{func.__name__}] Successfully parsed JSON output.")
         except Exception as e:
             raise LogicError(f"[{func.__name__}] Failed to parse JSON: {e}")
 
