@@ -131,7 +131,7 @@ class ContentGenerator:
 
         return text.strip()
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def generate_chapter_content(self, prompt: str) -> str:
         """Generate chapter content using the language model"""
         response = self.llm.generate(prompt)
@@ -715,10 +715,10 @@ class PaperGenerator:
             return generated_title
         return ''
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     @reflective_retry_on_logic_error(
         max_attempts=3,
-        wait_time=3,
+        wait_time=30,
     )
     @ensure_parsed_json_output
     def _call_llm_for_metadata(self, prompt: str) -> dict:

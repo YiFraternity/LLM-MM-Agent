@@ -6,7 +6,7 @@ class ChartCreator(BaseAgent):
     def __init__(self, llm):
         super().__init__(llm)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def create_single_chart(self, paper_content: str, existing_charts: str, user_prompt: str=''):
         prompt = CREATE_CHART_PROMPT.format(paper_content=paper_content, existing_charts=existing_charts, user_prompt=user_prompt)
         return self.llm.generate(prompt)

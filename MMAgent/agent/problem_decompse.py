@@ -14,7 +14,7 @@ class ProblemDecompose(BaseAgent):
         super().__init__(llm)
         self.decomposed_principles = read_json_file('MMAgent/prompt/decompose_prompt.json')
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def decompose(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, problem_type: str, tasknum: int, user_prompt: str='') -> List[str]:
         decomposed_principle = self.decomposed_principles.get(problem_type, self.decomposed_principles['C'])
         decomposed_principle = decomposed_principle.get(str(tasknum), decomposed_principle['4'])
@@ -23,7 +23,7 @@ class ProblemDecompose(BaseAgent):
         tasks = [task.strip() for task in answer.split('---') if task.strip()]
         return tasks
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def refine(self, modeling_problem: str, problem_analysis: str, modeling_solution: str, decomposed_subtasks: List[str], task_i: int):
         decomposed_subtasks_str = '\n'.join(decomposed_subtasks)
         prompt = TASK_DESCRIPTION_PROMPT.format(

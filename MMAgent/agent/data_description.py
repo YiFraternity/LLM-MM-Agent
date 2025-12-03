@@ -6,7 +6,7 @@ class DataDescription(BaseAgent):
     def __init__(self, llm):
         super().__init__(llm)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def summary(self, data_description: str):
         prompt = DATA_DESCRIPTION_PROMPT.format(data_description=data_description)
         return self.llm.generate(prompt)

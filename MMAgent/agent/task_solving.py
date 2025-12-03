@@ -97,22 +97,22 @@ class TaskSolver(BaseAgent):
     def __init__(self, llm):
         super().__init__(llm)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def analysis(self, prompt: str, task_description: str, user_prompt: str = ''):
         prompt = TASK_ANALYSIS_PROMPT.format(prompt=prompt, task_description=task_description, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def formulas_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, modeling_methods: str, user_prompt: str = '') -> str:
         prompt = TASK_FORMULAS_PROMPT.format(prompt=prompt, data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_methods=modeling_methods, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def formulas_critic(self, data_summary: str, task_description: str, task_analysis: str, modeling_formulas: str):
         prompt = TASK_FORMULAS_CRITIQUE_PROMPT.format(data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=modeling_formulas).strip()
         return self.llm.generate(prompt)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def formulas_improvement(self, data_summary: str, task_description: str, task_analysis: str, modeling_formulas: str, modeling_formulas_critique: str, user_prompt: str = ''):
         prompt = TASK_FORMULAS_IMPROVEMENT_PROMPT.format(data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=modeling_formulas, modeling_formulas_critique=modeling_formulas_critique, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
@@ -127,7 +127,7 @@ class TaskSolver(BaseAgent):
 
         return formulas, modeling_method
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def modeling_actor(self, prompt: str, data_summary: str, task_description: str, task_analysis: str, formulas: str, user_prompt: str = '') -> str:
         prompt = TASK_MODELING_PROMPT.format(prompt=prompt, data_summary=data_summary, task_description=task_description, task_analysis=task_analysis, modeling_formulas=formulas, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
@@ -150,7 +150,7 @@ class TaskSolver(BaseAgent):
 
 
     @ensure_parsed_python_code
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def _generate_code(self, prompt: str):
         return self.llm.generate(prompt)
 
@@ -231,7 +231,7 @@ class TaskSolver(BaseAgent):
 
         return code, False, None
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def result(self, task_description: str, task_analysis: str, task_formulas: str, task_modeling: str, user_prompt: str = '', execution_result: str = ''):
         if execution_result == '':
             prompt = TASK_RESULT_PROMPT.format(task_description=task_description, task_analysis=task_analysis, task_formulas=task_formulas, task_modeling=task_modeling, user_prompt=user_prompt).strip()
@@ -239,19 +239,19 @@ class TaskSolver(BaseAgent):
             prompt = TASK_RESULT_WITH_CODE_PROMPT.format(task_description=task_description, task_analysis=task_analysis, task_formulas=task_formulas, task_modeling=task_modeling, user_prompt=user_prompt, execution_result=execution_result).strip()
         return self.llm.generate(prompt)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def answer(self, task_description: str, task_analysis: str, task_formulas: str, task_modeling: str, task_result: str, user_prompt: str = ''):
         prompt = TASK_ANSWER_PROMPT.format(task_description=task_description, task_analysis=task_analysis, task_formulas=task_formulas, task_modeling=task_modeling, task_result=task_result, user_prompt=user_prompt).strip()
         return self.llm.generate(prompt)
 
-    @retry_on_api_error(max_attempts=3,  min_wait=5)
+    @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     @ensure_parsed_json_output
     def _generate_json_structure(self, prompt: str):
         return self.llm.generate(prompt)
 
     @reflective_retry_on_logic_error(
         max_attempts=3,
-        wait_time=3,
+        wait_time=30,
         reflection_template="\n⚠️ Last attempt failed: {error}. Please correct and output valid JSON."
     )
     def extract_code_structure(self, task_id, code: str, save_path: str):
