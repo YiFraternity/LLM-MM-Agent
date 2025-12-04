@@ -103,19 +103,19 @@ class LLM:
                 answer = response.choices[0].message.content
 
                 usage_data = {
-                    'completion_tokens': response.usage.completion_tokens,
-                    'prompt_tokens': response.usage.prompt_tokens,
-                    'total_tokens': response.usage.total_tokens,
+                    'completion_tokens': response.usage.completion_tokens or 0,
+                    'prompt_tokens': response.usage.prompt_tokens or 0,
+                    'total_tokens': response.usage.total_tokens or 0,
                 }
                 if hasattr(response.usage, "prompt_tokens_details"):
                     details = response.usage.prompt_tokens_details
                     usage_data.update({
-                        "cached_tokens": getattr(details, "cached_tokens", 0),
+                        "cached_tokens": getattr(details, "cached_tokens", 0) or 0,
                     })
                 if hasattr(response.usage, "completion_tokens_details"):
                     details = response.usage.completion_tokens_details
                     usage_data.update({
-                        "reasoning_tokens": getattr(details, "reasoning_tokens", 0),
+                        "reasoning_tokens": getattr(details, "reasoning_tokens", 0) or 0,
                     })
 
             if usage:
