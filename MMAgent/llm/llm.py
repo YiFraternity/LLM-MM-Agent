@@ -67,7 +67,7 @@ class LLM:
                 f"[LLM] UserID={self.user_id}, Model={self.model_name}, Usage={usage}"
             )
 
-    @retry_on_api_error(wait_time=5)
+    @retry_on_api_error(max_attempts=3, min_wait=30, max_wait=120)
     def _safe_completion(self, system: str, prompt: str, timeout: int = 60, **kwargs):
         if self.provider == "anthropic":
             return self.client.messages.create(
