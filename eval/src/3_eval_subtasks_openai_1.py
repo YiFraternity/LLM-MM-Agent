@@ -84,17 +84,17 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='评估子任务')
     parser.add_argument('--task-paths', nargs='+', type=Path,
                         help='指定子任务数学建模报告的latex文件')
-    parser.add_argument('--task-dir', default='output/deepseek-chat-v3.1:free/CPMCM/MM-Agent', type=Path,
+    parser.add_argument('--task-dir', default='output/Qwen2.5-7B-Instruct/CPMCM/MM-Agent', type=Path,
                         help='子任务目录')
     parser.add_argument('--criteria-dir', default='MMBench/CPMCM/criteria', type=Path,
                         help='评估标准 JSON 目录')
     parser.add_argument('--eval-prompt', default='eval/prompts/criterial_generate.yaml', type=Path,
                         help='评估提示词 YAML 路径')
-    parser.add_argument('--output-dir', default='eval/output/deepseek-chat-v3.1:free', type=Path, help='输出 Json 文件目录')
-    parser.add_argument('--tmp-dir', default='tmp/eval/deepseek-chat-v3.1:free', type=Path, help='输出 Json 文件目录')
-    parser.add_argument('--ai-model-name', default='deepseek-chat-v3.1:free', help='AI 模型名称，例如 deepseek-chat-v3.1:free')
+    parser.add_argument('--output-dir', default='eval/output/results', type=Path, help='输出 Json 文件目录')
+    parser.add_argument('--tmp-dir', default='tmp/eval/results', type=Path, help='输出 Json 文件目录')
+    parser.add_argument('--ai-model-name', default='Qwen2.5-7B-Instruct', help='AI 模型名称，例如 Qwen2.5-7B-Instruct')
 
-    parser.add_argument('--openai-model', default='gpt-5-mini', help='OpenAI 模型名称，例如 gpt-4o-mini')
+    parser.add_argument('--openai-model', default='gpt-5-mini-ca', help='OpenAI 模型名称，例如 gpt-4o-mini')
     parser.add_argument('--openai-log-dir', default='eval/logs/openai', type=Path,
                         help='OpenAI API 日志目录')
 
@@ -153,6 +153,8 @@ def main(args):
                 eval_res = eval_results.get(str(subtask_id), None)
                 _eval_res = tmp_results.get(str(subtask_id), {}).get('eval_res', None)
                 if eval_res or _eval_res:
+                    if eval_res is None:
+                        eval_results[str(subtask_id)] = _eval_res
                     logger.info(f"✅  任务 {task_id} 子任务 {subtask_id} 已存在，跳过")
                     continue
                 sections_and_parents = extract_sections_and_parents(ai_report_dict, subtask_id)
