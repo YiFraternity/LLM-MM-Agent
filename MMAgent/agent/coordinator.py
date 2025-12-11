@@ -85,29 +85,31 @@ class Coordinator:
     @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     def analyze(self, tasknum: int, modeling_problem: str, task_descriptions: List[str], with_code: bool):
         problem_str = modeling_problem[:5000]
+        task_descriptions_str = '\n\n'.join(task_descriptions)
         if with_code:
             prompt = TASK_DEPENDENCY_ANALYSIS_WITH_CODE_PROMPT.format(
                 tasknum=tasknum,
                 modeling_problem=problem_str,
-                task_descriptions=task_descriptions
+                task_descriptions=task_descriptions_str
             ).strip()
         else:
             prompt = TASK_DEPENDENCY_ANALYSIS_PROMPT.format(
                 tasknum=tasknum,
                 modeling_problem=problem_str,
-                task_descriptions=task_descriptions
+                task_descriptions=task_descriptions_str
             ).strip()
         return self.llm.generate(prompt)
 
     @retry_on_api_error(max_attempts=3,  min_wait=30, max_wait=120)
     @reflective_retry_on_logic_error(max_attempts=5, wait_time=20)
     @ensure_parsed_json_output
-    def dag_construction(self, tasknum: int, modeling_problem: str, task_descriptions: str, task_dependency_analysis: str) -> dict:
+    def dag_construction(self, tasknum: int, modeling_problem: str, task_descriptions: list, task_dependency_analysis: str) -> dict:
         problem_str = modeling_problem[:5000]
+        task_descriptions_str = '\n\n'.join(task_descriptions)
         prompt = DAG_CONSTRUCTION_PROMPT.format(
             tasknum=tasknum,
             modeling_problem=problem_str,
-            task_descriptions=task_descriptions,
+            task_descriptions=task_descriptions_str,
             task_dependency_analysis=task_dependency_analysis
         ).strip()
         return self.llm.generate(prompt)
