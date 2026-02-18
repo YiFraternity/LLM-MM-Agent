@@ -1,0 +1,1210 @@
+\begin{center}
+\textbf{第十一届华为杯全国研究生数学建模竞赛}
+\end{center}
+
+
+\section{题目：小鼠视觉感受区电位信号（LFP）与视觉刺激之间的关系研究}
+
+\begin{abstract}  
+
+本文主要运用了小波变换、独立分量分析、平均经验模态分解等技术，建立了多个小鼠脑电波与行为之间关系模型，分析了小鼠睡眠、清醒无视觉刺激、清醒有视觉刺激情况下视觉感受区局部电位与诱发信号之间的响应情况，并深入的研究了小鼠脑电波与具体行为间的关系这一问题。
+
+针对问题一，本文通过分析小鼠呼吸过程机理，将该过程分解为“呼”、“吸”两个过程，各自对应一个触发动作电位。运用固定阈值法、过零点检测等方法，获得周期近似值等参数，通过假设检验等方法给出一个符合实际呼吸曲线的呼吸相关脑电波模型，并给出具体周期函数表达式。
+
+在问题二中，首先运用独立分量分析（ICA）方法对观测信号进行去噪处理，获得独立的源信号；通过固定阈值获取峰电位，带通滤波提取 $2 \sim 10 \mathrm{~Hz}$ 特定周期节律信号，并参照呼吸曲线建立睡眠状态小鼠视觉感受区局部电位模型；针对模型设立是否关联的判据为所提取的峰值震荡和局部场电位活动是否被呼吸锁相，本文提出了基于区间估计法和 Rayleigh 检验结合的方法判定 $\alpha=0.05$ 时相位锁定，即小鼠脑电波周期节律与呼吸相关联。
+
+对于问题三，首先对局部电位信号进行小波变换，针对峰值部分的重构信号计算自相关系数，结合频率谱、功率谱分析，理论上给出了在清醒状态下，建立的呼吸脑电波模型具有周期性变化；通过互相关系数分析得出视觉感受区的 LFP 与呼吸的 LFP 周期变化相关，建立一个多元线性回归模型并用最小二乘法从理论上证明了它们不满足线性相关关系，本文通过给出交叉二次模型，运用数值检验两种周期变化的相关性。
+
+对于问题四，将 ICA 处理后 LFP 进行平均经验模态分解（EEMD），获得了各个频段的局部场信号，有效改善了模态混叠问题；提出了一种基于互相关度的伪分量检验算法，将 EEMD 处理过程中混入的无关分量作为 IMF 伪成分予以剔除，剩余全部 IMF 分量为局部电位有效成分，即模型输出；最终建立了完整的脑电波信号分离模型，并通过该模型分离了小鼠睡眠状态和清醒无视觉刺激状态下与呼吸相关联的脑电波信号。
+
+在问题五中，首先获得小鼠视觉刺激曲线及其功率谱，并与呼吸曲线功率谱对比，分析得到各自主要作用的频段；然后利用问题四中“ICA—EEMD”分离模型分离出与 Checkboard 刺激相关脑电波信号；其次，利用问题二中模型，验证分离出来的从积极脑电波成分与视觉刺激之间的相关性，为排除视觉刺激响应的电位影响，本文采用叠加平均信号（STA）的方法；最后，分析脑电波中是否包含图形形状因素，提取了题设中两个视觉刺激图像特征，定义了一个衡量局部电位节律随诱发信号相位锁定程度的物理量，判断不同视觉刺激是否带来不同局部电位特征，同时给出了实验改进建议及方法。
+
+关键词：呼吸机理，局部电位，小波变换，独立分量分析，平均经验模态分解，STA
+\end{abstract}
+
+\tableofcontents
+
+\section{一、问题重述}
+
+人类脑计划（Human Brain Project, HBP）是继人类基因组计划之后，又一国际性科研计划，其核心是神经信息学(Neuroinformatics)。该研究旨在努力探究数十亿个神经元的信息，以期对知觉、行动以及意识等有更进一步的了解。科学家们预期这是一条开发新技术的好途径，由此可能进一步认识像老年痴呆和帕金森综合症等疾病，有望为各种精神疾病研究出新的治疗方法。此外，该计划还可以更好地为人工智能服务。目前该计划已经取得一定进展，例如在 2014 年足球世界杯巴西开幕式上，脊髓损伤患者开球就是利用了美国杜克大学的神经生物学家、大脑-计算机界面研究的先驱、巴西人 Miguel Nicolelis 开发的一种由大脑脑电波控制的外骨骼系统。它既是人类脑计划的结晶，也是 2014 年 Nature 十大科学展望领域之一神经科学的代表性成就。
+
+\paragraph{脑电波介绍}
+
+脑电波（Electroencephalogram, EEG）是大脑在活动时，脑皮质细胞群之间形成电位差，从而在大脑皮质的细胞外产生电流。它们是脑神经细胞的电生理活动在大脑皮层或头皮表面的总体反映，将大脑活动时这种电波的变化记录下来就得到脑电图。
+
+\paragraph{脑电波的应用}
+
+脑电波或脑电图是一种比较敏感的客观指标，不仅用于脑科学的基础理论研究，而且更重要的在于临床实践的应用。事实上，脑电波是诊断癫痫的重要依据，而且对于各种颅内病变，如脑中风、脑炎、脑瘤、代谢性脑病变等的诊断，亦有很大帮助。脑疾病的诊断主要是从脑电波的异常入手，结合临床，对颅内病变进行定位。
+
+\paragraph{问题的难点}
+
+与脑电波对颅内病变诊断不同的是，利用脑电波分析人（动物）的行为与脑电波之间的关系，并反过来通过脑电波确定或引导人的行为，具有更大的挑战性。脑电波信号是无数神经放电的混合，我们不可能也没有必要将单个神经放电分离出来。宏观意义上，控制某个特定行为或想法的脑电波是一系列众多神经放电的迭加。而我们测量所得到的脑电波信号又是由许许多多构成不同想法和控制行为的脑信号合成的。研究表明这些信号的强弱差别很大。在实现人机交互时，我们也许只关注若干个行为或思想，而对应的脑电波可能很弱。这在信号处理领域，相当于弱信号检测。在数学领域，这可能属于不适定的反问题。显然只有将脑电波信号很好地分离才能从中确定某种脑电波与某种行为相对应。这也可以理解为盲源分离或半盲信号分离问题。但通常的盲源分离技术在这里很难奏效，或误差太大，因为脑电波这一混合信号是由尺度差异很大的信号所构成的。
+
+\paragraph{研究问题}
+
+由于对呼吸的观测是间接的，能否通过分析呼吸的机理，建立数学模型反映小鼠在睡眠状态下与呼吸相关联的脑电波。（猜测：呼吸过程是由脑干部分发出“呼”和“吸”的命令，由神经元集群同步产生动作电位，该电位完成呼吸过程。）
+
+一般认为：在睡眠状态下，小鼠脑电波的周期节律有可能与呼吸相关联[2]。该结论是否正确？通过对所给的视觉感受区的局部电位数据建立模型论证你的结论。
+
+研究在清醒状态下，小鼠视觉感受区的局部电位信号是否有周期性的变化？该周期性的变化是否与小鼠呼吸所对应的脑电波的周期性的变化有关？是线性
+
+相关吗？如果不是线性相关，是否具有其他形式的相关性？
+
+建立脑电波信号的分离模型，能否从前两种状态（睡眠状态、无视觉刺激的清醒状态）的局部脑电位信号 LC01_20131204_Data10_V1_50s_70s_1kHz.mat、V01_20131126_Data03_80s_110s_LFP_NoStim_1khz.mat 中分离出与小鼠呼吸相关联的脑电波信号？
+
+通过 Checkboard 随时间变化的曲线，分析小鼠视觉刺激的时间曲线及其功率谱，并与呼吸曲线的功率谱对比。利用问题(4)所建立的信号分离模型，从数据 V01_20131126_Data03_300s_330s_LFP_VisStim_1khz.mat 中分离出与 Checkboard 刺激相关的脑电波信号成份和可能与呼吸相关的脑电波信号成份？请验证所分离出来的刺激脑电波成份与视觉刺激之间的相关性，并说明该脑电波成份中是否包含图形形状因素。
+
+\section{二、模型假设}
+
+1. 小鼠自身内环境稳定，即呼出气体恒温且高于室温、吸入气体温度与室温相同；
+2. 小鼠无论处于睡眠还是清醒状态，均完全进行主动吸气、被动呼气，排除存在不确定的外界因素及嗅探等诱发因素产生的主观意识活动对呼吸脑电波的影响；
+3. 无诱发刺激的情况下，认为小鼠呼吸是均匀的；
+4. 与呼吸相关的膈肌、肋间肌协同作用使胸腔扩大，且扩张过程胸腔体积符合某时间函数；
+5. 参与控制呼吸过程的神经元具有高度专一性，即神经元总数目恒定且只参与呼吸一项生理活动，不参与其他活动；
+6. 排除周围环境光线变化及小鼠眨眼对测量脑电波造成额外影响；
+
+\section{三、符号说明}
+
+\begin{tabular}{|c|c|}
+\hline $r_{b}$ & 小鼠呼吸曲线 \\
+\hline $r_{LEP}$ & 小鼠视觉感受区局部电位信号 \\
+\hline $beta$ & 回归系数 \\
+\hline $rmse$ & 剩余标准差 \\
+\hline $residuals$ & 残差 \\
+\hline
+\end{tabular}
+
+\section{四、模型的建立与求解}
+
+\subsection{问题一：}
+
+问题一中涉及的小鼠呼吸机理，根据 Ito 等人研究结果显示[1]，刺激小鼠产
+
+生呼吸相应脑电波的为鼻腔前端长有可动须的“嗅球”，通过鼻腔气流成为刺激“嗅球”的外界相关信号，而脑干则与相应的呼吸脑电波建立某种通路联系，控制小鼠肋间肌、膈肌收缩或舒张以使胸腔体积增大或减小。已知，小鼠在主动吸气过程中，胸腔体积增大，使腔内气压小于外界气压，这时外界气体经鼻腔入肺（胸腔）。同理，被动呼气过程，胸腔体积减小，腔内气压大于外界，肺部（胸腔）气体经鼻腔排出体外。由此，小鼠呼吸机理为一个交叉循环的链路，其具体流程见下图 1:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{小鼠呼吸机理流程示意图}
+    \label{fig:breathing_mechanism}
+\end{figure}
+
+呼吸脑电模型猜测
+
+根据题设，小鼠的呼吸过程分为“呼”和“吸”两个阶段，分别由脑干发出“呼”命令和“吸”命令，由神经元集群同步产生动作电位，该电位完成呼吸过程。对于单个神经元产生的动作电位，其图像近似如下图 2:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{单个神经元动作电位示意图}
+    \label{fig:action_potential}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{动作电位示意图}
+    \label{fig:action_potential}
+\end{figure}
+
+动作电位由峰电位（迅速去极化上升支和迅速复极化下降支的总称）和后电位（缓慢的电位变化，包括负后电位和正后电位）组成。峰电位是动作电位的主要组成成分，因此通常意义的动作电位主要指峰电位。动作电位的幅度约为 90~130mV，一般历时约 0.5~2.0ms，并且具有不叠加、不衰减特性。
+
+因此，当脑干下达“呼”或“吸”命令时，神经元集同步产生动作电位，则大脑皮层产生的呼吸脑电波应包含对应“呼命令动作电位”和“吸命令动作电位”。当睡眠小鼠产生均匀呼吸时，呼吸脑电波也应为周期信号，每个周期包含两个峰电位。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{单周期脑电波脉冲示意图}
+    \label{fig:brainwave_pulse}
+\end{figure}
+
+呼吸脑电模型建立
+
+实验中，小鼠的呼吸曲线为间接测量曲线，表现为是呼气时温度升高（曲线下降），吸气过程相反，其具体幅度无实际价值。故对实验呼吸曲线进行处理，以提取吸气相、呼气相、呼吸周期等相关量。
+
+处理过程如下：
+
+首先，对呼吸曲线进行低通滤波，去除高频环境噪声影响；
+
+其次，对滤波后的曲线进行 wavelet 变换，选取 $db6$ 波为小波基函数，选择 7 级重构小波作为实际呼吸曲线，处理前后波形如下图所示（图 4）：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{处理前后波形示意图}
+    \label{fig:waveform}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{小波处理前的呼吸曲线（睡眠状态）}
+    \label{fig:4}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{小波处理后的呼吸曲线（睡眠状态）}
+    \label{fig:5}
+\end{figure}
+
+图4为处理前的呼吸曲线，图5为小波过滤后的呼吸曲线，显然后者效果更佳，由于小波分析技术的时频局部化特性，原信号中的高斯噪声、脉冲噪声等混合噪声都得到了有效的抑制。
+
+然后，提取呼吸曲线的负峰值横坐标作为“吸命令动作电位”的发放时刻，峰值横坐标作为“呼命令动作电位”的发放时刻。利用固定阈值法配合人工检验，同时提取相同命令峰值时间间隔均值（表1）与实验的间接呼吸曲线自相关图像（图6），作为呼吸脑电波的周期，从负峰值到峰值的时间均值作为“吸气相”时间，从峰值到负峰值的时间均值为“呼气相”时间。
+
+\begin{table}[h]
+    \centering
+    \caption{呼吸曲线“峰-谷”时间坐标一览}
+    \label{tab:1}
+    \begin{tabular}{c c c c}
+        \hline
+        峰值位置（点序） & 时间点 & 谷值位置（点序） & 时间点 \\
+        \hline
+        1 & 48 & 1 & 464 \\
+        2 & 578 & 2 & 1000 \\
+        3 & 1130 & 3 & 1531 \\
+        4 & 1661 & 4 & 2068 \\
+        5 & 2233 & 5 & 2607 \\
+        6 & 2739 & 6 & 3124 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{c c c c}
+7 & 3270 & 7 & 3687 \\
+8 & 3791 & 8 & 4215 \\
+9 & 4327 & 9 & 4783 \\
+10 & 4994 & 10 & 5343 \\
+11 & 5456 & 11 & 5887 \\
+12 & 6052 & 12 & 6451 \\
+13 & 6605 & 13 & 7034 \\
+14 & 7131 & 14 & 7572 \\
+15 & 7715 & 15 & 8142 \\
+16 & 8246 & 16 & 8712 \\
+17 & 8847 & 17 & 9280 \\
+18 & 9387 & 18 & 9840 \\
+19 & 9948 & 19 & 10400 \\
+20 & 10510 & 20 & 10950 \\
+21 & 11080 & 21 & 11540 \\
+22 & 11630 & 22 & 12090 \\
+23 & 12210 & 23 & 12690 \\
+24 & 12810 & 24 & 13290 \\
+25 & 13400 & 25 & 13910 \\
+26 & 14030 & 26 & 14510 \\
+27 & 14620 & 27 & 15090 \\
+28 & 15230 & 28 & 15660 \\
+29 & 15800 & 29 & 16260 \\
+30 & 16390 & 30 & 16870 \\
+31 & 16970 & 31 & 17480 \\
+32 & 17610 & 32 & 18050 \\
+33 & 18180 & 33 & 18670 \\
+34 & 18780 & 34 & 19260 \\
+35 & 19400 & 35 & 19830 \\
+36 & 19970 & & \\
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{呼吸信号的自相关函数曲线}
+\end{figure}
+
+图 6 可以看出, 含有周期成分和噪声成分的自相关函数在 \( t=0 \) 时具有最大值,在 \( t \) 较大时仍具有较好的周期性。
+
+由于实际电极测量得到电位数量级远小于神经元表面动作电位, 不妨对实际幅值进行 “归一化”, 取 “吸命令动作电位” 幅值为 1 , “呼命令动作电位” 宽度选择经验值 \( 2ms \) 。
+
+最后, 考虑到多个神经元相应脑干相应命令的时间略有差异, 选取两个动作电位间隔时间为 \( 126.86ms \) 则根据假设 5 , 选取适宜的电位 “幅值—时间” 的函数, 进行周期延拓 (周期 \( T=582.86ms \) ), 得到的分段周期函数, 得到预测的呼吸相关联的脑电波模型。
+
+其图像示意图如下 (图 7):
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{建立单周期呼吸相关脑电波模型示意图}
+\end{figure}
+
+本文选用一次函数逼近 “幅值—时间” 函数关系, 则其解析式可由下式表示:
+\[
+\begin{cases}
+(x-126.86m)-582.86n, & \text{其中 } 0 \leq x \leq 2, \, m=0 \text{ 或 } 1, \, n \text{ 为自然数} \\
+-[(x-126.86m)-582.86n]+2, & \text{其中 } 0 \leq x \leq 2, \, m=0 \text{ 或 } 1, \, n \text{ 为自然数} \\
+0, & \text{其他}
+\end{cases}
+\]
+
+经检验, 上述模型与实际测量睡眠状态下小鼠呼吸曲线有较高的互相关系数, 故认为模型合理, 可以作为反映小鼠睡眠状态下与呼吸相关联的脑电波模型。
+
+\subsection{问题二:}
+
+研究表明 [1], \( \delta \) 波段的峰值震荡与清醒状态下的小鼠晶须桶状皮层局部场电位的活动被呼吸锁相, 如果能够证明在睡眠状态下, 小鼠脑电波 LFP 信号中某个波段的峰值震荡与视觉感受区电位的活动也被呼吸相关信号锁相, 则说明此状态下的小鼠脑电波周期节律与呼吸相关联, 即问题二中的观点正确。问题研究步骤如下:
+
+{峰电位提取}
+
+即脑干发出呼吸命令的动作电位, 其发放时间应与呼吸过程（呼吸曲线中的负峰时间点）呈线性关系, 本文拟采用卷积方法实现提取。具体流程如下:
+
+1. 将原始宽频带信号进行高通滤波, 截止频率设为 \( 500Hz \) （该频率可以达到最佳去噪效果）。使用阈值法并手工辅助进行峰电位检测和分类, 获得各个峰电
+
+位的负峰时间点作为发放时刻。如果该信号的信噪比大于 4，且与相邻峰电位间隔不应期大于 \(5 \, \text{ms}\) 且该不应期服从 \(gamma\) 分布，则称其为单峰电位，剩余统称为复峰电位。
+
+2. 将得到的峰电位序列与一个标准差 \(\sigma = 2.5 \, \text{ms}\) 的单位面积高斯分布序列做卷积，得到新的序列 \(r_{juan}\)，（图 8），将该信号与题目中呼吸曲线信号 \(r_{b1}\) 做互相关分析，结果如下：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{高斯卷积呼吸信号所得的新序列}
+    \label{fig:8}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{\(r_{juan}\) 与 \(r_{b1}\) 的互相关函数曲线}
+    \label{fig:9}
+\end{figure}
+
+两者的互相关系数为 0.95，证明高斯卷积后的呼吸信号与原信号高度互相关，故本文用信号 \(r_{juan}\) 作为脑电波中的峰电位信号。
+
+{局部场电位的提取}
+
+题目中提供的局部电位信号 (\(LFP\)) 为 5 个电极实际记录的原始 \(LFP\) 信号，但一些附加往往轻易造成采集到的 \(LFP\) 信号中出现噪声。因此，对实际采集的 \(LFP\) 信号，在做进一步的分析处理之前，应当将采集到的原始 \(LFP\) 信号中的这些噪声设法消除。经分析，引起噪声干扰的因素主要有以下三种形式：
+
+1. 空间环境中的电磁干扰。包括实验环境中其它用电器、设备布线、供电电缆在使用过程中向空间中辐射不同形式的电磁波信号以及空间中存在的各种形式的无线电波信号。
+
+2. 信号采集系统带来的噪声。包含 \(50Hz\) 左右工频干扰、仪器内部热噪声、部分仪器连接线未屏蔽引发的噪声等。
+
+3. 实验鼠自身引发的干扰。包括睡眠深度、身体可能产生的微动噪声、不同精神状态等因素噪声。
+
+上述干扰噪声多为低频噪声信号，简单的滤波效果甚微，为了剔除上述因素引发的噪声干扰，得到较为纯净的 \(LFP\) 信号，需要采用合理的方法手段。本文采用独立成分分析（Independent Component Analysis, ICA）的方法，属于一种盲源分离。其模型可以描述为：
+
+将实验中采集到的信号记为观察信号 \(X\)，其为噪声信号和纯净信号的线性组合，\(X\) 可以表示为：
+\begin{equation}
+X = AS
+\tag{4.1}
+\end{equation}
+式中，\(X = (x_1, x_2, \ldots, x_n)^T\), \(S = (s_1, s_2, \ldots, s_n)^T\) 是 \(n\) 个独立分量。\(A\) 为混合矩阵，\(A\) 为一个可逆矩阵，（1）式可以表示为
+\begin{equation}
+S = WX
+\tag{4.2}
+\end{equation}
+式（2）中 \(W = A^{-1}\) 为转换矩阵。
+
+ICA 模型最关键的一个假定就是 \(s_i (i = 1, 2, \ldots, n)\) 之间相互独立，而且满足独立分量最多有一个符合高斯分布，其他的符合超高斯分布或者是亚高斯分布，观察信号大于等于原信号的数目等条件，此时 \(s_i (i = 1, 2, \ldots, n)\) 为 \(x_i (x_1, x_2, \ldots, x_n)^T\) 的估计量。
+
+一般的，将采样的 \(LFP\) 数据在实现 ICA 处理之前，需要进行预处理。
+
+1) 同一中心。对 LFP 样本 \(X\) 减去均值 \(m = E(X)\)，使 \(X\) 和 \(S\) 成为零均值矢量。
+
+2) 白化。对 \(X\) 进行线性变换得
+\begin{align}
+X' &= D^{-\frac{1}{2}}E^TV \\
+E\big(XX^T\big) &= I
+\tag{4.3}
+\end{align}
+式 (3) 中，\(V\) 是原始信号，\(X'\) 是白化后的数据，\(D\) 和 \(E\) 是 \(V\) 的协方差矩阵的特征值和特征向量矩阵。
+
+白化作为 ICA 的预处理可以有效地降低问题的复杂度，当观测信号个数大于源信号的个数时，经过白化可以自动将观测信号数目降到与源信号维数相同。
+
+ICA 算法可以分为基于统计迭代的目标函数法和基于信息论的方法，信息论的方法以输入和输出之间的信息量为目标来进行研究，从神经信息处理的角度来看，此方法更好一些。快速定点算法又称为 FastICA 算法，是由芬兰赫尔辛基大学 Hyvärinen 等人提出的，是一种快速寻优迭代算法。本文采用基于负熵最大的 FastICA 算法，该方法具有收敛速度快，运行稳定的特点。负熵用来衡量独立分
+
+量的非高斯性，非高斯性达到最大时，则表明已经完成对各独立分量的分离。 $Hyv\ddot{a}rinen$ 给出的负熵的定义方法为：
+
+\begin{equation}
+J_{g}(y)=\left\{E\left[g(Y)\right]-E\left[g(\nu)\right]\right\}^{2}
+\tag{4.4}
+\end{equation}
+
+式(4)中， $\nu$ 是期望为 0，方差为 1 的服从高斯分布的变量， $g(\cdot)$ 为非二次函数，通常选为：
+
+\begin{align}
+g_{1}(u) &= \frac{1}{a_{1}}\log\left(\cosh a_{1}u\right) \\
+g_{2}(u) &= -\exp\left(-\frac{u^{2}}{2}\right)
+\tag{4.5}
+\end{align}
+
+式中 $a_{1}$ 为常数，取值范围为 1 到 2 之间，通常取为 1。
+
+$FastICA$ 学习规则是找一个方向以便 $W^{T}X\left(Y=W^{T}X\right)$ 具有最大的的高斯性。这里非高斯性用负熵来度量。 $W^{T}X$ 的方差约束为 1，对白化数据 $X'$ 而言，也即约束 $W$ 的范数为 1。 $FastICA$ 算法的过程如下：首先， $W^{T}X$ 的负熵最大近似值通过对 $E\left\{G\left(W^{T}X\right)\right\}$ 进行优化获得。根据 Kuhn-Tucker 条件，在 $W$ 的范数为 1 的约束下， $E\left\{G\left(W^{T}X\right)\right\}$ 的最优值在满足下式的条件下获得。
+
+\begin{equation}
+E\left\{Xg\left(W^{T}X\right)\right\}+\beta W=0
+\tag{4.6}
+\end{equation}
+
+这里， $\beta$ 是一个恒定值， $\beta=E\left\{W_{0}^{T}Xg\left(W_{0}^{T}X\right)\right\}$， $W_{0}$ 是优化后的 $W$ 值。下面利用牛顿迭代法解方程(6)。用 $F$ 表示(6)左边的函数，可得 $F$ 的雅克比矩阵 $JF(W)$ 如下：
+
+\begin{equation}
+JF(W)=E\left\{XX^{T}g^{\prime}\left(W^{T}X\right)\right\}-\beta I
+\tag{4.7}
+\end{equation}
+
+为简化矩阵的求逆，可以近似为(7)的第一项。由于数据被球化， $E\left\{XX^{T}\right\}=I$，所以， $E\left\{XX^{T}g^{\prime}\left(W^{T}X\right)\right\}\approx E\left\{XX^{T}\right\}\cdot E\left\{g^{\prime}\left(W^{T}X\right)\right\}=E\left\{g^{\prime}\left(W^{T}X\right)\right\}I$。因而雅克比矩阵变成了对角阵，并且能比较容易的求逆。因而可以得到下面的迭代公式：
+
+\begin{align}
+W^{*} &= W-\left[E\left\{Xg\left(W^{T}X\right)\right\}-\beta W\right]/\left[E\left\{g^{\prime}\left(W^{T}X\right)\right\}-\beta\right] \\
+W &= W^{*}/\left\|W^{*}\right\|
+\tag{4.8}
+\end{align}
+
+这里，$W^{*}$ 是 $W$ 的新值，$\beta = E\left\{W^{T}Xg\left(W^{T}X\right)\right\}$，规范化能提高解的稳定性。
+简化后就可以得到 $FastICA$ 算法的迭代公式：
+\begin{equation}
+\begin{aligned}
+W^{*} &= E\left\{Xg\left(W^{T}X\right)\right\} - E\left\{g'\left(W^{T}X\right)\right\}W \\
+W &= W^{*} / \left\|W^{*}\right\|
+\end{aligned}
+\tag{4.9}
+\end{equation}
+
+综上所述，对 $LFP$ 进行 $FastICA$ 去噪的基本流程如下图所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{对 $LFP$ 进行 $FastICA$ 去噪的基本流程示意图}
+\end{figure}
+
+下面以题目提供的睡眠状态下小鼠视觉感受区原始局部场电位信号实验数据，进行 $FastICA$ 盲源分离，并对所处理的结果进行分析说明。如下图所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image2.png}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{睡眠状态下小鼠的 5 路 LFP 信号}
+    \label{fig:11}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{睡眠状态下小鼠 LFP 信号的 FastICA 处理结果}
+    \label{fig:12}
+\end{figure}
+
+{降噪效果分析:}
+
+通过频谱分析来说明 ICA 去噪前后的效果, 以 channel1 为例, 对处理前后的功率谱如下图:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{ICA 去噪前 channel1 的功率谱}
+    \label{fig:13}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{ICA 去噪后 channel1 的功率谱}
+    \label{fig:ica_power_spectrum}
+\end{figure}
+
+对比图 \ref{fig:ica_power_spectrum} 和图 13，ICA 可从混合数据中提取出原始的独立信号，使得功率谱的分布更加具有差异性。
+
+{局部场电位分析与处理}
+
+大量科研结果表明，场电位节律包含的频段非常丰富，既包括几秒钟一周期的慢波，又包括频率高达的快波。本文选用功率谱（power spectrum）计算分析场电位信号，可以明确场电位信号中包含的主要节律波。同时功率场分析可以在频域中提取被淹没在噪声中的有用信号。因此也可以用检验 ICA 方法处理的降噪效果。本文选用 Welch 方法来进行信号谱估计。
+
+LFP 节律波频段分
+根据前文的处理结果，分析功率谱图像，得到睡眠状态下小鼠 LFP 信号包含的主要节律频段应该分布在极低频率段。
+
+{LFP 节律波的提取}
+
+经上述分析，猜测睡眠小鼠脑电波在 $2 \sim 10 Hz$ 频段有显著的节律行为，根据文献 [2]，睡眠状态下小鼠 $\delta$ 节律范围为 $0 \sim 4 Hz$，故需要将此部分节律波提取出来。对 ICA 处理后的 LFP 进行节律波提取时，考虑选用最快捷、最高效的带通滤波器，本文选择 Kaiser 窗函数窄频带通滤波器（narrow band-pass filter），通带和阻带纹波均小于 $0.5\%$。
+
+提取步骤如下：
+
+1. 对原始记录信号进行 $2 \sim 10 Hz$ 的带通滤波；
+2. 在滤波信号中识别出各个 $\delta$ 节律的周期，每个周期以前一个正峰点为起点，以下一个正峰点为终点。$\delta$ 周期的搜索方法如下：从第一个记录点开始搜索，找到并记录第一个幅值由正变负的记录点（设定为节点 2）、第一个幅值由负变正的记录点（设定为节点 3），如图 15 所示。以节点 2 为基点，向前搜索第一个波峰，其对应时间点记为节点 1；以节点 3 为基点，向后搜索第一个波峰，其对应时间点记为节点 4。记节点 1 和节点 4 之间的距离为 $T$，若 $0.2 s \sim 0.5 s$，则认为节点 1 至节点 4 之间为一个 $\delta$ 节律，其中幅值最小点为一个 $\delta$ 节律的波谷。点 1 和节点 4，分别作为 \(\delta\) 节律的起始点与终止点。
+
+\(\delta\) 节律示意图：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{\(\delta\) 波的提取}
+    \label{fig:delta_wave_extraction}
+\end{figure}
+
+如图 \ref{fig:delta_wave_extraction}，左上为 LFP 待处理信号，右上为其频谱，右下为带通滤波后的结果（提取 \(\delta\) 波的频谱），左下为对应的 LFP 信号。该过程去除原 LFP 中的高频成分，保留了 \(\delta\) 波的信息。
+
+信号锁相性判断
+
+相位锁定的判断，即判断锋电位与场电位之间锁相性，两种电位均由上文得到。本文选择区间统计法（Bin 法），步骤如下：
+
+1. 统计峰电位在 \(\delta\) 节律上的发放相位：在 \(2 \sim 5Hz\) 的带通滤波信号中，若某个节律周期 \(0.2s \sim 0.5s\)，则视为 \(\delta\) 节律；否则忽略此段信号以及该时间段内包含的锋电位。将每个 \(\delta\) 周期 T（即 \(0 \sim 360^\circ\)）均分成 18 个相位区间（即 bin），每个区间包含的角度为 \(20^\circ\)。统计已分类的同类各个锋电位落在每个区间内的数目，计算发放概率，并作相位分布直方图。其中，对 spike 发放先后 \(1s\) 的 LFP 用希尔伯特变换提取瞬时相位，具体过程如下：
+
+\begin{equation}
+x(t) = H\big[x(t)\big] = h(t) * x(t) = \int_{-\infty}^{+\infty} x(\tau) h(x - \tau) d\tau = \frac{1}{\pi} \int_{-\infty}^{+\infty} \frac{x(\tau)}{t - \tau} d\tau
+\tag{4.10}
+\end{equation}
+
+从而 \(x(t)\) 的解析表达式如下所示：
+
+\begin{equation}
+z_x(t) = x(t) + i x(t) = a(t) e^{-i \phi(t)}
+\tag{4.11}
+\end{equation}
+
+其中 \(a(t)\) 为瞬时振幅，\(\phi(t)\) 为瞬时相位。
+
+\begin{equation}
+a(t) = \sqrt{x^2(t) + x^2(t)}
+\tag{4.12}
+\end{equation}
+
+\begin{equation}
+\phi(t) = \arctan\left(\frac{x(t)}{x(t)}\right)
+\tag{4.13}
+\end{equation}
+
+在提取瞬时相位后，计算刺激前后各个通道与参考通道的相位锁定值（Phase Locking Value, PLV）。相位锁定值的计算方法如下：
+
+\begin{equation}
+PLV = \frac{1}{N} \left| \sum_{i=1}^{N} e^{j\left[\theta_1(t_i) - \theta_2(t_i)\right]} \right|, i = 1, \ldots, N
+\tag{4.14}
+\end{equation}
+
+2. 区间统计法的锋电位锁相性的假设检验：利用 Rayleigh 检验可以判断样本数据所对应的总体圆分布是否是均匀分布，它是一种基于 von Mises 分布的检验方法，假设所有采样点都服从 von Mises 分布。
+
+Rayleigh 检验在 $H_0$ 下的近似概率值 $P$ 计算公式如下：
+
+\begin{equation}
+p = \exp \left[ \sqrt{\left(1 + 4n + 4\left(n^2 - R_n^2\right)\right)} - \left(1 + 2n\right) \right]
+\tag{4.15}
+\end{equation}
+
+其中，$R_n = R \cdot N$。研究资料认为，当值小于所设定的检验水平（如 0.05）时，就判断为的分布不均匀，也就是锋电位的发放与所研究场电位节律的相关性具有统计学意义，本文简称锁相，否则称为不锁相。
+
+3. 根据上述方法，对从题目提供的睡眠状态下小鼠脑电波中提取的 $\delta$ 节律波进行锁相判定，最终 Rayleigh 检验的近似概率值 $p = 0.973$，所以在置信率为 0.95 的情况下，认为小鼠脑电波周期节律与呼吸相关联。
+
+\subsection{问题三：}
+
+根据问题一建立的模型，对清醒状态下小鼠视觉感受区的局部电位信号进行小波变换，得到适宜的重构波形，对其进行自相关检验，是周期性变化的。其自相关图像如下：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{LFP 信号与其小波重构信号的相关性检验}
+\end{figure}
+
+应用问题二建立的 $LFP$ 呼吸关联模型，小鼠感受区的局部电位信号的周期性
+
+变化与小鼠呼吸对应的脑电波的周期性变化相关，通过图 17 可以明确反应他们之间的互相关性。通过特征提取我们证明了它们是非线性相关的。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{呼吸信号和 LFP 信号的互相关函数曲线}
+\end{figure}
+
+{线性相关性讨论}
+
+假设呼吸所对应的脑电波提取的特征向量为 \( \nu \)（MFCC 特征），视觉感受区局部电位信号经过 ICA 分离后得到的对应的独立分量源信号为 \( A = (\alpha_1, \alpha_2, \alpha_3, \alpha_4, \alpha_5) \)，这里 \( \alpha_i (i = 1, 2, \cdots, 5) \) 为提取的对应波的特征向量，若存在这样的一个非零向量 \( X = (x_1, x_2, x_3, x_4, x_5) \) 其中 \( x_i (i = 1 \cdots 5) \) 为常数，使得 \( AX^T = \beta \) 成立，那么可以证明它们是线性相关的。
+
+首先给一个简单直观的说明初步猜想非线性相关，解存在性定理（说明）根据计算原矩阵的秩和增广矩阵的秩不相等，所以原方程组无解，所以是非线性相关的。
+
+根据线性相关的定义可以得到上面非齐次线性方程组，根据线性方程组解存在性判别性定理即：
+
+已知线性方程组为
+\[
+\begin{cases}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1, \\
+a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = b_2, \\
+\cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cdots \cd
+
+的线性组合，用秩的概念线性方程组有解的判别定理如下：
+
+线性方程组有解的充分必要条件是它的系数矩阵
+\[
+A=\left[\begin{array}{cccc}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & & \vdots \\
+a_{s1} & a_{s2} & \cdots & a_{sn}
+\end{array}\right]
+\]
+与增广矩阵
+\[
+\overline{A}=\left[\begin{array}{cccc|c}
+a_{11} & a_{12} & \cdots & a_{1n} & b_{1} \\
+a_{21} & a_{22} & \cdots & a_{2n} & b_{2} \\
+\vdots & \vdots & & \vdots & \vdots \\
+a_{s1} & a_{s2} & \cdots & a_{sn} & b_{s}
+\end{array}\right]
+\]
+有相同的秩[6]。
+
+经过上面的讨论结合通过上面建模提取出波的特征其中两个矩阵的秩经计算并不相等，所以方程组无解，所以不能由其线性表出，也就是说它们不是线性相关的。
+
+下面采用最小二乘法讨论：
+
+根据前面所选的特征向量构造多元线性回归模型然后判断其是否线性相关，多元线性回归模型为：
+\begin{equation}
+\left\{\begin{aligned}
+y &= \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} + \cdots + \beta_{5}x_{5} + \varepsilon \\
+\varepsilon &\sim N\left(0, \sigma^{2}\right)
+\end{aligned}\right.
+\tag{4.16}
+\end{equation}
+
+用最小二乘法求解各个系数，由该模型并用 Matlab 编程（见附录）拟合出相关函数。
+
+现在已经得到 6 个独立观测数据 $\left(y_{i}, x_{i1}, \cdots, x_{i5}\right), i=1, \cdots, n$，由上面的式子可得
+\begin{equation}
+\left\{\begin{aligned}
+y_{i} &= \beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2} + \cdots + \beta_{5}x_{i5} + \varepsilon_{i} \\
+\varepsilon_{i} &\sim N\left(0, \sigma^{2}\right), i=1, \cdots, n
+\end{aligned}\right.
+\tag{4.17}
+\end{equation}
+
+记：
+\begin{equation}
+X=\left[\begin{array}{cccc}
+1 & x_{11} & \cdots & x_{15} \\
+\vdots & \vdots & & \vdots \\
+1 & x_{n1} & \cdots & x_{n5}
+\end{array}\right], Y=\left[\begin{array}{c}
+y_{1} \\
+\vdots \\
+y_{n}
+\end{array}\right]
+\end{equation}
+\begin{equation}
+\varepsilon=\left[\varepsilon_{1} \quad \cdots \quad \varepsilon_{n}\right]^{T}, \beta=\left[\beta_{0} \quad \beta_{1} \quad \cdots \quad \beta_{m}\right]^{T}
+\tag{4.18}
+\end{equation}
+
+则模型转化为
+\begin{equation}
+\left\{\begin{aligned}
+Y &= X\beta + \varepsilon \\
+\varepsilon &\sim N\left(0, \sigma^{2}E_{n}\right)
+\end{aligned}\right.
+\tag{4.19}
+\end{equation}
+
+其中 $E_{n}$ 为 $n$ 阶单位阵。模型中的参数通过最小二乘法进行估计，即应选取估计值。
+
+回归模型的假设检验
+
+因变量与自变量之间是否存在如模型所示的线性关系是需要检验的。显然，如果所有 $\left|\beta_{i}\right|$ 都很小，那么它们之间线性关系就不明显，所以可以令原假设为：
+
+\[
+H_{0}: \beta_{j}=0(j=1, \cdots, m)
+\]
+
+这里 $\beta$ 是 $\beta$ 的线性无偏最小方差估计，并且 $\beta \sim N\left(\beta, \sigma^{2}\left(X^{T} X\right)^{-1}\right)$。
+
+定义 $SST=\sum_{i=1}^{n}\left(y_{i}-\overline{y}\right)^{2}$，$SST=Q+U$，$U=\sum_{i=1}^{n}\left(\hat{y}_{i}-\overline{y}\right)^{2}$。当 $H_{0}$ 成立时，由分解式定义的 $U, Q$ 满足
+
+\[
+F=\frac{U / m}{Q /(n-m-1)} \sim F(m, n-m-1)
+\]
+
+在显著性水平 $\alpha$ 下有上 $\alpha$ 分位数 $F_{\alpha}(m, n-m-1)$，若 $F < F_{\alpha}(m, n-m-1)$，接受 $H_{0}$，否则拒绝。
+
+通过 matlab 计算上面所建的线性回归方程进行统计分析。
+
+我们对源信号几组独立分量进行分层并进行特征提取，进而与清醒状态下呼吸曲线所对应的脑电波提取的特征向量进行线性拟合，并通过所建立的回归方程进行统计分析，并判断所建回归模型。
+
+用最小二乘法分别得到 11 组特征的模拟的系回归系数估计值（b），置信空间（bint），以及用于检验回归模型的统计量（stats）（仅取一组数据为例说明，详细数据见附录）
+
+\begin{align*}
+b &= 0.1580 \\
+& 5.5491 \\
+& 8.7599 \\
+& -0.8814 \\
+& -2.0970 \\
+& -10.8425 \\
+\text{bint} &= \begin{array}{cc}
+-0.3492 & 0.6652 \\
+2.3678 & 8.7304 \\
+5.3909 & 12.1289 \\
+-4.4771 & 2.7143 \\
+-6.8252 & 2.6312 \\
+-15.4693 & -6.2157
+\end{array} \\
+\text{stats} &= 0.8290 \quad 29.0817 \quad 0.0000 \quad 1.5787
+\end{align*}
+
+其中 $b$ 所对应的是对应的回归方程的系数，对第一组数而言，则有
+
+\[
+\beta_{0}=0.1580, \beta_{1}=5.5491, \beta_{2}=8.7599, \beta_{3}=-0.8814, \beta_{4}=-2.0970, \beta_{5}=-10.8425
+\]
+
+尽管接受 $H_{0}$，但是很明显回归的效果不太好，$R^{2}=0.8290$，根据后面的计算可以知道只有并非所有相关系数均大于 0.8（数据可以参见附录），并且多个系数对应的置信区间包含了零点，这说明用线性拟合是不合理的，也就是说它们之间的有相关性，但并不是线性相关的。
+
+下面用源信号所提取的五组特征向量的二次函数来改进上述线性回归。这里通过建立三种二次模型对其进行相关性讨论，也即：
+
+纯二次： \( y = \beta_0 + \beta_1 x_1 + \cdots + \beta_m x_m + \sum_{j=1}^m \beta_{jj} x_j^2 \);
+
+交叉二次： \( y = \beta_0 + \beta_1 x_1 + \cdots + \beta_m x_m + \sum_{1 \leq j \neq k \leq m} \beta_{jk} x_j x_k \);
+
+完全二次： \( y = \beta_0 + \beta_1 x_1 + \cdots + \beta_m x_m + \sum_{1 \leq j, k \leq m} \beta_{jk} x_j x_k \) （这里 \( m = 5 \) ）.
+
+最终得到 \( beta \) （回归系数），\( rmse \) （剩余标准差），\( residuals \) （残差）。二次模型的回归系数和剩余标准差为
+
+纯二次模型：
+\[
+beta = -0.121 \quad -1.32 \quad 6.62 \quad -18.01 \quad 19.99 \quad -4.46 \quad 2.35 \quad -1.52 \quad -0.28 \quad -3.39 \quad 2.62
+\]
+\[
+rmse = 0.4148
+\]
+
+交叉二次模型：
+\[
+beta = 0.005 \quad 2.391 \quad -0.324 \quad 0.891 \quad -0.979 \quad 0.146 \quad 21.948 \quad -42.603
+\]
+\[
+6.223 \quad 12.984 \quad -102.249 \quad 52.097 \quad 27.425 \quad 66.645 \quad 81.848 \quad -124.410
+\]
+\[
+rmse = 0.0381
+\]
+
+完全二次模型：
+\[
+beta = 0.003 \quad 2.406 \quad 0.047 \quad 1.137 \quad -1.389 \quad 0.019 \quad 1.281
+\]
+\[
+-29.600 \quad 1.211 \quad 14.676 \quad -89.903 \quad 80.075 \quad 9.611 \quad 15.225
+\]
+\[
+74.080 \quad -100.135 \quad 4.356 \quad -0.397 \quad 16.408 \quad 4.248 \quad -1.278
+\]
+\[
+rmse = 0.0433
+\]
+
+四个二次模型中 \( rmse = 0.0381 \) 最小，但是完全二次和交叉二次残差很接近，在不考虑复杂程度的情况下均可采用，但显然交叉二次模型计算复杂度低，所以推荐通过建立交叉二次模型，来讨论它们之间的相关性，可参图如下：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{完全、交叉、纯二次模拟}
+    \label{fig:18}
+\end{figure}
+
+\subsection{问题四:}
+
+题设要求建立脑电波信号的分离模型，从两种状态下的局部脑电位信号离出与小鼠呼吸相关联的脑电波信号。而脑电波信号包含多个节律性成分，所以由模型 2 获得的 LFP 仍是多个不同频率成分的叠加。若想获得与呼吸关联的脑电波，则须将 LFP 信号的各个子频带分离。本文采用总体平均经验模态分解的方法（Ensemble Empirical Mode Decomposition EEMD），此方法能够有效解决模态混叠问题，同时有效规避了滤波截止频率的选定、小波分析基函数的选取等人为因素的影响。
+
+将 LFP 信号自适应地进行分解，获得固有模态分量（Intrinsic Mode Function, IMF）。EEMD 的具体分解步骤如下：
+
+1) 首先，在待分析的 LFP 数据上加入一次白噪声信号；
+2) 对加入白噪声信号后的 LFP 信号经 EEMD 分解为窄带分量，每一分量被称为固有模态分量，且每一个分解出来的 IMF 应满足两个条件：1) 数据的极值点和过零点的数目相同或最多相差一个；2) 由极值点定义的上下包络线的均值为零。
+
+分解后，加入白噪声信号后的 LFP 信号 \( x(t) \) 由多个模态信号分量和一个残余分量组成，即
+
+固有模态分量蹄分过程如下:
+
+步骤 1 首先计算 $x(t)$ 不同时刻信号的极大值与极小值, 用三次样条插值拟合上线包络线 $u(t)$ 和 $v(t)$, 计算上下包络线在每一点上的平均值, 获得平均值曲线 $m_{1}(t)$, 即
+
+\[
+m_{1}(t)=\frac{u(t)+v(t)}{2}
+\]
+
+步骤 2 用 $x(t)$ 减去 $m_{1}(t)$, 即
+
+\[
+h_{1}=x(t)-m_{1}(t)
+\]
+
+如果 $h_{1}$ 满足 IMF 的两个条件, 即 $h_{1}$ 就是第一个 IMF 分量; 否则, 将 $h_{1}$ 作为原始信号, 重复步骤 1, 得上下包络的均值 $m_{11}$
+
+\[
+h_{11}=h_{1}-m_{11}
+\]
+
+然后再判断 $h_{11}$ 是否满足 IMF 的两个条件; 如果不满足, 则重复循环 $k$ 次, 得到
+
+\[
+h_{1k}=h_{1(k-1)}-m_{1k}
+\]
+
+直至 $h_{1k}$ 满足条件。记 $c_{1}(t)=imf_{1}(t)=h_{1k}(t)$ 为信号经 EMD 分解得到的第一个 IMF 分量。其中, 停止标准为
+
+\[
+SD_{k}=\frac{\sum_{t=0}^{T}\left|h_{1(k-1)}-h_{1k}\right|^{2}}{\sum_{t=0}^{T} h_{1(k-1)}^{2}}
+\]
+
+当 $SD_{k}$ 小于预定值时, 筛选停止;
+
+步骤 3 将 $c_{1}$ 从 $x(t)$ 中分离出来, 得到 $r_{1}=x(t)-c_{1}$。
+
+步骤 4 将 $r_{1}$ 作为初始数据, 重复步骤 1、2、3, 得到, $x(t)$ 的第 2 个 IMF 分量 $c_{2}$, 依此重复循环 $n$ 次, 得到信号 $n$ 个 IMF 分量, $r_{2}$ 为残余分量。
+
+3) 每次加入不同的白噪声信号, 重复步骤 1) 和 2)。
+
+4) 对得到的 $IMF$ 分量进行总体平均，得到最终的 $IMF$ 分量。
+
+$EEMD$ 分解中添加白噪声的幅值和总体平均的次数是两个重要的参数。白噪声的幅值准则为：
+
+\begin{equation}
+a = \frac{\varepsilon_1}{\varepsilon_2}
+\tag{4.26}
+\end{equation}
+
+$a$ 为添加白噪声的幅值，$\varepsilon_1$ 为白噪声的标准差，$\varepsilon_2$ 为待分析 $LFP$ 数据的标准差，为 $IMF$ 分量的总体平均的次数。对于添加的噪声幅值来说，如果添加的噪声信号幅值过小，对 $LFP$ 信号的极值点影响过小，造成分解的效果不明显，因此在进行 $EEMD$ 分解时候不能选择过小，反之，幅值过大经过多次的总体平均仍然不能将噪声的影响降至理想的水平，这样噪声的添加就会起反作用。通过合理控制添加噪声的幅值，通过增加总体平均的次数就能够将噪声影响的水平降至可以承受的范围，总体平均的次数一般设置为数百次就能够满足信号分解的要求。本文在选取白噪声参数时候选取，幅值设置为 0.1，总体平均的次数设为 100，既能够改善模态混叠现象，又能快速有效地实现 $LFP$ 信号的分解。
+
+运用上述方法，分别对小鼠睡眠、清醒无刺激状态下的，经 $ICA$ 处理过后的 $LFP$ 信号进行 $EEMD$ 分解，如图 19 所示:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{EEMD 分解结果}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{EEMD 分解结果}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{EEMD 分解结果}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image4.png}
+    \caption{EEMD 分解结果}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image5.png}
+    \caption{EEMD 分解结果}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image6.png}
+    \caption{EEMD 分解结果}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{LFP 信号的 EEMD 分解}
+    \label{fig:19}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{LFP 信号 EEMD 分解的残差}
+    \label{fig:20}
+\end{figure}
+
+由图 \ref{fig:19} 可见，1 路 LFP 可被分解为 13 路从高频到低频频率依次递减的分量，图 \ref{fig:20} 为对应残差。
+
+\textbf{IMF 伪分量去除}
+
+由于EEMD算法本身存在的插值偏差、边界效应以及过分解等缺陷，分解后的IMF分量可能存在伪分量，即与原信号无关的分量，因此需要将这些伪分量予以剔除。因此在确定各IMF分量对刺激选择性之前，需要对分解后的各模态进行伪分量判别，本文采用IMF分量与原信号进行相关性计算。设原LFP信号为 \( x(n) \)，IMF分量为 \( y(n) \)，两者的相关系数 \( C_{xy} \)：
+
+\[
+C_{xy} = \frac{\sum\limits_{n=0}^{\infty} x(n) y(n)}{\sqrt{\sum\limits_{n=0}^{\infty} x^2(n) \sum\limits_{n=0}^{\infty} y^2(n)}}
+\tag{4.27}
+\]
+
+对于计算出的各个相关系数值，需要进行大小判断以判别伪分量，一般是根据经验选取阈值，本文选取各分量与ICA去噪后的信号相关系数序列中最大值的十分之一为阈值，小于阈值的分量为伪分量。两个状态下LFP与分解后的各模态计算相关系数，如表2所示，六、七通道的IMF1和IMF2与去噪处理后信号的相关系数小于各自最大值阈值的十分之一，即此两个分量为分解后的伪分量，予以剔除，余下的全部分量为对LFP的有效分解。
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+相关系数 & IMF1 & IMF2 & IMF3 & IMF4 & IMF5 & IMF6 & IMF7 & IMF8 & IMF9 \\
+\hline
+6通道 & 0.0302 & 0.0579 & 0.1811 & 0.1453 & 0.2758 & 0.5163 & 0.6124 & 0.4823 & 0.4792 \\
+\hline
+7通道 & 0.0360 & 0.0598 & 0.1874 & 0.1498 & 0.2649 & 0.5060 & 0.6041 & 0.5130 & 0.5170 \\
+\hline
+平均 & 0.0331 & 0.0589 & 0.1843 & 0.1431 & 0.2703 & 0.5131 & 0.6082 & 0.4977 & 0.4981 \\
+\hline
+\end{tabular}
+\end{table}
+
+{LFP与睡眠关联最佳响应频带的确定}
+
+通过神经元第三固有模态分量上下限主频带范围的统计分析，对实验求取的IMF3的主频带范围为37至97Hz。说明了此频带范围内的LFP信号有效响应了呼吸作用相关的峰电位，这也很好的吻合该频带脑电信号所产生的生理机制。
+
+\subsection{问题五：}
+
+题目所给清醒小鼠Checkboard随时间变化的曲线如下图21所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\caption{视觉刺激信号（红点代表坐标）}
+\end{figure}
+
+功率谱，又称功率谱密度 \((power \ spectrum \ density, PSD)\)，是指用密度的概念表示信号功率在单位频率上的分布情况，主要研究信号在频域中的各种特征，可以在频域中提取被淹没在噪声中的有用信号。对功率谱在频域上积分就可以得到信号的功率。
+
+本文选用广泛应用的 \(Welch\) 法，计算时选择 \(Hann\) 窗，设置重叠率为 \(50\%\)。所得到结果如下：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{清醒状态（有视觉刺激）下的呼吸功率谱}
+    \label{fig:22}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{清醒状态（有视觉刺激）下的 LFP 信号功率谱}
+    \label{fig:23}
+\end{figure}
+
+按照互相关系数最大的原则，从 5 路 \(LFP\) 信号中选取和呼吸信号互相关系数最高的波形作为功率谱分析的蓝本（第 3 路）。对比以上两图，\(LFP\) 的功率谱有明显的“突刺”成分，表明 \(LFP\) 内含有视觉刺激所引起的脑电波信号。
+
+因此，观察呼吸曲线的功率谱，发现呼吸曲线的功率谱，在低频部分段有较高幅值，由此可得频波段是主要的呼吸相关 \(LFP\) 波。
+
+根据问题 4 建立的信号分离模型，将 \(EEMD\) 法分离出的几路 \(IMF\) 信号，分别进行功率谱分析，并结合问题 2 中所建模型是否锁相作为选取标准，第 3 路作为呼吸相关程度高的脑电波成分，选择第 11 路作为刺激相关的脑电波信号，成分波形如下图所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{成分波形}
+    \label{fig:24}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{LFP 脑电波信号中视觉刺激成分}
+    \label{fig:24}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{LFP 脑电波信号中的呼吸成分}
+    \label{fig:25}
+\end{figure}
+
+{关于图形因素在脑电波成分中对相关性产生的影响分析}
+
+由于视觉刺激的信号不是周期的（即视觉刺激激发时间具有随机性），所以本文在验证视觉刺激脑电波成分与视觉刺激之间相关性，用一种基于峰电位触发的平均叠加算法，其核心思想是：以锋电位的负峰为基准点，将原始宽频带记录信号进行叠加并求得平均波形。详细介绍如下：
+
+\paragraph{1. 叠加求平均}
+
+以锋电位的发放时间为基准点，求宽频带场电位信号的叠加平均，可以提取出场电位中所包含的与锋电位发放相关的成分，去除其它无关成分。叠加求平均算法的具体步骤是：
+
+\begin{enumerate}
+    \item 首先，利用处理后的呼吸曲线，获得锋电位发放的各个负峰时间点；
+    \item 其次，将这些时间点作为参考，在原始宽频带信号中截取所需长度的信号进行叠加平均。按照需要，假设在参考点前取 $a$ 个采样点，在参考点后取 $b$ 个采样点，则所截取的每个场电位信号段含有 $(k=a+b+1)$ 个采样点。从而得到 $n$ 个锋电位
+\end{enumerate}
+
+所对应的 $n$ 段长度为个采样点的场电位信号；
+
+然后，求这 $n$ 段由同类锋电位负峰触发的场电位节律的叠加平均信号。将这种叠加求平均的方法所得到的叠加平均信号称为 $STA$ 波。此 $STA$ 波中保留了与锋电位发放锁相的场电位成分。
+
+2. “峰——场”电位关系分析。
+
+当锋电位个数足够大时，叠加平均可以消除场电位中包含的与锋电位发放不锁相的信号，保留并突显出与锋电位具有锁相关系的场电位节律信号；并且，锁相性越强，该节律信号在 $STA$ 波中的幅值就越大。将题目中视觉刺激下小鼠脑电波信号进行 $STA$ 波的提取，提取后的波形如下图：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{视觉刺激下脑电波信号的 $STA$ 波}
+\end{figure}
+
+用获得的 $STA$ 信号逐段替换原始小鼠脑电波相应视觉刺激产生的脑电波，获得一个只包含视觉刺激响应的脑电波。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{与 Checkboard 刺激相关的脑电波信号成份}
+\end{figure}
+
+将此信号（图 27）利用问题二中的锁相模型，判断该合成 $STA$ 波所包含的场电位节律信号与视觉刺激之间是否相关。
+
+经过模型判断，最终 $p$ 值为 0.875，即相位锁定，场电位节律信号与视觉刺激之间相关性得证。
+
+实际分析脑电波成分过程中，很多时候仅仅判断是否相关还不够，对不同的
+
+外界诱发刺激，STA 波幅值的大小不仅与这种锁相性的强弱有关，还与原始信号中节律波的原有幅值大小相关。
+
+观察经叠加平均后的节律信号，我们可以看到锋电位所在的波（锋电位前后波峰之间的波）幅值最大，左右两边节律波的幅值逐渐减小。所以我们考虑从锋电位所在波的能量入手，探索合适的参数来判断锁相性强弱，采用 STA 波中锋电位所在周期波段与原始场电位中感兴趣节律的功率之比 $\varphi_{STA}$ 来评价锋电位与场电位节律之间锁相性的强弱，$\varphi_{STA}$ 指标的定义如下：
+
+根据帕塞瓦尔 (Parserval) 能量守恒定理，即信号的时域能量与频域能量相等：
+\begin{equation}
+\int_{-\infty}^{\infty} \left[f(t)\right]^2 dt = \frac{1}{2\pi} \int_{-\infty}^{\infty} \left|F(j\omega)\right|^2 d\omega
+\tag{4.28}
+\end{equation}
+而能量除以时间就得到功率。因此，信号的功率在时域或者频域都可以计算。由于 $\delta$ 节律中峰电位所在的那个中心周期的信号较短，因此，在时域上计算其功率，即直接求数据的幅值平方和，再除以数据长度。而原始场电位信号较长，就在频域上计算其包含的 $\delta$ 节律的功率，用 Welch 法计算原始信号的功率谱密度。其中，FFT 长度取 65536 个数据点，对于 $1\text{kHz}$ 的采样频率，其频谱分辨率为 $0.305\text{Hz}$；窗函数采用 Hann 窗。然后求得 $\delta$ 节律频段或者 $\gamma$ 波频段的总功率。最后，得到 STA 与 LFP 的功率百分比 $\varphi_{STA}$，其计算公式为：
+\begin{equation}
+\varphi_{STA} = \frac{\text{中心周期波形幅值的平方和/该周期采样点数}}{\text{LFP 包含相应频段的功率}} \times 100\%
+\tag{4.29}
+\end{equation}
+
+可以预见，$\varphi_{STA}$ 值越大，表明锋电位发放与场电位中节律波的锁相性就越强。
+
+而由于题目实验中，对小鼠的视觉刺激时间随机（间隔时间 $0.2 \sim 2\text{s}$），且每次给予刺激均为“空—A—空—B—空”的模式，两种图形（如图 28）之间的间隔过短，如果分别截取两种图形刺激给予的影响，则信号周期过短，采样点数过少，不利于上述方法来分析两种图形因素产生的锋电位与场电位节律之间锁相性的强弱，故本文未提供验证过程及结果。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{图形示例}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{提取两幅图的 sift 特征点}
+    \label{fig:24}
+\end{figure}
+
+如果重新设计实验，拟将实验分两组进行，每组周期性地仅给予小鼠 A 类视觉刺激或者 B 类刺激，两组刺激周期相等且足够长，刺激持续时间相等。将得到的波形信号按照上述方法进行 $\varphi_{ST_A}$ 值计算，如果两个图形 $\varphi_{ST_A}$ 值差异明显，则认为刺激脑电波成分包含图形形状因素，反之认为不包含。另外，可尝试分别对两幅图像提取 sift 图形特征（如图 \ref{fig:24}），建立图像特征空间和波形信号之间的联系，进一步分析图形形状对 LFP 信号的影响。
+
+\section{五、模型思考}
+
+为了使模型所得到的结果更加精确，在处理采样数据时可以对其进行适当插值运算，对信号采样特征进行奇异值分解后处理，更有利于处理过程的有效性，降低计算复杂度，在相关性的模型讨论中可以适当考虑多项式拟合，这样更能提高模型的可信度。我们设计的模型可以推广应用到几列信号的相关性分析判定。
+
+模型具有坚实的数学基础和理论支持，本文通过采用多种高性能算法的有机结合，有效减弱了各种算法自身的缺陷。
+
+峰值检验采用固定阈值配合人工筛选的方法，存在错检、漏检的可能，若改用更高效、更准确的检验方法，效果会更加接近真实情况，误差更小。
+
+\section{参考文献}
+
+[1] J. Wessberg, C. R. Stambaugh, J. D. Kralik, P. D. Beck, M. Laubach, J. K. Chapin, J. Kim, J. Biggs, M. A. Srinivasan, M. A. L. Nicolelis, Real-time prediction of hand trajectory by ensembles of cortical neurons in primates, Nature, 408, 361-365, Nov. 2000
+
+[2] J. Ito, S. Roy, Y. Liu, M. Fletcher, L. Lu, J. D. Boughter, S. Grun, D. H. Heck, Whisker barrel cortex delta oscillations and gamma power in the awake mouse are linked to respiration, Nature Communication, 2014, April.
+
+[3] Mark E. Bear 等，王建军等译，神经科学——探索脑，高等教育出版社，2004
+
+[4] 王青云，石霞，陆启韶，神经元耦合系统的同步动力学，科学出版社，2008
+
+[5] 吴孔海，大鼠初级视皮层局部场电位相位同步信息编码研究，郑州大学，2013
+
+[6] 王巧兰，微弱电信号的提取方法及其应用研究，重庆大学，2006
+
+\section{附录}
+
+第三题数据（matlab）
+
+\begin{verbatim}
+>> x=[ones(36,1),matrix_10{1}'];
+>> [b,bint,r,rint,stats]=regress(y',x,0.05)
+\end{verbatim}
+
+\begin{align*}
+b &= \\
+& 0.1580 \\
+& 5.5491 \\
+& 8.7599 \\
+& -0.8814 \\
+& -2.0970 \\
+& -10.8425 \\
+\text{bint} &= \\
+& -0.3492 \quad 0.6652 \\
+& 2.3678 \quad 8.7304 \\
+& 5.3909 \quad 12.1289 \\
+& -4.4771 \quad 2.7143 \\
+& -6.8252 \quad 2.6312 \\
+& -15.4693 \quad -6.2157 \\
+r &= \\
+& -1.6047 \\
+& 1.0980 \\
+& 1.7666 \\
+& 2.7153 \\
+& 3.2965 \\
+& 3.3547 \\
+& -1.1244 \\
+& -2.2246 \\
+& -1.4705 \\
+& -0.8303 \\
+& -0.5400 \\
+& -0.5576 \\
+& -0.0295 \\
+& -0.0810 \\
+& -0.2014 \\
+& -0.4885 \\
+& -0.4910 \\
+& 0.0575 \\
+& -0.4024 \\
+& -0.0635 \\
+& 0.0455 \\
+& -0.0990 \\
+& -0.1021 \\
+& -0.1414
+\end{align*}
+
+\begin{verbatim}
+-0.0131
+-0.0701
+-0.2176
+-0.3616
+-0.3921
+-0.3590
+0.0439
+0.0575
+-0.0681
+-0.1663
+-0.1796
+-0.1559
+rint=
+-2.1329  -1.0764
+-0.5695   2.7656
+1.0111   2.5222
+0.6190   4.8116
+1.4427   5.1502
+1.4705   5.2388
+-2.8410   0.5921
+-4.1160  -0.3331
+-3.5875   0.6465
+-2.4427   0.7820
+-2.9800   1.8999
+-3.1189   2.0037
+-2.5847   2.5258
+-2.6377   2.4757
+-2.7451   2.3423
+-3.0461   2.0690
+-3.0473   2.0653
+-2.4860   2.6010
+-2.9437   2.1389
+-2.6174   2.4904
+-2.5014   2.5925
+-2.6552   2.4572
+-2.6594   2.4552
+-2.6985   2.4157
+-2.5683   2.5420
+-2.6264   2.4862
+-2.7735   2.3383
+-2.9144   2.1912
+-2.9396   2.1554
+-2.9126   2.1945
+-2.4993   2.5872
+\end{verbatim}
+
+\begin{align*}
+-2.4959 & \quad 2.6109 \\
+-2.6197 & \quad 2.4834 \\
+-2.7237 & \quad 2.3911 \\
+-2.7377 & \quad 2.3785 \\
+-2.7136 & \quad 2.4017 \\
+\text{stats =} & \\
+& 0.8290 \quad 29.0817 \quad 0.0000 \quad 1.5787 \\
+\text{>> x=[ones(36,1),matrix\_10\{2\}];} \\
+\text{>> [b,bint,r,rint,stats]=regress(y',x,0.05)} \\
+\text{b =} & \\
+& 0.4160 \\
+& 7.7408 \\
+& 5.7473 \\
+& -8.7376 \\
+& -4.7995 \\
+& 0.6478 \\
+\text{bint =} & \\
+-0.2582 & \quad 1.0902 \\
+2.5265 & \quad 12.9552 \\
+0.9350 & \quad 10.5595 \\
+-20.6948 & \quad 3.2197 \\
+-19.2587 & \quad 9.6596 \\
+-4.7592 & \quad 6.0549 \\
+\text{r =} & \\
+& -2.9545 \\
+& 0.6781 \\
+& 2.1310 \\
+& 5.8048 \\
+& 3.8719 \\
+& 0.3237 \\
+& 3.7022 \\
+& 0.0898 \\
+& 0.0441 \\
+& -1.6692 \\
+& -1.2796 \\
+& -0.7630 \\
+& -0.6380 \\
+& -0.6146 \\
+& 0.4450 \\
+& -0.9728 \\
+& -0.7276 \\
+& -0.4291 \\
+& -0.6844 \\
+& -0.4233
+\end{align*}
+
+\begin{tabular}{l l}
+-0.4895 & \\
+-0.3441 & \\
+-0.3940 & \\
+-0.4156 & \\
+-0.4293 & \\
+-0.4767 & \\
+-0.3693 & \\
+-0.4404 & \\
+-0.1279 & \\
+0.3502 & \\
+-0.5818 & \\
+-0.4647 & \\
+-0.3264 & \\
+-0.5205 & \\
+-0.4551 & \\
+-0.4493 & \\
+\end{tabular}
+
+\begin{tabular}{l l}
+rint= & \\
+-4.3462 & -1.5629 \\
+-2.5605 & 3.9168 \\
+1.4948 & 2.7671 \\
+3.5230 & 8.0867 \\
+1.0175 & 6.7262 \\
+-1.6169 & 2.2643 \\
+0.6376 & 6.7669 \\
+-3.0978 & 3.2775 \\
+-2.5575 & 2.6457 \\
+-4.1437 & 0.8054 \\
+-4.4676 & 1.9084 \\
+-4.2109 & 2.6849 \\
+-4.0611 & 2.7851 \\
+-4.0630 & 2.8338 \\
+-2.4571 & 3.3471 \\
+-4.1947 & 2.2491 \\
+-4.1506 & 2.6954 \\
+-3.8391 & 2.9809 \\
+-4.0709 & 2.7021 \\
+-3.8967 & 3.0501 \\
+-3.9614 & 2.9824 \\
+-3.8169 & 3.1288 \\
+-3.8698 & 3.0818 \\
+-3.8914 & 3.0602 \\
+-3.8936 & 3.0350 \\
+-3.9454 & 2.9919 \\
+-3.7206 & 2.9820 \\
+\end{tabular}
+
+\begin{tabular}{r r r r}
+-3.8666 & 2.9857 & & \\
+-3.5593 & 3.3035 & & \\
+-3.0524 & 3.7529 & & \\
+-4.0503 & 2.8866 & & \\
+-3.9371 & 3.0077 & & \\
+-3.7903 & 3.1375 & & \\
+-3.9968 & 2.9557 & & \\
+-3.9318 & 3.0216 & & \\
+-3.9257 & 3.0272 & & \\
+stats= & & & \\
+0.6842 & 13.0013 & 0.0000 & 2.9148 \\
+\end{tabular}

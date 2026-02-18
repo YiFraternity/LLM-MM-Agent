@@ -1,0 +1,1447 @@
+\begin{center}
+\includegraphics[width=0.3\textwidth]{image1.png} \quad
+\includegraphics[width=0.3\textwidth]{image2.png} \quad
+\includegraphics[width=0.3\textwidth]{image3.png}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.3\textwidth]{image4.png}
+\end{center}
+
+\begin{center}
+\textbf{中国研究生创新实践系列大赛} \\
+\textbf{“华为杯”第十六届中国研究生} \\
+\textbf{数学建模竞赛}
+\end{center}
+
+
+
+\textbf{题目} \hfill 基于单目视觉的视频图像信息分析
+
+\begin{abstract}    
+
+视频图像信息分析是计算机视觉研究中非常重要的一部分，它的目的是依据已知的图像信息，通过数学模型提取出用户感兴趣的物体信息，如物体的大小、距离、速度等。本文研究了在单目视觉下的单幅图像、平面视频、立体视频下的距离信息分析技术，通过射影几何、透视投影、灭点检测、相机位姿估计、RANSAC、SafeUAV 等算法，完成对典型应用场景下视频图像信息分析。
+
+针对任务一：单幅图像下的距离信息分析。单幅图像可以通过求解灭点利用透视投影的交比不变性得到结果，也可以通过灭点求解相机内参，得到单应矩阵进行求解。因此，灭点的求解对于单幅图像的距离分析至关重要。本文分别采用了基于霍夫变换的灭点检测、基于 Gabor 小波变换的灭点检测和线性回归法进行单幅图像下的灭点求解，并选取出最优的检测结果。基于求解出的灭点，本文分别利用了两种不同的方法进行求解并进行交叉验证。其中，直接几何法利用射影变换中的交比不变性直接求解物体的距离，而间接几何法可以通过 EPnP 相机位姿估计算法求解单应矩阵，从而得到像素坐标系与真实坐标系之间的对应关系。
+
+针对任务二：平面视频下（高速上拍摄）的距离信息分析。相机在拍摄的过程中难免会存在一些晃动或者偏移，这也就造成了视频中的抖动。为了去除视频抖动影响，根据原视频产生经过运动补偿过的视频序列，我们采用随机抽样一致 RANSAC 算法，利用帧间的信息来计算帧的全局运动参数，进而去除视频的抖动，从而得到运动稳定的视频图片序列。与任务一不同，任务二中的视频中含有的真实尺度信息较少，很难得到足够多的像素坐标与真实坐标对应关系进而求解单应矩阵。因此我们通过寻找几何约束对实际问题进行建模，利用交比不变性得到对物体距离和尺度的估计。
+
+针对任务三：平面视频下（高铁上拍摄）的距离信息分析。与任务二相同，我们用 RANSAC 算法消除视频中的抖动。高铁上拍摄的视频由于缺乏明显的尺度信息，通过广泛的资料查找，我们挖掘出了视频中隐含的部分物体的真实尺度。进而利用地平线上灭点的性质，通过几何约束对实际问题进行建模，利用交比不变性得到对物体距离和尺度的估计。
+
+针对任务四：立体视频下的信息分析，本文采取了基于深度学习的无人机飞行高度估计算法 SafeUAV 对视频中的深度和无人机飞行高度进行估计。SafeUAV 算法对无人机拍摄视频中的深度信息进行预测，进而得到图像中各个像素点的深度图。基于 SafeUAV 算法
+
+提供的深度预测，以及灭点求解出相机内参，我们进一步通过层次分解和射影几何方法求解单应矩阵，将等高度的单位距离网格可视化，从而得到了立体视频下的物体距离和尺度估计。
+
+最后，本文对所建立的模型给出了评价和改进的方向。
+
+关键词：交比不变性，相机位姿估计，霍夫变换，单应矩阵，RANSAC 算法，深度学习，SafeUAV 算法
+\end{abstract}
+
+\tableofcontents
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+从图像或视频序列中提取物体的大小、距离、速度等信息是视觉情报分析工作的重要内容之一，在移动机器人、无人驾驶、计算机视觉、无人机侦察等领域，更是存在着大量的应用需求。随着双目、多目视觉系统和 3D 视觉系统的蓬勃发展，视频图像信息分析中的深度信息变容易被感知。但在条件有限的情况下，我们只能获取普通的图像或视频，对其进行信息分析需要综合考虑各种因素。
+
+得益于计算机视觉领域的蓬勃发展，单目视觉系统的几何信息分析已有成熟的方法和算法。对于单幅图像而言，由于成像过程中深度信息的缺失，其几何信息分析需要一定的先验度量信息。基于先验度量，可以通过直接几何法、间接几何法实现几何量测。对于多幅图像或视频而言，可以通过立体视觉原理恢复场景的三维结构，实现几何信息分析。
+
+\subsection{问题提出}
+
+问题一：实验对象是单幅图片。构造数学模型，对其图片中的物体距离、高度以及拍摄者的位置进行求解。
+
+问题二：实验对象是高速行驶的车上拍摄的后视镜视频，设计有效的模型求解视频中车辆的相对距离、相对行驶速度。
+
+问题三：实验对象是高铁上拍摄的视频，设计有效的模型求解视频中桥面距水面的高度、距高铁轨道的距离以及水面宽度，估算拍摄时高铁的行驶速度。
+
+问题四：实验对象是无人机航拍视频，设计有效的模型求解建筑物的高度、面积，并测算无人机的飞行高度和速度。
+
+\section{问题分析}
+
+本文研究了视频中静态背景和动态背景下运动目标检测技术，当摄像机发生晃动或偏移下的视频去抖动算法，选出包含显著前景目标的视频帧标号的方法，多摄像机不同视角拍摄视频的前景目标提取以及视频异常事件检测算法。
+
+对于任务一：单幅图像下的距离信息分析。图像视频序列中的距离测量可以通过直接几何法和间接几何法进行求解。直接几何法利用透视投影的交比不变性，通过求解出灭点和灭线从而计算出结果。间接几何法通过求解单应矩阵得到真实坐标系与像素坐标系的变换关系，从而计算出结果。对于单幅图像而言，可以通过一组相互垂直方向的灭点求解相机内参，再依据相机内参求解单应矩阵。因此，灭点的求解对于单幅图像的距离分析至关重要。其中，现有的灭点检测算法有基于霍夫变换的灭点检测、基于 Gabor 小波变换的灭点检测和几何法。本文分别采用上述算法进行单幅图像下的灭点求解，并选取出最优的检测结果。通过求解出的灭点，利用直接几何法和间接几何法两种方法对图像中的距离信息分别进行求解，并对实验结果作对比及分析。
+
+针对任务二：平面视频下（高速上拍摄）的距离信息分析。相机在移动拍摄的过程中难免会存在一些晃动或者偏移，这也就造成了视频中的相机抖动。视频去抖动的过程就是要根据原视频产生经过运动补偿过的视频序列，这样就可以将不需要的抖动除去。这种方法关键就在于怎样利用帧间的信息来得出当前帧的全局运动参数。本文采用 RANSAC 算法利用帧间的信息来计算帧的全局运动参数，进而去除视频的抖动，从而得到稳定的图片拍摄序列。再通过几何约束和交比不变性对图像中的距离信息进行求解。
+
+针对任务三：平面视频下（高铁上拍摄）的距离信息分析。同样，我们采用 RANSAC 算法消除任务三视频中的抖动影响。但高铁上的拍摄视频由于没有很好的尺度参照物，因此，本文利用灭点和地平线性质通过几何约束对大桥和河面进行物理建模，并选取其中几帧进行运算，最终得到一个的结果。
+
+针对任务四：立体视频下的距离分析。立体视频下由于缺乏深度信息，因此需要对深度进行建模求解。我们采用了基于深度学习的 SafeUAV 算法对深度信息进行估计，得到了建筑物的高度信息，并给出了视频对应的深度图像。通过估计出的建筑物高度，我们对，最终求解出。其次，我们利用近似同一地点在不同高度层上的标志物，计算基于多层的不同视角间计算单应性矩阵，然后通过单应性变换获得目标在不同高度层的定位信息，最后，本文对所建立的模型给出了评价和改进的方向。
+
+\section{3 模型假设}
+
+假设 1：视频和图像中出现的普通小型轿车车长为标准车长 4.3m，轴距为标准轴距 2.6 米。
+
+假设 2：视频和图像中双向两车道公路宽度符合标准，即每条机动车道宽度为 3.75 米。
+
+假设 3：任务 1 图 2 中可跨越对向车行道分界线（黄色虚线）符合国家标准 [1]，即线长 4 米，间隔 6 米。
+
+假设 4：任务 1 图 3 中的车道中人行横道预告标识线（白色菱形图案）符合国家标准，即对角线长度分别为 3 米和 1.5 米。
+
+假设 5：任务 2 视频中的高速公路上的车行道分界线（白色虚线）符合国家标准，即线长 6 米，间隔 9 米。
+
+假设 6：任务 2 视频中的高速公路上的所有车辆均处于匀速行驶状态。
+
+假设 7：任务 3 视频中的高铁处于匀速行驶状态。
+
+假设 8：任务 3 中高铁行驶铁轨与水平面平行，且相机的拍摄方向与铁轨方向垂直。
+
+假设 9：任务 3 视频中移动通信基站单管塔严格按照设计图纸建设，符合 30m 灯杆景观塔设计标准，即铁塔高度为 30m，塔尖高 5 米，总高 35 米。
+
+假设 10：任务 4 视频中拍摄用无人机在近似固定高度匀速绕圆周飞行。
+
+\section{4 符号说明}
+
+\begin{tabular}{|c|c|}
+\hline 符号 & 说明 \\
+\hline $\mathbf{V}$ & 灭点 \\
+\hline $\frac{H}{R}$ & 交比 \\
+\hline $f_{x}$ & 相机在 $x$ 轴上的尺度因子 \\
+\hline $f_{y}$ & 相机在 $y$ 轴上的尺度因子 \\
+\hline $u_{0}$ & 相机主点在 $x$ 轴上的像素坐标 \\
+\hline $v_{0}$ & 相机主点在 $x$ 轴上的像素坐标 \\
+\hline $\mathbf{M}_{1}$ & 相机内参矩阵 \\
+\hline $\mathbf{M}_{2}$ & 相机外参矩阵 \\
+\hline $\mathbf{R}$ & 相机旋转矩阵 \\
+\hline $\mathbf{T}$ & 相机平移矩阵 \\
+\hline
+\end{tabular}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|}
+\hline
+V & 速度 \\
+\hline
+S & 距离 \\
+\hline
+N & 帧 \\
+\hline
+R & 相机帧率 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{模型的建立与求解}
+
+\subsection{任务一：单幅图像下的距离信息分析}
+
+\subsubsection{问题分析}
+
+距离信息分析就是利用单幅图像中图形和我们有限的已知信息，将我们所感兴趣的物体相对位置信息从图像中提取出来。对于单幅图像而言，由于成像过程中深度信息的缺失，其几何信息分析需要一定的先验度量信息。因此，拍摄图像中通常包括水平面平行线（道路、地砖）、竖直面平行线（楼房），已知信息通常包括车辆轴距、道宽、标线长度等等。
+
+图像视频序列中的距离测量可以通过直接几何法和间接几何法进行求解。直接几何法利用透视投影的交比不变性，通过求解出灭点和灭线从而计算出结果。间接几何法通过求解单应矩阵得到真实坐标系与像素坐标系的变换关系，从而计算出结果。本文分别采用直接几何量测法和间接几何量测法进行单幅图像下的距离信息分析实验，并对实验结果进行对比及分析。
+
+\subsubsection{直接几何量测：透视投影法}
+
+\paragraph{交比不变性}
+
+根据射影几何原理，将三维空间中的点投影到特定的射影平面上时，三维空间中的平行直线在射影平面上会相交在一个射影点上，即为射影平面中的灭点（Vanishing Points）。射影平面上的灭点对应三维空间上的无穷远点。
+
+灭点只和直线的方向相关，三维空间中一组平行的直线可以确定射影平面中的一个灭点。一个平面上所有平行线组确定的灭点共线，称为灭线，特别的，地平面对应的灭线即地平线。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\end{figure}
+
+根据射影变换和透视投影的性质，图像中四个共线点的交比（Cross Ratio）与真实世界的交比相等。因此，在真实场景下，可以通过交比的不变性来确定图像中的距离信息。
+
+在图像中：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image1.png}
+    \caption{Cross Ratio in 2D}
+\end{figure}
+
+\begin{align*}
+\frac{\mathrm{AO}_{2} \cdot \mathrm{A}_{2} \mathrm{~B}_{2}}{\mathrm{AB}_{2} \cdot \mathrm{A}_{2} \mathrm{O}_{2}} &= \frac{(\mathrm{c}+91) \cdot 182}{(\mathrm{c}+182) \cdot 91} \\
+\frac{\mathrm{A}_{2} \mathrm{~B}_{2} \cdot \mathrm{BO}_{2}}{\mathrm{B}_{2} \mathrm{O}_{2} \cdot \mathrm{A}_{2} \mathrm{~B}} &= \frac{182 \cdot (\mathrm{d}+91)}{91 \cdot (\mathrm{d}+182)}
+\end{align*}
+
+在三维空间中：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image2.png}
+    \caption{Cross Ratio in 3D}
+\end{figure}
+
+\begin{align*}
+\frac{\mathrm{HH}_{2} \cdot \mathrm{H}_{1} \mathrm{O}_{3}}{\mathrm{HO}_{3} \cdot \mathrm{H}_{2} \mathrm{H}_{2}} &= \frac{(\mathrm{h}+180) \cdot 440}{(\mathrm{h}+440) \cdot 180} \\
+\frac{\mathrm{H}_{1} \mathrm{O}_{3} \cdot \mathrm{H}_{2} \mathrm{H}_{0}}{\mathrm{H}_{2} \mathrm{O}_{3} \cdot \mathrm{H}_{1} \mathrm{H}_{0}} &= \frac{440 \cdot (260+j)}{(440+j) \cdot 260}
+\end{align*}
+
+\begin{align*}
+PX_1 &= B_4X - P_1C_4 \times \tan\theta \\
+QX_1 &= B_4X + Q_1C_4 \times \tan\theta
+\end{align*}
+
+因此，根据交比不变性，可以通过求解图像中的灭点来求解物体的长度、距离信息。
+
+\paragraph{5.1.2.2 常见的灭点检测算法}
+
+灭点检测算法[2]的根本在于对三维空间平行线段在图像中的投影线段的检测。实现平行直线段从背景中清晰、完整及快速的提取，并通过线段求解灭点是灭点检测算法的目的。灭点的正确检测对后续的灭线求解以及图像物体距离计算有重要的作用。
+
+灭点检测算法主要包括基于霍夫变换的灭点检测法、基于纹理信息的灭点滤波法，和线性回归法。
+
+\paragraph{(1) 基于霍夫变换的灭点检测}
+
+基于霍夫变换的灭点检测首先检测图像中的直线。对于每一个可能的直线对，计算直线交点的方向。并且他们的角度能够积累到一个参量中。通过选择包含最高数量的参量来获得占据主导的灭点。但是，霍夫变换对于角度参量量化的水平十分的敏感，因此结果中可能会出现多重的检测。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image3.png}
+    \caption{霍夫变换流程图}
+\end{figure}
+
+霍夫变换通过计算霍夫矩阵，把使每个像素坐标点经过变换转换得到极坐标系的极半径和角度。
+
+径和极角，并对转换后的参量进行累计。当一个峰值点出现时候，说明有直线存在。检测出图像的中的直线后通过选择包含最高数量的参量获得灭点。
+
+(2) 基于 Gabor 小波的道路消失点检测
+
+针对公路上的灭点检测，可以通过基于 Gabor 小波的道路消失点检测算法[3]进行检测。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image.png}
+\caption{更新}
+\end{figure}
+
+首先进行纹理分析，使用 Gabor 小波在多个尺度上进行纹理分析，对纹理不显著光滑区域进行舍弃。之后计算每个点与纹理信息的关系和得分，通过纹理投票的方法，选取候选点。根据候选点寻找比较显著的边缘，然后依据这个边缘对候选点进行更新。对于更新后的新候选点，再寻找另一个边缘，从而得到道路的直线边缘以及道路消失点。
+
+(3) 线性回归法
+
+在需要处理的图像数量有限的情况下，可以通过手工标注穷举出三维空间中平行直线上的点，根据点求解回归方程，确定直线在空间中的表达式，求出平行直线组的交点，即为灭点。
+
+对于图 1 到图 4，我们选取了三维空间中的多个平行直线组，如图 1 和图四中的地砖连线，图 2、图 3 中的线作为平行线组。
+
+根据选取的像素点坐标，将同一直线上的像素点进行线性拟合，得到各条直线的函数表达式。直线组的交点即为灭点。
+
+为了减少手工标注的误差，我们通过数据拟合出直线的表达式。以图 1 为例，我们选取了 50 个像素点对直线 L1-L11 进行线性回归，得到的结果如下：
+
+\[
+y = p_1 \cdot x + p_2
+\]
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+(x, y) & L1 & L2 & L3 & L4 & L5 & p1 & p2 \\
+\hline
+L6 & (783.5, 1369.5) & (861.5, 1393.5) & (951.5, 1415.5) & (1261.5, 1499.5) & - & 0.274 & 1156 \\
+\hline
+L7 & (861.5, 1393.5) & - & (1085.5, 1281.5) & (1355.5, 1337.5) & (1810.5, 1437) & 0.214 & 1049 \\
+\hline
+L8 & (951.5, 1415.5) & (1115.5, 1171.5) & - & (1425.5, 1221.5) & (1815.5, 1293.1) & 0.1718 & 978 \\
+\hline
+L9 & - & - & (1263.5, 1105.5) & (1475.5, 1137.5) & (1815.5, 1188.9) & 0.1457 & 922.6 \\
+\hline
+L10 & (1147.5, 1473.5) & (1263.5, 1039.5) & (1319.5, 1047.5) & (1517.5, 1071.5) & - & 0.1226 & 885.4 \\
+\hline
+L11 & (1261.5, 1499.5) & (1311.5, 995.5) & (1367.5, 1001.5) & (1547.5, 1019.5) & - & 0.09924 & 863.9 \\
+\hline
+p1 & 0.7837 & -0.8833 & -0.9961 & -1.672 & -43.49 & & \\
+\hline
+p2 & 1985 & 2155 & 2363 & 3607 & 80170 & & \\
+\hline
+\end{tabular}
+\end{table}
+
+注：表中的 - 表示像素点由于遮挡等原因无法准确选取，我们选取了其他的像素点作为补充。为了直观显示，部分像素坐标点未在表中给出。
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ & p1** & p2** & SSE & R-Square & RMSE \\
+\hline
+L1 & (-0.792, 0.7754) & (1976, 1993) & 3.23 & 1 & 1.038 \\
+\hline
+L2 & (-0.9025, 0.8642) & (2133, 2177) & 4.861 & 0.9999 & 1.559 \\
+\hline
+L3 & (-1.005, -0.987) & (2352, 2374) & 2.962 & 1 & 0.9936 \\
+\hline
+L4 & (-1.7, -1.644) & (3567, 3647) & 23.08 & 0.9999 & 2.042 \\
+\hline
+L5 & (-48.42, -38.56) & (71200, 89130) & 516.2 & 0.9986 & 16.07 \\
+\hline
+L6 & (0.2539, 0.2942) & (1135, 1176) & 19.1 & 0.9984 & 2.523 \\
+\hline
+L7 & (0.2057, 0.2223) & (1037, 1060) & 48 & 0.9985 & 2.829 \\
+\hline
+L8 & (0.1639, 0.1797) & (966.6, 989.5) & 22.85 & 0.9984 & 2.138 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+L9 & (0.1371,0.1542) & (909.3,935.9) & 8.077 & 0.9982 & 1.421 \\
+\hline
+L10 & (0.1167,0.1284) & (876.6,894.2) & 11.48 & 0.9977 & 1.383 \\
+\hline
+L11 & (0.09048,0.108) & (850.5,877.3) & 21.36 & 0.9923 & 1.887 \\
+\hline
+\end{tabular}
+\end{table}
+
+其中，L1-L5为三维空间中的平行直线组，L6-L11为与该平行直线组相互垂直的另一个平行直线组，通过求解每一个直线组的交点，可以得到灭点坐标。
+
+由于穷举标注和数据拟合过程中存在误差，每个直线组并非只有一个交点，我们将灭点坐标与直线组中每条直线的距离作为误差函数，通过最小化误差函数进行灭点求解。
+
+设灭点 \( v_0 \) 的坐标 \((x_0, y_0)\)
+
+直线方程：
+\[
+y_i = p_{i1} \cdot x_i + p_{i2}
+\]
+
+误差函数：
+\[
+\sum_i \frac{p_{i1} \cdot x_i + p_{i2} - y_i}{\sqrt{p_{i1}^2 + 1}}
+\]
+
+\paragraph{5.1.2.2 灭点检测算法结果}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & 原图 & 霍夫变换法 & Gabor小波法 & 线性回归法 \\
+\hline
+图1 & \includegraphics[width=0.2\textwidth]{image1.png} & \includegraphics[width=0.2\textwidth]{image2.png} & \includegraphics[width=0.2\textwidth]{image3.png} & \includegraphics[width=0.2\textwidth]{image4.png} \\
+\hline
+灭点 & & (1836.5,531.8) & (1816.4,527.3) & (1829.6,539.2) \\
+\hline
+ & \includegraphics[width=0.2\textwidth]{image5.png} & \includegraphics[width=0.2\textwidth]{image6.png} & \includegraphics[width=0.2\textwidth]{image7.png} & \includegraphics[width=0.2\textwidth]{image8.png} \\
+\hline
+灭点 & & (416.8,800.6) & (337.5,795) & (332.1,786.4) \\
+\hline
+ & \includegraphics[width=0.2\textwidth]{image9.png} & \includegraphics[width=0.2\textwidth]{image10.png} & \includegraphics[width=0.2\textwidth]{image11.png} & \includegraphics[width=0.2\textwidth]{image12.png} \\
+\hline
+灭点 & & 求解错误 & 求解错误 & (-1953,409) \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & \includegraphics[width=0.2\textwidth]{image1.png} & \includegraphics[width=0.2\textwidth]{image2.png} & \includegraphics[width=0.2\textwidth]{image3.png} & \includegraphics[width=0.2\textwidth]{image4.png} \\
+\hline
+灭点 & & (663.6, 1271.9) & 求解错误 & (664.9, 1271.1) \\
+\hline
+\end{tabular}
+\end{table}
+
+通过对比分析可以看出，基于霍夫变换的灭点检测依赖于检测出的直线对的好坏，容易出现错误判断。基于 Gabor 小波变换的道路消失点检测只能检测出在图像中的灭点，对于图像外的消失点不能检测出来。基于线性回归法的灭点检测依赖于对像素点的手工标注，存在一定的手工误差，但结果相对来说更准确。
+
+\paragraph{图片一求解}
+
+(1) 红色车辆 A 车头和白色车辆 B 车头之间的距离
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image5.png}
+\end{figure}
+
+基于霍夫变换法、Gabor 小波法和穷举法，我们得到了三组灭点，根据分析结果，我们选取 $V_1, V_2$ 作为灭点并构造出灭线（图中绿色虚线）。简化图如下所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image6.png}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{示意图}
+\end{figure}
+
+其中，点 $R_1$ 为红色车辆前轮位置，点 $R_3$ 为白色车辆前轮位置。由于两车车型相似，因此可认为两车车头之间的距离等于两车前轮之间的距离。即为点 $R_1$ 和 $R_3$ 在空间中的直线距离。
+
+由于两辆车车型相差不大，不失一般性的认为两车前车轮之间的距离即为车头之间的距离。基于假设 1，红色车辆 A 的轴距为 2600mm。从灭线上取一个灭点 $V_Z$，连接灭点与红色车辆的轮胎中心点，与蓝色直线交于 O 点和 B 点。
+
+图中点的像素坐标分别为：
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+点 & O & A & V & B & T \\ \hline
+像素坐标 & (1813,1439) & (1818,1187) & (1829,539) & (1821,985) & (1829,618) \\ \hline
+\end{tabular}
+\end{table}
+
+根据灭线性质，灭线上的所有点都为灭点，从灭点连出的任意两条直线平行。则有：
+\[
+R_1R_2 \parallel OB, \, V_ZO \parallel V_ZB, \, R_1O \parallel R_2B
+\]
+根据平行四边形原理，$\|O-B\| = \|R_1-R_2\| = 2600mm$，$\|R_1-R_3\| = \|O-T\|$
+
+又根据交比性质，图像中的交比与三维空间中的交比相等：
+\[
+\frac{|o-t||v-b|}{|b-t||v-o|} = \frac{|O-T||\infty-B|}{|B-T||\infty-O|} = \frac{H}{R}
+\]
+\[
+\|O-T\| = (\|O-T\| - \|O-B\|) \frac{|o-t||v-b|}{|b-t||v-o|}
+\]
+
+计算得出 OT 两点的真实距离为 26.544m，也即两车车头之间的距离为 26.544m
+
+为了验证计算结果的准确性，我们利用交比不变性对 OA 两点间的地砖长度进行求解。依据交比不变性：
+\[
+\frac{|o-b||v-a|}{|a-b||v-o|} = \frac{|O-B||\infty-A|}{|A-B||\infty-O|} = \frac{H}{R}
+\]
+由上文知 $\|O-B\| = \|R_1-R_2\| = 2600mm$，$\|A-B\| = \|O-B\| - \|O-A\|$ = 轴距 - 地砖长度
+
+根据交比性质，算出 AB 之间的地砖长度为 99.3cm，结合日常生活经验，真实的地砖长度大致为 100cm，与结果接近。因此，我们认为上文中求解的结果较为可信。
+
+(2) 拍照者距马路左侧边界的距离
+
+如图所示，相机位置几乎与 O 点重合，偏差在 5cm 左右。因此，我们可以将拍照者离马路左侧的距离近似为O 点到马路左侧的距离。即为马路宽度与相机位置到马路
+右侧距离的和。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{相机位置示意图}
+\end{figure}
+
+利用交比不变性：
+\[
+\frac{\left|o-c\right|\left|v_{1}-q\right|}{\left|q-c\right|\left|v_{1}-o\right|} = \frac{\left|\mathbf{O}-\mathbf{C}\right|\left|\infty-\mathbf{Q}\right|}{\left|\mathbf{Q}-\mathbf{C}\right|\left|\infty-\mathbf{O}\right|} = \frac{H}{R}
+\]
+
+求出 $OC$ 为 $9\,\text{m}$。由于地砖大小为 $1\,\text{m}$，可以得到与人行道边沿距离 $OQ=2.25\,\text{m}$，因此相机距离边沿距离为 $2\times(OC-OQ)+OQ=15.75\,\text{m}$。
+
+\paragraph{5.1.2.3 图片二求解}
+
+(1) 黑色车辆 A 车头和灰色车辆 C 车尾之间的距离
+
+基于霍夫变换法、Gabor 小波法和穷举法，我们得到了三组灭点，根据分析结果，我们选取作为灭点并构造出灭线（图中绿色虚线）。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{车辆位置示意图}
+\end{figure}
+
+简化图如下所示：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{简化图示意图}
+\end{figure}
+
+我们将 O 点作为原点，从 O 点做直线连接黑色车辆的车前轮，并与灭线交于点 \( V_3 \)，连接灭点 \( V_3 \) 与灰色车辆的车后轮，并交与直线 \( OV \) 交于 D 点。A、B 为参考坐标点。
+
+图中点的像素坐标分别为：
+
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline 点 & O & A & B & V & D \\
+\hline 像素坐标 & (1293,1207) & (883,1028) & (771,979) & (332,786) & (493,856) \\
+\hline
+\end{tabular}
+
+基于假设 3，标准的可跨越对向车行道分界线长度为 4m，间隔为 6m。即 \( \| \mathbf{O} - \mathbf{B} \| = 1000 \) cm \( \| \mathbf{A} - \mathbf{B} \| = 400 \) cm。
+
+根据交比性质，图像中的交比与三维空间中的交比相等：
+\[
+\frac{\| o - d \| \| v - a \|}{\| a - d \| \| v - o \|} = \frac{\| \mathbf{O} - \mathbf{D} \| \| \infty - \mathbf{A} \|}{\| \mathbf{A} - \mathbf{D} \| \| \infty - \mathbf{O} \|} = \frac{H}{R}
+\]
+\[
+\| \mathbf{O} - \mathbf{D} \| = (\| \mathbf{O} - \mathbf{D} \| - \| \mathbf{O} - \mathbf{A} \|) \frac{\| o - d \| \| v - a \|}{\| a - d \| \| v - o \|}
+\]
+
+因此，得到 OD 点对应车长为 40.28m。由于题目所求为黑色车辆车头和灰色车辆车尾之间的距离，还需要减去黑色车辆车头到车轮距离和灰色车尾到车轮距离。根据假设条件 1，普通家用轿车的车长为 4.3m，轴距为 2.6m，差为 1.7m。
+
+因此，最终得到的距离为：40.28 - 1.7 = 38.58m。
+
+(2) 拍照者距白色车辆 B 车头的距离
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image1.png}
+\caption{相机位置}
+\end{figure}
+
+垂直于照片底边的黄线即相机到 B 车连线，与 \( OV \) 交于点 P。马路右侧的花坛边线与直线 \( OV \) 垂直，利用灭线，找到白色车辆车轮 T 在 \( OV \) 线上的垂直投影 Q。根据直角三角形勾股定理，则有：
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+点 & O & A & P & V & V_{4} & T & Q \\
+\hline
+像素坐标 & (1293,1207) & (883,1028) & (938,1052) & (332,786) & (968,829) & (938,921) & (642,923) \\
+\hline
+\end{tabular}
+\end{table}
+
+根据交比性质，图像中的交比与三维空间中的交比相等：
+\[
+\frac{\|o-q\|\|v-a\|}{\|a-q\|\|v-o\|} = \frac{\|O-Q\|\|\infty-A\|}{\|A-Q\|\|\infty-O\|} = \frac{H}{R}
+\]
+\[
+\|O-Q\| = (\|O-Q\| - \|O-A\|) \frac{\|o-q\|\|v-a\|}{\|a-q\|\|v-o\|}
+\]
+
+因此，得到 \(OQ=16.87 \, \text{m}\)
+\[
+\frac{\|o-q\|\|v-p\|}{\|p-q\|\|v-o\|} = \frac{\|O-Q\|\|\infty-P\|}{\|P-Q\|\|\infty-O\|} = \frac{H}{R}
+\]
+\[
+\|P-Q\| = (\|O-Q\| - \|O-P\|) \frac{\|p-q\|\|v-o\|}{\|o-q\|\|v-p\|}
+\]
+
+因此，得到 \(PQ=12.14 \, \text{m}\)
+
+根据假设 2，车道宽度为 \(3.75 \, \text{m}\)，又由于 \(TQ \perp OV\)，\(PT^2 = PQ^2 + TQ^2\)，故有：
+\[
+PT = \sqrt{12.14^2 + 3.75^2} = 12.71 \, \text{m}
+\]
+
+又有相机位置 \(X\)、点 \(P\)、\(T\)、\(V_4\) 四点共线，利用交比不变性：
+\[
+\frac{\|x-t\|\|v_4-p\|}{\|p-t\|\|v_4-x\|} = \frac{\|X-T\|\|\infty-P\|}{\|P-T\|\|\infty-X\|} = \frac{H}{R}
+\]
+
+由于相机位置 \(X\) 在照片中的坐标相当于 \((938, +\infty)\)，即像素坐标系中相当于 \(y\) 处于无穷远的位置。因此，可做如下近似：
+\[
+\|X-T\| = \|P-T\| \frac{\|x-t\|\|v_4-p\|}{\|p-t\|\|v_4-x\|} \approx \|P-T\| \frac{\|v_4-p\|}{\|p-t\|}
+\]
+
+所以，拍照者距白色车辆的距离约 \(21.73 \, \text{m}\)。
+
+\paragraph{5.1.2.4 图片三求解}
+
+(1) 拍照者距离地面的高度
+
+以远处门为参照，简易房门高度为 \(2 \, \text{米}\)，地面到灭线 \(138 \, \text{pixel}\)，门高 \(58 \, \text{pixel}\)。由于与相机底片平行的平面上的点的相对距离关系不变，所以灭线相对地面高 \(2 * 138 / 58 = 4.76 \, \text{米}\)。由灭线性质，相机高度应等于灭线对应高度，即相机高度为 \(4.76 \, \text{米}\)。
+
+(2) 拍照者距岗亭 \(A\) 的距离
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{image.png}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{相机位置 X}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        点 & O & A & B & P & P$_1$ & G \\
+        \hline
+        像素坐标 & (333,987) & (503,1030) & (932,1138) & (-315,824) & (-4,766) & (333,703) \\
+        \hline
+        点 & V & V$_1$ & V$_2$ & & & \\
+        \hline
+        像素坐标 & (-1953,409) & (1633,461) & (333,442) & & & \\
+        \hline
+    \end{tabular}
+    \caption{点的像素坐标}
+\end{table}
+
+根据假设 x，菱形标志两条对角线长分别为 3m 和 1.5m。根据图中的距离关系，我们推测黄色横道线标志长为 2m，间隔为 4 米。即 OA=2m，OB=4m。下面验证推测：
+
+点 O、A、B、V 四点共线，利用交比不变性：
+\[
+\frac{\|o-b\| \|v-a\|}{\|o-a\| \|v-b\|} = \frac{\|O-B\| \|\infty-A\|}{\|O-A\| \|\infty-B\|} = \frac{H}{R}
+\]
+
+得到的交比为 2.9995。与推测线长 2m，线间隔 4m 相符。
+
+又有，点 O、A、B、V 四点共线，利用交比不变性：
+\[
+\frac{\|p-a\| \|v-o\|}{\|p-o\| \|v-a\|} = \frac{\|P-A\| \|\infty-O\|}{\|P-O\| \|\infty-A\|} = \frac{H}{R}
+\]
+\[
+\|P-O\| = \|P-A\| \frac{\|p-o\| \|v-a\|}{\|p-a\| \|v-o\|}
+\]
+
+因此，得到 OP 实际长度为 11.43 米。
+
+同理，点 P、G、P$_1$、V$_1$ 四点共线，利用交比不变性：
+\[
+\frac{\|p-g\| \|v_1-p_1\|}{\|p_1-o\| \|v_1-p\|} = \frac{\|P-G\| \|\infty-P_1\|}{\|P_1-G\| \|\infty-P\|} = \frac{H}{R}
+\]
+\[
+\|P-G\| = (\|P-G\| - \|P-P_1\|) \frac{\|p-g\| \|v_1-p_1\|}{\|p_1-o\| \|v_1-p\|}
+\]
+
+由假设 2，道路宽为 3.75 米，因此，得到 PG 实际长度为 9.84 米。
+
+又由于实际中 PG ⊥ OP，OG$^2$=PG$^2$+OP$^2$，因此可得 OG=15.08 米
+
+与第二小问同理，设相机到地面投影位置 X。又有相机位置 X、点 O、G、V$_2$ 四点共线，利用交比不变性：
+\[
+\frac{\|x-g\| \|v_2-o\|}{\|o-g\| \|v_4-x\|} = \frac{\|X-G\| \|\infty-O\|}{\|O-G\| \|\infty-X\|} = \frac{H}{R}
+\]
+
+由于相机位置 X 在照片中的坐标相当于 (968, +∞)，即像素坐标系中相当于 y 处于无穷远的位置。因此，可做如下近似：
+
+\[
+\| \mathbf{X} - \mathbf{G} \| = \| \mathbf{O} - \mathbf{G} \| \frac{\| v_2 - o \|}{\| o - g \| }
+\]
+
+所以，$XG = 29.94 \, \text{m}$。
+
+$G$ 与岗亭很近，可以认为相机到岗亭的水平距离为 $28.94$ 米，考虑到相机高度，实际距离约 $29.33$ 米。
+
+\paragraph{5.1.2.4 图片四求解}
+
+(1) $AB$ 的长度
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{图片四}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+点 & $A_1$ & $O_1$ & $P_1$ & $B_1$ & $Q_1$ \\ \hline
+像素坐标 & (492,1643) & (660,1636) & (925,1623) & (1095,1613) & (1185,1611) \\ \hline
+点 & $A$ & $A_2$ & $O_2$ & $B_2$ & $B$ \\ \hline
+像素坐标 & (221,1420) & (558,1409) & (739,1402) & (923,1396) & (1227,1384) \\ \hline
+点 & $H_0$ & $O_3$ & $H_2$ & $H_1$ & $H$ \\ \hline
+像素坐标 & (967,1395) & (965,1369) & (934,966) & (915,717) & (882,282) \\ \hline
+\end{tabular}
+\caption{点的像素坐标}
+\end{table}
+
+首先求台阶砖长度，记 $P_1B_1$ 实际长为 $a$，$O_1A_1$ 实际长为 $b$。则有：
+\[
+\frac{O_1B_1 \cdot P_1Q_1}{O_1Q_1 \cdot P_1B_1} = \frac{(80 + a) \cdot 80}{160 \cdot a}
+\]
+\[
+\frac{O_1Q_1 \cdot P_1A_1}{O_1P_1 \cdot Q_1A_1} = \frac{(80 + b) \cdot 160}{(160 + b) \cdot 80}
+\]
+
+求出 $a = 52.14 \, \text{cm}$，$b = 49.93 \, \text{cm}$，因此，所以台阶砖块 $A_1B_1 = a + b + 80 = 182 \, \text{cm}$，约为 $182 \, \text{cm}$。
+
+连线 $AB$，与平行直线组分别交于 $A_2, O_2, B_2$，其中 $O_2$ 近似为 $A_2$ 和 $B_2$ 中点处，故认为：$A_2O_2 = B_2O_2 = 91 \, \text{cm}$
+
+记 $AA_2$ 实际长度 $c$，$BB_2$ 实际长度 $d$
+
+\begin{align*}
+\frac{\mathrm{AO}_{2} \cdot \mathrm{A}_{2} \mathrm{~B}_{2}}{\mathrm{AB}_{2} \cdot \mathrm{A}_{2} \mathrm{O}_{2}} &= \frac{(\mathrm{c}+91) \cdot 182}{(\mathrm{c}+182) \cdot 91} \\
+\frac{\mathrm{A}_{2} \mathrm{~B}_{2} \cdot \mathrm{BO}_{2}}{\mathrm{B}_{2} \mathrm{O}_{2} \cdot \mathrm{A}_{2} \mathrm{~B}} &= \frac{182 \cdot (\mathrm{d}+91)}{91 \cdot (\mathrm{d}+182)}
+\end{align*}
+
+求出 \( c = 173.5 \, \mathrm{cm} \), \( d = 147.1 \, \mathrm{cm} \), 因此所以 \( \mathrm{AB} = 173.5 + 147.1 + 182 = 502.6 \, \mathrm{cm} \)。
+
+(2) AB 到 CD 的距离
+
+根据假设 1, 图片中出现的人身高约 1.7 米, 观察到门框纹路有周期性, 我们认为每周期等长。由于人的身高共约 8.5 个周期, 因此估算出门框纹路每周期高度为 20cm。
+
+作辅助线, \( \mathrm{H}_{0} \mathrm{H} \), 与 \( \mathrm{AB} \) 交于 \( \mathrm{H}_{0} \), 与 \( \mathrm{CD} \) 交于 \( \mathrm{H} \)。已知 \( \mathrm{O}_{3} \mathrm{H}_{2} \) 共 13 格, \( \mathrm{H}_{2} \mathrm{H}_{1} \) 共 9 格。记 \( \mathrm{HH}_{1} \) 实际长度为 \( h \), \( \mathrm{O}_{3} \mathrm{H}_{0} \) 实际长度为 \( j \), 有:
+\begin{align*}
+\frac{\mathrm{HH}_{2} \cdot \mathrm{H}_{1} \mathrm{O}_{3}}{\mathrm{HO}_{3} \cdot \mathrm{H}_{2} \mathrm{H}_{2}} &= \frac{(\mathrm{h}+180) \cdot 440}{(\mathrm{h}+440) \cdot 180} \\
+\frac{\mathrm{H}_{1} \mathrm{O}_{3} \cdot \mathrm{H}_{2} \mathrm{H}_{0}}{\mathrm{H}_{2} \mathrm{O}_{3} \cdot \mathrm{H}_{1} \mathrm{H}_{0}} &= \frac{440 \cdot (260+j)}{(440+j) \cdot 260}
+\end{align*}
+
+求出 \( h = 357.7 \, \mathrm{cm} \), \( j = 15.6 \, \mathrm{cm} \), 总高度 \( = h + 440 + j = 813.3 \, \mathrm{cm} \)
+
+(3) CD 的长度
+
+做辅助线, 得到 \( \mathrm{CH}_{1} \) 和 \( \mathrm{H}_{1} \mathrm{O}_{2} \) 正好共线, 因此有, 三角形 \( \mathrm{O}_{2} \mathrm{H}_{0} \mathrm{H}_{1} \) 和 \( \mathrm{CHH}_{1} \) 相似。假设 \( \mathrm{O} 2 \mathrm{H} 0 \) 长度为 \( c \), 有:
+\[
+\frac{\mathrm{A}_{2} \mathrm{~B}_{2} \cdot \mathrm{H}_{0} \mathrm{O}_{2}}{\mathrm{A}_{2} \mathrm{H}_{0} \cdot \mathrm{O}_{2} \mathrm{~B}_{2}} = \frac{182 \cdot c}{(c+91) \cdot 91}
+\]
+
+得到 \( c = 112.5 \, \mathrm{cm} \)。又有 \( \mathrm{BH} 0 \) 实际长度 \( 125.6 \, \mathrm{cm} \), 故所以我们可以得到 \( \mathrm{CH} \) 实际长度 \( c \cdot 357.7 / 455.6 = 88.3 \, \mathrm{cm} \)
+
+由于 \( \mathrm{ABCD} \) 为等腰梯形, \( \mathrm{HH} 0 \) 垂直于上下底边, 所以 \( \mathrm{CD} = \mathrm{AB} - 2(\mathrm{BH}_{0} - \mathrm{CH}) \), 因此得到 \( \mathrm{CD} \) 长度 \( 428 \, \mathrm{cm} \)。
+
+\subsubsection{5.1.3 间接几何量测: 单应矩阵求解}
+
+\paragraph{5.1.3.1 模型建立}
+
+像素坐标系、图像坐标系、相机坐标系、世界坐标系。
+
+(1) 从像素坐标系到图像坐标系
+
+\begin{tikzpicture}
+    \draw[->] (0,0) -- (5,0) node[right] {$u$};
+    \draw[->] (0,0) -- (0,5) node[above] {$v$};
+    \draw[->] (1,1) -- (4,1) node[right] {$x$};
+    \draw[->] (1,1) -- (1,4) node[above] {$y$};
+    \draw (1,1) rectangle (4,4);
+    \node at (1,1) [below left] {$o(u_0, v_0)$};
+    \node at (2.5,2.5) {$\bullet$};
+    \node at (2.5,2.5) [right] {$p(x, y)$};
+    \node at (0,5) [above left] {$o_{uv}$};
+\end{tikzpicture}
+
+\begin{equation}
+\begin{cases}
+u = \frac{x}{dx} + u_0 \\
+v = \frac{y}{dy} + v_0
+\end{cases}
+\end{equation}
+
+\begin{equation}
+\begin{bmatrix}
+u \\
+v \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{1}{dx} & 0 & u_0 \\
+0 & \frac{1}{dy} & v_0 \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+1
+\end{bmatrix}
+\end{equation}
+
+(2) 从图像坐标系到相机坐标系
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image1.png}
+\end{figure}
+
+\begin{equation}
+x = f \frac{X_c}{Z_c} \quad , \quad y = f \frac{Y_c}{Z_c}
+\end{equation}
+
+\begin{equation}
+Z_c
+\begin{bmatrix}
+x \\
+y \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+f & 0 & 0 & 0 \\
+0 & f & 0 & 0 \\
+0 & 0 & 1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+X_c \\
+Y_c \\
+Z_c \\
+1
+\end{bmatrix}
+\end{equation}
+
+(3) 从相机坐标系到真实坐标系
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{image2.png}
+\end{figure}
+
+\begin{equation}
+\begin{bmatrix}
+X_{c} \\
+Y_{c} \\
+Z_{c} \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\mathbf{R} & \mathbf{T} \\
+\mathbf{0}_{3}^{\mathrm{T}} & 1
+\end{bmatrix}
+\begin{bmatrix}
+X_{w} \\
+Y_{w} \\
+Z_{w} \\
+1
+\end{bmatrix}
+\end{equation}
+
+因此，可以得到从世界坐标系到像素坐标系的转化关系：
+
+\begin{equation}
+Z_{c}
+\begin{bmatrix}
+u \\
+v \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{1}{dx} & 0 & u_{0} \\
+0 & \frac{1}{dy} & v_{0} \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+f & 0 & 0 & 0 \\
+0 & f & 0 & 0 \\
+0 & 0 & 1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+R & T \\
+\overline{0} & 1
+\end{bmatrix}
+\begin{bmatrix}
+X_{w} \\
+Y_{w} \\
+Z_{w} \\
+1
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+=
+\begin{bmatrix}
+f_{x} & 0 & u_{0} & 0 \\
+0 & f_{y} & v_{0} & 0 \\
+0 & 0 & 1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+R & T \\
+\overline{0} & 1
+\end{bmatrix}
+\begin{bmatrix}
+X_{w} \\
+Y_{w} \\
+Z_{w} \\
+1
+\end{bmatrix}
+=
+\mathbf{M}_{1}
+\mathbf{M}_{2}
+\begin{bmatrix}
+X_{w} \\
+Y_{w} \\
+Z_{w} \\
+1
+\end{bmatrix}
+\end{equation}
+
+其中，$\mathbf{M}_{1}$ 相机内参矩阵，$\mathbf{M}_{2}$ 为相机外参矩阵。
+
+因此，只要求出相机的内参矩阵和外参矩阵，就能得出从像素坐标系和真实坐标系的对应关系。[4]
+
+\paragraph{5.1.3.2 内参矩阵求解}
+
+一般情况下，相机内参矩阵包含 5 个内部参数，即 $f_{x}, f_{y}, u_{0}, v_{0}, s$。[4]
+
+\begin{equation}
+\mathbf{M}_{1} =
+\begin{bmatrix}
+f_{x} & s & u_{0} & 0 \\
+0 & f_{y} & v_{0} & 0 \\
+0 & 0 & 1 & 0
+\end{bmatrix}
+\end{equation}
+
+其中，$f_{x}, f_{y}$ 分别为相机在坐标轴上的尺度因子；$u_{0}, v_{0}$ 为相机的主点；$s$ 为相机畸变因子。对于大多数相机而言，图像坐标轴相互垂直，且坐标轴上的尺度因子 $f_{x}, f_{y}$ 相等，因此相机内参矩阵可以简化为三参数模型。不失一般性的，我们将相机的主点 $u_{0}, v_{0}$ 取在像素坐标系的中心点，因此，相机内参矩阵可以简化为对 $f = f_{x} = f_{y}$ 的求解。
+
+单幅图像缺少多幅图像之间的约束，标定过程仅依靠图像中所包含的几何信息。当前基于单幅图像的自标定方法多利用场景中三个垂直方向的灭点实现对相机内参的求解。
+
+根据拉盖尔定理，3 个互相垂直的灭点所构成的三角形的垂心即为主点，可以据此计算焦距。当只有一组互相垂直的灭点时，可以假定主点位于图像的中心。因此，只需要通过一组互相垂直的灭点，即可求出相机内参矩阵。
+
+\paragraph{5.1.3.2 外参矩阵求解}
+
+相机外参矩阵可以通过 PnP 算法求解。PnP 算法 (Perspective-n-Point) 是求解 3D 到 2D 点对运动的方法：即给出 n 个 3D 空间点时，如何求解相机的位姿。
+
+典型的 PnP 问题求解方式有很多种，例如 P3P，直接线性变换 (DLT)，EPnP (Efficient PnP), UPnP。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{流程图}
+\end{figure}
+
+\paragraph{5.1.3.3 模型求解结果}
+
+由于只有单目相机拍摄的一张图片，不能由二维图像准确恢复出三维的信息。因此，我们采用在世界坐标系中等间隔采样，把采样点利用计算出来的投影矩阵投影到二维平面中，找到投影出的像素坐标与所求点的像素坐标最接近的点作为候选点，再依据几何约束，从候选点集中选出最优的点作为所求点的三维坐标，最后，求出所求点之间的欧氏距离即可。由于候选点密集生成，像素坐标接近的候选点可能三维坐标相差较远，因此会给最终求解结果带来较大误差。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{图像示例}
+\end{figure}
+
+由于缺少深度信息，通过 EPnP 算法求解出的单应矩阵存在一定误差，从而影响到候选点的选取。同时由于候选点密集生成，基于像素坐标得到的最优候选点可能于三维空间相差很远，算法不能胜任所有的任务。根据算法求出的部分结果如下：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{图像示例}
+\end{figure}
+
+\section{任务一：}
+(1) 红色车辆A车头和白色车辆B车头之间的距离：23.08m
+(2) 拍照者距马路左侧边界的距离：16m
+
+任务二：
+(2) 拍照者距白色车辆B车头的距离：18.38m
+
+任务四：
+(1) AB的长度：6.20m
+
+\subsubsection{5.1.4 模型求解结果分析}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+图 & 任务 & 直接几何法 & 间接几何法 \\
+\hline
+\multirow{2}{*}{图片1} & AB之间的距离 & 26.544m & 23.08m \\
+\cline{2-4}
+ & 拍照者离马路边界的距离 & 15.75m & 16m \\
+\hline
+\multirow{2}{*}{图片2} & AC之间的距离 & 28.58m & - \\
+\cline{2-4}
+ & 拍照者距白色车辆车头的距离 & 21.73m & 18.38m \\
+\hline
+\multirow{2}{*}{图片3} & 相机高度 & 4.76m & - \\
+\cline{2-4}
+ & 拍照者距离岗亭的距离 & 28.94m & - \\
+\hline
+\multirow{3}{*}{图片4} & AB的长度 & 5.026m & 6.20m \\
+\cline{2-4}
+ & CD的长度 & 4.28m & - \\
+\cline{2-4}
+ & 建筑物的高度 & 8.131m & - \\
+\hline
+\end{tabular}
+\end{table}
+
+基于交比不变性的直接测量法的优点是算法准确性较高，可以通过几何建模求出结果。缺点是对于每一幅图片都需要基于几何关系建模，当需要处理的图片较多时，计算量会很大。
+
+基于EPnP相机位姿估计的间接测量法，优点是算法计算量小，实时性高，简单且容易实现。缺点是需要有足够多的已知像素坐标与真实坐标的对应点，若对应点不够多（小于4个），算法无法求解结果；缺乏深度信息，无法直接从像素坐标重建出空间坐标；相机内参求解的误差会累计，造成结果的偏差。
+
+\subsection{5.2 任务二：平面视频下的距离信息分析}
+
+\subsubsection{5.2.1 问题分析}
+
+\subsubsection{5.2.2 汽车运动模型建立}
+
+根据假设6，我们认为任务二中所有车辆为匀速直线行驶状态。因此有：
+\[ s = v \cdot t \]
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{car_diagram.png}
+\end{figure}
+
+\subsubsection{5.2.3 RANSAC视频去抖动}
+
+相机在移动拍摄的过程中难免会存在一些晃动或者偏移，这也就造成了视频中的相机抖动。为了去除视频的抖动影响，需要对原视频进行运动补偿。通过查阅相关资料[5]，我们采用随机抽样一致算法RANSAC算法计算全局运动参数，进而去除视频的抖动，从而
+
+得到稳定的图片拍摄序列。再对图像进行估计。
+RANSAC 视频去抖动算法的具体步骤如下：
+1. 块匹配
+首先用块匹配计算相邻两帧的运动向量集。每得到一帧图像，采用 SSD 或 SAD 算法把它和前一帧图像做块匹配，从而得到当前图像的一个比较稠密的运动向量场。
+2. 全局运动参数计算
+根据前一步得到的运动向量场，采用 RANSAC 计算当前帧图像的全局运动参数。
+3. 运动参量滤波和图像运动补偿
+通过滤波可以去除由抖动产生的运动参数在时间域上的高频分量，从而计算出相对平滑的运动轨迹和图像运动补偿，最后通过平移和旋转等图像变换就得到无抖动的结果图像。
+
+\paragraph{5.2.3.1 块匹配}
+用绝对差和（SAD）对当前帧的 \(16 \times 16\) 的块在前一帧搜索匹配块，搜索范围为 \([-15, 15] \times [-15, 15]\)。
+上述块匹配算法找出了当前帧和前一帧的对应点集 \(\left\{\left(\left(x_{i}, y_{i}\right)^{T} ;\left(x_{i}^{\prime} ; y_{i}^{\prime}\right)^{T}\right)\right\}\)，\(i = 1, 2, \ldots, n\)。假设每帧图像的运动包括伸缩变换、旋转变换和平移变换，则图像全局运动方程为：
+\[
+\begin{bmatrix} x_{i} \\ y_{i} \end{bmatrix} = s \times \begin{bmatrix} \cos \alpha & -\sin \alpha \\ \sin \alpha & \cos \alpha \end{bmatrix} \begin{bmatrix} x_{i}^{\prime} \\ y_{i}^{\prime} \end{bmatrix} + \begin{bmatrix} dx \\ dy \end{bmatrix}, i = 1, 2, \ldots, n
+\]
+其中 \(s\) 表示图像的伸缩，\(\alpha\) 表示图像绕中心逆时针旋转角度，\(\begin{bmatrix} dx \\ dy \end{bmatrix}\) 表示图像中心的位移。
+上式也可写为：
+\[
+\begin{bmatrix} x_{i} \\ y_{i} \end{bmatrix} = \begin{bmatrix} a & -b \\ b & a \end{bmatrix} \begin{bmatrix} x_{i}^{\prime} \\ y_{i}^{\prime} \end{bmatrix} + \begin{bmatrix} dx \\ dy \end{bmatrix} = \begin{bmatrix} x_{i}^{\prime} & -y_{i}^{\prime} & 1 & 0 \\ y_{i}^{\prime} & x_{i}^{\prime} & 0 & 1 \end{bmatrix} \times \begin{bmatrix} a \\ b \\ dx \\ dy \end{bmatrix}, i = 1, 2, \ldots, n
+\]
+其中，\(s = \sqrt{a^{2} + b^{2}}\)，\(\alpha = \tan^{-1}(b / a)\)。
+在上式中存在 \(a, b, dx, dy\) 四个未知量，可以通过用最小二乘法求解。
+
+\paragraph{5.2.3.2 全局运动参数计算}
+在图像的块匹配结果中大部分的点都有相同的运动趋势，但也有一些“坏点”的运动向量异常，当坏点数目较多或偏差较大时，最小二乘法的结果可能会有较大偏差。
+RANSAC 算法对坏点有很好的鲁棒性，即使坏点的数目接近一半，RANSAC 算法仍然可以得出正确的结果。由于 RANSAC 算法是对数据进行多次随机取样，每次随机取出尽可能少但充分多个数据来确定模型参数，再根据已确定的模型对所有数据进行划分，因此可以减少坏点的影响。经过多次随机取样试验后，RANSAC 算法找出落在误差范围内最多的点的集合，用此集合来做最优化，最终确定模型的参数。
+本文视频去抖动中求运动参数时采用的 RANSAC 算法描述如下：
+假定块匹配的结果是在某一时刻前后两帧图像一系列对应点对的集合
+\[
+P = \left\{\left(\left(x_{i}, y_{i}\right)^{T} ;\left(x_{i}^{\prime} ; y_{i}^{\prime}\right)^{T}\right)\right\}, \quad i = 1, 2, \ldots, n
+\]
+在 \(P\) 中随机取两对对应点构成 \(P\) 的子集合
+\[
+S_{1} = \left\{\left(\left(x_{i}, y_{i}\right)^{T} ;\left(x_{i}^{\prime} ; y_{i}^{\prime}\right)^{T}\right),\left(\left(x_{j}, y_{j}\right)^{T} ;\left(x_{j}^{\prime} ; y_{j}^{\prime}\right)^{T}\right)\right\}
+\]
+其中 \(i, j\) 为两个随机数，由 \(S_{1}\) 和给定的误
+
+差范围 \( T \)，可以得到 \( P \) 的子集 \( S_1^* \) 如下：
+\[
+S_1^* = \left\{ \left( \left( x_i, y_i \right)^T ; \left( x_i', y_i' \right)^T \right) \left| \left| \begin{bmatrix} x_i \\ y_i \end{bmatrix} - \begin{bmatrix} a & -b \\ b & a \end{bmatrix} \begin{bmatrix} x_i' \\ y_i' \end{bmatrix} + \begin{bmatrix} dx \\ dy \end{bmatrix} \right| \leq T \right. \right\}
+\]
+其中，误差范围 \( T \) 是一个经验值，在系统中取 \( T = 5 \)。把 \( S_1^* \) 叫做 \( S_1 \) 的一致集。
+
+将以上过程重复 \( K \) 次，并记下元素个数最多的 \( S_k^* \)。根据 \( S_k^* \) 中的元素通过最小二乘法可以得到最终结果。
+
+\paragraph{5.2.3.3 运动参数滤波}
+滤除运动参量时间函数的高频分量，采用如下 FIR 滤波器：
+\[
+h(t) = \begin{cases}
+\frac{\sin \left( \frac{2\pi t}{N-1} \right)}{\frac{2\pi t}{N-1}} & -\frac{N-1}{2} \leq t \leq \frac{N-1}{2} \\
+0 & \text{其他}
+\end{cases}
+\]
+
+\paragraph{5.2.3.4 图像运动补偿}
+知道了图像振动或偏移的运动分量，就可以对图像做运动补偿，以消除图像的抖动。对原始图像上的每一个像素点 \( [x, y]^T \)，运动补偿后的位置 \( [x', y']^T \) 为：
+\[
+\begin{bmatrix} x' \\ y' \end{bmatrix} = \begin{bmatrix} \cos \left( \alpha_t' - \alpha_t \right) & -\sin \left( \alpha_t' - \alpha_t \right) \\ \sin \left( \alpha_t' - \alpha_t \right) & \cos \left( \alpha_t' - \alpha_t \right) \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} + \begin{bmatrix} dx_t' - dx_t \\ dy_t' - dy_t \end{bmatrix}
+\]
+
+\subsubsection{5.2.4 模型求解}
+首先根据匀速直线运动模型：
+\[
+s = v \cdot t = \frac{v \cdot N}{R}
+\]
+因此，计算出别克英朗车速为：
+\[
+v = \frac{R}{N} \cdot s
+\]
+根据假设 3，白色车行道分界线长为 6 米，间隔 9 米。因此通过观察汽车后视镜内出现白色车行道分界线的帧数，我们得到了如下数据：
+其中 \( N \) 表示出现白色分界线的帧数，\( s \) 表示车在该段时间内行驶的距离。
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\( N(\text{frame}) \) & 3 & 21 & 39 & 57 & 75 & 93 & 110 & 128 & 146 & 164 \\
+\hline
+\( s(\text{m}) \) & 0 & 15 & 30 & 45 & 60 & 75 & 90 & 105 & 120 & 135 \\
+\hline
+\( N(\text{frame}) \) & 182 & 200 & 217 & 234 & 252 & 269 & 287 & 305 & 322 & \\
+\hline
+\( s(\text{m}) \) & 150 & 165 & 180 & 195 & 210 & 225 & 240 & 255 & 270 & \\
+\hline
+\end{tabular}
+
+\( s \) 与 \( N \) 存在线性关系，因此将数据用 matlab 进行线性回归，回归方程为：
+\[
+s = p_1 \cdot N + p_2
+\]
+结果为：
+\[
+p_1^{**} = 0.8464 \quad (0.8439, 0.8489)
+\]
+\[
+p_2^{**} = -3.279 \quad (-3.758, -2.799)
+\]
+也即在 95% 的显著性水平下，车速为：\( 25.317 \sim 25.467 \, \text{m/s} \) 之间。（即 \( 91.14 \sim 91.68 \, \text{km/h} \)）
+
+(1) 与红色车辆的距离
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{图像中的对应像素坐标}
+\end{figure}
+
+图像中的对应的像素坐标为:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        点 & O & A & B & V & C \\
+        \hline
+        像素坐标 & (377,468) & (319,406) & (281,364) & (269,352) & (399,493) \\
+        \hline
+    \end{tabular}
+    \caption{像素坐标表}
+\end{table}
+
+图中 O、A、B、V、C 五点共线，根据交比不变性有：
+
+\begin{equation}
+\frac{|o-b||v-a|}{|v-o||a-b|} = \frac{|O-B||\infty-A|}{|A-B||\infty-O|} = \frac{H}{R}
+\end{equation}
+
+\begin{equation}
+\frac{|a-c||v-o|}{|a-o||v-c|} = \frac{|A-C||\infty-O|}{|A-O||\infty-C|} = \frac{H}{R}
+\end{equation}
+
+根据假设 3，车道线长为 6 米，间隔 9 米。因此，求出 \( OB = 43.23 \, \text{m} \)，\( OC = 0.921 \, \text{m} \)
+
+下图为视频第 74 帧与 75 帧的图片。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{视频第 74 帧与 75 帧的图片}
+\end{figure}
+
+可以看到第 75 帧时，白色车道分隔标线的一端出现在副驾驶车窗视野内，另一端出现在后视镜内。车窗边的白色标线可以看出，此时当线段点出现在车窗视野，另一端正好出现在后视镜内。根据经验，出现在副驾驶视野时位置大约为右前轮下。由于右前轮到车尾的距离通常为车长加轴距的一半，根据查阅的别克英朗 2016 款参数配置[6]，我们得到距离为：$(4587+2640)/2=3613.5\,\text{mm}$。
+
+因此，当白线端点正好出现在后视镜时，端点 $O$ 处距离别克英朗车尾距离为 $6-3.6135=2.3865\,\text{m}$
+
+因此，别克英朗车于红色车辆车头的距离为 $2.3865+0.921+43.23=46.54\,\text{m}$。
+
+(2) 超越第一辆白色车辆时两车的速度差异
+
+由假设条件，白色车辆的车型为普通紧凑型轿车，根据假设 1，车辆的轴距为 2.6 米。根据假设，车辆均为匀速直线行驶状态，通过计算别克英朗车经过白车的帧数信息，即可求出相对车速。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{107帧}
+    \label{fig:107}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{121帧}
+    \label{fig:121}
+\end{figure}
+
+根据视频，第 107 帧时经过白色车辆后车轮，第 121 帧时经过白色车辆前车轮。
+
+\[
+v = \frac{R}{N} \cdot s
+\]
+
+所以相对车速为：
+
+\[
+v = \frac{30}{14} \times 2.6 = 5.57\,\text{m/s} = 20.06\,\text{km/h}
+\]
+
+\subsection{5.3 任务三：平面视频下的距离信息分析}
+
+\subsubsection{5.3.1 问题分析}
+
+任务三中平面视频下的距离分析，由于高铁上拍摄的视频由于缺乏明显的尺度信息，通过广泛的资料查找，我们挖掘出了视频中隐含的部分物体的真实尺度。进而通过几何约束对实际问题进行建模，利用交比不变性得到对物体距离和尺度的估计。
+
+\subsubsection{5.3.2 模型建立}
+
+通过查阅相关资料[7]，我们得到了视频中通信基站铁塔的相关设计参数：塔高为 $30\,\text{m}$，塔尖高度为 $5\,\text{m}$，具体参数如下图所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{(1)铁塔的几何模型}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{image4.png}
+\end{figure}
+
+如图所示，点 $O$、$A$、$B$、$H$ 四点共线，利用交比不变性：
+\begin{equation}
+\frac{H}{R} = \frac{|a-h||b-o|}{|a-b||o-h|} = \frac{|A-H||B-O|}{|A-B||O-H|}
+\end{equation}
+
+同理有：
+\begin{equation}
+\frac{H}{R} = \frac{|a-h_0||b-o|}{|a-b||o-h_0|} = \frac{|A-H_0||B-O|}{|A-B||O-H_0|}
+\end{equation}
+
+(2) 大桥的几何模型
+
+我们选取视频第 142 帧，根据穷举法求解并画出灭线。利用桥墩延长线与其灭线的交点，我们可以得到如下所示的几何模型：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{桥梁与河流的俯视图}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{桥梁与河流的几何关系图}
+\end{figure}
+
+由于相机中心的灭点 $V$ 引出的线都平行于相机的视线，而与相机底片平行的线，投影后长度比例不会发生变化。
+
+所以 $P_1Q_1$ 对应为桥真实长度。因此我们可以得到如下图所示的几何关系:
+
+\begin{equation}
+\frac{B_1C_2}{A_1B_1} = \frac{C_2C_3}{A_1B_1} = \frac{C_3C_4}{A_1B_1} = \frac{\text{桥墩投影间距}}{\text{相机高度}}
+\end{equation}
+
+设桥与高铁线夹角为 $\theta$
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{桥与高铁线的几何关系图}
+\end{figure}
+
+\begin{equation}
+\cos^2\theta = \frac{B_1C_i}{B_1B_i}
+\end{equation}
+
+可以求出河宽 $PQ = P_1Q_1 \cdot \cos\theta$
+
+\section{高铁的几何模型}
+
+由假设 7，视频中高铁处于匀速直线运动状态。因此，求高铁速度，只需要计算出相机中高铁经过已知的真实距离段所花费的时间即可。
+
+设 $B_4$ 在高铁线上的投影位置 $X$（该位置在照片上的像素值无穷大），利用交比不变性可以求解出 $B_4X$ 的长度，从而得到 $P, Q$ 与高铁的距离。
+
+\begin{align*}
+PX_1 &= B_4X - P_1C_4 \times \tan\theta \\
+QX_1 &= B_4X + Q_1C_4 \times \tan\theta
+\end{align*}
+
+\subsubsection{5.3.3 模型求解结果}
+
+像素坐标如下：
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+点 & A & B & H & O & H_0 & A_1 \\
+\hline
+像素坐标 & (1096, 421) & (1094, 490) & (1087, 851) & (1084, 982) & (1091, 652) & (329, 616) \\
+\hline
+点 & A_2 & A_3 & A_4 & B_1 & B_2 & B_3 \\
+\hline
+像素坐标 & (484, 618) & (625, 620) & (750, 622) & (329, 710) & (484, 708) & (625, 705) \\
+\hline
+点 & B_4 & V & C_2 & C_3 & C_4 & D_2 \\
+\hline
+像素坐标 & (750, 703) & (961, 626) & (455, 712) & (587, 714) & (712, 716) & (516, 713) \\
+\hline
+点 & D_3 & D_4 & P_1 & Q_1 & & \\
+\hline
+像素坐标 & (678, 715) & (866, 718) & (54, 706) & (1079, 722) & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{itemize}
+    \item OP 实际长度 $h = 7.14$ 米
+    \item 相机高度 $h_0 = 19.11$
+    \item 桥墩在高铁线上的投影间距 = 26.02 米
+    \item $P_1Q_1$ 的长度 = 208.4 米
+    \item 桥与高铁线夹角 $\cos\theta = 0.842$, $\theta = 31.65^\circ$
+    \item 河宽 $PQ = P_1Q_1 \times \cos\theta = 175.5$ 米
+    \item 高铁速度 = $P_1Q_1 / (219 - 138) = 77.2 \, \text{m/s} = 278 \, \text{km/h}$
+    \item $C_4B_4$ 实际距离 = $26.02 \times \tan\theta = 16.67$ 米
+    \item $B_4X$ 实际距离 = 307 米
+    \item $P_1C_4 = 133.8$ 米, $Q_1C_4 = 74.6$ 米
+    \item $P_1$ 距高铁的距离 $PX_1 = 307 - 133.8 \times \tan\theta = 221$ 米
+    \item $Q_1$ 距高铁的距离 $QX_1 = 307 + 74.6 \times \tan\theta = 355$ 米
+    \item 故桥距离高铁铁路最近 221 米，最远 355 米
+\end{itemize}
+
+\subsection{5.4 任务四：立体视频下的距离信息分析}
+
+\subsubsection{5.4.1 问题分析}
+
+立体视频中由于相机拍摄角度不平行于地面，且由于距离地面高度过高，参照物的选取变得更为困难。此时几何量测法不适用。
+
+本文使用基于深度学习的 SafeUAV 算法估算无人机的飞行高度、计算物体深度信息。再进一步利用射影几何的知识，利用灭点计算相机内参，并将单应矩阵进行分解。通过编写重建单位距离网格的算法，将等高度的单位距离网格可视化，对立体视频进行分析并估计物体尺寸和相机位置。
+
+\subsubsection{5.4.2 SafeUAV 算法求解深度}
+
+SafeUAV 算法 [8] 是为了给无人机提供能够安全着陆而提出的基于深度学习的算法。其基本原理就是利用合成的深度图片数据来训练网络，让网络能够直接从无人机拍摄的图片中就能获得深度信息，从而测算无人机飞行的高度。而且此算法还将地图进行了分类，分为了可着陆区域和不可着陆区域，训练好模型之后就可以直接来预测无人机可以着陆的位置。
+
+任务四立体视频下的距离分析为无人机视角，为了测算无人机的高度以及速度，图像的深度信息至关重要。因此，我们采用 SafeUAV 算法和已经在大型数据集上训练好的模型[9]，对无人机拍摄视频中的深度信息进行预测，进而得到图像中各个像素点距离无人机的实际距离。
+
+\paragraph{5.4.2.1 SafeUAV 算法原理}
+
+SafeUAV 算法原理如下图所示:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{SafeUAV 算法流程图}
+\end{figure}
+
+\textbf{网络框架:}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{SafeUAV 网络框架图}
+\end{figure}
+
+SafeUAV 算法提出了两种方案，第一种是将提取的特征进行拼接，进而预测结果，第二种方案是将卷积层提取的特征进行求和来特征融合，并分别实现。网络是类似于 UNet 的全卷积网络，loss 函数采用多分类交叉熵。
+
+\paragraph{5.4.2.2 输出结果}
+
+将任务四中的视频输入网络，输出得到如下的深度图，无人机的飞行高度约为 65m。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{深度图示例}
+\end{figure}
+
+\subsubsection{5.4.3 单应矩阵求解}
+
+通过 SafeUAV 算法，我们能估计出无人机飞行时的高度。基于此，我们通过计算单应矩阵来获得像素坐标系与世界坐标系的对应转换关系。
+
+首先需要对视频进行预处理，去除掉黑边并将视频拉伸至 1280×720 大小。
+
+\paragraph{(1) 相机内参计算}
+
+由上文可知，相机内参可以简化为三参数模型，其中 \( f \) 可以通过一组垂直方向上的灭点进行约束求解。因此，我们选取第 340 帧，找出两个灭点坐标分别为 \((-348, -101)\), \((1662, -87)\)，计算得到 \( f = 1276 \)。
+
+\paragraph{(2) 按变换层次求解单应矩阵}
+
+参考平面和图像平面之间的映射是一种射影变换，可分解为一串变换链的复合。平面单应矩阵可作如下分解：
+
+\[
+\mathbf{H} = \mathbf{H}_S \mathbf{H}_A \mathbf{H}_P =
+\begin{bmatrix}
+\mathbf{sR} & \mathbf{t} \\
+\mathbf{0}^{\mathsf{T}} & 1
+\end{bmatrix}
+\begin{bmatrix}
+1/\beta & -\alpha/\beta & 0 \\
+0 & 0 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+l_1 & l_2 & l_3
+\end{bmatrix}
+\]
+
+其中，\(\mathbf{H}_S, \mathbf{H}_A, \mathbf{H}_P\) 分别为相似变换、仿射变换和射影变换。其中，\(\mathbf{H}_P\) 与灭线相关，\(\mathbf{H}_A\) 影响仿射性质而与灭线无关；\(\mathbf{H}_S\) 为一般的相似变换，它不影响仿射及射影性质。
+
+当单应矩阵恢复到相似变换层次，校正后的图像与实际对象只相差一个比例因子。按变换层次求解单应矩阵的方法并没有完全恢复单应矩阵，通常只应用于距离的量算。
+
+由于我们已通过 SafeUAV 算法估算得到了无人机飞行的高度信息，因此，我们可以将单应矩阵分层进行求解，同时通过生成可视化图像估计求解误差并进行修正。
+
+\subsubsection{5.4.4 模型求解结果}
+
+为了方便参数修正，我们使用拍摄方向与屋脊方向基本一致的 539 帧。调整参数到生成网格与照片中参照物（道路，房屋）基本重合。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{图1: 水平面上的点在照片上的对应关系}
+\end{figure}
+
+我们知道在水平面上的点在照片上有一一对应关系，所以当重合时，设定参数应与实际拍摄时的参数相同。即我们可以通过参考网格点的准确度反推出设定参数的置信度，从而对参数进行修正。
+
+当飞行高度设定为 65 米时：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{图2: 飞行高度为 65 米时的网格图}
+\end{figure}
+
+图中红点的间隔为 5 米。此时可以看到网格图与外墙轮廓基本重合，同时通过此网格可以推出房门宽度约为 0.9~1 米，符合通常的门宽。因此推断，我们设定的参数符合实际。
+
+通过网格，我们可以估算得到道路宽度和长度。道路宽度最大约 5 米，最窄部分为 2 米。在上图中，庄园面向相机的边长约为 90 米，另一边长约为 150 米。
+
+通过设定高度 \( Z \) 生成网格与屋脊比对，得到高度为 6 米时基本吻合，因此推断庄园内大部分房屋高 6 米，后方有两个三层建筑，高度约 9 米。
+
+在视频中通过观察，得到后花园内最高的树为靠近内院墙的两棵，在后花园作出等高线，观察发现树高约为 10 米。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image3.png}
+    \caption{图3: 后花园内最高的两棵树}
+\end{figure}
+
+为了消除误差，我们同时选取 921 帧进行结果比对。设定飞行高度为 80 米后得到了吻合的网格。同时得到庄园长 140 米，宽 100 米，与之前结果偏差不大。庄园后花园近似为半圆，半径为 75 米。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{庄园示意图}
+\end{figure}
+
+因此，可以得到道路总长 $2 \times (100 + 150) \times 75 \times 3.14 \approx 735$ 米。
+
+基于以上结果，得到无人机飞行轨迹约为半径 200 米的圆，经历半圆的帧数为 539~1477 帧，时间为 31 秒，得到无人机飞行速度为 $20 \, \text{m/s}$。
+
+综上所述，无人机飞行高度在 $65 \sim 80 \, \text{m}$ 之间，飞行速度约为 $20 \, \text{m/s}$。
+
+\section{模型的评价与改进}
+
+\subsection{模型的评价}
+
+针对任务一的单幅图像信息分析，本文运用了多个模型来解决。其中单幅图像中的灭点提供的几何约束对距离信息度量极为关键。本文采取了霍夫变换、基于 Gabor 小波的消失点检测、穷举法等算法求解图像中的灭点，并比较了算法结果。基于灭点提供的几何约束，我们采取了两种不同的方法求解。直接几何法利用了射影变换中的交比不变性来求解，间接几何法可以通过相机 EPnP 位姿估计算法进行求解。
+
+针对平面视频下的信息分析，本文首先利用 RANSAC 算法去除视频中的抖动，从而得到运动稳定的视频。通过广泛的资料查找，我们挖掘出了视频中隐含的部分物体的真实尺度。进而通过几何约束对实际问题进行建模，利用射影变换中的交比不变性得到对物体距离和尺度的估计。
+
+针对立体视频下的信息分析，本文采取了基于深度学习的无人机飞行高度估计算法 SafeUAV 对视频中的深度和无人机飞行高度进行估计。SafeUAV 算法对无人机拍摄视频中的深度信息进行预测，进而得到图像中各个像素点的深度图。基于 SafeUAV 算法提供的深度预测，我们进一步通过层次分解求解单应矩阵，从而得到了立体视频下的物体距离和尺度估计。
+
+本文提出算法模型可以有效的利用图片中的隐含信息，在仅含少量先验信息的情况下，对图片和视频中的距离、尺度信息进行高效的估算。
+
+\subsection{模型的改进}
+
+任务一中的 EPnP 算法求解相机位姿时存在误差，这是由于图像中已知的真实尺度过少，模型的数据不够，后续可以通过挖掘更多的尺度信息增加更多的数据，从而得到更为准确的结果；任务二和任务三中，只利用了几何法求解，没有利用视频序列前后帧的关键点求解相机位姿，后续可以对视频进行单目三角化从而求解视频中的距离、尺度信息。通过两种方法交叉验证结果。任务四中，利用的是已经在大规模数据集上训练过的模型，后续可以用自己的数据集重新训练网络，进一步优化深度计算结果。 
+
+\section{7 参考文献}
+
+[1] GB 51038-2015. 城市道路交通标志和标线设置规范[S]. 北京: 中国计划出版社, 131-146, 2015.
+
+[2] Bazin J C, Seo Y, Demonceaux C, et al. Globally Optimal Line Clustering and Vanishing Point Estimation in Manhattan World[C]// Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on. IEEE, 2012.
+
+[3] smallflyingpig, 基于消失点检测的道路检测. https://blog.csdn.net/smallflyingpig article/ details/70550715, 2019.9.21
+
+[4] 刘学军, 王美珍, 甄艳等: 单幅图像几何量测研究进展[J], 《武汉大学学报》（信息科学版）, 36(8): pp941-947.
+
+[5] 赵文华, 姚天翔, 叶秀清, 顾伟康. RANSAC 算法在视频去抖动中的应用[J]. 电路与系统学报, 2005, (04): 91-94.
+
+[6] 汽车之家, 上汽通用别克-英朗参数配置, https://car.autohome.com.cn/config/series/982-8625.html#pvareaid=3454437, 2019.9.21.
+
+[7] 高扬明. 移动通信基站单管塔水平位移的设计[J]. 电信技术, 2015, 7(12): 59-61.
+
+[8] Marcu A, Costea D, Licaret V, et al. SafeUAV: Learning to estimate depth and safe landing areas for UAVs from synthetic data[C]// Proceedings of the European Conference on Computer Vision (ECCV). 2018: 0-0.
+
+[9] Pîrvu Mihai Cristian, Depth-HVN-Estimation-Aerial, https://gitlab.com/mihai.cristianpirvu/ Depth-HVN-Estimation-Aerial. 2019.9.22
+
+\section{8 附录}
+
+\section{相关程序代码}
+
+霍夫变换: (Matlab)
+
+\begin{verbatim}
+img = imread('图 4.png');
+subplot(221), imshow(img), title('original image');
+img_gray = rgb2gray(img);
+prewittSample = uint8(filter2(fspecial('prewitt'), img_gray)); % 图像锐化
+prewittSample = medfilt2(prewittSample, [3, 3]);
+subplot(222), imshow(prewittSample), title('edge enhance');
+img_gray = img_gray + uint8(prewittSample);
+% imshow(addSample)
+% the canny edge of image
+img_gray = medfilt2(img_gray, [3, 3]);
+BW = edge(img_gray, 'canny'); % canny 边缘检测
+subplot(223), imshow(BW), title('image edge');
+% the theta and rho of transformed space
+[H, Theta, Rho] = hough(BW);
+subplot(224),
+imshow(H, [], 'XData', Theta, 'YData', Rho, 'InitialMagnification', 'fit'), ...
+title('rho\_theta space and peaks');
+\end{verbatim}

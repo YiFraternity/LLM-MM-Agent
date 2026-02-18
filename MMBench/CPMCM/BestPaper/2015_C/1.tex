@@ -1,0 +1,1046 @@
+\begin{center}
+\textbf{第十二届“中关村青联杯”全国研究生数学建模竞赛}
+\end{center}
+
+\begin{center}
+\textbf{题目} \underline{移动通信中的无线信道“指纹”特征建模}
+\end{center}
+
+\begin{abstract} \end{abstract}
+
+本文基于优化理论和统计学方法对移动通信中的无线信道“指纹”特征建模问题进行了研究。首先，恢复出稀疏信道系数在所有测试时间片上的分布特性；其次，利用信道系数构建多条场景特征曲线，并基于凸优化理论对其最优拟合；最后，将拟合曲线作为唯一指纹来解决不同场景的正确分类和实际样本数据的场景识别问题，具体分为以下几点：
+
+1. 首先，构建了信道系数的信号模型，并结合实际信道的稀疏特性提出基于混合 $l_0$ 范数的稀疏正则最小二乘模型；其次，采用 $l_1$ 范数优化对该非凸模型进行凸松弛，以便采用原对偶内点算法进行有效求解，得到信道系数；最后，用获得的信道系数重构接收信号，将其与真实信道测量结果进行对比，进一步验证所建模型的合理性。
+
+2. 针对问题 1，首先，基于统计学方法将信道系数建立场景特征曲线模型；然后，利用最小范数距离准则拟合同一场景的 5 条特征曲线得到场景最优指纹特征曲线，并将其视为场景的唯一特征指纹，实现对问题 1 中三个场景的正确区分；最后，利用同一场景的不同特征曲线与不同场景最优指纹特征曲线求范数距离，验证特征指纹选取的有效性。针对问题 2，基于本文构造的场景识别器来完成对问题 2 中两组真实信道的测量结果进行场景识别。
+
+3. 针对问题 3，求解连续路段的真实信道测量结果得到其信道系数，建立空间分段模型，按照由粗至细的方式进行不同长度的区域划分，并通过已有指纹模型构建区域指纹，比较前后两次的指纹差异决定是否进行更细的区域划分。对不同区域的拟合效果，评价区域划分方法的有效性。针对问题 4，基于场景特征曲线模型求得两个真实信道测量结果的特征曲线，与问题 3 中区域最优指纹特征曲线同时输入场景识别器，对问题 4 的两组真实信道的测量结果进行区域识别，并分析其合理性。
+\end{abstract}
+
+\tableofcontents
+
+\section{一、问题的重述}
+
+移动通信产业一直以惊人的速度迅猛发展，已成为带动全球经济发展的主要高科技产业之一，并对人类生活及社会发展产生了巨大的影响。在移动通信中，将发送端和接收端之间通路称为无线信道。无线信道与周围的环境密切相关，不同环境下的无线信道具有一些差异化的特征。类比人类指纹，我们将上述无线信道的差异化的特征称为无线信道“指纹”。无线信道“指纹”特征建模，就是在先验模型和测试数据的基础上，提取不同场景或不同区域内无线信道的差异化的特征，进而分析归纳出“指纹”的“数学模型”，并给出清晰准确的“数学描述”。在典型的无线信道中，电磁波是由许多因散射（包括反射和衍射）而形成的路径所构成的。由于电磁波沿各条路径的传播距离不同，因此相同发射信号经由各条路径到达接收端的时间各不相同，即多径的时延之间有差异。此外，各条路径对相同发射信号造成的影响各不相同，即多径的系数之间有差异。基于这些某些参数及特征，一个场景或一定区域内的无线信道可能存在一定的“指纹”。利用所定义的“指纹”，进行场景的分析以及无线网络的优化，具有重要意义。
+
+本研究旨在挖掘、提炼和聚合实测信道数据中这种差异化特征，进而建立“指纹”数学模型，并验证其在不同场景或不同区域下的适用性，具体包括：
+
+问题 1: “数据包 1”提供了三种场景的真实信道测量结果。基于三种已知场景的测量结果，参考背景中的知识介绍，采用数学建模特别是特征提取的方法，对所提供的样本加以分析，给出无线信道“指纹”的模型。在此基础上，给出简洁而明确的“评价指标”，用于分析验证所建模“指纹”合理有效。所谓有效是指，该模型应能从数学上对已知的三种场景进行合理区分。要求详细说明建模的思路、使用的方法以及得出结论的过程。另外，所提取的特征或所建立的模型最好有一定的物理意义。最后，提供获取“指纹”的程序代码，要求代码可运行，但代码形式不限。
+
+问题 2: “数据包 2”提供了与“问题 1”中某些场景相对应的二个真实信道测量结果。基于“问题 1”中所提供的三个场景，以及所建立的“指纹”模型和“评价指标”，采用数学的方法，识别出此处提供的二个样本分别属于哪个场景。需要保证“场景识别”的结果正确，且对识别的结果进行合理的分析。请明确给出“场景识别”的结果，并详细描述分析的过程。
+
+问题 3: “数据包 3”提供了一条连续路段的真实信道测量结果。该结果对应于以 \(3 \mathrm{~km} / \mathrm{h}\) 的速度步行近 \(150 \mathrm{~m}\) 的测试距离。该路段可能包含不同的场景或环境，对应不同的“指纹”特征。基于上述测量结果，先自行分段，采用“问题 1”中的建模方法，给出分段的“指纹”分析。在分段分析的基础上，对所提取的“指纹”进行合理分类。通过对比不同段的分析结果，最终决定该路段可以依“指纹”划分为多少个区域。理论上，“区域划分”越细，后续做“区域识别”的精确程度越高，但过细的“区域划分”会在“指纹”特征中引入更多的错误，导致误判概率增大。要求详细说明“区域划分”的思路及过程，并对划分结果进行合理的分析。
+
+问题 4: “数据包 4”提供了二个真实信道测量结果。基于“问题 3”中的“区域划分”和“问题 1”中的“评价指标”，首先判断此处提供的二个样本是否采集自“问题 3”中所提供的路段。对于已判断出的采自上述路段的样本，请识别其对应于“问题 3”中的哪一块区域。需要保证“样本判断”的结果正确，以及“区域识别”的误判距离尽可能小，同时对所识别的结果进行合理的分析。要求详细说明样本判别的思路和方法，以及得出结论的过程。
+
+\section{合理假设及符号系统}
+
+\subsection{合理假设}
+
+1. 发射端的发射信号近似为理想单位冲激信号 $\delta(n)$。
+
+2. 最大多径数不超过文中提供的测试时间片内的数据采样点数 100。
+
+3. 同一场景下，多径信道是稀疏的。
+
+4. 同一场景下，引起多径效应的重要散射体之间的相对位置在整个测试时间内不会发生巨变。
+
+5. 同一场景下，不考虑接收机内部时延误差造成的影响。
+
+6. 同一场景下，主要多径效应相对于各个接收点（接收机）的时延抖动规律是相同的。
+
+\subsection{符号系统}
+
+\begin{tabular}{ll}
+\hline
+\textbf{符号} & \textbf{说明} \\
+\hline
+$r[k, n]$ & 代表真实信道测量结果，其中 $k$ 代表样本点，$n$ 代表样本标识 \\
+$h[k, n]$ & 代表时变信道系数 \\
+$g(m)$ & 代表滤波器系数 \\
+$u[k, n]$ & 代表复高斯白噪声 \\
+$\|\cdot\|$ & 代表范数运算 \\
+$\mathbf{fp}_{\text{test}}$ & 代表待测样本的指纹曲线 \\
+$\mathbf{fp}_{i}^{*}$ & 代表第 $i$ 条环境最优指纹曲线 \\
+$\mathbf{D}_{i}$ & 代表第 $i$ 条环境最优指纹曲线 $\mathbf{fp}_{i}^{*}$ 到待测样本的指纹曲线 $\mathbf{fp}_{\text{test}}$ 之间的二范数（欧氏）距离 \\
+$\text{cone}^{k}$ & $k$ 为锥约数 \\
+\hline
+\end{tabular}
+
+\section{问题的分析}
+
+\subsection{对问题 1 的分析}
+
+问题 1 中提供了三种场景的五个真实信道测量结果，并要求根据三种已知场景的测量结果，采用数学建模特别是特征提取的方法，对所提供的样本加以分析，给出无线信道“指纹”的模型。在此基础上，给出简洁而明确的“评价指标”，用于分析验证所建模“指纹”合理有效，难点主要有：
+
+1. 由题目中的背景可知，想要得到三种场景的无线信道的“指纹”模型，需要先恢复出三种场景不同真实信道测试结果下的时变信道系数 $h[k, n]$，如何建立接收信号数学模型并有效求解信道系数 $h[k, n]$ 是一个难点；
+
+2. 影响时变信道系数 $h[k, n]$ 的因素包括多径效应、大尺度衰落、小尺度衰落、时延抖动、幅度抖动等多个因素。恢复出时变信道系数 $h[k, n]$ 后，需要分析这些关键因素的变化规律和特征。如何将这些特征融合成代表环境全息照片的指纹是另一个难点。
+
+3. 得到“指纹”特征后，通过有限的真实信道数目验证“指纹”特征的正确性，选取合理的评价指标并对不同的场景环境进行区分。
+
+通过以上问题分析可知，解决问题的思路：一是选取合适的方法，将数据包 1 中的真实信道测试结果 $r[k, n]$ 恢复出信道系数 $h[k, n]$，这也是整个建模的首要关键；二是信道系数 $h[k, n]$ 是场景特性的一个反映，包括主要信道数目、信道的时延抖动以及各个主要信道的幅度分布规律，但是这些参量在不同的测试样本中又有一定的随机性，如何从信道随机过程 $h[k, n]$ 中提取出场景的指纹特征是对三个场景正确判定的重要前提；三是选取合理的评价指标，给出相应的模型应能从数学上对已知的三个场景进行合理区分，并利用给出的三个场景多组真实信道测试数据进行分析验证，确保同一场景中各组样本数据能够聚类，不同场景的样本数据具有明显的区分度。
+
+\subsection{对问题 2 的分析}
+
+问题 2 中提供了两个真实信道测量结果，并要求根据“问题 1”中的所建立的“指纹”模型判定该两个真实信道测试结果分别属于“问题 1”中的哪个场景，并根据“评价指标”分析模型判定的有效性，难点主要有：
+
+利用问题 1 中的“指纹”模型做出的场景识别是否有效，识别的结果是否合理。
+
+通过以上问题分析可知，解决问题的思路：一是利用“问题 1”中选用的方法，恢复出两个真实信道测量结果的信道系数 $h[k, n]$；二是将求得的信道系数 $h[k, n]$ 通过“问题 1”中的“指纹”模型，判定两个真实信道分别处于哪个场景；三是评价场景识别的
+
+有效性。
+
+\subsection{对问题 3 的分析}
+
+问题 3 提供了一条连续路段的真实信道测量结果，该结果对应于以 $3 \mathrm{~km} / \mathrm{h}$ 的速度步行近 $150 \mathrm{~m}$ 的测试距离。该路段可能包含不同的场景或环境，对应不同的“指纹”特征。所有测量结果需要自行分段。在分段分析的基础上，对所提取的“指纹”进行合理分类。需要考虑的难点有：
+
+1. 连续路段中包含多个场景或区域，与“问题 1”中的三个场景不一定相匹配，无法利用现有的先验信息，需要“指纹”建模方法重新提取“指纹”特征；
+2. 区域的长度信息并未给出，需要进行自行划分区域，区域划分过粗会导致识别精度不够，区域划分过细，会引入更多的错误信息，导致误判；
+3. 区域间的过渡地段会影响区域划分的结果。
+
+通过以上问题分析可知，解决问题的思路：一是恢复出整段测量结果的信道系数 $h[k, n]$；二是按照由粗至细的方式进行不同长度的区域划分并通过已有模型构建区域指纹，并比较第 $m$ 次与第 $m-1$ 次操作得到指纹差异决定是否进行下一次更细的区域划分；三是对不同区域的划分方法，评价“指纹”模型的有效性。
+
+\subsection{对问题 4 的分析}
+
+问题 4 提供了二个真实信道测量结果，首先判断所提供的二个样本是否采集自“问题 3”中所提供的路段。如果是，还需指出其属于哪个区域，同时对所识别的结果进行合理的分析，难点主要有：
+
+1. “问题 3”中场景的识别性能对本问题有严重的影响，如果“问题 3”中场景识别不是特别精确对造成对本问题两个真实信道的识别造成误判，这时就要将识别结果与两个真实信号测量结果进行联合考虑，从而进一步判断识别结果的合理性；
+2. 在“问题 3”对能够环境识别进行正确识别，但是其划分区域精度不够，将造成本问题区域识别的误判距离变大，从而无法对识别的结果进行合理分析。
+
+\section{信号模型的建立与求解}
+
+\subsection{信号模型建立}
+
+真实信道的测试数据为：
+r[\mathrm{k},\mathrm{n}]=\sum_{m=0}^{M-1}h[k-m,n]\cdot g[m]+u[k,n],\mathrm{k}=0,1,\cdots,K-1,n=0,1,\cdots,N-1\quad\mathrm{(1)}
+因为题中所给的 $r[k, n]$ 均为基带复信号，因此，滤波器是对信号的 $I$、$Q$ 两路分别进行处理的。故信道系数 $h[k, n]$ 也应是时变复信号。
+
+为了描述的方便，现以一个 $2/3 \mathrm{~ms}$ 内的数据为例对空间中的各个信道系数进行求解，可以在此短时间片内将 $n$ 视为固定值，换句话说将其视为一个时不变系统，所以式 (1) 进一步可等效为：
+
+\begin{align*}
+\left\| \mathbf{fp}_i^* - \mathbf{fp}_{i,k} \right\|_2 & \leq \sigma_k \\
+\Leftrightarrow \begin{bmatrix} \mathbf{fp}_i^* - \mathbf{fp}_{i,k} \\ \sigma_k \end{bmatrix} & \in \text{cone}^{N'+1} \\
+\Leftrightarrow \begin{bmatrix} 0 & \mathbf{0}_{1 \times K'} & \mathbf{E}' \\ 0 & \mathbf{E}_k & \mathbf{0}_{1 \times N'} \end{bmatrix} \mathbf{y} + \begin{bmatrix} -\mathbf{fp}_{i,k} \\ 0 \end{bmatrix} & \in \text{cone}^{N'+1} \\
+\sum_{k}^{K'} \sigma_k & \leq \xi \\
+\Leftrightarrow \xi - \sum_{k}^{K'} \sigma_k & \geq 0 \\
+\Leftrightarrow [1, \mathbf{E}'] \mathbf{y} & \geq 0
+\end{align*}
+
+其中，$u[k]$ 为复高斯白噪声序列，$g(k) = g_r(k) + j g_i(k)$ 因果线性低通 FIR 复数滤波器冲激响应，$M$ 为滤波器的阶数，（注意，$I$ 通道滤波器 $g_r(k)$ 与 $Q$ 通道滤波器 $g_i(k)$ 完全相同，均由题中数据包 5 给出其冲激响应，$M = 49, K = 100$），其相对于理想滤波器有 $\frac{M-1}{2}$ 个延迟，因此，在考虑上述信号卷积模型时，为避免大的暂态响应，丢弃前 $\frac{M-1}{2}$ 个滤波样本。为数学处理方便，现将卷积方程 (2) 写为矩阵形式并构建为本题的信号数学模型：
+
+\begin{equation}
+\mathbf{r} = \mathbf{G} \mathbf{h} + \mathbf{u}
+\tag{3}
+\end{equation}
+
+其中，$\mathbf{r} = [r(1), r(2), \dots, r(100)]^T$，$\mathbf{h} = [h(1), h(2), \dots, h(100)]^T$，$\mathbf{u} = [u(1), u(2), \dots, u(100)]^T$，系数矩阵 $\mathbf{G}$ 按照以上分析其形式如下：
+
+\[
+\mathbf{G} =
+\begin{bmatrix}
+g(25) & g(24) & \cdots & g(1) \\
+g(26) & g(25) & \cdots & g(1) \\
+\vdots & & & \\
+g(49) & g(48) & \cdots & g(1) \\
+g(49) & g(48) & & g(1) \\
+& & \vdots & \\
+& & g(49) & \cdots & g(26) & g(25)
+\end{bmatrix}.
+\]
+
+对于 (3) 式给出的信号模型，可通过最小二乘方法得到近似解：$\mathbf{h} = (\mathbf{G}^H \mathbf{G})^{-1} \mathbf{G}^H \mathbf{r}$，该解仅仅对数据做了一个较好的拟合，并未充分考虑环境中的信道稀疏性的重要特征，因此最小二乘解对于本问题的求解是不合适的，需要进一步给出问题的求解模型。
+
+\subsection{稀疏正则最小二乘模型}
+
+考虑到在一个场景中其主要信道个数是有限的，结合假设 2 可知，信道系数一定是稀疏的，因而在利用接收数据对信号系数进行求解时，需要兼顾逼近精度和其稀疏性能。鉴于此思想，将信号模型进一步构建为基于混合 $l_0$ 范数的稀疏正则最小二乘模型：
+
+\begin{equation}
+\text{minimize } \|\mathbf{G} \mathbf{h} - \mathbf{r}\|_2 + \gamma \|\mathbf{h}\|_0
+\tag{4}
+\end{equation}
+
+其中 $\|\mathbf{G} \mathbf{h} - \mathbf{r}\|_2$ 代表数据的拟合误差，$\|\mathbf{h}\|_0$ 代表信道稀疏度的衡量，$\gamma > 0$ 是加权因子，它
+
+实现对数据的拟合质量和信道系数向量稀疏度的平衡与折中，从而兼顾两者的性能。
+
+但是（4）中包含了 $l_{0}$ 范数的优化问题，这是一个整数优化的 NP 难问题，现有理论难以给出一个有效的求解方法。因此考虑将其松弛为一个可有效求解的凸优化问题。由于 $l_{1}$ 范数是在所有 $l_{p}$ 范数（$\|\cdot\|_{p}, p \geq 1$）当中最接近 $l_{0}$ 范数的凸范数，因此将上述模型进一步松弛为混合 $l_{1}$ 范数的稀疏正则最小二乘模型：
+
+\begin{equation}
+\text{minimize } \|\mathbf{Gh} - \mathbf{r}\|_{2} + \gamma \|\mathbf{h}\|_{1}
+\tag{5}
+\end{equation}
+
+因此如何求解该模型是本问题的难点所在。由于优化模型中的目标函数是两个不可微函数的混合，一般优化方法难以求解。但是该问题是一个典型的凸优化问题，所以将其转化为二阶锥规划（SOCP，second-order cone programming）问题，以便原对偶内点算法对其进行有效求解，并且所获得解一定为该优化模型的全局最优解。
+
+\subsection{4.3 $l_{1}$ 范数稀疏正则最小二乘模型的求解}
+
+将标准的 $k$ 维二阶锥记为：
+
+\begin{equation}
+cone^{k} = \left\{ \begin{bmatrix} \mathbf{p} \\ t \end{bmatrix} \middle| t \in \mathbf{R}, \mathbf{p} \in \mathbf{R}^{k-1}, \|\mathbf{p}\| \leq t \right\}
+\tag{6}
+\end{equation}
+
+并且当 $k = 1$ 时，定义一维二阶锥为 $cone^{1} = \{ t | t \in R, 0 \leq t \}$。
+
+为了便于转化，可将式（5）与下式等价：
+
+\begin{equation}
+\begin{aligned}
+\text{minimize} & \quad \xi \\
+\text{subject to} & \quad \|\mathbf{Gh} - \mathbf{r}\|_{2} \leq \sigma \\
+& \quad \gamma \|\mathbf{h}_{k}\|_{2} \leq \varpi_{k} \\
+& \quad k = 1, \dots, K \\
+& \quad \sigma + \varpi_{1} + \cdots + \varpi_{K} \leq \xi
+\end{aligned}
+\tag{7}
+\end{equation}
+
+令
+\[
+\mathbf{G} = \mathbf{G}_{r} + j\mathbf{G}_{i}, \quad \mathbf{h} = \mathbf{h}_{r} + j\mathbf{h}_{i}, \quad \mathbf{r} = \mathbf{r}_{r} + j\mathbf{r}_{i}, \quad \mathbf{v} = [1, \mathbf{0}_{1 \times 3K+1}]^{T},
+\]
+\[
+\mathbf{y} = [\xi, \sigma, \varpi_{1}, \dots, \varpi_{K}, h_{r_{1}}, \dots, h_{r_{K}}, h_{i_{1}}, \dots, h_{i_{K}}]^{T}, \quad \mathbf{v}_{s} = [0, \dots, 1, 0, \dots, 0]^{T}, \quad \mathbf{v}_{1} = [0, 1, \mathbf{0}_{1 \times 3K}]^{T},
+\]
+$\mathbf{E}'$ 为 $K$ 维的全 1 列向量，其中，$\mathbf{v}_{1}$，$\mathbf{y}$，$\mathbf{v}$ 和 $\mathbf{v}_{s}$ 均为 $3K+2$ 维的列向量，$\mathbf{v}_{s}$ 表示向量中第 $s$ 个元素为 1，其余元素均为 0，$s = 1, \dots, K$。则式（7）的目标函数可以表示为 $\mathbf{v}^{T}\mathbf{y}$，其余各个约束条件的转化形式为：
+
+\begin{align*}
+&\left\|\mathbf{Gh}-\mathbf{r}\right\|_2 \leq \sigma \\
+&\Leftrightarrow \left\|(\mathbf{G}_r\mathbf{h}_r - \mathbf{G}_i\mathbf{h}_i - \mathbf{r}_r) + j(\mathbf{G}_r\mathbf{h}_i + \mathbf{G}_i\mathbf{h}_r - \mathbf{r}_i)\right\|_2 \leq \sigma \\
+&\Leftrightarrow \begin{bmatrix}
+\mathbf{G}_r\mathbf{h}_r - \mathbf{G}_i\mathbf{h}_i - \mathbf{r}_r \\
+\mathbf{G}_r\mathbf{h}_i + \mathbf{G}_i\mathbf{h}_r - \mathbf{r}_i \\
+\sigma
+\end{bmatrix} \in cone^{2K+1} \\
+&\Leftrightarrow \begin{bmatrix}
+0 & 0 & 0_{1\times 2K} & \mathbf{G}_r & -\mathbf{G}_i \\
+0 & 0 & 0_{1\times 2K} & \mathbf{G}_i & \mathbf{G}_r \\
+& & & \mathbf{v}_1
+\end{bmatrix} \mathbf{y} + \begin{bmatrix}
+-\mathbf{r}_r \\
+-\mathbf{r}_i \\
+0
+\end{bmatrix} \in cone^{2K+1} \\
+&\gamma \left\|\mathbf{h}_k\right\|_2 \leq \boldsymbol{\sigma}_k \\
+&\Leftrightarrow \gamma \left\|\mathbf{h}_{r,k} + j\mathbf{h}_{i,k}\right\|_2 \leq \boldsymbol{\sigma}_k \\
+&\Leftrightarrow \gamma \begin{bmatrix}
+\mathbf{h}_{r,k} \\
+\mathbf{h}_{i,k} \\
+\boldsymbol{\sigma}_k
+\end{bmatrix} \in cone^3 \\
+&\Leftrightarrow \gamma \begin{bmatrix}
+\mathbf{h}_{r,k} \\
+\mathbf{h}_{i,k} \\
+\boldsymbol{\sigma}_k
+\end{bmatrix} \in cone^3 \\
+&\Leftrightarrow \begin{bmatrix}
+0 & \mathbf{0}_{1\times K} & \gamma\mathbf{v}_k & \mathbf{0}_{1\times K} \\
+0 & \mathbf{0}_{1\times K} & \mathbf{0}_{1\times K} & \gamma\mathbf{v}_k \\
+0 & \gamma\mathbf{v}_k & \mathbf{0}_{1\times K} & \mathbf{0}_{1\times K}
+\end{bmatrix} \mathbf{y} \in cone^3 \\
+&\sigma + \boldsymbol{\sigma}_1 + \cdots + \boldsymbol{\sigma}_K \leq \xi \\
+&\Leftrightarrow \xi - \boldsymbol{\sigma}_1 - \cdots - \boldsymbol{\sigma}_K - \sigma \geq 0 \\
+&\Leftrightarrow \begin{bmatrix} 1, -1, -\mathbf{E}'^T, \mathbf{0}_{1\times 2K} \end{bmatrix} \mathbf{y} \geq 0
+\end{align*}
+
+至此可以构造出式（5）的 SOCP 模型为：
+
+\begin{equation}
+\begin{aligned}
+\text{minimize} \quad & \mathbf{v}^T\mathbf{y} \\
+\text{subject to} \quad & \begin{bmatrix}
+0 & 0 & 0_{1\times 2K} & \mathbf{G}_r & -\mathbf{G}_i \\
+0 & 0 & 0_{1\times 2K} & \mathbf{G}_i & \mathbf{G}_r \\
+& & & \mathbf{v}_1
+\end{bmatrix} \mathbf{y} + \begin{bmatrix}
+-\mathbf{r}_r \\
+-\mathbf{r}_i \\
+0
+\end{bmatrix} \in cone^{2K+1} \\
+& \begin{bmatrix}
+0 & \mathbf{0}_{1\times K} & \gamma\mathbf{v}_k & \mathbf{0}_{1\times K} \\
+0 & \mathbf{0}_{1\times K} & \mathbf{0}_{1\times K} & \gamma\mathbf{v}_k \\
+0 & \gamma\mathbf{v}_k & \mathbf{0}_{1\times K} & \mathbf{0}_{1\times K}
+\end{bmatrix} \mathbf{y} \in cone^3 \\
+& k = 1, \ldots, K \\
+& \begin{bmatrix} 1, -1, -\mathbf{E}'^T, \mathbf{0}_{1\times 2K} \end{bmatrix} \mathbf{y} \geq 0
+\end{aligned}
+\tag{8}
+\end{equation}
+
+对于式（8）可以采用 MatLab 中的 CVX 工具箱进行求解（CVX 工具箱的运用见上传附件 “软件程序功能及其使用说明”）
+
+\subsection{4.4 优化效果的分析}
+
+现以第一场景的“Test2.mat”中的两个测试时间片（这里选择起始和终止）的接收数据验证所提方法的有效性。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{起始测试时间片信道系数}
+    \label{fig:1}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{终止测试时间片信道系数}
+    \label{fig:2}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{起始测试时间片数据幅度}
+    \label{fig:3}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{终止测试时间片数据幅度}
+    \label{fig:4}
+\end{figure}
+
+图 1 和图 2 给出了两个测试时间片的信道系数分布图，从中可以看出，优化结果具有明显的稀疏特性，达到了主信道数的提取目的。
+
+图 3 和图 4 给出了两个测试时间片的接收数据幅度重构图，从中可以看出，重构接收数据幅度与原始接收数据幅度有较小绝对误差，这主要是优化模型中通过调整加权因子，更加关注场景中信道的稀疏度。但是，其相对形状未发生变化，可见信号系数的衰落规律和时延并没有被破坏。
+
+\section{五、问题 1 模型的建立与求解}
+
+\subsection{5.1 信道系数特性分析}
+
+利用第四章的方法可以求解出“数据包 1”中所有的信道系数，为了能够对场景多径效应进行指纹建模，我们首先需要对场景中的信道系数进行分析。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{场景 1 接收点 1 信道系数幅度三维图}
+    \label{fig:5}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{场景 1 接收点 1 测试时间片 1 的信道系数幅度分布图}
+    \label{fig:6}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{场景 1 接收点 1 测试时间片 2 的信道系数幅度分布图}
+    \label{fig:7}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{场景 1 接收点 1 测试时间片 3 的信道系数幅度分布图}
+    \label{fig:8}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image5.png}
+    \caption{场景 1 接收点 1 测试时间片 4 的信道系数幅度分布图}
+    \label{fig:9}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image6.png}
+    \caption{场景 1 接收点 1 主信道 1 的系数幅度分布图}
+    \label{fig:10}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{场景 1 接收点 1 主信道 2 的系数幅度分布图}
+    \label{fig:11}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{场景 1 接收点 1 主信道 3 的系数幅度分布图}
+    \label{fig:12}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{场景 1 接收点 1 主信道 4 的系数幅度分布图}
+    \label{fig:13}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{场景 1 接收点 1 可能主信道数目分布图}
+    \label{fig:14}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image5.png}
+    \caption{场景 1 接收点 2 信道系数幅度三维图}
+    \label{fig:15}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image6.png}
+    \caption{场景 1 接收点 2 测试时间片 1 的信道系数幅度分布图}
+    \label{fig:16}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{场景 1 接收点 2 测试时间片 2 的信道系数幅度分布图}
+    \label{fig:17}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{场景 1 接收点 2 测试时间片 3 的信道系数幅度分布图}
+    \label{fig:18}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{场景 1 接收点 2 测试时间片 4 的信道系数幅度分布图}
+    \label{fig:19}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{场景 1 接收点 2 主信道 1 的系数幅度分布图}
+    \label{fig:20}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image5.png}
+    \caption{场景 1 接收点 2 主信道 2 的系数幅度分布图}
+    \label{fig:21}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image6.png}
+    \caption{场景 1 接收点 2 主信道 3 的系数幅度分布图}
+    \label{fig:22}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{场景 1 接收点 2 主信道 4 的系数幅度分布图}
+    \label{fig:23}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{场景 1 接收点 2 可能主信道数目分布图}
+    \label{fig:24}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{场景 2 接收点 1 信道系数幅度三维图}
+    \label{fig:25}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{场景 2 接收点 1 测试时间片 1 的信道系数幅度分布图}
+    \label{fig:26}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image5.png}
+    \caption{场景 2 接收点 1 测试时间片 2 的信道系数幅度分布图}
+    \label{fig:27}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image6.png}
+    \caption{场景 2 接收点 1 测试时间片 3 的信道系数幅度分布图}
+    \label{fig:28}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image1.png}
+    \caption{场景 2 接收点 1 测试时间片 4 的信道系数幅度分布图}
+    \label{fig:29}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image2.png}
+    \caption{场景 2 接收点 1 主信道 1 的系数幅度分布图}
+    \label{fig:30}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image3.png}
+    \caption{场景 2 接收点 1 主信道 2 的系数幅度分布图}
+    \label{fig:31}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image4.png}
+    \caption{场景 2 接收点 1 主信道 3 的系数幅度分布图}
+    \label{fig:32}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image5.png}
+    \caption{场景 2 接收点 1 主信道 4 的系数幅度分布图}
+    \label{fig:33}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image6.png}
+    \caption{场景 2 接收点 1 可能主信道数目分布图}
+    \label{fig:34}
+\end{figure}
+
+图 5 给出了场景 1 接收点 1 的信道系数幅度分布的三维图，从不同测试时间片沿信道方向观察并向结合图 6 至图 9 可知，不同的测试时间片场景中的主要信道的位置（信道时延）和信道系数幅度都是有变化的。将图 5 从不同信道沿测试时间片方向观察并结合图 10 至图 13 可知，不同信道系数的幅度统计规律相差较大。图 14 给出了整个测试时间片内可能主信道数次数的统计，这在一定程度上给出了可能存在的有效信道数的一个可信参考，也是场景一个重要特性的反映。
+
+图 15 至图 24、图 25 至图 34 的含义分别与图 5 至图 14 相同，横向上述三个组图形中的相应图可知，相同场景下不同接收点获得的信道数目、绝对时延以及系数幅度变化
+
+\subsection{5.2 场景特征曲线模型的建立}
+
+通过对 5.1 节的分析可知，无法直接运用信道的时延、数目以及幅度的绝对变化规律提取关于场景的主要信息。其原因是主要信道的时延是抖动的，主信道数在一定的范围内是波动的，系数幅度特性是随机的。但是通过统计一个接收点的不同主要信道在整个测试历程所有的时间片上超过门限的数目，归一化后按照大小进行排序可以得到一个相对稳定的曲线。这个规律包含了场景中主要信道数目、时延以及系数幅度的变化特性。其原因是，不同的接收点测得的信道的绝对时延、系数幅度上可能存在较大的差异，但是根据假设 4 我们认为同一场景在短时间内不会出现巨变，因而不同接收点各个信道的相对时延关系、时延抖动和系数的幅度变化规律是一定的，这些信息必然与这条曲线的变化规律相对应，所以可以认为这条曲线真实反映了该场景的特征，因此我们将其称为场景特征曲线，其模型框图建立如下：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{model_diagram.png}
+\caption{模型框图}
+\end{figure}
+
+\subsection{5.3 场景最优指纹特征曲线的概念}
+
+根据 5.1 和 5.2 节的分析可以看出，对同一场景的不同接收点接收数据，按照以上规律构建的特征曲线是相似的，说明其包含了该环境的主要信息，因此我们可以依据这些相似曲线构建该场景的最优指纹特征曲线，其实各个特征曲线的融合，应能准确反映该场景的全息。构造的场景最优指纹特征曲线需要满足以下两个条件：1、最优指纹特征曲线应包含场景中主要信道数目、相对时延、时延抖动和系数幅度的统计变化规律；2、最优指纹特征曲线应具有唯一性，对统一场景中不同接收点的特征曲线能够进行很好的聚类，对不同场景应能准确区分。
+
+\subsection{5.4 场景最优指纹特征曲线的数学模型}
+
+最优指纹特征曲线应依据不同接收点的指纹特征曲线综合得出，其准则是最优指纹特征曲线与各个接收点特征曲线误差距离和最小。因此，构建数学模型如下：
+
+\begin{equation}
+\text{minimize} \quad \sum_{k=1}^{K'} \left\| \mathbf{fp}_i^* - \mathbf{fp}_{i,k} \right\|_2
+\tag{9}
+\end{equation}
+
+其中，$i$ 表示第 $i$ 个场景，由凸优化理论可知，这是一个 SOCP 问题，可以采用原对偶内点算法进行快速有效求解。
+
+\subsection{5.5 场景最优指纹特征曲线的求解}
+
+本节进一步给出式 (9) 的求解方法，假设场景中不同的接收点数为 $K'$，主要信道个数为 $N'$，则 $\mathbf{fp}_i^*$ 和 $\mathbf{fp}_{i,k}$ 应为 $N'$ 维的列向量，这里进一步给出其 SOCP 形式，为了推导方便，将式 (9) 等价为如下形式：
+
+\begin{equation}
+\begin{aligned}
+\text{minimize} \quad & \xi \\
+\text{subject to} \quad & \left\| \mathbf{fp}_i^* - \mathbf{fp}_{i,k} \right\|_2 \leq \sigma_k \\
+& k = 1, \dots, K' \\
+& \sum_{k}^{K'} \sigma_k \leq \xi
+\end{aligned}
+\tag{10}
+\end{equation}
+
+定义向量 $\mathbf{v} = [1, \mathbf{0}_{1 \times K'}, \mathbf{0}_{1 \times N'}]^T$, $\mathbf{y} = [\xi, \sigma_1, \dots, \sigma_{K'}, \mathbf{fp}_i^{*T}]^T$, $\mathbf{E}_k = [0, \dots, 0, 1, 0, \dots, 0]^T$ 为第 $k$ 个元素为 1，其元素元素为 0 的 $K'$ 维列向量，$\mathbf{E}'$ 为 $N'$ 维的全 1 列向量，则式 (10) 的目标函数为 $\mathbf{v}^T \mathbf{y}$，各个约束条件的 SOCP 形式：
+
+\begin{align*}
+\left\| \mathbf{fp}_i^* - \mathbf{fp}_{i,k} \right\|_2 & \leq \sigma_k \\
+\Leftrightarrow \begin{bmatrix} \mathbf{fp}_i^* - \mathbf{fp}_{i,k} \\ \sigma_k \end{bmatrix} & \in \text{cone}^{N'+1} \\
+\Leftrightarrow \begin{bmatrix} 0 & \mathbf{0}_{1 \times K'} & \mathbf{E}' \\ 0 & \mathbf{E}_k & \mathbf{0}_{1 \times N'} \end{bmatrix} \mathbf{y} + \begin{bmatrix} -\mathbf{fp}_{i,k} \\ 0 \end{bmatrix} & \in \text{cone}^{N'+1} \\
+\sum_{k}^{K'} \sigma_k & \leq \xi \\
+\Leftrightarrow \xi - \sum_{k}^{K'} \sigma_k & \geq 0 \\
+\Leftrightarrow [1, \mathbf{E}'] \mathbf{y} & \geq 0
+\end{align*}
+
+则式 (9) 的 SOCP 形式为：
+
+\begin{equation}
+\begin{aligned}
+\text{minimize} \quad & \mathbf{v}^T \mathbf{y} \\
+\text{subject to} \quad & \begin{bmatrix} 0 & \mathbf{0}_{1 \times K'} & \mathbf{E}' \\ 0 & \mathbf{E}_k & \mathbf{0}_{1 \times N'} \end{bmatrix} \mathbf{y} + \begin{bmatrix} -\mathbf{fp}_{i,k} \\ 0 \end{bmatrix} \in \text{cone}^{N'+1}_k \\
+& k = 1, \dots, K' \\
+& [1, \mathbf{E}'] \mathbf{y} \geq 0
+\end{aligned}
+\tag{11}
+\end{equation}
+
+式（11）利用 MatLab 中 CVX 工具箱进行有效求解，并且所获得解一定为该优化模型的全局最优解。
+
+\subsection{5.6 场景最优指纹特征曲线分析}
+
+结合 5.4 和 5.5 节的方法对“数据包 1.rar”中三个场景的特征曲线进行分析，图 36 给出了利用所提方法拟合出的场景最优特征曲线。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{场景最优特征曲线}
+    \label{fig:36}
+\end{figure}
+
+从图 36（注意：正方形标记线为场景 1 的最优指纹特征曲线，圆圈标记线为场景 2 的最优指纹特征曲线，三角形标记线为场景 3 的最优指纹特征曲线，黑、蓝、红线表示场景 3、1、2 的特征曲线）中可以看出：1、同一场景中的不同接收点的特征曲线聚集程度很高，不同场景的各个接收点的特征曲线差异性较大，这说明我们提出的利用特征曲线来作为场景识别的衡量特性是符合实际情况的；2、一个场景的指纹特征是唯一的，因而这个指纹应尽可能反映出一个场景的全息，从图中三个场景最优特征指纹曲线的拟合情况可知，我们利用最优指纹特征曲线与各个接收点特征曲线误差距离和最小为准则得到的最优特征曲线融合了不同接收点特征曲线的信息，因而将其作为指纹来衡量不同场景的差别是合理。
+
+\subsection{5.7 评价准则}
+
+场景最优特征曲线从数学上来说是一个向量，因而我们可以利用衡量向量间差异方法来制定评价准则，这里我们以向量的范数距离为准则来判别不同场景间的差异性，其数学模型为：
+
+\begin{equation}
+\left\|\mathbf{fp}_{i}^{*}-\mathbf{fp}_{j}^{*}\right\|_{2}
+\tag{12}
+\end{equation}
+
+其中, $i,j=1,\ldots,T$ 且 $i\neq j$，$T$ 表示总的场景个数，三种场景的范数距离见表 1.
+
+\begin{table}[h]
+\centering
+\caption{不同场景最优指纹特征曲线的范数距离}
+\begin{tabular}{c c c c}
+\hline
+场景标号 & 1 & 2 & 3 \\
+\hline
+1 & 0 & 0.9649 & 0.6701 \\
+2 & 0.9649 & 0 & 1.3510 \\
+3 & 0.6701 & 1.3510 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{5.8 有效性分析}
+
+所谓有效是指该模型应能从数学上对已知的三种场景进行合理区分，表 1 可知，三种场景利用 5.7 节提出的评价准则能够进行有效区分，而且场景 1 和场景 3 的区分度最小，场景 1 和场景 2 的区分度次之，场景 2 和场景 3 的区分度最大，这与图 36 是一致的（图 36 中正方形标记线为场景 1 的最优指纹特征曲线，圆圈标记线为场景 2 的最优指纹特征曲线，三角形标记线为场景 3 的最优指纹特征曲线）。这同时也说明了 5.4 场景最优指纹特征曲线的建模的合理性。
+
+\section{六、问题 2 模型的建立与求解}
+
+\subsection{6.1 场景识别器模型}
+
+根据 5.2 所建立的场景特征曲线模型，可以求解出待测样本的特征曲线 $\mathbf{fp}_{\text{test}}$，$\mathbf{fp}_{\text{test}}$ 是一个向量，可以求出待测样本的特征曲线 $\mathbf{fp}_{\text{test}}$ 与三个场景的场景最优指纹特征曲线 $\mathbf{fp}_{i}^{*}$ 之间的范数距离，即：
+
+\begin{equation}
+D_{i}=\left\|\mathbf{fp}_{\text{test}}-\mathbf{fp}_{i}^{*}\right\|_{2}
+\tag{13}
+\end{equation}
+
+由 5.7 可知，范数距离 $D_{i}$ 越小，那么待测样本的特征曲线即与场景 $i$ 的场景最优指纹特征曲线的区分度越小，可判定为场景 $i$。
+
+根据以上分析，可以建立场景识别器模型：将待测样本的特征曲线 $\mathbf{fp}_{\text{test}}$ 输入场景识别器，分别与三个场景的场景最优指纹特征曲线 $\mathbf{fp}_{i}^{*}$ 求范数距离，得到的三组范数距离 $D_{i}$，并进行相互比较，得到最小范数距离 $D_{i}$，输出其场景标识 $i$，待测样本即属于场景 $i$。场景识别器模型如图 37 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image.png}
+    \caption{场景识别器模型}
+    \label{fig:37}
+\end{figure}
+
+\subsection{场景识别器分类结果分析}
+
+针对问题 2，先求出“数据包 2”中的两组待测样本的特征曲线 $\mathbf{fp}_{\text{test1}}$、$\mathbf{fp}_{\text{test2}}$，如图 \ref{fig:38} 所示。观察图 \ref{fig:38} 可发现，$\mathbf{fp}_{\text{test1}}$ 与 $\mathbf{fp}_{1}^{*}$ 相近，$\mathbf{fp}_{\text{test2}}$ 与 $\mathbf{fp}_{2}^{*}$ 相近。
+
+进一步分析：将两组曲线向量输入 6.1 的场景特征曲线模型，可得到两组待测样本的特征曲线与三个场景的场景最优指纹特征曲线 $\mathbf{fp}_{i}^{*}$ 之间的范数距离，如表 2 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{待测样本的场景特征曲线与场景最优指纹特征曲线对比图}
+    \label{fig:38}
+\end{figure}
+
+表2 “数据包2”待测样本与场景最优指纹特征曲线的范数距离
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c c c c}
+\hline
+场景标号 & 1 & 2 & 3 \\
+\hline
+待测1 & 0.3445 & 0.7452 & 0.7995 \\
+待测2 & 1.2071 & 0.3950 & 1.5259 \\
+\hline
+\end{tabular}
+\end{table}
+
+从表中可知，待测样本1的特征曲线与场景1的场景最优指纹特征曲线之间的范数距离最小，故待测样本1属于场景1，同理，待测样本2属于场景2。
+
+\section{七、问题3模型的建立与求解}
+
+\subsection{7.1 空间分段模型的建立}
+
+由于步行150米，在这段区域内我们并没有具体的场景数目作为先验信息来利用。为了简化问题的分析与建模，我们采用先粗后细的原则作为场景区分的依据。给出解决问题的思路：一是恢复出整段测量结果的信道系数 $h[k,n]$；二是按照由粗至细的方式进行不同长度的区域划分并基于“问题1”中的建模方法，给出相应的场景特征曲线，据此拟合出相应的场景最优特征指纹曲线，并比较第 $m$ 次与第 $m-1$ 次操作得到指纹差异决定是否进行下一次更细的区域划分，其具体流程框图如下：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \label{fig:flowchart}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{model_diagram.png}
+    \caption{模型框图}
+    \label{fig:model_diagram}
+\end{figure}
+
+\subsection{分段“指纹”分析}
+
+基于“数据包3”的测量结果，按照7.1的模型对空间进行分段（划分方式从路程的开始都结束依次均匀划分），采用“问题1”中的建模方法，对分段的“指纹”进行分析分析。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{fingerprint_curves.png}
+    \caption{空间4分段场景最优指纹特征曲线}
+    \label{fig:fingerprint_curves}
+\end{figure}
+
+从图\ref{fig:fingerprint_curves}可以看出，4段区域的指纹特性曲线的变化特性两两比较近似，由此我们可以得到两条有关空间场景分类的信息：一、空间可能存在的场景个数为2，但是具体数值的确定还需更为精确的讨论；二、由于第1段场景最优指纹特征曲线和第4段场景最优指纹特征曲线比较近似，因而我们可以认为至少有一个场景在150米的方向上来看是不连续的。续的，也就是说并一个场景可以对应两个或者多个区域。
+
+为了对空间进行一个更加精确的划分，我们需要依次增加空间的分段并拟合出相应的分段场景最优指纹特征曲线。通过对分段场景的最优特征曲线进行范数距离门限检测，从而给出整个空间一个更加合理的全息。本节在 7.1 的基础上对上述问题中的分段数依次增加，并分析分段“指纹”特性，考虑到篇幅的限制，这里仅以 32 段为例进行讨论。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{空间 32 分段场景最优指纹特征曲线}
+    \label{fig:41}
+\end{figure}
+
+图 41 给出了将空间分成 32 段后，各个分段场景最优指纹特征曲线的分布图，其中蓝色虚线为前 10 个分段的最优指纹特征曲线，黑线为 29 至 32 分段区域的最优指纹特征曲线，绿色圆圈标记实线为第 28 个分段场景的最优指纹特征曲线，蓝色实线为剩余分段区域的最优指纹特征曲线。对比图 40 和 41 可知，一、我们更加确定了空间可能的场景个数为 2；二、一个场景会由不相连的分段区域组成，而且这两个分段区域的长度不一定相同；三、如果继续增加空间的分段个数可能会造成过细的“区域划分”会在“指纹”特征中引入更多的错误，导致误判概率增大，图 41 中的第 28 个分段场景最优特征曲线说明了这一点。
+
+\subsection{7.3 区域划分}
+
+在 7.2 节的基础上，我们继续增加空间的分段数，会出现多个分段区域的交叉情况，因而会在指纹中引入更多的错误，联合 7.2 的试验我们给出结论：空间分为三个区域，区域 1 为 0 到 50 米，区域 2 为 50 到 130 米，区域 3 为 130 到 150 米，但是区域 1 和区域 3 构成场景 1，区域 2 构成场景 2。
+
+\section{问题 4 模型的建立与求解}
+
+\subsection{场景识别}
+
+场景识别与第六章问题 2 的建模与求解是类似的，这里区域其主要的数学模型不在赘述，直接对其识别结果进行分析，图 42 和表 3 分别给出了两个样本最优指纹特征曲线和两个场景最优指纹特征曲线的逼近图形和范数距离。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{不同场景和样本的最优指纹特征曲线}
+    \label{fig:42}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{不同场景和样本的最优指纹特征曲线的范数距离}
+    \label{tab:3}
+    \begin{tabular}{c c c}
+        \hline
+        & 场景 1 最优 & 场景 2 最优 \\
+        & 指纹特征曲线 & 指纹特征曲线 \\
+        \hline
+        样本 1 最优 & 0.5053 & 1.1508 \\
+        指纹特征曲线 & & \\
+        样本 2 最优 & 0.3220 & 0.6001 \\
+        指纹特征曲线 & & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+结合图 42 和表 3 可知，无论是样本 1 还是样本 2 均与场景 1 的近似程度最高，因而我们认为两个样本均是来自场景 1 的采样。
+
+\subsection{区域识别}
+
+虽然我们判断出了两个样本均来自于对场景 1 的测量，由于场景 1 包含了两个不连续的区域，因而我们还要进一步判断两个样本分别对于场景 1 的哪个区域。我们的思路是将两个场景 1 中的两个区域分别看为两个新的区域，然后采用 8.1 节中场景识别的方法进行判断。图 43 和表 4 分别给出了两个样本最优指纹特征曲线和两个区域最优指纹特征曲线的逼近图形和范数距离。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image.png}
+    \caption{不同区域和样本的最优指纹特征曲线}
+    \label{fig:43}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{不同区域和样本的最优指纹特征曲线的范数距离}
+    \label{tab:4}
+    \begin{tabular}{c c c}
+        \hline
+        & 区域 1 最优 & 区域 2 最优 \\
+        & 指纹特征曲线 & 指纹特征曲线 \\
+        \hline
+        样本 1 最优 & 0.4632 & 0.5683 \\
+        指纹特征曲线 & & \\
+        样本 2 最优 & 0.3412 & 0.3063 \\
+        指纹特征曲线 & & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+结合图 43 和表 4 可知，样本 1 的采样来自于属于区域 1 为 0 到 50 米的路段，样本 2 的采样来自于属于区域 3 为 130 到 150 米的路段。
+
+\section{模型的评价与推广}
+
+\subsection{模型的评价}
+
+1. 本文所建立的指纹特征分析模型具有以下优点：
+   - （1）本文所建立的信道识别器模型利用的是主要信道数目、相对时延、时延抖动和系数幅度的综合信息进行判定，故运行简单、高效、速度快；
+   - （2）由于本文建立的指纹特征分析模型并没有利用信号的统计特性，故该模型可以进
+
+行在高斯色噪声、非高斯噪声环境下的场景识别，有较强的场景适用性；
+
+（3）本文建立的大部分模型均为矩阵模型，构造简洁，因而扩展性较强，且便于计算机进行计算。
+
+2. 本文所建立的指纹特征分析模型存在的不足及需要改进的地方：
+
+（1）本文的信道系数是基于对冲激信号辐射源条件下得分析，如果对常用的窄脉冲信号作为辐射源进行测试时，需要对本文的指纹模型进行一定的修正。
+
+（2）理想的稀疏模型应是利用 2-0 范数求解，但现有理论无法对其进行有效求解，因而用 1 范数对其进行松弛，但这只是原问题的近似，所求的最优解并非理论上的最优解。
+
+（3）本文提供的指纹特征分析模型仅能对测试样本进行场景判定，并没有得到场景中的多径效应、大尺度衰落、小尺度衰落、时延抖动、幅度抖动等具体特征。
+
+\subsection{9.2 模型的推广}
+
+1. 掌握无线信道本身的特性是研究无线传输技术的基础，本文提出的指纹特征分析模型具有一定的通用性，对无线信道系统研究具有一定的帮助；
+
+2. 本文提出的指纹特征分析模型对系统进行了正确辨识，可以为收发隔离技术提供一个参考依据；
+
+3. 本文所利用的稀疏方法可以用来解决强噪声背景下的信号提取问题；
+
+4. 本文提出的指纹特征分析模型可以用于对电磁环境的检测，可应用于优化区域内的无线网络。
+
+\section{参考文献}
+
+[1] Stephen Boyd, Lieven Vandenberghe, Convex Optimization, London: Cambridge University Press, 2004.
+
+[2] Steven M. Kay, 统计信号处理基础——估计与检测理论（罗鹏飞等译），北京：电子工业出版社，2014 年。
+
+[3] Gregory D. Durgin, 空一时无线信道（朱世华等译），西安：西安交通大学出版社，2004 年。
+
+[4] Proakis. J. G，数字通信（第五版）（英文版），北京：电子工业出版社，2009。
+
+[5] 柯志龙，基于幅频特性的无线信道指纹研究，厦门大学硕士论文，2011。
+
+[6] 林文彬，基于频率响应的无线信道指纹研究，厦门大学硕士论文，2012。
+
+[7] 顾杰，无线信道的确定性建模和参数分析，南京：南京理工大学硕士论文，2010。
+
+[8] 王鹏飞，一种小尺度衰落信道仿真器的研究与 FPGA 实现，长沙：国防科学技术大学硕士论文，2009。
+
+[9] Peter Steenkiste, Douglas Sicker, Gary Minden, Dipankar Raychaudhuri, Future Directions in Cognitive Radio Network Research, 2009.
+
+\section{附录 问题 1 分析所需的 matlab 软件包}
+
+(1) Scene\_Experiment\_Data\_Processing.m
+
+\begin{verbatim}
+%%%%%%%场景 1--试验 1--Num 个采样时间段数据处理（获得 Hk）%%%%%%%
+% 首先通过 load 函数调入数据，并根据冲激响应，利用卷积方程构建信号模型，然后利用稀疏正则化最小二乘计算冲激响应系数
+% 优化准则：利用特定环境的多径路数是稀疏的以及逼近误差二范数最小原则
+% 根据门限判断选择稀疏冲激响应系数的位置及幅度
+close all
+clc;
+clear all
+load('C:\Users\lenovo\Desktop\2015 研究生试题\2015 研究生试题\2015 赛题\C\数据包 5\filter.mat');
+G=filter;%滤波器的长度
+load('C:\Users\lenovo\Desktop\2015 研究生试题\2015 研究生试题\2015 赛题\C\数据包 1\场景 1\Test1.mat');
+Num=1500;%选取数据采样块数%%%%%
+r=ChannelR.';%数据长度
+%%%%%%%%%%%%%构造矩阵%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+N=100;%数据长度
+Co_Am=zeros(N,Num);
+N_f=49;%滤波器的长度
+G_comple=G+j.*G;%复数滤波器
+G_comple1=fliplr(G_comple);%数据反转
+H=zeros(N,N);
+H1=zeros(N,N+N_f-1);
+for i=1:N
+    H1(i,i:i+N_f-1)=G_comple1;
+end
+H=H1(:,1+(N_f-1)/2:N+(N_f-1)/2);%构建矩阵
+h_max_vect=zeros(2,Num);
+for i=1:Num
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    rr=r(:,i);
+    cvx_begin
+
+    variable h(N,1) complex
+    gama=1;
+    minimize norm(H*h-rr,2)+gama*norm(h,1)
+
+    cvx_end
+    Co_Am(:,i)=h;
+end
+save Scene1_Experiment5 Co_Am
+\end{verbatim}
+
+\begin{verbatim}
+(2) Hk_analysis.m
+%%%%%%%%%%%%%%%%%%%HK 的分析(获得特征曲线 Ot)%%%%%%%%%%%%%%%%%%%%
+%本程序只是给出了一个场景一个测试点的特征曲线获得，要获得
+%一个场景的最优指纹曲线需要将一个场景所得测试点都按照本程序
+%跑一遍并将数据进行存储
+
+clear all;
+clc;
+close all;
+load('C:\Users\lenovo\Desktop\All_hk_Processing\1\Hk\Scene3_Experiment5')
+% load('C:\Users\lenovo\Desktop\All_hk_Processing\2\Datapackage2_Scene1_Experiment2.mat')
+K=100;%冲激响应长度
+N=1500;%采样测试次数
+Over_Threshold_Numb1=zeros(1,K);%各个路径超过门限的次数值
+for k=1:K
+    for n=1:N
+        if (abs(Co_Am(k,n))>=0.1*max(abs(Co_Am(k,:))) && abs(Co_Am(k,n))>=0.001)
+            Over_Threshold_Numb1(k)=Over_Threshold_Numb1(k)+1;
+        else
+            end
+    end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot(Over_Threshold_Numb)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%在所有切片中路径数目出现的次数%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+PPP=20;%可能主要通道个数
+% NN_Numb1=zeros(2,PPP);
+% for i=1:PPP
+%     [a,b]=max(Over_Threshold_Numb1);
+%     NN_Numb1(1,i)=b;
+%     NN_Numb1(2,i)=a;
+%     Over_Threshold_Numb1(b)=0;
+% end
+
+for i=1:PPP
+    [a,b]=max(Over_Threshold_Numb1(i));
+    NN_Numb1(kkk,i)=a;
+    Over_Threshold_Numb1(i)=0;
+end
+
+%将所有切片各个路径在一个块内超过门限的值进行归一化
+for kkk=1:K
+    NN_Numb(kkk,:)=NN_Numb1(kkk,:)/max(NN_Numb1(kkk,:));
+end
+\end{verbatim}
+
+\begin{verbatim}
+save Hk_anslysis Over_Threshold_Numb1
+
+% tt
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+(3) curle_plot.m
+%%%%%%%%%%%%%画出特征曲线样本%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear all;
+clc;
+load ('C:\Users\lenovo\Desktop\All_hk_Processing\3\Ot\Datapackage3_Ot.mat')
+%%%%%%%%%%%%在所有切片中路径数目出现的次数%%%%%%%%%%%%%%%%%%%%
+KKK=size(Datapackage3_Ot,1);%切片的个数值
+KK=32;%预设场景的个数值
+PPP=20;%主要路径个数门限
+NN_Numb1=zeros(KKK,PPP);
+for kkk=1:KKK
+    for i=1:PPP
+        [a,b]=max(Datapackage3_Ot(kkk,:));
+        NN_Numb1(kkk,i)=a;
+        Datapackage3_Ot(kkk,b)=0;
+    end
+end
+%将所有切片各个路径在一个块内超过门限的值进行归一化
+for kkk=1:KKK
+    NN_Numb(kkk,:)=NN_Numb1(kkk,:)/max(NN_Numb1(kkk,:));
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+KKKK=floor(KKK/KK);%每个场景中测试点的个数
+Fing_Char=zeros(KK,PPP);%要优化的最优指纹特征曲线
+for kk=1:KK
+    cvx_begin
+
+        variables s1(PPP,1) t tt(KKKK,1)
+        minimize t
+        for kkkk=1:KKKK
+            norm(s1-NN_Numb((kk-1)*KKKK+kkkk,:)',2)<=tt(kkkk);
+        end
+        sum(tt)<=t;
+    cvx_end
+    Fing_Char(kk,:)=s1.';
+end
+for kk=1:KK
+    plot(Fing_Char(kk,:),'LineWidth',3);
+\end{verbatim}
+
+\begin{verbatim}
+hold on;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+(4) Each_Samp_Plot.m
+%给出 Hk 的三维图形
+%给出某个采样样本所有路径的幅度分布情况
+%给出所有采样样本中主要路径数目的分布情况
+%给出一个路径的散射系数幅度分布情况
+clear all;
+clc;
+close all;
+load('C:\Users\lenovo\Desktop\All_hk_Processing\1\Hk\Scene1_Experiment2')
+% load('C:\Users\lenovo\Desktop\All_hk_Processing\2\Datapackage2_Scene1_Experiment2.mat')
+K=100;%冲激响应长度
+N=1500;%采样测试次数
+figure(1)
+mesh(1:N,1:K,abs(Co_Am));%给出 Hk 的三维图形
+figure(2)
+plot(1:K,abs(Co_Am(:,1)));%给出某个采样样本所有路径的幅度分布情况
+figure(3)
+plot(1:K,abs(Co_Am(:,400)));%给出某个采样样本所有路径的幅度分布情况
+figure(4)
+plot(1:K,abs(Co_Am(:,800)));%给出某个采样样本所有路径的幅度分布情况
+figure(5)
+plot(1:K,abs(Co_Am(:,1200)));%给出某个采样样本所有路径的幅度分布情况
+figure(6)
+plot(1:N,abs(Co_Am(56,:)));%给出某个采样样本所有路径的幅度分布情况
+figure(7)
+plot(1:N,abs(Co_Am(55,:)));%给出某个采样样本所有路径的幅度分布情况
+figure(8)
+plot(1:N,abs(Co_Am(54,:)));%给出某个采样样本所有路径的幅度分布情况
+figure(9)
+plot(1:N,abs(Co_Am(57,:)));%给出某个采样样本所有路径的幅度分布情况
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%一个切片中有多少个路径%%%%%%%%%%%%%%%%%%%%%
+Over_Threshold_Numb=zeros(1,N);%给出所有采样样本中所有可能出现路径数目的分布情况
+for n=1:N
+    for k=1:K
+        if (abs(Co_Am(k,n))>=0.1*max(abs(Co_Am(:,n))) && abs(Co_Am(k,n))>=0.001)
+            Over_Threshold_Numb(n)=Over_Threshold_Numb(n)+1;
+        else
+        end
+    end
+end
+\end{verbatim}
+
+\begin{verbatim}
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot(Over_Threshold_Numb)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%在所有切片中路径数目出现的次数%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NN=20;%定义主要路径门限
+NN_Numb=zeros(1,NN);
+for n=1:N
+    for i=1:NN
+        if (Over_Threshold_Numb(n)==i)
+            NN_Numb(i)= NN_Numb(i)+1;
+        else
+        end
+    end
+end
+figure(10)
+stem(NN_Numb) %给出所有采样样本中主要出现路径数目的分布情况
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{verbatim}
+
+\begin{enumerate}
+    \item 程序的正确运行需要保证数据引用路径的正确性
+    \item 如果后面程序需要调用前面程序的数据，要确保数据变量名和数据 mat 文件名区别
+    \item 运行场景最优指纹特征曲线程序（3）需要将特征曲线程序（2）在所有接收点跑完
+    \item 程序 1 和程序 4 的运行需要 CVX 工具箱）
+\end{enumerate}

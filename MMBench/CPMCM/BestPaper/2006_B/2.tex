@@ -1,0 +1,853 @@
+
+\tableofcontents
+
+\section{问题重述}
+
+要对航天器实施有效的控制，首先必须建立其精确的数学模型。航天器在轨道运动是一个十分复杂的物理过程，这个过程中要受到很多力的作用，对其分析和控制将是非常困难的。通常在粗略分析时可以作如下假定：
+
+\begin{enumerate}
+    \item 地球和航天器的质量集中在质心，因而可以将其视为质点看待；
+    \item 航天器仅受到地球万有引力和自身发动机推力的作用；
+    \item 地球引力场为平行力场；
+    \item 发动机推力恒定，不会随着航天器飞行高度的变化而改变；
+    \item 航天器质量恒定，既不考虑发动机推进剂消耗而引起的航天器质量改变；
+    \item 假定航天器只在发动机推力轴线与地球引力作用线所确定的平面内运动，运动可以为直线，也可以为曲线。
+\end{enumerate}
+
+为了建立航天器的运动方程，首先定义如下坐标系 $Oxy$。以地球质心为坐标原点 $O$，$Ox$ 向东为正，$Oy$ 向北为正，如图 1 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{coordinate_system.png}
+    \caption{坐标系的定义}
+\end{figure}
+
+图中 $P$ 为发动机推力矢量，$F$ 为地球对航天器的引力矢量，$\boldsymbol{r}$ 为航天器与地球之间的距离矢量，$\boldsymbol{V}$ 为航天器的运动速度矢量，$\alpha$ 为地球引力矢量与 $x$ 轴之间的夹角，$\beta$ 为发动机推力矢量与 $x$ 轴之间的夹角。
+
+由牛顿第二定律可得航天器矢量形式的运动方程为
+
+\begin{align}
+\dot{\mathbf{X}} &= \mathbf{f}+\mathbf{V} \tag{26} \\
+\mathbf{Y} &= \mathbf{H}\mathbf{X}+\mathbf{W} \tag{27}
+\end{align}
+
+式中 $F = G \frac{Mm}{r^3} \boldsymbol{r}$ 为地球引力矢量。
+
+将式 (1) 写成分量形式即为
+
+\begin{align}
+\hat{X}_{0/k} &= \hat{X}_{0/k-1} + K_k^*(Y(j) - H_k X_{k/k-1}) \tag{44-a} \\
+K_k^* &= P_{k/k-1}^* H_k^T (H_k P_{k/k-1}^* H_k^T + R(k))^{-1} \tag{44-b} \\
+P_{k+1/k}^* &= P_{k/k-1}^* \Phi_{k+1,k} (I - K_k H_k)^T \tag{44-c}
+\end{align}
+
+式中 $r = \sqrt{x^2 + y^2}$，$\alpha = \arctan(y/x)$，$\beta$ 由发动机轴线与 $x$ 轴之间的夹角确定，$G$ 为地球引力常数，$M$ 为地球质量标量，$m$ 为航天器质量。
+
+以上建立的是航天器运动的简化模型，显然这样的数学模型在精度上是远远不能满足实际需要的，在其他要求精确制导等有关高科技的实际问题中，我们都常常面临类似的问题：我们必须建立高精度的数学模型，必须高精度地估计模型中的大批参数，因为只有这样的数学模型才能解决实际问题，而不会出现差之毫厘，结果却失之千里的情况。这时所建立数学模型的精度就成了数学模型的生命线。例如上述问题中的航天器还要受到地球质量分布不均匀所引起的摄动力，大气阻力，日、月及其它星球的摄动引力的影响，以及航天器发动机为调整航天器自身姿态运作时作用力的影响。这样不但数学模型十分复杂，而且在这些数学模型中还要涉及到许多重要的参数，如地球的引力场模型就有许多待定参数。不仅如此，在对航天器进行测量时，还涉及到观测站的地理位置以及设备的系统误差等参数。为此人们要设法利用长期积累的丰富的观测资料，高精度确定这些重要的参数。
+
+由于航天器的问题太复杂，本题仅考虑了一个较简单的确定高精度参数问题。假设有一个生态系统，其中含有两种生物，即：A 生物和 B 生物，其中 A 生物是捕食者，B 生物是被捕食者。假设 $t$ 时刻捕食者 A 的数目为 $x(t)$，被捕食者 B 数目为 $y(t)$，它们之间满足以下变化规律：
+
+\begin{align}
+\dot{X} &= f + V \tag{49} \\
+Y &= HX + W \tag{50}
+\end{align}
+
+初始条件为：
+
+\begin{equation}
+\begin{cases}
+x(t_0) = \alpha_5 \\
+y(t_0) = \alpha_6
+\end{cases}
+\end{equation}
+
+其中 $\alpha_k (1 \leq k \leq 6)$ 为模型的待定参数。
+
+通过对此生态系统的观测，得到了相关的观测数据。现要求解决如下问题：
+
+\begin{enumerate}
+    \item 在观测数据无误差的情况下，若已知 $\alpha_2 = \frac{1}{5}$，求其它 5 个参数 $\alpha_k (k = 1, 3, 4, 5, 6)$。有关数据见数据文件：DATA1.TXT
+    \item 在观测数据无误差的情况下，若 $\alpha_2$ 也未知，问至少需要多少组观测数据，才能确定参数 $\alpha_k (1 \leq k \leq 6)$。有关数据见数据文件：DATA1.TXT
+    \item 在观测资料有误差（时间变量不含有误差）的情况下，请分别利用观测数据 DATA2.TXT 和 DATA3.TXT，确定参数 $\alpha_k (1 \leq k \leq 6)$ 在某种意义下的最优解，并与仿真结果比较，进而改进所建的数学模型。
+    \item 假设连观测资料的时间变量也含有误差，利用数据 DATA4.TXT，建立数学模型，确定参数 $\alpha_k (1 \leq k \leq 6)$ 在某种意义下的最优解。
+\end{enumerate}
+
+\section{模型假定}
+
+虽然该问题已经给定食饵—捕食者的具体模型，但是为了问题分析与求解的方便我们做出如下假定：
+
+\begin{enumerate}
+    \item 假定 DATA1 所给数据无误差；
+    \item 假定 DATA2、DATA3、DATA4 所给数据仅含有随机误差而不含系统误差，且其统计特性与高斯白噪声特性相同；
+    \item 非线性微分方程的理论解一定存在，而且这个理论解与实际解之间能够用一个线性微分方程表示，此时我们可以说，理论解能够“充分地”对系统的实际特性给予分析。
+\end{enumerate}
+
+\section{符号定义}
+
+$\alpha_1$、$\alpha_3$：捕食者、食饵分别独立生存时的自然增长率。
+
+$\alpha_2$：食饵对捕食者的供养能力。
+
+$\alpha_4$：捕食者掠取食饵的能力。
+
+\(\alpha_5\)、\(\alpha_6\)：捕食者、食饵在观测初始时刻的数目。
+
+\(x(t)\)、\(y(t)\)：分别表示捕食者、食饵的数目。
+
+\(i\)，\(j\)，\(k\)：在本模型中表示待定参数\(\alpha\)，状态变量和设计讨论各部分各因素的索引下标。
+
+\(x_i\)、\(y_j\)：该食饵——捕食者生物系统的状态变量与输出变量。
+
+\(\nu_i\)、\(w_j\)：系统噪声与观测噪声。
+
+\(f_i\)：系统状态变量对时间导数的连续型非线性函数。
+
+\(X\)、\(Y\)：该生物系统的状态向量与观测向量。
+
+\(f\)、\(H\)：该生物系统的系统矩阵与观测矩阵。
+
+\(V\)、\(W\)：系统噪声向量和观测噪声向量。
+
+\(\delta X\)：系统真实状态与最优估计状态之间的偏差。
+
+\(\hat{X}_{0/k}\)：初始状态的最优平滑值。
+
+\section{问题分析与求解}
+
+\subsection{问题（1）的求解}
+
+该问题的实质是运用给定的观测数据，对系统参数进行辨识。
+
+由于该方程组为非线性微分形式，应用现有的线性系统参数辨识方法难以有效进行。而且由于传统差分法精度太差，难以满足高精度参数辨识的要求，需要寻求另外的有效方案。
+
+分析所给方程组，我们发现由所给微分方程组模型消去\(dt\)可得
+\begin{equation}
+\frac{dx(t)}{dy(t)} = \frac{x(t)[\alpha_1 + \alpha_2 y(t)]}{y(t)[\alpha_3 + \alpha_4 x(t)]} \tag{1}
+\end{equation}
+分离变量后易得
+\begin{equation}
+\frac{[\alpha_1 + \alpha_2 y(t)]}{y(t)} dy(t) = \frac{[\alpha_3 + \alpha_4 x(t)]}{x(t)} dx(t) \tag{2}
+\end{equation}
+对上式进行积分得到：
+\begin{equation}
+\alpha_1 \ln(y(t)) + \alpha_2 y(t) = \alpha_3 \ln(x(t)) + \alpha_4 x(t) + C \tag{3}
+\end{equation}
+
+\begin{equation}
+\alpha_{1} \ln(y(t+T)) + \alpha_{2} y(t+T) = \alpha_{3} \ln(x(t+T)) + \alpha_{4} x(t+T) + C
+\tag{4}
+\end{equation}
+
+式（4）减式（3）可消去积分常数 \(C\)，进而得到
+
+\begin{equation}
+\begin{aligned}
+& \alpha_{1} \ln(y(t+T)) - \ln(y(t)) + \alpha_{2} (y(t+T) - y(t)) \\
+& - \alpha_{3} (\ln(x(t+T)) - \ln x(t)) - \alpha_{4} (x(t+T) - x(t)) = 0
+\end{aligned}
+\tag{5}
+\end{equation}
+
+将 DATA1 所有数据代入（4）式，可以得到关于 \(\alpha_{i} (i=1,\cdots,4)\) 的齐次线性方程组。
+
+\begin{equation}
+\begin{aligned}
+& \ln(y(t_{j}+T)) - \ln(y(t_{j})) \times \alpha_{1} + \alpha_{2} (y(t_{j}+T) - y(t_{j})) \times \alpha_{2} \\
+& - (\ln(x(t_{j}+T)) - \ln x(t_{j})) \times \alpha_{3} - (x(t_{j}+T) - x(t_{j})) \times \alpha_{4} = 0
+\end{aligned}
+\tag{6}
+\end{equation}
+
+对于实际问题来说，该方程组的系数矩阵非奇异的概率几乎为 1，从而使得该齐次线性方程组仅有零解。而问题 1 已经给出 \(\alpha_{2}\) 的具体数值，则可将（6）式化为如下形式的非齐次线性方程组：
+
+\begin{equation}
+\begin{aligned}
+& \ln(y(t_{j}+T)) - \ln(y(t_{j})) \times \alpha_{1} - (\ln(x(t_{j}+T)) - \ln x(t_{j})) \times \alpha_{3} \\
+& - (x(t_{j}+T) - x(t_{j})) \times \alpha_{4} = - (y(t_{j}+T) - y(t_{j})) \times \alpha_{2}
+\end{aligned}
+\tag{7}
+\end{equation}
+
+式（7）为关于待定参数 \(\alpha_{1}\)、\(\alpha_{3}\)、\(\alpha_{4}\) 的超定方程组，因此不存在精确解，只存在某种意义下的最优解。本文采用最小二乘法求使得所有方程的误差平方和最小的参数解，即最小方差解。
+
+为此令
+
+\begin{equation}
+H =
+\begin{bmatrix}
+\ln(y(t_{0}+T)) - \ln(y(t_{0})) & -(\ln(x(t_{0}+T)) - \ln x(t_{0})) & -(x(t_{0}+T) - x(t_{0})) \\
+\ln(y(t_{1}+T)) - \ln(y(t_{1})) & -(\ln(x(t_{1}+T)) - \ln x(t_{1})) & -(x(t_{1}+T) - x(t_{1})) \\
+\ln(y(t_{2}+T)) - \ln(y(t_{2})) & -(\ln(x(t_{2}+T)) - \ln x(t_{2})) & -(x(t_{2}+T) - x(t_{2})) \\
+\ln(y(t_{3}+T)) - \ln(y(t_{3})) & -(\ln(x(t_{3}+T)) - \ln x(t_{3})) & -(x(t_{3}+T) - x(t_{3})) \\
+\ln(y(t_{4}+T)) - \ln(y(t_{4})) & -(\ln(x(t_{4}+T)) - \ln x(t_{4})) & -(x(t_{4}+T) - x(t_{4}))
+\end{bmatrix}
+\tag{8}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{\alpha} =
+\begin{bmatrix}
+\alpha_{1} & \alpha_{3} & \alpha_{4}
+\end{bmatrix}^{T}
+\tag{9}
+\end{equation}
+
+\begin{equation}
+Y =
+\begin{bmatrix}
+-(y(t_{0}+T) - y(t_{0})) \\
+-(y(t_{1}+T) - y(t_{1})) \\
+-(y(t_{2}+T) - y(t_{2})) \\
+-(y(t_{3}+T) - y(t_{3})) \\
+-(y(t_{4}+T) - y(t_{4}))
+\end{bmatrix}
+\times \alpha_{2}
+\tag{10}
+\end{equation}
+
+由此可将式（7）写成如下形式的矩阵方程
+
+\begin{equation}
+H \boldsymbol{\alpha} = Y
+\tag{11}
+\end{equation}
+
+设式（11）中 \(\boldsymbol{\alpha}\) 的估计值为 \(\boldsymbol{\alpha}^{*}\)，则最小二乘估计的指标是使得各次观测值 \(Y_{j}\)
+
+与由参数估计值 $\boldsymbol{\alpha}^*$ 确定的量测估计值 $Y_j^* = H_j \boldsymbol{\alpha}^*$ 之差的平方和最小，即
+\begin{equation}
+J(\boldsymbol{\alpha}^*) = (Y - H \boldsymbol{\alpha}^*)^T (Y - H \boldsymbol{\alpha}^*) = \min
+\tag{12}
+\end{equation}
+而要使上式达到最小，需满足
+\begin{equation}
+\frac{\partial J}{\partial \boldsymbol{\alpha}} = -2 H^T (Z - H \boldsymbol{\alpha}^*) = 0
+\tag{13}
+\end{equation}
+
+若系数矩阵 $H$ 列满秩（实际问题中该条件始终是满足的），即 $H^T H$ 正定，则 $\boldsymbol{\alpha}$ 的最小二乘估计为
+\begin{equation}
+\boldsymbol{\alpha}^* = (H^T H)^{-1} H^T Z
+\tag{14}
+\end{equation}
+
+运行程序 problem1.m 即可得到待定参数 $\alpha_i$ ($i = 1, 3, 4$) 的最小方差估计值。另一方面由所给模型可以看出 $\alpha_5 = x(t_0)$、$\alpha_6 = y(t_0)$，并且题给 DATA1.txt 数据准确无误，因此待定参数的具体数值如表 1 所示。
+
+表 1 根据 DATA1 及 $\alpha_2$ 的数值确定的参数 $\alpha_i$ ($i = 1, 3, 4, 5, 6$) 的值
+
+\begin{table}[h]
+    \centering
+    \caption{利用数据 DATA 3 得出的系统参数值}
+    \label{tab:3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \(\alpha_1\) & \(\alpha_2\) & \(\alpha_3\) \\
+        \hline
+        1.87789685903883 & -0.0982064879995812 & -8.76809001619831 \\
+        \hline
+        \(\alpha_4\) & \(\alpha_5\) & \(\alpha_6\) \\
+        \hline
+        0.895183968794147 & 12.81905467265500 & 73.41087060535932 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{问题（2）的求解}
+
+该问题与问题（1）的唯一差别是 $\alpha_2$ 为未知，要求运用最少的数据对参数进行辨识。同上题一样，只需第一组数据即可确定参数 $\alpha_5$ 及 $\alpha_6$，分别为：
+\begin{equation}
+\begin{cases}
+\alpha_5 = 10 \\
+\alpha_6 = 60
+\end{cases}
+\tag{15}
+\end{equation}
+
+然而，由于 $\alpha_2$ 未知，所以不能像上题一样把它转换为线性非齐次方程组进行求解，但是依然可以通过变换得到
+\begin{equation}
+\alpha_1 \ln(y(t)) + \alpha_2 y(t) - \alpha_3 \ln(x(t)) - \alpha_4 x(t) = C
+\tag{16}
+\end{equation}
+令
+\begin{equation}
+\beta_i = \alpha_i / C \quad (i = 1, 2, 3, 4)
+\tag{17}
+\end{equation}
+其中 $C$ 为常数，则有：
+\begin{equation}
+\beta_1 \ln(y(t)) + \beta_2 y(t) - \beta_3 \ln(x(t)) - \beta_4 x(t) = 1
+\tag{18}
+\end{equation}
+只需将前 4 组数据带入上式即可得到一个线性非齐次的方程组（同样对实际
+
+问题其系数矩阵非奇异的概率为 1），由此运行程序 problem2.m 容易确定出 \(\beta_1\)、\(\beta_2\)、\(\beta_3\)、\(\beta_4\) 的值分别为：
+\begin{equation}
+\begin{cases}
+\beta_1 = 1.447156025445758e-001 \\
+\beta_2 = -1.447146313960247e-002 \\
+\beta_3 = -8.683179240242531e-001 \\
+\beta_4 = 7.236037259772786e-002
+\end{cases}
+\tag{19}
+\end{equation}
+
+则原微分方程组可化为：
+\begin{equation}
+\begin{cases}
+x'(t) = f\big(t, x, y\big) = C * x(t)\big[\beta_1 + \beta_2 y(t)\big] \\
+y'(t) = g\big(t, x, y\big) = C * y(t)\big[\beta_3 + \beta_4 x(t)\big]
+\end{cases}
+\tag{20}
+\end{equation}
+
+由于 \(\beta_i\) 和 \(\alpha_i\) \((i = 1, \cdots, 4)\) 只相差一个比例系数 \(C\)，所以只需要求出 \(C\) 即可得出参数 \(\alpha_i\) 的值。下面通过微分方程的数值解法确定出生物种群数量与待定参数 \(C\) 之间的关系式。
+
+对于微分方程组的数值解法可以采用诸如梯形公式、辛普生公式、龙格库塔方法等经典方法来进行，分析表明，龙格库塔方法的截断误差可以通过积分步长 \(h\) 进行较好的控制，当采用 4 级 4 阶龙格库塔公式时，数值积分方法的截断误差为 \(o(h^5)\)，即 \(h^5\) 的高阶无穷小。因而若取积分步长为 \(1 \times 10^{-4}\) 时，其截断误差达到 \(1 \times 10^{-20}\)，可以较好的满足高精度参数估计的需要。另一方面，在先行 64 位微机上采用 MATLAB 软件进行计算时，可以不考虑其舍入误差。4 级 4 阶龙格库塔法的计算公式如下：
+\begin{equation}
+\begin{cases}
+x_{k+1} = x_k + \frac{h}{6}\big(f_1 + 2f_2 + 2f_3 + f_4\big) \\
+y_{k+1} = y_k + \frac{h}{6}\big(g_1 + 2g_2 + 2g_3 + g_4\big)
+\end{cases}
+\tag{21}
+\end{equation}
+
+其中：
+\begin{align}
+f_1 &= f\big(t_k, x_k, y_k\big) & g_1 &= g\big(t_k, x_k, y_k\big) \\
+f_2 &= f\left(t_k + \frac{h}{2}, x_k + \frac{h}{2}f_1, y_k + \frac{h}{2}g_1\right) & g_2 &= g\left(t_k + \frac{h}{2}, x_k + \frac{h}{2}f_1, y_k + \frac{h}{2}g_1\right) \\
+f_3 &= f\left(t_k + \frac{h}{2}, x_k + \frac{h}{2}f_2, y_k + \frac{h}{2}g_2\right) & g_3 &= g\left(t_k + \frac{h}{2}, x_k + \frac{h}{2}f_2, y_k + \frac{h}{2}g_2\right) \\
+f_4 &= f\big(t_k + h, x_k + hf_3, y_k + hg_3\big) & g_4 &= g\big(t_k + h, x_k + hf_3, y_k + hg_3\big)
+\end{align}
+\tag{22}
+
+然而当方程组中含有未知参数，采用龙格库塔方法求解微分方程组的数值解
+
+将难以进行具体的迭代运算, 因而本文采用搜索寻优的方法来求解待定参数 $C$ 的具体数值。
+
+具体方法是, 首先在较大的范围内取较大的步长确定出 $C$ 的大概范围, 然后逐步缩小搜索范围并减小步长来确定出满足精度要求的 $C$ 值。
+
+将搜索范围设定在 $[-200,200]$ 之间, 搜索步长取为 1 , 运行程序 problem2_searching.m, 可以首先得到参数 $C$ 的粗略值为:
+\[
+C=-98
+\]
+
+在精确搜索时, 根据粗略搜索的结果可将搜索范围设定为 $[-99,-97]$, 搜索步长缩小为 0.01 , 运行程序 problem2_searching.m, 可以进一步得到参数 $C$ 的值为:
+\[
+C=-97.88
+\]
+
+如此进行下去, 不断缩小搜索范围和搜索步长, 最后可确定出精度更高的 $C$ 的值, 本文将 $C$ 的误差设定在 $10^{-5}$ 之内, 再次运行程序 problem2_searching.m 后, 计算得到的 $C$ 值为:
+\[
+C=-97.88108
+\]
+
+将满足精度要求的常数 $C$ 的值代入式 (17) 并利用式 (19) 结果, 即可得到待定参数 $\alpha_{i}(i=1, \cdots, 4)$ 的值。
+
+在本问题中我们用到了四组数据完成了对参数的求解, 结果如表 2 所示:
+
+表 2 根据 DATA1 数值确定的参数 $\alpha_{i}(i=1, \cdots, 6)$ 值
+
+\begin{table}[h]
+    \centering
+    \caption{利用数据 DATA 2 得出的系统参数值}
+    \label{tab:4}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \(\alpha_1\) & \(\alpha_2\) & \(\alpha_3\) \\
+        \hline
+        1.82454930199629 & -0.09306342741035 & -9.18790539145952 \\
+        \hline
+        \(\alpha_4\) & \(\alpha_5\) & \(\alpha_6\) \\
+        \hline
+        0.91895256832865 & 12.80905468265500 & 73.31089065535932 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{问题 (3) 的求解}
+
+为了能够从含有误差的数据中估计出参数 $\alpha_{i}(i=1, \cdots, 6)$ 的最优值, 采用控制系统中应用最为广泛的 Kalman 滤波方法进行。将非线性系统参数的辨识问题转换为各状态参数变量的最优状态估计, 从而求得 Kalman 滤波意义下 (其本质为最小二乘意义下) 的参数最优辨识解具体处理方法如下。
+
+\subsubsection{对参数的估计方法}
+
+将种群数量 $x(t)$、$y(t)$ 及待定参数 $\alpha_{i}(i=1,\cdots,4)$ 视为状态变量，即 $x_{1}=x(t)$、$x_{2}=y(t)$、$x_{3}=\alpha_{1}$、$x_{4}=\alpha_{2}$、$x_{5}=\alpha_{3}$、$x_{6}=\alpha_{4}$，列写该生态系统非线性形式的状态方程：
+
+\begin{equation}
+\begin{cases}
+\dot{x}_{1}=x_{3}x_{1}+x_{4}x_{1}x_{2} \\
+\dot{x}_{2}=x_{5}x_{2}+x_{6}x_{1}x_{2} \\
+\dot{x}_{3}=0 \\
+\dot{x}_{4}=0 \\
+\dot{x}_{5}=0 \\
+\dot{x}_{6}=0
+\end{cases}
+\tag{23}
+\end{equation}
+
+若令 $\mathbf{X}=\left[\begin{array}{llllll}x_{1} & x_{2} & x_{3} & x_{4} & x_{5} & x_{6}\end{array}\right]^{T}$，$f_{1}(\mathbf{X})=x_{3}x_{1}+x_{4}x_{1}x_{2}$，$f_{2}(\mathbf{X})=x_{5}x_{2}+x_{6}x_{1}x_{2}$，则式 (1) 可写为如下形式：
+
+\begin{equation}
+\dot{\mathbf{X}}=\left[\begin{array}{c}
+f_{1}(\mathbf{X}) \\
+f_{2}(\mathbf{X}) \\
+f_{3}(\mathbf{X}) \\
+f_{4}(\mathbf{X}) \\
+f_{5}(\mathbf{X}) \\
+f_{6}(\mathbf{X})
+\end{array}\right]+\mathbf{V}
+\tag{24}
+\end{equation}
+
+式中 $f_{3}(\mathbf{X})=f_{4}(\mathbf{X})=f_{5}(\mathbf{X})=f_{6}(\mathbf{X})=0$，$\mathbf{V}=\left[\begin{array}{llllll}\nu_{1} & \nu_{2} & \nu_{3} & \nu_{4} & \nu_{5} & \nu_{6}\end{array}\right]$ 为系统误差（这里可假定为高斯白噪声）。
+
+为了进行 Kalman 滤波递推计算，还必须确定该生态系统的观测方程。由于此为食饵——捕食者模型，由所给数据可以选择物种的数量为观测量，即 $y_{1}(t)=x_{1}(t)$、$y_{2}(t)=x_{2}(t)$，则该生物系统的观测方程即为：
+
+\begin{equation}
+\mathbf{Y}=\left[\begin{array}{l}
+y_{1} \\
+y_{2}
+\end{array}\right]=\left[\begin{array}{llllll}
+1 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0
+\end{array}\right] \mathbf{X}+\mathbf{W}
+\tag{25}
+\end{equation}
+
+式中 $\mathbf{W}=\left[\begin{array}{ll}w_{1} & w_{2}\end{array}\right]^{T}$ 为测量误差（这里仍然假定为高斯白噪声）。
+
+为便于以后叙述方便，令 $\mathbf{f}=\left[f_{1}(\mathbf{X}) \cdots f_{6}(\mathbf{X})\right]^{T}$，$\mathbf{H}=\left[\mathbf{I}_{2} \quad \mathbf{O}_{2 \times 4}\right]$，则可将式 (24) 和式 (25) 写成如下的矩阵形式：
+
+\begin{align}
+\dot{\mathbf{X}} &= \mathbf{f}+\mathbf{V} \tag{26} \\
+\mathbf{Y} &= \mathbf{H}\mathbf{X}+\mathbf{W} \tag{27}
+\end{align}
+
+由于连续型非线性系统的 Kalman 滤波算法难以在计算机上实现，因而对于实际问题一般选由两条途径，一条是先进行连续性非线性系统的离散化，后线性化；另一条是先进行连续性非线性系统的线性化，后离散化。本文采用后一种方法。
+
+通常将非线性系统线性化也由两条技术途径，一是围绕标称状态（假设系统噪声 \(V\) 和量测噪声 \(W\) 恒为零，方程（24）和（25）的解成为非线性方程的理论解，有成“标称状态”）的线性化方法，二是围绕滤波值的线性化方法。对本题所给实际生物系统而言，状态的标称值无法通过方程（24）和（25）直接确定，而且状态真实值与标称值之间的状态偏差 \(\Delta \mathbf{X}\) 不能保证为足够小量。为此，本文采用围绕最优状态估计 \(\hat{\mathbf{X}}\) 的线性化方法。
+
+现定义真实状态与最优估计状态之间的偏差为
+\begin{equation}
+\delta \mathbf{X} = \mathbf{X} - \hat{\mathbf{X}}
+\tag{28}
+\end{equation}
+\begin{equation}
+\delta \mathbf{Y} = \mathbf{Y} - \hat{\mathbf{Y}}
+\tag{29}
+\end{equation}
+式中 \(\hat{\mathbf{X}}\) 是非线性系统标称状态微分方程
+\begin{equation}
+\dot{\hat{\mathbf{X}}} = f(\hat{\mathbf{X}})
+\tag{30}
+\end{equation}
+当初始值用初始最优状态估计 \(\hat{\mathbf{X}}_0\) 代入时的解，或者初始值用初始最优状态估计 \(\hat{\mathbf{X}}_{k-1}\) 对式 (*) 进行数值求解所得的解，其中 \(\hat{\mathbf{X}}\) 就是系统状态 \(\mathbf{X}\) 的一步预测值，即：\(\hat{\mathbf{X}}_{k/k-1} = \hat{\mathbf{X}}_k\)。
+
+由于初始状态的最优估计值比初始标称状态值根接近于状态的真实值，所以最优估计值与真实值的偏差一般均较标称状态与真实值的偏差要小。又由于随时间积累的误差满足偏差 \(\delta \mathbf{X}\) “足够小”的条件，所以提高了泰勒级数一次近似展开式和系统线性化的精度。 \(\hat{\mathbf{Y}}\) 也是用状态最优估计值 \(\hat{\mathbf{X}}\) 计算的量测值，其值为：
+\[
+\hat{\mathbf{Y}} = H \hat{\mathbf{X}}.
+\]
+
+因为 \(\delta \mathbf{X}\) 足够小，所以非线性生物系统（26）、（27）在状态最优估计附近展开成泰勒级数，并取一次近似，得：
+\begin{equation}
+\dot{\mathbf{X}} = f(\mathbf{X}) \bigg|_{\mathbf{X} = \hat{\mathbf{X}}} + \frac{\partial f}{\partial \mathbf{X}^T} \bigg|_{\mathbf{X} = \hat{\mathbf{X}}} \cdot \left[ \mathbf{X} - \hat{\mathbf{X}} \right] + \mathbf{W}
+\tag{31}
+\end{equation}
+\begin{equation}
+\mathbf{Y} = H \mathbf{X} \bigg|_{\mathbf{X} = \hat{\mathbf{X}}}
+\tag{32}
+\end{equation}
+考虑系统的标称值
+
+\begin{equation}
+\dot{\hat{X}} = f(X) \big|_{x=\hat{x}}
+\tag{33}
+\end{equation}
+
+\begin{equation}
+\hat{Y} = HX \big|_{x=\hat{x}}
+\tag{34}
+\end{equation}
+
+由式（31）～式（34）可以得到非线性系统的扰动线性化方程：
+
+\begin{equation}
+\dot{\boldsymbol{\delta X}} = F \boldsymbol{\delta X} + \boldsymbol{W}
+\tag{35}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{\delta Y} = H \boldsymbol{\delta X}
+\tag{36}
+\end{equation}
+
+式中
+
+\begin{equation}
+F = \left. \frac{\partial \boldsymbol{f}}{\partial \boldsymbol{X}^T} \right|_{\boldsymbol{X}=\hat{\boldsymbol{X}}} = \left. \begin{bmatrix}
+\frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} & \dots & \frac{\partial f_1}{\partial x_6} \\
+\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2} & \dots & \frac{\partial f_2}{\partial x_6} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial f_6}{\partial x_1} & \frac{\partial f_6}{\partial x_2} & \dots & \frac{\partial f_6}{\partial x_6}
+\end{bmatrix} \right|_{\boldsymbol{X}=\hat{\boldsymbol{X}}}
+\tag{37}
+\end{equation}
+
+称为该非线性系统的雅可比矩阵。
+
+对式（35）、式（36）分别进行基本解阵离散化得到离散型线性干扰方程为：
+
+\begin{equation}
+\boldsymbol{\delta X}(k) = \boldsymbol{\Phi}_{k,k-1} \boldsymbol{\delta X}(k) + \boldsymbol{W}(k)
+\tag{38}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{\delta Y}(k) = \boldsymbol{H}(k) \boldsymbol{\delta X}(k)
+\tag{39}
+\end{equation}
+
+当采样周期 $T$ 为小量时：
+
+\begin{equation}
+\boldsymbol{\Phi}_{k+1,k} = \left. \left( \boldsymbol{I} + \boldsymbol{F}(k)T + \frac{1}{2} \boldsymbol{F}^2(k)T^2 \right) \right|_{\boldsymbol{X}=\hat{\boldsymbol{X}}_k}
+\tag{40}
+\end{equation}
+
+由此，参照文献[1]中的方法，不难导出偏差 $\boldsymbol{\delta X}(k)$ 的 Kalman 滤波方程，同时为了抑制可能出现的不确定性因素（包括系统模型不准确、系统噪声和测量噪声的统计特性不准确等）导致的滤波发散问题，本文采用渐消记忆（衰减记忆）方式的 Kalman 滤波，来逐渐减小老观测数据的权重，相对的增加新观测数据的权重，从而逐渐减小过老观测数据对滤波的不良影响。
+
+\begin{equation}
+\boldsymbol{\delta \hat{X}}_{k/k-1} = \boldsymbol{\Phi}_{k,k-1} \boldsymbol{\delta \hat{X}}(k-1)
+\tag{41-a}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{\delta \hat{X}}_{k/k} = \boldsymbol{\delta \hat{X}}_{k/k-1} + \boldsymbol{K}_k \left[ \boldsymbol{\delta Y}(k) - \boldsymbol{H}(k) \boldsymbol{\delta \hat{X}}_{k/k-1} \right]
+\tag{41-b}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{K}_k = \boldsymbol{P}_{k/k-1} \boldsymbol{H}_k^T \left[ \boldsymbol{H}_k \boldsymbol{P}_{k/k-1} \boldsymbol{H}_k^T + \boldsymbol{R}(k) \right]^{-1}
+\tag{41-c}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{P}_{k/k-1} = \boldsymbol{\Phi}_{k,k-1} \boldsymbol{P}_{k-1} \boldsymbol{\Phi}_{k,k-1}^T \boldsymbol{\varepsilon} + \boldsymbol{Q}(k-1)
+\tag{41-d}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{P}_k = \left( \boldsymbol{I} - \boldsymbol{K}_k \boldsymbol{H}_k \right) \boldsymbol{P}_{k/k-1} \left( \boldsymbol{I} - \boldsymbol{K}_k \boldsymbol{H}_k \right)^T + \boldsymbol{K}_k \boldsymbol{R}(k) \boldsymbol{K}_k^T
+\tag{41-e}
+\end{equation}
+
+\begin{equation}
+\delta \mathbf{Y}(k) = \mathbf{Y}(k) - \mathbf{H}(k) \hat{\mathbf{X}}_{k/k-1}
+\tag{41-f}
+\end{equation}
+
+式中 $\varepsilon > 1$ 称为渐消记忆因子，其具体数值对滤波结果的影响较大，一般采用试探的方法针对不同的问题确定较好的一个值。本文中选定 $\varepsilon = 1.03$。
+
+值得注意的是，由于在每次递推计算下一时刻的状态最优估计 $\hat{\mathbf{X}}_{k/k}$ 和标称状态 $\hat{\mathbf{X}}_{k/k-1}$ 时，其初始值均采用状态最优估计的初始值，所以，初始时刻的状态偏差最优估计 $\delta \hat{\mathbf{X}}_{k-1/k-1}$ 恒等于零，从而使状态偏差的一步预测值
+
+\begin{equation}
+\delta \hat{\mathbf{X}}_{k/k-1} = 0
+\tag{42}
+\end{equation}
+
+将式 (42) 代入式 (41)，求得离散型非线性广义卡尔曼滤波方程如下：
+
+状态一步预测
+
+\begin{equation}
+\hat{\mathbf{X}}_{k/k-1} = \hat{\mathbf{X}}_{k-1/k-1} + \mathbf{f}(\hat{\mathbf{X}}_{k-1/k-1}) \mathbf{T} + \frac{1}{2} \mathbf{F}^2(\hat{\mathbf{X}}_{k-1/k-1}) \mathbf{f}(\hat{\mathbf{X}}_{k-1/k-1}) \mathbf{T}^2
+\tag{43-a}
+\end{equation}
+
+状态估计
+
+\begin{equation}
+\hat{\mathbf{X}}_{k/k} = \hat{\mathbf{X}}_{k/k-1} + \mathbf{K}_k \left\{ \mathbf{Y}(k) - \mathbf{H}(k) \hat{\mathbf{X}}_{k/k-1} \right\}
+\tag{43-b}
+\end{equation}
+
+滤波增益
+
+\begin{equation}
+\mathbf{K}_k = \mathbf{P}_{k/k-1} \mathbf{H}_k^T \left[ \mathbf{H}_k \mathbf{P}_{k/k-1} \mathbf{H}_k^T + \mathbf{R}(k) \right]^{-1}
+\tag{43-c}
+\end{equation}
+
+一步预测均方误差
+
+\begin{equation}
+\mathbf{P}_{k/k-1} = \mathbf{\Phi}_{k,k-1} \mathbf{P}_{k-1} \mathbf{\Phi}_{k,k-1}^T \cdot \varepsilon + \mathbf{Q}(k-1)
+\tag{43-d}
+\end{equation}
+
+估计均方误差
+
+\begin{equation}
+\mathbf{P}_k = \left( \mathbf{I} - \mathbf{K}_k \mathbf{H}_k \right) \mathbf{P}_{k/k-1} \left( \mathbf{I} - \mathbf{K}_k \mathbf{H}_k \right)^T + \mathbf{K}_k \mathbf{R}(k) \mathbf{K}_k^T
+\tag{43-e}
+\end{equation}
+
+初始条件
+
+\begin{equation}
+\hat{\mathbf{X}}_0 = E[\mathbf{X}_0] = m_{x_0}, \quad \mathbf{P}_0 = C_{x_0}
+\tag{43-f}
+\end{equation}
+
+以上各式中 $\mathbf{R}(k)$、$\mathbf{Q}(k)$ 分别为系统噪声和量测噪声的协方差矩阵。由以上渐消记忆滤波公式可以看出，由于一步预测均方误差阵 $\mathbf{P}_{k/k-1}$ 表达式 (43-d) 中第一项乘上了一个大于 1 的因子 $\varepsilon$，因此使每一步计算的增大了，从而使每一步的 $\mathbf{K}_k$ 也增大了，这就加大了每次新观测数据 $\mathbf{Y}(k)$ 的作用，也就相应的降低了老观测数据的作用。
+
+由于本题给的观测数据存在误差，所以不能由初始值直接得到参数 $\alpha_5, \alpha_6$。而已经利用观测数据确定出参数 $\alpha_i$ ($i=1,2,3,4$) 在最小方差意义下的最优解，
+
+通过滤波得到了种群数量 \(x\)、\(y\) 的最优估计值，因此对于 \(\alpha_5, \alpha_6\) 的估计就是利用较多的观测数据 \(Y(1), Y(2), \cdots, Y(k)\)，对观测初始时刻的系统状态向量 \(X(0)\) 进行最优估计，属于经典的固定点平滑问题。对于固定点最优平滑方程在此限于篇幅不再进行详细的推导，具体算法参看文献[3]，直接给出其结果如下：
+
+\begin{align}
+\hat{X}_{0/k} &= \hat{X}_{0/k-1} + K_k^*(Y(j) - H_k X_{k/k-1}) \tag{44-a} \\
+K_k^* &= P_{k/k-1}^* H_k^T (H_k P_{k/k-1}^* H_k^T + R(k))^{-1} \tag{44-b} \\
+P_{k+1/k}^* &= P_{k/k-1}^* \Phi_{k+1,k} (I - K_k H_k)^T \tag{44-c}
+\end{align}
+
+由于是对 0 时刻的状态值进行固定点最优平滑，所以式中状态向量初始值取为 \(\hat{X}_0\)，\(P_{k+1/k}^*\) 均方误差阵初始值取为
+
+\begin{equation}
+P_{k/k-1}^* = P_{k/k-1} \tag{45}
+\end{equation}
+
+整个平滑过程是：从 0 时刻开始，滤波器用铝箔方程解算出 \(P_{k+1/k}\) 和 \(K_k\)，并估计出 \(\hat{X}_{k+1/k}\)；当 \(k \geq 0\) 时（同样也是从初始时刻开始），滤波器用平滑方程解算出 \(P_{k+1/k}^*\) 和 \(K_k^*\)，从而解算出 \(\hat{X}_{0/k}\) 的最优估计值。
+
+\subsubsection{模型求解与数据分析}
+
+根据以上理论，我们利用 MatLab 编制了该模型求解的程序。对于所给 DATA2 数据，得到 Kalman 滤波辨识过程中的 \(\alpha 1\)，\(\alpha 2\)，\(\alpha 3\)，\(\alpha 4\) 变化结果和各参数的协方差变化过程，分别如图 1、图 2 所示。图中结果表明，滤波得到的 \(\alpha 1\)，\(\alpha 2\)，\(\alpha 3\)，\(\alpha 4\) 是渐进收敛的。改变系统给定的初值，滤波的稳定值没有变化。而且随着滤波次数的不断增加，各参数的协方差组成的协方差阵趋近于一个常值正定阵，且协方差均很小，进一步说明该滤波算法的稳定性和有效性。通过对程序中协方差矩阵 COV 的进一步分析，发现其中 COV 中有关 \(\alpha 2\)、\(\alpha 4\) 的协方差系数均为 \(10^{-5}\) 量级，说明对于 \(\alpha 2\)、\(\alpha 4\) 的估计比较精确。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{利用DATA2得到的参数估计（辨识）过程}
+    \label{fig:1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{利用DATA3各辨识参数的协方差变化}
+    \label{fig:2}
+\end{figure}
+
+对于所给DATA3数据，同样按照上述方法，得到辨识过程中的$\alpha 1$，$\alpha 2$，$\alpha 3$，$\alpha 4$变化结果和各参数的协方差变化过程，结果分别如图\ref{fig:1}、图\ref{fig:2}所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{利用DATA3得到的参数估计（辨识）过程}
+    \label{fig:3}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{利用DATA3各辨识参数的协方差变化}
+    \label{fig:4}
+\end{figure}
+
+分析所得结果，我们发现该组中，参数辨识 $\alpha 2$，$\alpha 4$ 趋于收敛，而 $\alpha 1$，$\alpha 3$ 则
+
+出现周期性振荡现象，且通过各参数协方差变化过程的分析，认为 \(\alpha 1\)、\(\alpha 3\) 不能满足高精度参数辨识的要求。这是由于 DATA3 中采样周期约为 DATA2 的 \(\frac{1}{10}\)，采样点比较密集，观测资料有误差，采样数据易失效。因此辨识出的结果不尽理想。但通过对图 2，图 3，图 4，图 5 的综合分析，仍然可以看出 \(\alpha 1\)，\(\alpha 2\)，\(\alpha 3\)，\(\alpha 4\) 趋向收敛于统一值，表明该算法具有正确性和适用性。
+
+\subsubsection{模型的改进}
+
+受上述两组辨识结果的启发，以下通过模型改进，可以获得较好的辨识结果。具体方法为：在 DATA3 中，采用等间隔（间距为 10）抽样的方法，将数据分为 \(N/10\) 组，分别对每组利用上述方法进行参数辨识，然后将各组得到的参数进行加权平均，得到最终的辨识结果。该方法能够剔除辨识结果的随即误差，相当于对各组 Kalman 滤波意义下辨识出的最优的系统参数再次进行平滑，消除其随机误差。
+
+编程得到各组的参数辨识过程结果比较图和各辨识参数的协方差变化图，分别如图 6，图 7 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{各组的参数辨识过程结果比较图}
+    \label{fig:5}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{各辨识参数的协方差变化过程}
+    \label{fig:6}
+\end{figure}
+
+模型参数的校验：根据辨识出的 \(\alpha_1\)，\(\alpha_2\)，\(\alpha_3\)，\(\alpha_4\)，利用龙格库塔法及观测初值，进行数值积分，得到种群数目的标称值，与用扩展 Kalman 滤波算法得到的种群数目的最优估计值进行比较，如图 7 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{placeholder.png} % 替换为实际图像文件名
+    \caption{龙格库塔方法与最优估计值的比较}
+    \label{fig:7}
+\end{figure}
+
+根据得到的精确的 \(\alpha_1\)，\(\alpha_2\)，\(\alpha_3\)，\(\alpha_4\)，采用固定点最优平滑算法，可以得出 \(\alpha_5\)、\(\alpha_6\) 的最优估计值，最终辨识出系统参数（利用 DATA 3）如表 3 所示。
+
+\begin{table}[h]
+    \centering
+    \caption{利用数据 DATA 3 得出的系统参数值}
+    \label{tab:3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \(\alpha_1\) & \(\alpha_2\) & \(\alpha_3\) \\
+        \hline
+        1.87789685903883 & -0.0982064879995812 & -8.76809001619831 \\
+        \hline
+        \(\alpha_4\) & \(\alpha_5\) & \(\alpha_6\) \\
+        \hline
+        0.895183968794147 & 12.81905467265500 & 73.41087060535932 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+利用 DATA 2 得出的结果表 4 如示。
+
+\begin{table}[h]
+    \centering
+    \caption{利用数据 DATA 2 得出的系统参数值}
+    \label{tab:4}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \(\alpha_1\) & \(\alpha_2\) & \(\alpha_3\) \\
+        \hline
+        1.82454930199629 & -0.09306342741035 & -9.18790539145952 \\
+        \hline
+        \(\alpha_4\) & \(\alpha_5\) & \(\alpha_6\) \\
+        \hline
+        0.91895256832865 & 12.80905468265500 & 73.31089065535932 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{问题（4）的求解}
+
+由于 DATA4 所给数据中对参数估计结果影响非常重要的时间变量 $t$ 也含有误差，所以无法直接沿用问题（3）中的求解方法来处理 DATA4 所提供的观测数据。这里如果将时间变量与种群数目的观测值、待定参数 $\alpha$ 等同看待，均作为该食饵——捕食者生物系统的状态变量，利用输出方程对时间变量进行观测，将能够借助扩展的 Kalman 滤波方法估计出各个状态变量（包括时间变量的值），得到 $\alpha_{i} \ (i=1,\cdots,4)$ 及时间变量在最小方差意义下的最优估计值。这样就可以利用固定点最优平滑算法来确定 $\alpha_{5}$、$\alpha_{6}$ 在最小方差意义下的最优估计值。
+
+\subsubsection{系统模型的建立}
+
+与问题（3）的求解过程类似，所不同的是增加了时间状态变量，具体处理方法如下：
+
+设 $x_{1}=x(t)$、$x_{2}=y(t)$、$x_{3}=\alpha_{1}$、$x_{4}=\alpha_{2}$、$x_{5}=\alpha_{3}$、$x_{6}=\alpha_{4}$、$x_{7}=t$，列出该生态系统非线性形式的状态方程：
+\begin{equation}
+\begin{cases}
+\dot{x}_{1}=x_{3}x_{1}+x_{4}x_{1}x_{2} \\
+\dot{x}_{2}=x_{5}x_{2}+x_{6}x_{1}x_{2} \\
+\dot{x}_{3}=0 \\
+\dot{x}_{4}=0 \\
+\dot{x}_{5}=0 \\
+\dot{x}_{6}=0 \\
+\dot{x}_{7}=1
+\end{cases}
+\tag{46}
+\end{equation}
+
+令 $\boldsymbol{X}=\left[x_{1} \quad x_{2} \quad x_{3} \quad x_{4} \quad x_{5} \quad x_{6} \quad x_{7}\right]^{T}$，$f_{7}(\boldsymbol{X})=1$，$f_{i}(\boldsymbol{X})(i=1,2,\cdots,6)$ 表达式的含义与问题（3）相同，则式（46）可写为如下形式：
+\begin{equation}
+\dot{\boldsymbol{X}}=\begin{bmatrix}
+f_{1}(\boldsymbol{X}) \\
+\vdots \\
+f_{7}(\boldsymbol{X})
+\end{bmatrix}+\boldsymbol{V}
+\tag{47}
+\end{equation}
+其中，$\boldsymbol{V}=\left[\nu_{1} \quad \nu_{2} \quad \nu_{3} \quad \nu_{4} \quad \nu_{5} \quad \nu_{6} \quad \nu_{7}\right]^{T}$ 为系统误差（这里可假定为高斯白噪声）。
+
+由所给数据选择物种的数量及时间为观测量，即 $y_{1}(t)=x_{1}(t)$、$y_{2}(t)=x_{2}(t)$、$y_{3}(t)=t$，则该生物系统的观测方程即为：
+
+\begin{equation}
+Y =
+\begin{bmatrix}
+y_1 \\
+y_2 \\
+y_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 1
+\end{bmatrix}
+X + W
+\tag{48}
+\end{equation}
+
+式中 $W =
+\begin{bmatrix}
+w_1 & w_2 & w_3
+\end{bmatrix}^T$ 为测量误差（这里仍然假定为高斯白噪声）。
+
+令 $f =
+\begin{bmatrix}
+f_1(X) & \cdots & f_7(X)
+\end{bmatrix}^T$，将式（47）和式（48）写成如下的矩阵形式：
+
+\begin{align}
+\dot{X} &= f + V \tag{49} \\
+Y &= HX + W \tag{50}
+\end{align}
+
+由于方程（48）是非线性的，因此首先对（48）式线性化得到偏微分矩阵：
+
+\begin{equation}
+F = \left. \frac{\partial f}{\partial X^T} \right|_{X = \hat{X}} =
+\begin{bmatrix}
+\frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} & \cdots & \frac{\partial f_1}{\partial x_7} \\
+\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2} & \cdots & \frac{\partial f_2}{\partial x_7} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial f_7}{\partial x_1} & \frac{\partial f_7}{\partial x_2} & \cdots & \frac{\partial f_7}{\partial x_7}
+\end{bmatrix}_{X = \hat{X}}
+\tag{51}
+\end{equation}
+
+然后按照问题（3）改进算法进行 Kalman 滤波即可得出参数 $\alpha_i$ ($i = 1, 2, 3, 4$) 的估计值及物种的数量 $x(t)$、$y(t)$ 和时间 $t$ 的滤波值，再采用固定点最优平滑得出 $\alpha_5$、$\alpha_6$ 的最优估计值。
+
+\subsubsection{模型的求解与数据分析}
+
+根据 4.4.1 节建立的数学模型，我们利用 MatLab 编制了该模型求解的程序。对于所给 DATA4 数据，得到 Kalman 滤波辨识过程中的 $\alpha_1$，$\alpha_2$，$\alpha_3$，$\alpha_4$，变化结果和各参数的协方差变化过程，分别如图 8、图 9 所示。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image1.png}
+    \caption{分组滤波得到的参数辨识过程}
+    \label{fig:8}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image2.png}
+    \caption{分组滤波得到的参数协方差变化情况}
+    \label{fig:9}
+\end{figure}
+
+图中结果表明，滤波得到的 \(\alpha_1\)，\(\alpha_2\)，\(\alpha_3\)，\(\alpha_4\)，是渐进收敛的，而且随着滤波次数的不断增加，各参数的协方差组成的协方差阵趋近于一个常值正定阵，且协方差均很小，说明问题三中提出的改进算法是很有效性的。
+
+与问题三中的处理方法相同，可以根据得到的待定参数 \(\alpha_1\)，\(\alpha_2\)，\(\alpha_3\)，\(\alpha_4\) 的精确值，采用固定点最优平滑算法，求出 \(\alpha_5\)、\(\alpha_6\) 的最优估计值，最终辨识出系统参数如表 5 所示。
+
+表 5 利用数据 DATA 4 得出的系统参数值
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\(\alpha_1\) & \(\alpha_2\) & \(\alpha_3\) \\
+\hline
+1.88391412547936 & -0.0978804717345565 & -8.81564963438237 \\
+\hline
+\(\alpha_4\) & \(\alpha_5\) & \(\alpha_6\) \\
+\hline
+0.897285298082892 & 13.2053606104186 & 70.8249665689868 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{模型的评价与推广}
+
+通过第（3）问题模型的校验与实际分析结果的比较，我们认为本文使用的参数辨识方法是有效的，能够满足高精度系统辨识的要求，而且不依赖于准确的观测数据，具有较强的鲁棒性和稳定性。
+
+在现实生活中，我们接触的绝大部分模型都是非线性的，本文的参数辨识解决方案由于不依赖于精确的数学模型以及观测数据，具有较好的适用性。由于其本质是最小方差意义下的参数估计，不仅适用于线性系统，也适用于非线性系统，对与本文中讨论的类似系统模型参数的高精度辨识具有较好的通用性。
+
+[REFERENCES:1]

@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage{titling}
+
+\title{多无人机对组网雷达的协同干扰}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+组网雷达系统相比单部雷达，具有空间覆盖范围更广、目标检测概率更高和抗干扰能力更强的特点，因而在军事特别是现代战争中得到广泛的应用。如何对组网雷达实施行之有效的干扰，已成为当前世界电子对抗界面临的一个重大问题。
+
+本文主要考虑多架无人机对组网雷达系统的协同干扰问题，即采用适当的协同策略，通过协同控制多架无人机的飞行轨迹，在敌方组网雷达系统中形成一条或者多条虚拟目标航迹，从而达到欺骗的目的。根据无人机协同干扰组网雷达的工作机理，我们提出了合理假设，建立起多无人机协同干扰组网雷达的优化模型，给出了每架无人机的运动规律和协同策略，此外还分析了虚假航迹的运动规律和合理性。
+
+针对问题一，按照题目给定的虚假目标航迹，无人机做匀速直线运动，航向、航速和飞行高度都在允许范围内，本文提出了一系列合理假设，通过对无人机飞行规律的深入分析，建立了多无人机协同干扰组网雷达的优化模型；然后利用枚举法对该模型进行求解；进而设计多无人机飞行方案以确保用最少架次的无人机实现附件 1 要求的虚假目标航迹，注意到，枚举法利用了计算机具有运算速度快、计算精确度高的特点，可考虑所有可能情况，从中找出符合要求的无人机运动规律，即可得到全局最优解。计算结果表明，安排 31 架无人机协同飞行，可以产生题目附件 1 所要求的虚假目标航迹。此外，我们还分析了每架无人机的运动规律和协同策略（见表 4-3）。相应的计算结果已经按照规定格式存入附件 2。
+
+针对问题二，需要在实现问题一所要求的虚假轨迹条件下，优化无人机编队的飞行轨迹使得所形成的虚假航迹最多。在问题一的求解基础上，我们进一步分析了无人机的飞行规律，在保证转弯半径、飞行高度和速度都在合理范围内的情况下，考虑了 9 架无人机组成的编队在 5 分钟内的飞行情况，建立了协同航迹欺骗的最优控制模型。计算机仿真结果表明，按照该模型的协同策略，除了能产生附件 1 要求的虚假航迹外，还可另外产生 3 条虚假目标航迹。与此同时，我们还
+\end{abstract}
+
+\section{分析了协同飞行的每架无人机的运动规律及其合理性}
+相应的计算结果已经按照规定格式存入附件 3。
+
+针对问题三，当组网雷达系统中的某部雷达受到压制或其他因素干扰时，我们采用题目给定的航迹维持策略，在满足无人机飞行高度和速度等限定条件下，基于问题二，重新建立了多无人机协同干扰组网雷达的目标分配模型，运用竞标算法，通过在雷达可探测跟踪的工作区域内选择目标，建立目标的竞标信息，无人机彼此之间实行信息传递，并完成目标任务的分配。我们的计算及分析结果表明，由 9 架无人机组成的编队在 5 分钟内，除了完成附件 1 要求的虚假航迹外，至多还可产生 9 条虚假航迹。此外，我们还发现该算法既可实现目标无冲突分配，也可保证无人机执行任务的效率。
+
+\textbf{关键词：多无人机 组网雷达 优化模型 枚举法 竞标算法}
+
+\section*{目录}
+
+\section{一、问题重述}
+\subsection{1.1 问题背景} \dotfill 4
+\subsection{1.2 需要解决的问题} \dotfill 5
+
+\section{二、模型假设} \dotfill 6
+
+\section{三、符号说明} \dotfill 6
+
+\section{四、问题一模型的建立和求解} \dotfill 7
+\subsection{4.1 问题一的分析} \dotfill 7
+\subsection{4.2 数据处理} \dotfill 7
+\subsection{4.3 模型的建立} \dotfill 9
+\subsubsection{4.3.1 多无人机协同干扰组网雷达的优化模型} \dotfill 9
+\subsubsection{4.3.2 基于枚举法的模型的目标优化} \dotfill 10
+\subsection{4.4 模型的求解} \dotfill 10
+\subsubsection{4.4.1 模型求解结果} \dotfill 13
+
+\section{五、问题二模型的建立和求解} \dotfill 16
+\subsection{5.1 问题二的分析} \dotfill 16
+\subsection{5.2 虚假目标和无人机运动模型} \dotfill 16
+\subsection{5.3 协同航迹欺骗的最优控制模型} \dotfill 18
+\subsection{5.4 模型的求解} \dotfill 20
+\subsubsection{5.4.1 附件 1 虚假航迹的产生} \dotfill 20
+\subsubsection{5.4.2 其它虚假航迹的产生} \dotfill 21
+
+\section{六、问题三模型的建立和求解} \dotfill 23
+\subsection{6.1 问题三的分析} \dotfill 23
+\subsection{6.2 模型的建立} \dotfill 23
+\subsubsection{6.2.1 多无人机协同产生多个虚假航迹} \dotfill 23
+\subsubsection{6.2.2 基于竞标算法的模型} \dotfill 24
+\subsection{6.3 模型的求解} \dotfill 25
+
+\section{七、模型的改进和评价} \dotfill 28
+\subsection{7.1 模型的算法和复杂度分析} \dotfill 28
+\subsection{7.2 模型的推广} \dotfill 28
+
+\includegraphics[width=0.3\textwidth]{image1.png} \quad
+\includegraphics[width=0.3\textwidth]{image2.png} \quad
+\includegraphics[width=0.3\textwidth]{image3.png} \\
+\includegraphics[width=0.3\textwidth]{image4.png} \quad
+\includegraphics[width=0.3\textwidth]{image5.png} \quad
+\includegraphics[width=0.3\textwidth]{image6.png}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l}
+学校 & 上海师范大学 \\
+\hline
+参赛队号 & 18102700005 \\
+\hline
+队员姓名 & 1. 武育宏 \\
+ & 2. 谢菁华 \\
+ & 3. 魏怿琛 \\
+\end{tabular}
+\end{table}
+
+[REFERENCES:1]
+
+\end{document}
