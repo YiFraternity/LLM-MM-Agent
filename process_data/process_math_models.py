@@ -134,7 +134,7 @@ def extract_sections(text: str) -> Dict[str, str]:
         "background": "",
         "problem_requirement": "",
         "dataset_path": "",
-        "dataset_description": "",
+        "dataset_description": {},
         "variable_description": "",
         "addendum": ""
     }

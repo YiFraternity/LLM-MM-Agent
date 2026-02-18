@@ -42,3 +42,7 @@ key_points*/
 *.egg-info/
 *.egg/
 criteria-gpt5/
+test-src/
+.env.*
+process_data/
+eval/score/

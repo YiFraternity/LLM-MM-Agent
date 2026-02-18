@@ -29,7 +29,7 @@ def read_json_file(json_file):
     return json.loads(json_txt)
 
 
-def read_jsonl_file(jsonl_file) -> list:
+def load_jsonl_file(jsonl_file) -> list:
     with open(jsonl_file, 'r', encoding='utf-8') as f:
         jsonl = f.readlines()
     return [json.loads(json_txt) for json_txt in jsonl]
@@ -109,9 +109,9 @@ def scan_all_dataset_path(root_dir) -> List[dict]:
     result = []
     tasks = os.listdir(root_dir)
     for task in tasks:
-        if '2016_C' not in task:
+        if '2017_D' not in task:
             continue
-        datas = read_jsonl_file(os.path.join(root_dir, task))
+        datas = load_jsonl_file(os.path.join(root_dir, task))
         for data in datas:
             file_path = data.get('dataset_path') or data.get('file_path')
             file_path = file_path.split('/')[-1]
@@ -133,8 +133,8 @@ if __name__ == '__main__':
     templates = templates['system_prompt']
     all_prompts = prepare_batch_prompts(contents, templates, '')
 
-    model_name_or_path = '/home/share/Qwen/Qwen2.5-7B-Instruct/'
-    model, sampling_params = load_llm(model_name_or_path, gpu_num=2)
+    model_name_or_path = '/group_homes/our_llm_domain/home/share/open_models/Qwen/Qwen2.5-14B-Instruct'
+    model, sampling_params = load_llm(model_name_or_path, gpu_num=1)
 
     outputs_t = model.chat(all_prompts, sampling_params, use_tqdm=True)
 

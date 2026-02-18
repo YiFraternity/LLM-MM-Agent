@@ -8,12 +8,13 @@ from jinja2 import Template, StrictUndefined
 import yaml
 from process_read_content import DevRead
 
+TASK_ID = '2014_E'
 def read(file_path: Path) -> str:
     dr = DevRead()
     if file_path.suffix in ['.bmp', '.jpg', '.jpeg', '.png', '.mp4', '.mpg', '.mpeg', '.avi', '.wmv', '.flv', '.webm']:
         return ''
     else:
-        return dr.read(file_path)[0][:20000]
+        return dr.read(file_path)[0][:10000]
 
 def load_json(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -141,7 +142,7 @@ def scan_all_dataset_path(root_dir) -> List[dict]:
     tasks = os.listdir(root_dir)
     dataset_root_dir = 'MMBench/CPMCM/dataset'
     for task in tqdm(tasks):
-        if '2016_C' not in task:
+        if TASK_ID not in task:
             continue
         task_id = task.split('.')[0]
         data = load_json(os.path.join(root_dir, task))
@@ -170,18 +171,18 @@ def write_datapath_using_datapath_folder(task_id):
 if __name__ == '__main__':
     base_dir = Path('MMBench/CPMCM/problem')
     output_dir = Path('MMBench/CPMCM/problem_2')
-    # task_id = '2015_F'
-    # write_datapath_using_datapath_folder(task_id)
+    task_id = TASK_ID
+    write_datapath_using_datapath_folder(task_id)
     # exit()
     contents = scan_all_dataset_path(base_dir)
-    contents = [_ for _ in contents if _['sub_folders'] or _['content']]
+    # contents = [_ for _ in contents if _['sub_folders'] or _['content']]
 
     # Prepare prompts
     templates = load_yaml('process_data/process_write_datapath.yaml')
     all_prompts = prepare_batch_prompts(contents, templates, '')
 
-    model_name_or_path = '/home/share/Qwen/Qwen2.5-7B-Instruct/'
-    model, sampling_params = load_llm(model_name_or_path, gpu_num=2)
+    model_name_or_path = '/group_homes/our_llm_domain/home/share/open_models/Qwen/Qwen2.5-14B-Instruct'
+    model, sampling_params = load_llm(model_name_or_path, gpu_num=1)
 
     outputs_t = model.chat(all_prompts, sampling_params, use_tqdm=True)
 

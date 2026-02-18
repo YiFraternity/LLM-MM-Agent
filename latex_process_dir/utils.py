@@ -1,123 +1,42 @@
 """
-### `split_sections(text: str) -> List[Dict[str, Any]]`
+# Core Functions
 
-Splits the document text into a list of sections based on `\section{...}` commands.
+## [split_sections(text: str) -> List[Dict[str, Any]]]
+Splits LaTeX document into sections based on `\section{}` commands.
+- **Returns**: List of dicts with keys `title` and `content`
 
-  * **`text`** (`str`): The LaTeX document content.
-  * **Returns** (`List[Dict[str, Any]]`): A list where each item is a dictionary with keys `title` (section title) and `content` (text following the section command until the next section or end of file).
+## [extract_subitems(content: str) -> List[Dict[str, Any]]]
+Extracts subsections and subsubsections from section content.
+- **Returns**: Nested structure of subsections with titles and content
 
-### `extract_subitems(content: str) -> List[Dict[str, Any]]`
+## [extract_equations(text: str) -> List[str]]
+Finds and extracts LaTeX equations.
+- **Returns**: List of unique equation strings
 
-Extracts subsections and their nested subsubsections from a block of text (typically a section's content).
+## [extract_tables(text: str) -> List[str]]
+Extracts `\begin{tabular}...\end{tabular}` blocks.
+- **Returns**: List of table content strings
 
-  * **`content`** (`str`): The section content to be analyzed.
-  * **Returns** (`List[Dict[str, Any]]`): A list of dictionaries.
-    Each dictionary represents a subsection with keys `title` and `subsubsections`
-    (a list of dictionaries, each with `title` and `content` for the subsubsection).
+## [parse_tex(path: Path) -> dict]
+Main parsing function that processes LaTeX files.
+- **Returns**: Structured dict with sections, equations, tables, and metadata
 
-### `extract_equations(text: str) -> List[str]`
+## [clean_tex_content(text: str) -> Tuple[str, Dict[str, Any]]]
+Identifies and records context around complex elements without modifying text.
 
-Finds and extracts the raw content of display and inline equations using the defined regexes
-(`EQUATION_ENV_RE`, `DISPLAY_MATH_RE`, `INLINE_EQ_RE`),
-ensuring the resulting list contains only unique equations in their order of appearance.
+## [find_unclosed_constructs(text: str) -> List[Dict[str, Any]]]
+Detects common LaTeX parsing issues like unclosed environments.
 
-  * **`text`** (`str`): The LaTeX content.
-  * **Returns** (`List[str]`): A list of unique, stripped equation strings.
+## [save_json(data: dict, out_path: Path)]
+Saves data to JSON file with proper formatting.
 
-### `extract_tables(text: str) -> List[str]`
-
-Finds and extracts the raw content of `\begin{tabular} ... \end{tabular}` blocks.
-
-  * **`text`** (`str`): The LaTeX content.
-  * **Returns** (`List[str]`): A list of stripped `tabular` block strings.
-
-### `clean_tex_content(text: str) -> Tuple[str, Dict[str, Any]]`
-
-Scans the LaTeX content to identify and record the context around complex elements
-(tables, figures, display math, graphics commands) **without modifying the original text**.
-It also skips content found after the likely start of the References section.
-
-For each found element, it records:
-
-  * `original`: The full LaTeX snippet.
-
-  * `prev`: Up to 50 characters of context immediately preceding the element.
-
-  * `next`: Up to 50 characters of context immediately following the element.
-
-  * `start`, `end`: Character indices in the original text.
-
-  * `label`: Category (`TABLEENV`, `FIGUREENV`, `MATHENV`, `DISPLAYMATH`, `GRAPHIC`).
-
-  * **`text`** (`str`): The original LaTeX content.
-
-  * **Returns** (`Tuple[str, Dict[str, Any]]`): A tuple containing the *original text* (unchanged) and a dictionary of **placeholders** (contexts).
-
-### `find_unclosed_constructs(text: str) -> List[Dict[str, Any]]`
-
-Attempts to detect common parsing issues, specifically:
-
-1.  Unclosed `\begin{...}` environments.
-2.  Odd number of `$$` for display math.
-3.  Unpaired `\[` commands.
-
-<!-- end list -->
-
-  * **`text`** (`str`): The original LaTeX content.
-  * **Returns** (`List[Dict[str, Any]]`): A list of dictionaries, each describing a potential issue with its `type`, `env` (if applicable), `start` index, `line` number, and a `preview` snippet.
-
-### `parse_tex(path: Path) -> dict`
-
-The main parsing function. It reads the file, identifies unclosed constructs, extracts structural and embedded elements (sections, subsections, equations, tables), and collects context for complex elements. It limits parsing to content appearing before the document's references section.
-
-  * **`path`** (`Path`): The path to the `.tex` file.
-  * **Returns** (`dict`): A structured dictionary containing all extracted data, including:
-      * `file`: The source file path.
-      * `sections`: List of parsed section data.
-      * `placeholders`: Contexts collected by `clean_tex_content`.
-      * `unclosed`: List of issues found by `find_unclosed_constructs`.
-      * `top_equations`, `top_tables`: Equations/tables found outside of any section.
-
-### `save_json(data: dict, out_path: Path)`
-
-Writes a Python dictionary to a JSON file with UTF-8 encoding, ensuring non-ASCII characters are preserved, and using an indentation of 2 for readability.
-
-  * **`data`** (`dict`): The dictionary to save.
-  * **`out_path`** (`Path`): The path to the output JSON file.
-
------
-
-## Command Line Interface (`main`)
-
-The `main` function serves as the command-line entry point for the module, enabling batch processing of LaTeX files within a nested directory structure.
-
-### Usage
-
-```bash
-python your_script_name.py --path <input_directory> --json-dir <output_directory>
-```
-
-### Arguments
-
-| Argument | Default | Description |
-| :--- | :--- | :--- |
-| `--path` | `'bestpaper_latex.bak'` | Path to the directory containing LaTeX files (e.g., `<path>/<task_id>/<latex_file>`). |
-| `--json` | `False` | If set, the parsed output will be saved as JSON. (Currently this flag doesn't affect the code flow as it unconditionally saves the JSON output based on the `main` logic). |
-| `--json-dir` | `'bestpaper_latex.bak.json'` | Directory where the structured JSON outputs will be saved. Output files maintain the structure: `<json-dir>/<task_id>/<latex_file>.json`. |
-
-### Execution Flow
-
-1.  Lists the content of the `--path` directory (expected to be a list of `<task_id>` directories).
-2.  Iterates through each `<task_id>` directory to find LaTeX files.
-3.  For each LaTeX file, it calls `parse_tex`.
-4.  The results are saved to the corresponding JSON output path within the `--json-dir` structure, creating directories as needed.
-5.  Prints the path of the saved JSON file.
 """
 
 import re
 import json
 from pathlib import Path
 from typing import Dict, Tuple, List, Any
+import yaml
 
 
 def find_task_id_from_path(path: Path) -> str:
@@ -305,6 +224,10 @@ def _replace_with_placeholders(text: str, pattern: str, label: str, mapping: Dic
         return f"[{key}]"
 
     return re.sub(pattern, repl, text, flags=re.DOTALL)
+
+def load_yaml(yaml_path: str) -> dict[str, Any]:
+    with open(yaml_path, 'r', encoding='utf-8') as f:
+        return yaml.safe_load(f)
 
 def clean_tex_content(text: str) -> Tuple[str, Dict[str, Any]]:
     """
@@ -505,3 +428,103 @@ def find_unclosed_constructs(text: str) -> List[Dict[str, Any]]:
             issues.append({'type': 'display_math_bracket', 'start': pos, 'line': line, 'preview': preview})
 
     return issues
+
+
+def load_llm(model_name_or_path, tokenizer_name_or_path=None, gpu_num=1, lora_model_name_or_path=None, max_model_len=32768):
+    """
+    Load a VLLM model.
+    """
+    from vllm import LLM, SamplingParams
+    kw_args = {
+        "model": model_name_or_path,
+        "tokenizer": tokenizer_name_or_path,
+        "tokenizer_mode": "slow",
+        "tensor_parallel_size" : gpu_num,
+        "enable_lora": bool(lora_model_name_or_path),
+        'max_model_len': max_model_len,
+    }
+    llm = LLM(**kw_args)
+    kwargs={
+        "n":1,
+        "max_tokens": 4096,
+        "top_p":1.0,
+        # sampling
+        "temperature":0,
+        'top_k': 1,
+    }
+    sampling_params = SamplingParams(**kwargs)
+    return llm, sampling_params
+
+
+def populate_template(template: str, variables: dict) -> str:
+    """
+    Populate a Jinja template with variables.
+    """
+    from jinja2 import Template, StrictUndefined
+    compiled_template = Template(template, undefined=StrictUndefined)
+    try:
+        return compiled_template.render(**variables)
+    except Exception as e:
+        raise Exception(f"Error during jinja template rendering: {type(e).__name__}: {e}")
+
+
+def prepare_batch_prompts(prompts_kwargs: List[dict[str, Any]], prompt_template: str, system_prompt='') -> List[List[dict]]:
+    """
+    Prepare a batch of prompts for inference.
+    """
+    prompts = [populate_template(prompt_template, prompt_kwarg) for prompt_kwarg in prompts_kwargs]
+    if system_prompt == '':
+        sys_prompt = 'You are a helpful AI assistant.'
+    else:
+        sys_prompt = system_prompt
+    system_prompts = [sys_prompt for _ in prompts]
+    message_list = []
+    for prompt, sys_prompt in zip(prompts, system_prompts):
+        message_list.append([
+                {"role": "system", "content": sys_prompt},
+                {"role": "user", "content": prompt}
+            ])
+    return message_list
+
+
+def clean_json_txt(json_txt: str, standardize: bool = False) -> Union[str, Dict[str, Any], List[Dict[str, Any]]]:
+    """
+    从可能包含 ```json ... ``` 或 ``` ... ``` 的文本中提取 JSON 并解析为 dict。
+
+    优先级：
+      1) 第一个标记为 ```json 的代码块（忽略大小写）
+      2) 第一个任意 ``` ... ``` 代码块
+      3) 解析包含latex公式的json
+      3) 整个输入字符串
+
+    参数:
+        json_txt: 要处理的JSON文本
+        standardize: 是否尝试标准化非标准JSON
+
+    返回:
+        解析后的JSON对象，如果standardize为True且标准化失败，则返回空字典
+    """
+    if not isinstance(json_txt, str):
+        raise TypeError("json_txt must be a str")
+
+    m = re.search(r'```(?:\s*json\b)[\r\n]*([\s\S]*?)```', json_txt, re.IGNORECASE)
+    if not m:
+        m = re.search(r'```[\r\n]*([\s\S]*?)```', json_txt)
+
+    if m:
+        payload = m.group(1).strip()
+    else:
+        payload = json_txt.strip()
+
+    try:
+        return json.loads(payload)
+    except json.JSONDecodeError:
+        # If it fails, check if the error is likely due to unescaped backslashes
+        corrected_payload = re.sub(r'\\', r'\\\\', payload)
+        try:
+            return json.loads(corrected_payload)
+        except json.JSONDecodeError:
+            if standardize:
+                return {}
+            else:
+                return json_txt
