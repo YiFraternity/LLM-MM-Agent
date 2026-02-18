@@ -250,32 +250,3 @@ If you find this work useful, please cite:
   journal={ACL 2026 Submission}
 }
 ```
-
----
-
-# 📌 Positioning
-
-This repository is:
-
-* ❌ Not a modeling agent
-* ❌ Not a solution generator
-* ✅ A problem-conditioned evaluation framework
-* ✅ A diagnostic tool for modeling competence
-* ✅ A reliability-validated scoring system
-
----
-
-如果你愿意，我可以再给你三种不同风格版本：
-
-1. 🔥 更“ACL论文风”版本（更克制、更正式）
-2. 🚀 更“GitHub吸引力”版本（更直观、更有冲击力）
-3. 🧠 更“Evaluation Benchmark”定位版本（强调可扩展性和泛化能力）
-
-你更想让这个 repo 看起来像：
-
-* 学术代码仓库
-* Benchmark 项目
-* LLM 评测工具
-* 研究型评估框架
-
-告诉我定位，我给你优化到最强版本。
