@@ -1,154 +1,281 @@
-# 🤖 MM-Agent: LLMs as Agents for Real-world Mathematical Modeling Problems
+# 📊 How Far Are We?
 
-> 📖 This is the English version of the README. [点击查看中文版](./README_zh.md)
+## A Problem-Oriented, Stage-Wise Evaluation Framework for Mathematical Modeling
 
+Official implementation for the ACL 2026 submission:
 
-
-## 📰 News
-
- 1. **2025-07**
-🎉 Our paper *"MM-Agent: LLMs as Agents for Real-world Mathematical Modeling Problems"* has been accepted to the **AI4MATH Workshop at ICML 2025**!
-📄 [Read the paper on arXiv](https://arxiv.org/abs/2505.14148)
-
-
-
-## 📖 Overview
-
-We propose a **Mathematical Modeling Agent** that simulates the real-world human process of mathematical modeling. This agent follows a complete problem-solving pipeline:
-
-<p align="center">
-   <img src="figs/Overview.png" alt="MM-Agent Overview" width="80%">
-</p>
-
-
-
-
-1. **Problem Analysis**
-2. **Mathematical Modeling**
-3. **Computational Solving**
-4. **Solution Reporting**
-
-
-Our paper is available at [arXiv](https://arxiv.org/abs/2505.14148).
+**“How Far Are We? Systematic Evaluation of LLMs vs. Human Experts in Mathematical Contest in Modeling”**
 
 ---
 
+# 📖 Overview
 
-## 🆚 Traditional vs LLM-powered Mathematical Modeling
+Large Language Models (LLMs) perform strongly on isolated reasoning benchmarks.
+However, real-world problem solving requires **full-process modeling**:
 
-A well-defined mathematical problem, where an agent solves a well-defined problem to obtain a solution.  An open-ended mathematical modeling problem, where given an abstract application scenario or phenomenon, the agent first needs to formulate the mathematical problem before solving it and providing an end-to-end solution.
+* Understanding the problem
+* Formulating a mathematical abstraction
+* Constructing and solving models
+* Implementing executable solutions
+* Validating and analyzing results
 
-<p align="center">
-   <img src="figs/difference.png" alt="Traditional vs LLM-powered Mathematical Modeling" width="80%">
-</p>
+Mathematical modeling competitions provide a natural testbed for evaluating this capability.
 
-<p align="center">
-   <b>Figure 1:</b> Traditional well-defined mathematics problem vs LLM-powered open-ended mathematical modeling problem.<br>
-</p>
+Unlike traditional benchmarks:
 
-## 🔬 How Does the Mathematical Modeling Agent Work?
+* There is **no unique correct answer**
+* Multiple modeling approaches may be valid
+* Evaluation relies on expert judgment
 
-The agent simulates a real-world mathematical modeling workflow through the following structured stages:
-
-1. **🧠 Problem Analysis**
-   Understands the background, objectives, data availability, and constraints of the problem.
-
-2. **📐 Mathematical Modeling**
-   Translates real-world problems into mathematical models using appropriate assumptions, formulations, and modeling techniques.
-
-3. **🧮 Computational Solving**
-   Implements algorithms, simulations, or optimization techniques to solve the models, often involving numerical computation.
-
-4. **📝 Solution Reporting**
-   Summarizes the full modeling process, interprets results, and generates a clear, structured report.
-
-We propose MM-Agent, an end-to-end solution for open-ended real-world modeling problems. Inspired by expert workflows, MM-Agent systematically analyzes unstructured problem descriptions, formulates structured mathematical models, derives solutions, and generates analytical reports.
-Among these stages, the modeling step poses the greatest challenge, as it requires abstracting complex scenarios into mathematically coherent formulations grounded in both problem context and solution feasibility. To address this, we introduce the Hierarchical Mathematical Modeling Library (HMML): a tri-level knowledge hierarchy encompassing domains, subdomains, and method nodes. HMML encodes 98 high-level modeling schemas that enable both problem-aware and solution-aware retrieval of modeling strategies, supporting abstraction and method selection.  Specifically, MM-Agent first analyzes the problem and decomposes it into subtasks. It then retrieves suitable methods from HMML and refines its modeling plans via an actor-critic mechanism. To solve the models, the agent autonomously generates and iteratively improves code using the MLE-Solver for efficient, accurate execution. Finally, it compiles a structured report summarizing the modeling approach, experimental results, and key insights.
-
----
-## 🌐 Demo
-Our demo is available at [Hugging Face Spaces](https://huggingface.co/spaces/MathematicalModelingAgent/MathematicalModelingAgent).
+This repository implements a **problem-oriented, stage-wise evaluation framework** designed to measure modeling competence faithfully and diagnostically.
 
 ---
 
-## 👾 Currently Supported Models
+# ⭐ Core Contributions
 
-* **OpenAI**: `gpt-4o`
-* **DeepSeek**: `deepseek-R1`
+## 1️⃣ Problem-Oriented Evaluation
 
----
+Instead of using generic rubrics, we:
 
-## ▶️ Quick Start
+* Decompose each modeling problem into **subtasks**
+* Align evaluation criteria with **problem semantics**
+* Ground scoring in **task-specific necessary conditions**
 
-### 🔧 Running the Agent
-
-You can directly run the Mathematical Modeling Agent with:
-
-```bash
-python MMAgent/main.py --key "your_openai_key" --task "task_id"
-```
-
-**Example**:
-
-```bash
-python MMAgent/main.py --key "sk-XXX" --task "2024_C"
-```
-
-Here, `task` corresponds to the problem ID from MM-Bench (e.g., `"2024_C"` refers to the 2024 MCM problem C).
+This avoids rewarding superficially polished but fundamentally misaligned solutions.
 
 ---
 
-## 🖥️ Installation Guide
+## 2️⃣ Stage-Wise Evaluation Across the Modeling Pipeline
 
-### ✅ Prerequisites
+Each subtask is evaluated along seven canonical modeling stages:
 
-* Python 3.10 recommended
-* Conda (optional but preferred)
+1. Problem Identification
+2. Problem Formulation
+3. Assumption Development
+4. Model Construction
+5. Model Solving
+6. Code Implementation
+7. Result Analysis
 
-### 💻 Setup Steps
+This structure enables:
 
-1. **Clone the Repository**
-
-```bash
-git clone git@github.com:usail-hkust/LLM-MM-Agent.git
-```
-
-2. **Create and Activate the Conda Environment**
-
-```bash
-conda create --name math_modeling python=3.10
-conda activate math_modeling
-```
-
-3. **Navigate to Project Directory**
-
-```bash
-cd MM-Agent
-```
-
-4. **Install Dependencies**
-
-```bash
-pip install -r requirements.txt
-```
+* Fine-grained diagnosis
+* Stage-level performance comparison
+* Failure pattern tracing
 
 ---
 
-## 📜 License
+## 3️⃣ Expert-Aligned Reliability
 
-Source code is licensed under the **\[CC BY-NC]**.
+We validate our framework against independent domain experts.
+
+Using ICC(2,1) to measure agreement:
+
+| Evaluation Scheme | ICC(2,1) vs Expert |
+| ----------------- | ------------------ |
+| Baseline Rubric   | 0.012              |
+| **Ours**          | **0.673**          |
 
 
-## 📚 References
 
-```bash
-@misc{mmagent,  
-   title={MM-Agent: LLM as Agents for Real-world Mathematical Modeling Problem},  
-   author={Fan Liu and Zherui Yang and Cancheng Liu and Tianrui Song and Xiaofeng Gao and Hao Liu},  
-   year={2025},  
-   eprint={2505.14148},  
-   archivePrefix={arXiv},  
-   primaryClass={cs.AI},  
-   url={https://arxiv.org/abs/2505.14148}  
+This demonstrates substantially stronger alignment with expert judgment.
+
+---
+
+## 4️⃣ Comprehension–Execution Gap
+
+Applying the framework to state-of-the-art LLMs reveals:
+
+* Strong performance in early stages (problem identification & formulation)
+* Significant degradation in:
+
+  * Model solving
+  * Code implementation
+  * Result validation
+
+Performance declines monotonically across stages.
+
+Scaling model size improves comprehension,
+but **does not close the execution gap** .
+
+---
+
+## 5️⃣ Failure Pattern Analysis
+
+Stage-wise failure analysis shows that:
+
+* Failures are rarely due to completely wrong ideas.
+* Most errors arise from:
+
+  * Missing specification
+  * Lack of verification
+  * Incomplete derivation
+  * Non-reproducible implementation
+  * Missing validation
+
+Errors propagate across stages without correction .
+
+---
+
+# 🏗 Framework Architecture
+
+The evaluation framework operates in two phases:
+
+---
+
+## Phase I: Subtask Decomposition
+
+Each modeling problem is decomposed into:
+
+* Self-contained modeling requirements
+* Each requiring a full modeling pipeline
+
+Experts verify that subtasks faithfully represent the original problem intent .
+
+---
+
+## Phase II: Stage-Wise Criteria Instantiation
+
+For each (Subtask × Stage) pair:
+
+* LLM generates fine-grained evaluation criteria
+* Experts refine and verify
+* Criteria become atomic scoring units
+
+Evaluation is:
+
+* Problem-conditioned
+* Stage-aware
+* Uniformly applied across models
+
+---
+
+# 📂 Dataset
+
+We evaluate on:
+
+**97 problems from the China Postgraduate Mathematical Contest in Modeling (PMCM)**
+
+Characteristics:
+
+* Graduate-level difficulty
+* Multi-page real-world tasks
+* Multi-method modeling requirements
+* Only ~1–1.5% gold medal rate
+
+Problems are converted into verified LaTeX format via a structured preprocessing pipeline.
+
+---
+
+# 📈 What This Framework Enables
+
+* Faithful evaluation of open-ended modeling
+* Expert-aligned scoring
+* Diagnostic stage-wise analysis
+* Identification of execution-level weaknesses
+* Comparative evaluation across model scales
+
+---
+
+# ▶️ Usage
+
+### 1. Generate Stage-Wise Criteria
+
+The system generates JSON-based evaluation schemas conditioned on:
+
+* Problem background
+* Subtask definition
+* Pipeline position
+
+### 2. Stage-Wise Evaluation
+
+Given:
+
+* Subtask
+* Modeling report
+* Generated criteria
+
+The framework performs:
+
+* Criterion-wise scoring
+* Evidence-based justification
+* Stage-level aggregation
+
+All outputs are in structured JSON format.
+
+---
+
+# 📊 Evaluation Protocol
+
+* All models are evaluated under a fixed generation protocol
+* Same subtask decomposition applied to all models
+* Only the LLM varies
+
+Agreement with experts measured using ICC(2,1) under a two-way random-effects model .
+
+---
+
+# 🔬 Key Insight
+
+Mathematical modeling competence is not a linear extension of language understanding.
+
+LLMs can:
+
+✔ Generate plausible modeling ideas
+
+But struggle to:
+
+✘ Execute models rigorously
+✘ Provide checkable solutions
+✘ Produce reproducible code
+✘ Validate results
+
+Improvement requires:
+
+* Process-aware reasoning
+* Stage-wise self-correction
+* Execution-grounded validation
+
+—not just scaling model size .
+
+---
+
+# 📜 Citation
+
+If you find this work useful, please cite:
+
+```
+@article{anonymous2026howfar,
+  title={How Far Are We? Systematic Evaluation of LLMs vs. Human Experts in Mathematical Contest in Modeling},
+  journal={ACL 2026 Submission}
 }
 ```
+
+---
+
+# 📌 Positioning
+
+This repository is:
+
+* ❌ Not a modeling agent
+* ❌ Not a solution generator
+* ✅ A problem-conditioned evaluation framework
+* ✅ A diagnostic tool for modeling competence
+* ✅ A reliability-validated scoring system
+
+---
+
+如果你愿意，我可以再给你三种不同风格版本：
+
+1. 🔥 更“ACL论文风”版本（更克制、更正式）
+2. 🚀 更“GitHub吸引力”版本（更直观、更有冲击力）
+3. 🧠 更“Evaluation Benchmark”定位版本（强调可扩展性和泛化能力）
+
+你更想让这个 repo 看起来像：
+
+* 学术代码仓库
+* Benchmark 项目
+* LLM 评测工具
+* 研究型评估框架
+
+告诉我定位，我给你优化到最强版本。
