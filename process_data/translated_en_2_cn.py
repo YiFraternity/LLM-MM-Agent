@@ -3,14 +3,18 @@ DevRead: A Versatile File Processing Library for Text, PDFs, DOCX, JSON,
 XML, YAML, HTML, Markdown, LaTeX, PPTX, Excel, Images, and Videos, etc.
 """
 
+import os
+import re
 import json
 import logging
-from typing import List, Any
+from pathlib import Path
+from typing import Optional, Tuple, Dict, List, Any
 from rich.logging import RichHandler
 from rich.console import Console
 from vllm import LLM, SamplingParams
 from jinja2 import Template, StrictUndefined
 import yaml
+from process_read_content import DevRead
 
 console = Console()
 
@@ -45,8 +49,7 @@ def load_llm(model_name_or_path, tokenizer_name_or_path=None, gpu_num=1, lora_mo
         "tokenizer": tokenizer_name_or_path,
         "tokenizer_mode": "slow",
         "tensor_parallel_size" : gpu_num,
-        "enable_lora": bool(lora_model_name_or_path),
-        "max_model_len": 16384,
+        "enable_lora": bool(lora_model_name_or_path)
     }
     llm = LLM(**kw_args)
     kwargs={
@@ -90,12 +93,12 @@ def postprocess_output(inputs:List[dict], outputs):
         _input['output'] = _output
     return inputs
 
-def read_file(filepath: str) -> List[dict]:
+def read_file(filepath: Path) -> List[dict]:
     with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.readlines()
     contents = []
-    for idx,line in enumerate(lines):
-        if line.strip() == '':
+    for idx, line in enumerate(lines):
+        if len(line.strip()) == 0:
             continue
         contents.append({'text': line.strip(), 'idx': idx})
     return contents
@@ -111,19 +114,19 @@ def main():
     system_prompt = templates['system_prompt']
     all_prompts = prepare_batch_prompts(contents, prompt_template, system_prompt)
 
-    model_name_or_path = '/group_homes/our_llm_domain/home/share/open_models/Qwen/Qwen2.5-32B-Instruct'
-    model, sampling_params = load_llm(model_name_or_path, gpu_num=1)
+    # model_name_or_path = '/home/share/models/modelscope/Qwen/Qwen2.5-32B-Instruct/'
+    # model, sampling_params = load_llm(model_name_or_path, gpu_num=1)
 
-    outputs_t = model.chat(all_prompts, sampling_params, use_tqdm=True)
+    # outputs_t = model.chat(all_prompts, sampling_params, use_tqdm=True)
 
-    pred_lst = []
-    for o_t in outputs_t:
-        pred_lst.append(o_t.outputs[0].text)
+    pred_lst = [''] * len(all_prompts)
+    # for o_t in outputs_t:
+    #     pred_lst.append(o_t.outputs[0].text)
 
     results = postprocess_output(contents, pred_lst)
     with open('translated_en_2_cn.jsonl', 'w', encoding='utf-8') as f:
-        for res in results:
-            f.write(json.dumps(res, ensure_ascii=False) + '\n')
+        for result in results:
+            f.write(json.dumps(result) + '\n')
 
 if __name__ == "__main__":
     main()

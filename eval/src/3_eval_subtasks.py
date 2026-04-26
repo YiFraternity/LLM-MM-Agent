@@ -35,6 +35,8 @@ from eval_utils import (
     populate_template,
     load_llm,
     write_jsonl,
+    extract_python_code,
+    execute_code,
 )
 
 os.environ['VLLM_WORKER_MULTIPROC_METHOD'] = 'spawn'
@@ -45,11 +47,11 @@ dimensions = {
     '假设建立': 'assumption_develop',
     '模型构建': 'model_construction',
     '模型求解': 'model_solving',
-    '代码实现': 'code_implement',
+    '代码实现': 'code_implementation',
     '结果分析': 'result_analysis',
 }
 
-evaluation_prompts = load_yaml('eval/eval_prompt.yaml')['evaluation_prompts']
+evaluation_prompts = load_yaml('eval/prompts/eval_prompt.yaml')['evaluation_prompts']
 
 def get_evaluation_prompt(step_chinese_name: str) -> str:
     """
@@ -147,10 +149,23 @@ if __name__ == '__main__':
                     _.pop('dimension', None)
                     criteria_dimension.append(_)
 
+                execution_result = ""
+                if dimension == '代码实现':
+                    print(f"Executing code for {subtask}...")
+                    code_to_run = extract_python_code(modelgenerate_str)
+                    if code_to_run:
+                        success, result_out = execute_code(code_to_run)
+                        execution_result = result_out
+                        print(f"Execution {'successful' if success else 'failed'}.")
+                    else:
+                        execution_result = "No code found to execute."
+                        print("No code found.")
+
                 _prompt_ = {
                     'subtask': criteria_dict[subtask_en]['subtask'],
                     'bestpaper': bestpaper_str,
                     'model_generate': modelgenerate_str,
+                    'execution_result': execution_result,
                     'criteria': criteria_dimension,
                     'prompt_template': get_evaluation_prompt(dimension)
                 }

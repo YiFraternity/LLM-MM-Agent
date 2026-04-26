@@ -3,6 +3,7 @@
 """
 
 import argparse
+import json
 from pathlib import Path
 import logging
 import re
@@ -167,9 +168,10 @@ def main(args):
                 prompt_info = {
                     'subproblem': subtask_info.get('subtask', ''),
                     'report_content': subsection_content,
-                    'report_criteria': subtask_info.get('criteria', ''),
+                    'report_criteria': json.dumps(subtask_info.get('criteria', {}), ensure_ascii=False, indent=2),  # subtask_info.get('criteria', ''),
                 }
                 user_prompt = populate_template(user_prompt_template, prompt_info)
+                print(user_prompt)
                 response = llm.generate(prompt=user_prompt, system=system_prompt)
                 response = clean_json_txt(response)
                 # response = '模拟的评估结果'

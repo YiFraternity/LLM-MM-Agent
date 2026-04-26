@@ -1,8 +1,12 @@
 import os
 import re
+import sys
+import subprocess
+import tempfile
+import shutil
 from pathlib import Path
 import json
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, Tuple
 import logging
 import time
 
@@ -29,6 +33,73 @@ DIMENSION_MAPPING = {
     '代码实现': 'code_implementation',
     '结果分析': 'result_analysis',
 }
+
+def extract_python_code(text: str) -> str:
+    """
+    Extract python code blocks from text.
+    If multiple blocks are found, concatenate them.
+    """
+    if not isinstance(text, str):
+        return ""
+
+    # Try to find ```python ... ``` blocks
+    patterns = [
+        r'```python\s*([\s\S]*?)```',
+        r'```py\s*([\s\S]*?)```',
+        r'```\s*([\s\S]*?)```' # Fallback to any code block if no python tag
+    ]
+
+    all_code = []
+    for pattern in patterns:
+        matches = re.findall(pattern, text, re.IGNORECASE)
+        if matches:
+            for match in matches:
+                code = match.strip()
+                # Simple heuristic to check if it's likely python if it was an untagged block
+                if pattern == patterns[-1]:
+                    if "import " in code or "def " in code or "print(" in code:
+                        all_code.append(code)
+                else:
+                    all_code.append(code)
+            # If we found tagged blocks, we don't look for untagged ones
+            if all_code:
+                break
+
+    return "\n\n".join(all_code)
+
+def execute_code(code: str, timeout: int = 30) -> Tuple[bool, str]:
+    """
+    Execute python code and return (success, output).
+    Output contains stdout and stderr.
+    """
+    if not code.strip():
+        return False, "No code found to execute."
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        script_path = Path(tmp_dir) / "eval_script.py"
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(code)
+
+        try:
+            # Using current python interpreter
+            result = subprocess.run(
+                [sys.executable, str(script_path)],
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                cwd=tmp_dir
+            )
+            success = (result.returncode == 0)
+            output = result.stdout
+            if result.stderr:
+                output += "\n--- STDERR ---\n" + result.stderr
+            if not output.strip() and success:
+                output = "Code executed successfully with no output."
+            return success, output
+        except subprocess.TimeoutExpired:
+            return False, f"Execution timed out after {timeout} seconds."
+        except Exception as e:
+            return False, f"An error occurred during execution: {str(e)}"
 
 def load_tex_content(latex_file: Union[str, Path]) -> str:
     """

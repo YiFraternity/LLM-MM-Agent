@@ -73,14 +73,13 @@ def main(input_path: Path | str | None = None, output_path: Path | str | None = 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="汇总评分并导出为 Excel。")
     parser.add_argument(
-        "-i",
         "--input",
-        required=True,
+        default='eval/output/results',
         help="输入 JSON 文件或包含多个 JSON 的目录。",
     )
     parser.add_argument(
-        "-o",
         "--output",
+        default="eval/score",
         help="输出 Excel 文件路径；若输入为目录，则应提供输出目录。",
     )
 

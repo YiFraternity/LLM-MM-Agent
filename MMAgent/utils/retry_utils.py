@@ -141,6 +141,34 @@ def ensure_parsed_json_output(func):
         return parsed
     return wrapper
 
+def async_retry_on_api_error(
+    max_attempts=5,
+    min_wait=2,
+    max_wait=20,
+    multiplier=2,
+    wait_time=None,
+):
+    wait_strategy = (
+        wait_exponential(multiplier=multiplier, min=min_wait, max=max_wait)
+        if wait_time is None
+        else wait_fixed(wait_time)
+    )
+
+    return retry(
+        retry=retry_if_exception_type((
+            APIConnectionError,
+            APIStatusError,
+            RateLimitError,
+            APITimeoutError,
+            ConnectionError,
+            RequestsTimeout,
+            TimeoutError,
+        )),
+        wait=wait_strategy,
+        stop=stop_after_attempt(max_attempts),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
+        reraise=True,
+    )
 
 def reflective_retry_on_logic_error(
     max_attempts: int = 3,
