@@ -1,0 +1,457 @@
+{
+  "configuration": {
+    "sheet": "Task_Stage_Scores",
+    "key_columns": [
+      "Model Name",
+      "Task ID"
+    ],
+    "score_columns": [
+      "modeling_rigor",
+      "practicality_scientificity",
+      "problem_analysis",
+      "result_bias"
+    ],
+    "bootstrap_samples": 10000,
+    "bootstrap_cluster_column": "Task ID",
+    "confidence": 0.95,
+    "seed": 20261001,
+    "excellent_threshold": 0.9,
+    "score_maximum": 10.0
+  },
+  "coverage": {
+    "common_target_count": 10,
+    "intersection_policy": "complete-case inner join on all key columns",
+    "bootstrap_cluster_count": 10
+  },
+  "judges": [
+    {
+      "label": "gemini-3.1-p",
+      "path": "eval/judge_agreement/cross_judge_calibration_v2_10/old_prompt_summaries/gemini-3.1-p.xlsx",
+      "row_count": 10,
+      "excluded_from_intersection": 0
+    },
+    {
+      "label": "ali-deepseek-v4-pro",
+      "path": "eval/judge_agreement/cross_judge_calibration_v2_10/old_prompt_summaries/ali-deepseek-v4-pro.xlsx",
+      "row_count": 10,
+      "excluded_from_intersection": 0
+    }
+  ],
+  "outcomes": {
+    "overall_mean": {
+      "target_count": 10,
+      "descriptive": {
+        "gemini-3.1-p": {
+          "mean": 8.5625,
+          "sd": 1.021045896236904,
+          "min": 6.875,
+          "max": 10.0,
+          "at_maximum_rate": 0.1
+        },
+        "ali-deepseek-v4-pro": {
+          "mean": 5.2625,
+          "sd": 1.3352200193226582,
+          "min": 3.0,
+          "max": 7.625,
+          "at_maximum_rate": 0.0
+        }
+      },
+      "global": {
+        "icc_absolute_a1": {
+          "value": 0.08775525891004124,
+          "ci": {
+            "lower": -0.033477643880838764,
+            "upper": 0.21499312088578215
+          },
+          "level": "poor"
+        },
+        "icc_consistency_c1": {
+          "value": 0.4209167998033672,
+          "ci": {
+            "lower": -0.24097810092441801,
+            "upper": 0.7483312698046082
+          },
+          "level": "poor"
+        },
+        "kendall_w": {
+          "value": 0.6914893617021277,
+          "ci": {
+            "lower": 0.3221995820271685,
+            "upper": 0.9798792569659442
+          }
+        }
+      },
+      "pairwise": [
+        {
+          "judge_a": "gemini-3.1-p",
+          "judge_b": "ali-deepseek-v4-pro",
+          "mean_a": 8.5625,
+          "mean_b": 5.2625,
+          "at_maximum_rate_a": 0.1,
+          "at_maximum_rate_b": 0.0,
+          "pearson_r": 0.43615413382444956,
+          "spearman_rho": 0.3829804925184407,
+          "lin_ccc": 0.07967895777596837,
+          "mean_bias_b_minus_a": -3.3,
+          "mae": 3.3,
+          "rmse": 3.516034698349833,
+          "within_0_5": 0.0,
+          "within_1_0": 0.0,
+          "bland_altman_lower": -5.807046956968386,
+          "bland_altman_upper": -0.7929530430316136,
+          "confidence_intervals": {
+            "pearson_r": {
+              "lower": -0.2576489875432386,
+              "upper": 0.8726578483087852
+            },
+            "spearman_rho": {
+              "lower": -0.35561660275768003,
+              "upper": 0.9597629986161131
+            },
+            "lin_ccc": {
+              "lower": -0.030029348309877253,
+              "upper": 0.1977451944582352
+            }
+          }
+        }
+      ],
+      "decision": {
+        "threshold": 0.9,
+        "point_estimate_pass": false,
+        "confidence_bound_pass": false
+      }
+    },
+    "modeling_rigor": {
+      "target_count": 10,
+      "descriptive": {
+        "gemini-3.1-p": {
+          "mean": 9.05,
+          "sd": 0.83166499665831,
+          "min": 7.5,
+          "max": 10.0,
+          "at_maximum_rate": 0.2
+        },
+        "ali-deepseek-v4-pro": {
+          "mean": 4.15,
+          "sd": 1.9867617426914137,
+          "min": 1.0,
+          "max": 7.5,
+          "at_maximum_rate": 0.0
+        }
+      },
+      "global": {
+        "icc_absolute_a1": {
+          "value": 0.003349753694581284,
+          "ci": {
+            "lower": -0.07416307659380743,
+            "upper": 0.09233599519652866
+          },
+          "level": "poor"
+        },
+        "icc_consistency_c1": {
+          "value": 0.02035928143712577,
+          "ci": {
+            "lower": -0.4101515178823156,
+            "upper": 0.6671838634600464
+          },
+          "level": "poor"
+        },
+        "kendall_w": {
+          "value": 0.48757763975155277,
+          "ci": {
+            "lower": 0.09803921568627451,
+            "upper": 0.9032786885245901
+          }
+        }
+      },
+      "pairwise": [
+        {
+          "judge_a": "gemini-3.1-p",
+          "judge_b": "ali-deepseek-v4-pro",
+          "mean_a": 9.05,
+          "mean_b": 4.15,
+          "at_maximum_rate_a": 0.2,
+          "at_maximum_rate_b": 0.0,
+          "pearson_r": 0.02857934090294872,
+          "spearman_rho": -0.024846637675730268,
+          "lin_ccc": 0.003015788540003546,
+          "mean_bias_b_minus_a": -4.9,
+          "mae": 4.9,
+          "rmse": 5.300943312279429,
+          "within_0_5": 0.0,
+          "within_1_0": 0.1,
+          "bland_altman_lower": -9.078269710990158,
+          "bland_altman_upper": -0.7217302890098427,
+          "confidence_intervals": {
+            "pearson_r": {
+              "lower": -0.8128903898249717,
+              "upper": 0.7659396243271085
+            },
+            "spearman_rho": {
+              "lower": -0.8039254332634286,
+              "upper": 0.8065963963620446
+            },
+            "lin_ccc": {
+              "lower": -0.06625539848046239,
+              "upper": 0.08387688120876634
+            }
+          }
+        }
+      ],
+      "decision": {
+        "threshold": 0.9,
+        "point_estimate_pass": false,
+        "confidence_bound_pass": false
+      }
+    },
+    "practicality_scientificity": {
+      "target_count": 10,
+      "descriptive": {
+        "gemini-3.1-p": {
+          "mean": 8.85,
+          "sd": 1.5643600040343086,
+          "min": 5.5,
+          "max": 10.0,
+          "at_maximum_rate": 0.3
+        },
+        "ali-deepseek-v4-pro": {
+          "mean": 5.65,
+          "sd": 2.4949949899749297,
+          "min": 1.5,
+          "max": 9.0,
+          "at_maximum_rate": 0.0
+        }
+      },
+      "global": {
+        "icc_absolute_a1": {
+          "value": -0.02500000000000002,
+          "ci": {
+            "lower": -0.21257459083815594,
+            "upper": 0.2586793737236214
+          },
+          "level": "poor"
+        },
+        "icc_consistency_c1": {
+          "value": -0.051889814221652814,
+          "ci": {
+            "lower": -0.5245644482942152,
+            "upper": 0.3705882352941175
+          },
+          "level": "poor"
+        },
+        "kendall_w": {
+          "value": 0.5877742946708464,
+          "ci": {
+            "lower": 0.21921715611347817,
+            "upper": 0.8993610223642172
+          }
+        }
+      },
+      "pairwise": [
+        {
+          "judge_a": "gemini-3.1-p",
+          "judge_b": "ali-deepseek-v4-pro",
+          "mean_a": 8.85,
+          "mean_b": 5.65,
+          "at_maximum_rate_a": 0.3,
+          "at_maximum_rate_b": 0.0,
+          "pearson_r": -0.05764692370922118,
+          "spearman_rho": 0.17559086972715876,
+          "lin_ccc": -0.022443890274314225,
+          "mean_bias_b_minus_a": -3.2,
+          "mae": 3.3,
+          "rmse": 4.295346318982906,
+          "within_0_5": 0.2,
+          "within_1_0": 0.3,
+          "bland_altman_lower": -9.119791287612166,
+          "bland_altman_upper": 2.719791287612165,
+          "confidence_intervals": {
+            "pearson_r": {
+              "lower": -0.5554840101520417,
+              "upper": 0.5909167703971395
+            },
+            "spearman_rho": {
+              "lower": -0.5616213317479977,
+              "upper": 0.7993407359411471
+            },
+            "lin_ccc": {
+              "lower": -0.18733486842561137,
+              "upper": 0.23899371069182382
+            }
+          }
+        }
+      ],
+      "decision": {
+        "threshold": 0.9,
+        "point_estimate_pass": false,
+        "confidence_bound_pass": false
+      }
+    },
+    "problem_analysis": {
+      "target_count": 10,
+      "descriptive": {
+        "gemini-3.1-p": {
+          "mean": 8.55,
+          "sd": 1.4424131015612538,
+          "min": 5.5,
+          "max": 10.0,
+          "at_maximum_rate": 0.1
+        },
+        "ali-deepseek-v4-pro": {
+          "mean": 4.45,
+          "sd": 2.2416511771459895,
+          "min": 1.5,
+          "max": 9.0,
+          "at_maximum_rate": 0.0
+        }
+      },
+      "global": {
+        "icc_absolute_a1": {
+          "value": 0.10213270142180093,
+          "ci": {
+            "lower": -0.03960396039603958,
+            "upper": 0.29674481632186206
+          },
+          "level": "poor"
+        },
+        "icc_consistency_c1": {
+          "value": 0.3369820172009383,
+          "ci": {
+            "lower": -0.15293826235108374,
+            "upper": 0.8178807362766806
+          },
+          "level": "poor"
+        },
+        "kendall_w": {
+          "value": 0.675,
+          "ci": {
+            "lower": 0.3088673943744852,
+            "upper": 0.9548494983277592
+          }
+        }
+      },
+      "pairwise": [
+        {
+          "judge_a": "gemini-3.1-p",
+          "judge_b": "ali-deepseek-v4-pro",
+          "mean_a": 8.55,
+          "mean_b": 4.45,
+          "at_maximum_rate_a": 0.1,
+          "at_maximum_rate_b": 0.0,
+          "pearson_r": 0.37026876529412905,
+          "spearman_rho": 0.3500068361377781,
+          "lin_ccc": 0.09286791639732815,
+          "mean_bias_b_minus_a": -4.1,
+          "mae": 4.2,
+          "rmse": 4.588027898781785,
+          "within_0_5": 0.1,
+          "within_1_0": 0.1,
+          "bland_altman_lower": -8.354198449114056,
+          "bland_altman_upper": 0.1541984491140571,
+          "confidence_intervals": {
+            "pearson_r": {
+              "lower": -0.37505069691380366,
+              "upper": 0.8496631021798511
+            },
+            "spearman_rho": {
+              "lower": -0.38263259358654983,
+              "upper": 0.9102640011634373
+            },
+            "lin_ccc": {
+              "lower": -0.03550295857988165,
+              "upper": 0.27523787600378474
+            }
+          }
+        }
+      ],
+      "decision": {
+        "threshold": 0.9,
+        "point_estimate_pass": false,
+        "confidence_bound_pass": false
+      }
+    },
+    "result_bias": {
+      "target_count": 10,
+      "descriptive": {
+        "gemini-3.1-p": {
+          "mean": 7.8,
+          "sd": 2.2261077142751997,
+          "min": 3.0,
+          "max": 10.0,
+          "at_maximum_rate": 0.1
+        },
+        "ali-deepseek-v4-pro": {
+          "mean": 6.8,
+          "sd": 2.8596814119369625,
+          "min": 3.0,
+          "max": 10.0,
+          "at_maximum_rate": 0.2
+        }
+      },
+      "global": {
+        "icc_absolute_a1": {
+          "value": 0.5387453874538745,
+          "ci": {
+            "lower": 0.04679312736142347,
+            "upper": 0.8825711844414743
+          },
+          "level": "moderate"
+        },
+        "icc_consistency_c1": {
+          "value": 0.5558375634517765,
+          "ci": {
+            "lower": 0.05760646063272728,
+            "upper": 0.88334260690191
+          },
+          "level": "moderate"
+        },
+        "kendall_w": {
+          "value": 0.8498452012383901,
+          "ci": {
+            "lower": 0.5897009966777409,
+            "upper": 0.9764890282131662
+          }
+        }
+      },
+      "pairwise": [
+        {
+          "judge_a": "gemini-3.1-p",
+          "judge_b": "ali-deepseek-v4-pro",
+          "mean_a": 7.8,
+          "mean_b": 6.8,
+          "at_maximum_rate_a": 0.1,
+          "at_maximum_rate_b": 0.2,
+          "pearson_r": 0.5733621729506033,
+          "spearman_rho": 0.699774249750297,
+          "lin_ccc": 0.5124804992199689,
+          "mean_bias_b_minus_a": -1.0,
+          "mae": 1.8,
+          "rmse": 2.5,
+          "within_0_5": 0.3,
+          "within_1_0": 0.6,
+          "bland_altman_lower": -5.73384973708855,
+          "bland_altman_upper": 3.7338497370885504,
+          "confidence_intervals": {
+            "pearson_r": {
+              "lower": 0.07095856467623088,
+              "upper": 0.9066207448690587
+            },
+            "spearman_rho": {
+              "lower": 0.1797604789358163,
+              "upper": 0.9530202011156795
+            },
+            "lin_ccc": {
+              "lower": 0.042311804877879264,
+              "upper": 0.8712040229772332
+            }
+          }
+        }
+      ],
+      "decision": {
+        "threshold": 0.9,
+        "point_estimate_pass": false,
+        "confidence_bound_pass": false
+      }
+    }
+  }
+}
