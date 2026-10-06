@@ -99,6 +99,46 @@ def build_subtask_inputs(
     ]
 
 
+def exact_output_contract(subtask_info: Mapping[str, Any]) -> str:
+    """Describe the only accepted stage/dimension keys for one subtask."""
+    evaluation_criteria = (
+        subtask_info.get("criteria", {}).get("evaluation_criteria", {})
+    )
+    schema = {
+        stage: [
+            str(item.get("sub_criteria", ""))
+            for item in evaluation_criteria.get(stage, [])
+            if isinstance(item, Mapping)
+        ]
+        for stage in STAGES
+    }
+    return (
+        "\n\n=====================================\n"
+        "🔐 精确输出键约束（机器校验，必须遵守）\n"
+        "=====================================\n"
+        "下列对象给出了每个 stage 唯一允许的 dimension 名称。"
+        "不得改写、增删或合并 dimension 名称；名称必须逐字复制。"
+        "若某个 stage 对应空数组，该 stage 必须原样输出 []，不得自行补充评分项。\n"
+        + json.dumps(schema, ensure_ascii=False)
+    )
+
+
+def prune_not_applicable_stages(
+    response: Any, subtask_info: Mapping[str, Any]
+) -> Any:
+    """Make rubric-declared empty stages authoritative without mutating raw output."""
+    if not isinstance(response, dict):
+        return response
+    evaluation_criteria = (
+        subtask_info.get("criteria", {}).get("evaluation_criteria", {})
+    )
+    pruned = dict(response)
+    for stage in STAGES:
+        if evaluation_criteria.get(stage, []) == []:
+            pruned[stage] = []
+    return pruned
+
+
 def freeze_inputs(
     *,
     bestpaper_root: Path,
@@ -252,6 +292,7 @@ def evaluate_report(
                 ),
             },
         )
+        prompt += exact_output_contract(subtask_input)
         previous_error: str | None = None
         for attempt in range(1, max_attempts + 1):
             judge = judge_factory(
@@ -285,6 +326,7 @@ def evaluate_report(
                     prompt=call_prompt, system=template.get("system", "")
                 )
                 parsed = clean_json_txt(raw)
+                parsed = prune_not_applicable_stages(parsed, subtask_input)
                 subtask_info = criteria["subtask"][subtask_id]
                 checkpoint["subtasks"][subtask_id] = validate_response(
                     parsed, subtask_info

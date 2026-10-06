@@ -15,8 +15,10 @@ from run_bestpaper_judges import (  # noqa: E402
     build_subtask_inputs,
     clean_bestpaper_tex,
     evaluate_report,
+    exact_output_contract,
     freeze_inputs,
     load_judge_configs,
+    prune_not_applicable_stages,
     select_bestpapers,
     write_summaries,
 )
@@ -105,6 +107,47 @@ class BuildSubtaskInputsTest(unittest.TestCase):
     def test_rejects_criteria_without_subtasks(self) -> None:
         with self.assertRaisesRegex(ValueError, "subtask"):
             build_subtask_inputs("paper", {"subtask": {}})
+
+
+class ExactOutputContractTest(unittest.TestCase):
+    def test_lists_exact_dimension_names_and_requires_empty_arrays(self) -> None:
+        subtask_info = {
+            "criteria": {
+                "evaluation_criteria": {
+                    "问题识别": [
+                        {"sub_criteria": "目标A"},
+                        {"sub_criteria": "约束B"},
+                    ],
+                    "模型构建": [],
+                }
+            }
+        }
+
+        contract = exact_output_contract(subtask_info)
+
+        self.assertIn('"问题识别": ["目标A", "约束B"]', contract)
+        self.assertIn('"模型构建": []', contract)
+        self.assertIn("不得改写、增删或合并 dimension 名称", contract)
+
+    def test_prunes_only_model_items_for_rubric_stages_marked_empty(self) -> None:
+        response = {
+            "问题识别": [{"dimension": "keep", "score": 1, "comment": "ok"}],
+            "模型构建": [{"dimension": "invented", "score": 1, "comment": "x"}],
+        }
+        subtask_info = {
+            "criteria": {
+                "evaluation_criteria": {
+                    "问题识别": [{"sub_criteria": "keep", "score": 1}],
+                    "模型构建": [],
+                }
+            }
+        }
+
+        pruned = prune_not_applicable_stages(response, subtask_info)
+
+        self.assertEqual(pruned["问题识别"], response["问题识别"])
+        self.assertEqual(pruned["模型构建"], [])
+        self.assertEqual(response["模型构建"][0]["dimension"], "invented")
 
 
 class FreezeInputsTest(unittest.TestCase):
