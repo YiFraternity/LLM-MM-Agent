@@ -18,6 +18,7 @@ from run_bestpaper_judges import (  # noqa: E402
     exact_output_contract,
     freeze_inputs,
     load_judge_configs,
+    next_artifact_attempt,
     prune_not_applicable_stages,
     select_bestpapers,
     write_summaries,
@@ -191,6 +192,17 @@ class FreezeInputsTest(unittest.TestCase):
 
 
 class EvaluateReportTest(unittest.TestCase):
+    def test_resumed_subtask_uses_a_new_artifact_attempt_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            artifact_root = Path(temporary_directory) / "artifacts"
+            (artifact_root / "attempt_1").mkdir(parents=True)
+            (artifact_root / "attempt_3").mkdir()
+            (artifact_root / "notes").mkdir()
+
+            attempt = next_artifact_attempt(artifact_root)
+
+        self.assertEqual(attempt, 4)
+
     def test_scores_each_subtask_and_reuses_completed_result(self) -> None:
         class FakeJudge:
             calls_made = 0

@@ -237,6 +237,17 @@ def _sum_usage(total: dict[str, int], addition: Mapping[str, Any]) -> None:
             total[key] = total.get(key, 0) + value
 
 
+def next_artifact_attempt(artifact_root: Path) -> int:
+    """Return an unused monotonically increasing artifact attempt number."""
+    existing = []
+    if artifact_root.is_dir():
+        for path in artifact_root.iterdir():
+            match = re.fullmatch(r"attempt_(\d+)", path.name)
+            if path.is_dir() and match:
+                existing.append(int(match.group(1)))
+    return max(existing, default=0) + 1
+
+
 def evaluate_report(
     *,
     report: dict[str, Any],
@@ -294,6 +305,15 @@ def evaluate_report(
         )
         prompt += exact_output_contract(subtask_input)
         previous_error: str | None = None
+        artifact_root = (
+            experiment_dir
+            / "runs"
+            / judge_name
+            / "artifacts"
+            / report["task_id"]
+            / f"subtask_{subtask_id}"
+        )
+        first_artifact_attempt = next_artifact_attempt(artifact_root)
         for attempt in range(1, max_attempts + 1):
             judge = judge_factory(
                 config_name=judge_name,
@@ -304,15 +324,8 @@ def evaluate_report(
                 api_version=judge_config["api_version"],
                 temperature=temperature,
                 max_tokens=max_tokens,
-                artifact_dir=(
-                    experiment_dir
-                    / "runs"
-                    / judge_name
-                    / "artifacts"
-                    / report["task_id"]
-                    / f"subtask_{subtask_id}"
-                    / f"attempt_{attempt}"
-                ),
+                artifact_dir=artifact_root
+                / f"attempt_{first_artifact_attempt + attempt - 1}",
             )
             call_prompt = prompt
             if previous_error:
