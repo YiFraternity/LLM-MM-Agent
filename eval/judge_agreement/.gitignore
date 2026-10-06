@@ -1,5 +1,6 @@
 # Large/reconstructable experiment inputs and API call artifacts.
 cross_judge_*/
+bestpaper_*/
 cross_judge_30/
 understanding_vs_gemini25p/
 */frozen_inputs/
